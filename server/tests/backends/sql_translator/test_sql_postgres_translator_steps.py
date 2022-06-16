@@ -100,50 +100,6 @@ def execute(connection, query: str, meta: bool = True) -> Optional[pd.DataFrame]
             return None
 
 
-def sql_retrieve_city(t):
-    return t
-
-
-def split_list(lst, list_index):
-    temp = lst[list_index[0] + 1]
-    if len(temp.split('.')) == 2:
-        table_name = temp.split('.')[1]
-    else:
-        table_name = temp.split('.')[0]
-    return table_name
-
-
-def sql_query_describer(domain, query_string=None) -> Union[Dict[str, str], None]:
-    lst = (domain if domain else query_string).split(' ')
-    lst = [item for item in lst if len(item) > 0]
-    if 'FROM' in lst:
-        list_index = [i for i, s in enumerate(lst) if s == "FROM"]
-        if len(list_index) == 1:
-            table_name = split_list(lst, list_index)
-        if len(list_index) > 1:
-            table_name = split_list(lst, list_index)[:-1]
-    else:
-        table_name = lst[0]
-
-    request = (
-        f'SELECT column_name as name, data_type as type_code FROM information_schema.columns'
-        f' WHERE table_name = \'{table_name}\' ORDER BY ordinal_position;'
-    )
-    connection = get_connection()
-    with connection.cursor() as cursor:
-        cursor.execute(request)
-        describe_res = cursor.fetchall()
-        res = {r[0]: r[1] for r in describe_res}
-        return res
-
-
-def sql_query_executor(domain: str, query_string: str = None) -> Union[pd.DataFrame, None]:
-    connection = get_connection()
-    with connection.cursor() as cursor:
-        res = cursor.execute(domain if domain else query_string).fetchall()
-        return pd.DataFrame(res)
-
-
 def standardized_columns(df: pd.DataFrame):
     df.columns = [c.replace('-', '_') for c in df.columns]
 
