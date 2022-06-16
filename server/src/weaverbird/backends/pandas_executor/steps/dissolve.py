@@ -29,10 +29,18 @@ def execute_dissolve(
     domain_retriever: DomainRetriever = None,
     execute_pipeline: PipelineExecutor = None,
 ) -> DataFrame:
+    if len(step.aggregations) > 0:
+        aggfunc: dict[str, Any] | str = _translate_agg_func(step.aggregations)
+        geo_df = df_to_geodf(df)
+    else:
+        aggfunc = 'first'  # placeholder, can't be None
+        columns_to_keep = set(step.groups + ['geometry'])
+        geo_df = df_to_geodf(df).drop(list(set(df.columns) - columns_to_keep), axis=1)
+
     return DataFrame(
-        df_to_geodf(df).dissolve(
+        geo_df.dissolve(
             by=step.groups,
-            aggfunc=_translate_agg_func(step.aggregations),
+            aggfunc=aggfunc,
             as_index=False,
             dropna=not step.include_nulls,
         )
