@@ -1,7 +1,7 @@
 import json
 import logging
 import time
-from typing import Dict, List, Optional, Union
+from typing import List, Optional
 
 import docker
 import pandas as pd
@@ -108,9 +108,10 @@ def standardized_columns(df: pd.DataFrame):
 @pytest.mark.parametrize('case_id, case_spec_file_path', test_cases)
 def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     spec = get_spec_from_json_fixture(case_id, case_spec_file_path)
+    test_table_name = case_id.replace("/", "")
 
     # Drop created table
-    execute(get_connection(), f'DROP TABLE IF EXISTS {case_id.replace("/", "")}', False)
+    execute(get_connection(), f'DROP TABLE IF EXISTS {test_table_name}', False)
 
     # inserting the data in Postgres
     # Take data in fixture file, set in pandas, create table and insert
@@ -134,18 +135,21 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
             )
 
     steps = spec['step']['pipeline']
-    steps.insert(0, {'name': 'domain', 'domain': case_id.replace("/", "")})
+    steps.insert(0, {'name': 'domain', 'domain': test_table_name})
     pipeline = PipelineWithVariables(steps=steps)
 
     # Convert Pipeline object to Postgres Query
     query = translate_pipeline(
-        sql_dialect=SQLDialect.POSTGRESQL, pipeline=pipeline, tables_columns={}, db_schema=None
+        sql_dialect=SQLDialect.POSTGRESQL,
+        pipeline=pipeline,
+        tables_columns={test_table_name: data_to_insert.columns},
+        db_schema=None,
     )
     # Execute request generated from Pipeline in Postgres and get the result
     result: pd.DataFrame = execute(get_connection(), query)
 
     # Drop created table
-    execute(get_connection(), f'DROP TABLE {case_id.replace("/", "")}', False)
+    execute(get_connection(), f'DROP TABLE {test_table_name}', False)
 
     # Compare result and expected (from fixture file)
     pandas_result_expected = pd.read_json(
@@ -165,5 +169,4 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     if 'other_expected' in spec:
         query_expected = spec['other_expected']['sql']['query']
         assert query_expected == query
-
     assert_dataframes_equals(pandas_result_expected, result)
