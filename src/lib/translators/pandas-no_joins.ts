@@ -11,6 +11,10 @@ import { BaseTranslator } from './base';
 export class PandasNoJoinsTranslator extends BaseTranslator {
   static label = 'PandasNoJoins';
 
+  absolutevalue(step: Readonly<S.AbsoluteValueStep>) {
+    return step;
+  }
+
   addmissingdates(step: Readonly<S.AddMissingDatesStep>) {
     return step;
   }
