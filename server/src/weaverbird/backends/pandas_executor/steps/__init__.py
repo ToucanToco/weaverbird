@@ -32,6 +32,7 @@ from .rename import execute_rename
 from .replace import execute_replace
 from .rollup import execute_rollup
 from .select import execute_select
+from .simplify import execute_simplify
 from .sort import execute_sort
 from .split import execute_split
 from .statistics import execute_statistics
@@ -78,6 +79,7 @@ steps_executors: Dict[str, StepExecutor] = {
     'replace': execute_replace,
     'rollup': execute_rollup,
     'select': execute_select,
+    'simplify': execute_simplify,
     'sort': execute_sort,
     'split': execute_split,
     'statistics': execute_statistics,
