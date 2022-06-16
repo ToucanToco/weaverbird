@@ -16,6 +16,7 @@ def execute_simplify(
     # Simplify returns a GeoSeries, so we need to reassign here.
     #
     # Also, we don't want to provide preserve_topoly to the user, as results
-    # are too imprecise (some result in empty polygons)
+    # are too imprecise (some result in empty polygons, see:
+    # https://geopandas.org/en/stable/docs/reference/api/geopandas.GeoSeries.simplify.html)
     geo_df.geometry = geo_df.simplify(tolerance=step.tolerance, preserve_topology=True)
     return DataFrame(geo_df)
