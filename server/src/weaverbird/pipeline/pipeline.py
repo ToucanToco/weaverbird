@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 from typing_extensions import Annotated
 
 from .steps import (
+    AbsoluteValueStep,
     AddMissingDatesStep,
     AddMissingDatesStepWithVariables,
     AggregateStep,
@@ -81,6 +82,7 @@ from .steps import (
 
 PipelineStep = Annotated[
     Union[
+        AbsoluteValueStep,
         AddMissingDatesStep,
         AggregateStep,
         AppendStep,

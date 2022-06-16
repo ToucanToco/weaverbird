@@ -1,6 +1,7 @@
 from typing import Dict
 
 from ..types import SQLStepTranslator
+from .absolutevalue import translate_absolutevalue
 from .aggregate import translate_aggregate
 from .append import translate_append
 from .argmax import translate_argmax

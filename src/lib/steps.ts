@@ -80,6 +80,12 @@ export function isPipelineStep(step: any): step is PipelineStep {
   return typeof step === 'object' && 'name' in step;
 }
 
+export type AbsoluteValueStep = {
+  name: 'absolutevalue'
+  column: string;
+  new_column: string;
+}
+
 export type AddMissingDatesStep = {
   name: 'addmissingdates';
   datesColumn: string;
@@ -487,6 +493,7 @@ export type WaterfallStep = {
 };
 
 export type PipelineStep =
+  | AbsoluteValueStep
   | AddMissingDatesStep
   | AddTextColumnStep
   | AddTotalRowsStep

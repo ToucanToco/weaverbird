@@ -129,6 +129,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     };
   }
 
+  absolutevalue(step: Readonly<S.AbsoluteValueStep>) {
+    return { ...step }
+  }
+
   append(step: Readonly<S.AppendStep>) {
     const pipelines = [];
     for (const pipeline of step.pipelines) {
