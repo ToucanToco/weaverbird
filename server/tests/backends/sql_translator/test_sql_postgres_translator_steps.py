@@ -11,9 +11,11 @@ from docker.models.images import Image
 from psycopg2 import OperationalError
 from sqlalchemy import create_engine
 
-from tests.utils import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
-from weaverbird.backends.sql_translator import translate_pipeline
-from weaverbird.pipeline import Pipeline
+from tests.utils  import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
+
+from weaverbird.backends.pypika_translator.dialects import SQLDialect
+from weaverbird.backends.pypika_translator.translate import translate_pipeline
+from weaverbird.pipeline import Pipeline, PipelineWithVariables
 
 image = {'name': 'postgres_weaverbird_test', 'image': 'postgres', 'version': '14.1-bullseye'}
 docker_client = docker.from_env()
@@ -144,7 +146,7 @@ def sql_query_executor(domain: str, query_string: str = None) -> Union[pd.DataFr
 
 
 def standardized_columns(df: pd.DataFrame):
-    df.columns = [c.replace('-', '_').lower() for c in df.columns]
+    df.columns = [c.replace('-', '_') for c in df.columns]
 
 
 # Translation from Pipeline json to SQL query
@@ -177,17 +179,16 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
             )
 
     steps = spec['step']['pipeline']
-    steps.insert(0, {'name': 'domain', 'domain': f'SELECT * FROM {case_id.replace("/", "")}'})
-    pipeline = Pipeline(steps=steps)
+    steps.insert(0, {'name': 'domain', 'domain': case_id.replace("/", "")})
+    pipeline = PipelineWithVariables(steps=steps)
 
     # Convert Pipeline object to Postgres Query
-    query, report = translate_pipeline(
-        pipeline,
-        sql_query_retriever=sql_retrieve_city,
-        sql_query_describer=sql_query_describer,
-        sql_query_executor=sql_query_executor,
-        sql_dialect='postgres',
-    )
+    query = translate_pipeline(
+        sql_dialect=SQLDialect.POSTGRESQL,
+        pipeline=pipeline,
+        tables_columns={},
+        db_schema=None
+)
     # Execute request generated from Pipeline in Postgres and get the result
     result: pd.DataFrame = execute(get_connection(), query)
 
