@@ -11,11 +11,10 @@ from docker.models.images import Image
 from psycopg2 import OperationalError
 from sqlalchemy import create_engine
 
-from tests.utils  import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
-
+from tests.utils import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import translate_pipeline
-from weaverbird.pipeline import Pipeline, PipelineWithVariables
+from weaverbird.pipeline import PipelineWithVariables
 
 image = {'name': 'postgres_weaverbird_test', 'image': 'postgres', 'version': '14.1-bullseye'}
 docker_client = docker.from_env()
@@ -184,11 +183,8 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
 
     # Convert Pipeline object to Postgres Query
     query = translate_pipeline(
-        sql_dialect=SQLDialect.POSTGRESQL,
-        pipeline=pipeline,
-        tables_columns={},
-        db_schema=None
-)
+        sql_dialect=SQLDialect.POSTGRESQL, pipeline=pipeline, tables_columns={}, db_schema=None
+    )
     # Execute request generated from Pipeline in Postgres and get the result
     result: pd.DataFrame = execute(get_connection(), query)
 
