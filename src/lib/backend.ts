@@ -38,6 +38,8 @@ export interface BackendService {
   ): BackendResponse<DataSet>;
 }
 
+export const dummy = undefined;
+
 /**
  * While no backend service is set, this will throw errors if we try to call its methods
  */
