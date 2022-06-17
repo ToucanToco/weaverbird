@@ -44,6 +44,7 @@ import { ACTION_CATEGORIES, ButtonDef, CATEGORY_BUTTONS } from './constants';
 })
 export default class ActionToolbar extends Vue {
   @VQBModule.State selectedColumns!: string[];
+  @VQBModule.State('featureFlags') featureFlags!: Record<string, any>;
   @VQBModule.Getter unsupportedSteps!: PipelineStepName[];
 
   isActiveActionToolbarButton = -1;
@@ -60,9 +61,20 @@ export default class ActionToolbar extends Vue {
     return this.supportedButtons.length > 0;
   }
 
+  // Enable to develop steps under feature flag
+  get featureFlagsAllowedButtons(): ButtonDef[] {
+    return CATEGORY_BUTTONS.filter(d => {
+      if (!d.featureFlag) {
+        return true;
+      } else {
+        return !this.featureFlags ? false : this.featureFlags[d.featureFlag] === 'enable';
+      }
+    });
+  }
+
   // Filter buttons that contains at least one supported step
   get supportedButtons(): ButtonDef[] {
-    return CATEGORY_BUTTONS.filter(categoryButton =>
+    return this.featureFlagsAllowedButtons.filter(categoryButton =>
       ACTION_CATEGORIES[categoryButton.category].some(
         action => !this.unsupportedSteps.includes(action.name),
       ),

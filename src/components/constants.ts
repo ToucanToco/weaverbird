@@ -5,6 +5,7 @@ export type ButtonDef = Readonly<{
   label: string;
   category: string;
   enable: boolean;
+  featureFlag?: string;
 }>;
 
 export type ActionCategories = {
@@ -197,6 +198,7 @@ export const CATEGORY_BUTTONS: ButtonDef[] = [
     enable: true,
     icon: 'map-marked-alt',
     label: 'Geo',
+    featureFlag: 'BASEMAP_AS_USUAL_DATASOURCE',
   },
 ];
 
