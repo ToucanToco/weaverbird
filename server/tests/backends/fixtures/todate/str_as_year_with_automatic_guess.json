@@ -3,7 +3,8 @@
     "snowflake",
     "mysql",
     "pandas",
-    "postgres"
+    "postgres",
+    "redshift"
   ],
   "step": {
     "pipeline": [

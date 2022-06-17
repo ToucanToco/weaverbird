@@ -3,6 +3,7 @@
     "pandas",
     "mysql",
     "postgres",
+    "redshift",
     "mongo"
   ],
   "step": {

@@ -2,8 +2,10 @@
   "exclude": [
     "snowflake",
     "postgres",
+    "redshift",
     "mysql",
-    "postgres"
+    "postgres",
+    "redshift"
   ],
   "step": {
     "name": "unpivot",

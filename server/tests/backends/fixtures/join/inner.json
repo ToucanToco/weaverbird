@@ -3,6 +3,7 @@
     "snowflake",
     "mysql",
     "postgres",
+    "redshift",
     "pandas"
   ],
   "step": {

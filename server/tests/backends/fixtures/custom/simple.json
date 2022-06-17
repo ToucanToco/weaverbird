@@ -2,6 +2,7 @@
     "exclude": [
         "snowflake",
         "postgres",
+    "redshift",
         "mysql",
         "pandas"
     ],

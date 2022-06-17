@@ -1,0 +1,535 @@
+{
+  "exclude": [
+    "mysql",
+    "snowflake",
+    "postgres",
+    "redshift"
+  ],
+  "step": {
+    "pipeline": [
+        {
+            "name": "waterfall",
+            "valueColumn": "value",
+            "milestonesColumn": "date",
+            "start": "January 2020",
+            "end": "December 2021",
+            "labelsColumn": "country",
+            "parentsColumn": "information",
+            "sortBy": "value",
+            "order": "desc"
+        }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "date",
+          "type": "string"
+        },
+        {
+          "name": "information",
+          "type": "string"
+        },
+        {
+          "name": "country",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "type": "integer"
+        },
+        {
+          "name": "domain",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+{
+            "date": "January 2021",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 96,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "February 2021",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 54,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "March 2021",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 175,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "April 2021",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 38,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "May 2021",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 244,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "June 2021",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 241,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "July 2021",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 101,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "August 2021",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 43,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "September 2021",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 117,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "October 2021",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 160,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "November 2021",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 1,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "December 2021",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 165,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "January 2020",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 89,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "February 2020",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 216,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "March 2020",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 108,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "April 2020",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 194,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "May 2020",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 67,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "June 2020",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 188,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "July 2020",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 246,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "August 2020",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 2,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "September 2020",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 73,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "October 2020",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 75,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "November 2020",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 110,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "December 2020",
+            "information": "Toco Toucan",
+            "country": "France",
+            "value": 172,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "January 2021",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 163,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "February 2021",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 23,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "March 2021",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 144,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "April 2021",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 158,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "May 2021",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 162,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "June 2021",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 42,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "July 2021",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 30,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "August 2021",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 179,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "September 2021",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 241,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "October 2021",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 72,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "November 2021",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 175,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "December 2021",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 158,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "January 2020",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 6,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "February 2020",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 27,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "March 2020",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 30,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "April 2020",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 227,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "May 2020",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 178,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "June 2020",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 5,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "July 2020",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 242,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "August 2020",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 183,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "September 2020",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 111,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "October 2020",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 101,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "November 2020",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 183,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "December 2020",
+            "information": "Red-Billed Toucan",
+            "country": "France",
+            "value": 137,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "January 2021",
+            "information": "Yellow-ridged Toucan",
+            "country": "France",
+            "value": 189,
+            "domain": "DEMO APP - VQB - datestep"
+        },
+        {
+            "date": "February 2021",
+            "information": "Yellow-ridged Toucan",
+            "country": "France",
+            "value": 79,
+            "domain": "DEMO APP - VQB - datestep"
+        }
+    ]
+  },
+  "expected_mongo": {
+    "schema": {
+      "fields": [
+        {
+          "name": "LABEL_waterfall",
+          "type": "string"
+        },
+        {
+          "name": "GROUP_waterfall",
+          "type": "string"
+        },
+        {
+          "name": "TYPE_waterfall",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+    {
+          "value": 1384,
+          "LABEL_waterfall": "January 2020",
+          "GROUP_waterfall": "January 2020",
+          "TYPE_waterfall": null
+      },
+      {
+          "value": 225,
+          "LABEL_waterfall": "Ariel Toucan",
+          "GROUP_waterfall": "Ariel Toucan",
+          "TYPE_waterfall": "parent"
+      },
+      {
+          "value": 196,
+          "LABEL_waterfall": "Toco Toucan",
+          "GROUP_waterfall": "Toco Toucan",
+          "TYPE_waterfall": "parent"
+      },
+      {
+          "value": 159,
+          "LABEL_waterfall": "United States",
+          "GROUP_waterfall": "Yellow-ridged Toucan",
+          "TYPE_waterfall": "child"
+      },
+      {
+          "value": 154,
+          "LABEL_waterfall": "Netherlands",
+          "GROUP_waterfall": "Ariel Toucan",
+          "TYPE_waterfall": "child"
+      },
+      {
+          "value": 152,
+          "LABEL_waterfall": "France",
+          "GROUP_waterfall": "Red-Billed Toucan",
+          "TYPE_waterfall": "child"
+      },
+      {
+          "value": 76,
+          "LABEL_waterfall": "France",
+          "GROUP_waterfall": "Toco Toucan",
+          "TYPE_waterfall": "child"
+      },
+      {
+          "value": 75,
+          "LABEL_waterfall": "Netherlands",
+          "GROUP_waterfall": "Toco Toucan",
+          "TYPE_waterfall": "child"
+      },
+      {
+          "value": 69,
+          "LABEL_waterfall": "France",
+          "GROUP_waterfall": "Ariel Toucan",
+          "TYPE_waterfall": "child"
+      },
+      {
+          "value": 45,
+          "LABEL_waterfall": "United States",
+          "GROUP_waterfall": "Toco Toucan",
+          "TYPE_waterfall": "child"
+      },
+      {
+          "value": 2,
+          "LABEL_waterfall": "United States",
+          "GROUP_waterfall": "Ariel Toucan",
+          "TYPE_waterfall": "child"
+      },
+      {
+          "value": -2,
+          "LABEL_waterfall": "Yellow-ridged Toucan",
+          "GROUP_waterfall": "Yellow-ridged Toucan",
+          "TYPE_waterfall": "parent"
+      },
+      {
+          "value": -2,
+          "LABEL_waterfall": "Netherlands",
+          "GROUP_waterfall": "Yellow-ridged Toucan",
+          "TYPE_waterfall": "child"
+      },
+      {
+          "value": -8,
+          "LABEL_waterfall": "Netherlands",
+          "GROUP_waterfall": "Red-Billed Toucan",
+          "TYPE_waterfall": "child"
+      },
+      {
+          "value": -48,
+          "LABEL_waterfall": "Red-Billed Toucan",
+          "GROUP_waterfall": "Red-Billed Toucan",
+          "TYPE_waterfall": "parent"
+      },
+      {
+          "value": -159,
+          "LABEL_waterfall": "France",
+          "GROUP_waterfall": "Yellow-ridged Toucan",
+          "TYPE_waterfall": "child"
+      },
+      {
+          "value": -192,
+          "LABEL_waterfall": "United States",
+          "GROUP_waterfall": "Red-Billed Toucan",
+          "TYPE_waterfall": "child"
+      },
+      {
+          "value": 1755,
+          "LABEL_waterfall": "December 2021",
+          "GROUP_waterfall": "December 2021",
+          "TYPE_waterfall": null
+      }
+    ]
+  }
+}
