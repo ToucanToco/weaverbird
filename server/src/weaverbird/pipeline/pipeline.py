@@ -3,6 +3,8 @@ from typing import Any, Dict, List, Union
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated
 
+from weaverbird.pipeline.steps.hierarchy import HierarchyStep
+
 from .steps import (
     AddMissingDatesStep,
     AddMissingDatesStepWithVariables,
@@ -106,6 +108,7 @@ PipelineStep = Annotated[
         FormulaStep,
         FromdateStep,
         FromdateStep,
+        HierarchyStep,
         IfthenelseStep,
         JoinStep,
         LowercaseStep,

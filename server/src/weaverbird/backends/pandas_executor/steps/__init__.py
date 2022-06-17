@@ -21,6 +21,7 @@ from .fillna import execute_fillna
 from .filter import execute_filter
 from .formula import execute_formula
 from .fromdate import execute_fromdate
+from .hierarchy import execute_hierarchy
 from .ifthenelse import execute_ifthenelse
 from .join import execute_join
 from .lowercase import execute_lowercase
@@ -68,6 +69,7 @@ steps_executors: Dict[str, StepExecutor] = {
     'filter': execute_filter,
     'formula': execute_formula,
     'fromdate': execute_fromdate,
+    'hierarchy': execute_hierarchy,
     'ifthenelse': execute_ifthenelse,
     'join': execute_join,  # type: ignore
     'lowercase': execute_lowercase,

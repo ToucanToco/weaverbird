@@ -22,6 +22,7 @@ from .fillna import FillnaStep, FillnaStepWithVariable
 from .filter import FilterStep, FilterStepWithVariables
 from .formula import FormulaStep, FormulaStepWithVariable
 from .fromdate import FromdateStep
+from .hierarchy import HierarchyStep
 from .ifthenelse import IfthenelseStep, IfThenElseStepWithVariables
 from .join import JoinStep, JoinStepWithVariable
 from .lowercase import LowercaseStep
