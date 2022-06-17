@@ -59,6 +59,7 @@ export interface VQBState {
 
   featureFlags?: {
     RELATIVE_DATE_FILTERING?: 'enable' | 'disable';
+    BASEMAP_AS_USUAL_DATASOURCE?: 'enable' | 'disabled';
     [k: string]: boolean | string | undefined;
   };
 }
