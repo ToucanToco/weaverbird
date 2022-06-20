@@ -5,6 +5,7 @@ export type ButtonDef = Readonly<{
   label: string;
   category: string;
   enable: boolean;
+  featureFlag?: string;
 }>;
 
 export type ActionCategories = {
@@ -15,6 +16,7 @@ export type ActionCategories = {
   date: ActionCategory[];
   reshape: ActionCategory[];
   combine: ActionCategory[];
+  geo: ActionCategory[];
   [key: string]: ActionCategory[];
 };
 
@@ -86,6 +88,10 @@ export const ACTION_CATEGORIES: ActionCategories = {
     { name: 'append', label: 'Append datasets' },
     { name: 'join', label: 'Join datasets' },
   ],
+  geo: [
+    // TO_REMOVE: category can't be instanciated without at least one step, replace it with real step after
+    { name: 'text', label: 'Fake step' },
+  ],
 };
 
 export const SEARCH_ACTION: groupActions[] = [
@@ -120,6 +126,10 @@ export const SEARCH_ACTION: groupActions[] = [
   {
     type: 'combine',
     actions: [...ACTION_CATEGORIES.combine],
+  },
+  {
+    type: 'geo',
+    actions: [...ACTION_CATEGORIES.geo],
   },
   {
     type: 'Others actions',
@@ -182,6 +192,13 @@ export const CATEGORY_BUTTONS: ButtonDef[] = [
     enable: true,
     icon: 'object-group',
     label: 'Combine',
+  },
+  {
+    category: 'geo',
+    enable: true,
+    icon: 'map-marked-alt',
+    label: 'Geo',
+    featureFlag: 'BASEMAP_AS_USUAL_DATASOURCE',
   },
 ];
 

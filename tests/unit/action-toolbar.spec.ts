@@ -14,15 +14,19 @@ localVue.use(Vuex);
 
 describe('ActionToolbar', () => {
   it('should instantiate action toolbar buttons with right classes', () => {
+    const store = setupMockStore(
+      // TO_REMOVE: add a ff for geo category until development is done
+      buildStateWithOnePipeline([], { featureFlags: { BASEMAP_AS_USUAL_DATASOURCE: 'enable' } }),
+    );
     const wrapper = mount(ActionToolbar, {
       propsData: {
         buttons: CATEGORY_BUTTONS,
       },
       localVue,
-      store: setupMockStore({}),
+      store,
     });
     const actionButtons = wrapper.findAll(ActionToolbarButton);
-    expect(actionButtons.length).toEqual(8);
+    expect(actionButtons.length).toEqual(9);
     expect(actionButtons.at(0).props().category).toEqual('add');
     expect(actionButtons.at(0).classes()).toContain('action-toolbar__btn');
     expect(actionButtons.at(1).props().category).toEqual('filter');
@@ -39,6 +43,8 @@ describe('ActionToolbar', () => {
     expect(actionButtons.at(6).classes()).toContain('action-toolbar__btn');
     expect(actionButtons.at(7).props().category).toEqual('combine');
     expect(actionButtons.at(7).classes()).toContain('action-toolbar__btn');
+    expect(actionButtons.at(8).props().category).toEqual('geo');
+    expect(actionButtons.at(8).classes()).toContain('action-toolbar__btn');
   });
 
   it('should instantiate with its hidden popover', () => {
@@ -134,36 +140,19 @@ describe('ActionToolbar', () => {
     await localVue.nextTick();
     expect(searchButton.props('isActive')).toBeTruthy();
   });
-
-  it('should hide action toolbar content without supported actions', () => {
-    const store = setupMockStore(
-      buildStateWithOnePipeline([], {
-        translator: 'empty', // there is no supported actions in empty translator
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [['value1', 'value2', 'value3']],
-          paginationContext: {
-            totalCount: 10,
-            pagesize: 10,
-            pageno: 1,
-          },
-        },
-      }),
-    );
-    const wrapper = shallowMount(ActionToolbar, {
-      propsData: {
-        buttons: [
-          {
-            category: 'filter',
-            icon: 'filter',
-            label: 'Filter',
-          },
-        ],
-      },
-      localVue,
-      store,
+  describe('with feature flags', () => {
+    it('should show action button when referent category feature flag is enabled', () => {
+      const store = setupMockStore(
+        buildStateWithOnePipeline([], { featureFlags: { BASEMAP_AS_USUAL_DATASOURCE: 'enable' } }),
+      );
+      const wrapper = shallowMount(ActionToolbar, { localVue, store });
+      const categories = wrapper.findAll('action-toolbar-button-stub');
+      expect(categories.wrappers.map(c => c.props().category)).toContain('geo');
     });
-    expect(wrapper.find('search-bar-stub').exists()).toBeFalsy();
-    expect(wrapper.findAll('action-toolbar-button-stub')).toHaveLength(0);
+    it('should hide action button when referent category feature flag is disabled', () => {
+      const wrapper = shallowMount(ActionToolbar, { localVue, store: setupMockStore() });
+      const categories = wrapper.findAll('action-toolbar-button-stub');
+      expect(categories.wrappers.map(c => c.props().category)).not.toContain('geo');
+    });
   });
 });
