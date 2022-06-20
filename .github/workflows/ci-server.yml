@@ -29,6 +29,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
@@ -46,7 +48,30 @@ jobs:
     - name: Lint
       run: make lint
 
+    - name: Get changed files
+      id: changed-files
+      uses: tj-actions/changed-files@v23
+
     - name: Test
       env:
         SNOWFLAKE_PASSWORD: '${{ secrets.SNOWFLAKE_PASSWORD }}'
-      run: make test
+      run: |
+        # we're going to run integration tests only if we have changes
+        # related to that, in this case, we're covering sql_translator
+        INTEGRATION_TEST_TRIGGER_PATHS=(
+          "src/weaverbird/pipeline/steps/"
+          "tests/backends/fixtures/"
+          "src/weaverbird/backends/sql_translator/"
+          "tests/backends/sql_translator/"
+        )
+        for trigger_dir in "${INTEGRATION_TEST_TRIGGER_PATHS}"; do
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            if [[ "$file" == *"$trigger_dir"* ]]; then
+              make test
+              exit 0 # after running test we quit properly with an exit 0
+            fi
+          done
+        done
+        # if no integration dependencies path...
+        # then tests no integrations
+        make test-without-integration

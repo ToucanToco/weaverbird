@@ -37,6 +37,15 @@ lint:
 test:
 	python -m pytest --junitxml=test-report.xml --cov=weaverbird --cov-report xml -s
 
+.PHONY: test-without-integration
+test-without-integration:
+	# for futures integration tests, 
+	# we will just need to add a new line of ignore...
+	python -m pytest \
+		--ignore=tests/backends/sql_translator/test_snowflake_translator_steps.py \
+		--junitxml=test-report.xml --cov=weaverbird \
+		--cov-report xml -s
+
 .PHONY: all
 all: test lint
 
