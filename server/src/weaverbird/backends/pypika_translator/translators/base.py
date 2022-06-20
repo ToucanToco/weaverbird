@@ -303,7 +303,7 @@ class SQLTranslator(ABC):
     ) -> tuple["QueryBuilder", StepTable]:
         try:
             if isinstance(step.domain, Reference):
-                selected_cols = ["*"]
+                raise NotImplementedError(f"[{self.DIALECT}] Cannot resolve a reference to a query")
             else:
                 selected_cols = list(self._tables_columns[step.domain])
         except KeyError:
