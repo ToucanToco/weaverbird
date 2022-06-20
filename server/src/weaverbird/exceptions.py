@@ -15,7 +15,7 @@ class UnresolvedReferenceError(Exception):
 
 
 class MissingColumnNameError(WeaverbirdError):
-    """Raised when definning a substring but dont supply a new column name"""
+    """Raised when defining a substring but did not supply a new column name"""
 
 
 class MissingTableNameError(WeaverbirdError):
