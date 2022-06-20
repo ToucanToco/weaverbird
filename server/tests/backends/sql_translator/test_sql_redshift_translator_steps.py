@@ -34,7 +34,7 @@ REDSHIFT_CONNEXION = redshift_connector.connect(
     host=HOST,
     cluster_identifier=CLUSTER,
     password=PASSWORD,
-    region=REGION
+    region=REGION,
 )
 REDSHIFT_CONNEXION.autocommit = True
 
