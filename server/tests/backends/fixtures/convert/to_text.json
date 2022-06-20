@@ -3,7 +3,8 @@
     "snowflake",
     "mysql",
     "redshift",
-    "postgres"
+    "postgres",
+    "postgres_pypika"
   ],
   "step": {
     "pipeline": [
