@@ -4,11 +4,7 @@ from pypika.dialects import RedshiftQuery
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
-from weaverbird.backends.pypika_translator.translators.base import (
-    DataTypeMapping,
-    SQLTranslator,
-    StepTable,
-)
+from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, SQLTranslator
 from weaverbird.backends.pypika_translator.translators.postgresql import PostgreSQLTranslator
 
 Self = TypeVar("Self", bound="SQLTranslator")

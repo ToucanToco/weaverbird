@@ -10,12 +10,7 @@ import redshift_connector
 import sqlalchemy
 from sqlalchemy.engine.url import URL
 
-from tests.utils import (
-    assert_dataframes_equals,
-    get_spec_from_json_fixture,
-    retrieve_case,
-    type_code_mapping,
-)
+from tests.utils import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
 from weaverbird.backends.pandas_executor.pipeline_executor import logger
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import translate_pipeline
