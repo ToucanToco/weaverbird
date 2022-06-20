@@ -511,7 +511,7 @@ def test_substring(redshift_translator: RedshiftTranslator):
     (query, new_step_table) = redshift_translator.substring(step=step, table=step_table)
 
     expected_query = Query.from_(previous_step).select(
-        *selected_columns, functions.Substring(Field(column), 0, 10).as_("name")
+        *selected_columns, functions.Substring(Field(column), 0, 11).as_("name")
     )
 
     assert query.get_sql() == expected_query.get_sql()

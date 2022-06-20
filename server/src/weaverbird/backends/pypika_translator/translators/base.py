@@ -11,7 +11,7 @@ from pypika.terms import AnalyticFunction, BasicCriterion, LiteralValue
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators import ALL_TRANSLATORS
-from weaverbird.exceptions import MissingColumnNameError, MissingTableNameError
+from weaverbird.exceptions import MissingTableNameError
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
     DateBoundCondition,
@@ -608,15 +608,15 @@ class SQLTranslator(ABC):
     def substring(
         self: Self, *, step: "SubstringStep", table: StepTable
     ) -> tuple["QueryBuilder", StepTable]:
-        if step.new_column_name is None:
-            raise MissingColumnNameError()
-
+        step.new_column_name = (
+            f"{step.column}_SUBSTR" if step.new_column_name is None else step.new_column_name
+        )
         col_field: Field = Table(table.name)[step.column]
         query: "QueryBuilder" = self.QUERY_CLS.from_(table.name).select(
             *table.columns,
-            functions.Substring(col_field, step.start_index, step.end_index - step.start_index).as_(
-                step.new_column_name
-            ),
+            functions.Substring(
+                col_field, step.start_index, (step.end_index - step.start_index) + 1
+            ).as_(step.new_column_name),
         )
         return query, StepTable(columns=[*table.columns, step.new_column_name])
 

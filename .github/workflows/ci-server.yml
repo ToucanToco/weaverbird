@@ -49,4 +49,5 @@ jobs:
     - name: Test
       env:
         SNOWFLAKE_PASSWORD: '${{ secrets.SNOWFLAKE_PASSWORD }}'
+        REDSHIFT_PASSWORD: '${{ secrets.REDSHIFT_PASSWORD }}'
       run: make test
