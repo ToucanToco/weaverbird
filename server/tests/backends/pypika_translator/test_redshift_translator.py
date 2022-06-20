@@ -5,14 +5,14 @@ import pytest
 from sqlalchemy import column, true
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translators import ALL_TRANSLATORS
-from weaverbird.backends.pypika_translator.translators.base import RowNumber, StepTable
+from weaverbird.backends.pypika_translator.translators.base import DateFormat, RowNumber, StepTable
 from weaverbird.backends.pypika_translator.translators.redshift import RedshiftTranslator
 from weaverbird.pipeline import conditions, steps
 from weaverbird.pipeline.pipeline import DomainStep
 from weaverbird.exceptions import MissingTableNameError
 
 from pypika import Query, AliasedQuery, Schema, Order, functions, Field, Case, Table
-from pypika.terms import LiteralValue
+from pypika.terms import LiteralValue, ValueWrapper
 from weaverbird.pipeline.steps.utils.combination import Reference
 
 ALL_TABLES = {"users": ["name", "pseudonyme", "age"]}
@@ -341,3 +341,263 @@ def test_formula(redshift_translator: RedshiftTranslator):
 
     assert query.get_sql() == expected_query.get_sql()
 
+def test_fromdate(redshift_translator: RedshiftTranslator):
+    selected_columns=["name", "pseudonyme"]
+    previous_step = "previous_with"
+    column = "birthday"
+    format = "dd/yy"
+
+    step_table = StepTable(columns=selected_columns, name=previous_step)
+    step=steps.FromdateStep(column=column, format=format)
+    (query, new_step_table) = redshift_translator.fromdate(step=step, table=step_table)
+
+    expected_query = (
+        Query.from_(previous_step).select(
+            *selected_columns, functions.ToChar(Field(column), format).as_(column)
+        )
+    )
+
+    assert query.get_sql() == expected_query.get_sql()
+
+
+def test_ifthenelse(redshift_translator: RedshiftTranslator):
+    selected_columns=["name", "pseudonyme"]
+    previous_step = "previous_with"
+    new_column_name = "fancy division"
+    column="name"
+    value="goerge"
+    statement=conditions.ComparisonCondition(column=column, operator='eq', value=value)
+    then="a"
+    reject="b"
+
+    step_table = StepTable(columns=selected_columns, name=previous_step)
+    step=steps.IfthenelseStep(condition=statement, then=then, else_value=reject, newColumn=new_column_name)
+    (query, new_step_table) = redshift_translator.ifthenelse(step=step, table=step_table)
+
+    expected_query = (
+        Query.from_(previous_step).select(
+            *selected_columns, Case().when(Field(column) == value, LiteralValue(then))
+                    .else_( LiteralValue(reject))
+                    .as_(new_column_name)
+        )
+    )
+
+    assert query.get_sql() == expected_query.get_sql()
+
+def test_lowercase(redshift_translator: RedshiftTranslator):
+    selected_columns=["name", "pseudonyme"]
+    previous_step = "previous_with"
+    column="name"
+
+    step_table = StepTable(columns=selected_columns, name=previous_step)
+    step=steps.LowercaseStep(column=column)
+    (query, new_step_table) = redshift_translator.lowercase(step=step, table=step_table)
+
+    expected_query = (
+        Query.from_(previous_step).select(
+            Field("pseudonyme"), functions.Lower(Field(column)).as_("name")
+        )
+    )
+
+    assert query.get_sql() == expected_query.get_sql()
+
+def test_uppercase(redshift_translator: RedshiftTranslator):
+    selected_columns=["name", "pseudonyme"]
+    previous_step = "previous_with"
+    column="name"
+
+    step_table = StepTable(columns=selected_columns, name=previous_step)
+    step=steps.UppercaseStep(column=column)
+    (query, new_step_table) = redshift_translator.lowercase(step=step, table=step_table)
+
+    expected_query = (
+        Query.from_(previous_step).select(
+            Field("pseudonyme"), functions.Upper(Field(column)).as_("name")
+        )
+    )
+
+    assert query.get_sql() == expected_query.get_sql()
+
+
+def test_percentage(redshift_translator: RedshiftTranslator):
+    with pytest.raises(NotImplementedError):
+        redshift_translator.percentage(
+            step=steps.PercentageStep(column="", group=[], newColumnName=""), 
+            table=StepTable(columns=[], name="")
+        )
+
+
+def test_uppercase(redshift_translator: RedshiftTranslator):
+    selected_columns=["name", "pseudonyme"]
+    previous_step = "previous_with"
+    column="name"
+
+    step_table = StepTable(columns=selected_columns, name=previous_step)
+    step=steps.LowercaseStep(column=column)
+    (query, new_step_table) = redshift_translator.lowercase(step=step, table=step_table)
+
+    expected_query = (
+        Query.from_(previous_step).select(
+            Field("pseudonyme"), functions.Lower(Field(column)).as_("name")
+        )
+    )
+
+    assert query.get_sql() == expected_query.get_sql()
+
+def test_replace(redshift_translator: RedshiftTranslator):
+    selected_columns=["name", "pseudonyme"]
+    previous_step = "previous_with"
+    column="name"
+    find = "a"
+    replace_with="b"
+    replace=[(find, replace_with)]
+
+    step_table = StepTable(columns=selected_columns, name=previous_step)
+    step=steps.ReplaceStep(search_column=column, to_replace=replace)
+    (query, new_step_table) = redshift_translator.replace(step=step, table=step_table)
+
+    expected_query = (
+        Query.from_(previous_step).select(
+            Field("pseudonyme"), functions.Replace(Field(column), find, replace_with).as_("name")
+        )
+    )
+
+    assert query.get_sql() == expected_query.get_sql()
+
+def test_select(redshift_translator: RedshiftTranslator):
+    selected_columns=["name", "pseudonyme"]
+    previous_step = "previous_with"
+    columns=["name"]
+
+    step_table = StepTable(columns=selected_columns, name=previous_step)
+    step=steps.SelectStep(columns=columns)
+    (query, new_step_table) = redshift_translator.select(step=step, table=step_table)
+
+    expected_query = (
+        Query.from_(previous_step).select(
+            Field("name")
+        )
+    )
+
+    assert query.get_sql() == expected_query.get_sql()
+
+def test_sort(redshift_translator: RedshiftTranslator):
+    selected_columns=["name", "pseudonyme"]
+    previous_step = "previous_with"
+    columns=[{'column':"name", 'order':"asc"}]
+
+    step_table = StepTable(columns=selected_columns, name=previous_step)
+    step=steps.SortStep(columns=columns)
+    (query, new_step_table) = redshift_translator.sort(step=step, table=step_table)
+
+    expected_query = (
+        Query.from_(previous_step)
+        .select(*selected_columns)
+        .orderby(Field("name"), order=Order.asc)
+    )
+
+    assert query.get_sql() == expected_query.get_sql()
+
+def test_split(redshift_translator: RedshiftTranslator):
+    selected_columns=["name", "pseudonyme"]
+    previous_step = "previous_with"
+    column="name"
+    delimiter=","
+
+    step_table = StepTable(columns=selected_columns, name=previous_step)
+    step=steps.SplitStep(column=column, delimiter=delimiter, number_cols_to_keep=2)
+    (query, new_step_table) = redshift_translator.split(step=step, table=step_table)
+
+    expected_query = (
+        Query.from_(previous_step)
+        .select(
+            *selected_columns
+            , functions.SplitPart(Field(column), delimiter, 1).as_(f"{column}_1")
+            , functions.SplitPart(Field(column), delimiter, 2).as_(f"{column}_2")
+        )
+    )
+
+    assert query.get_sql() == expected_query.get_sql()
+
+def test_substring(redshift_translator: RedshiftTranslator):
+    selected_columns=["name", "pseudonyme"]
+    previous_step = "previous_with"
+    column="name"
+    new_column_name="name"
+
+    step_table = StepTable(columns=selected_columns, name=previous_step)
+    step=steps.SubstringStep(column=column, newColumnName=new_column_name, start_index=0, end_index=10)
+    (query, new_step_table) = redshift_translator.substring(step=step, table=step_table)
+
+    expected_query = (
+        Query.from_(previous_step)
+        .select(
+            *selected_columns,
+            functions.Substring(Field(column), 0, 10).as_("name")
+        )
+    )
+
+    assert query.get_sql() == expected_query.get_sql()
+
+def test_text(redshift_translator: RedshiftTranslator):
+    selected_columns=["name", "pseudonyme"]
+    previous_step = "previous_with"
+    new_column_name="name"
+    text="Hello World"
+
+    step_table = StepTable(columns=selected_columns, name=previous_step)
+    step=steps.TextStep(text=text, new_column=new_column_name)
+    (query, new_step_table) = redshift_translator.text(step=step, table=step_table)
+
+    expected_query = (
+        Query.from_(previous_step)
+        .select(
+            *selected_columns,
+            ValueWrapper(text).as_(new_column_name)
+        )
+    )
+
+    assert query.get_sql() == expected_query.get_sql()
+
+def test_to_date(redshift_translator: RedshiftTranslator):
+    # TODO
+    ...
+
+def test_text(redshift_translator: RedshiftTranslator):
+    selected_columns=["name", "pseudonyme"]
+    previous_step = "previous_with"
+    column="name"
+    columns=[column]
+
+    step_table = StepTable(columns=selected_columns, name=previous_step)
+    step=steps.TrimStep(columns=columns)
+    (query, new_step_table) = redshift_translator.trim(step=step, table=step_table)
+
+    expected_query = (
+        Query.from_(previous_step)
+        .select(
+            Field("pseudonyme"),
+            functions.Trim(Field(column)).as_(column)
+        )
+    )
+
+    assert query.get_sql() == expected_query.get_sql()
+
+def test_uniquegroups(redshift_translator: RedshiftTranslator):
+    selected_columns=["name", "pseudonyme"]
+    previous_step = "previous_with"
+    column="name"
+    columns=[column]
+
+    step_table = StepTable(columns=selected_columns, name=previous_step)
+    step=steps.UniqueGroupsStep(on=columns)
+    (query, new_step_table) = redshift_translator.uniquegroups(step=step, table=step_table)
+
+    expected_query = (
+        Query.from_(previous_step)
+        .select(Field(column))
+        .groupby(Field(column))
+        .orderby(Field(column), order=Order.asc)
+    )
+
+    assert query.get_sql() == expected_query.get_sql()
