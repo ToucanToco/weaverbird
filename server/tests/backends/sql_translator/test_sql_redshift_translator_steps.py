@@ -39,7 +39,7 @@ REDSHIFT_CONNEXION = redshift_connector.connect(
 REDSHIFT_CONNEXION.autocommit = True
 
 
-def _drop_tables(table_array: list):
+def _drop_tables(table_array: list) -> None:
     """
     This method will drop tables
     As given parameter, we have list of tables we want to drop
@@ -64,9 +64,17 @@ def _drop_tables(table_array: list):
                 )
 
 
+@pytest.fixture(scope='module', autouse=True)
+def autodrop_tables():
+    try:
+        yield
+    finally:
+        _drop_tables(REDSHIFT_TABLES_TESTS)
+
+
 # Translation from Pipeline json to SQL query
 @pytest.mark.parametrize('case_id, case_spec_file_path', test_cases)
-def test_sql_translator_pipeline(case_id, case_spec_file_path):
+def test_sql_translator_pipeline(case_id: str, case_spec_file_path: str) -> None:
     global REDSHIFT_TABLES_TESTS, CLEANER_JOB_DONE
     case_id = (
         f"{case_id.replace('/', '')}_toucan_test___{str(int(time.time()))}___{str(randint(1, 100))}"
@@ -133,7 +141,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path):
         _drop_tables(REDSHIFT_TABLES_TESTS)
 
 
-def lower_step_columns(steps: list[dict[str, Any]]):
+def lower_step_columns(steps: list[dict[str, Any]]) -> None:
     for s in steps:
         if 'columns' in s:
             if isinstance(s['columns'][0], dict):

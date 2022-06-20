@@ -51,3 +51,4 @@ jobs:
         SNOWFLAKE_PASSWORD: '${{ secrets.SNOWFLAKE_PASSWORD }}'
         REDSHIFT_PASSWORD: '${{ secrets.REDSHIFT_PASSWORD }}'
       run: make test
+      timeout-minutes: 25

@@ -148,9 +148,6 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     # Execute request generated from Pipeline in Postgres and get the result
     result: pd.DataFrame = execute(get_connection(), query)
 
-    # Drop created table
-    execute(get_connection(), f'DROP TABLE {test_table_name}', False)
-
     # Compare result and expected (from fixture file)
     pandas_result_expected = pd.read_json(
         json.dumps(
