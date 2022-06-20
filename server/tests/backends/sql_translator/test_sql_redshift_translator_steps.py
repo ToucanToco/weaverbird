@@ -23,6 +23,7 @@ CLUSTER = 'toucan-paris'
 USER = 'awsuser'
 DATABASE = 'dev'
 PASSWORD = environ.get('REDSHIFT_PASSWORD')
+REGION = "eu-west-3"
 
 PORT = 5439
 
@@ -33,7 +34,7 @@ REDSHIFT_CONNEXION = redshift_connector.connect(
     host=HOST,
     cluster_identifier=CLUSTER,
     password=PASSWORD,
-    client_protocol_version=0,  # see: https://github.com/aws/amazon-redshift-python-driver/issues/16
+    region=REGION
 )
 REDSHIFT_CONNEXION.autocommit = True
 
