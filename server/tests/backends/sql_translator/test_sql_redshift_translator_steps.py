@@ -24,7 +24,6 @@ USER = 'awsuser'
 DATABASE = 'dev'
 PASSWORD = environ.get('REDSHIFT_PASSWORD')
 
-print(f"PASSWORD {PASSWORD!r}")
 PORT = 5439
 
 REDSHIFT_TABLES_TESTS = []
