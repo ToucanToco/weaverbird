@@ -64,11 +64,11 @@ jobs:
           "src/weaverbird/backends/sql_translator/"
           "tests/backends/sql_translator/"
         )
-        for trigger_dir in "${INTEGRATION_TEST_TRIGGER_PATHS}"; do
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+        for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+          for trigger_dir in "${INTEGRATION_TEST_TRIGGER_PATHS[@]}"; do
             if [[ "$file" == *"$trigger_dir"* ]]; then
               make test
-              exit 0 # after running test we quit properly with an exit 0
+              exit 0 # after running all tests we quit properly with an exit 0
             fi
           done
         done
