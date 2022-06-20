@@ -3,6 +3,7 @@
     "mysql",
     "pandas",
     "postgres_pypika",
+    "postgres",
     "redshift",
     "mongo"
   ],
