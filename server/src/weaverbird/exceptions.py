@@ -19,4 +19,4 @@ class MissingColumnNameError(WeaverbirdError):
 
 
 class MissingTableNameError(WeaverbirdError):
-    """Raised when definning a custom sql query but didn't set a proper temporary table name"""
+    """Raised when defining a custom SQL query but didn't set a proper temporary table name"""
