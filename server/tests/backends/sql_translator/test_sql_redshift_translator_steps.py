@@ -33,6 +33,7 @@ REDSHIFT_CONNEXION = redshift_connector.connect(
     host=HOST,
     cluster_identifier=CLUSTER,
     password=PASSWORD,
+    client_protocol_version=0,  # see: https://github.com/aws/amazon-redshift-python-driver/issues/16
 )
 REDSHIFT_CONNEXION.autocommit = True
 
