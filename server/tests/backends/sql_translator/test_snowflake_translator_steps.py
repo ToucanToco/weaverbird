@@ -169,6 +169,8 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_sql_alchemy_c
         clean_too_old_residuals_tables()
         CLEANER_JOB_DONE = True
 
+    # Just to see if it will run integration tests if we modify this file
+
     # To prevent conflicts on snowflake tables when testing on multiple terminals
     # we're going to create specific tables for tests with this structure
     # tableName_creationTime_caseid (Ex: SUBSTRING_toucan_test___169494938___3342)
