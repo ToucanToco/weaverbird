@@ -18,7 +18,7 @@ from weaverbird.pipeline import PipelineWithVariables
 
 image = {'name': 'postgres_weaverbird_test', 'image': 'postgres', 'version': '14.1-bullseye'}
 docker_client = docker.from_env()
-exec_type = 'postgres'
+exec_type = 'postgres_pypika'
 
 test_cases = retrieve_case('sql_translator', exec_type)
 

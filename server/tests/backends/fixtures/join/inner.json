@@ -3,6 +3,7 @@
     "snowflake",
     "mysql",
     "postgres",
+    "postgres_pypika",
     "redshift",
     "pandas"
   ],

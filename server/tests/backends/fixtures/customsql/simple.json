@@ -2,7 +2,7 @@
   "exclude": [
     "mysql",
     "pandas",
-    "postgres",
+    "postgres_pypika",
     "redshift",
     "mongo"
   ],
