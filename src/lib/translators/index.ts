@@ -20,6 +20,7 @@ import { MySqlTranslator } from './mysql';
 import { PandasTranslator } from './pandas';
 import { PandasNoJoinsTranslator } from './pandas-no_joins';
 import { PostgresqlTranslator } from './postgresql';
+import { RedshiftTranslator } from './redshift';
 import { SnowflakeTranslator } from './snowflake';
 
 const TRANSLATORS: { [backend: string]: typeof BaseTranslator } = {};
@@ -80,6 +81,7 @@ registerTranslator('athena', AthenaTranslator);
 registerTranslator('google-big-query', GoogleBigQueryTranslator);
 registerTranslator('mysql', MySqlTranslator);
 registerTranslator('postgresql', PostgresqlTranslator);
+registerTranslator('redshift', RedshiftTranslator);
 
 /**
  * Initialize variable delimiters for all translators
@@ -100,4 +102,5 @@ export type VqbTranslator =
   | 'athena'
   | 'google-big-query'
   | 'mysql'
-  | 'postgresql';
+  | 'postgresql'
+  | 'redshift';
