@@ -23,6 +23,7 @@ const USE_MONGO_BACKEND_TRANSLATOR = args.get('mongo-python') === 'enable';
 const mongoTranslator = getTranslator('mongo50');
 const pandasTranslator = getTranslator('pandas');
 const snowflakeTranslator = getTranslator('snowflake');
+const athenaTranslator = getTranslator('athena');
 
 const VARIABLES = {
   view: 'Product 123',
@@ -377,6 +378,58 @@ class SnowflakeService {
   }
 }
 
+class AthenaService {
+  async listCollections() {
+    const response = await fetch('/athena');
+    return response.json();
+  }
+
+  async executePipeline(pipeline, pipelines, limit, offset = 0) {
+    const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
+
+    // This does not modify the pipeline, but checks if all steps are supported
+    athenaTranslator.translate(dereferencedPipeline);
+    const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(
+      dereferencedPipeline,
+      VARIABLES,
+    );
+
+    const url = new URL(window.location.origin + '/athena');
+    url.searchParams.set('limit', limit);
+    url.searchParams.set('offset', offset);
+
+    const response = await fetch(url.toString(), {
+      method: 'POST',
+      body: JSON.stringify(dereferencedPipelineWithoutVariables),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      parameters: {
+        limit: limit,
+        offset: offset,
+      },
+    });
+    const result = await response.json();
+
+    if (response.ok) {
+      let dataset = pandasDataTableToDataset(result);
+      dataset.paginationContext = {
+        totalCount: result.total,
+        pagesize: limit,
+        pageno: Math.floor(offset / limit) + 1,
+      };
+      dataset = autocastDataset(dataset);
+      updateLastExecutedQuery(result.query);
+      return { data: dataset };
+    } else {
+      updateLastExecutedQuery(null);
+      return {
+        error: [{ type: 'error', message: result }],
+      };
+    }
+  }
+}
+
 let backendService;
 switch (TRANSLATOR) {
   case 'pandas':
@@ -384,7 +437,8 @@ switch (TRANSLATOR) {
     break;
   case 'snowflake':
     backendService = new SnowflakeService();
-    break;
+  case 'athena':
+    backendService = new AthenaService();
   default:
     backendService = new MongoService();
 }

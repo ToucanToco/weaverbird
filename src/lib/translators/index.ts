@@ -8,6 +8,7 @@
 import { PipelineStepName } from '@/lib/steps';
 
 import { VariableDelimiters } from '../variables';
+import { AthenaTranslator } from './athena';
 import { BaseTranslator } from './base';
 import { EmptyTranslator } from './empty';
 import { Mongo36Translator } from './mongo';
@@ -72,6 +73,7 @@ registerTranslator('pandas', PandasTranslator);
 registerTranslator('pandas-no_joins', PandasNoJoinsTranslator);
 registerTranslator('empty', EmptyTranslator);
 registerTranslator('snowflake', SnowflakeTranslator);
+registerTranslator('athena', AthenaTranslator);
 
 /**
  * Initialize variable delimiters for all translators
@@ -88,4 +90,5 @@ export type VqbTranslator =
   | 'pandas'
   | 'pandas-no_joins'
   | 'empty'
-  | 'snowflake';
+  | 'snowflake'
+  | 'athena'

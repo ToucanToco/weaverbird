@@ -84,6 +84,7 @@ describe('translator registration', () => {
       'snowflake',
     ]);
     expect(backendsSupporting('domain')).toEqual([
+      'athena',
       'dummy',
       'empty',
       'mongo36',
@@ -120,6 +121,7 @@ describe('translator registration', () => {
     registerTranslator('dummy', DummyStringTranslator);
     const translators = availableTranslators();
     expect(Object.keys(translators).sort()).toEqual([
+      'athena',
       'dummy',
       'empty',
       'mongo36',
