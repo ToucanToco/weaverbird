@@ -1,6 +1,6 @@
 from weaverbird.pipeline.steps.utils.base import BaseStep
 
-from .absolutevalue import AbsoluteValueStep
+from .absolutevalue import AbsoluteValueStep, AbsoluteValueStepWithVariable
 from .addmissingdates import AddMissingDatesStep, AddMissingDatesStepWithVariables
 from .aggregate import AggregateStep, AggregateStepWithVariables, Aggregation
 from .append import AppendStep, AppendStepWithVariable

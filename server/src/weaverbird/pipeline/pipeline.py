@@ -5,6 +5,7 @@ from typing_extensions import Annotated
 
 from .steps import (
     AbsoluteValueStep,
+    AbsoluteValueStepWithVariable,
     AddMissingDatesStep,
     AddMissingDatesStepWithVariables,
     AggregateStep,
@@ -143,6 +144,7 @@ class Pipeline(BaseModel):
 
 PipelineStepWithVariables = Annotated[
     Union[
+        AbsoluteValueStepWithVariable,
         AddMissingDatesStepWithVariables,
         AggregateStepWithVariables,
         AppendStepWithVariable,
