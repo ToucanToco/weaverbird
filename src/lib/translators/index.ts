@@ -19,6 +19,7 @@ import { Mongo42Translator } from './mongo42';
 import { MySqlTranslator } from './mysql';
 import { PandasTranslator } from './pandas';
 import { PandasNoJoinsTranslator } from './pandas-no_joins';
+import { PostgresqlTranslator } from './postgresql';
 import { SnowflakeTranslator } from './snowflake';
 
 const TRANSLATORS: { [backend: string]: typeof BaseTranslator } = {};
@@ -78,6 +79,7 @@ registerTranslator('snowflake', SnowflakeTranslator);
 registerTranslator('athena', AthenaTranslator);
 registerTranslator('google-big-query', GoogleBigQueryTranslator);
 registerTranslator('mysql', MySqlTranslator);
+registerTranslator('postgresql', PostgresqlTranslator);
 
 /**
  * Initialize variable delimiters for all translators
@@ -97,4 +99,5 @@ export type VqbTranslator =
   | 'snowflake'
   | 'athena'
   | 'google-big-query'
-  | 'mysql';
+  | 'mysql'
+  | 'postgresql';

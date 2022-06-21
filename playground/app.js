@@ -26,6 +26,7 @@ const snowflakeTranslator = getTranslator('snowflake');
 const athenaTranslator = getTranslator('athena');
 const googleBigQueryTranslator = getTranslator('google-big-query');
 const mysqlTranslator = getTranslator('mysql');
+const postgresqlTranslator = getTranslator('postgresql');
 
 const VARIABLES = {
   view: 'Product 123',
@@ -536,6 +537,58 @@ class MySqlService {
   }
 }
 
+class PostgresqlService {
+  async listCollections() {
+    const response = await fetch('/postgresql');
+    return response.json();
+  }
+
+  async executePipeline(pipeline, pipelines, limit, offset = 0) {
+    const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
+
+    // This does not modify the pipeline, but checks if all steps are supported
+    postgresqlTranslator.translate(dereferencedPipeline);
+    const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(
+      dereferencedPipeline,
+      VARIABLES,
+    );
+
+    const url = new URL(window.location.origin + '/postgresql');
+    url.searchParams.set('limit', limit);
+    url.searchParams.set('offset', offset);
+
+    const response = await fetch(url.toString(), {
+      method: 'POST',
+      body: JSON.stringify(dereferencedPipelineWithoutVariables),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      parameters: {
+        limit: limit,
+        offset: offset,
+      },
+    });
+    const result = await response.json();
+
+    if (response.ok) {
+      let dataset = pandasDataTableToDataset(result);
+      dataset.paginationContext = {
+        totalCount: result.total,
+        pagesize: limit,
+        pageno: Math.floor(offset / limit) + 1,
+      };
+      dataset = autocastDataset(dataset);
+      updateLastExecutedQuery(result.query);
+      return { data: dataset };
+    } else {
+      updateLastExecutedQuery(null);
+      return {
+        error: [{ type: 'error', message: result }],
+      };
+    }
+  }
+}
+
 let backendService;
 switch (TRANSLATOR) {
   case 'pandas':
@@ -549,6 +602,8 @@ switch (TRANSLATOR) {
     backendService = new GoogleBigQueryService();
   case 'mysql':
     backendService = new MySqlService();
+  case 'postgresql':
+    backendService = new PostgresqlService();
   default:
     backendService = new MongoService();
 }

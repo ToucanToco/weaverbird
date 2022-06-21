@@ -95,6 +95,7 @@ describe('translator registration', () => {
       'mysql',
       'pandas',
       'pandas-no_joins',
+      'postgresql',
       'snowflake',
     ]);
     expect(backendsSupporting('append')).toEqual([
@@ -134,6 +135,7 @@ describe('translator registration', () => {
       'mysql',
       'pandas',
       'pandas-no_joins',
+      'postgresql',
       'snowflake',
     ]);
   });
