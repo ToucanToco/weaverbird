@@ -2,7 +2,9 @@
   "exclude": [
     "snowflake",
     "mysql",
-    "postgres"
+    "postgres_pypika",
+    "postgres",
+    "redshift"
   ],
   "step": {
     "pipeline": [

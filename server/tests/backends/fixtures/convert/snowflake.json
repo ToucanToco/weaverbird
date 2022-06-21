@@ -2,7 +2,9 @@
   "exclude": [
     "pandas",
     "mysql",
-    "postgres"
+    "postgres_pypika",
+    "postgres",
+    "redshift"
   ],
   "step": {
     "name": "convert",

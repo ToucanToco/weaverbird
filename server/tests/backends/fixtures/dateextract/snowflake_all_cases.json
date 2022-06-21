@@ -2,7 +2,9 @@
   "exclude": [
     "pandas",
     "mysql",
+    "postgres_pypika",
     "postgres",
+    "redshift",
     "mongo"
   ],
   "step": {
