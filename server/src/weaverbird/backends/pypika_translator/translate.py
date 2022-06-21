@@ -8,7 +8,7 @@ from weaverbird.pipeline import PipelineWithVariables
 def translate_pipeline(
     *,
     sql_dialect: SQLDialect,
-    pipeline: PipelineWithVariables,
+    pipeline: Pipeline,
     tables_columns: Mapping[str, Sequence[str]],
     db_schema: str | None = None,
 ) -> str:
