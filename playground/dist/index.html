@@ -207,6 +207,31 @@
             Snowflake
           </a>
         </div>
+        <div class="toolbar__radio" :class="{ toolbar__selected:isSelectedTranslator('athena') }">
+          <a href="?backend=athena">
+            Athena
+          </a>
+        </div>
+        <div class="toolbar__radio" :class="{ toolbar__selected:isSelectedTranslator('google-big-query') }">
+          <a href="?backend=google-big-query">
+            Google big query
+          </a>
+        </div>
+        <div class="toolbar__radio" :class="{ toolbar__selected:isSelectedTranslator('mysql') }">
+          <a href="?backend=mysql">
+            MySql
+          </a>
+        </div>
+        <div class="toolbar__radio" :class="{ toolbar__selected:isSelectedTranslator('postgresql') }">
+          <a href="?backend=postgresql">
+            Postgresql
+          </a>
+        </div>
+        <div class="toolbar__radio" :class="{ toolbar__selected:isSelectedTranslator('redshift') }">
+          <a href="?backend=redshift">
+            Redshift
+          </a>
+        </div>
         <div class="toolbar__button" v-show="!isCodeOpened" @click="openCode">
           Show code
         </div>
