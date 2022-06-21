@@ -1,5 +1,9 @@
 # Changelog (weaverbird python package)
 
+## [0.15.0] - 2022-06-21
+
+- Feat: Add SQL backend powered by PyPika
+
 ## [0.14.0] - 2022-06-14
 
 - Changed: deleting a non-existing columns doesn't trigger an error (pandas, SQL)
