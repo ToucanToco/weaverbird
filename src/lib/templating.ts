@@ -130,7 +130,11 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   absolutevalue(step: Readonly<S.AbsoluteValueStep>) {
-    return { ...step }
+    return {
+      ...step,
+      column: _interpolate(this.interpolateFunc, step.column, this.context),
+      new_column: _interpolate(this.interpolateFunc, step.new_column, this.context),
+    };
   }
 
   append(step: Readonly<S.AppendStep>) {
