@@ -11,6 +11,55 @@ builder.
 
 Unless explicitly specified, all steps are supported by all backends.
 
+### `absolutevalue` step
+
+This step is meant to compute the absolute value of a given input column.
+
+```javascript
+{
+    name: 'absolutevalue',
+    column: 'my-column'
+    new_column: 'my-new-column'
+}
+```
+
+**This step is supported by the following backends:*
+
+- Mongo 5.0
+- Mongo 4.2
+- Mongo 4.0
+- Mongo 3.6
+- Pandas (python)
+
+#### Example
+
+**Input dataset:**
+
+| Company   | Value |
+| --------- | ----- |
+| Company 1 | -33   |
+| Company 2 | 0     |
+| Company 3 | 10    |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'absolutevalue',
+  column: "Value",
+  new_column_name: "My-absolute-value",
+}
+```
+
+**Output dataset:**
+
+| Company   | Value | My-absolute-value |
+| --------- | ----- | ------------      |
+| Company 1 | -33   | 33                |
+| Company 2 | 0     | 0                 |
+| Company 3 | 10    | 10                |
+
+
 ### `addmissingdates` step
 
 Add missing dates as new rows in a dates column. Exhaustive dates will range

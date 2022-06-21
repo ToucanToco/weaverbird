@@ -34,11 +34,11 @@ import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import ColumnPicker from './ColumnPicker.vue';
 import { AbsoluteValueStep, PipelineStepName } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
+import ColumnPicker from './ColumnPicker.vue';
 import BaseStepForm from './StepForm.vue';
 
 @Component({
@@ -55,7 +55,7 @@ export default class AbsoluteValueStepForm extends BaseStepForm<AbsoluteValueSte
 
   @VQBModule.State variableDelimiters?: VariableDelimiters;
 
-  @Prop({ type: Object, default: () => ({ name: 'absolutevalue', column: '', new_column: ''}) })
+  @Prop({ type: Object, default: () => ({ name: 'absolutevalue', column: '', new_column: '' }) })
   initialStepValue!: AbsoluteValueStep;
 
   readonly title: string = 'Absolute Value';

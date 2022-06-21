@@ -2,6 +2,7 @@ import { VueConstructor } from 'vue';
 
 import StepForm from '@/components/stepforms/StepForm.vue';
 import { PipelineStepName } from '@/lib/steps';
+
 import AbsoluteValueStepForm from './AbsoluteValueStepForm.vue';
 import AddMissingDatesStepForm from './AddMissingDatesStepForm.vue';
 import AddTextColumnStepForm from './AddTextColumnStepForm.vue';

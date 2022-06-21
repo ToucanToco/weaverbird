@@ -23,8 +23,8 @@ install-playground:
 
 .PHONY: format
 format:
-	$(isort)
-	$(black)
+	poetry run $(isort)
+	poetry run $(black)
 
 .PHONY: lint
 lint:

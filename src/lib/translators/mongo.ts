@@ -309,14 +309,13 @@ export function _generateDateFromParts(mongoDate: string, granularity: DateGranu
 /** transform an 'absolutevalue' step into corresponding mongo steps */
 function absoluteValue(step: Readonly<S.AbsoluteValueStep>): MongoStep[] {
   return [
-    { 
-      $addFields: 
-      { [step.new_column]: 
-        {
-          $abs: $$(step.column)
-        } 
+    {
+      $addFields: {
+        [step.new_column]: {
+          $abs: $$(step.column),
+        },
       },
-    }
+    },
   ];
 }
 
