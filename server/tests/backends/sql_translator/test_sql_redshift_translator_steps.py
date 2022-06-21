@@ -65,6 +65,12 @@ def _drop_tables(table_array: list) -> None:
                 )
 
 
+def can_connect_to_cluster() -> bool:
+    with REDSHIFT_CONNEXION.cursor() as curs:
+        res = curs.execute('select 1').fetchall()
+    return res[0][0] == 1
+
+
 @pytest.fixture(scope='module', autouse=True)
 def autodrop_tables():
     try:
@@ -74,6 +80,9 @@ def autodrop_tables():
 
 
 # Translation from Pipeline json to SQL query
+@pytest.mark.skipif(
+    not can_connect_to_cluster(), reason='Skip this test if unable to connect to cluster'
+)
 @pytest.mark.parametrize('case_id, case_spec_file_path', test_cases)
 def test_sql_translator_pipeline(case_id: str, case_spec_file_path: str) -> None:
     global REDSHIFT_TABLES_TESTS, CLEANER_JOB_DONE
