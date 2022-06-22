@@ -1,5 +1,9 @@
 # Changelog (weaverbird python package)
 
+## [0.16.0] - 2022-06-22
+
+- Feat: Handle code mode queries in pypika translator
+
 ## [0.15.0] - 2022-06-21
 
 - Feat: Add SQL backend powered by PyPika
