@@ -48,8 +48,12 @@ from weaverbird.backends.pandas_executor.pipeline_executor import PipelineExecut
 from weaverbird.backends.pandas_executor.pipeline_executor import (
     preview_pipeline as pandas_preview_pipeline,
 )
+from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.sql_translator.sql_pipeline_translator import (
     translate_pipeline as sql_translate_pipeline,
+)
+from weaverbird.backends.pypika_translator.translate import (
+    translate_pipeline as pypika_translate_pipeline
 )
 from weaverbird.pipeline import Pipeline
 
@@ -328,7 +332,7 @@ async def handle_mongo_translated_backend_request():
 
 
 ### Snowflake back-end routes
-if os.getenv('SNOWFLAKE_ACCOUNT'):
+if False or os.getenv('SNOWFLAKE_ACCOUNT'):
     snowflake_connexion = snowflake.connector.connect(
         user=os.getenv('SNOWFLAKE_USER'),
         password=os.getenv('SNOWFLAKE_PASSWORD'),
@@ -426,13 +430,49 @@ if os.getenv('POSTGRESQL_CONNECTION_STRING'):
 @app.route('/postgresql', methods=['GET', 'POST'])
 async def handle_postgres_backend_request():
     postgresql_connexion = await postgresql_connexion_coroutine
+    db_schema = 'public'
 
     if request.method == 'GET':
         async with postgresql_connexion.cursor() as cur:
-            tables_info_exec = await cur.execute("SELECT * FROM pg_catalog.pg_tables WHERE schemaname='public';")
+            tables_info_exec = await cur.execute(f"SELECT * FROM pg_catalog.pg_tables WHERE schemaname='{db_schema}';")
             tables_info = await tables_info_exec.fetchall()
             return jsonify([table_infos[1] for table_infos in tables_info])
 
+    if request.method == 'POST':
+        async with postgresql_connexion.cursor() as cur:
+            pipeline = await parse_request_json(request)
+
+            # Url parameters are only strings, these two must be understood as numbers
+            limit = int(request.args.get('limit', 50))
+            offset = int(request.args.get('offset', 0))
+
+            # Find all columns for all available tables
+            table_columns_exec = await cur.execute("SELECT * FROM information_schema.columns WHERE table_schema='public';")
+            table_columns_results = await table_columns_exec.fetch_all()
+            table_columns = {}
+            for t_c in table_columns_results:
+                if t_c['table_name'] not in table_columns:
+                    table_columns[t_c['table_name']] = []
+                table_columns[t_c['table_name']].append(t_c['column_name'])
+
+            sql_query, _ = pypika_translate_pipeline(
+                sql_dialect=SQLDialect.POSTGRESQL,
+                pipeline=Pipeline(steps=pipeline),
+                db_schema=db_schema,
+                tables_columns=table_columns,
+            )
+            query_total_count_exec = await cur.execute(f'SELECT COUNT(*) FROM ({ sql_query })')
+            query_total_count = await query_total_count_exec.fetchone()
+            query_results_page_exec = await cur.execute(f'SELECT * FROM ({ sql_query }) LIMIT { limit } OFFSET { offset }')
+            query_results_page = await query_results_page_exec.fetchall()
+
+            return {
+                'offset': offset,
+                'limit': limit,
+                'total': query_total_count,
+                'data': query_results_page,
+                'query': sql_query  # provided for inspection purposes
+            }
 
 ### UI files
 
