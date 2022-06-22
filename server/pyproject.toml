@@ -24,6 +24,7 @@ hypercorn = {version = "^0.13", optional = true}
 pymongo = {version = ">=3.12.0", optional = true, extras = ["srv", "tls"]}
 snowflake-connector-python = {version = "^2.7.6", extras = ["pandas"], optional = true}
 geopandas = "^0.10.2"
+psycopg = {extras = ["postgres"], version = "^3.0.15"}
 
 [tool.poetry.dev-dependencies]
 pytest-cov = "^2.10.1"
@@ -43,9 +44,10 @@ sqlalchemy = "^1.4.22"
 pymysql = "^1.0.2"
 psycopg2 = "^2.9.2"
 pymongo = ">=3.12.0"
+ipdb = "^0.13.9"
 
 [tool.poetry.extras]
-playground = ["quart", "hypercorn", "pymongo", "snowflake-connector-python"]
+playground = ["quart", "hypercorn", "pymongo", "pandas", "snowflake-connector-python", "psycopg"]
 
 [tool.black]
 line-length = 100

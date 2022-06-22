@@ -14,6 +14,9 @@ Routes:
 - `/snowflake`:
     - GET: return the available tables in the database
     - POST: translate the pipeline to a Snowflake query, execute it and returns paginated results
+- `/postgresql`:
+    - GET: return the available tables in the database
+    - POST: translate the pipeline to a SQL query, execute it and returns paginated results
 - `/health`: simple health check
 
 Run it with `QUART_APP=playground QUART_ENV=development quart run`
@@ -21,6 +24,7 @@ Run it with `QUART_APP=playground QUART_ENV=development quart run`
 Environment variables:
 - for mongo, MONGODB_CONNECTION_STRING (default to localhost:27017) and MONGODB_DATABASE_NAME (default to 'data')
 - for snowflake, SNOWFLAKE_USER, SNOWFLAKE_PASSWORD, SNOWFLAKE_ACCOUNT and SNOWFLAKE_DATABASE
+- for postgresql, POSTGRESQL_CONNECTION_STRING
 """
 import json
 import os
@@ -31,6 +35,7 @@ from typing import Dict, Union
 
 import geopandas as gpd
 import pandas as pd
+import psycopg
 import snowflake.connector
 from pandas.io.json import build_table_schema
 from pymongo import MongoClient
@@ -412,6 +417,21 @@ async def handle_snowflake_backend_request():
             ),
             mimetype='application/json',
         )
+
+
+### Postgres back-end routes
+if os.getenv('POSTGRESQL_CONNECTION_STRING'):
+    postgresql_connexion_coroutine = psycopg.AsyncConnection.connect(os.getenv('POSTGRESQL_CONNECTION_STRING'))
+
+@app.route('/postgresql', methods=['GET', 'POST'])
+async def handle_postgres_backend_request():
+    postgresql_connexion = await postgresql_connexion_coroutine
+
+    if request.method == 'GET':
+        async with postgresql_connexion.cursor() as cur:
+            tables_info_exec = await cur.execute("SELECT * FROM pg_catalog.pg_tables WHERE schemaname='public';")
+            tables_info = await tables_info_exec.fetchall()
+            return jsonify([table_infos[1] for table_infos in tables_info])
 
 
 ### UI files
