@@ -2,7 +2,7 @@ from typing import Mapping, Sequence
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translators import ALL_TRANSLATORS
-from weaverbird.pipeline import PipelineWithVariables
+from weaverbird.pipeline import Pipeline
 
 
 def translate_pipeline(
