@@ -115,8 +115,13 @@ class SQLTranslator(ABC):
                 raise NotImplementedError(f"[{self.DIALECT}] step {step.name} not yet implemented")
 
             if i == 0:
-                assert step.name == "domain"
-                step_query, step_table = step_method(step=step)
+                assert step.name == "domain" or step.name == "customsql"
+                if step.name == "domain":
+                    step_query, step_table = step_method(step=step)
+                elif step.name == "customsql":
+                    step_query, step_table = step_method(
+                        step=step, table=StepTable(name="_", columns=["*"])
+                    )
             else:
                 step_query, step_table = step_method(step=step, table=step_tables[i - 1])
 
