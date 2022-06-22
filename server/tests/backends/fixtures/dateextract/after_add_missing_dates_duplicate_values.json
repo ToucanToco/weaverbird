@@ -1,11 +1,12 @@
 {
   "description": "After a addmissing date on a column having same dates but in different groups, the dateextract step was failing for pandas executor (cannot reindex from a duplicate axis)",
   "exclude": [
-    "snowflake",
+    "athena",
     "mysql",
-    "postgres_pypika",
     "postgres",
-    "redshift"
+    "postgres_pypika",
+    "redshift",
+    "snowflake"
   ],
   "step": {
     "pipeline": [

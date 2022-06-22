@@ -1,5 +1,6 @@
 {
   "exclude": [
+    "athena",
     "mysql",
     "postgres_pypika"
   ],
@@ -70,13 +71,13 @@
         "NAME": "foo",
         "AGE": 42,
         "SCORE": 100,
-        "FOOBAR": -58.000000
+        "FOOBAR": -58.0
       },
       {
         "NAME": "Azz",
         "AGE": 21,
         "SCORE": 100,
-        "FOOBAR": -79.000000
+        "FOOBAR": -79.0
       }
     ]
   }

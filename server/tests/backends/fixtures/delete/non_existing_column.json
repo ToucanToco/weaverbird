@@ -1,6 +1,7 @@
 {
   "description": "it should not fail when deleting a column that does not exist in the dataset",
   "exclude": [
+    "athena",
     "mysql",
     "postgres_pypika",
     "redshift"

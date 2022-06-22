@@ -1,17 +1,20 @@
 {
   "exclude": [
-    "snowflake",
+    "athena",
     "mysql",
-    "postgres_pypika",
     "postgres",
-    "redshift"
+    "postgres_pypika",
+    "redshift",
+    "snowflake"
   ],
   "step": {
     "pipeline": [
       {
         "name": "percentage",
         "column": "AGE",
-        "group": ["GROUP"],
+        "group": [
+          "GROUP"
+        ],
         "new_column_name": "AGE_PERCENT"
       }
     ]
@@ -107,7 +110,7 @@
         "NAME": "bar",
         "AGE": 10,
         "GROUP": "A",
-        "AGE_PERCENT": 0.10
+        "AGE_PERCENT": 0.1
       },
       {
         "NAME": "foo",

@@ -1,8 +1,9 @@
 {
   "exclude": [
+    "athena",
     "mysql",
-    "redshift",
-    "postgres_pypika"
+    "postgres_pypika",
+    "redshift"
   ],
   "step": {
     "pipeline": [
@@ -71,7 +72,7 @@
         "NAME": "foo",
         "AGE": 1,
         "SCORE": 100,
-        "FOOBAR": -99.000000
+        "FOOBAR": -99.0
       },
       {
         "NAME": "Azz",

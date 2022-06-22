@@ -1,28 +1,37 @@
 {
   "exclude": [
-    "snowflake",
+    "athena",
     "mysql",
-    "postgres_pypika",
     "postgres",
-    "redshift"
+    "postgres_pypika",
+    "redshift",
+    "snowflake"
   ],
   "step": {
     "pipeline": [
       {
         "name": "join",
-        "right_pipeline":[
-          {"name": "domain", "domain": "bazz"},
+        "right_pipeline": [
           {
-          "name": "filter",
-          "condition": {
-            "column": "X",
-            "operator": "gt",
-            "value": 11
+            "name": "domain",
+            "domain": "bazz"
+          },
+          {
+            "name": "filter",
+            "condition": {
+              "column": "X",
+              "operator": "gt",
+              "value": 11
+            }
           }
-         }
         ],
         "type": "left",
-        "on": [["NAME","NAME"]]
+        "on": [
+          [
+            "NAME",
+            "NAME"
+          ]
+        ]
       }
     ]
   },

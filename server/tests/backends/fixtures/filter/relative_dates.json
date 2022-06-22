@@ -1,9 +1,10 @@
 {
   "description": "Dates from/until can be specified relative to another date.",
   "exclude": [
+    "athena",
     "mysql",
-    "postgres_pypika",
     "postgres",
+    "postgres_pypika",
     "redshift"
   ],
   "step": {
@@ -11,20 +12,23 @@
       {
         "name": "filter",
         "condition": {
-          "and": [{
-            "column": "CREATED",
-            "operator": "from",
-            "value": "date: 2021-11-01 12:34:56"
-          }, {
-            "column": "CREATED",
-            "operator": "until",
-            "value": {
-              "quantity": "1",
-              "duration": "month",
+          "and": [
+            {
+              "column": "CREATED",
               "operator": "from",
-              "date": "date: 2021-11-01 12:34:56"
+              "value": "date: 2021-11-01 12:34:56"
+            },
+            {
+              "column": "CREATED",
+              "operator": "until",
+              "value": {
+                "quantity": "1",
+                "duration": "month",
+                "operator": "from",
+                "date": "date: 2021-11-01 12:34:56"
+              }
             }
-          }]
+          ]
         }
       }
     ]

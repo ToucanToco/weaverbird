@@ -1,11 +1,12 @@
 {
   "exclude": [
-    "pandas",
+    "athena",
+    "mongo",
     "mysql",
-    "postgres_pypika",
+    "pandas",
     "postgres",
-    "redshift",
-    "mongo"
+    "postgres_pypika",
+    "redshift"
   ],
   "step": {
     "pipeline": [

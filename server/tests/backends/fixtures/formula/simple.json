@@ -1,5 +1,6 @@
 {
   "exclude": [
+    "athena",
     "mysql",
     "postgres_pypika"
   ],

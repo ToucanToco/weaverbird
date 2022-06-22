@@ -1,8 +1,9 @@
 {
   "exclude": [
+    "athena",
     "mysql",
-    "postgres_pypika",
     "postgres",
+    "postgres_pypika",
     "redshift",
     "snowflake"
   ],
@@ -10,7 +11,10 @@
     "pipeline": [
       {
         "name": "select",
-        "columns": ["NAME", "SCORE"]
+        "columns": [
+          "NAME",
+          "SCORE"
+        ]
       }
     ]
   },

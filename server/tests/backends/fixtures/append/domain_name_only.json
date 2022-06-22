@@ -1,15 +1,18 @@
 {
   "exclude": [
+    "athena",
     "mysql",
-    "postgres_pypika",
     "postgres",
+    "postgres_pypika",
     "redshift"
   ],
   "step": {
     "pipeline": [
       {
         "name": "append",
-        "pipelines": ["miamoss"]
+        "pipelines": [
+          "miamoss"
+        ]
       }
     ]
   },
