@@ -1,0 +1,78 @@
+{
+  "exclude": [
+    "mongo",
+    "mysql",
+    "pandas",
+    "postgres",
+    "postgres_pypika",
+    "redshift",
+    "snowflake"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "aggregate",
+        "on": [
+          "beer_kind"
+        ],
+        "aggregations": [
+          {
+            "newcolumns": [
+              "beers_count_distinct"
+            ],
+            "aggfunction": "count distinct",
+            "columns": [
+              "name"
+            ]
+          }
+        ],
+        "keepOriginalGranularity": false
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "beer_kind",
+          "type": "any"
+        },
+        {
+          "name": "beers_count_distinct",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "1.4.0"
+    },
+    "data": [
+      {
+        "beer_kind": "Belge blonde forte & Golden Ale",
+        "beers_count_distinct": 1
+      },
+      {
+        "beer_kind": "Best-sellers",
+        "beers_count_distinct": 1
+      },
+      {
+        "beer_kind": "Blanche & Weizen",
+        "beers_count_distinct": 1
+      },
+      {
+        "beer_kind": "Blonde",
+        "beers_count_distinct": 3
+      },
+      {
+        "beer_kind": "India Pale Ale",
+        "beers_count_distinct": 2
+      },
+      {
+        "beer_kind": "Sans alcool",
+        "beers_count_distinct": 1
+      },
+      {
+        "beer_kind": "Triple",
+        "beers_count_distinct": 1
+      }
+    ]
+  }
+}

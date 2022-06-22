@@ -1,0 +1,71 @@
+{
+  "exclude": [
+    "mongo",
+    "mysql",
+    "pandas",
+    "postgres",
+    "postgres_pypika",
+    "redshift",
+    "snowflake"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "argmax",
+        "column": "alcohol_degree",
+        "groups": []
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "price_per_l",
+          "type": "number"
+        },
+        {
+          "name": "alcohol_degree",
+          "type": "number"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "cost",
+          "type": "number"
+        },
+        {
+          "name": "beer_kind",
+          "type": "string"
+        },
+        {
+          "name": "volume_ml",
+          "type": "number"
+        },
+        {
+          "name": "brewing_date",
+          "type": "datetime"
+        },
+        {
+          "name": "nullable_name",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "1.4.0"
+    },
+    "data": [
+      {
+        "price_per_l": 0.1599999964,
+        "alcohol_degree": 13.5,
+        "name": "Superstrong beer",
+        "cost": 2.8900001049,
+        "beer_kind": "Triple",
+        "volume_ml": 330.0,
+        "brewing_date": "2022-01-01",
+        "nullable_name": ""
+      }
+    ]
+  }
+}

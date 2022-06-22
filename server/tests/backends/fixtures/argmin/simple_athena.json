@@ -1,0 +1,71 @@
+{
+  "exclude": [
+    "mongo",
+    "mysql",
+    "pandas",
+    "postgres",
+    "postgres_pypika",
+    "redshift",
+    "snowflake"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "argmin",
+        "column": "alcohol_degree",
+        "groups": []
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "price_per_l",
+          "type": "number"
+        },
+        {
+          "name": "alcohol_degree",
+          "type": "number"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "cost",
+          "type": "number"
+        },
+        {
+          "name": "beer_kind",
+          "type": "string"
+        },
+        {
+          "name": "volume_ml",
+          "type": "number"
+        },
+        {
+          "name": "brewing_date",
+          "type": "datetime"
+        },
+        {
+          "name": "nullable_name",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "1.4.0"
+    },
+    "data": [
+      {
+        "price_per_l": 0.0049999999,
+        "alcohol_degree": 0.5699344873,
+        "name": "Brewdog Nanny State Alcoholvrij",
+        "cost": 2.2899999619,
+        "beer_kind": "Sans alcool",
+        "volume_ml": 330.0,
+        "brewing_date": "2022-01-03",
+        "nullable_name": "Brewdog Nanny State Alcoholvrij"
+      }
+    ]
+  }
+}
