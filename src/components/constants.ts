@@ -59,7 +59,7 @@ export const ACTION_CATEGORIES: ActionCategories = {
     { name: 'rank', label: 'Rank' },
     { name: 'movingaverage', label: 'Moving average' },
     { name: 'statistics', label: 'Statistics' },
-    { name :'absolutevalue', label: 'Absolute value'},
+    { name: 'absolutevalue', label: 'Absolute value' },
   ],
   text: [
     { name: 'text', label: 'Add text column' },

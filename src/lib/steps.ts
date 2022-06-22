@@ -81,10 +81,10 @@ export function isPipelineStep(step: any): step is PipelineStep {
 }
 
 export type AbsoluteValueStep = {
-  name: 'absolutevalue'
+  name: 'absolutevalue';
   column: string;
   new_column: string;
-}
+};
 
 export type AddMissingDatesStep = {
   name: 'addmissingdates';

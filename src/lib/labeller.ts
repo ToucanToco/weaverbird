@@ -120,7 +120,6 @@ function capitalize(label: string) {
  * The `Labeller` class provides a human-readable label for each step.
  */
 class StepLabeller implements StepMatcher<string> {
-  
   absolutevalue(step: Readonly<S.AbsoluteValueStep>) {
     return `Compute absolute value of "${step.column}"`;
   }
