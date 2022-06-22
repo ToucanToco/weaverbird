@@ -649,16 +649,22 @@ switch (TRANSLATOR) {
     break;
   case 'snowflake':
     backendService = new SnowflakeService();
+    break;
   case 'athena':
     backendService = new AthenaService();
+    break;
   case 'google-big-query':
     backendService = new GoogleBigQueryService();
+    break;
   case 'mysql':
     backendService = new MySqlService();
+    break;
   case 'postgresql':
     backendService = new PostgresqlService();
+    break;
   case 'redshift':
     backendService = new RedshiftService();
+    break;
   default:
     backendService = new MongoService();
 }
