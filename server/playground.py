@@ -424,12 +424,10 @@ async def handle_snowflake_backend_request():
 
 
 ### Postgres back-end routes
-if os.getenv('POSTGRESQL_CONNECTION_STRING'):
-    postgresql_connexion_coroutine = psycopg.AsyncConnection.connect(os.getenv('POSTGRESQL_CONNECTION_STRING'))
-
 @app.route('/postgresql', methods=['GET', 'POST'])
 async def handle_postgres_backend_request():
-    postgresql_connexion = await postgresql_connexion_coroutine
+    # improve by using a connexion pool
+    postgresql_connexion = await psycopg.AsyncConnection.connect(os.getenv('POSTGRESQL_CONNECTION_STRING'))
     db_schema = 'public'
 
     if request.method == 'GET':
@@ -447,23 +445,23 @@ async def handle_postgres_backend_request():
             offset = int(request.args.get('offset', 0))
 
             # Find all columns for all available tables
-            table_columns_exec = await cur.execute("SELECT * FROM information_schema.columns WHERE table_schema='public';")
-            table_columns_results = await table_columns_exec.fetch_all()
+            table_columns_exec = await cur.execute("SELECT table_name, column_name FROM information_schema.columns WHERE table_schema='public';")
+            table_columns_results = await table_columns_exec.fetchall()
             table_columns = {}
-            for t_c in table_columns_results:
-                if t_c['table_name'] not in table_columns:
-                    table_columns[t_c['table_name']] = []
-                table_columns[t_c['table_name']].append(t_c['column_name'])
+            for table_name, table_col in table_columns_results:
+                if table_name not in table_columns:
+                    table_columns[table_name] = []
+                table_columns[table_name].append(table_col)
 
-            sql_query, _ = pypika_translate_pipeline(
+            sql_query = pypika_translate_pipeline(
                 sql_dialect=SQLDialect.POSTGRESQL,
                 pipeline=Pipeline(steps=pipeline),
                 db_schema=db_schema,
                 tables_columns=table_columns,
             )
-            query_total_count_exec = await cur.execute(f'SELECT COUNT(*) FROM ({ sql_query })')
+            query_total_count_exec = await cur.execute(f'WITH Q AS ({ sql_query }) SELECT COUNT(*) FROM Q')
             query_total_count = await query_total_count_exec.fetchone()
-            query_results_page_exec = await cur.execute(f'SELECT * FROM ({ sql_query }) LIMIT { limit } OFFSET { offset }')
+            query_results_page_exec = await cur.execute(f'WITH Q AS ({ sql_query }) SELECT * FROM Q LIMIT { limit } OFFSET { offset }')
             query_results_page = await query_results_page_exec.fetchall()
 
             return {
