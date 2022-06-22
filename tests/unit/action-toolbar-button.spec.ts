@@ -116,6 +116,7 @@ describe('ActionToolbarButton active', () => {
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, [
+      'absolutevalue',
       'formula',
       'evolution',
       'cumsum',
