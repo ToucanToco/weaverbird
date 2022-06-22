@@ -38,6 +38,7 @@ import pandas as pd
 import psycopg
 import snowflake.connector
 from pandas.io.json import build_table_schema
+from psycopg.rows import dict_row
 from pymongo import MongoClient
 from quart import Quart, Request, Response, jsonify, request, send_file
 
@@ -427,7 +428,9 @@ async def handle_snowflake_backend_request():
 @app.route('/postgresql', methods=['GET', 'POST'])
 async def handle_postgres_backend_request():
     # improve by using a connexion pool
-    postgresql_connexion = await psycopg.AsyncConnection.connect(os.getenv('POSTGRESQL_CONNECTION_STRING'))
+    postgresql_connexion = await psycopg.AsyncConnection.connect(
+        os.getenv('POSTGRESQL_CONNECTION_STRING')
+    )
     db_schema = 'public'
 
     if request.method == 'GET':
@@ -437,14 +440,14 @@ async def handle_postgres_backend_request():
             return jsonify([table_infos[1] for table_infos in tables_info])
 
     if request.method == 'POST':
+        pipeline = await parse_request_json(request)
+
+        # Url parameters are only strings, these two must be understood as numbers
+        limit = int(request.args.get('limit', 50))
+        offset = int(request.args.get('offset', 0))
+
+        # Find all columns for all available tables
         async with postgresql_connexion.cursor() as cur:
-            pipeline = await parse_request_json(request)
-
-            # Url parameters are only strings, these two must be understood as numbers
-            limit = int(request.args.get('limit', 50))
-            offset = int(request.args.get('offset', 0))
-
-            # Find all columns for all available tables
             table_columns_exec = await cur.execute("SELECT table_name, column_name FROM information_schema.columns WHERE table_schema='public';")
             table_columns_results = await table_columns_exec.fetchall()
             table_columns = {}
@@ -453,24 +456,31 @@ async def handle_postgres_backend_request():
                     table_columns[table_name] = []
                 table_columns[table_name].append(table_col)
 
-            sql_query = pypika_translate_pipeline(
-                sql_dialect=SQLDialect.POSTGRESQL,
-                pipeline=Pipeline(steps=pipeline),
-                db_schema=db_schema,
-                tables_columns=table_columns,
-            )
+        sql_query = pypika_translate_pipeline(
+            sql_dialect=SQLDialect.POSTGRESQL,
+            pipeline=Pipeline(steps=pipeline),
+            db_schema=db_schema,
+            tables_columns=table_columns,
+        )
+
+        async with postgresql_connexion.cursor() as cur:
             query_total_count_exec = await cur.execute(f'WITH Q AS ({ sql_query }) SELECT COUNT(*) FROM Q')
             query_total_count = await query_total_count_exec.fetchone()
-            query_results_page_exec = await cur.execute(f'WITH Q AS ({ sql_query }) SELECT * FROM Q LIMIT { limit } OFFSET { offset }')
+
+        async with postgresql_connexion.cursor(row_factory=dict_row) as cur:
+            query_results_page_exec = await cur.execute(
+                f'WITH Q AS ({ sql_query }) SELECT * FROM Q LIMIT { limit } OFFSET { offset }',
+
+            )
             query_results_page = await query_results_page_exec.fetchall()
 
-            return {
-                'offset': offset,
-                'limit': limit,
-                'total': query_total_count,
-                'data': query_results_page,
-                'query': sql_query  # provided for inspection purposes
-            }
+        return {
+            'offset': offset,
+            'limit': limit,
+            'total': query_total_count,
+            'data': query_results_page,
+            'query': sql_query  # provided for inspection purposes
+        }
 
 ### UI files
 
