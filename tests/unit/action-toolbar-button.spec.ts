@@ -116,7 +116,6 @@ describe('ActionToolbarButton active', () => {
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, [
-      'absolutevalue',
       'formula',
       'evolution',
       'cumsum',
@@ -124,6 +123,7 @@ describe('ActionToolbarButton active', () => {
       'rank',
       'movingaverage',
       'statistics',
+      'absolutevalue',
     ]);
   });
 
