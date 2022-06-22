@@ -1,5 +1,13 @@
 # Changelog (weaverbird python package)
 
+## [0.15.0] - 2022-06-21
+
+- Feat: Add SQL backend powered by PyPika
+- Feat: Added a geographical hierarchy step to pandas executor
+- Feat: Added a geographical dissolve step to pandas executor
+- Feat: Added a geographical simplify step to pandas executor
+- Feat: Support joins with geographical data in pandas executor
+
 ## [0.14.0] - 2022-06-14
 
 - Changed: deleting a non-existing columns doesn't trigger an error (pandas, SQL)

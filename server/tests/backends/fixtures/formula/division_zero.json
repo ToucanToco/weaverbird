@@ -1,6 +1,8 @@
 {
   "exclude": [
-    "mysql"
+    "mysql",
+    "redshift",
+    "postgres_pypika"
   ],
   "step": {
     "pipeline": [
