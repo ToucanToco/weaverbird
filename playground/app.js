@@ -572,13 +572,13 @@ class PostgresqlService {
     const result = await response.json();
 
     if (response.ok) {
-      let dataset = pandasDataTableToDataset(result);
+      let dataset = result.results;
       dataset.paginationContext = {
         totalCount: result.total,
         pagesize: limit,
         pageno: Math.floor(offset / limit) + 1,
       };
-      dataset = autocastDataset(dataset);
+      // dataset = autocastDataset(dataset);
       updateLastExecutedQuery(result.query);
       return { data: dataset };
     } else {

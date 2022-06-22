@@ -467,18 +467,24 @@ async def handle_postgres_backend_request():
             query_total_count_exec = await cur.execute(f'WITH Q AS ({ sql_query }) SELECT COUNT(*) FROM Q')
             query_total_count = await query_total_count_exec.fetchone()
 
-        async with postgresql_connexion.cursor(row_factory=dict_row) as cur:
+        async with postgresql_connexion.cursor() as cur:
             query_results_page_exec = await cur.execute(
                 f'WITH Q AS ({ sql_query }) SELECT * FROM Q LIMIT { limit } OFFSET { offset }',
 
             )
             query_results_page = await query_results_page_exec.fetchall()
+            query_results_columns = query_results_page_exec.description
 
         return {
             'offset': offset,
             'limit': limit,
             'total': query_total_count,
-            'data': query_results_page,
+            'results': {
+                'headers': [
+                    { 'name': c.name, 'type_code': c.type_code } for c in query_results_columns
+                ],
+                'data': query_results_page,
+            },
             'query': sql_query  # provided for inspection purposes
         }
 
