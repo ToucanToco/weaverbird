@@ -29,6 +29,7 @@ Environment variables:
 import json
 import os
 from datetime import datetime
+from enum import Enum
 from glob import glob
 from os.path import basename, splitext
 from typing import Dict, Union
@@ -92,6 +93,15 @@ async def parse_request_json(request: Request):
     Parse the request with a custom JSON parser so that types are preserved (such as dates)
     """
     return json.loads(await request.get_data(), object_hook=json_js_datetime_parser)
+
+
+class ColumnType(str, Enum):
+    INTEGER = 'integer'
+    FLOAT = 'float'
+    BOOLEAN = 'boolean'
+    DATE = 'date'
+    STRING = 'string'
+    OBJECT = 'object'
 
 
 ### Pandas back-end routes
@@ -425,6 +435,26 @@ async def handle_snowflake_backend_request():
 
 
 ### Postgres back-end routes
+
+def postgresql_type_to_data_type(pg_type: str) -> ColumnType | None:
+    # https://www.postgresql.org/docs/current/datatype-numeric.html
+    if 'float' in pg_type or 'double' in pg_type or 'serial' in pg_type or pg_type in ('decimal', 'numeric', 'real', 'money'):
+        return ColumnType.FLOAT
+    elif 'int' in pg_type:
+        return ColumnType.INTEGER
+    # https://www.postgresql.org/docs/current/datatype-datetime.html
+    elif 'time' in pg_type or 'date' in pg_type:
+        return ColumnType.DATE
+    # https://www.postgresql.org/docs/current/datatype-character.html
+    elif 'char' in pg_type or pg_type == 'text':
+        return ColumnType.STRING
+    # https://www.postgresql.org/docs/current/datatype-boolean.html
+    elif 'bool' in pg_type:
+        return ColumnType.BOOLEAN
+    else:
+        return ColumnType.OBJECT
+
+
 @app.route('/postgresql', methods=['GET', 'POST'])
 async def handle_postgres_backend_request():
     # improve by using a connexion pool
@@ -473,16 +503,28 @@ async def handle_postgres_backend_request():
 
             )
             query_results_page = await query_results_page_exec.fetchall()
-            query_results_columns = query_results_page_exec.description
+
+        # Provide types for the columns
+        async with postgresql_connexion.cursor() as cur:
+            # oid of columns of query results are provided in the "description" attribute
+            # They are mapped to base types in the system pg_type table
+            types_exec = await cur.execute(
+                'SELECT oid, typname FROM pg_type WHERE oid = ANY(%s)',
+                ([ c.type_code for c in query_results_page_exec.description ],),
+            )
+            types = await types_exec.fetchall()
+            query_results_columns = [{
+                    'name': c.name,
+                    'type': [postgresql_type_to_data_type(t[1]) for t in types if t[0] == c.type_code][0],
+                } for c in query_results_page_exec.description
+            ]
 
         return {
             'offset': offset,
             'limit': limit,
             'total': query_total_count,
             'results': {
-                'headers': [
-                    { 'name': c.name, 'type_code': c.type_code } for c in query_results_columns
-                ],
+                'headers': query_results_columns,
                 'data': query_results_page,
             },
             'query': sql_query  # provided for inspection purposes
