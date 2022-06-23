@@ -487,7 +487,7 @@ async def handle_postgres_backend_request():
                 table_columns[table_name].append(table_col)
 
         sql_query = pypika_translate_pipeline(
-            sql_dialect=SQLDialect.POSTGRESQL,
+            sql_dialect=SQLDialect.POSTGRES,
             pipeline=Pipeline(steps=pipeline),
             db_schema=db_schema,
             tables_columns=table_columns,
