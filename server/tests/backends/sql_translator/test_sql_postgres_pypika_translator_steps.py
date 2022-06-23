@@ -140,7 +140,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
 
     # Convert Pipeline object to Postgres Query
     query = translate_pipeline(
-        sql_dialect=SQLDialect.POSTGRESQL,
+        sql_dialect=SQLDialect.POSTGRES,
         pipeline=pipeline,
         tables_columns={test_table_name: data_to_insert.columns},
         db_schema=None,
