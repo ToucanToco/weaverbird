@@ -1,0 +1,166 @@
+{
+  "exclude": [
+    "mongo",
+    "mysql",
+    "pandas",
+    "postgres",
+    "postgres_pypika",
+    "redshift",
+    "snowflake"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "replace",
+        "search_column": "beer_kind",
+        "to_replace": [
+          [
+            "Blonde",
+            "Deublon"
+          ]
+        ]
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "price_per_l",
+          "type": "number"
+        },
+        {
+          "name": "alcohol_degree",
+          "type": "number"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "cost",
+          "type": "number"
+        },
+        {
+          "name": "volume_ml",
+          "type": "number"
+        },
+        {
+          "name": "brewing_date",
+          "type": "datetime"
+        },
+        {
+          "name": "nullable_name",
+          "type": "string"
+        },
+        {
+          "name": "beer_kind",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "1.4.0"
+    },
+    "data": [
+      {
+        "price_per_l": 0.1599999964,
+        "alcohol_degree": 13.5,
+        "name": "Superstrong beer",
+        "cost": 2.8900001049,
+        "volume_ml": 330.0,
+        "brewing_date": "2022-01-01",
+        "nullable_name": "",
+        "beer_kind": "Triple"
+      },
+      {
+        "price_per_l": 0.0540000014,
+        "alcohol_degree": 4.8773770332,
+        "name": "Ninkasi Ploploplop",
+        "cost": 2.8900001049,
+        "volume_ml": 330.0,
+        "brewing_date": "2022-01-02",
+        "nullable_name": "Ninkasi Ploploplop",
+        "beer_kind": "India Pale Ale"
+      },
+      {
+        "price_per_l": 0.0049999999,
+        "alcohol_degree": 0.5699344873,
+        "name": "Brewdog Nanny State Alcoholvrij",
+        "cost": 2.2899999619,
+        "volume_ml": 330.0,
+        "brewing_date": "2022-01-03",
+        "nullable_name": "Brewdog Nanny State Alcoholvrij",
+        "beer_kind": "Sans alcool"
+      },
+      {
+        "price_per_l": 0.0560000017,
+        "alcohol_degree": 6.9941053391,
+        "name": "Ardwen Blonde",
+        "cost": 2.0899999142,
+        "volume_ml": 330.0,
+        "brewing_date": "2022-01-04",
+        "nullable_name": "Ardwen Blonde",
+        "beer_kind": "Best-sellers"
+      },
+      {
+        "price_per_l": 0.0700000003,
+        "alcohol_degree": 8.930644989,
+        "name": "Cuv\u00e9e des Trolls",
+        "cost": 1.5499999523,
+        "volume_ml": 250.0,
+        "brewing_date": "2022-01-05",
+        "nullable_name": "",
+        "beer_kind": "Deublon"
+      },
+      {
+        "price_per_l": 0.0049999999,
+        "alcohol_degree": 1.2437106371,
+        "name": "Weihenstephan Hefe Weizen Alcoholarm",
+        "cost": 1.5900000334,
+        "volume_ml": 500.0,
+        "brewing_date": "2022-01-06",
+        "nullable_name": "Weihenstephan Hefe Weizen Alcoholarm",
+        "beer_kind": "Blanche & Weizen"
+      },
+      {
+        "price_per_l": 0.0450000018,
+        "alcohol_degree": 4.7174096107,
+        "name": "Bellfield Lawless Village IPA",
+        "cost": 2.4900000095,
+        "volume_ml": 330.0,
+        "brewing_date": "2022-01-07",
+        "nullable_name": "Bellfield Lawless Village IPA",
+        "beer_kind": "India Pale Ale"
+      },
+      {
+        "price_per_l": 0.0839999989,
+        "alcohol_degree": 12.9742717743,
+        "name": "Pauwel Kwak",
+        "cost": 1.6900000572,
+        "volume_ml": 330.0,
+        "brewing_date": "2022-01-08",
+        "nullable_name": "Pauwel Kwak",
+        "beer_kind": "Belge blonde forte & Golden Ale"
+      },
+      {
+        "price_per_l": 0.0649999976,
+        "alcohol_degree": 7.7474656105,
+        "name": "Brasserie De Sutter Brin de Folie",
+        "cost": 2.1900000572,
+        "volume_ml": 330.0,
+        "brewing_date": "2022-01-09",
+        "nullable_name": "",
+        "beer_kind": "Deublon"
+      },
+      {
+        "price_per_l": 0.0599999987,
+        "alcohol_degree": 8.7496089935,
+        "name": "Brugse Zot blonde",
+        "cost": 1.7899999619,
+        "volume_ml": 330.0,
+        "brewing_date": "2022-01-10",
+        "nullable_name": "Brugse Zot blonde",
+        "beer_kind": "Deublon"
+      }
+    ]
+  }
+}

@@ -1,5 +1,6 @@
 {
   "exclude": [
+    "athena",
     "mysql"
   ],
   "step": {
@@ -15,13 +16,12 @@
         "then": "'tintin'",
         "else": {
           "if": {
-          "column": "AGE",
-          "value": 20,
-          "operator": "eq"
+            "column": "AGE",
+            "value": 20,
+            "operator": "eq"
           },
           "then": "'toto'",
           "else": "'tata'"
-
         }
       }
     ]

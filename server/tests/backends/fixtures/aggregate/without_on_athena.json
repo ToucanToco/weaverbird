@@ -1,0 +1,47 @@
+{
+  "exclude": [
+    "mongo",
+    "mysql",
+    "pandas",
+    "postgres",
+    "postgres_pypika",
+    "redshift",
+    "snowflake"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "aggregate",
+        "on": [],
+        "aggregations": [
+          {
+            "newcolumns": [
+              "sum_volume_ml"
+            ],
+            "aggfunction": "sum",
+            "columns": [
+              "volume_ml"
+            ]
+          }
+        ],
+        "keepOriginalGranularity": false
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "sum_volume_ml",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "1.4.0"
+    },
+    "data": [
+      {
+        "sum_volume_ml": 3390.0
+      }
+    ]
+  }
+}

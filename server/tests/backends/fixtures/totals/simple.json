@@ -1,9 +1,10 @@
 {
   "exclude": [
+    "athena",
     "mysql",
     "pandas",
-    "postgres_pypika",
     "postgres",
+    "postgres_pypika",
     "redshift"
   ],
   "step": {

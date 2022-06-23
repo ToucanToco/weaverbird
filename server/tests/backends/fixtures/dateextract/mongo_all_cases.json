@@ -1,9 +1,10 @@
 {
   "exclude": [
-    "pandas",
+    "athena",
     "mysql",
-    "postgres_pypika",
+    "pandas",
     "postgres",
+    "postgres_pypika",
     "redshift",
     "snowflake"
   ],

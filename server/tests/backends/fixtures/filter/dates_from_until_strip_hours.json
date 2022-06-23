@@ -1,9 +1,10 @@
 {
   "description": "From/until operators should always include the whole selected day. Users don't select hours (and shouldn't care about them in most cases).",
   "exclude": [
+    "athena",
     "mysql",
-    "postgres_pypika",
     "postgres",
+    "postgres_pypika",
     "redshift"
   ],
   "step": {
@@ -11,15 +12,18 @@
       {
         "name": "filter",
         "condition": {
-          "and": [{
-            "column": "CREATED",
-            "operator": "from",
-            "value": "date: 2021-11-01 12:34:56"
-          }, {
-            "column": "CREATED",
-            "operator": "until",
-            "value": "date: 2021-11-30 21:43:01"
-          }]
+          "and": [
+            {
+              "column": "CREATED",
+              "operator": "from",
+              "value": "date: 2021-11-01 12:34:56"
+            },
+            {
+              "column": "CREATED",
+              "operator": "until",
+              "value": "date: 2021-11-30 21:43:01"
+            }
+          ]
         }
       }
     ]

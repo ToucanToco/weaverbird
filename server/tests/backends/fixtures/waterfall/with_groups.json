@@ -1,27 +1,28 @@
 {
   "exclude": [
+    "athena",
     "mysql",
-    "snowflake",
-    "postgres_pypika",
     "postgres",
-    "redshift"
+    "postgres_pypika",
+    "redshift",
+    "snowflake"
   ],
   "step": {
     "pipeline": [
-        {
-            "name": "waterfall",
-            "valueColumn": "REVENUE",
-            "milestonesColumn": "YEAR",
-            "start": 2018,
-            "end": 2019,
-            "labelsColumn": "CITY",
-            "sortBy": "label",
-            "order": "asc",
-            "parentsColumn": "COUNTRY",
-            "groupby": [
-              "PRODUCT"
-            ]
-        }
+      {
+        "name": "waterfall",
+        "valueColumn": "REVENUE",
+        "milestonesColumn": "YEAR",
+        "start": 2018,
+        "end": 2019,
+        "labelsColumn": "CITY",
+        "sortBy": "label",
+        "order": "asc",
+        "parentsColumn": "COUNTRY",
+        "groupby": [
+          "PRODUCT"
+        ]
+      }
     ]
   },
   "input": {

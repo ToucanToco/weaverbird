@@ -1,0 +1,78 @@
+{
+  "exclude": [
+    "mongo",
+    "mysql",
+    "pandas",
+    "postgres",
+    "postgres_pypika",
+    "redshift",
+    "snowflake"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "aggregate",
+        "on": [
+          "beer_kind"
+        ],
+        "aggregations": [
+          {
+            "newcolumns": [
+              "beer_count"
+            ],
+            "aggfunction": "count",
+            "columns": [
+              "name"
+            ]
+          }
+        ],
+        "keepOriginalGranularity": false
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "beer_kind",
+          "type": "any"
+        },
+        {
+          "name": "beer_count",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "1.4.0"
+    },
+    "data": [
+      {
+        "beer_kind": "Belge blonde forte & Golden Ale",
+        "beer_count": 1
+      },
+      {
+        "beer_kind": "Best-sellers",
+        "beer_count": 1
+      },
+      {
+        "beer_kind": "Blanche & Weizen",
+        "beer_count": 1
+      },
+      {
+        "beer_kind": "Blonde",
+        "beer_count": 3
+      },
+      {
+        "beer_kind": "India Pale Ale",
+        "beer_count": 2
+      },
+      {
+        "beer_kind": "Sans alcool",
+        "beer_count": 1
+      },
+      {
+        "beer_kind": "Triple",
+        "beer_count": 1
+      }
+    ]
+  }
+}
