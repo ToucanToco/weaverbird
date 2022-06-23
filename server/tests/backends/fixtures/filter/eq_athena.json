@@ -1,0 +1,94 @@
+{
+  "exclude": [
+    "mongo",
+    "mysql",
+    "pandas",
+    "postgres",
+    "postgres_pypika",
+    "redshift",
+    "snowflake"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "filter",
+        "condition": {
+          "column": "beer_kind",
+          "operator": "eq",
+          "value": "Blonde"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "price_per_l",
+          "type": "number"
+        },
+        {
+          "name": "alcohol_degree",
+          "type": "number"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "cost",
+          "type": "number"
+        },
+        {
+          "name": "beer_kind",
+          "type": "string"
+        },
+        {
+          "name": "volume_ml",
+          "type": "number"
+        },
+        {
+          "name": "brewing_date",
+          "type": "datetime"
+        },
+        {
+          "name": "nullable_name",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "1.4.0"
+    },
+    "data": [
+      {
+        "price_per_l": 0.0700000003,
+        "alcohol_degree": 8.930644989,
+        "name": "Cuv\u00e9e des Trolls",
+        "cost": 1.5499999523,
+        "beer_kind": "Blonde",
+        "volume_ml": 250.0,
+        "brewing_date": "2022-01-05",
+        "nullable_name": ""
+      },
+      {
+        "price_per_l": 0.0649999976,
+        "alcohol_degree": 7.7474656105,
+        "name": "Brasserie De Sutter Brin de Folie",
+        "cost": 2.1900000572,
+        "beer_kind": "Blonde",
+        "volume_ml": 330.0,
+        "brewing_date": "2022-01-09",
+        "nullable_name": ""
+      },
+      {
+        "price_per_l": 0.0599999987,
+        "alcohol_degree": 8.7496089935,
+        "name": "Brugse Zot blonde",
+        "cost": 1.7899999619,
+        "beer_kind": "Blonde",
+        "volume_ml": 330.0,
+        "brewing_date": "2022-01-10",
+        "nullable_name": "Brugse Zot blonde"
+      }
+    ]
+  }
+}

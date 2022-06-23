@@ -1,6 +1,8 @@
 {
   "exclude": [
-    "mysql"  ],
+    "athena",
+    "mysql"
+  ],
   "step": {
     "pipeline": [
       {

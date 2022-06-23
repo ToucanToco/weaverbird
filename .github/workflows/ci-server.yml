@@ -50,5 +50,10 @@ jobs:
       env:
         SNOWFLAKE_PASSWORD: '${{ secrets.SNOWFLAKE_PASSWORD }}'
         REDSHIFT_PASSWORD: '${{ secrets.REDSHIFT_PASSWORD }}'
+        ATHENA_OUTPUT: '${{ secrets.ATHENA_OUTPUT }}'
+        ATHENA_DATABASE: '${{ secrets.ATHENA_DATABASE }}'
+        ATHENA_ACCESS_KEY_ID: '${{ secrets.ATHENA_ACCESS_KEY_ID }}'
+        ATHENA_SECRET_ACCESS_KEY: '${{ secrets.ATHENA_SECRET_ACCESS_KEY }}'
+        ATHENA_REGION: '${{ secrets.ATHENA_REGION }}'
       run: make test
       timeout-minutes: 25
