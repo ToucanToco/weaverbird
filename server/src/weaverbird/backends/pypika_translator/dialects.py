@@ -5,6 +5,6 @@ class SQLDialect(str, Enum):
     ATHENA = "athena"
     GOOGLEBIGQUERY = "googlebigquery"
     MYSQL = "mysql"
-    POSTGRESQL = "postgresql"
+    POSTGRES = "postgres"
     REDSHIFT = "redshift"
     SNOWFLAKE = "snowflake"

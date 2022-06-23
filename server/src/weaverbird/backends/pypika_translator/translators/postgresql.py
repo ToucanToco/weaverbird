@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 
 class PostgreSQLTranslator(SQLTranslator):
-    DIALECT = SQLDialect.POSTGRESQL
+    DIALECT = SQLDialect.POSTGRES
     QUERY_CLS = PostgreSQLQuery
     DATA_TYPE_MAPPING = DataTypeMapping(
         boolean="BOOLEAN",
