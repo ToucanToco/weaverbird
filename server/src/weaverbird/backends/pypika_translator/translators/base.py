@@ -670,6 +670,7 @@ class SQLTranslator(ABC):
                     RowNumber()
                     .over(*groups_fields)
                     .orderby(rank_on_field, order=Order.desc if step.sort == "desc" else Order.asc)
+                    .as_("row_number")
                 )
                 query: "QueryBuilder" = (
                     self.QUERY_CLS.from_(sub_query)

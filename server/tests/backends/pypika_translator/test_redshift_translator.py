@@ -100,6 +100,7 @@ def get_top_query(sort_order, previous_step, group, rank_on, selected_columns, l
     sub_query = Query.from_(previous_step).select(*selected_columns)
     rank_select = sub_query.select(
         RowNumber()
+        .as_("row_number")
         .over(name_field)
         .orderby(age_field, order=Order.asc if sort_order == "asc" else Order.desc)
     )
