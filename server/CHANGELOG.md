@@ -1,9 +1,14 @@
 # Changelog (weaverbird python package)
 
+## Unreleased
+
+- Fix: Return N results for every group in the `top` step of the PyPika translator
+- Fix: Ensure RowNumber() has an alias in the `top` step of the PyPika translator
+- Fix: Ensure the `top` step of the PyPika translator returns consistent results
+
 ## [0.16.1] - 2022-06-22
 
 - Fix: rename the sql dialect used for postgres
-
 
 ## [0.16.0] - 2022-06-22
 
