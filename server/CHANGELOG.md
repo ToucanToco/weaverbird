@@ -1,5 +1,10 @@
 # Changelog (weaverbird python package)
 
+## [0.16.1] - 2022-06-22
+
+- Fix: rename the sql dialect used for postgres
+
+
 ## [0.16.0] - 2022-06-22
 
 - Feat: Handle code mode queries in pypika translator
