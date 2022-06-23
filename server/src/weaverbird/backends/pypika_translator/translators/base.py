@@ -676,6 +676,9 @@ class SQLTranslator(ABC):
                     self.QUERY_CLS.from_(sub_query)
                     .select(*table.columns)
                     .where(Field("row_number") == step.limit)
+                    # The order of returned results is not necessarily consistent. This ensures we
+                    # always get the results in the same order
+                    .orderby(*(Field(f) for f in step.groups + ["row_number"]), order=Order.asc)
                 )
                 return query, StepTable(columns=table.columns)
 
