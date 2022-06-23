@@ -1,6 +1,5 @@
 /**
- * This translator is a temporary clone of Pandas one to release now the
- * VQB pipelines over live queries feature that does not support joins & appends yet.
+ * Declaration of supported steps by translators based on pypika
  * */
 
 import * as S from '@/lib/steps';
@@ -8,7 +7,7 @@ import * as S from '@/lib/steps';
 import { BaseTranslator, ValidationError } from './base';
 
 /* istanbul ignore next */
-export class RedshiftTranslator extends BaseTranslator {
+export class PypikaTranslator extends BaseTranslator {
   static label = 'Redshift';
 
   aggregate(step: Readonly<S.AggregateStep>) {
@@ -24,10 +23,6 @@ export class RedshiftTranslator extends BaseTranslator {
   }
 
   comparetext(step: Readonly<S.CompareTextStep>) {
-    return step;
-  }
-
-  concatenate(step: Readonly<S.ConcatenateStep>) {
     return step;
   }
 
@@ -60,10 +55,6 @@ export class RedshiftTranslator extends BaseTranslator {
   }
 
   formula(step: Readonly<S.FormulaStep>) {
-    return step;
-  }
-
-  fromdate(step: Readonly<S.FromDateStep>) {
     return step;
   }
 
@@ -100,10 +91,6 @@ export class RedshiftTranslator extends BaseTranslator {
   }
 
   text(step: Readonly<S.AddTextColumnStep>) {
-    return step;
-  }
-
-  todate(step: Readonly<S.ToDateStep>) {
     return step;
   }
 

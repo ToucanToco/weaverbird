@@ -1,11 +1,6 @@
-import * as S from '@/lib/steps';
-
-import { BaseTranslator } from './base';
+import { PypikaTranslator } from './pypika';
 
 /* istanbul ignore next */
-export class PostgresqlTranslator extends BaseTranslator {
-  static label = 'PostgresqlTranslator';
-  domain(step: Readonly<S.DomainStep>) {
-    return step;
-  }
+export class PostgresqlTranslator extends PypikaTranslator {
+  static label = 'PostgreSQL';
 }
