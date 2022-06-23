@@ -39,7 +39,6 @@ import pandas as pd
 import psycopg
 import snowflake.connector
 from pandas.io.json import build_table_schema
-from psycopg.rows import dict_row
 from pymongo import MongoClient
 from quart import Quart, Request, Response, jsonify, request, send_file
 
@@ -51,11 +50,11 @@ from weaverbird.backends.pandas_executor.pipeline_executor import (
     preview_pipeline as pandas_preview_pipeline,
 )
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
+from weaverbird.backends.pypika_translator.translate import (
+    translate_pipeline as pypika_translate_pipeline,
+)
 from weaverbird.backends.sql_translator.sql_pipeline_translator import (
     translate_pipeline as sql_translate_pipeline,
-)
-from weaverbird.backends.pypika_translator.translate import (
-    translate_pipeline as pypika_translate_pipeline
 )
 from weaverbird.pipeline import Pipeline
 
@@ -436,9 +435,15 @@ async def handle_snowflake_backend_request():
 
 ### Postgres back-end routes
 
+
 def postgresql_type_to_data_type(pg_type: str) -> ColumnType | None:
     # https://www.postgresql.org/docs/current/datatype-numeric.html
-    if 'float' in pg_type or 'double' in pg_type or 'serial' in pg_type or pg_type in ('decimal', 'numeric', 'real', 'money'):
+    if (
+        'float' in pg_type
+        or 'double' in pg_type
+        or 'serial' in pg_type
+        or pg_type in ('decimal', 'numeric', 'real', 'money')
+    ):
         return ColumnType.FLOAT
     elif 'int' in pg_type:
         return ColumnType.INTEGER
@@ -465,7 +470,9 @@ async def handle_postgres_backend_request():
 
     if request.method == 'GET':
         async with postgresql_connexion.cursor() as cur:
-            tables_info_exec = await cur.execute(f"SELECT * FROM pg_catalog.pg_tables WHERE schemaname='{db_schema}';")
+            tables_info_exec = await cur.execute(
+                f"SELECT * FROM pg_catalog.pg_tables WHERE schemaname='{db_schema}';"
+            )
             tables_info = await tables_info_exec.fetchall()
             return jsonify([table_infos[1] for table_infos in tables_info])
 
@@ -478,7 +485,9 @@ async def handle_postgres_backend_request():
 
         # Find all columns for all available tables
         async with postgresql_connexion.cursor() as cur:
-            table_columns_exec = await cur.execute("SELECT table_name, column_name FROM information_schema.columns WHERE table_schema='public';")
+            table_columns_exec = await cur.execute(
+                "SELECT table_name, column_name FROM information_schema.columns WHERE table_schema='public';"
+            )
             table_columns_results = await table_columns_exec.fetchall()
             table_columns = {}
             for table_name, table_col in table_columns_results:
@@ -494,13 +503,14 @@ async def handle_postgres_backend_request():
         )
 
         async with postgresql_connexion.cursor() as cur:
-            query_total_count_exec = await cur.execute(f'WITH Q AS ({ sql_query }) SELECT COUNT(*) FROM Q')
+            query_total_count_exec = await cur.execute(
+                f'WITH Q AS ({ sql_query }) SELECT COUNT(*) FROM Q'
+            )
             query_total_count = await query_total_count_exec.fetchone()
 
         async with postgresql_connexion.cursor() as cur:
             query_results_page_exec = await cur.execute(
                 f'WITH Q AS ({ sql_query }) SELECT * FROM Q LIMIT { limit } OFFSET { offset }',
-
             )
             query_results_page = await query_results_page_exec.fetchall()
             query_results_desc = query_results_page_exec.description
@@ -511,13 +521,17 @@ async def handle_postgres_backend_request():
             # They are mapped to base types in the system pg_type table
             types_exec = await cur.execute(
                 'SELECT oid, typname FROM pg_type WHERE oid = ANY(%s)',
-                ([ c.type_code for c in query_results_desc or [] ],),
+                ([c.type_code for c in query_results_desc or []],),
             )
             types = await types_exec.fetchall()
-            query_results_columns = [{
+            query_results_columns = [
+                {
                     'name': c.name,
-                    'type': [postgresql_type_to_data_type(t[1]) for t in types if t[0] == c.type_code][0],
-                } for c in query_results_desc
+                    'type': [
+                        postgresql_type_to_data_type(t[1]) for t in types if t[0] == c.type_code
+                    ][0],
+                }
+                for c in query_results_desc
             ]
 
         return {
@@ -528,8 +542,9 @@ async def handle_postgres_backend_request():
                 'headers': query_results_columns,
                 'data': query_results_page,
             },
-            'query': sql_query  # provided for inspection purposes
+            'query': sql_query,  # provided for inspection purposes
         }
+
 
 ### UI files
 
