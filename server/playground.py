@@ -503,6 +503,7 @@ async def handle_postgres_backend_request():
 
             )
             query_results_page = await query_results_page_exec.fetchall()
+            query_results_desc = query_results_page_exec.description
 
         # Provide types for the columns
         async with postgresql_connexion.cursor() as cur:
@@ -510,13 +511,13 @@ async def handle_postgres_backend_request():
             # They are mapped to base types in the system pg_type table
             types_exec = await cur.execute(
                 'SELECT oid, typname FROM pg_type WHERE oid = ANY(%s)',
-                ([ c.type_code for c in query_results_page_exec.description ],),
+                ([ c.type_code for c in query_results_desc or [] ],),
             )
             types = await types_exec.fetchall()
             query_results_columns = [{
                     'name': c.name,
                     'type': [postgresql_type_to_data_type(t[1]) for t in types if t[0] == c.type_code][0],
-                } for c in query_results_page_exec.description
+                } for c in query_results_desc
             ]
 
         return {
