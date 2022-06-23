@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Fix: Return N results for every group in the `top` step of the PyPika translator
 - Fix: Ensure RowNumber() has an alias in the `top` step of the PyPika translator
 - Fix: Ensure the `top` step of the PyPika translator returns consistent results
 

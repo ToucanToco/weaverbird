@@ -106,7 +106,7 @@ def get_top_query(sort_order, previous_step, group, rank_on, selected_columns, l
     )
     expected_query = (
         Query.from_(rank_select)
-        .where(Field("row_number") == limit)
+        .where(Field("row_number") <= limit)
         .orderby(*(Field(f) for f in [group, "row_number"]), order=Order.asc)
         .select(*selected_columns)
     )
