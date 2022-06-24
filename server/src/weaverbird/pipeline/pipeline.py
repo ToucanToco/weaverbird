@@ -6,6 +6,8 @@ from typing_extensions import Annotated
 from weaverbird.pipeline.steps.hierarchy import HierarchyStep
 
 from .steps import (
+    AbsoluteValueStep,
+    AbsoluteValueStepWithVariable,
     AddMissingDatesStep,
     AddMissingDatesStepWithVariables,
     AggregateStep,
@@ -85,6 +87,7 @@ from .steps import (
 
 PipelineStep = Annotated[
     Union[
+        AbsoluteValueStep,
         AddMissingDatesStep,
         AggregateStep,
         AppendStep,
@@ -148,6 +151,7 @@ class Pipeline(BaseModel):
 
 PipelineStepWithVariables = Annotated[
     Union[
+        AbsoluteValueStepWithVariable,
         AddMissingDatesStepWithVariables,
         AggregateStepWithVariables,
         AppendStepWithVariable,

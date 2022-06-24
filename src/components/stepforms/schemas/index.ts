@@ -1,3 +1,4 @@
+import absolutevalueSchema from './absolutevalue';
 import addmissingdatesSchema from './addmissingdates';
 import aggregateBuildSchema from './aggregate';
 import appendSchema from './append';
@@ -47,6 +48,7 @@ import waterfallSchema from './waterfall';
 type buildSchemaType = ((form: any) => object) | object;
 
 const factories: { [stepname: string]: buildSchemaType } = {
+  absolutevalue: absolutevalueSchema,
   addmissingdates: addmissingdatesSchema,
   aggregate: aggregateBuildSchema,
   append: appendSchema,

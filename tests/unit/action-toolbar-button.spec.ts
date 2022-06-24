@@ -123,6 +123,7 @@ describe('ActionToolbarButton active', () => {
       'rank',
       'movingaverage',
       'statistics',
+      'absolutevalue',
     ]);
   });
 

@@ -14,6 +14,10 @@ import { BaseTranslator } from './base';
 export class PandasTranslator extends BaseTranslator {
   static label = 'Pandas';
 
+  absolutevalue(step: Readonly<S.AbsoluteValueStep>) {
+    return step;
+  }
+
   addmissingdates(step: Readonly<S.AddMissingDatesStep>) {
     return step;
   }

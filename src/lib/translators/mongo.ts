@@ -306,6 +306,19 @@ export function _generateDateFromParts(mongoDate: string, granularity: DateGranu
   return dateFromParts;
 }
 
+/** transform an 'absolutevalue' step into corresponding mongo steps */
+function absoluteValue(step: Readonly<S.AbsoluteValueStep>): MongoStep[] {
+  return [
+    {
+      $addFields: {
+        [step.new_column]: {
+          $abs: $$(step.column),
+        },
+      },
+    },
+  ];
+}
+
 /** specific function to translate addmissingdates at year granularity (for performance gains) */
 function addMissingDatesYear(step: Readonly<S.AddMissingDatesStep>): MongoStep[] {
   const groups: Array<string> = step.groups ?? [];
@@ -1855,6 +1868,7 @@ function transformWaterfall(step: Readonly<S.WaterfallStep>): MongoStep[] {
 }
 
 const mapper: Partial<StepMatcher<MongoStep>> = {
+  absolutevalue: absoluteValue,
   addmissingdates: transformAddMissingDates,
   aggregate: transformAggregate,
   argmax: transformArgmaxArgmin,

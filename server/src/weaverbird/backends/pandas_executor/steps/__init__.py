@@ -1,6 +1,7 @@
 from typing import Dict
 
 from ..types import StepExecutor
+from .absolutevalue import execute_absolutevalue
 from .addmissingdates import execute_addmissingdates
 from .aggregate import execute_aggregate
 from .append import execute_append
@@ -49,6 +50,7 @@ from .uppercase import execute_uppercase
 from .waterfall import execute_waterfall
 
 steps_executors: Dict[str, StepExecutor] = {
+    'absolutevalue': execute_absolutevalue,
     'addmissingdates': execute_addmissingdates,
     'aggregate': execute_aggregate,
     'append': execute_append,  # type: ignore
