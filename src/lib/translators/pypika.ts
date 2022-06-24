@@ -10,6 +10,10 @@ import { BaseTranslator, ValidationError } from './base';
 export class PypikaTranslator extends BaseTranslator {
   static label = 'Pypika';
 
+  absolutevalue(step: Readonly<S.AbsoluteValueStep>) {
+    return step;
+  }
+
   aggregate(step: Readonly<S.AggregateStep>) {
     return step;
   }
