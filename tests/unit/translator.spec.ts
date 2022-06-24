@@ -81,6 +81,8 @@ describe('translator registration', () => {
       'mongo50',
       'pandas',
       'pandas-no_joins',
+      'postgresql',
+      'redshift',
       'snowflake',
     ]);
     expect(backendsSupporting('domain')).toEqual([
