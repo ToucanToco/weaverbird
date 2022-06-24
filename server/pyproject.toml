@@ -27,6 +27,7 @@ geopandas = "^0.10.2"
 PyPika = "^0.48.9"
 redshift-connector = "^2.0.907"
 sqlalchemy-redshift = "^0.8.9"
+psycopg = {extras = ["postgres"], version = "^3.0.15"}
 
 [tool.poetry.dev-dependencies]
 pytest-cov = "^2.10.1"
@@ -49,7 +50,7 @@ psycopg2 = "^2.9.2"
 pymongo = ">=3.12.0"
 
 [tool.poetry.extras]
-playground = ["quart", "hypercorn", "pymongo", "snowflake-connector-python"]
+playground = ["quart", "hypercorn", "pymongo", "pandas", "snowflake-connector-python", "psycopg"]
 
 [tool.black]
 line-length = 100

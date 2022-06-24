@@ -14,6 +14,9 @@ Routes:
 - `/snowflake`:
     - GET: return the available tables in the database
     - POST: translate the pipeline to a Snowflake query, execute it and returns paginated results
+- `/postgresql`:
+    - GET: return the available tables in the database
+    - POST: translate the pipeline to a SQL query, execute it and returns paginated results
 - `/health`: simple health check
 
 Run it with `QUART_APP=playground QUART_ENV=development quart run`
@@ -21,16 +24,19 @@ Run it with `QUART_APP=playground QUART_ENV=development quart run`
 Environment variables:
 - for mongo, MONGODB_CONNECTION_STRING (default to localhost:27017) and MONGODB_DATABASE_NAME (default to 'data')
 - for snowflake, SNOWFLAKE_USER, SNOWFLAKE_PASSWORD, SNOWFLAKE_ACCOUNT and SNOWFLAKE_DATABASE
+- for postgresql, POSTGRESQL_CONNECTION_STRING
 """
 import json
 import os
 from datetime import datetime
+from enum import Enum
 from glob import glob
 from os.path import basename, splitext
 from typing import Dict, Union
 
 import geopandas as gpd
 import pandas as pd
+import psycopg
 import snowflake.connector
 from pandas.io.json import build_table_schema
 from pymongo import MongoClient
@@ -42,6 +48,10 @@ from weaverbird.backends.mongo_translator.mongo_pipeline_translator import (
 from weaverbird.backends.pandas_executor.pipeline_executor import PipelineExecutionFailure
 from weaverbird.backends.pandas_executor.pipeline_executor import (
     preview_pipeline as pandas_preview_pipeline,
+)
+from weaverbird.backends.pypika_translator.dialects import SQLDialect
+from weaverbird.backends.pypika_translator.translate import (
+    translate_pipeline as pypika_translate_pipeline,
 )
 from weaverbird.backends.sql_translator.sql_pipeline_translator import (
     translate_pipeline as sql_translate_pipeline,
@@ -82,6 +92,15 @@ async def parse_request_json(request: Request):
     Parse the request with a custom JSON parser so that types are preserved (such as dates)
     """
     return json.loads(await request.get_data(), object_hook=json_js_datetime_parser)
+
+
+class ColumnType(str, Enum):
+    INTEGER = 'integer'
+    FLOAT = 'float'
+    BOOLEAN = 'boolean'
+    DATE = 'date'
+    STRING = 'string'
+    OBJECT = 'object'
 
 
 ### Pandas back-end routes
@@ -412,6 +431,119 @@ async def handle_snowflake_backend_request():
             ),
             mimetype='application/json',
         )
+
+
+### Postgres back-end routes
+
+
+def postgresql_type_to_data_type(pg_type: str) -> ColumnType | None:
+    # https://www.postgresql.org/docs/current/datatype-numeric.html
+    if (
+        'float' in pg_type
+        or 'double' in pg_type
+        or 'serial' in pg_type
+        or pg_type in ('decimal', 'numeric', 'real', 'money')
+    ):
+        return ColumnType.FLOAT
+    elif 'int' in pg_type:
+        return ColumnType.INTEGER
+    # https://www.postgresql.org/docs/current/datatype-datetime.html
+    elif 'time' in pg_type or 'date' in pg_type:
+        return ColumnType.DATE
+    # https://www.postgresql.org/docs/current/datatype-character.html
+    elif 'char' in pg_type or pg_type == 'text':
+        return ColumnType.STRING
+    # https://www.postgresql.org/docs/current/datatype-boolean.html
+    elif 'bool' in pg_type:
+        return ColumnType.BOOLEAN
+    else:
+        return ColumnType.OBJECT
+
+
+@app.route('/postgresql', methods=['GET', 'POST'])
+async def handle_postgres_backend_request():
+    # improve by using a connexion pool
+    postgresql_connexion = await psycopg.AsyncConnection.connect(
+        os.getenv('POSTGRESQL_CONNECTION_STRING')
+    )
+    db_schema = 'public'
+
+    if request.method == 'GET':
+        async with postgresql_connexion.cursor() as cur:
+            tables_info_exec = await cur.execute(
+                f"SELECT * FROM pg_catalog.pg_tables WHERE schemaname='{db_schema}';"
+            )
+            tables_info = await tables_info_exec.fetchall()
+            return jsonify([table_infos[1] for table_infos in tables_info])
+
+    if request.method == 'POST':
+        pipeline = await parse_request_json(request)
+
+        # Url parameters are only strings, these two must be understood as numbers
+        limit = int(request.args.get('limit', 50))
+        offset = int(request.args.get('offset', 0))
+
+        # Find all columns for all available tables
+        async with postgresql_connexion.cursor() as cur:
+            table_columns_exec = await cur.execute(
+                "SELECT table_name, column_name FROM information_schema.columns WHERE table_schema='public';"
+            )
+            table_columns_results = await table_columns_exec.fetchall()
+            table_columns = {}
+            for table_name, table_col in table_columns_results:
+                if table_name not in table_columns:
+                    table_columns[table_name] = []
+                table_columns[table_name].append(table_col)
+
+        sql_query = pypika_translate_pipeline(
+            sql_dialect=SQLDialect.POSTGRES,
+            pipeline=Pipeline(steps=pipeline),
+            db_schema=db_schema,
+            tables_columns=table_columns,
+        )
+
+        async with postgresql_connexion.cursor() as cur:
+            query_total_count_exec = await cur.execute(
+                f'WITH Q AS ({ sql_query }) SELECT COUNT(*) FROM Q'
+            )
+            query_total_count = await query_total_count_exec.fetchone()
+
+        async with postgresql_connexion.cursor() as cur:
+            query_results_page_exec = await cur.execute(
+                f'WITH Q AS ({ sql_query }) SELECT * FROM Q LIMIT { limit } OFFSET { offset }',
+            )
+            query_results_page = await query_results_page_exec.fetchall()
+            query_results_desc = query_results_page_exec.description
+
+        # Provide types for the columns
+        async with postgresql_connexion.cursor() as cur:
+            # oid of columns of query results are provided in the "description" attribute
+            # They are mapped to base types in the system pg_type table
+            types_exec = await cur.execute(
+                'SELECT oid, typname FROM pg_type WHERE oid = ANY(%s)',
+                ([c.type_code for c in query_results_desc or []],),
+            )
+            types = await types_exec.fetchall()
+            query_results_columns = [
+                {
+                    'name': c.name,
+                    'type': [
+                        postgresql_type_to_data_type(t[1]) for t in types if t[0] == c.type_code
+                    ][0],
+                }
+                for c in query_results_desc
+            ]
+
+        return {
+            'offset': offset,
+            'limit': limit,
+            'total': query_total_count,
+            'results': {
+                'headers': query_results_columns,
+                'data': query_results_page,
+            },
+            'query': sql_query,  # provided for inspection purposes
+        }
 
 
 ### UI files

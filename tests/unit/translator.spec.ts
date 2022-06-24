@@ -81,17 +81,24 @@ describe('translator registration', () => {
       'mongo50',
       'pandas',
       'pandas-no_joins',
+      'postgresql',
+      'redshift',
       'snowflake',
     ]);
     expect(backendsSupporting('domain')).toEqual([
+      'athena',
       'dummy',
       'empty',
+      'google-big-query',
       'mongo36',
       'mongo40',
       'mongo42',
       'mongo50',
+      'mysql',
       'pandas',
       'pandas-no_joins',
+      'postgresql',
+      'redshift',
       'snowflake',
     ]);
     expect(backendsSupporting('append')).toEqual([
@@ -120,14 +127,19 @@ describe('translator registration', () => {
     registerTranslator('dummy', DummyStringTranslator);
     const translators = availableTranslators();
     expect(Object.keys(translators).sort()).toEqual([
+      'athena',
       'dummy',
       'empty',
+      'google-big-query',
       'mongo36',
       'mongo40',
       'mongo42',
       'mongo50',
+      'mysql',
       'pandas',
       'pandas-no_joins',
+      'postgresql',
+      'redshift',
       'snowflake',
     ]);
   });
