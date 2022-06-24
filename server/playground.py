@@ -342,7 +342,7 @@ async def handle_mongo_translated_backend_request():
 
 
 ### Snowflake back-end routes
-if False or os.getenv('SNOWFLAKE_ACCOUNT'):
+if os.getenv('SNOWFLAKE_ACCOUNT'):
     snowflake_connexion = snowflake.connector.connect(
         user=os.getenv('SNOWFLAKE_USER'),
         password=os.getenv('SNOWFLAKE_PASSWORD'),
