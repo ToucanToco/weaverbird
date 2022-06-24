@@ -8,7 +8,7 @@ import { BaseTranslator, ValidationError } from './base';
 
 /* istanbul ignore next */
 export class PypikaTranslator extends BaseTranslator {
-  static label = 'Redshift';
+  static label = 'Pypika';
 
   aggregate(step: Readonly<S.AggregateStep>) {
     return step;
