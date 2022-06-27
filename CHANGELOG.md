@@ -1,5 +1,10 @@
 # Changelog (weaverbird npm package)
 
+## [0.84.0] - 2022-06-27
+
+- Translators: Add new translators for Redshift, Athena, GoogleBigQuery and Mysql
+- Navigation: enable to hide steps categories under development by using a feature flag
+
 ## [0.83.1] - 2022-05-27
 
 ### Fixed
@@ -1241,6 +1246,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ## Unreleased
 
+[0.84.0]: https://github.com/ToucanToco/weaverbird/compare/v0.84.0...v0.83.1
 [0.83.1]: https://github.com/ToucanToco/weaverbird/compare/v0.83.1...v0.83.0
 [0.83.0]: https://github.com/ToucanToco/weaverbird/compare/v0.83.0...v0.82.3
 [0.82.3]: https://github.com/ToucanToco/weaverbird/compare/v0.82.3...v0.82.2
