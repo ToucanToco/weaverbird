@@ -28,7 +28,7 @@ PORT = 5439
 try:
     PASSWORD = environ['REDSHIFT_PASSWORD']
 except KeyError:
-    pytestmark = pytest.mark.skip(reason=f'Missing environ variable "REDSHIFT_PASSWORD"')
+    pytestmark = pytest.mark.skip(reason='Missing environ variable "REDSHIFT_PASSWORD"')
 else:
     REDSHIFT_CONNECTION = redshift_connector.connect(
         user=USER,
