@@ -28,14 +28,14 @@ format:
 
 .PHONY: lint
 lint:
-	$(flake8)
-	$(isort) --check-only
-	$(black) --check
-	mypy
+	poetry run $(flake8)
+	poetry run $(isort) --check-only
+	poetry run $(black) --check
+	poetry run mypy
 
 .PHONY: test
 test:
-	python -m pytest --junitxml=test-report.xml --cov=weaverbird --cov-report xml -s
+	poetry run python -m pytest --junitxml=test-report.xml --cov=weaverbird --cov-report xml -s
 
 .PHONY: all
 all: test lint
