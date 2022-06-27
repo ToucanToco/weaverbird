@@ -1,0 +1,129 @@
+{
+  "exclude": [
+    "athena",
+    "mysql",
+    "postgres",
+    "snowflake"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "absolutevalue",
+        "column": "VALUE",
+        "new_column": "ABSVALUE"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "LABEL",
+          "type": "string"
+        },
+        {
+          "name": "COLUM",
+          "type": "string"
+        },
+        {
+          "name": "VALUE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "LABEL": "label1",
+        "COLUM": "col 1",
+        "VALUE": -13
+      },
+      {
+        "LABEL": "label2",
+        "COLUM": "col 1",
+        "VALUE": 7
+      },
+      {
+        "LABEL": "label3",
+        "COLUM": "col 1",
+        "VALUE": -20
+      },
+      {
+        "LABEL": "label4",
+        "COLUM": "col 2",
+        "VALUE": 1
+      },
+      {
+        "LABEL": "label5",
+        "COLUM": "col 2",
+        "VALUE": -10
+      },
+      {
+        "LABEL": "label6",
+        "COLUM": "col 2",
+        "VALUE": 5
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "LABEL",
+          "type": "string"
+        },
+        {
+          "name": "COLUM",
+          "type": "string"
+        },
+        {
+          "name": "VALUE",
+          "type": "integer"
+        },
+        {
+          "name": "ABSVALUE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "LABEL": "label1",
+        "COLUM": "col 1",
+        "VALUE": -13,
+        "ABSVALUE": 13
+      },
+      {
+        "LABEL": "label2",
+        "COLUM": "col 1",
+        "VALUE": 7,
+        "ABSVALUE": 7
+      },
+      {
+        "LABEL": "label3",
+        "COLUM": "col 1",
+        "VALUE": -20,
+        "ABSVALUE": 20
+      },
+      {
+        "LABEL": "label4",
+        "COLUM": "col 2",
+        "VALUE": 1,
+        "ABSVALUE": 1
+      },
+      {
+        "LABEL": "label5",
+        "COLUM": "col 2",
+        "VALUE": -10,
+        "ABSVALUE": 10
+      },
+      {
+        "LABEL": "label6",
+        "COLUM": "col 2",
+        "VALUE": 5,
+        "ABSVALUE": 5
+      }
+    ]
+  }
+}

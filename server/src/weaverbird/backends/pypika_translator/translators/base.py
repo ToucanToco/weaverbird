@@ -30,6 +30,7 @@ if TYPE_CHECKING:
     from weaverbird.pipeline import PipelineStep
     from weaverbird.pipeline.conditions import Condition, SimpleCondition
     from weaverbird.pipeline.steps import (
+        AbsoluteValueStep,
         AggregateStep,
         ArgmaxStep,
         ArgminStep,
@@ -161,6 +162,16 @@ class SQLTranslator(ABC):
                 raise NotImplementedError(
                     f"[{self.DIALECT}] Aggregation for {agg_function!r} is not yet implemented"
                 )
+
+    def absolutevalue(
+        self: Self, *, step: "AbsoluteValueStep", table: StepTable
+    ) -> tuple["QueryBuilder", StepTable]:
+        col_field: Field = Table(table.name)[step.column]
+        query: "QueryBuilder" = self.QUERY_CLS.from_(table.name).select(
+            *table.columns,
+            functions.Abs(col_field).as_(step.new_column),
+        )
+        return query, StepTable(columns=[*table.columns, step.new_column])
 
     def aggregate(
         self: Self, *, step: "AggregateStep", table: StepTable

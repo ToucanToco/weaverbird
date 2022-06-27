@@ -3,6 +3,9 @@ node_modules
 .storybook/dist
 playground/*.map
 
+.idea
+.vscode
+
 # local env files
 .env.local
 .env.*.local
