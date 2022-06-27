@@ -73,7 +73,5 @@ allow_redefinition = true
 check_untyped_defs = true
 
 [tool.pytest.ini_options]
-env = [
-    "PYTHONPATH = ."
-]
+pythonpath = ["."]
 testpaths = "tests"
