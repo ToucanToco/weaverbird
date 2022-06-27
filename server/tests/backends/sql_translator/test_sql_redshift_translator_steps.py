@@ -28,7 +28,7 @@ REGION = "eu-west-3"
 PORT = 5439
 
 REDSHIFT_TABLES_TESTS = []
-REDSHIFT_CONNEXION = redshift_connector.connect(
+REDSHIFT_CONNECTION = redshift_connector.connect(
     user=USER,
     database=DATABASE,
     host=HOST,
@@ -37,7 +37,7 @@ REDSHIFT_CONNEXION = redshift_connector.connect(
     region=REGION,
     ssl=False,
 )
-REDSHIFT_CONNEXION.autocommit = True
+REDSHIFT_CONNECTION.autocommit = True
 
 
 def _drop_tables(table_array: list) -> None:
@@ -49,7 +49,7 @@ def _drop_tables(table_array: list) -> None:
     global REDSHIFT_TABLES_TESTS
 
     logger.info("[x] Cleaning tables in progress, please wait...")
-    with REDSHIFT_CONNEXION.cursor() as curs:
+    with REDSHIFT_CONNECTION.cursor() as curs:
         for case_id in table_array:
             try:
                 logger.info(f"[-] Dropping {case_id}")
@@ -83,7 +83,7 @@ def test_sql_translator_pipeline(case_id: str, case_spec_file_path: str) -> None
     )
     spec = get_spec_from_json_fixture(case_id, case_spec_file_path)
     try:
-        with REDSHIFT_CONNEXION.cursor() as curs:
+        with REDSHIFT_CONNECTION.cursor() as curs:
             curs.execute(f'DROP TABLE IF EXISTS {case_id}')
         engine = sqlalchemy.create_engine(
             url=URL.create(

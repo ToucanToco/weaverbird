@@ -35,14 +35,14 @@ SNOWFLAKE_TABLES_TESTS = []
 # we will need this boolean variable
 CLEANER_JOB_DONE = False
 
-# Use a single connexion to speed-up tests
-SNOWFLAKE_CONNEXION = None
+# Use a single connection to speed-up tests
+SNOWFLAKE_CONNECTION = None
 
 
 def get_connection():
-    global SNOWFLAKE_CONNEXION
-    if SNOWFLAKE_CONNEXION is None:
-        SNOWFLAKE_CONNEXION = snowflake.connector.connect(
+    global SNOWFLAKE_CONNECTION
+    if SNOWFLAKE_CONNECTION is None:
+        SNOWFLAKE_CONNECTION = snowflake.connector.connect(
             account=ACCOUNT,
             user=USER,
             password=environ.get('SNOWFLAKE_PASSWORD'),
@@ -52,7 +52,7 @@ def get_connection():
             schema=SCHEMA,
             authenticator='snowflake',
         )
-    return SNOWFLAKE_CONNEXION
+    return SNOWFLAKE_CONNECTION
 
 
 @pytest.fixture(scope='module')

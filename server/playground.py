@@ -343,7 +343,7 @@ async def handle_mongo_translated_backend_request():
 
 ### Snowflake back-end routes
 if os.getenv('SNOWFLAKE_ACCOUNT'):
-    snowflake_connexion = snowflake.connector.connect(
+    snowflake_connection = snowflake.connector.connect(
         user=os.getenv('SNOWFLAKE_USER'),
         password=os.getenv('SNOWFLAKE_PASSWORD'),
         account=os.getenv('SNOWFLAKE_ACCOUNT'),
@@ -375,14 +375,14 @@ def snowflake_query_describer(domain: str, query_string: str = None) -> Union[Di
         13: 'boolean',
     }
 
-    with snowflake_connexion.cursor() as cursor:
+    with snowflake_connection.cursor() as cursor:
         describe_res = cursor.describe(f'SELECT * FROM "{domain}"' if domain else query_string)
         res = {r.name: type_code_mapping.get(r.type_code) for r in describe_res}
         return res
 
 
 def snowflake_query_executor(domain: str, query_string: str = None) -> Union[pd.DataFrame, None]:
-    with snowflake_connexion.cursor() as cursor:
+    with snowflake_connection.cursor() as cursor:
         res = cursor.execute(domain if domain else query_string).fetchall()
         return res.fetch_pandas_all()
 
@@ -390,7 +390,7 @@ def snowflake_query_executor(domain: str, query_string: str = None) -> Union[pd.
 @app.route('/snowflake', methods=['GET', 'POST'])
 async def handle_snowflake_backend_request():
     if request.method == 'GET':
-        tables_info = snowflake_connexion.cursor().execute('SHOW TABLES;').fetchall()
+        tables_info = snowflake_connection.cursor().execute('SHOW TABLES;').fetchall()
         return jsonify([table_infos[1] for table_infos in tables_info])
 
     elif request.method == 'POST':
@@ -408,12 +408,12 @@ async def handle_snowflake_backend_request():
         )
 
         total_count = (
-            snowflake_connexion.cursor().execute(f'SELECT COUNT(*) FROM ({ query })').fetchone()[0]
+            snowflake_connection.cursor().execute(f'SELECT COUNT(*) FROM ({ query })').fetchone()[0]
         )
         # By using snowflake's connector ability to turn results into a DataFrame,
         # we can re-use all the methods to parse this data- interchange format in the front-end
         df_results = (
-            snowflake_connexion.cursor()
+            snowflake_connection.cursor()
             .execute(f'SELECT * FROM ({ query }) LIMIT { limit } OFFSET { offset }')
             .fetch_pandas_all()
         )
@@ -462,14 +462,14 @@ def postgresql_type_to_data_type(pg_type: str) -> ColumnType | None:
 
 @app.route('/postgresql', methods=['GET', 'POST'])
 async def handle_postgres_backend_request():
-    # improve by using a connexion pool
-    postgresql_connexion = await psycopg.AsyncConnection.connect(
+    # improve by using a connection pool
+    postgresql_connection = await psycopg.AsyncConnection.connect(
         os.getenv('POSTGRESQL_CONNECTION_STRING')
     )
     db_schema = 'public'
 
     if request.method == 'GET':
-        async with postgresql_connexion.cursor() as cur:
+        async with postgresql_connection.cursor() as cur:
             tables_info_exec = await cur.execute(
                 f"SELECT * FROM pg_catalog.pg_tables WHERE schemaname='{db_schema}';"
             )
@@ -484,7 +484,7 @@ async def handle_postgres_backend_request():
         offset = int(request.args.get('offset', 0))
 
         # Find all columns for all available tables
-        async with postgresql_connexion.cursor() as cur:
+        async with postgresql_connection.cursor() as cur:
             table_columns_exec = await cur.execute(
                 "SELECT table_name, column_name FROM information_schema.columns WHERE table_schema='public';"
             )
@@ -502,13 +502,13 @@ async def handle_postgres_backend_request():
             tables_columns=table_columns,
         )
 
-        async with postgresql_connexion.cursor() as cur:
+        async with postgresql_connection.cursor() as cur:
             query_total_count_exec = await cur.execute(
                 f'WITH Q AS ({ sql_query }) SELECT COUNT(*) FROM Q'
             )
             query_total_count = await query_total_count_exec.fetchone()
 
-        async with postgresql_connexion.cursor() as cur:
+        async with postgresql_connection.cursor() as cur:
             query_results_page_exec = await cur.execute(
                 f'WITH Q AS ({ sql_query }) SELECT * FROM Q LIMIT { limit } OFFSET { offset }',
             )
@@ -516,7 +516,7 @@ async def handle_postgres_backend_request():
             query_results_desc = query_results_page_exec.description
 
         # Provide types for the columns
-        async with postgresql_connexion.cursor() as cur:
+        async with postgresql_connection.cursor() as cur:
             # oid of columns of query results are provided in the "description" attribute
             # They are mapped to base types in the system pg_type table
             types_exec = await cur.execute(
