@@ -50,6 +50,7 @@ from weaverbird.backends.mongo_translator.steps.waterfall import translate_water
 # each of this function take a particular step as input
 # so it is not possible to use `Dict[str, Callable[[BaseStep], list]]
 mongo_step_translator: Dict[str, Callable[[Any], list]] = {
+    'absolutevalue': translate_absolutevalue,
     'addmissingdates': translate_addmissingdates,
     'aggregate': translate_aggregate,
     'append': translate_append,
