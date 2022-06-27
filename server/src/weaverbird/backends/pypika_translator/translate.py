@@ -1,20 +1,29 @@
-from typing import Mapping, Sequence
+from typing import Callable
 
-from weaverbird.backends.pypika_translator.dialects import SQLDialect
-from weaverbird.backends.pypika_translator.translators import ALL_TRANSLATORS
+from pypika.queries import AliasedQuery
+
+from weaverbird.backends.pypika_translator.translators.base import SQLTranslator
 from weaverbird.pipeline import Pipeline
+
+
+class TableResolutionError(Exception):
+    ...
+
+
+# Returns a translator instance OR a raw SQL query OR None if no table could be found
+TableResolver = Callable[[str], SQLTranslator | AliasedQuery | None]
 
 
 def translate_pipeline(
     *,
-    sql_dialect: SQLDialect,
     pipeline: Pipeline,
-    tables_columns: Mapping[str, Sequence[str]],
-    db_schema: str | None = None,
+    table_resolver: TableResolver,
+    table: str,
 ) -> str:
-    translator_cls = ALL_TRANSLATORS[sql_dialect]
-    translator = translator_cls(
-        tables_columns=tables_columns,
-        db_schema=db_schema,
+    if not (translator := table_resolver(table)):
+        raise TableResolutionError(f"Could not resolve table '{table}'")
+    return (
+        translator.get_sql()
+        if isinstance(translator, AliasedQuery)
+        else translator.get_query_str(steps=pipeline.steps)
     )
-    return translator.get_query_str(steps=pipeline.steps)

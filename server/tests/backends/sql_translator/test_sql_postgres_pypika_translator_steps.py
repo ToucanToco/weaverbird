@@ -14,6 +14,8 @@ from sqlalchemy import create_engine
 from tests.utils import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import translate_pipeline
+from weaverbird.backends.pypika_translator.translators import get_translator
+from weaverbird.backends.pypika_translator.translators.base import SQLTranslator
 from weaverbird.pipeline import PipelineWithVariables
 
 image = {'name': 'postgres_weaverbird_test', 'image': 'postgres', 'version': '14.1-bullseye'}
@@ -139,11 +141,15 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     pipeline = PipelineWithVariables(steps=steps)
 
     # Convert Pipeline object to Postgres Query
+    def table_resolver(table: str) -> SQLTranslator:
+        return get_translator(
+            SQLDialect.POSTGRES,
+            tables_columns={table: data_to_insert.columns},
+            db_schema=None,
+        )
+
     query = translate_pipeline(
-        sql_dialect=SQLDialect.POSTGRES,
-        pipeline=pipeline,
-        tables_columns={test_table_name: data_to_insert.columns},
-        db_schema=None,
+        pipeline=pipeline, table_resolver=table_resolver, table=test_table_name
     )
     # Execute request generated from Pipeline in Postgres and get the result
     result: pd.DataFrame = execute(get_connection(), query)

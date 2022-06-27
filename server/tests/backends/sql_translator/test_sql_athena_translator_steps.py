@@ -9,6 +9,8 @@ from boto3 import Session
 from tests.utils import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import translate_pipeline
+from weaverbird.backends.pypika_translator.translators import get_translator
+from weaverbird.backends.pypika_translator.translators.base import SQLTranslator
 from weaverbird.pipeline import Pipeline
 
 _REGION = environ['ATHENA_REGION']
@@ -39,6 +41,14 @@ _BEERS_TABLE_COLUMNS = [
 ]
 
 
+def _table_resolver(table: str) -> SQLTranslator:
+    return get_translator(
+        SQLDialect.ATHENA,
+        tables_columns={'beers_tiny': _BEERS_TABLE_COLUMNS},
+        db_schema=None,
+    )
+
+
 @pytest.mark.parametrize('case_id, case_spec_file', retrieve_case('sql_translator', 'athena'))
 def test_athena_translator_pipeline(boto_session: Session, case_id: str, case_spec_file: str):
     pipeline_spec = get_spec_from_json_fixture(case_id, case_spec_file)
@@ -47,10 +57,7 @@ def test_athena_translator_pipeline(boto_session: Session, case_id: str, case_sp
     pipeline = Pipeline(steps=steps)
 
     query = translate_pipeline(
-        sql_dialect=SQLDialect.ATHENA,
-        pipeline=pipeline,
-        tables_columns={'beers_tiny': _BEERS_TABLE_COLUMNS},
-        db_schema=None,
+        pipeline=pipeline, table_resolver=_table_resolver, table='beers_tiny'
     )
     expected = pd.read_json(json.dumps(pipeline_spec['expected']), orient='table')
     result = wr.athena.read_sql_query(
