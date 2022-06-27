@@ -22,22 +22,26 @@ HOST = 'toucan-paris.crxviwjnhzks.eu-west-3.redshift.amazonaws.com'
 CLUSTER = 'toucan-paris'
 USER = 'awsuser'
 DATABASE = 'dev'
-PASSWORD = environ.get('REDSHIFT_PASSWORD')
 REGION = "eu-west-3"
-
 PORT = 5439
 
+try:
+    PASSWORD = environ['REDSHIFT_PASSWORD']
+except KeyError:
+    pytestmark = pytest.mark.skip(reason=f'Missing environ variable "REDSHIFT_PASSWORD"')
+else:
+    REDSHIFT_CONNECTION = redshift_connector.connect(
+        user=USER,
+        database=DATABASE,
+        host=HOST,
+        cluster_identifier=CLUSTER,
+        password=PASSWORD,
+        region=REGION,
+        ssl=False,
+    )
+    REDSHIFT_CONNECTION.autocommit = True
+
 REDSHIFT_TABLES_TESTS = []
-REDSHIFT_CONNECTION = redshift_connector.connect(
-    user=USER,
-    database=DATABASE,
-    host=HOST,
-    cluster_identifier=CLUSTER,
-    password=PASSWORD,
-    region=REGION,
-    ssl=False,
-)
-REDSHIFT_CONNECTION.autocommit = True
 
 
 def _drop_tables(table_array: list) -> None:

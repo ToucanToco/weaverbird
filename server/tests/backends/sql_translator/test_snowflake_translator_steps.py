@@ -30,6 +30,11 @@ DATABASE = 'toucan_test'
 ROLE = 'toucan_test'
 SCHEMA = 'toucan_test'
 
+try:
+    PASSWORD = environ['SNOWFLAKE_PASSWORD']
+except KeyError:
+    pytestmark = pytest.mark.skip(reason=f'Missing environ variable "SNOWFLAKE_PASSWORD"')
+
 SNOWFLAKE_TABLES_TESTS = []
 # to be sure we're going to run the cleaner job only once per test
 # we will need this boolean variable
@@ -45,7 +50,7 @@ def get_connection():
         SNOWFLAKE_CONNECTION = snowflake.connector.connect(
             account=ACCOUNT,
             user=USER,
-            password=environ.get('SNOWFLAKE_PASSWORD'),
+            password=PASSWORD,
             warehouse=WAREHOUSE,
             database=DATABASE,
             role=ROLE,

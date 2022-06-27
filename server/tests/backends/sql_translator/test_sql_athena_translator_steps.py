@@ -11,11 +11,14 @@ from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import translate_pipeline
 from weaverbird.pipeline import Pipeline
 
-_REGION = environ['ATHENA_REGION']
-_DB = environ['ATHENA_DATABASE']
-_ACCESS_KEY_ID = environ['ATHENA_ACCESS_KEY_ID']
-_SECRET_ACCESS_KEY = environ['ATHENA_SECRET_ACCESS_KEY']
-_OUTPUT = environ['ATHENA_OUTPUT']
+try:
+    _REGION = environ['ATHENA_REGION']
+    _DB = environ['ATHENA_DATABASE']
+    _ACCESS_KEY_ID = environ['ATHENA_ACCESS_KEY_ID']
+    _SECRET_ACCESS_KEY = environ['ATHENA_SECRET_ACCESS_KEY']
+    _OUTPUT = environ['ATHENA_OUTPUT']
+except KeyError as e:
+    pytestmark = pytest.mark.skip(reason=f'Missing environ variable: {e}')
 
 
 @pytest.fixture
