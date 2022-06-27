@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+## [0.17.0] - 2022-06-27
+
+- feat: add step to compute absolute value
 - Feat: Add `SUPPORT_ROW_NUMBER` and `SUPPORT_SPLIT_PART` to PyPika Athena translator
 - Fix: Return N results for every group in the `top` step of the PyPika translator
 - Fix: Ensure RowNumber() has an alias in the `top` step of the PyPika translator
