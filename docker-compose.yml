@@ -33,6 +33,7 @@ services:
     environment:
       MONGODB_CONNECTION_STRING: "mongodb://mongodb:27017"
       MONGODB_DATABASE_NAME: "playground_data"
+      POSTGRESQL_CONNECTION_STRING: "postgresql://dbuser:password@postgres/playground_db"
     volumes:
       - ./server:/local_src/:Z
     command: bash -c "pip install -e '/local_src/[playground]' && hypercorn --bind 0.0.0.0:5000 playground:app"
