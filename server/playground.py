@@ -30,10 +30,13 @@ import json
 import os
 from datetime import datetime
 from enum import Enum
+from functools import cache
 from glob import glob
 from os.path import basename, splitext
 from typing import Dict, Union
 
+import awswrangler as wr
+import boto3
 import geopandas as gpd
 import pandas as pd
 import psycopg
@@ -544,6 +547,70 @@ async def handle_postgres_backend_request():
             },
             'query': sql_query,  # provided for inspection purposes
         }
+
+
+### Athena back-end routes
+@cache
+def _aws_wrangler_kwargs() -> dict[str, str | boto3.Session]:
+    return {
+        'boto3_session': boto3.Session(
+            aws_access_key_id=os.environ['ATHENA_ACCESS_KEY_ID'],
+            aws_secret_access_key=os.environ['ATHENA_SECRET_ACCESS_KEY'],
+            region_name=os.environ['ATHENA_REGION'],
+        ),
+        'database': os.environ['ATHENA_DATABASE'],
+        's3_output': os.environ['ATHENA_OUTPUT'],
+    }
+
+
+@cache
+def _athena_table_info() -> pd.DataFrame:
+    kwargs = _aws_wrangler_kwargs()
+    df = wr.catalog.tables(boto3_session=kwargs['boto3_session'], database=kwargs['database'])
+    return df[~df['Table'].str.startswith('temp_table')]
+
+
+@app.get('/athena')
+async def handle_athena_get_request():
+    return jsonify(_athena_table_info()['Table'].to_list())
+
+
+@app.post('/athena')
+async def handle_athena_post_request():
+    pipeline = await parse_request_json(request)
+
+    # Url parameters are only strings, these two must be understood as numbers
+    limit = int(request.args.get('limit', 50))
+    offset = int(request.args.get('offset', 0))
+
+    # Find all columns for all available tables
+    table_info = _athena_table_info()
+    tables_columns = {
+        row['Table']: [c.strip() for c in row['Columns'].split(',')]
+        for _, row in table_info.iterrows()
+    }
+
+    sql_query = (
+        pypika_translate_pipeline(
+            sql_dialect=SQLDialect.ATHENA,
+            pipeline=Pipeline(steps=pipeline),
+            tables_columns=tables_columns,
+        )
+        + f' OFFSET {offset} LIMIT {limit}'
+    )
+    result = wr.athena.read_sql_query(sql_query, **_aws_wrangler_kwargs())
+    return {
+        'offset': offset,
+        'limit': limit,
+        # Dirty, but we don't want whole scans on athena
+        'total': offset + limit + 1 if len(result) == limit else offset + len(result),
+        'results': {
+            'headers': result.columns.to_list(),
+            'data': json.loads(result.to_json(orient='records')),
+            'schema': build_table_schema(result, index=False),
+        },
+        'query': sql_query,  # provided for inspection purposes
+    }
 
 
 ### UI files

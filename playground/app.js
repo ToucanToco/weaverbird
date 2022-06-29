@@ -416,7 +416,7 @@ class AthenaService {
     const result = await response.json();
 
     if (response.ok) {
-      let dataset = pandasDataTableToDataset(result);
+      let dataset = pandasDataTableToDataset(result.results);
       dataset.paginationContext = {
         totalCount: result.total,
         pagesize: limit,
@@ -839,6 +839,39 @@ async function buildVueApp() {
           //   ],
           // },
         ];
+      } else if (TRANSLATOR === 'athena') {
+        registrationOpts.currentPipelineName = 'beersPipeline';
+        registrationOpts.pipelines = {
+          beersPipeline: [
+            {
+              domain: 'beers',
+              name: 'domain',
+            },
+            {
+              name: 'filter',
+              condition: {
+                and: [
+                  {
+                    column: 'beer_kind',
+                    value: 'Blonde',
+                    operator: 'eq',
+                  },
+                  {
+                    column: 'nullable_name',
+                    value: null,
+                    operator: 'notnull',
+                  },
+                ],
+              },
+            },
+            {
+              name: 'top',
+              rank_on: 'alcohol_degree',
+              sort: 'desc',
+              limit: 20,
+            },
+          ],
+        };
       }
       registerModule(this.$store, registrationOpts);
       // Add variables

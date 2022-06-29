@@ -319,6 +319,17 @@ docker-compose up -d weaverbird postgres
 An alternative back-end for the playground is a small server running in python, executing pipelines with pandas.
 Add `?backend=pandas` to the URL to see it in action.
 
+### Athena back-end
+
+In order to run the playground with AWS Athena, make sure the following environment variables are set before starting the
+docker-compose stack:
+
+* `ATHENA_REGION`
+* `ATHENA_SECRET_ACCESS_KEY`
+* `ATHENA_ACCESS_KEY_ID`
+* `ATHENA_DATABASE`
+* `ATHENA_OUTPUT`
+
 #### Use your own data files
 
 CSVs from `playground/datastore` are available to use in the playground with pandas.
