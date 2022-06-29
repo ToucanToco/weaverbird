@@ -1,6 +1,6 @@
 {
   "exclude": [
-    "athena",
+    "pypika",
     "mysql",
     "snowflake"
   ],
