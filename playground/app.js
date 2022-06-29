@@ -468,7 +468,7 @@ class GoogleBigQueryService {
     const result = await response.json();
 
     if (response.ok) {
-      let dataset = pandasDataTableToDataset(result);
+      let dataset = pandasDataTableToDataset(result.results);
       dataset.paginationContext = {
         totalCount: result.total,
         pagesize: limit,
@@ -839,12 +839,12 @@ async function buildVueApp() {
           //   ],
           // },
         ];
-      } else if (TRANSLATOR === 'athena') {
+      } else if (TRANSLATOR === 'athena' || TRANSLATOR === 'google-big-query') {
         registrationOpts.currentPipelineName = 'beersPipeline';
         registrationOpts.pipelines = {
           beersPipeline: [
             {
-              domain: 'beers',
+              domain: TRANSLATOR === 'athena' ? 'beers' : 'biquery-integration-tests.beers.beers',
               name: 'domain',
             },
             {

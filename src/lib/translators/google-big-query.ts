@@ -1,11 +1,8 @@
 import * as S from '@/lib/steps';
 
-import { BaseTranslator } from './base';
+import { PypikaTranslator } from './pypika';
 
 /* istanbul ignore next */
-export class GoogleBigQueryTranslator extends BaseTranslator {
+export class GoogleBigQueryTranslator extends PypikaTranslator {
   static label = 'GoogleBigQueryTranslator';
-  domain(step: Readonly<S.DomainStep>) {
-    return step;
-  }
 }

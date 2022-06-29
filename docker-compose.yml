@@ -42,6 +42,9 @@ services:
       ATHENA_DATABASE: "${ATHENA_DATABASE}"
       ATHENA_OUTPUT: "${ATHENA_OUTPUT}"
 
+      GOOGLE_BIG_QUERY_CREDENTIALS_FILE: "/secrets/bigquery-credentials.json"
+
     volumes:
       - ./server:/local_src/:Z
+      - ./bigquery-credentials.json:/secrets/bigquery-credentials.json:ro
     command: bash -c "pip install -e '/local_src/[playground]' && hypercorn --bind 0.0.0.0:5000 playground:app"

@@ -41,6 +41,8 @@ import geopandas as gpd
 import pandas as pd
 import psycopg
 import snowflake.connector
+from google.cloud import bigquery
+from google.oauth2.service_account import Credentials
 from pandas.io.json import build_table_schema
 from pymongo import MongoClient
 from quart import Quart, Request, Response, jsonify, request, send_file
@@ -603,6 +605,75 @@ async def handle_athena_post_request():
         'offset': offset,
         'limit': limit,
         # Dirty, but we don't want whole scans on athena
+        'total': offset + limit + 1 if len(result) == limit else offset + len(result),
+        'results': {
+            'headers': result.columns.to_list(),
+            'data': json.loads(result.to_json(orient='records')),
+            'schema': build_table_schema(result, index=False),
+        },
+        'query': sql_query,  # provided for inspection purposes
+    }
+
+
+### BigQuery back-end routes
+
+
+@cache
+def _bigquery_creds() -> Credentials:
+    return Credentials.from_service_account_file(os.environ['GOOGLE_BIG_QUERY_CREDENTIALS_FILE'])
+
+
+def _bigquery_client() -> bigquery.Client:
+    return bigquery.Client(credentials=_bigquery_creds())
+
+
+def _bigquery_tables_list(client: bigquery.Client) -> list[str]:
+    return [
+        # This is in the `project:dataset.table` by default but SQL requires the members to be
+        # separated by dots
+        t.full_table_id.replace(':', '.')
+        for dataset in client.list_datasets()
+        for t in client.list_tables(dataset)
+    ]
+
+
+def _bigquery_tables_info(client: bigquery.Client) -> dict[str, list[str]]:
+    return {
+        table: [field.name for field in client.get_table(table).schema]
+        for table in _bigquery_tables_list(client)
+    }
+
+
+@app.get('/google-big-query')
+async def hangle_bigquery_get_request():
+    return jsonify(_bigquery_tables_list(_bigquery_client()))
+
+
+@app.post('/google-big-query')
+async def hangle_bigquery_post_request():
+    pipeline = await parse_request_json(request)
+
+    # Url parameters are only strings, these two must be understood as numbers
+    limit = int(request.args.get('limit', 50))
+    offset = int(request.args.get('offset', 0))
+
+    client = _bigquery_client()
+    tables_columns = _bigquery_tables_info(client)
+
+    sql_query = (
+        pypika_translate_pipeline(
+            sql_dialect=SQLDialect.GOOGLEBIGQUERY,
+            pipeline=Pipeline(steps=pipeline),
+            tables_columns=tables_columns,
+        )
+        + f' LIMIT {limit} OFFSET {offset}'
+    )
+
+    result = client.query(sql_query).result().to_dataframe()
+    return {
+        'offset': offset,
+        'limit': limit,
+        # Dirty, but we don't want whole scans on BigQuery
         'total': offset + limit + 1 if len(result) == limit else offset + len(result),
         'results': {
             'headers': result.columns.to_list(),

@@ -330,6 +330,11 @@ docker-compose stack:
 * `ATHENA_DATABASE`
 * `ATHENA_OUTPUT`
 
+### BigQuery back-end
+
+In order to run the playground with Google BigQuery, download the JSON file containing the credentials for your service account, place
+it at the root of the `weaverbird` repo and name it `bigquery-credentials.json`. It will be mounted inside of the playground container.
+
 #### Use your own data files
 
 CSVs from `playground/datastore` are available to use in the playground with pandas.
