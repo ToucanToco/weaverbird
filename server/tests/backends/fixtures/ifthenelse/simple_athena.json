@@ -74,7 +74,7 @@
         "beer_kind": "Triple",
         "volume_ml": 330.0,
         "brewing_date": "2022-01-01",
-        "nullable_name": "",
+        "nullable_name": null,
         "cond": "tintin"
       },
       {
@@ -118,7 +118,7 @@
         "beer_kind": "Blonde",
         "volume_ml": 250.0,
         "brewing_date": "2022-01-05",
-        "nullable_name": "",
+        "nullable_name": null,
         "cond": "anime"
       },
       {
@@ -162,7 +162,7 @@
         "beer_kind": "Blonde",
         "volume_ml": 330.0,
         "brewing_date": "2022-01-09",
-        "nullable_name": "",
+        "nullable_name": null,
         "cond": "tintin"
       },
       {
