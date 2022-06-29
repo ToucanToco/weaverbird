@@ -14,7 +14,6 @@ from weaverbird.pipeline import Pipeline
 credentials = service_account.Credentials.from_service_account_info(
     info=json.loads(environ['GOOGLEBIGQUERYCREDENTIALS'])
 )
-test_cases = retrieve_case('sql_translator', 'bigquery')
 
 
 @pytest.fixture
@@ -34,17 +33,17 @@ _BEERS_TABLE_COLUMNS = [
 ]
 
 
-@pytest.mark.parametrize('case_id, case_spec_file', retrieve_case('sql_translator', 'athena'))
+@pytest.mark.parametrize('case_id, case_spec_file', retrieve_case('sql_translator', 'pypika'))
 def test_bigquery_translator_pipeline(bigquery_client: Client, case_id: str, case_spec_file: str):
     pipeline_spec = get_spec_from_json_fixture(case_id, case_spec_file)
 
-    steps = [{'name': 'domain', 'domain': 'beers'}] + pipeline_spec['step']['pipeline']
+    steps = [{'name': 'domain', 'domain': 'beers_tiny'}] + pipeline_spec['step']['pipeline']
     pipeline = Pipeline(steps=steps)
 
     query = translate_pipeline(
         sql_dialect=SQLDialect.GOOGLEBIGQUERY,
         pipeline=pipeline,
-        tables_columns={'beers': _BEERS_TABLE_COLUMNS},
+        tables_columns={'beers_tiny': _BEERS_TABLE_COLUMNS},
         db_schema='beers',
     )
     expected = pd.read_json(json.dumps(pipeline_spec['expected']), orient='table')
