@@ -12,7 +12,7 @@
     "pipeline": [
       {
         "name": "formula",
-        "new_column": "FOOBAR",
+        "new_column": "foobar",
         "formula": "(price_per_l + volume_ml) / 1 - cost * 2"
       }
     ]

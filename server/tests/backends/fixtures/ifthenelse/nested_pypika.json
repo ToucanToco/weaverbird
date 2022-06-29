@@ -17,7 +17,7 @@
           "value": "Blonde",
           "operator": "eq"
         },
-        "newColumn": "COND",
+        "newColumn": "cond",
         "then": "'tintin'",
         "else": {
           "if": {

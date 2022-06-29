@@ -12,7 +12,7 @@
     "pipeline": [
       {
         "name": "ifthenelse",
-        "newColumn": "COND",
+        "newColumn": "cond",
         "if": {
           "and": [
             {

@@ -17,7 +17,7 @@
           "value": 2,
           "operator": "gt"
         },
-        "newColumn": "COND",
+        "newColumn": "cond",
         "then": "'tintin'",
         "else": "'anime'"
       }

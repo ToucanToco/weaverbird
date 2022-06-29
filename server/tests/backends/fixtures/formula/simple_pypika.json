@@ -12,7 +12,7 @@
     "pipeline": [
       {
         "name": "formula",
-        "new_column": "FOOBAR",
+        "new_column": "foobar",
         "formula": "cost + 10"
       }
     ]
