@@ -28,8 +28,8 @@ PyPika = "^0.48.9"
 psycopg = {optional = true, version = "^3.0.15"}
 google = "^3.0.0"
 google-api-python-client = "^2.52.0"
-google-cloud-bigquery = "^3.2.0"
 db-dtypes = "^1.0.2"
+google-cloud-bigquery = {version = "^3.2.0", optional = true, extras = ["pandas", "bqstorage"]}
 
 [tool.poetry.dev-dependencies]
 pytest-cov = "^2.10.1"
@@ -54,7 +54,7 @@ redshift-connector = "^2.0.907"
 sqlalchemy-redshift = ">=0.8.9,<1"
 
 [tool.poetry.extras]
-playground = ["quart", "hypercorn", "pymongo", "pandas", "snowflake-connector-python", "psycopg"]
+playground = ["quart", "hypercorn", "pymongo", "pandas", "snowflake-connector-python", "psycopg", "google-cloud-bigquery"]
 
 [tool.black]
 line-length = 100
