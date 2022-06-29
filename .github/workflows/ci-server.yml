@@ -55,5 +55,6 @@ jobs:
         ATHENA_ACCESS_KEY_ID: '${{ secrets.ATHENA_ACCESS_KEY_ID }}'
         ATHENA_SECRET_ACCESS_KEY: '${{ secrets.ATHENA_SECRET_ACCESS_KEY }}'
         ATHENA_REGION: '${{ secrets.ATHENA_REGION }}'
+        GOOGLE_BIG_QUERY_CREDENTIALS: '${{ secrets.GOOGLE_BIG_QUERY_CREDENTIALS }}'
       run: make test
       timeout-minutes: 25
