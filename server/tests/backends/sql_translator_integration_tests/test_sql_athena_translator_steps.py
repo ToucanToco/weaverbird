@@ -39,7 +39,7 @@ _BEERS_TABLE_COLUMNS = [
 ]
 
 
-@pytest.mark.parametrize('case_id, case_spec_file', retrieve_case('sql_translator', 'pypika'))
+@pytest.mark.parametrize('case_id, case_spec_file', retrieve_case('sql_translator', 'athena_pypika'))
 def test_athena_translator_pipeline(boto_session: Session, case_id: str, case_spec_file: str):
     pipeline_spec = get_spec_from_json_fixture(case_id, case_spec_file)
 

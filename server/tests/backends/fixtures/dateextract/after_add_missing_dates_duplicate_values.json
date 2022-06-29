@@ -1,7 +1,8 @@
 {
   "description": "After a addmissing date on a column having same dates but in different groups, the dateextract step was failing for pandas executor (cannot reindex from a duplicate axis)",
   "exclude": [
-    "pypika",
+    "athena_pypika",
+    "bigquery_pypika",
     "mysql",
     "postgres",
     "postgres_pypika",

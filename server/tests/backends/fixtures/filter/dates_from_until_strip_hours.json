@@ -1,7 +1,8 @@
 {
   "description": "From/until operators should always include the whole selected day. Users don't select hours (and shouldn't care about them in most cases).",
   "exclude": [
-    "pypika",
+    "athena_pypika",
+    "bigquery_pypika",
     "mysql",
     "postgres",
     "postgres_pypika",

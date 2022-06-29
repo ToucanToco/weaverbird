@@ -4,6 +4,7 @@
     "mysql",
     "pandas",
     "postgres",
+    "bigquery_pypika",
     "postgres_pypika",
     "redshift",
     "snowflake"
