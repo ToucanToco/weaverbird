@@ -62,7 +62,7 @@
         "cost": 2.8900001049,
         "volume_ml": 330.0,
         "brewing_date": "2022-01-01",
-        "nullable_name": "",
+        "nullable_name": null,
         "beer_kind": "triple"
       },
       {
@@ -102,7 +102,7 @@
         "cost": 1.5499999523,
         "volume_ml": 250.0,
         "brewing_date": "2022-01-05",
-        "nullable_name": "",
+        "nullable_name": null,
         "beer_kind": "blonde"
       },
       {
@@ -142,7 +142,7 @@
         "cost": 2.1900000572,
         "volume_ml": 330.0,
         "brewing_date": "2022-01-09",
-        "nullable_name": "",
+        "nullable_name": null,
         "beer_kind": "blonde"
       },
       {

@@ -73,7 +73,7 @@
         "beer_kind": "Triple",
         "volume_ml": 330.0,
         "brewing_date": "2022-01-01",
-        "nullable_name": "",
+        "nullable_name": null,
         "name_1": "Superstrong",
         "name_2": "beer"
       },
@@ -121,7 +121,7 @@
         "beer_kind": "Blonde",
         "volume_ml": 250.0,
         "brewing_date": "2022-01-05",
-        "nullable_name": "",
+        "nullable_name": null,
         "name_1": "Cuv\u00e9e",
         "name_2": "des"
       },
@@ -169,7 +169,7 @@
         "beer_kind": "Blonde",
         "volume_ml": 330.0,
         "brewing_date": "2022-01-09",
-        "nullable_name": "",
+        "nullable_name": null,
         "name_1": "Brasserie",
         "name_2": "De"
       },

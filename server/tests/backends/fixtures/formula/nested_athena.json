@@ -68,7 +68,7 @@
         "beer_kind": "Triple",
         "volume_ml": 330.0,
         "brewing_date": "2022-01-01",
-        "nullable_name": "",
+        "nullable_name": null,
         "foobar": 938.1624755859
       },
       {
@@ -112,7 +112,7 @@
         "beer_kind": "Blonde",
         "volume_ml": 250.0,
         "brewing_date": "2022-01-05",
-        "nullable_name": "",
+        "nullable_name": null,
         "foobar": 380.6084899902
       },
       {
@@ -156,7 +156,7 @@
         "beer_kind": "Blonde",
         "volume_ml": 330.0,
         "brewing_date": "2022-01-09",
-        "nullable_name": "",
+        "nullable_name": null,
         "foobar": 716.3423461914
       },
       {

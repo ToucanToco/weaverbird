@@ -64,7 +64,7 @@
         "beer_kind": "Triple",
         "volume_ml": 330.0,
         "brewing_date": "2022-01-01",
-        "nullable_name": ""
+        "nullable_name": null
       }
     ]
   }
