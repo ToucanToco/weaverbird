@@ -75,6 +75,8 @@ describe('translator registration', () => {
 
   it('should provided backend supporting a specific step', () => {
     expect(backendsSupporting('aggregate')).toEqual([
+      'athena',
+      'google-big-query',
       'mongo36',
       'mongo40',
       'mongo42',
