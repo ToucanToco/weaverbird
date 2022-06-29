@@ -625,7 +625,7 @@ class SQLTranslator(ABC):
         self: Self, *, step: "SubstringStep", table: StepTable
     ) -> tuple["QueryBuilder", StepTable]:
         step.new_column_name = (
-            f"{step.column}_SUBSTR" if step.new_column_name is None else step.new_column_name
+            f"{step.column}_substr" if step.new_column_name is None else step.new_column_name
         )
         col_field: Field = Table(table.name)[step.column]
         query: "QueryBuilder" = self.QUERY_CLS.from_(table.name).select(

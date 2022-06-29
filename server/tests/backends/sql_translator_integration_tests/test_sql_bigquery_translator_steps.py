@@ -33,7 +33,9 @@ _BEERS_TABLE_COLUMNS = [
 ]
 
 
-@pytest.mark.parametrize('case_id, case_spec_file', retrieve_case('sql_translator', 'bigquery_pypika'))
+@pytest.mark.parametrize(
+    'case_id, case_spec_file', retrieve_case('sql_translator', 'bigquery_pypika')
+)
 def test_bigquery_translator_pipeline(bigquery_client: Client, case_id: str, case_spec_file: str):
     pipeline_spec = get_spec_from_json_fixture(case_id, case_spec_file)
 
@@ -48,5 +50,4 @@ def test_bigquery_translator_pipeline(bigquery_client: Client, case_id: str, cas
     )
     expected = pd.read_json(json.dumps(pipeline_spec['expected']), orient='table')
     result = bigquery_client.query(query).result().to_dataframe()
-    breakpoint()
     assert_dataframes_equals(expected, result)
