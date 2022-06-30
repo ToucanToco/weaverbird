@@ -11,6 +11,8 @@ from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import translate_pipeline
 from weaverbird.pipeline import Pipeline
 
+print(f"\n\n\nCREDS {environ['GOOGLE_BIG_QUERY_CREDENTIALS']}\n\n\n")
+
 credentials = service_account.Credentials.from_service_account_info(
     info=json.loads(environ['GOOGLE_BIG_QUERY_CREDENTIALS'])
 )
