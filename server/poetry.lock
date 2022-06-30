@@ -551,7 +551,7 @@ name = "google-cloud-bigquery"
 version = "3.2.0"
 description = "Google BigQuery API client library"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.6, <3.11"
 
 [package.dependencies]
@@ -582,7 +582,7 @@ name = "google-cloud-bigquery-storage"
 version = "2.13.2"
 description = "BigQuery Storage API API client library"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
@@ -601,7 +601,7 @@ name = "google-cloud-core"
 version = "2.3.1"
 description = "Google Cloud API client core library"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
@@ -616,7 +616,7 @@ name = "google-crc32c"
 version = "1.3.0"
 description = "A python wrapper of the C library 'Google CRC32C'"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.6"
 
 [package.extras]
@@ -627,7 +627,7 @@ name = "google-resumable-media"
 version = "2.3.3"
 description = "Utilities for Google Media Downloads and Resumable Uploads"
 category = "main"
-optional = true
+optional = false
 python-versions = ">= 3.6"
 
 [package.dependencies]
@@ -681,7 +681,7 @@ name = "grpcio"
 version = "1.47.0"
 description = "HTTP/2-based RPC framework"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
@@ -695,7 +695,7 @@ name = "grpcio-status"
 version = "1.47.0"
 description = "Status proto mapping for gRPC"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
@@ -1123,7 +1123,7 @@ name = "proto-plus"
 version = "1.20.6"
 description = "Beautiful, Pythonic protocol buffers."
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
@@ -1927,7 +1927,7 @@ playground = ["quart", "hypercorn", "pymongo", "pandas", "snowflake-connector-py
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10, <3.11"
-content-hash = "74538fa67c3d5c103a6b26b87732beef7401224451361c1a418bab920eb6e5d5"
+content-hash = "9161ae3246cbaadfde6a47b5a135e8eee0b725d963876e37bc0ecf37c59c9b59"
 
 [metadata.files]
 aenum = [
