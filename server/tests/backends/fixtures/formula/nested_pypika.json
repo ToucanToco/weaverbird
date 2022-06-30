@@ -11,10 +11,9 @@
   "step": {
     "pipeline": [
       {
-        "name": "split",
-        "column": "name",
-        "delimiter": " ",
-        "number_cols_to_keep": 2
+        "name": "formula",
+        "new_column": "foobar",
+        "formula": "(price_per_l + volume_ml) * cost - price_per_l * 100"
       }
     ]
   },
@@ -54,12 +53,8 @@
           "type": "string"
         },
         {
-          "name": "name_1",
-          "type": "string"
-        },
-        {
-          "name": "name_2",
-          "type": "string"
+          "name": "foobar",
+          "type": "number"
         }
       ],
       "pandas_version": "1.4.0"
@@ -74,8 +69,7 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-01",
         "nullable_name": null,
-        "name_1": "Superstrong",
-        "name_2": "beer"
+        "foobar": 938.1624755859
       },
       {
         "price_per_l": 0.0540000014,
@@ -86,8 +80,7 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-02",
         "nullable_name": "Ninkasi Ploploplop",
-        "name_1": "Ninkasi",
-        "name_2": "Ploploplop"
+        "foobar": 948.4560546875
       },
       {
         "price_per_l": 0.0049999999,
@@ -98,8 +91,7 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-03",
         "nullable_name": "Brewdog Nanny State Alcoholvrij",
-        "name_1": "Brewdog",
-        "name_2": "Nanny"
+        "foobar": 755.2114257812
       },
       {
         "price_per_l": 0.0560000017,
@@ -110,8 +102,7 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-04",
         "nullable_name": "Ardwen Blonde",
-        "name_1": "Ardwen",
-        "name_2": "Blonde"
+        "foobar": 684.2170410156
       },
       {
         "price_per_l": 0.0700000003,
@@ -122,8 +113,7 @@
         "volume_ml": 250.0,
         "brewing_date": "2022-01-05",
         "nullable_name": null,
-        "name_1": "Cuv\u00e9e",
-        "name_2": "des"
+        "foobar": 380.6084899902
       },
       {
         "price_per_l": 0.0049999999,
@@ -134,8 +124,7 @@
         "volume_ml": 500.0,
         "brewing_date": "2022-01-06",
         "nullable_name": "Weihenstephan Hefe Weizen Alcoholarm",
-        "name_1": "Weihenstephan",
-        "name_2": "Hefe"
+        "foobar": 794.5079956055
       },
       {
         "price_per_l": 0.0450000018,
@@ -146,8 +135,7 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-07",
         "nullable_name": "Bellfield Lawless Village IPA",
-        "name_1": "Bellfield",
-        "name_2": "Lawless"
+        "foobar": 817.3120727539
       },
       {
         "price_per_l": 0.0839999989,
@@ -158,8 +146,7 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-08",
         "nullable_name": "Pauwel Kwak",
-        "name_1": "Pauwel",
-        "name_2": "Kwak"
+        "foobar": 549.4419555664
       },
       {
         "price_per_l": 0.0649999976,
@@ -170,8 +157,7 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-09",
         "nullable_name": null,
-        "name_1": "Brasserie",
-        "name_2": "De"
+        "foobar": 716.3423461914
       },
       {
         "price_per_l": 0.0599999987,
@@ -182,8 +168,7 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-10",
         "nullable_name": "Brugse Zot blonde",
-        "name_1": "Brugse",
-        "name_2": "Zot"
+        "foobar": 584.8073730469
       }
     ]
   }

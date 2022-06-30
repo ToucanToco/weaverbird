@@ -1,7 +1,8 @@
 {
   "description": "Dates from/until can be specified relative to another date.",
   "exclude": [
-    "athena",
+    "athena_pypika",
+    "bigquery_pypika",
     "mysql",
     "postgres",
     "postgres_pypika",

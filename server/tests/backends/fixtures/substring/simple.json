@@ -1,6 +1,8 @@
 {
   "exclude": [
-    "athena",
+    "athena_pypika",
+    "bigquery_pypika",
+    "postgres_pypika",
     "mysql"
   ],
   "step": {
