@@ -19,3 +19,6 @@ yarn-error.log*
 coverage
 lint-report.json
 test-report.xml
+
+# Secrets
+bigquery-credentials.json

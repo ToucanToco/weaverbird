@@ -96,7 +96,7 @@ cryptography = ">=3.2"
 
 [[package]]
 name = "awswrangler"
-version = "2.16.0"
+version = "2.16.1"
 description = "Pandas on AWS."
 category = "dev"
 optional = false
@@ -178,14 +178,14 @@ python-versions = "*"
 
 [[package]]
 name = "boto3"
-version = "1.24.18"
+version = "1.24.20"
 description = "The AWS SDK for Python"
 category = "dev"
 optional = false
 python-versions = ">= 3.7"
 
 [package.dependencies]
-botocore = ">=1.27.18,<1.28.0"
+botocore = ">=1.27.20,<1.28.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.6.0,<0.7.0"
 
@@ -194,7 +194,7 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.27.18"
+version = "1.27.20"
 description = "Low-level, data-driven core of boto 3."
 category = "dev"
 optional = false
@@ -555,12 +555,14 @@ optional = false
 python-versions = ">=3.6, <3.11"
 
 [package.dependencies]
+db-dtypes = {version = ">=0.3.0,<2.0.0dev", optional = true, markers = "extra == \"pandas\""}
 google-api-core = {version = ">=1.31.5,<2.0.0 || >2.3.0,<3.0.0dev", extras = ["grpc"]}
 google-cloud-bigquery-storage = ">=2.0.0,<3.0.0dev"
 google-cloud-core = ">=1.4.1,<3.0.0dev"
 google-resumable-media = ">=0.6.0,<3.0dev"
 grpcio = ">=1.38.1,<2.0dev"
 packaging = ">=14.3,<22.0.0dev"
+pandas = {version = ">=1.0.0", optional = true, markers = "extra == \"pandas\""}
 proto-plus = ">=1.15.0,<2.0.0dev"
 protobuf = ">=3.12.0,<4.0.0dev"
 pyarrow = ">=3.0.0,<9.0dev"
@@ -1759,7 +1761,7 @@ requests = ">=2.23,<3.0"
 
 [[package]]
 name = "toucan-connectors"
-version = "3.15.0"
+version = "3.15.2"
 description = "Toucan Toco Connectors"
 category = "dev"
 optional = false
@@ -1779,7 +1781,7 @@ toucan-data-sdk = ">=7.4.2,<8.0.0"
 [package.extras]
 ROK = ["requests (>=2.27.1,<3.0.0)", "PyJWT (>=1.5.3,<3)", "simplejson (>=3.17.6,<4.0.0)"]
 adobe = ["adobe-analytics (>=1.2.3,<2.0.0)"]
-all = ["adobe-analytics (>=1.2.3,<2.0.0)", "bearer (==3.1.0)", "oauthlib (==3.2.0)", "requests-oauthlib (==1.3.1)", "awswrangler (>=2.15.1,<3.0.0)", "pyodbc (>=4,<5)", "clickhouse-driver (>=0.2.3,<1.0)", "dataiku-api-client (>=9.0.1,<10.0.0)", "elasticsearch (>=7.11.0,<8)", "facebook-sdk (>=3.1.0,<4.0.0)", "python-graphql-client (>=0.4.3,<1.0)", "google-api-python-client (>=2,<3)", "oauth2client (>=4.1.3,<5.0.0)", "googleads (>=32.0.0,<33.0.0)", "google-cloud-bigquery[pandas,bqstorage] (>=2,<3)", "PyMySQL (>=1.0.2,<2.0.0)", "gspread (>=5.4.0,<6.0.0)", "PyHive[hive] (>=0.6.5,<1.0)", "xmltodict (>=0.13.0,<1.0)", "pymongo", "tctc-odata (>=0.3,<1.0)", "cx-Oracle (>=8.3.0,<9.0.0)", "openpyxl (>=3.0.9,<4.0.0)", "psycopg2 (>=2.7.4,<3.0.0)", "redshift-connector (>=2.0.907,<3.0.0)", "lxml (==4.6.5)", "PyJWT (>=1.5.3,<3)", "simplejson (>=3.17.6,<4.0.0)", "pyhdb (>=0.3.4,<1.0)", "zeep (>=4.1.0,<5.0.0)", "snowflake-connector-python (>=2.7.8,<3.0.0)", "pyarrow (<7)", "toucan-client (>=1.0.1,<2.0.0)"]
+all = ["adobe-analytics (>=1.2.3,<2.0.0)", "bearer (==3.1.0)", "oauthlib (==3.2.0)", "requests-oauthlib (==1.3.1)", "awswrangler (>=2.15.1,<3.0.0)", "pyodbc (>=4,<5)", "clickhouse-driver (>=0.2.3,<1.0)", "dataiku-api-client (>=9.0.1,<10.0.0)", "elasticsearch (>=7.11.0,<8)", "facebook-sdk (>=3.1.0,<4.0.0)", "python-graphql-client (>=0.4.3,<1.0)", "google-api-python-client (>=2,<3)", "oauth2client (>=4.1.3,<5.0.0)", "googleads (>=32.0.0,<33.0.0)", "google-cloud-bigquery[bqstorage,pandas] (>=2,<3)", "PyMySQL (>=1.0.2,<2.0.0)", "gspread (>=5.4.0,<6.0.0)", "PyHive[hive] (>=0.6.5,<1.0)", "xmltodict (>=0.13.0,<1.0)", "pymongo", "tctc-odata (>=0.3,<1.0)", "cx-Oracle (>=8.3.0,<9.0.0)", "openpyxl (>=3.0.9,<4.0.0)", "psycopg2 (>=2.7.4,<3.0.0)", "redshift-connector (>=2.0.907,<3.0.0)", "lxml (==4.6.5)", "PyJWT (>=1.5.3,<3)", "simplejson (>=3.17.6,<4.0.0)", "pyhdb (>=0.3.4,<1.0)", "zeep (>=4.1.0,<5.0.0)", "snowflake-connector-python (>=2.7.8,<3.0.0)", "pyarrow (<7)", "toucan-client (>=1.0.1,<2.0.0)"]
 aircall = ["bearer (==3.1.0)"]
 lightspeed = ["bearer (==3.1.0)"]
 http_api = ["oauthlib (==3.2.0)", "requests-oauthlib (==1.3.1)", "xmltodict (>=0.13.0,<1.0)"]
@@ -1797,7 +1799,7 @@ google_analytics = ["google-api-python-client (>=2,<3)", "oauth2client (>=4.1.3,
 google_my_business = ["google-api-python-client (>=2,<3)"]
 google_sheets = ["google-api-python-client (>=2,<3)"]
 google_spreadsheet = ["oauth2client (>=4.1.3,<5.0.0)", "gspread (>=5.4.0,<6.0.0)"]
-google_big_query = ["google-cloud-bigquery[pandas,bqstorage] (>=2,<3)"]
+google_big_query = ["google-cloud-bigquery[bqstorage,pandas] (>=2,<3)"]
 google_cloud_mysql = ["PyMySQL (>=1.0.2,<2.0.0)"]
 mysql = ["PyMySQL (>=1.0.2,<2.0.0)"]
 hive = ["PyHive[hive] (>=0.6.5,<1.0)"]
@@ -1920,12 +1922,12 @@ idna = ">=2.0"
 multidict = ">=4.0"
 
 [extras]
-playground = ["quart", "hypercorn", "pymongo", "pandas", "snowflake-connector-python", "psycopg"]
+playground = ["quart", "hypercorn", "pymongo", "pandas", "snowflake-connector-python", "psycopg", "google-cloud-bigquery"]
 
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10, <3.11"
-content-hash = "6a072b66e0aff3ba953966c125990ac64411b574f224a6ba91ea3dd85d2fba71"
+content-hash = "9161ae3246cbaadfde6a47b5a135e8eee0b725d963876e37bc0ecf37c59c9b59"
 
 [metadata.files]
 aenum = [
@@ -2036,8 +2038,8 @@ authlib = [
     {file = "Authlib-1.0.1.tar.gz", hash = "sha256:6e74a4846ac36dfc882b3cc2fbd3d9eb410a627f2f2dc11771276655345223b1"},
 ]
 awswrangler = [
-    {file = "awswrangler-2.16.0-py3-none-any.whl", hash = "sha256:6dd2a3da28d221716e46d3657fd37a658c376cb3e4b6d4bc5037f779af427348"},
-    {file = "awswrangler-2.16.0.tar.gz", hash = "sha256:b1db6730d4d59042268f9f00f490a66e9bd1b68c8629921b88f2951703f58c83"},
+    {file = "awswrangler-2.16.1-py3-none-any.whl", hash = "sha256:42dbef60234faf862cfaa4213ab15087f167e13efec8d272a63006e4bd70575f"},
+    {file = "awswrangler-2.16.1.tar.gz", hash = "sha256:19cad43e8b12c69e26750f964833b7b3ee99026170dcea9664de030711fc24c6"},
 ]
 backoff = [
     {file = "backoff-2.1.2-py3-none-any.whl", hash = "sha256:b135e6d7c7513ba2bfd6895bc32bc8c66c6f3b0279b4c6cd866053cfd7d3126b"},
@@ -2076,12 +2078,12 @@ blinker = [
     {file = "blinker-1.4.tar.gz", hash = "sha256:471aee25f3992bd325afa3772f1063dbdbbca947a041b8b89466dc00d606f8b6"},
 ]
 boto3 = [
-    {file = "boto3-1.24.18-py3-none-any.whl", hash = "sha256:4a7cf5fddb1626d25c5935c5a82afdff9c7fe2faac2a68d37edf0264b3a85127"},
-    {file = "boto3-1.24.18.tar.gz", hash = "sha256:bd0b94428ae7cc57904d3c903d9393bdf4dd2b1274d1c51749f27f5bd76953e1"},
+    {file = "boto3-1.24.20-py3-none-any.whl", hash = "sha256:7033d3a351171b85647405eb70c4c9ae0d75c085dd987d7674557607acbcd459"},
+    {file = "boto3-1.24.20.tar.gz", hash = "sha256:e87dbc67475b0ea7564b17b6686995fd3a120312a95a625e6db61490fa0a3fed"},
 ]
 botocore = [
-    {file = "botocore-1.27.18-py3-none-any.whl", hash = "sha256:74426179c75debd77c6dcc2d66cfd506e52962e605d2b9f2dbca290474539c8b"},
-    {file = "botocore-1.27.18.tar.gz", hash = "sha256:20a866351f9f65cfe27edc21d755de60e17a1fbb1273d73fc0006ed0d6f8ef86"},
+    {file = "botocore-1.27.20-py3-none-any.whl", hash = "sha256:bb80a2204ccd51c1611e562d3d0511dc2a156257f87edeb59e99d7cef24b75d6"},
+    {file = "botocore-1.27.20.tar.gz", hash = "sha256:d3445a382711b58b4ec29e42267f074aa743ac7a5ddc50a08e0aae2b8309e3a5"},
 ]
 cached-property = [
     {file = "cached-property-1.5.2.tar.gz", hash = "sha256:9fa5755838eecbb2d234c3aa390bd80fbd3ac6b6869109bfc1b499f7bd89a130"},
@@ -3508,8 +3510,8 @@ toucan-client = [
     {file = "toucan_client-1.1.2.tar.gz", hash = "sha256:e604dc04140b84cf9b3ed879b19580b5b6342c6eaffbe5e49df2b8e113edb6c0"},
 ]
 toucan-connectors = [
-    {file = "toucan-connectors-3.15.0.tar.gz", hash = "sha256:1b4bd490e2d0fb5bd2e5d3f2c6b5e5555978d2f68fa6b26d1d849f8f446c7433"},
-    {file = "toucan_connectors-3.15.0-py3-none-any.whl", hash = "sha256:5e203b81a06c5e640d32c14b0e306bfb3d0b97feb0b9fa40b4aa510390cf0f0c"},
+    {file = "toucan-connectors-3.15.2.tar.gz", hash = "sha256:c4c4589ad2543cf4b53e5473f43f94ed2f4b6d9ad7ccc58c321cff75fb23bd8b"},
+    {file = "toucan_connectors-3.15.2-py3-none-any.whl", hash = "sha256:ef9ae90773531ca9b7b575605a9eba27cfcc37b73bafdfcffb388f70e357ad92"},
 ]
 toucan-data-sdk = [
     {file = "toucan_data_sdk-7.5.0-py3-none-any.whl", hash = "sha256:1035b72ab94cafd4c45a0c0724cff73fe7d62fbb310f799c1afd4ced2ade8041"},

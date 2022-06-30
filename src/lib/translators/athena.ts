@@ -1,11 +1,6 @@
-import * as S from '@/lib/steps';
-
-import { BaseTranslator } from './base';
+import { PypikaTranslator } from './pypika';
 
 /* istanbul ignore next */
-export class AthenaTranslator extends BaseTranslator {
+export class AthenaTranslator extends PypikaTranslator {
   static label = 'AthenaTranslator';
-  domain(step: Readonly<S.DomainStep>) {
-    return step;
-  }
 }
