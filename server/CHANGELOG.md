@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## [0.17.1] - 2022-06-30
+
+- Tests: enable integration tests for Big Query
+- Playground: Added support for Big Query and Athena
+
 ## [0.17.0] - 2022-06-27
 
 - feat: add step to compute absolute value
