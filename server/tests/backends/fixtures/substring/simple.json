@@ -3,6 +3,7 @@
     "athena_pypika",
     "bigquery_pypika",
     "postgres_pypika",
+    "redshift_pypika",
     "mysql"
   ],
   "step": {
