@@ -6,7 +6,6 @@
     "postgres",
     "bigquery_pypika",
     "postgres_pypika",
-    "redshift_pypika",
     "snowflake"
   ],
   "step": {
