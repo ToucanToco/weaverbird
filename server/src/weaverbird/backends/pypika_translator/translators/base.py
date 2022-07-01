@@ -37,6 +37,7 @@ if TYPE_CHECKING:
         CompareTextStep,
         ConcatenateStep,
         ConvertStep,
+        CumSumStep,
         CustomSqlStep,
         DeleteStep,
         DomainStep,
@@ -77,6 +78,11 @@ class DataTypeMapping:
     float: str
     integer: str
     text: str
+
+
+class CustomQuery(AliasedQuery):  # type: ignore[misc]
+    def get_sql(self, **kwargs: Any) -> str:
+        return cast(str, self.query)
 
 
 class SQLTranslator(ABC):
@@ -146,6 +152,14 @@ class SQLTranslator(ABC):
         self: Self, agg_function: "AggregateFn"
     ) -> functions.AggregateFunction:
         match agg_function:
+            # Commenting this since postgres and redshift
+            # doesn't support it
+            # case "first":
+            #     return functions.First
+            # case "last":
+            #     return functions.Last
+            # case "abs":
+            #     return functions.Abs
             case "avg":
                 return functions.Avg
             case "count":
@@ -289,10 +303,6 @@ class SQLTranslator(ABC):
     ) -> tuple["QueryBuilder", StepTable]:
         """create a custom sql step based on the current table named ##PREVIOUS_STEP## in the query"""
 
-        class CustomQuery(AliasedQuery):  # type: ignore[misc]
-            def get_sql(self, **kwargs: Any) -> str:
-                return cast(str, self.query)
-
         if table.name is None:
             raise MissingTableNameError()
 
@@ -304,6 +314,38 @@ class SQLTranslator(ABC):
         # we now have no way to know which columns remain
         # without actually executing the query
         return custom_query, StepTable(columns=["*"])
+
+    def cumsum(
+        self: Self, *, step: "CumSumStep", table: StepTable
+    ) -> tuple["QueryBuilder", StepTable]:
+        # !FIXME / TODO
+        # Since "OVER (PARTITION BY..." and "rows UNBOUNDED PRECEDING" are
+        # synthax used on snowflake for this step not available on redshift nor postgresql
+        # a tweak should be made here to adapt that on pypika, something like (https://pypika.readthedocs.io/en/latest/3_advanced.html?highlight=rank#ntile-and-rank) , this step is not
+        # completed, an equivalent of this step can looks like :
+
+        sub_query: "QueryBuilder" = self.QUERY_CLS.from_(table.name).select(*table.columns)
+        cumsum_col_list = [cumsum[1] or f"{cumsum[0]}_CUMSUM" for cumsum in step.to_cumsum]
+
+        the_table = Table(table.name)
+        reference_column_field: Field = the_table[step.reference_column]
+
+        sub_query = (
+            sub_query.select(
+                *(
+                    functions.Sum(the_table[cumsum[0]]).as_(cumsum[1] or f"{cumsum[0]}_CUMSUM")
+                    for cumsum in step.to_cumsum
+                ),
+            )
+            .orderby(reference_column_field, order=Order.asc)
+            .groupby(*(step.groupby or [*table.columns]))
+        )  # commented .over() .over(*groups_fields)
+
+        query: "QueryBuilder" = (
+            self.QUERY_CLS.from_(sub_query).select(*(*table.columns, *cumsum_col_list))
+        ).from_(table.name)
+
+        return query, StepTable(columns=[*table.columns, *cumsum_col_list])
 
     def delete(
         self: Self, *, step: "DeleteStep", table: StepTable
@@ -466,6 +508,7 @@ class SQLTranslator(ABC):
         #   [my age] + 1 / 2
         # into
         #   CAST("my age" AS float) + 1 / 2
+
         query = query.select(LiteralValue(step.formula).as_(step.new_column))
         return query, StepTable(columns=[*table.columns, step.new_column])
 

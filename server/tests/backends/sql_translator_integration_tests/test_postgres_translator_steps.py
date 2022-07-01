@@ -11,6 +11,7 @@ from docker.models.images import Image
 from psycopg2 import OperationalError
 from sqlalchemy import create_engine
 
+from tests.backends.sql_translator.common import standardized_columns
 from tests.utils import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
 from weaverbird.backends.sql_translator import translate_pipeline
 from weaverbird.pipeline import Pipeline
@@ -143,10 +144,6 @@ def sql_query_executor(domain: str, query_string: str = None) -> Union[pd.DataFr
         return pd.DataFrame(res)
 
 
-def standardized_columns(df: pd.DataFrame):
-    df.columns = [c.replace('-', '_').lower() for c in df.columns]
-
-
 # Translation from Pipeline json to SQL query
 @pytest.mark.parametrize('case_id, case_spec_file_path', test_cases)
 def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
@@ -158,7 +155,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     # inserting the data in Postgres
     # Take data in fixture file, set in pandas, create table and insert
     data_to_insert = pd.read_json(json.dumps(spec['input']), orient='table')
-    standardized_columns(data_to_insert)
+    standardized_columns(data_to_insert, True)
     data_to_insert.to_sql(
         name=case_id.replace('/', ''), con=get_engine, index=False, if_exists='replace', chunksize=1
     )
@@ -168,7 +165,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
             data_other_insert = pd.read_json(
                 json.dumps(spec['other_inputs'][input]), orient='table'
             )
-            standardized_columns(data_other_insert)
+            standardized_columns(data_other_insert, True)
             data_other_insert.to_sql(
                 name=input,
                 con=get_engine,
@@ -208,7 +205,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
         orient='table',
     )
 
-    standardized_columns(pandas_result_expected)
+    standardized_columns(pandas_result_expected, True)
     if 'other_expected' in spec:
         query_expected = spec['other_expected']['sql']['query']
         assert query_expected == query

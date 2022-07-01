@@ -11,6 +11,7 @@ from docker.models.images import Image
 from psycopg2 import OperationalError
 from sqlalchemy import create_engine
 
+from tests.backends.sql_translator.common import standardized_columns, standardized_values
 from tests.utils import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import translate_pipeline
@@ -100,10 +101,6 @@ def execute(connection, query: str, meta: bool = True) -> Optional[pd.DataFrame]
             return None
 
 
-def standardized_columns(df: pd.DataFrame):
-    df.columns = [c.replace('-', '_') for c in df.columns]
-
-
 # Translation from Pipeline json to SQL query
 @pytest.mark.parametrize('case_id, case_spec_file_path', test_cases)
 def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
@@ -148,6 +145,12 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     # Execute request generated from Pipeline in Postgres and get the result
     result: pd.DataFrame = execute(get_connection(), query)
 
+    # we standadize the expected columns
+    standardized_columns(result)
+
+    # we standardize the expected values
+    standardized_values(result)
+
     # Compare result and expected (from fixture file)
     pandas_result_expected = pd.read_json(
         json.dumps(
@@ -163,6 +166,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     )
 
     standardized_columns(pandas_result_expected)
+    standardized_values(pandas_result_expected, convert_nan_to_none=True)
     if 'other_expected' in spec:
         query_expected = spec['other_expected']['sql']['query']
         assert query_expected == query

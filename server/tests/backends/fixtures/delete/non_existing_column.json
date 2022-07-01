@@ -5,7 +5,7 @@
     "bigquery_pypika",
     "mysql",
     "postgres_pypika",
-    "redshift"
+    "redshift_pypika"
   ],
   "step": {
     "pipeline": [
