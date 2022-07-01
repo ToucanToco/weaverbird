@@ -29,14 +29,8 @@ def standardized_values(df: pd.DataFrame, convert_nan_to_none: bool = False) -> 
             # get the first non-null value in the series.
             # if it's a float, try to convert the whole serie with the
             # precision we want.
-            # If it's string and == to 'nan', convert that to None/null
             s = df[colname]
             idx = s.first_valid_index()
             if idx is not None and (first_value := s.loc[idx]) is not None:
                 if isinstance(first_value, (Decimal, float)) and "." in str(first_value):
                     _clean_float(first_value, colname)
-
-                if convert_nan_to_none:
-                    for i, v in enumerate(df[colname].values):
-                        if str(df[colname].values[i]).lower() == 'nan':
-                            df[colname].values[i] = None
