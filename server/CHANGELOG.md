@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [0.17.2] - 2022-07-01
+
+- Playground: Add missing toucan-connectors[awsathena] dependency
+
 ## [0.17.1] - 2022-06-30
 
 - Tests: enable integration tests for Big Query
