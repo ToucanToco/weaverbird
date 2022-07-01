@@ -508,15 +508,6 @@ class SQLTranslator(ABC):
         # into
         #   CAST("my age" AS float) + 1 / 2
 
-        # We add quotes to identify columns
-        # for c in table.columns:
-        #     step.formula = (
-        #         f" {step.formula} ".replace(f" {c} ", f" \"{c}\" ")
-        #         .replace(f"({c} ", f"(\"{c}\" ")
-        #         .replace(f" {c})", f" \"{c}\")")
-        #     )
-        #     step.formula = " ".join(step.formula.split())
-
         query = query.select(LiteralValue(step.formula).as_(step.new_column))
         return query, StepTable(columns=[*table.columns, step.new_column])
 
