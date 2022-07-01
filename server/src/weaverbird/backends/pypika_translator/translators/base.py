@@ -305,11 +305,21 @@ class SQLTranslator(ABC):
         if table.name is None:
             raise MissingTableNameError()
 
+        table.columns = (
+            [f'"{c}"' for c in table.columns]
+            if self.DIALECT in ["postgres", "redshift"]
+            else table.columns
+        )
         custom_query = CustomQuery(
             name=f"custom_from_{table.name}",
             query=step.query.replace("##PREVIOUS_STEP##", table.name),
         )
 
+        custom_query.query = (
+            custom_query.query.replace(";", "")
+            if self.DIALECT in ["postgres", "redshift"]
+            else custom_query.query
+        )
         # we now have no way to know which columns remain
         # without actually executing the query
         return custom_query, StepTable(columns=["*"])
