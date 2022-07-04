@@ -79,6 +79,11 @@ class DataTypeMapping:
     text: str
 
 
+class CustomQuery(AliasedQuery):  # type: ignore[misc]
+    def get_sql(self, **kwargs: Any) -> str:
+        return cast(str, self.query)
+
+
 class SQLTranslator(ABC):
     DIALECT: SQLDialect
     QUERY_CLS: Query
@@ -146,6 +151,14 @@ class SQLTranslator(ABC):
         self: Self, agg_function: "AggregateFn"
     ) -> functions.AggregateFunction:
         match agg_function:
+            # Commenting this since postgres and redshift
+            # doesn't support it
+            # case "first":
+            #     return functions.First
+            # case "last":
+            #     return functions.Last
+            # case "abs":
+            #     return functions.Abs
             case "avg":
                 return functions.Avg
             case "count":
@@ -288,10 +301,6 @@ class SQLTranslator(ABC):
         self: Self, *, step: "CustomSqlStep", table: StepTable
     ) -> tuple["QueryBuilder", StepTable]:
         """create a custom sql step based on the current table named ##PREVIOUS_STEP## in the query"""
-
-        class CustomQuery(AliasedQuery):  # type: ignore[misc]
-            def get_sql(self, **kwargs: Any) -> str:
-                return cast(str, self.query)
 
         if table.name is None:
             raise MissingTableNameError()
@@ -466,6 +475,7 @@ class SQLTranslator(ABC):
         #   [my age] + 1 / 2
         # into
         #   CAST("my age" AS float) + 1 / 2
+
         query = query.select(LiteralValue(step.formula).as_(step.new_column))
         return query, StepTable(columns=[*table.columns, step.new_column])
 
