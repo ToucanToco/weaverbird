@@ -1,5 +1,9 @@
 # Changelog (weaverbird npm package)
 
+## [0.85.0] - 2022-07-05
+
+- Translators: Add supported steps for Athena and GoogleBigQuery
+
 ## [0.84.0] - 2022-06-27
 
 - Translators: Add new translators for Redshift, Athena, GoogleBigQuery and Mysql
@@ -1246,6 +1250,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ## Unreleased
 
+[0.85.0]: https://github.com/ToucanToco/weaverbird/compare/v0.85.0...v0.84.0
 [0.84.0]: https://github.com/ToucanToco/weaverbird/compare/v0.84.0...v0.83.1
 [0.83.1]: https://github.com/ToucanToco/weaverbird/compare/v0.83.1...v0.83.0
 [0.83.0]: https://github.com/ToucanToco/weaverbird/compare/v0.83.0...v0.82.3
