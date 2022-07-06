@@ -9,7 +9,7 @@ from weaverbird.backends.pypika_translator.translators.base import (
     DataTypeMapping,
     Self,
     SQLTranslator,
-    StepTable,
+    StepContext,
 )
 
 if TYPE_CHECKING:
@@ -35,15 +35,20 @@ class PostgreSQLTranslator(SQLTranslator):
     TO_DATE_OP = ToDateOp.TO_DATE
 
     def duration(
-        self: Self, *, step: "DurationStep", table: StepTable
-    ) -> tuple["QueryBuilder", StepTable]:
-        query: "QueryBuilder" = self.QUERY_CLS.from_(table.name).select(
-            *table.columns,
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: "DurationStep",
+    ) -> StepContext:
+        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
+            *columns,
             functions.Extract(
                 step.duration_in, Field(step.end_date_column) - Field(step.start_date_column)
             ).as_(step.new_column_name),
         )
-        return query, StepTable(columns=[*table.columns, step.new_column_name])
+        return StepContext(query, columns + [step.new_column_name])
 
 
 SQLTranslator.register(PostgreSQLTranslator)

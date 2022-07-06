@@ -1,8 +1,10 @@
+from typing import Any
+
 import pytest
 from pypika import Field, Query, functions
 
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
-from weaverbird.backends.pypika_translator.translators.base import SQLTranslator, StepTable
+from weaverbird.backends.pypika_translator.translators.base import SQLTranslator
 from weaverbird.pipeline import steps
 
 
@@ -26,21 +28,24 @@ def date_format_translators():
     )
 
 
-def test_fromdate(date_format_translators: DateFormatTranslator):
+def test_fromdate(
+    date_format_translators: DateFormatTranslator, default_step_kwargs: dict[str, Any]
+):
     selected_columns = ["name", "pseudonyme"]
     previous_step = "previous_with"
     column = "birthday"
-    format = "dd/yy"
+    format_ = "dd/yy"
 
-    step_table = StepTable(columns=selected_columns, name=previous_step)
-    step = steps.FromdateStep(column=column, format=format)
-    (query, _) = date_format_translators.fromdate(step=step, table=step_table)
-
-    expected_query = Query.from_(previous_step).select(
-        *selected_columns, functions.ToChar(Field(column), format).as_(column)
+    step = steps.FromdateStep(column=column, format=format_)
+    ctx = date_format_translators.fromdate(
+        step=step, columns=selected_columns, **default_step_kwargs
     )
 
-    assert query.get_sql() == expected_query.get_sql()
+    expected_query = Query.from_(previous_step).select(
+        *selected_columns, functions.ToChar(Field(column), format_).as_(column)
+    )
+
+    assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
 def test_to_date(date_format_translators: DateFormatTranslator):

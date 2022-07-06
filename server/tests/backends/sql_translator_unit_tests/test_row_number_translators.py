@@ -1,11 +1,9 @@
+from typing import Any
+
 import pytest
 from pypika import Field, Order, Query
 
-from weaverbird.backends.pypika_translator.translators.base import (
-    RowNumber,
-    SQLTranslator,
-    StepTable,
-)
+from weaverbird.backends.pypika_translator.translators.base import RowNumber, SQLTranslator
 from weaverbird.pipeline import steps
 
 
@@ -62,93 +60,104 @@ def get_top_query(sort_order, previous_step, group, rank_on, selected_columns, l
 
 @pytest.mark.parametrize("sort_order", ["asc", "desc"])
 def test_top_with_enabled_row_number(
-    row_number_enabled_translator: RowNumberEnabledTranslator, sort_order
+    row_number_enabled_translator: RowNumberEnabledTranslator,
+    sort_order: str,
+    default_step_kwargs: dict[str, Any],
 ):
     previous_step = "previous_with"
     group = "name"
     rank_on = "age"
     selected_columns = ["*"]
 
-    step_table = StepTable(columns=selected_columns, name=previous_step)
     step = steps.TopStep(rank_on=rank_on, groups=[group], sort=sort_order, limit=100)
-    (query, _) = row_number_enabled_translator.top(step=step, table=step_table)
+    ctx = row_number_enabled_translator.top(
+        step=step, columns=selected_columns, **default_step_kwargs
+    )
 
     expected_query = get_top_query(
         sort_order, previous_step, group, rank_on, selected_columns, step.limit
     )
 
-    assert query.get_sql() == expected_query.get_sql()
+    assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
 @pytest.mark.parametrize("sort_order", ["asc", "desc"])
 def test_top_with_disabled_row_number(
-    row_number_disabled_translator: RowNumberDisabledTranslator, sort_order
+    row_number_disabled_translator: RowNumberDisabledTranslator,
+    sort_order: str,
+    default_step_kwargs: dict[str, Any],
+):
+    group = "name"
+    rank_on = "age"
+    selected_columns = ["*"]
+
+    step = steps.TopStep(rank_on=rank_on, groups=[group], sort=sort_order, limit=100)
+    with pytest.raises(NotImplementedError):
+        row_number_disabled_translator.top(
+            step=step, columns=selected_columns, **default_step_kwargs
+        )
+
+
+def test_argmax_with_enabled_split_part(
+    row_number_enabled_translator: RowNumberEnabledTranslator, default_step_kwargs: dict[str, Any]
 ):
     previous_step = "previous_with"
     group = "name"
     rank_on = "age"
     selected_columns = ["*"]
 
-    step_table = StepTable(columns=selected_columns, name=previous_step)
-    step = steps.TopStep(rank_on=rank_on, groups=[group], sort=sort_order, limit=100)
-    with pytest.raises(NotImplementedError):
-        row_number_disabled_translator.top(step=step, table=step_table)
-
-
-def test_argmax_with_enabled_split_part(row_number_enabled_translator: RowNumberEnabledTranslator):
-    previous_step = "previous_with"
-    group = "name"
-    rank_on = "age"
-    selected_columns = ["*"]
-
-    step_table = StepTable(columns=selected_columns, name=previous_step)
     step = steps.ArgmaxStep(column=rank_on, groups=[group])
-    (query, _) = row_number_enabled_translator.argmax(step=step, table=step_table)
+    ctx = row_number_enabled_translator.argmax(
+        step=step, columns=selected_columns, **default_step_kwargs
+    )
 
     expected_query = get_top_query("desc", previous_step, group, rank_on, selected_columns, 1)
 
-    assert query.get_sql() == expected_query.get_sql()
+    assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
 def test_argmax_with_disabled_split_part(
-    row_number_disabled_translator: RowNumberDisabledTranslator,
+    row_number_disabled_translator: RowNumberDisabledTranslator, default_step_kwargs: dict[str, Any]
+):
+    group = "name"
+    rank_on = "age"
+    selected_columns = ["*"]
+
+    step = steps.ArgmaxStep(column=rank_on, groups=[group])
+    with pytest.raises(NotImplementedError):
+        row_number_disabled_translator.argmax(
+            step=step, columns=selected_columns, **default_step_kwargs
+        )
+
+
+def test_argmin_with_enabled_split_part(
+    row_number_enabled_translator: RowNumberEnabledTranslator, default_step_kwargs: dict[str, Any]
 ):
     previous_step = "previous_with"
     group = "name"
     rank_on = "age"
     selected_columns = ["*"]
 
-    step_table = StepTable(columns=selected_columns, name=previous_step)
-    step = steps.ArgmaxStep(column=rank_on, groups=[group])
-    with pytest.raises(NotImplementedError):
-        row_number_disabled_translator.argmax(step=step, table=step_table)
-
-
-def test_argmin_with_enabled_split_part(row_number_enabled_translator: RowNumberEnabledTranslator):
-    previous_step = "previous_with"
-    group = "name"
-    rank_on = "age"
-    selected_columns = ["*"]
-
-    step_table = StepTable(columns=selected_columns, name=previous_step)
     step = steps.ArgminStep(column=rank_on, groups=[group])
-    (query, _) = row_number_enabled_translator.argmin(step=step, table=step_table)
+    ctx = row_number_enabled_translator.argmin(
+        step=step, columns=selected_columns, **default_step_kwargs
+    )
 
     expected_query = get_top_query("asc", previous_step, group, rank_on, selected_columns, 1)
 
-    assert query.get_sql() == expected_query.get_sql()
+    assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
 def test_argmin_with_disabled_split_part(
-    row_number_disabled_translator: RowNumberDisabledTranslator,
+    row_number_disabled_translator: RowNumberDisabledTranslator, default_step_kwargs: dict[str, Any]
 ):
-    previous_step = "previous_with"
     group = "name"
     rank_on = "age"
     selected_columns = ["*"]
 
-    step_table = StepTable(columns=selected_columns, name=previous_step)
     step = steps.ArgminStep(column=rank_on, groups=[group])
 
     with pytest.raises(NotImplementedError):
-        row_number_disabled_translator.argmin(step=step, table=step_table)
+        row_number_disabled_translator.argmin(
+            step=step, columns=selected_columns, **default_step_kwargs
+        )
