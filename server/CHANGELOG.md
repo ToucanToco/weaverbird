@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [0.17.3] - 2022-07-06
+
+- CustomSQL step: Sanitize query
+
 ## [0.17.2] - 2022-07-01
 
 - Playground: Add missing toucan-connectors[awsathena] dependency
