@@ -1,17 +1,18 @@
 from abc import ABC
 from dataclasses import dataclass
+from functools import cache
 
 # from typing_extensions import Self
-from typing import TYPE_CHECKING, Any, Callable, Mapping, Sequence, TypeVar, cast
+from typing import TYPE_CHECKING, Any, Callable, Mapping, Sequence, TypeVar, Union, cast
 
 from pypika import AliasedQuery, Case, Criterion, Field, Order, Query, Schema, Table, functions
 from pypika.enums import Comparator
+from pypika.queries import QueryBuilder, Selectable
 from pypika.terms import AnalyticFunction, BasicCriterion, LiteralValue
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators import ALL_TRANSLATORS
-from weaverbird.exceptions import MissingTableNameError
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
     DateBoundCondition,
@@ -19,13 +20,13 @@ from weaverbird.pipeline.conditions import (
     MatchCondition,
     NullCondition,
 )
+from weaverbird.pipeline.pipeline import Pipeline
 from weaverbird.pipeline.steps.utils.combination import Reference
 
 Self = TypeVar("Self", bound="SQLTranslator")
 
 
 if TYPE_CHECKING:
-    from pypika.queries import QueryBuilder
 
     from weaverbird.pipeline import PipelineStep
     from weaverbird.pipeline.conditions import Condition, SimpleCondition
@@ -46,6 +47,7 @@ if TYPE_CHECKING:
         FormulaStep,
         FromdateStep,
         IfthenelseStep,
+        JoinStep,
         LowercaseStep,
         PercentageStep,
         RenameStep,
@@ -79,6 +81,23 @@ class DataTypeMapping:
     text: str
 
 
+@dataclass
+class StepContext:
+    selectable: Selectable | None
+    columns: list[str]
+    builder: QueryBuilder | None = None
+
+
+@dataclass(kw_only=True)
+class QueryBuilderContext:
+    builder: QueryBuilder
+    columns: list[str]
+    table_name: str
+
+    def materialize(self) -> QueryBuilder:
+        return self.builder.from_(self.table_name).select(*self.columns)
+
+
 class CustomQuery(AliasedQuery):  # type: ignore[misc]
     def get_sql(self, **kwargs: Any) -> str:
         return cast(str, self.query)
@@ -103,53 +122,71 @@ class SQLTranslator(ABC):
         db_schema: str | None = None,
     ) -> None:
         self._tables_columns: Mapping[str, Sequence[str]] = tables_columns or {}
+        self._db_schema_name = db_schema
         self._db_schema: Schema | None = Schema(db_schema) if db_schema is not None else None
+        self._i = 0
+        # self._table: StepTable | None = None
+        self._builder: 'QueryBuilder' | None = None
 
     def __init_subclass__(cls) -> None:
         ALL_TRANSLATORS[cls.DIALECT] = cls
 
-    def get_query(self: Self, *, steps: Sequence["PipelineStep"]) -> "QueryBuilder":
-        step_queries: list["QueryBuilder"] = []
-        step_tables: list[StepTable] = []
+    @cache
+    def _id(self: Self) -> str:
+        return str(id(self))
 
-        for i, step in enumerate(steps):
-            try:
-                step_method: Callable[..., tuple["QueryBuilder", StepTable]] = getattr(
-                    self, step.name
-                )
-            except AttributeError:
-                raise NotImplementedError(f"[{self.DIALECT}] step {step.name} not yet implemented")
+    def _step_name(self: Self) -> str:
+        return f'__step_{self._i}_{self._id()}__'
 
-            if i == 0:
-                assert step.name == "domain" or step.name == "customsql"
-                if step.name == "domain":
-                    step_query, step_table = step_method(step=step)
-                elif step.name == "customsql":
-                    step_query, step_table = step_method(
-                        step=step, table=StepTable(name="_", columns=["*"])
-                    )
-            else:
-                step_query, step_table = step_method(step=step, table=step_tables[i - 1])
+    def _next_step_name(self: Self) -> str:
+        name = self._step_name()
+        self._i += 1
+        return name
 
-            step_queries.append(step_query)
-            step_table.name = f"__step_{i}__"
-            step_tables.append(step_table)
+    def _selectable_from_first_step(
+        self, step: Union['DomainStep', 'CustomSqlStep']
+    ) -> tuple["Selectable", list[str]]:
+        return (
+            self._domain(step=step)
+            if step.name == 'domain'
+            else (self.customsql(step=step)[0], ['*'])
+        )
 
-        query: "QueryBuilder" = self.QUERY_CLS
-        for i, step_query in enumerate(step_queries):
-            query = query.with_(step_query, step_tables[i].name)
+    def get_query_builder(
+        self: Self,
+        *,
+        steps: Sequence["PipelineStep"],
+        query_builder: QueryBuilder | None = None,
+    ) -> QueryBuilderContext:
+        if len(steps) < 0:
+            ValueError('No steps provided')
+        assert steps[0].name == "domain" or steps[0].name == "customsql"
+        step0, columns = self._selectable_from_first_step(steps[0])
+        table_name = self._next_step_name()
+        builder = (query_builder if query_builder is not None else self.QUERY_CLS).with_(
+            step0, table_name
+        )
+        ctx = StepContext(step0, columns, builder)
 
-        return query.from_(step_tables[-1].name).select("*")
+        for step in steps[1:]:
+            step_method: Callable[..., StepContext] = getattr(self, step.name)
+            ctx = step_method(
+                step=step, prev_step_name=table_name, builder=builder, columns=ctx.columns
+            )
+            table_name = self._next_step_name()
+            builder = (builder if ctx.builder is None else ctx.builder).with_(
+                ctx.selectable, table_name
+            )
+        return QueryBuilderContext(builder=builder, columns=ctx.columns, table_name=table_name)
 
     def get_query_str(self: Self, *, steps: Sequence["PipelineStep"]) -> str:
-        query_str: str = self.get_query(steps=steps).get_sql()
-        return query_str
+        return self.get_query_builder(steps=steps).materialize().get_sql()
 
     # All other methods implement step from https://weaverbird.toucantoco.com/docs/steps/,
     # the name of the method being the name of the step and the kwargs the rest of the params
     def _get_aggregate_function(
         self: Self, agg_function: "AggregateFn"
-    ) -> functions.AggregateFunction:
+    ) -> type[functions.AggregateFunction]:
         match agg_function:
             # Commenting this since postgres and redshift
             # doesn't support it
@@ -177,25 +214,81 @@ class SQLTranslator(ABC):
                 )
 
     def absolutevalue(
-        self: Self, *, step: "AbsoluteValueStep", table: StepTable
-    ) -> tuple["QueryBuilder", StepTable]:
-        col_field: Field = Table(table.name)[step.column]
-        query: "QueryBuilder" = self.QUERY_CLS.from_(table.name).select(
-            *table.columns,
-            functions.Abs(col_field).as_(step.new_column),
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: "AbsoluteValueStep",
+    ) -> StepContext:
+        col_field: Field = Table(prev_step_name)[step.column]
+        query: "Selectable" = self.QUERY_CLS.from_(prev_step_name).select(
+            *columns, functions.Abs(col_field).as_(step.new_column)
         )
-        return query, StepTable(columns=[*table.columns, step.new_column])
+        return StepContext(query, columns + [step.new_column])
+
+    def join(
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: "JoinStep",
+    ) -> StepContext:
+        try:
+            steps = Pipeline(steps=step.right_pipeline).steps
+        except Exception as exc:
+            raise NotImplementedError(
+                f"join is only possible with another pipeline: {exc}"
+            ) from exc
+        right_builder_ctx = self.__class__(
+            tables_columns=self._tables_columns, db_schema=self._db_schema_name
+        ).get_query_builder(steps=steps, query_builder=builder)
+        left_table = Table(prev_step_name)
+        right_table = Table(right_builder_ctx.table_name)
+
+        columns_requiring_alias = [
+            col
+            for col in set(columns + right_builder_ctx.columns)
+            if col in columns and col in right_builder_ctx.columns
+        ]
+
+        left_cols = [Field(col, table=left_table) for col in columns]
+        right_cols = [
+            Field(
+                col,
+                table=right_table,
+                alias=col if col not in columns_requiring_alias else f'{col}_right',
+            )
+            for col in right_builder_ctx.columns
+        ]
+
+        query = (
+            self.QUERY_CLS.from_(left_table)
+            .select(*left_cols, *right_cols)
+            .left_join(right_table)
+            .on(*(Field(f[0], table=left_table) == Field(f[1], table=right_table) for f in step.on))
+        )
+        return StepContext(
+            query,
+            [c.name for c in left_cols] + [c.alias for c in right_cols],
+            right_builder_ctx.builder,
+        )
 
     def aggregate(
-        self: Self, *, step: "AggregateStep", table: StepTable
-    ) -> tuple["QueryBuilder", StepTable]:
-        the_table = Table(table.name)
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: "AggregateStep",
+    ) -> StepContext:
         agg_selected: list[Field] = []
 
         for aggregation in step.aggregations:
             agg_fn = self._get_aggregate_function(aggregation.agg_function)
             for i, column_name in enumerate(aggregation.columns):
-                column_field: Field = the_table[column_name]
+                column_field: Field = Table(prev_step_name)[column_name]
                 new_agg_col = agg_fn(column_field).as_(aggregation.new_columns[i])
                 agg_selected.append(new_agg_col)
 
@@ -203,9 +296,7 @@ class SQLTranslator(ABC):
         selected_col_names: list[str]
 
         if step.keep_original_granularity:
-            current_query: "QueryBuilder" = self.QUERY_CLS.from_(table.name).select(*table.columns)
-
-            agg_query: "QueryBuilder" = self.QUERY_CLS.from_(table.name).select(
+            agg_query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
                 *step.on, *agg_selected
             )
             agg_query = agg_query.groupby(*step.on)
@@ -213,30 +304,36 @@ class SQLTranslator(ABC):
             all_agg_col_names: list[str] = [x for agg in step.aggregations for x in agg.new_columns]
 
             query = (
-                self.QUERY_CLS.from_(current_query)
+                self.QUERY_CLS.from_(prev_step_name)
                 .select(
-                    *table.columns,
-                    *(Field(agg_col, table=agg_query) for agg_col in all_agg_col_names),
+                    *columns, *(Field(agg_col, table=agg_query) for agg_col in all_agg_col_names)
                 )
                 .left_join(agg_query)
                 .on_field(*step.on)
             )
-            selected_col_names = [*table.columns, *all_agg_col_names]
+
+            selected_col_names = [*columns, *all_agg_col_names]
+            return StepContext(query, selected_col_names)
 
         else:
             selected_cols: list[str | Field] = [*step.on, *agg_selected]
             selected_col_names = [*step.on, *(f.alias for f in agg_selected)]
-            query = (
-                self.QUERY_CLS.from_(table.name)
+            return StepContext(
+                self.QUERY_CLS.from_(prev_step_name)
                 .select(*selected_cols)
                 .groupby(*step.on)
-                .orderby(*step.on, order=Order.asc)
+                .orderby(*step.on, order=Order.asc),
+                selected_col_names,
             )
 
-        return query, StepTable(columns=selected_col_names)
-
     def argmax(
-        self: Self, *, step: "ArgmaxStep", table: StepTable
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: "ArgmaxStep",
+        table: StepTable,
     ) -> tuple["QueryBuilder", StepTable]:
         from weaverbird.pipeline.steps import TopStep
 
@@ -297,22 +394,19 @@ class SQLTranslator(ABC):
         )
         return query, StepTable(columns=table.columns)
 
-    def customsql(
-        self: Self, *, step: "CustomSqlStep", table: StepTable
-    ) -> tuple["QueryBuilder", StepTable]:
-        """create a custom sql step based on the current table named ##PREVIOUS_STEP## in the query"""
-
-        if table.name is None:
-            raise MissingTableNameError()
-
-        custom_query = CustomQuery(
-            name=f"custom_from_{table.name}",
-            query=step.query.replace("##PREVIOUS_STEP##", table.name),
+    def _custom_query(
+        self: Self, *, step: 'CustomSqlStep', prev_step_name: str | None = None
+    ) -> CustomQuery:
+        table_name = prev_step_name or '_'
+        return CustomQuery(
+            name=f"custom_from_{table_name}",
+            query=step.query.replace("##PREVIOUS_STEP##", table_name),
         )
 
-        # we now have no way to know which columns remain
-        # without actually executing the query
-        return custom_query, StepTable(columns=["*"])
+    def customsql(self: Self, *, step: "CustomSqlStep") -> tuple["Selectable", StepTable]:
+        """create a custom sql step based on the current table named ##PREVIOUS_STEP## in the query"""
+        # we have no way to know which columns remain without actually executing the query
+        return self._custom_query(step=step), StepTable(columns=["*"])
 
     def delete(
         self: Self, *, step: "DeleteStep", table: StepTable
@@ -321,11 +415,9 @@ class SQLTranslator(ABC):
         query: "QueryBuilder" = self.QUERY_CLS.from_(table.name).select(*new_columns)
         return query, StepTable(columns=new_columns)
 
-    def domain(
-        self: Self,
-        *,
-        step: "DomainStep",
-    ) -> tuple["QueryBuilder", StepTable]:
+    # Prefixing domain with a '_', as it is a special case and should not be returned by
+    # getattr(self, step_name)
+    def _domain(self: Self, *, step: "DomainStep") -> tuple["QueryBuilder", list[str]]:
         try:
             if isinstance(step.domain, Reference):
                 raise NotImplementedError(f"[{self.DIALECT}] Cannot resolve a reference to a query")
@@ -337,7 +429,7 @@ class SQLTranslator(ABC):
         query: "QueryBuilder" = self.QUERY_CLS.from_(
             Table(step.domain, schema=self._db_schema)
         ).select(*selected_cols)
-        return query, StepTable(columns=selected_cols)
+        return query, selected_cols
 
     def duplicate(
         self: Self, *, step: "DuplicateStep", table: StepTable
@@ -566,20 +658,25 @@ class SQLTranslator(ABC):
         raise NotImplementedError(f"[{self.DIALECT}] percentage is not implemented")
 
     def rename(
-        self: Self, *, step: "RenameStep", table: StepTable
-    ) -> tuple["QueryBuilder", StepTable]:
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: "RenameStep",
+    ) -> StepContext:
         new_names_mapping: dict[str, str] = dict(step.to_rename)
 
         selected_col_fields: list[Field] = []
 
-        for col_name in table.columns:
+        for col_name in columns:
             if col_name in new_names_mapping:
                 selected_col_fields.append(Field(name=col_name, alias=new_names_mapping[col_name]))
             else:
                 selected_col_fields.append(Field(name=col_name))
 
-        query: "QueryBuilder" = self.QUERY_CLS.from_(table.name).select(*selected_col_fields)
-        return query, StepTable(columns=[f.alias or f.name for f in selected_col_fields])
+        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(*selected_col_fields)
+        return StepContext(query, [f.alias or f.name for f in selected_col_fields])
 
     def replace(
         self: Self, *, step: "ReplaceStep", table: StepTable
@@ -599,10 +696,15 @@ class SQLTranslator(ABC):
         return query, StepTable(columns=table.columns)
 
     def select(
-        self: Self, *, step: "SelectStep", table: StepTable
-    ) -> tuple["QueryBuilder", StepTable]:
-        query: "QueryBuilder" = self.QUERY_CLS.from_(table.name).select(*step.columns)
-        return query, StepTable(columns=step.columns)
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: "SelectStep",
+    ) -> StepContext:
+        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(*step.columns)
+        return StepContext(query, step.columns)
 
     def sort(self: Self, *, step: "SortStep", table: StepTable) -> tuple["QueryBuilder", StepTable]:
         query: "QueryBuilder" = self.QUERY_CLS.from_(table.name).select(*table.columns)
