@@ -38,7 +38,7 @@ def test_convert_with_enabled_split_part(mapping_translator: MappingEnabledTrans
 
     step_table = StepTable(columns=selected_columns, name=previous_step)
     step = steps.ConvertStep(columns=convert_columns, data_type="text")
-    (query, new_step_table) = mapping_translator.convert(step=step, table=step_table)
+    (query, _) = mapping_translator.convert(step=step, table=step_table)
 
     expected_query = Query.from_(previous_step).select(
         *selected_columns,

@@ -44,7 +44,7 @@ def test_split_enabled(split_enabled_translator: SplitEnabledTranslator):
 
     step_table = StepTable(columns=selected_columns, name=previous_step)
     step = steps.SplitStep(column=column, delimiter=delimiter, number_cols_to_keep=2)
-    (query, new_step_table) = split_enabled_translator.split(step=step, table=step_table)
+    (query, _) = split_enabled_translator.split(step=step, table=step_table)
 
     expected_query = Query.from_(previous_step).select(
         *selected_columns,

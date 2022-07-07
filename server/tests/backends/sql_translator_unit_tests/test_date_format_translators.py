@@ -35,7 +35,7 @@ def test_fromdate(date_format_translators: DateFormatTranslator):
 
     step_table = StepTable(columns=selected_columns, name=previous_step)
     step = steps.FromdateStep(column=column, format=format)
-    (query, new_step_table) = date_format_translators.fromdate(step=step, table=step_table)
+    (query, _) = date_format_translators.fromdate(step=step, table=step_table)
 
     expected_query = Query.from_(previous_step).select(
         *selected_columns, functions.ToChar(Field(column), format).as_(column)

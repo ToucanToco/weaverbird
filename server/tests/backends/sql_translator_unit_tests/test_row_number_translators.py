@@ -65,7 +65,7 @@ def test_top_with_enabled_row_number(row_number_enabled_translator: RowNumberEna
 
     step_table = StepTable(columns=selected_columns, name=previous_step)
     step = steps.TopStep(rank_on=rank_on, groups=[group], sort=sort_order, limit=100)
-    (query, new_step_table) = row_number_enabled_translator.top(step=step, table=step_table)
+    (query, _) = row_number_enabled_translator.top(step=step, table=step_table)
 
     expected_query = get_top_query(
         sort_order, previous_step, group, rank_on, selected_columns, step.limit
@@ -94,7 +94,7 @@ def test_argmax_with_enabled_split_part(row_number_enabled_translator: RowNumber
 
     step_table = StepTable(columns=selected_columns, name=previous_step)
     step = steps.ArgmaxStep(column=rank_on, groups=[group])
-    (query, new_step_table) = row_number_enabled_translator.argmax(step=step, table=step_table)
+    (query, _) = row_number_enabled_translator.argmax(step=step, table=step_table)
 
     expected_query = get_top_query("desc", previous_step, group, rank_on, selected_columns, 1)
 
@@ -121,7 +121,7 @@ def test_argmin_with_enabled_split_part(row_number_enabled_translator: RowNumber
 
     step_table = StepTable(columns=selected_columns, name=previous_step)
     step = steps.ArgminStep(column=rank_on, groups=[group])
-    (query, new_step_table) = row_number_enabled_translator.argmin(step=step, table=step_table)
+    (query, _) = row_number_enabled_translator.argmin(step=step, table=step_table)
 
     expected_query = get_top_query("asc", previous_step, group, rank_on, selected_columns, 1)
 
