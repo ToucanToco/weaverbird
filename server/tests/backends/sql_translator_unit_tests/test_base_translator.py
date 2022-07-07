@@ -76,11 +76,9 @@ def test_get_query_more_than_one_step(base_translator: BaseTranslator):
     step_0_query = Query.from_(schema.users).select(*ALL_TABLES["users"])
     expected = Query.with_(step_0_query, "__step_0__").from_(schema.users).select("*")
 
-    columns = list(
-        map(
-            lambda col: Field(col) if col is not to_rename else Field(col).as_(rename_as),
-            ALL_TABLES["users"],
-        )
+    columns = (
+        Field(col) if col is not to_rename else Field(col).as_(rename_as)
+        for col in ALL_TABLES["users"]
     )
     step_1_query = Query.from_(AliasedQuery('"__step_0__"')).select(*columns)
 
@@ -253,7 +251,7 @@ def test_delete(base_translator: BaseTranslator):
     previous_step = "previous_with"
     selected_columns = ALL_TABLES["users"]
     deleted_columns = ["name", "age"]
-    left_columns = filter(lambda c: c not in deleted_columns, ALL_TABLES["users"])
+    left_columns = [c for c in ALL_TABLES["users"] if c not in deleted_columns]
 
     step_table = StepTable(columns=selected_columns, name=previous_step)
     step = steps.DeleteStep(columns=deleted_columns)
