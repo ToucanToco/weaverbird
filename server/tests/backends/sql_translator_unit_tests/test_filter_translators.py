@@ -62,13 +62,15 @@ def test_inclusion_filter(filter_translator: FilterTranslator, op: str):
 
     condition = conditions.InclusionCondition(column=column, operator=op, value=inclusion)
 
-    op_func = { 'in': Field(column).isin, 'nin': Field(column).notin }
+    op_func = {'in': Field(column).isin, 'nin': Field(column).notin}
 
     step_table = StepTable(columns=selected_columns, name=previous_step)
     step = steps.FilterStep(condition=condition)
     (query, _) = filter_translator.filter(step=step, table=step_table)
 
-    expected_query = Query.from_(previous_step).where(op_func[op](inclusion)).select(*selected_columns)
+    expected_query = (
+        Query.from_(previous_step).where(op_func[op](inclusion)).select(*selected_columns)
+    )
 
     assert query.get_sql() == expected_query.get_sql()
 
@@ -81,8 +83,8 @@ def test_null_filter(filter_translator: FilterTranslator, op: str):
 
     condition = conditions.NullCondition(column=column, operator=op)
 
-    op_func = { 'isnull': Field(column).isnull, 'notnull': Field(column).isnotnull }
-    
+    op_func = {'isnull': Field(column).isnull, 'notnull': Field(column).isnotnull}
+
     step_table = StepTable(columns=selected_columns, name=previous_step)
     step = steps.FilterStep(condition=condition)
     (query, _) = filter_translator.filter(step=step, table=step_table)
