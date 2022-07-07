@@ -29,7 +29,7 @@ def filter_translator():
 
 
 @pytest.mark.parametrize('op', ['eq', 'ne', 'lt', 'le', 'gt', 'ge'])
-def test_comparasion_filter(filter_translator: FilterTranslator, op: str):
+def test_comparison_filter(filter_translator: FilterTranslator, op: str):
     selected_columns = ["name", "age"]
     previous_step = "previous_with"
     column = "name"
