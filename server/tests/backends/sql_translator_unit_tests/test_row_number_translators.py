@@ -49,7 +49,7 @@ def get_top_query(sort_order, previous_step, group, rank_on, selected_columns, l
         RowNumber()
         .as_("row_number")
         .over(name_field)
-        .orderby(age_field, order=Order.asc if sort_order == "asc" else Order.desc)
+        .orderby(age_field, order=getattr(Order, sort_order))
     )
     expected_query = (
         Query.from_(rank_select)
