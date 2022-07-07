@@ -108,7 +108,4 @@ def test_sql_translator_pipeline(case_id: str, case_spec_file_path: str, engine:
     # Execute request generated from Pipeline in Postgres and get the result
     result: pd.DataFrame = pd.read_sql(query, engine)
     expected = pd.read_json(json.dumps(spec['expected']), orient='table')
-    if 'other_expected' in spec:
-        query_expected = spec['other_expected']['sql']['query']
-        assert query_expected == query
     assert_dataframes_equals(expected, result)
