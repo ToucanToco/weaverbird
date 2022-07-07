@@ -1,19 +1,19 @@
 import pytest
-from pypika import AliasedQuery, Case, Field, Order, Query, Schema, Table, functions
-from pypika.terms import LiteralValue, ValueWrapper
+from pypika import Field, Order, Query
 
-from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, RowNumber, SQLTranslator, StepTable
-from weaverbird.exceptions import MissingTableNameError
-from weaverbird.pipeline import conditions, steps
-from weaverbird.pipeline.pipeline import DomainStep
-from weaverbird.pipeline.steps.utils.combination import Reference
-
+from weaverbird.backends.pypika_translator.translators.base import (
+    RowNumber,
+    SQLTranslator,
+    StepTable,
+)
+from weaverbird.pipeline import steps
 
 
 class RowNumberEnabledTranslator(SQLTranslator):
     DIALECT = "Base"
     QUERY_CLS = Query
     SUPPORT_ROW_NUMBER = True
+
 
 class RowNumberDisabledTranslator(SQLTranslator):
     DIALECT = "Base"
@@ -24,6 +24,7 @@ class RowNumberDisabledTranslator(SQLTranslator):
 ALL_TABLES = {"users": ["name", "pseudonyme", "age"]}
 DB_SCHEMA = "test_schema"
 
+
 @pytest.fixture
 def row_number_enabled_translator():
     return RowNumberEnabledTranslator(
@@ -31,12 +32,14 @@ def row_number_enabled_translator():
         db_schema=DB_SCHEMA,
     )
 
+
 @pytest.fixture
 def row_number_disabled_translator():
     return RowNumberDisabledTranslator(
         tables_columns=ALL_TABLES,
         db_schema=DB_SCHEMA,
     )
+
 
 def get_top_query(sort_order, previous_step, group, rank_on, selected_columns, limit):
     age_field = Field(rank_on)
@@ -56,8 +59,11 @@ def get_top_query(sort_order, previous_step, group, rank_on, selected_columns, l
     )
     return expected_query
 
+
 @pytest.mark.parametrize("sort_order", ["asc", "desc"])
-def test_top_with_enabled_row_number(row_number_enabled_translator: RowNumberEnabledTranslator, sort_order):
+def test_top_with_enabled_row_number(
+    row_number_enabled_translator: RowNumberEnabledTranslator, sort_order
+):
     previous_step = "previous_with"
     group = "name"
     rank_on = "age"
@@ -73,8 +79,11 @@ def test_top_with_enabled_row_number(row_number_enabled_translator: RowNumberEna
 
     assert query.get_sql() == expected_query.get_sql()
 
+
 @pytest.mark.parametrize("sort_order", ["asc", "desc"])
-def test_top_with_disabled_row_number(row_number_disabled_translator: RowNumberDisabledTranslator, sort_order):
+def test_top_with_disabled_row_number(
+    row_number_disabled_translator: RowNumberDisabledTranslator, sort_order
+):
     previous_step = "previous_with"
     group = "name"
     rank_on = "age"
@@ -101,7 +110,9 @@ def test_argmax_with_enabled_split_part(row_number_enabled_translator: RowNumber
     assert query.get_sql() == expected_query.get_sql()
 
 
-def test_argmax_with_disabled_split_part(row_number_disabled_translator: RowNumberDisabledTranslator):
+def test_argmax_with_disabled_split_part(
+    row_number_disabled_translator: RowNumberDisabledTranslator,
+):
     previous_step = "previous_with"
     group = "name"
     rank_on = "age"
@@ -128,7 +139,9 @@ def test_argmin_with_enabled_split_part(row_number_enabled_translator: RowNumber
     assert query.get_sql() == expected_query.get_sql()
 
 
-def test_argmin_with_disabled_split_part(row_number_disabled_translator: RowNumberDisabledTranslator):
+def test_argmin_with_disabled_split_part(
+    row_number_disabled_translator: RowNumberDisabledTranslator,
+):
     previous_step = "previous_with"
     group = "name"
     rank_on = "age"

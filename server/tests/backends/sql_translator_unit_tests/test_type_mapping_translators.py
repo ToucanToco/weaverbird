@@ -1,12 +1,13 @@
 import pytest
-from pypika import AliasedQuery, Case, Field, Order, Query, Schema, Table, functions
-from pypika.terms import LiteralValue, ValueWrapper
+from pypika import Field, Query, functions
 
-from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, RowNumber, SQLTranslator, StepTable
-from weaverbird.exceptions import MissingTableNameError
-from weaverbird.pipeline import conditions, steps
-from weaverbird.pipeline.pipeline import DomainStep
-from weaverbird.pipeline.steps.utils.combination import Reference
+from weaverbird.backends.pypika_translator.translators.base import (
+    DataTypeMapping,
+    SQLTranslator,
+    StepTable,
+)
+from weaverbird.pipeline import steps
+
 
 class MappingEnabledTranslator(SQLTranslator):
     DIALECT = "Base"
@@ -19,8 +20,10 @@ class MappingEnabledTranslator(SQLTranslator):
         text="TEXT",
     )
 
+
 ALL_TABLES = {"users": ["name", "pseudonyme", "age"]}
 DB_SCHEMA = "test_schema"
+
 
 @pytest.fixture
 def mapping_translator():

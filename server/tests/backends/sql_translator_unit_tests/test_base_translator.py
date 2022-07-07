@@ -2,11 +2,12 @@ import pytest
 from pypika import AliasedQuery, Case, Field, Order, Query, Schema, Table, functions
 from pypika.terms import LiteralValue, ValueWrapper
 
-from weaverbird.backends.pypika_translator.translators.base import RowNumber, SQLTranslator, StepTable
+from weaverbird.backends.pypika_translator.translators.base import SQLTranslator, StepTable
 from weaverbird.exceptions import MissingTableNameError
 from weaverbird.pipeline import conditions, steps
 from weaverbird.pipeline.pipeline import DomainStep
 from weaverbird.pipeline.steps.utils.combination import Reference
+
 
 class BaseTranslator(SQLTranslator):
     DIALECT = "Base"
@@ -24,6 +25,7 @@ def base_translator():
         db_schema=DB_SCHEMA,
     )
 
+
 def test_get_query(base_translator: BaseTranslator):
     steps = [DomainStep(domain="users")]
 
@@ -31,56 +33,56 @@ def test_get_query(base_translator: BaseTranslator):
 
     step_1_query = Query.from_(schema.users).select(*ALL_TABLES["users"])
     expected = (
-        Query.with_(step_1_query, "__step_0__")
-        .from_(AliasedQuery('"__step_0__"'))
-        .select("*")
+        Query.with_(step_1_query, "__step_0__").from_(AliasedQuery('"__step_0__"')).select("*")
     )
 
     query = base_translator.get_query(steps=steps)
     assert query.get_sql() == expected.get_sql()
 
+
 class ErrorStep:
     name = "custom step"
 
+
 def test_get_query_raises_error(base_translator: BaseTranslator):
     pipeline_steps = [DomainStep(domain="users"), ErrorStep()]
-    
+
     with pytest.raises(NotImplementedError):
         base_translator.get_query(steps=pipeline_steps)
+
 
 def test_get_query_with_custom_query(base_translator: BaseTranslator):
     pipeline_steps = [steps.CustomSqlStep(query="SELECT 1")]
 
     step_1_query = Query.select(1)
     expected = (
-        Query.with_(step_1_query, "__step_0__")
-        .from_(AliasedQuery('"__step_0__"'))
-        .select("*")
+        Query.with_(step_1_query, "__step_0__").from_(AliasedQuery('"__step_0__"')).select("*")
     )
 
     query = base_translator.get_query(steps=pipeline_steps)
     assert query.get_sql() == expected.get_sql()
 
+
 def test_get_query_more_than_one_step(base_translator: BaseTranslator):
-    to_rename="age"
-    rename_as="old"
-    pipeline_steps = [DomainStep(domain="users"), steps.RenameStep(toRename=[(to_rename, rename_as)])]
+    to_rename = "age"
+    rename_as = "old"
+    pipeline_steps = [
+        DomainStep(domain="users"),
+        steps.RenameStep(toRename=[(to_rename, rename_as)]),
+    ]
 
     schema = Schema(DB_SCHEMA)
 
     step_0_query = Query.from_(schema.users).select(*ALL_TABLES["users"])
-    expected = (
-        Query.with_(step_0_query, "__step_0__")
-        .from_(schema.users)
-        .select("*")
-    )
+    expected = Query.with_(step_0_query, "__step_0__").from_(schema.users).select("*")
 
-    rename_fields = lambda col: Field(col) if col is not to_rename else Field(col).as_(rename_as)
-    columns = list(map(rename_fields, ALL_TABLES["users"]))
-    step_1_query = (
-        Query.from_(AliasedQuery('"__step_0__"'))
-        .select(*columns)
+    columns = list(
+        map(
+            lambda col: Field(col) if col is not to_rename else Field(col).as_(rename_as),
+            ALL_TABLES["users"],
+        )
     )
+    step_1_query = Query.from_(AliasedQuery('"__step_0__"')).select(*columns)
 
     expected = (
         Query.with_(step_0_query, "__step_0__")
@@ -91,6 +93,7 @@ def test_get_query_more_than_one_step(base_translator: BaseTranslator):
 
     query = base_translator.get_query(steps=pipeline_steps)
     assert query.get_sql() == expected.get_sql()
+
 
 def test_get_query_str(base_translator: BaseTranslator):
     steps = [DomainStep(domain="users")]
@@ -147,6 +150,7 @@ def test_aggregate(base_translator: BaseTranslator, agg_type):
 
     assert query.get_sql() == expected_query.get_sql()
 
+
 @pytest.mark.parametrize("agg_type", ["avg", "count", "count distinct", "max", "min", "sum"])
 def test_aggregate_with_original_granularity(base_translator: BaseTranslator, agg_type):
     original_select = ["*"]
@@ -160,7 +164,7 @@ def test_aggregate_with_original_granularity(base_translator: BaseTranslator, ag
         aggregations=[
             steps.Aggregation(new_columns=[new_column], agg_function=agg_type, columns=[agg_field])
         ],
-        keepOriginalGranularity=True
+        keepOriginalGranularity=True,
     )
     (query, _) = base_translator.aggregate(step=step, table=step_table)
 
@@ -168,9 +172,7 @@ def test_aggregate_with_original_granularity(base_translator: BaseTranslator, ag
     agg_func = base_translator._get_aggregate_function(agg_type)
     field = Field(agg_field)
     agg_query = (
-        Query.from_(previous_step)
-        .groupby(field)
-        .select(field, agg_func(field).as_(new_column))
+        Query.from_(previous_step).groupby(field).select(field, agg_func(field).as_(new_column))
     )
 
     expected_query = (
@@ -463,6 +465,7 @@ def test_sort(base_translator: BaseTranslator):
 
     assert query.get_sql() == expected_query.get_sql()
 
+
 def test_substring(base_translator: BaseTranslator):
     selected_columns = ["name", "pseudonyme"]
     previous_step = "previous_with"
@@ -546,9 +549,8 @@ def test_absolutevalue(base_translator: BaseTranslator):
     step = steps.AbsoluteValueStep(column=column, new_column=new_column)
     (query, _) = base_translator.absolutevalue(step=step, table=step_table)
 
-    expected_query = (
-        Query.from_(previous_step)
-        .select(*selected_columns, functions.Abs(Field(column)).as_(new_column))
+    expected_query = Query.from_(previous_step).select(
+        *selected_columns, functions.Abs(Field(column)).as_(new_column)
     )
 
     assert query.get_sql() == expected_query.get_sql()

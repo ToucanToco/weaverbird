@@ -1,25 +1,25 @@
 import pytest
-from pypika import AliasedQuery, Case, Field, Order, Query, Schema, Table, functions
-from pypika.terms import LiteralValue, ValueWrapper
+from pypika import Field, Query, functions
 
-from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, RowNumber, SQLTranslator, StepTable
-from weaverbird.exceptions import MissingTableNameError
-from weaverbird.pipeline import conditions, steps
-from weaverbird.pipeline.pipeline import DomainStep
-from weaverbird.pipeline.steps.utils.combination import Reference
+from weaverbird.backends.pypika_translator.translators.base import SQLTranslator, StepTable
+from weaverbird.pipeline import steps
+
 
 class SplitEnabledTranslator(SQLTranslator):
     DIALECT = "Base"
     QUERY_CLS = Query
     SUPPORT_SPLIT_PART = True
 
+
 class SplitDisabledTranslator(SQLTranslator):
     DIALECT = "Base"
     QUERY_CLS = Query
     SUPPORT_SPLIT_PART = False
 
+
 ALL_TABLES = {"users": ["name", "pseudonyme", "age"]}
 DB_SCHEMA = "test_schema"
+
 
 @pytest.fixture
 def split_enabled_translator():
@@ -27,6 +27,7 @@ def split_enabled_translator():
         tables_columns=ALL_TABLES,
         db_schema=DB_SCHEMA,
     )
+
 
 @pytest.fixture
 def split_disabled_translator():

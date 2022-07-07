@@ -1,21 +1,19 @@
 import pytest
-from pypika import AliasedQuery, Case, Field, Order, Query, Schema, Table, functions
-from pypika.terms import LiteralValue, ValueWrapper
-from weaverbird.backends.pypika_translator.operators import RegexOp
+from pypika import Field, Query
+from pypika.terms import BasicCriterion, ValueWrapper
 
-from weaverbird.backends.pypika_translator.translators.base import RegexpMatching, RowNumber, SQLTranslator, StepTable
-from weaverbird.exceptions import MissingTableNameError
+from weaverbird.backends.pypika_translator.operators import RegexOp
+from weaverbird.backends.pypika_translator.translators.base import (
+    RegexpMatching,
+    SQLTranslator,
+    StepTable,
+)
 from weaverbird.pipeline import conditions, steps
-from weaverbird.pipeline.pipeline import DomainStep
-from weaverbird.pipeline.steps.utils.combination import Reference
-from pypika.terms import AnalyticFunction, BasicCriterion, LiteralValue 
 
 
 class FilterTranslator(SQLTranslator):
     DIALECT = "Filter"
     QUERY_CLS = Query
-
-
 
 
 ALL_TABLES = {"users": ["name", "pseudonyme", "age"]}
@@ -28,6 +26,7 @@ def filter_translator():
         tables_columns=ALL_TABLES,
         db_schema=DB_SCHEMA,
     )
+
 
 @pytest.mark.parametrize('op', ['eq', 'ne', 'lt', 'le', 'gt', 'ge'])
 def test_comparasion_filter(filter_translator: FilterTranslator, op: str):
@@ -43,11 +42,12 @@ def test_comparasion_filter(filter_translator: FilterTranslator, op: str):
     (query, _) = filter_translator.filter(step=step, table=step_table)
 
     import operator
-    op_func = getattr(operator, op) 
+
+    op_func = getattr(operator, op)
     expected_query = (
         Query.from_(previous_step)
-            .where(op_func(Field(column), anonymous))
-            .select(*selected_columns)
+        .where(op_func(Field(column), anonymous))
+        .select(*selected_columns)
     )
 
     assert query.get_sql() == expected_query.get_sql()
@@ -70,13 +70,10 @@ def test_inclusion_filter(filter_translator: FilterTranslator, op: str):
     step_table = StepTable(columns=selected_columns, name=previous_step)
     step = steps.FilterStep(condition=condition)
     (query, _) = filter_translator.filter(step=step, table=step_table)
-    expected_query = (
-        Query.from_(previous_step)
-            .where(op_func)
-            .select(*selected_columns)
-    )
+    expected_query = Query.from_(previous_step).where(op_func).select(*selected_columns)
 
     assert query.get_sql() == expected_query.get_sql()
+
 
 @pytest.mark.parametrize('op', ['isnull', 'notnull'])
 def test_null_filter(filter_translator: FilterTranslator, op: str):
@@ -94,11 +91,7 @@ def test_null_filter(filter_translator: FilterTranslator, op: str):
     step_table = StepTable(columns=selected_columns, name=previous_step)
     step = steps.FilterStep(condition=condition)
     (query, _) = filter_translator.filter(step=step, table=step_table)
-    expected_query = (
-        Query.from_(previous_step)
-            .where(op_func)
-            .select(*selected_columns)
-    )
+    expected_query = Query.from_(previous_step).where(op_func).select(*selected_columns)
 
     assert query.get_sql() == expected_query.get_sql()
 
@@ -120,20 +113,19 @@ def test_datebound_filter(filter_translator: FilterTranslator, op: str):
     step_table = StepTable(columns=selected_columns, name=previous_step)
     step = steps.FilterStep(condition=condition)
     (query, _) = filter_translator.filter(step=step, table=step_table)
-    expected_query = (
-        Query.from_(previous_step)
-            .where(op_func)
-            .select(*selected_columns)
-    )
+    expected_query = Query.from_(previous_step).where(op_func).select(*selected_columns)
 
     assert query.get_sql() == expected_query.get_sql()
 
+
 # MATCHES REGEXP
+
 
 class REGEXPTranslator(SQLTranslator):
     DIALECT = "REGEXP"
     QUERY_CLS = Query
     REGEXP_OP = RegexOp.REGEXP
+
 
 @pytest.fixture
 def regexp_translator():
@@ -155,12 +147,11 @@ def test_matches_regexp_filter(regexp_translator: REGEXPTranslator):
     step = steps.FilterStep(condition=condition)
     (query, _) = regexp_translator.filter(step=step, table=step_table)
     expected_query = (
-        Query.from_(previous_step)
-            .where(Field(column).regexp(regex))
-            .select(*selected_columns)
+        Query.from_(previous_step).where(Field(column).regexp(regex)).select(*selected_columns)
     )
 
     assert query.get_sql() == expected_query.get_sql()
+
 
 def test_notmatches_regexp_filter(regexp_translator: REGEXPTranslator):
     selected_columns = ["name", "age"]
@@ -175,18 +166,21 @@ def test_notmatches_regexp_filter(regexp_translator: REGEXPTranslator):
     (query, _) = regexp_translator.filter(step=step, table=step_table)
     expected_query = (
         Query.from_(previous_step)
-            .where(Field(column).regexp(regex).negate())
-            .select(*selected_columns)
+        .where(Field(column).regexp(regex).negate())
+        .select(*selected_columns)
     )
 
     assert query.get_sql() == expected_query.get_sql()
 
+
 # MATCHES SIMILAR TO
+
 
 class SimilarToTranslator(SQLTranslator):
     DIALECT = "SIMILAR TO"
     QUERY_CLS = Query
     REGEXP_OP = RegexOp.SIMILAR_TO
+
 
 @pytest.fixture
 def similar_to_translator():
@@ -194,6 +188,7 @@ def similar_to_translator():
         tables_columns=ALL_TABLES,
         db_schema=DB_SCHEMA,
     )
+
 
 def test_matches_similar_to_filter(similar_to_translator: SimilarToTranslator):
     selected_columns = ["name", "age"]
@@ -208,11 +203,12 @@ def test_matches_similar_to_filter(similar_to_translator: SimilarToTranslator):
     (query, _) = similar_to_translator.filter(step=step, table=step_table)
     expected_query = (
         Query.from_(previous_step)
-            .where(BasicCriterion(RegexpMatching.similar_to, Field(column), ValueWrapper(f"%{regex}%")))
-            .select(*selected_columns)
+        .where(BasicCriterion(RegexpMatching.similar_to, Field(column), ValueWrapper(f"%{regex}%")))
+        .select(*selected_columns)
     )
 
     assert query.get_sql() == expected_query.get_sql()
+
 
 def test_notmatches_similar_to_filter(similar_to_translator: SimilarToTranslator):
     selected_columns = ["name", "age"]
@@ -227,8 +223,10 @@ def test_notmatches_similar_to_filter(similar_to_translator: SimilarToTranslator
     (query, _) = similar_to_translator.filter(step=step, table=step_table)
     expected_query = (
         Query.from_(previous_step)
-            .where(BasicCriterion(RegexpMatching.not_similar_to, Field(column), ValueWrapper(f"%{regex}%")))
-            .select(*selected_columns)
+        .where(
+            BasicCriterion(RegexpMatching.not_similar_to, Field(column), ValueWrapper(f"%{regex}%"))
+        )
+        .select(*selected_columns)
     )
 
     assert query.get_sql() == expected_query.get_sql()
@@ -236,10 +234,12 @@ def test_notmatches_similar_to_filter(similar_to_translator: SimilarToTranslator
 
 # MATCHES CONTAINS
 
+
 class ContainsTranslator(SQLTranslator):
     DIALECT = "CONTAINS"
     QUERY_CLS = Query
     REGEXP_OP = RegexOp.CONTAINS
+
 
 @pytest.fixture
 def contains_translator():
@@ -247,6 +247,7 @@ def contains_translator():
         tables_columns=ALL_TABLES,
         db_schema=DB_SCHEMA,
     )
+
 
 def test_matches_contains_filter(contains_translator: ContainsTranslator):
     selected_columns = ["name", "age"]
@@ -261,11 +262,12 @@ def test_matches_contains_filter(contains_translator: ContainsTranslator):
     (query, _) = contains_translator.filter(step=step, table=step_table)
     expected_query = (
         Query.from_(previous_step)
-            .where(BasicCriterion(RegexpMatching.contains, Field(column), ValueWrapper(f"%{regex}%")))
-            .select(*selected_columns)
+        .where(BasicCriterion(RegexpMatching.contains, Field(column), ValueWrapper(f"%{regex}%")))
+        .select(*selected_columns)
     )
 
     assert query.get_sql() == expected_query.get_sql()
+
 
 def test_notmatches_contains_filter(contains_translator: ContainsTranslator):
     selected_columns = ["name", "age"]
@@ -280,8 +282,10 @@ def test_notmatches_contains_filter(contains_translator: ContainsTranslator):
     (query, _) = contains_translator.filter(step=step, table=step_table)
     expected_query = (
         Query.from_(previous_step)
-            .where(BasicCriterion(RegexpMatching.not_contains, Field(column), ValueWrapper(f"%{regex}%")))
-            .select(*selected_columns)
+        .where(
+            BasicCriterion(RegexpMatching.not_contains, Field(column), ValueWrapper(f"%{regex}%"))
+        )
+        .select(*selected_columns)
     )
 
     assert query.get_sql() == expected_query.get_sql()
