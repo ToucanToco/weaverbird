@@ -2,7 +2,7 @@ import json
 import logging
 import time
 from os import path
-from typing import List
+from typing import Any, List
 
 import docker
 import pandas as pd
@@ -31,12 +31,16 @@ con_params = {
     'database': 'pg_db',
 }
 docker_client = docker.from_env()
-ENGINE = None
+connection_string = f'postgresql://{con_params["user"]}:{con_params["password"]}@{con_params["host"]}:{con_params["port"]}/{con_params["database"]}'
+
+
+@pytest.fixture(scope='module')
+def engine() -> Any:
+    return create_engine(connection_string)
 
 
 @pytest.fixture(scope='module', autouse=True)
 def db_container():
-    global ENGINE
     images: List[Image] = docker_client.images.list()
     found = False
     for i in images:
@@ -64,29 +68,30 @@ def db_container():
         },
         ports={'5432': '5432'},
     )
-    while not ENGINE:
+    engine = None
+    while not engine:
         time.sleep(1)
         try:
             if docker_container.status == 'created' and psycopg2.connect(**con_params):
-                ENGINE = create_engine(
-                    f'postgresql://{con_params["user"]}:{con_params["password"]}@{con_params["host"]}:{con_params["port"]}/{con_params["database"]}'
-                )
                 dataset = pd.read_csv(
                     f'{path.join(path.dirname(path.realpath(__file__)))}/beers.csv'
                 )
                 dataset['brewing_date'] = dataset['brewing_date'].apply(pd.to_datetime)
-                dataset.to_sql('beers_tiny', ENGINE)
+                engine = create_engine(connection_string)
+                dataset.to_sql('beers_tiny', engine)
         except OperationalError:
             pass
-    yield docker_container
-    docker_container.stop()
+    try:
+        yield docker_container
+    finally:
+        docker_container.kill()
 
 
 # Translation from Pipeline json to SQL query
 @pytest.mark.parametrize(
     'case_id, case_spec_file_path', retrieve_case('sql_translator', 'postgres_pypika')
 )
-def test_sql_translator_pipeline(case_id, case_spec_file_path):
+def test_sql_translator_pipeline(case_id: str, case_spec_file_path: str, engine: Any):
     spec = get_spec_from_json_fixture(case_id, case_spec_file_path)
 
     steps = spec['step']['pipeline']
@@ -101,7 +106,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path):
         db_schema=None,
     )
     # Execute request generated from Pipeline in Postgres and get the result
-    result: pd.DataFrame = pd.read_sql(query, ENGINE)
+    result: pd.DataFrame = pd.read_sql(query, engine)
     expected = pd.read_json(json.dumps(spec['expected']), orient='table')
     if 'other_expected' in spec:
         query_expected = spec['other_expected']['sql']['query']
