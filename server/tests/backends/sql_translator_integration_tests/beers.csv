@@ -1,0 +1,11 @@
+price_per_l,alcohol_degree,name,cost,beer_kind,volume_ml,brewing_date,nullable_name
+0.16,13.5,Superstrong beer,2.89,Triple,330,2022-01-01,
+0.054,4.877377162629759,Ninkasi Ploploplop,2.89,India Pale Ale,330,2022-01-02,Ninkasi Ploploplop
+0.005,0.569934497816594,Brewdog Nanny State Alcoholvrij,2.29,Sans alcool,330,2022-01-03,Brewdog Nanny State Alcoholvrij
+0.0559999999999999,6.994105263157894,Ardwen Blonde,2.09,Best-sellers,330,2022-01-04,Ardwen Blonde
+0.07,8.930645161290323,Cuvée des Trolls,1.55,Blonde,250,2022-01-05,
+0.005,1.2437106918238994,Weihenstephan Hefe Weizen Alcoholarm,1.59,Blanche & Weizen,500,2022-01-06,Weihenstephan Hefe Weizen Alcoholarm
+0.045,4.717409638554217,Bellfield Lawless Village IPA,2.49,India Pale Ale,330,2022-01-07,Bellfield Lawless Village IPA
+0.084,12.974272189349117,Pauwel Kwak,1.69,Belge blonde forte & Golden Ale,330,2022-01-08,Pauwel Kwak
+0.065,7.747465753424658,Brasserie De Sutter Brin de Folie,2.19,Blonde,330,2022-01-09,
+0.06,8.749608938547487,Brugse Zot blonde,1.79,Blonde,330,2022-01-10,Brugse Zot blonde

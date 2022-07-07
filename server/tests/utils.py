@@ -8,6 +8,17 @@ import pytest
 from pandas import DataFrame, Series
 from pandas.testing import assert_frame_equal, assert_series_equal
 
+_BEERS_TABLE_COLUMNS = [
+    "price_per_l",
+    "alcohol_degree",
+    "name",
+    "cost",
+    "beer_kind",
+    "volume_ml",
+    "brewing_date",
+    "nullable_name",
+]
+
 
 def assert_dataframes_equals(left: DataFrame, right: DataFrame):
     """

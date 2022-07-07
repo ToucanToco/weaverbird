@@ -6,7 +6,12 @@ import pytest
 from google.cloud.bigquery import Client
 from google.oauth2 import service_account
 
-from tests.utils import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
+from tests.utils import (
+    _BEERS_TABLE_COLUMNS,
+    assert_dataframes_equals,
+    get_spec_from_json_fixture,
+    retrieve_case,
+)
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import translate_pipeline
 from weaverbird.pipeline import Pipeline
@@ -19,18 +24,6 @@ credentials = service_account.Credentials.from_service_account_info(
 @pytest.fixture
 def bigquery_client() -> Client:
     return Client(credentials=credentials)
-
-
-_BEERS_TABLE_COLUMNS = [
-    "price_per_l",
-    "alcohol_degree",
-    "name",
-    "cost",
-    "beer_kind",
-    "volume_ml",
-    "brewing_date",
-    "nullable_name",
-]
 
 
 @pytest.mark.parametrize(
