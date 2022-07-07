@@ -3,7 +3,8 @@
     "athena_pypika",
     "bigquery_pypika",
     "mysql",
-    "redshift_pypika"
+    "redshift_pypika",
+    "postgres_pypika"
   ],
   "step": {
     "pipeline": [

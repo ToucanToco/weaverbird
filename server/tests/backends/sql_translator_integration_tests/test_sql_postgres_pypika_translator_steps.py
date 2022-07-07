@@ -1,7 +1,8 @@
 import json
 import logging
 import time
-from typing import List, Optional
+from os import path
+from typing import Any, List
 
 import docker
 import pandas as pd
@@ -11,17 +12,31 @@ from docker.models.images import Image
 from psycopg2 import OperationalError
 from sqlalchemy import create_engine
 
-from tests.backends.sql_translator.common import standardized_columns, standardized_values
-from tests.utils import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
+from tests.utils import (
+    _BEERS_TABLE_COLUMNS,
+    assert_dataframes_equals,
+    get_spec_from_json_fixture,
+    retrieve_case,
+)
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import translate_pipeline
 from weaverbird.pipeline import PipelineWithVariables
 
 image = {'name': 'postgres_weaverbird_test', 'image': 'postgres', 'version': '14.1-bullseye'}
+con_params = {
+    'host': '127.0.0.1',
+    'user': 'ubuntu',
+    'password': 'ilovetoucan',
+    'port': 5432,
+    'database': 'pg_db',
+}
 docker_client = docker.from_env()
-exec_type = 'postgres_pypika'
+connection_string = f'postgresql://{con_params["user"]}:{con_params["password"]}@{con_params["host"]}:{con_params["port"]}/{con_params["database"]}'
 
-test_cases = retrieve_case('sql_translator', exec_type)
+
+@pytest.fixture(scope='module')
+def engine() -> Any:
+    return create_engine(connection_string)
 
 
 @pytest.fixture(scope='module', autouse=True)
@@ -53,121 +68,47 @@ def db_container():
         },
         ports={'5432': '5432'},
     )
-    ready = False
-    while not ready:
+    engine = None
+    while not engine:
         time.sleep(1)
         try:
-            if docker_container.status == 'created' and get_connection():
-                ready = True
+            if docker_container.status == 'created' and psycopg2.connect(**con_params):
+                dataset = pd.read_csv(
+                    f'{path.join(path.dirname(path.realpath(__file__)))}/beers.csv'
+                )
+                dataset['brewing_date'] = dataset['brewing_date'].apply(pd.to_datetime)
+                engine = create_engine(connection_string)
+                dataset.to_sql('beers_tiny', engine)
         except OperationalError:
             pass
-    yield docker_container
-    docker_container.stop()
-
-
-# Update this method to use snowflake connection
-def get_connection():
-    con_params = {
-        'host': '127.0.0.1',
-        'user': 'ubuntu',
-        'password': 'ilovetoucan',
-        'port': 5432,
-        'database': 'pg_db',
-    }
-    conn = psycopg2.connect(**con_params)
-    return conn
-
-
-@pytest.fixture
-def get_engine():
-    host = '127.0.0.1'
-    user = 'ubuntu'
-    password = 'ilovetoucan'
-    port = 5432
-    database = 'pg_db'
-    engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{database}')
-    return engine
-
-
-def execute(connection, query: str, meta: bool = True) -> Optional[pd.DataFrame]:
-    with connection.cursor() as cursor:
-        cursor.execute(query)
-        if meta:
-            df = pd.DataFrame(cursor.fetchall())
-            field_names = [i[0] for i in cursor.description]
-            df.columns = field_names
-            return df
-        else:
-            return None
+    try:
+        yield docker_container
+    finally:
+        docker_container.kill()
 
 
 # Translation from Pipeline json to SQL query
-@pytest.mark.parametrize('case_id, case_spec_file_path', test_cases)
-def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
+@pytest.mark.parametrize(
+    'case_id, case_spec_file_path', retrieve_case('sql_translator', 'postgres_pypika')
+)
+def test_sql_translator_pipeline(case_id: str, case_spec_file_path: str, engine: Any):
     spec = get_spec_from_json_fixture(case_id, case_spec_file_path)
-    test_table_name = case_id.replace("/", "")
-
-    # Drop created table
-    execute(get_connection(), f'DROP TABLE IF EXISTS {test_table_name}', False)
-
-    # inserting the data in Postgres
-    # Take data in fixture file, set in pandas, create table and insert
-    data_to_insert = pd.read_json(json.dumps(spec['input']), orient='table')
-    standardized_columns(data_to_insert)
-    data_to_insert.to_sql(
-        name=case_id.replace('/', ''), con=get_engine, index=False, if_exists='replace', chunksize=1
-    )
-
-    if 'other_inputs' in spec:
-        for input in spec['other_inputs']:
-            data_other_insert = pd.read_json(
-                json.dumps(spec['other_inputs'][input]), orient='table'
-            )
-            standardized_columns(data_other_insert)
-            data_other_insert.to_sql(
-                name=input,
-                con=get_engine,
-                index=False,
-                if_exists='replace',
-            )
 
     steps = spec['step']['pipeline']
-    steps.insert(0, {'name': 'domain', 'domain': test_table_name})
+    steps.insert(0, {'name': 'domain', 'domain': 'beers_tiny'})
     pipeline = PipelineWithVariables(steps=steps)
 
     # Convert Pipeline object to Postgres Query
     query = translate_pipeline(
         sql_dialect=SQLDialect.POSTGRES,
         pipeline=pipeline,
-        tables_columns={test_table_name: data_to_insert.columns},
+        tables_columns={'beers_tiny': _BEERS_TABLE_COLUMNS},
         db_schema=None,
     )
     # Execute request generated from Pipeline in Postgres and get the result
-    result: pd.DataFrame = execute(get_connection(), query)
-
-    # we standadize the expected columns
-    standardized_columns(result)
-
-    # we standardize the expected values
-    standardized_values(result)
-
-    # Compare result and expected (from fixture file)
-    pandas_result_expected = pd.read_json(
-        json.dumps(
-            spec[
-                f'expected_{exec_type}'
-                if f'expected_{exec_type}' in spec
-                else 'expected_sql'
-                if 'expected_sql' in spec
-                else 'expected'
-            ]
-        ),
-        orient='table',
-    )
-
-    standardized_columns(pandas_result_expected)
-    standardized_values(pandas_result_expected, convert_nan_to_none=True)
+    result: pd.DataFrame = pd.read_sql(query, engine)
+    expected = pd.read_json(json.dumps(spec['expected']), orient='table')
     if 'other_expected' in spec:
         query_expected = spec['other_expected']['sql']['query']
         assert query_expected == query
-    assert_dataframes_equals(pandas_result_expected, result)
+    assert_dataframes_equals(expected, result)
