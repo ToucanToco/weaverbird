@@ -1,0 +1,63 @@
+exclude:
+- mysql
+- mongo
+- pandas
+- postgres
+- snowflake
+expected:
+  data:
+  - brewing_date: '2022-01-01T00:00:00.000Z'
+    concatenated: Superstrong beer -> Triple
+  - brewing_date: '2022-01-02T00:00:00.000Z'
+    concatenated: Ninkasi Ploploplop -> India Pale Ale
+  - brewing_date: '2022-01-03T00:00:00.000Z'
+    concatenated: Brewdog Nanny State Alcoholvrij -> Sans alcool
+  - brewing_date: '2022-01-04T00:00:00.000Z'
+    concatenated: Ardwen Blonde -> Best-sellers
+  - brewing_date: '2022-01-05T00:00:00.000Z'
+    concatenated: "Cuv\xE9e des Trolls -> Blonde"
+  - brewing_date: '2022-01-06T00:00:00.000Z'
+    concatenated: Weihenstephan Hefe Weizen Alcoholarm -> Blanche & Weizen
+  - brewing_date: '2022-01-07T00:00:00.000Z'
+    concatenated: Bellfield Lawless Village IPA -> India Pale Ale
+  - brewing_date: '2022-01-08T00:00:00.000Z'
+    concatenated: Pauwel Kwak -> Belge blonde forte & Golden Ale
+  - brewing_date: '2022-01-09T00:00:00.000Z'
+    concatenated: Brasserie De Sutter Brin de Folie -> Blonde
+  - brewing_date: '2022-01-10T00:00:00.000Z'
+    concatenated: Brugse Zot blonde -> Blonde
+  schema:
+    fields:
+    - name: brewing_date
+      type: datetime
+    - name: concatenated
+      type: string
+    pandas_version: 1.4.0
+step:
+  pipeline:
+  - name: select
+    columns:
+    - 'name'
+    - 'brewing_date'
+
+  - name: join
+    'on':
+    - - name
+      - name
+    # Here, we're joining on the same dataset, but aren't keeping the same columns
+    right_pipeline:
+    - domain: beers_tiny
+      name: domain
+    - name: concatenate
+      columns:
+        - name
+        - beer_kind
+      separator: ' -> '
+      new_column_name: concatenated
+    - name: select
+      columns: ['name', 'concatenated']
+    type: inner
+  # In the end, brewing_date comes from the left dataset, and "concatenated"
+  # from the right dataset
+  - name: select
+    columns: ['brewing_date', 'concatenated']
