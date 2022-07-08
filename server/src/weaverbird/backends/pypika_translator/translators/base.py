@@ -703,7 +703,8 @@ class SQLTranslator(ABC):
 
         columns_requiring_alias = [
             col
-            for col in set(columns + right_builder_ctx.columns)
+            # Prevent SELECT "table"."*" "*"
+            for col in set(columns + right_builder_ctx.columns) - {'*'}
             if col in columns and col in right_builder_ctx.columns
         ]
 
@@ -712,7 +713,6 @@ class SQLTranslator(ABC):
             Field(
                 col,
                 table=right_table,
-                # Prevent SELECT "table"."*" "*"
                 alias=f'{col}_right' if col in columns_requiring_alias else None,
             )
             for col in right_builder_ctx.columns
