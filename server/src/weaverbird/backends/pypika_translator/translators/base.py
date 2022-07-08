@@ -1,10 +1,10 @@
 from abc import ABC
 from dataclasses import dataclass
 from functools import cache
-from typing import TYPE_CHECKING, Any, Callable, Mapping, Sequence, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, Callable, Literal, Mapping, Sequence, TypeVar, Union, cast
 
 from pypika import AliasedQuery, Case, Criterion, Field, Order, Query, Schema, Table, functions
-from pypika.enums import Comparator
+from pypika.enums import Comparator, JoinType
 from pypika.queries import QueryBuilder, Selectable
 from pypika.terms import AnalyticFunction, BasicCriterion, LiteralValue
 
@@ -19,6 +19,7 @@ from weaverbird.pipeline.conditions import (
     MatchCondition,
     NullCondition,
 )
+from weaverbird.pipeline.pipeline import Pipeline
 from weaverbird.pipeline.steps.utils.combination import Reference
 
 Self = TypeVar("Self", bound="SQLTranslator")
@@ -45,6 +46,7 @@ if TYPE_CHECKING:
         FormulaStep,
         FromdateStep,
         IfthenelseStep,
+        JoinStep,
         LowercaseStep,
         PercentageStep,
         RenameStep,
@@ -668,6 +670,65 @@ class SQLTranslator(ABC):
         )
 
         return StepContext(query, columns + [step.new_column])
+
+    @staticmethod
+    def _get_join_type(join_type: Literal['left', 'inner', 'left outer']) -> JoinType:
+        match join_type:
+            case 'left':
+                return JoinType.left
+            case 'left outer':
+                return JoinType.left_outer
+            case 'inner':
+                return JoinType.inner
+
+    def join(
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: "JoinStep",
+    ) -> StepContext:
+        try:
+            steps = Pipeline(steps=step.right_pipeline).steps
+        except Exception as exc:
+            raise NotImplementedError(
+                f"join is only possible with another pipeline: {exc}"
+            ) from exc
+        right_builder_ctx = self.__class__(
+            tables_columns=self._tables_columns, db_schema=self._db_schema_name
+        ).get_query_builder(steps=steps, query_builder=builder)
+        left_table = Table(prev_step_name)
+        right_table = Table(right_builder_ctx.table_name)
+
+        columns_requiring_alias = [
+            col
+            for col in set(columns + right_builder_ctx.columns)
+            if col in columns and col in right_builder_ctx.columns
+        ]
+
+        left_cols = [Field(col, table=left_table) for col in columns]
+        right_cols = [
+            Field(
+                col,
+                table=right_table,
+                # Prevent SELECT "table"."*" "*"
+                alias=f'{col}_right' if col in columns_requiring_alias else None,
+            )
+            for col in right_builder_ctx.columns
+        ]
+
+        query = (
+            self.QUERY_CLS.from_(left_table)
+            .select(*left_cols, *right_cols)
+            .join(right_table, self._get_join_type(step.type))
+            .on(*(Field(f[0], table=left_table) == Field(f[1], table=right_table) for f in step.on))
+        )
+        return StepContext(
+            query,
+            [c.name for c in left_cols] + [c.alias or c.name for c in right_cols],
+            right_builder_ctx.builder,
+        )
 
     def lowercase(
         self: Self,
