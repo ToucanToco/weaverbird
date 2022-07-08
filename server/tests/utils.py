@@ -5,6 +5,7 @@ from os import path
 from typing import Any, List
 
 import pytest
+import yaml
 from pandas import DataFrame, Series
 from pandas.testing import assert_frame_equal, assert_series_equal
 
@@ -74,18 +75,26 @@ type_code_mapping = {
 }
 
 
-def is_excluded(file, provider):
-    spec_file = open(file, 'r')
-    spec = json.loads(spec_file.read())
-    spec_file.close()
-    if 'exclude' in spec and provider in spec['exclude']:
+def load_fixture_file(filename: str) -> dict:
+    with open(filename, 'r') as fd:
+        if filename.endswith('.yml') or filename.endswith('.yaml'):
+            return yaml.safe_load(fd)
+        return json.load(fd)
+
+
+def is_excluded(filename: str, provider: str):
+    if 'exclude' in (spec := load_fixture_file(filename)) and provider in spec['exclude']:
         return True
     return False
 
 
 def retrieve_case(directory, provider):
     fixtures_dir_path = path.join(path.dirname(path.realpath(__file__)), 'backends/fixtures')
-    step_cases_files = glob(path.join(fixtures_dir_path, '*/*.json'))
+    step_cases_files = (
+        glob(path.join(fixtures_dir_path, '*/*.json'))
+        + glob(path.join(fixtures_dir_path, '*/*.yaml'))
+        + glob(path.join(fixtures_dir_path, '*/*.yml'))
+    )
 
     test_cases = []
     for x in step_cases_files:
@@ -99,12 +108,12 @@ def retrieve_case(directory, provider):
 
 
 def get_spec_from_json_fixture(case_id: str, case_spec_file_path: str) -> dict:
-    spec_file = open(case_spec_file_path, 'r')
+    spec = load_fixture_file(case_spec_file_path)
 
     # if it's a date type step like the filter on date
     if 'date' in case_id:
 
-        def _datetime_parser(dct):
+        def _datetime_parser(dct: dict):
             for k, v in dct.items():
                 if isinstance(dct[k], str) and dct[k].startswith(
                     "date:",
@@ -115,9 +124,7 @@ def get_spec_from_json_fixture(case_id: str, case_spec_file_path: str) -> dict:
                         print(es)
             return dct
 
-        spec = json.loads(spec_file.read(), object_hook=_datetime_parser)
-    else:
-        spec = json.loads(spec_file.read())
-    spec_file.close()
+        # Sub-optimal but still fast enough for tests
+        spec = json.loads(json.dumps(spec), object_hook=_datetime_parser)
 
     return spec

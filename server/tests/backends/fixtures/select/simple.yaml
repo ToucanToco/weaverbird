@@ -1,0 +1,44 @@
+exclude:
+- athena_pypika
+- bigquery_pypika
+- redshift_pypika
+- postgres_pypika
+- mysql
+- postgres
+- snowflake
+expected:
+  data:
+  - NAME: foo
+    SCORE: 100
+  - NAME: Azz
+    SCORE: 100
+  schema:
+    fields:
+    - name: NAME
+      type: string
+    - name: SCORE
+      type: integer
+    pandas_version: 0.20.0
+input:
+  data:
+  - AGE: 42
+    NAME: foo
+    SCORE: 100
+  - AGE: 21
+    NAME: Azz
+    SCORE: 100
+  schema:
+    fields:
+    - name: NAME
+      type: string
+    - name: AGE
+      type: integer
+    - name: SCORE
+      type: integer
+    pandas_version: 0.20.0
+step:
+  pipeline:
+  - columns:
+    - NAME
+    - SCORE
+    name: select
