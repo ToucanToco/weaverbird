@@ -681,6 +681,10 @@ class SQLTranslator(ABC):
             case 'inner':
                 return JoinType.inner
 
+    @staticmethod
+    def _field_list_to_name_list(fields: list[Field]) -> list[str]:
+        return [field.alias or field.name for field in fields]
+
     def join(
         self: Self,
         *,
@@ -701,28 +705,31 @@ class SQLTranslator(ABC):
         left_table = Table(prev_step_name)
         right_table = Table(right_builder_ctx.table_name)
 
-        columns_requiring_alias = [
-            col
-            # Prevent SELECT "table"."*" "*"
-            for col in set(columns + right_builder_ctx.columns) - {'*'}
-            if col in columns and col in right_builder_ctx.columns
-        ]
-
         left_cols = [Field(col, table=left_table) for col in columns]
-        right_cols = [
-            Field(
-                col,
-                table=right_table,
-                alias=f'{col}_right' if col in columns_requiring_alias else None,
-            )
-            for col in right_builder_ctx.columns
-        ]
+        # Simply checking if a column is in left columns and right columns is not enough to
+        # determine if it needs to be aliased. In case of nested joins where a column is used in
+        # three or more datasets (not unlikely with columns like "id" or "name"), the aliased column
+        # may need to be suffixed several times. The join/inner_pypika_nested.yaml fixture shows an
+        # example of this kind of situation
+        right_cols: list[Field] = []
+        for col in right_builder_ctx.columns:
+            if col not in (all_cols := self._field_list_to_name_list(left_cols + right_cols)):
+                right_cols.append(Field(col, table=right_table))
+                continue
+            alias = col
+            while (alias := f'{alias}_right') in all_cols:
+                pass
+            right_cols.append(Field(col, table=right_table, alias=alias))
 
         query = (
             self.QUERY_CLS.from_(left_table)
             .select(*left_cols, *right_cols)
             .join(right_table, self._get_join_type(step.type))
-            .on(*(Field(f[0], table=left_table) == Field(f[1], table=right_table) for f in step.on))
+            .on(
+                Criterion.all(
+                    Field(f[0], table=left_table) == Field(f[1], table=right_table) for f in step.on
+                )
+            )
         )
         return StepContext(
             query,
