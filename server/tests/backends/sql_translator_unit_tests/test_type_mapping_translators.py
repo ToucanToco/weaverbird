@@ -1,11 +1,9 @@
+from typing import Any
+
 import pytest
 from pypika import Field, Query, functions
 
-from weaverbird.backends.pypika_translator.translators.base import (
-    DataTypeMapping,
-    SQLTranslator,
-    StepTable,
-)
+from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, SQLTranslator
 from weaverbird.pipeline import steps
 
 
@@ -33,15 +31,16 @@ def mapping_translator():
     )
 
 
-def test_convert_with_enabled_split_part(mapping_translator: MappingEnabledTranslator):
+def test_convert_with_enabled_split_part(
+    mapping_translator: MappingEnabledTranslator, default_step_kwargs: dict[str, Any]
+):
     previous_step = "previous_with"
     selected_columns = ["*"]
     convert_columns = ["name", "age"]
     as_type = "text"
 
-    step_table = StepTable(columns=selected_columns, name=previous_step)
     step = steps.ConvertStep(columns=convert_columns, data_type="text")
-    (query, _) = mapping_translator.convert(step=step, table=step_table)
+    ctx = mapping_translator.convert(step=step, columns=selected_columns, **default_step_kwargs)
 
     expected_query = Query.from_(previous_step).select(
         *selected_columns,
@@ -49,4 +48,4 @@ def test_convert_with_enabled_split_part(mapping_translator: MappingEnabledTrans
         functions.Cast(Field("age"), as_type).as_("age"),
     )
 
-    assert query.get_sql() == expected_query.get_sql()
+    assert ctx.selectable.get_sql() == expected_query.get_sql()

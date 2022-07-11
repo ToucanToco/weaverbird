@@ -8,7 +8,7 @@ from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp,
 from weaverbird.backends.pypika_translator.translators.base import (
     DataTypeMapping,
     SQLTranslator,
-    StepTable,
+    StepContext,
 )
 
 Self = TypeVar("Self", bound="MySQLTranslator")
@@ -37,13 +37,18 @@ class MySQLTranslator(SQLTranslator):
     TO_DATE_OP = ToDateOp.STR_TO_DATE
 
     def split(
-        self: Self, *, step: "SplitStep", table: StepTable
-    ) -> tuple["QueryBuilder", StepTable]:
-        col_field: Field = Table(table.name)[step.column]
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: "SplitStep",
+    ) -> StepContext:
+        col_field: Field = Table(prev_step_name)[step.column]
         new_cols = [f"{step.column}_{i+1}" for i in range(step.number_cols_to_keep)]
 
-        query: "QueryBuilder" = self.QUERY_CLS.from_(table.name).select(
-            *table.columns,
+        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
+            *columns,
             *(
                 # https://stackoverflow.com/a/32500349
                 SubstringIndex(
@@ -52,7 +57,7 @@ class MySQLTranslator(SQLTranslator):
                 for i in range(step.number_cols_to_keep)
             ),
         )
-        return query, StepTable(columns=[*table.columns, *new_cols])
+        return StepContext(query, columns + new_cols)
 
 
 SQLTranslator.register(MySQLTranslator)

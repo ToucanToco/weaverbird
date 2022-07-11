@@ -6,11 +6,7 @@ from pypika.queries import QueryBuilder
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
-from weaverbird.backends.pypika_translator.translators.base import (
-    DataTypeMapping,
-    SQLTranslator,
-    StepTable,
-)
+from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, SQLTranslator
 from weaverbird.pipeline.conditions import DateBoundCondition
 
 Self = TypeVar("Self", bound="GoogleBigQueryTranslator")
@@ -57,9 +53,9 @@ class GoogleBigQueryTranslator(SQLTranslator):
     TO_DATE_OP = ToDateOp.PARSE_DATE
 
     def _get_single_condition_criterion(
-        self: Self, condition: "SimpleCondition", table: StepTable
+        self: Self, condition: "SimpleCondition", prev_step_name: str
     ) -> Criterion:
-        column_field: Field = Table(table.name)[condition.column]
+        column_field: Field = Table(prev_step_name)[condition.column]
 
         if isinstance(condition, DateBoundCondition):
             match condition.operator:
@@ -72,7 +68,7 @@ class GoogleBigQueryTranslator(SQLTranslator):
                         "%FT%T", condition.value
                     )
 
-        return super()._get_single_condition_criterion(condition, table)
+        return super()._get_single_condition_criterion(condition, prev_step_name)
 
 
 SQLTranslator.register(GoogleBigQueryTranslator)
