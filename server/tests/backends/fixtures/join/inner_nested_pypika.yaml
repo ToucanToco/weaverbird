@@ -6,33 +6,6 @@ exclude:
 - snowflake
 expected:
   data:
-  - beer_kind: Triple
-    beer_kind_right: Triple
-    brewing_date: '2022-01-01T00:00:00.000Z'
-    concatenated: Superstrong beer -> Triple
-    name: Superstrong beer
-    name_right: Superstrong beer
-    name_right_right: Superstrong beer
-    price_per_l: 0.16
-    price_per_l_right: 0.16
-  - beer_kind: India Pale Ale
-    beer_kind_right: India Pale Ale
-    brewing_date: '2022-01-02T00:00:00.000Z'
-    concatenated: Ninkasi Ploploplop -> India Pale Ale
-    name: Ninkasi Ploploplop
-    name_right: Ninkasi Ploploplop
-    name_right_right: Ninkasi Ploploplop
-    price_per_l: 0.054
-    price_per_l_right: 0.054
-  - beer_kind: Sans alcool
-    beer_kind_right: Sans alcool
-    brewing_date: '2022-01-03T00:00:00.000Z'
-    concatenated: Brewdog Nanny State Alcoholvrij -> Sans alcool
-    name: Brewdog Nanny State Alcoholvrij
-    name_right: Brewdog Nanny State Alcoholvrij
-    name_right_right: Brewdog Nanny State Alcoholvrij
-    price_per_l: 0.005
-    price_per_l_right: 0.005
   - beer_kind: Best-sellers
     beer_kind_right: Best-sellers
     brewing_date: '2022-01-04T00:00:00.000Z'
@@ -42,24 +15,6 @@ expected:
     name_right_right: Ardwen Blonde
     price_per_l: 0.056
     price_per_l_right: 0.056
-  - beer_kind: Blonde
-    beer_kind_right: Blonde
-    brewing_date: '2022-01-05T00:00:00.000Z'
-    concatenated: "Cuv\xE9e des Trolls -> Blonde"
-    name: "Cuv\xE9e des Trolls"
-    name_right: "Cuv\xE9e des Trolls"
-    name_right_right: "Cuv\xE9e des Trolls"
-    price_per_l: 0.07
-    price_per_l_right: 0.07
-  - beer_kind: Blanche & Weizen
-    beer_kind_right: Blanche & Weizen
-    brewing_date: '2022-01-06T00:00:00.000Z'
-    concatenated: Weihenstephan Hefe Weizen Alcoholarm -> Blanche & Weizen
-    name: Weihenstephan Hefe Weizen Alcoholarm
-    name_right: Weihenstephan Hefe Weizen Alcoholarm
-    name_right_right: Weihenstephan Hefe Weizen Alcoholarm
-    price_per_l: 0.005
-    price_per_l_right: 0.005
   - beer_kind: India Pale Ale
     beer_kind_right: India Pale Ale
     brewing_date: '2022-01-07T00:00:00.000Z'
@@ -69,15 +24,6 @@ expected:
     name_right_right: Bellfield Lawless Village IPA
     price_per_l: 0.045
     price_per_l_right: 0.045
-  - beer_kind: Belge blonde forte & Golden Ale
-    beer_kind_right: Belge blonde forte & Golden Ale
-    brewing_date: '2022-01-08T00:00:00.000Z'
-    concatenated: Pauwel Kwak -> Belge blonde forte & Golden Ale
-    name: Pauwel Kwak
-    name_right: Pauwel Kwak
-    name_right_right: Pauwel Kwak
-    price_per_l: 0.084
-    price_per_l_right: 0.084
   - beer_kind: Blonde
     beer_kind_right: Blonde
     brewing_date: '2022-01-09T00:00:00.000Z'
@@ -87,6 +33,15 @@ expected:
     name_right_right: Brasserie De Sutter Brin de Folie
     price_per_l: 0.065
     price_per_l_right: 0.065
+  - beer_kind: Sans alcool
+    beer_kind_right: Sans alcool
+    brewing_date: '2022-01-03T00:00:00.000Z'
+    concatenated: Brewdog Nanny State Alcoholvrij -> Sans alcool
+    name: Brewdog Nanny State Alcoholvrij
+    name_right: Brewdog Nanny State Alcoholvrij
+    name_right_right: Brewdog Nanny State Alcoholvrij
+    price_per_l: 0.005
+    price_per_l_right: 0.005
   - beer_kind: Blonde
     beer_kind_right: Blonde
     brewing_date: '2022-01-10T00:00:00.000Z'
@@ -96,6 +51,51 @@ expected:
     name_right_right: Brugse Zot blonde
     price_per_l: 0.06
     price_per_l_right: 0.06
+  - beer_kind: Blonde
+    beer_kind_right: Blonde
+    brewing_date: '2022-01-05T00:00:00.000Z'
+    concatenated: "Cuv\xE9e des Trolls -> Blonde"
+    name: "Cuv\xE9e des Trolls"
+    name_right: "Cuv\xE9e des Trolls"
+    name_right_right: "Cuv\xE9e des Trolls"
+    price_per_l: 0.07
+    price_per_l_right: 0.07
+  - beer_kind: India Pale Ale
+    beer_kind_right: India Pale Ale
+    brewing_date: '2022-01-02T00:00:00.000Z'
+    concatenated: Ninkasi Ploploplop -> India Pale Ale
+    name: Ninkasi Ploploplop
+    name_right: Ninkasi Ploploplop
+    name_right_right: Ninkasi Ploploplop
+    price_per_l: 0.054
+    price_per_l_right: 0.054
+  - beer_kind: Belge blonde forte & Golden Ale
+    beer_kind_right: Belge blonde forte & Golden Ale
+    brewing_date: '2022-01-08T00:00:00.000Z'
+    concatenated: Pauwel Kwak -> Belge blonde forte & Golden Ale
+    name: Pauwel Kwak
+    name_right: Pauwel Kwak
+    name_right_right: Pauwel Kwak
+    price_per_l: 0.084
+    price_per_l_right: 0.084
+  - beer_kind: Triple
+    beer_kind_right: Triple
+    brewing_date: '2022-01-01T00:00:00.000Z'
+    concatenated: Superstrong beer -> Triple
+    name: Superstrong beer
+    name_right: Superstrong beer
+    name_right_right: Superstrong beer
+    price_per_l: 0.16
+    price_per_l_right: 0.16
+  - beer_kind: Blanche & Weizen
+    beer_kind_right: Blanche & Weizen
+    brewing_date: '2022-01-06T00:00:00.000Z'
+    concatenated: Weihenstephan Hefe Weizen Alcoholarm -> Blanche & Weizen
+    name: Weihenstephan Hefe Weizen Alcoholarm
+    name_right: Weihenstephan Hefe Weizen Alcoholarm
+    name_right_right: Weihenstephan Hefe Weizen Alcoholarm
+    price_per_l: 0.005
+    price_per_l_right: 0.005
   schema:
     fields:
     - name: name
@@ -155,8 +155,8 @@ step:
         columns: ['price_per_l', 'beer_kind', 'name']
       type: inner
     type: inner
-  # FIXME: After several JOINs, order of results is not necessarily guaranteed, depending o the used SQL backend
-  - name: sort
-    columns:
-    - column: brewing_date
-      order: asc
+  # FIXME: After several JOINs, order of results is not necessarily guaranteed, depending on the used SQL backend
+  # - name: sort
+  #   columns:
+  #   - column: brewing_date
+  #     order: asc

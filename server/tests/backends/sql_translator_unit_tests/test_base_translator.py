@@ -585,7 +585,7 @@ def test_join_simple(
             right_table.created_at,
         )
         .join(right_table, join_type_variant)
-        .on(Table(previous_step).project_id == right_table.id)
+        .on(left_table.project_id == right_table.id)
+        .orderby(left_table.project_id)
     )
-
     assert ctx.selectable.get_sql() == expected_query.get_sql()

@@ -6,26 +6,26 @@ exclude:
 - snowflake
 expected:
   data:
-  - brewing_date: '2022-01-01T00:00:00.000Z'
-    concatenated: Superstrong beer -> Triple
-  - brewing_date: '2022-01-02T00:00:00.000Z'
-    concatenated: Ninkasi Ploploplop -> India Pale Ale
-  - brewing_date: '2022-01-03T00:00:00.000Z'
-    concatenated: Brewdog Nanny State Alcoholvrij -> Sans alcool
   - brewing_date: '2022-01-04T00:00:00.000Z'
     concatenated: Ardwen Blonde -> Best-sellers
-  - brewing_date: '2022-01-05T00:00:00.000Z'
-    concatenated: "Cuv\xE9e des Trolls -> Blonde"
-  - brewing_date: '2022-01-06T00:00:00.000Z'
-    concatenated: Weihenstephan Hefe Weizen Alcoholarm -> Blanche & Weizen
   - brewing_date: '2022-01-07T00:00:00.000Z'
     concatenated: Bellfield Lawless Village IPA -> India Pale Ale
-  - brewing_date: '2022-01-08T00:00:00.000Z'
-    concatenated: Pauwel Kwak -> Belge blonde forte & Golden Ale
   - brewing_date: '2022-01-09T00:00:00.000Z'
     concatenated: Brasserie De Sutter Brin de Folie -> Blonde
+  - brewing_date: '2022-01-03T00:00:00.000Z'
+    concatenated: Brewdog Nanny State Alcoholvrij -> Sans alcool
   - brewing_date: '2022-01-10T00:00:00.000Z'
     concatenated: Brugse Zot blonde -> Blonde
+  - brewing_date: '2022-01-05T00:00:00.000Z'
+    concatenated: "Cuv\xE9e des Trolls -> Blonde"
+  - brewing_date: '2022-01-02T00:00:00.000Z'
+    concatenated: Ninkasi Ploploplop -> India Pale Ale
+  - brewing_date: '2022-01-08T00:00:00.000Z'
+    concatenated: Pauwel Kwak -> Belge blonde forte & Golden Ale
+  - brewing_date: '2022-01-01T00:00:00.000Z'
+    concatenated: Superstrong beer -> Triple
+  - brewing_date: '2022-01-06T00:00:00.000Z'
+    concatenated: Weihenstephan Hefe Weizen Alcoholarm -> Blanche & Weizen
   schema:
     fields:
     - name: brewing_date

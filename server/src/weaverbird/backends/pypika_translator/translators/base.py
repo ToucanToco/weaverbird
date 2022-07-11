@@ -730,6 +730,9 @@ class SQLTranslator(ABC):
                     Field(f[0], table=left_table) == Field(f[1], table=right_table) for f in step.on
                 )
             )
+            # Order of results is not consistent depending on the SQL Engine (inconsistencies
+            # observed with Athena and BigQuery).
+            .orderby(*(c[0] for c in step.on))
         )
         return StepContext(
             query,
