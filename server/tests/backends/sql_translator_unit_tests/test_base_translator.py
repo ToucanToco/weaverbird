@@ -142,10 +142,28 @@ def test_get_aggregate_function(base_translator: BaseTranslator, agg_type):
     assert issubclass(agg_func, functions.AggregateFunction)
 
 
-@pytest.mark.parametrize("agg_type", ["first", "last", "count distinct including empty"])
-def test_get_aggregate_function_raise_expection(base_translator: BaseTranslator, agg_type):
+@pytest.mark.parametrize("agg_type", ["first", "last"])
+def test__get_window_function(base_translator: BaseTranslator, agg_type):
+    agg_func = base_translator._get_window_function(agg_type)
+    assert issubclass(agg_func, functions.AggregateFunction)
+
+
+@pytest.mark.parametrize("agg_type", ["count distinct including empty"])
+def test_aggregate_raise_expection(base_translator: BaseTranslator, agg_type):
+
+    new_column = "countDistinctAge"
+    previous_step = "previous_with"
+    agg_field = "age"
+
+    step_table = StepTable(columns=["*"], name=previous_step)
+    step = steps.AggregateStep(
+        on=[agg_field],
+        aggregations=[
+            steps.Aggregation(new_columns=[new_column], agg_function=agg_type, columns=[agg_field])
+        ],
+    )
     with pytest.raises(NotImplementedError):
-        base_translator._get_aggregate_function(agg_type)
+        base_translator.aggregate(step=step, table=step_table)
 
 
 @pytest.mark.parametrize("agg_type", ["avg", "count", "count distinct", "max", "min", "sum"])

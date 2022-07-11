@@ -200,10 +200,6 @@ class SQLTranslator(ABC):
         self: Self, agg_function: "AggregateFn"
     ) -> type[functions.AggregateFunction]:
         match agg_function:
-            # Commenting this since postgres and redshift
-            # doesn't support it
-            # case "abs":
-            #     return functions.Abs
             case "avg":
                 return functions.Avg
             case "count":
@@ -277,7 +273,7 @@ class SQLTranslator(ABC):
                         groupby_window_selected.append(column_field)
 
             else:  # pragma: no cover
-                NotImplementedError(
+                raise NotImplementedError(
                     f"[{self.DIALECT}] Aggregation for {aggregation.agg_function!r} is not yet implemented"
                 )
         query: "QueryBuilder"
