@@ -295,7 +295,7 @@ class SQLTranslator(ABC):
                 )
                 .left_join(agg_query)
                 .on_field(*step.on)
-            )
+            ).orderby(*step.on + [c.name for c in groupby_window_selected])
 
             selected_col_names = [*columns, *all_agg_col_names]
             return StepContext(query, selected_col_names)

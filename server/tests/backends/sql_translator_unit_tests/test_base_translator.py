@@ -224,6 +224,7 @@ def test_aggregate_with_original_granularity(
         .left_join(agg_query)
         .on_field(agg_field)
         .select(*original_select)
+        .orderby(agg_field)
     )
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
