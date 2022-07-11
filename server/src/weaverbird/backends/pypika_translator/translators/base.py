@@ -263,7 +263,8 @@ class SQLTranslator(ABC):
                     new_agg_col = (
                         window_fn(column_field)
                         .over(*step.on)
-                        .orderby(column_field)
+                        .orderby(*[Field(name=col) for col in step.on])
+                        .rows(analytics.Preceding(), analytics.Following())
                         .as_(aggregation.new_columns[i])
                     )
                     agg_selected.append(new_agg_col)
