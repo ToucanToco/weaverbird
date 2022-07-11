@@ -4,7 +4,18 @@ from datetime import datetime, timezone
 from functools import cache
 from typing import TYPE_CHECKING, Any, Callable, Literal, Mapping, Sequence, TypeVar, Union, cast
 
-from pypika import AliasedQuery, Case, Criterion, Field, Order, Query, Schema, Table, functions
+from pypika import (
+    AliasedQuery,
+    Case,
+    Criterion,
+    Field,
+    Order,
+    Query,
+    Schema,
+    Table,
+    analytics,
+    functions,
+)
 from pypika.enums import Comparator, JoinType
 from pypika.queries import QueryBuilder, Selectable
 from pypika.terms import AnalyticFunction, BasicCriterion, LiteralValue
@@ -28,7 +39,6 @@ from weaverbird.pipeline.pipeline import Pipeline
 from weaverbird.pipeline.steps.utils.combination import PipelineOrDomainNameOrReference, Reference
 
 Self = TypeVar("Self", bound="SQLTranslator")
-
 
 if TYPE_CHECKING:
 
@@ -192,10 +202,6 @@ class SQLTranslator(ABC):
         match agg_function:
             # Commenting this since postgres and redshift
             # doesn't support it
-            # case "first":
-            #     return functions.First
-            # case "last":
-            #     return functions.Last
             # case "abs":
             #     return functions.Abs
             case "avg":
@@ -210,10 +216,19 @@ class SQLTranslator(ABC):
                 return functions.Min
             case "sum":
                 return functions.Sum
-            case _:  # pragma: no cover
-                raise NotImplementedError(
-                    f"[{self.DIALECT}] Aggregation for {agg_function!r} is not yet implemented"
-                )
+            case _:
+                pass
+
+    def _get_window_function(
+        self: Self, window_function: "AggregateFn"
+    ) -> analytics.AnalyticFunction:
+        match window_function:
+            case 'first':
+                return analytics.FirstValue
+            case 'last':
+                return analytics.LastValue
+            case _:
+                pass
 
     def absolutevalue(
         self: Self,
@@ -238,14 +253,33 @@ class SQLTranslator(ABC):
         step: "AggregateStep",
     ) -> StepContext:
         agg_selected: list[Field] = []
+        groupby_window_selected: list[Field] = []
 
         for aggregation in step.aggregations:
-            agg_fn = self._get_aggregate_function(aggregation.agg_function)
-            for i, column_name in enumerate(aggregation.columns):
-                column_field: Field = Table(prev_step_name)[column_name]
-                new_agg_col = agg_fn(column_field).as_(aggregation.new_columns[i])
-                agg_selected.append(new_agg_col)
+            if agg_fn := self._get_aggregate_function(aggregation.agg_function):
+                for i, column_name in enumerate(aggregation.columns):
+                    column_field: Field = Table(prev_step_name)[column_name]
+                    new_agg_col = agg_fn(column_field).as_(aggregation.new_columns[i])
+                    agg_selected.append(new_agg_col)
+            elif window_fn := self._get_window_function(aggregation.agg_function):
+                for i, column_name in enumerate(aggregation.columns):
+                    column_field: Field = Table(prev_step_name)[column_name]
+                    new_agg_col = (
+                        window_fn(column_field)
+                        .over(*step.on)
+                        .orderby(column_field)
+                        .as_(aggregation.new_columns[i])
+                    )
+                    agg_selected.append(new_agg_col)
+                    if (
+                        step.on
+                    ):  # the column must be added to the group by clause if there's a group by clause
+                        groupby_window_selected.append(column_field)
 
+            else:  # pragma: no cover
+                NotImplementedError(
+                    f"[{self.DIALECT}] Aggregation for {aggregation.agg_function!r} is not yet implemented"
+                )
         query: "QueryBuilder"
         selected_col_names: list[str]
 
@@ -275,7 +309,7 @@ class SQLTranslator(ABC):
             return StepContext(
                 self.QUERY_CLS.from_(prev_step_name)
                 .select(*selected_cols)
-                .groupby(*step.on)
+                .groupby(*step.on, *groupby_window_selected)
                 .orderby(*step.on, order=Order.asc),
                 selected_col_names,
             )
