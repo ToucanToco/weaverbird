@@ -8,17 +8,21 @@ from pypika.enums import Comparator, JoinType
 from pypika.queries import QueryBuilder, Selectable
 from pypika.terms import AnalyticFunction, BasicCriterion, LiteralValue
 
+from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relative_date
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators import ALL_TRANSLATORS
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import handle_zero_division
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
+    ConditionComboAnd,
+    ConditionComboOr,
     DateBoundCondition,
     InclusionCondition,
     MatchCondition,
     NullCondition,
 )
+from weaverbird.pipeline.dates import RelativeDate
 from weaverbird.pipeline.pipeline import Pipeline
 from weaverbird.pipeline.steps.utils.combination import Reference
 
@@ -554,6 +558,21 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "FilterStep",
     ) -> StepContext:
+
+        # To handle relative date formats
+        cond = step.condition
+        if isinstance(cond, ConditionComboAnd) or isinstance(cond, ConditionComboOr):
+
+            if isinstance(cond, ConditionComboAnd):
+                operator = 'and_'
+            else:
+                operator = 'or_'
+
+            for i, c in enumerate(getattr(cond, operator)):
+                value = getattr(c, 'value')
+                if isinstance(value, RelativeDate):
+                    setattr(getattr(cond, operator)[i], 'value', evaluate_relative_date(value))
+
         query: "QueryBuilder" = (
             self.QUERY_CLS.from_(prev_step_name)
             .select(*columns)
