@@ -4,8 +4,6 @@ exclude:
 - pandas
 - postgres
 - snowflake
-# FIXME: There's a bug on redshift's concatenate, remove this once it is fixed
-- redshift_pypika
 expected:
   data:
   - newcol: Superstrong beer - Triple
