@@ -8,34 +8,34 @@ exclude:
 - redshift_pypika
 expected:
   data:
-  - NEWCOL: Superstrong beer - Triple
+  - newcol: Superstrong beer - Triple
     beer_kind: Triple
     name: Superstrong beer
-  - NEWCOL: Ninkasi Ploploplop - India Pale Ale
+  - newcol: Ninkasi Ploploplop - India Pale Ale
     beer_kind: India Pale Ale
     name: Ninkasi Ploploplop
-  - NEWCOL: Brewdog Nanny State Alcoholvrij - Sans alcool
+  - newcol: Brewdog Nanny State Alcoholvrij - Sans alcool
     beer_kind: Sans alcool
     name: Brewdog Nanny State Alcoholvrij
-  - NEWCOL: Ardwen Blonde - Best-sellers
+  - newcol: Ardwen Blonde - Best-sellers
     beer_kind: Best-sellers
     name: Ardwen Blonde
-  - NEWCOL: "Cuv\xE9e des Trolls - Blonde"
+  - newcol: "Cuv\xE9e des Trolls - Blonde"
     beer_kind: Blonde
     name: "Cuv\xE9e des Trolls"
-  - NEWCOL: Weihenstephan Hefe Weizen Alcoholarm - Blanche & Weizen
+  - newcol: Weihenstephan Hefe Weizen Alcoholarm - Blanche & Weizen
     beer_kind: Blanche & Weizen
     name: Weihenstephan Hefe Weizen Alcoholarm
-  - NEWCOL: Bellfield Lawless Village IPA - India Pale Ale
+  - newcol: Bellfield Lawless Village IPA - India Pale Ale
     beer_kind: India Pale Ale
     name: Bellfield Lawless Village IPA
-  - NEWCOL: Pauwel Kwak - Belge blonde forte & Golden Ale
+  - newcol: Pauwel Kwak - Belge blonde forte & Golden Ale
     beer_kind: Belge blonde forte & Golden Ale
     name: Pauwel Kwak
-  - NEWCOL: Brasserie De Sutter Brin de Folie - Blonde
+  - newcol: Brasserie De Sutter Brin de Folie - Blonde
     beer_kind: Blonde
     name: Brasserie De Sutter Brin de Folie
-  - NEWCOL: Brugse Zot blonde - Blonde
+  - newcol: Brugse Zot blonde - Blonde
     beer_kind: Blonde
     name: Brugse Zot blonde
   schema:
@@ -44,7 +44,7 @@ expected:
       type: string
     - name: beer_kind
       type: string
-    - name: NEWCOL
+    - name: newcol
       type: string
     pandas_version: 1.4.0
 step:
@@ -57,5 +57,5 @@ step:
     - name
     - beer_kind
     name: concatenate
-    new_column_name: NEWCOL
+    new_column_name: newcol
     separator: ' - '
