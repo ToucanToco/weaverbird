@@ -4,9 +4,8 @@ import pytest
 from pypika import AliasedQuery, Case, Field, Order, Query, Schema, Table, functions
 from pypika.terms import LiteralValue, ValueWrapper
 
-from weaverbird.backends.pypika_translator.translators.base import SQLTranslator, StepTable
+from weaverbird.backends.pypika_translator.translators.base import SQLTranslator
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import handle_zero_division
-from weaverbird.exceptions import MissingTableNameError
 from weaverbird.pipeline import conditions, steps
 from weaverbird.pipeline.pipeline import DomainStep
 from weaverbird.pipeline.steps.utils.combination import Reference
