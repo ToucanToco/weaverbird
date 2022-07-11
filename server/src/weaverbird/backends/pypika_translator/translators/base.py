@@ -11,6 +11,8 @@ from pypika.terms import AnalyticFunction, BasicCriterion, LiteralValue
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators import ALL_TRANSLATORS
+from weaverbird.backends.sql_translator.steps.utils.query_transformation import handle_zero_division
+from weaverbird.exceptions import MissingTableNameError
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
     DateBoundCondition,
@@ -577,7 +579,8 @@ class SQLTranslator(ABC):
         # into
         #   CAST("my age" AS float) + 1 / 2
 
-        query = query.select(LiteralValue(step.formula).as_(step.new_column))
+        query = query.select(LiteralValue(handle_zero_division(step.formula)).as_(step.new_column))
+
         return StepContext(query, columns + [step.new_column])
 
     def fromdate(
