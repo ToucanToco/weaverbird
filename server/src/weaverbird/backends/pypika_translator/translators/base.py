@@ -283,7 +283,7 @@ class SQLTranslator(ABC):
             agg_query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
                 *step.on, *agg_selected
             )
-            agg_query = agg_query.groupby(*step.on)
+            agg_query = agg_query.groupby(*step.on, *groupby_window_selected)
 
             all_agg_col_names: list[str] = [x for agg in step.aggregations for x in agg.new_columns]
 
