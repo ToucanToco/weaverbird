@@ -43,46 +43,16 @@
       "pandas_version": "1.4.0"
     },
     "data": [
-      {
-        "beer_kind": "Belge blonde forte & Golden Ale",
-        "last_name": "Pauwel Kwak"
-      },
-      {
-        "beer_kind": "Best-sellers",
-        "last_name": "Ardwen Blonde"
-      },
-      {
-        "beer_kind": "Blanche & Weizen",
-        "last_name": "Weihenstephan Hefe Weizen Alcoholarm"
-      },
-      {
-        "beer_kind": "Blonde",
-        "last_name": "Brasserie De Sutter Brin de Folie"
-      },
-      {
-        "beer_kind": "Blonde",
-        "last_name": "Brugse Zot blonde"
-      },
-      {
-        "beer_kind": "Blonde",
-        "last_name": "Cuvée des Trolls"
-      },
-      {
-        "beer_kind": "India Pale Ale",
-        "last_name": "Bellfield Lawless Village IPA"
-      },
-      {
-        "beer_kind": "India Pale Ale",
-        "last_name": "Ninkasi Ploploplop"
-      },
-      {
-        "beer_kind": "Sans alcool",
-        "last_name": "Brewdog Nanny State Alcoholvrij"
-      },
-      {
-        "beer_kind": "Triple",
-        "last_name": "Superstrong beer"
-      }
+      {"beer_kind": "Belge blonde forte & Golden Ale", "last_name": "Pauwel Kwak"},
+      {"beer_kind": "Best-sellers", "last_name": "Ardwen Blonde"},
+      {"beer_kind": "Blanche & Weizen", "last_name": "Weihenstephan Hefe Weizen Alcoholarm"},
+      {"beer_kind": "Blonde", "last_name": "Cuvée des Trolls"},
+      {"beer_kind": "Blonde", "last_name": "Cuvée des Trolls"},
+      {"beer_kind": "Blonde", "last_name": "Cuvée des Trolls"},
+      {"beer_kind": "India Pale Ale", "last_name": "Ninkasi Ploploplop"},
+      {"beer_kind": "India Pale Ale", "last_name": "Ninkasi Ploploplop"},
+      {"beer_kind": "Sans alcool", "last_name": "Brewdog Nanny State Alcoholvrij"},
+      {"beer_kind": "Triple", "last_name": "Superstrong beer"}
     ]
   }
 }
