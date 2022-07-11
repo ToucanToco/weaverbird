@@ -568,10 +568,11 @@ class SQLTranslator(ABC):
             else:
                 operator = 'or_'
 
-            for i, c in enumerate(getattr(cond, operator)):
-                value = getattr(c, 'value')
-                if isinstance(value, RelativeDate):
-                    setattr(getattr(cond, operator)[i], 'value', evaluate_relative_date(value))
+            for i, sub_cond in enumerate(getattr(cond, operator)):
+                if isinstance(sub_cond, DateBoundCondition):
+                    value = getattr(sub_cond, 'value')
+                    if isinstance(value, RelativeDate):
+                        setattr(getattr(cond, operator)[i], 'value', evaluate_relative_date(value))
 
         query: "QueryBuilder" = (
             self.QUERY_CLS.from_(prev_step_name)
