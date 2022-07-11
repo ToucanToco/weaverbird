@@ -198,7 +198,7 @@ class SQLTranslator(ABC):
     # the name of the method being the name of the step and the kwargs the rest of the params
     def _get_aggregate_function(
         self: Self, agg_function: "AggregateFn"
-    ) -> type[functions.AggregateFunction]:
+    ) -> type[functions.AggregateFunction] | None:
         match agg_function:
             case "avg":
                 return functions.Avg
@@ -213,18 +213,18 @@ class SQLTranslator(ABC):
             case "sum":
                 return functions.Sum
             case _:
-                pass
+                return None
 
     def _get_window_function(
         self: Self, window_function: "AggregateFn"
-    ) -> analytics.AnalyticFunction:
+    ) -> analytics.AnalyticFunction | None:
         match window_function:
             case 'first':
                 return analytics.FirstValue
             case 'last':
                 return analytics.LastValue
             case _:
-                pass
+                return None
 
     def absolutevalue(
         self: Self,
@@ -259,7 +259,7 @@ class SQLTranslator(ABC):
                     agg_selected.append(new_agg_col)
             elif window_fn := self._get_window_function(aggregation.agg_function):
                 for i, column_name in enumerate(aggregation.columns):
-                    column_field: Field = Table(prev_step_name)[column_name]
+                    column_field = Table(prev_step_name)[column_name]
                     new_agg_col = (
                         window_fn(column_field)
                         .over(*step.on)

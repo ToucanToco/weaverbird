@@ -149,13 +149,13 @@ def test__get_window_function(base_translator: BaseTranslator, agg_type):
 
 
 @pytest.mark.parametrize("agg_type", ["count distinct including empty"])
-def test_aggregate_raise_expection(base_translator: BaseTranslator, agg_type):
+def test_aggregate_raise_expection(
+    base_translator: BaseTranslator, agg_type: str, default_step_kwargs: dict[str, Any]
+):
 
     new_column = "countDistinctAge"
-    previous_step = "previous_with"
     agg_field = "age"
 
-    step_table = StepTable(columns=["*"], name=previous_step)
     step = steps.AggregateStep(
         on=[agg_field],
         aggregations=[
@@ -163,7 +163,7 @@ def test_aggregate_raise_expection(base_translator: BaseTranslator, agg_type):
         ],
     )
     with pytest.raises(NotImplementedError):
-        base_translator.aggregate(step=step, table=step_table)
+        base_translator.aggregate(step=step, columns=['*'], **default_step_kwargs)
 
 
 @pytest.mark.parametrize("agg_type", ["avg", "count", "count distinct", "max", "min", "sum"])
