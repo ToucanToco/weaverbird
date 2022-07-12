@@ -1,5 +1,4 @@
 {
-  "description": "bigquery behaves differently on the cast !",
   "exclude": [
     "mongo",
     "mysql",

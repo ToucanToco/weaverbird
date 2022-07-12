@@ -1,12 +1,10 @@
 {
-  "description": "bigquery behaves differently on the cast !",
   "exclude": [
     "mongo",
     "mysql",
     "pandas",
     "postgres",
-    "snowflake",
-    "bigquery_pypika"
+    "snowflake"
   ],
   "step": {
     "pipeline": [

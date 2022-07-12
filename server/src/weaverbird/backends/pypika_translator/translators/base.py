@@ -8,21 +8,17 @@ from pypika.enums import Comparator, JoinType
 from pypika.queries import QueryBuilder, Selectable
 from pypika.terms import AnalyticFunction, BasicCriterion, LiteralValue
 
-from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relative_date
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators import ALL_TRANSLATORS
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import handle_zero_division
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
-    ConditionComboAnd,
-    ConditionComboOr,
     DateBoundCondition,
     InclusionCondition,
     MatchCondition,
     NullCondition,
 )
-from weaverbird.pipeline.dates import RelativeDate
 from weaverbird.pipeline.pipeline import Pipeline
 from weaverbird.pipeline.steps.utils.combination import Reference
 
