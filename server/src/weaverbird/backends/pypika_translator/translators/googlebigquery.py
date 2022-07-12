@@ -65,11 +65,11 @@ class GoogleBigQueryTranslator(SQLTranslator):
 
         if isinstance(condition, DateBoundCondition):
             match condition.operator:
-                case "from":
+                case "until":
                     return functions.Cast(column_field, "datetime") >= ParseDatetime(
                         "%FT%T", condition.value
                     )
-                case "until":
+                case "from":
                     return functions.Cast(column_field, "datetime") <= ParseDatetime(
                         "%FT%T", condition.value
                     )
