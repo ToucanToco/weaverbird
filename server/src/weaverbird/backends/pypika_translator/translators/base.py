@@ -1,5 +1,6 @@
 from abc import ABC
 from dataclasses import dataclass
+from datetime import datetime
 from functools import cache
 from typing import TYPE_CHECKING, Any, Callable, Literal, Mapping, Sequence, TypeVar, Union, cast
 
@@ -558,18 +559,28 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "FilterStep",
     ) -> StepContext:
+        def _cast_to_timestamp(value: Any) -> Any:
+            if self.DIALECT != SQLDialect.GOOGLEBIGQUERY:
+                return functions.Cast(value, 'TIMESTAMP')
+
+            return functions.Cast(value, 'DATETIME')
 
         # To handle relative date formats
-        cond = step.condition
-        if isinstance(cond, (ConditionComboAnd, ConditionComboOr)):
+        if isinstance(step.condition, (ConditionComboAnd, ConditionComboOr)):
+            cond = step.condition
 
             operator = 'and_' if isinstance(cond, ConditionComboAnd) else 'or_'
 
             for sub_cond in getattr(cond, operator) or []:
-                if isinstance(sub_cond, DateBoundCondition) and isinstance(
-                    getattr(sub_cond, 'value'), RelativeDate
-                ):
-                    setattr(sub_cond, 'value', evaluate_relative_date(getattr(sub_cond, 'value')))
+                if isinstance(sub_cond, DateBoundCondition):
+                    if isinstance(sub_cond.value, RelativeDate):
+                        value_str_time = evaluate_relative_date(sub_cond.value).strftime(
+                            "%Y-%m-%d %H:%M:%S"
+                        )
+                        sub_cond.value = _cast_to_timestamp(value_str_time)
+                    elif isinstance(sub_cond.value, datetime):
+                        value_str_time = sub_cond.value.strftime("%Y-%m-%d %H:%M:%S")
+                        sub_cond.value = _cast_to_timestamp(value_str_time)
 
         query: "QueryBuilder" = (
             self.QUERY_CLS.from_(prev_step_name)
