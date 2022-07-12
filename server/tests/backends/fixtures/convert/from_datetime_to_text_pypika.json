@@ -5,14 +5,15 @@
     "pandas",
     "postgres",
     "snowflake",
-    "athena_pypika"
+    "athena_pypika",
+    "bigquery_pypika"
   ],
   "step": {
     "pipeline": [
       {
         "name": "convert",
         "columns": [
-          "price_per_l"
+          "brewing_date"
         ],
         "data_type": "text"
       },
@@ -32,7 +33,7 @@
       "fields": [
         {
           "name": "price_per_l",
-          "type": "string"
+          "type": "number"
         },
         {
           "name": "alcohol_degree",
@@ -56,7 +57,7 @@
         },
         {
           "name": "brewing_date",
-          "type": "datetime"
+          "type": "string"
         },
         {
           "name": "nullable_name",
@@ -67,7 +68,7 @@
     },
     "data": [
       {
-        "price_per_l": "0.0559999999999999",
+        "price_per_l": 0.0559999999999999,
         "alcohol_degree": 6.994105263157894,
         "name": "Ardwen Blonde",
         "cost": 2.09,
@@ -77,7 +78,7 @@
         "nullable_name": "Ardwen Blonde"
       },
       {
-        "price_per_l": "0.045",
+        "price_per_l": 0.045,
         "alcohol_degree": 4.717409638554217,
         "name": "Bellfield Lawless Village IPA",
         "cost": 2.49,
@@ -87,7 +88,7 @@
         "nullable_name": "Bellfield Lawless Village IPA"
       },
       {
-        "price_per_l": "0.065",
+        "price_per_l": 0.065,
         "alcohol_degree": 7.747465753424658,
         "name": "Brasserie De Sutter Brin de Folie",
         "cost": 2.19,
@@ -97,7 +98,7 @@
         "nullable_name": null
       },
       {
-        "price_per_l": "0.005",
+        "price_per_l": 0.005,
         "alcohol_degree": 0.569934497816594,
         "name": "Brewdog Nanny State Alcoholvrij",
         "cost": 2.29,
@@ -107,7 +108,7 @@
         "nullable_name": "Brewdog Nanny State Alcoholvrij"
       },
       {
-        "price_per_l": "0.06",
+        "price_per_l": 0.06,
         "alcohol_degree": 8.749608938547487,
         "name": "Brugse Zot blonde",
         "cost": 1.79,
@@ -117,7 +118,7 @@
         "nullable_name": "Brugse Zot blonde"
       },
       {
-        "price_per_l": "0.07",
+        "price_per_l": 0.07,
         "alcohol_degree": 8.930645161290323,
         "name": "Cuvée des Trolls",
         "cost": 1.55,
@@ -127,7 +128,7 @@
         "nullable_name": null
       },
       {
-        "price_per_l": "0.054",
+        "price_per_l": 0.054,
         "alcohol_degree": 4.877377162629759,
         "name": "Ninkasi Ploploplop",
         "cost": 2.89,
@@ -137,7 +138,7 @@
         "nullable_name": "Ninkasi Ploploplop"
       },
       {
-        "price_per_l": "0.084",
+        "price_per_l": 0.084,
         "alcohol_degree": 12.974272189349117,
         "name": "Pauwel Kwak",
         "cost": 1.69,
@@ -147,7 +148,7 @@
         "nullable_name": "Pauwel Kwak"
       },
       {
-        "price_per_l": "0.16",
+        "price_per_l": 0.16,
         "alcohol_degree": 13.5,
         "name": "Superstrong beer",
         "cost": 2.89,
@@ -157,7 +158,7 @@
         "nullable_name": null
       },
       {
-        "price_per_l": "0.005",
+        "price_per_l": 0.005,
         "alcohol_degree": 1.2437106918238994,
         "name": "Weihenstephan Hefe Weizen Alcoholarm",
         "cost": 1.59,
