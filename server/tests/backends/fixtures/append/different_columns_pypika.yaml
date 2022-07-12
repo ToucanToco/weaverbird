@@ -8,17 +8,23 @@ expected:
   data:
   - name: Brewdog Nanny State Alcoholvrij
     price_per_l: 0.005
+    alcolhol_degree: null
+  - name: Pauwel Kwak
+    price_per_l: null
+    alcohol_degree: 12.974272
+  - name: Superstrong beer
+    price_per_l: null
+    alcohol_degree: 13.500000
   - name: Weihenstephan Hefe Weizen Alcoholarm
     price_per_l: 0.005
-  - name: Superstrong beer
-    price_per_l: 13.500000
-  - name: Pauwel Kwak
-    price_per_l: 12.974272
+    alcolhol_degree: null
   schema:
     fields:
     - name: name
       type: string
     - name: price_per_l
+      type: number
+    - name: alcohol_degree
       type: number
     pandas_version: 1.4.0
 step:
@@ -33,7 +39,7 @@ step:
     limit: 2
   - name: append
     pipelines:
-    # Here, 'alcohol_degree' will implictly be inserted into the `price_per_l column`
+    # Here, 'alcohol_degree' will be added to the dataset and filled with NULLs
     - - name: domain
         domain: beers_tiny
       - name: select

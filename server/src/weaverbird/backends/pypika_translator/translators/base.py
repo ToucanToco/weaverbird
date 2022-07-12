@@ -307,19 +307,35 @@ class SQLTranslator(ABC):
             column_lists.append(pipeline_ctx.columns)
             builder = pipeline_ctx.builder
 
-        # NOTE: Not sure if we should run this check or just let the UNION ALL happen...
-        # if not all(cols == column_lists[0] for cols in column_lists[1:]):
-        #     raise ValueError(
-        #         "Columns of all appended datasets must be the same than the current dataset."
-        #         f''' Expected "{', '.join(column_lists[0])}"'''
-        #     )
+        # By default, UNION ALL will append columns by index in SQL, and only append as much columns
+        # as available in the first SELECT statement. Also, the columns are appended in the order of
+        # the select statement, which is not what we want either (a merge by name is probably what's
+        # expected by the user)
+        columns_to_add = []
+        for column_list in column_lists:
+            for col in column_list:
+                if col not in columns and col not in columns_to_add:
+                    columns_to_add.append(col)
 
-        query = self.QUERY_CLS.from_(prev_step_name).select(*columns)
+        all_columns = columns + columns_to_add
+
+        query = self.QUERY_CLS.from_(prev_step_name).select(
+            *columns, *(LiteralValue('NULL').as_(col) for col in columns_to_add)
+        )
         for table, column_list in zip(tables, column_lists):
-            query = query.union_all(self.QUERY_CLS.from_(table).select(*column_list))
+            query = query.union_all(
+                self.QUERY_CLS.from_(table).select(
+                    *(
+                        # Selecting either the column from the dataset if it is available, or NULL
+                        # AS "col" otherwise. We iterate over all_columns rather than column_list in
+                        # order to have a merge by name
+                        col if col in column_list else LiteralValue('NULL').as_(col)
+                        for col in all_columns
+                    )
+                )
+            )
 
-        # Columns are always the same than the first builder's columns
-        return StepContext(query, columns, builder)
+        return StepContext(query.orderby(*all_columns), all_columns, builder)
 
     def argmax(
         self: Self,

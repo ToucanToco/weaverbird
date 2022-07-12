@@ -1,0 +1,80 @@
+exclude:
+- mongo
+- mysql
+- pandas
+- postgres
+- snowflake
+expected:
+  data:
+  - alcohol_degree: null
+    brewing_date: '2022-01-09T00:00:00.000Z'
+    name: Brasserie De Sutter Brin de Folie
+    price_per_l: null
+  - alcohol_degree: null
+    brewing_date: null
+    name: Brewdog Nanny State Alcoholvrij
+    price_per_l: 0.005
+  - alcohol_degree: null
+    brewing_date: '2022-01-10T00:00:00.000Z'
+    name: Brugse Zot blonde
+    price_per_l: null
+  - alcohol_degree: 12.9742721893
+    brewing_date: null
+    name: Pauwel Kwak
+    price_per_l: null
+  - alcohol_degree: 13.5
+    brewing_date: null
+    name: Superstrong beer
+    price_per_l: null
+  - alcohol_degree: null
+    brewing_date: null
+    name: Weihenstephan Hefe Weizen Alcoholarm
+    price_per_l: 0.005
+  schema:
+    fields:
+    - name: name
+      type: string
+    - name: price_per_l
+      type: number
+    - name: alcohol_degree
+      type: number
+    - name: brewing_date
+      type: datetime
+    pandas_version: 1.4.0
+step:
+  pipeline:
+  - name: select
+    columns:
+    - name
+    - price_per_l
+  - name: top
+    rank_on: price_per_l
+    sort: asc
+    limit: 2
+  - name: append
+    pipelines:
+    - - name: domain
+        domain: beers_tiny
+      - name: select
+        columns:
+        # Reversing alcohol degree and name on purpose to ensure merge by name works
+        - alcohol_degree
+        - name
+      - name: top
+        rank_on: alcohol_degree
+        sort: desc
+        limit: 2
+      # Nesting everything
+      - name: append
+        pipelines:
+        - - name: domain
+            domain: beers_tiny
+          - name: select
+            columns:
+            - name
+            - brewing_date
+          - name: top
+            rank_on: brewing_date
+            sort: desc
+            limit: 2
+

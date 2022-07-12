@@ -8,13 +8,13 @@ expected:
   data:
   - name: Brewdog Nanny State Alcoholvrij
     price_per_l: 0.005
-  - name: Weihenstephan Hefe Weizen Alcoholarm
-    price_per_l: 0.005
-  - name: Superstrong beer
-    price_per_l: 0.16
   - name: Pauwel Kwak
     price_per_l: 0.084
-  - name:  Weihenstephan Hefe Weizen Alcoholarm
+  - name: Superstrong beer
+    price_per_l: 0.16
+  - name: Weihenstephan Hefe Weizen Alcoholarm
+    price_per_l: 0.005
+  - name: Weihenstephan Hefe Weizen Alcoholarm
     price_per_l: 0.005
   schema:
     fields:
