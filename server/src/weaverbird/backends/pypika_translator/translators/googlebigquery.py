@@ -3,16 +3,22 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from pypika import Criterion, Field, Query, Table, functions
 from pypika.queries import QueryBuilder
+from pypika.terms import LiteralValue
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
-from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, SQLTranslator
+from weaverbird.backends.pypika_translator.translators.base import (
+    DataTypeMapping,
+    SQLTranslator,
+    StepContext,
+)
 from weaverbird.pipeline.conditions import DateBoundCondition
 
 Self = TypeVar("Self", bound="GoogleBigQueryTranslator")
 
 if TYPE_CHECKING:
     from weaverbird.pipeline.conditions import SimpleCondition
+    from weaverbird.pipeline.steps import SplitStep
 
 
 class ExtraDialects(Enum):
@@ -69,6 +75,26 @@ class GoogleBigQueryTranslator(SQLTranslator):
                     )
 
         return super()._get_single_condition_criterion(condition, prev_step_name)
+
+    def split(
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: "SplitStep",
+    ) -> StepContext:
+        col_field: Field = Table(prev_step_name)[step.column]
+        splitted_cols = [
+            LiteralValue(f'SPLIT(`{col_field.name}`, "{step.delimiter}")[SAFE_OFFSET({i})]').as_(
+                f"{step.column}_{i + 1}"
+            )
+            for i in range(step.number_cols_to_keep)
+        ]
+        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
+            *columns, *splitted_cols
+        )
+        return StepContext(query, columns + splitted_cols)
 
 
 SQLTranslator.register(GoogleBigQueryTranslator)

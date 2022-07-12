@@ -4,7 +4,6 @@
     "mysql",
     "pandas",
     "postgres",
-    "bigquery_pypika",
     "snowflake"
   ],
   "step": {
