@@ -15,12 +15,12 @@
             {
               "column": "brewing_date",
               "operator": "from",
-              "value": "2022-01-07 00:00:00"
+              "value": "2022-01-05 00:00:00"
             },
             {
               "column": "brewing_date",
               "operator": "until",
-              "value": "2022-01-05 00:00:00"
+              "value": "2022-01-07 00:00:00"
             }
           ]
         }

@@ -14,12 +14,12 @@
           "and": [
             {
               "column": "brewing_date",
-              "operator": "until",
+              "operator": "from",
               "value": "2022-01-05 00:00:00"
             },
             {
               "column": "brewing_date",
-              "operator": "from",
+              "operator": "until",
               "value": {
                 "quantity": "1",
                 "duration": "day",

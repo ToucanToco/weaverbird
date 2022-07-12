@@ -1,6 +1,6 @@
 from abc import ABC
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from functools import cache
 from typing import TYPE_CHECKING, Any, Callable, Literal, Mapping, Sequence, TypeVar, Union, cast
 
@@ -522,9 +522,9 @@ class SQLTranslator(ABC):
                     return column_field.isnotnull()
 
             case DateBoundCondition():
-                if condition.operator == "from":
+                if condition.operator == "until":
                     return column_field <= condition.value
-                elif condition.operator == "until":
+                elif condition.operator == "from":
                     return column_field >= condition.value
 
             case _:  # pragma: no cover
@@ -564,17 +564,21 @@ class SQLTranslator(ABC):
         if isinstance(step.condition, (ConditionComboAnd, ConditionComboOr)):
             cond = step.condition
 
-            operator = 'and_' if isinstance(cond, ConditionComboAnd) else 'or_'
+            conditions = cond.and_ if isinstance(cond, ConditionComboAnd) else cond.or_
 
-            for sub_cond in getattr(cond, operator) or []:
+            for sub_cond in conditions or []:
                 if isinstance(sub_cond, DateBoundCondition):
                     if isinstance(sub_cond.value, RelativeDate):
-                        value_str_time = evaluate_relative_date(sub_cond.value).strftime(
-                            "%Y-%m-%d %H:%M:%S"
+                        value_str_time = (
+                            evaluate_relative_date(sub_cond.value)
+                            .replace(tzinfo=timezone.utc)
+                            .strftime("%Y-%m-%d %H:%M:%S")
                         )
                         sub_cond.value = functions.Cast(value_str_time, 'TIMESTAMP')  # type: ignore
                     elif isinstance(sub_cond.value, datetime):
-                        value_str_time = sub_cond.value.strftime("%Y-%m-%d %H:%M:%S")
+                        value_str_time = sub_cond.value.replace(tzinfo=timezone.utc).strftime(
+                            "%Y-%m-%d %H:%M:%S"
+                        )
                         sub_cond.value = functions.Cast(value_str_time, 'TIMESTAMP')  # type: ignore
 
         query: "QueryBuilder" = (
