@@ -107,9 +107,9 @@ def test_datebound_filter(
     condition = conditions.DateBoundCondition(column=column, operator=op, value=datetime)
 
     if op == 'from':
-        op_func = Field(column) <= datetime
-    else:
         op_func = Field(column) >= datetime
+    else:
+        op_func = Field(column) <= datetime
 
     step = steps.FilterStep(condition=condition)
     ctx = filter_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
