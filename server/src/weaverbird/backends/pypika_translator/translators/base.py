@@ -559,26 +559,12 @@ class SQLTranslator(ABC):
         step: "FilterStep",
     ) -> StepContext:
 
-        # To handle relative date formats
-        cond = step.condition
-        if isinstance(cond, ConditionComboAnd) or isinstance(cond, ConditionComboOr):
-
-            if isinstance(cond, ConditionComboAnd):
-                operator = 'and_'
-            else:
-                operator = 'or_'
-
-            for i, sub_cond in enumerate(getattr(cond, operator)):
-                if isinstance(sub_cond, DateBoundCondition):
-                    value = getattr(sub_cond, 'value')
-                    if isinstance(value, RelativeDate):
-                        setattr(getattr(cond, operator)[i], 'value', evaluate_relative_date(value))
-
         query: "QueryBuilder" = (
             self.QUERY_CLS.from_(prev_step_name)
             .select(*columns)
             .where(self._get_filter_criterion(step.condition, prev_step_name))
         )
+
         return StepContext(query, columns)
 
     def formula(
