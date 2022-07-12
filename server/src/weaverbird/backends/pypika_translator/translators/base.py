@@ -571,15 +571,15 @@ class SQLTranslator(ABC):
                     if isinstance(sub_cond.value, RelativeDate):
                         value_str_time = (
                             evaluate_relative_date(sub_cond.value)
-                            .replace(tzinfo=timezone.utc)
+                            .astimezone(timezone.utc)
                             .strftime("%Y-%m-%d %H:%M:%S")
                         )
-                        sub_cond.value = functions.Cast(value_str_time, 'TIMESTAMP')  # type: ignore
+                        sub_cond.value = functions.Cast(value_str_time, 'TIMESTAMP')
                     elif isinstance(sub_cond.value, datetime):
-                        value_str_time = sub_cond.value.replace(tzinfo=timezone.utc).strftime(
+                        value_str_time = sub_cond.value.astimezone(timezone.utc).strftime(
                             "%Y-%m-%d %H:%M:%S"
                         )
-                        sub_cond.value = functions.Cast(value_str_time, 'TIMESTAMP')  # type: ignore
+                        sub_cond.value = functions.Cast(value_str_time, 'TIMESTAMP')
 
         query: "QueryBuilder" = (
             self.QUERY_CLS.from_(prev_step_name)
