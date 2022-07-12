@@ -34,17 +34,16 @@ class AthenaTranslator(SQLTranslator):
         cond = step.condition
         if isinstance(cond, (ConditionComboAnd, ConditionComboOr)):
 
-            operator = 'and_' if isinstance(cond, ConditionComboAnd) else 'or_'
-
-            for i, sub_cond in enumerate(getattr(cond, operator)):
+            conditions = cond.and_ if isinstance(cond, ConditionComboAnd) else cond.or_
+            for i, sub_cond in enumerate(conditions):
                 if isinstance(sub_cond, DateBoundCondition):
                     value = getattr(sub_cond, 'value')
                     if isinstance(value, RelativeDate):
-                        value = evaluate_relative_date(value).strftime("%Y-%m-%d")
+                        value = evaluate_relative_date(value).strftime("%Y-%m-%d %H:%M:%S")
                     elif isinstance(value, datetime):
-                        value = value.strftime("%Y-%m-%d")
+                        value = value.strftime("%Y-%m-%d %H:%M:%S")
 
-                    setattr(getattr(cond, operator)[i], 'value', functions.Date(value))
+                    conditions[i].value = functions.Cast(value, 'TIMESTAMP')  # type: ignore
 
         query: "QueryBuilder" = (
             self.QUERY_CLS.from_(prev_step_name)
