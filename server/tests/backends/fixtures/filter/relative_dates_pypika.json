@@ -31,6 +31,10 @@
             }
           ]
         }
+      },
+      {
+        "name": "select",
+        "columns": [ "name", "cost" ]
       }
     ]
   },
@@ -38,60 +42,24 @@
     "schema": {
       "fields": [
         {
-          "name": "price_per_l",
-          "type": "number"
-        },
-        {
-          "name": "alcohol_degree",
-          "type": "number"
-        },
-        {
           "name": "name",
           "type": "string"
         },
         {
           "name": "cost",
           "type": "number"
-        },
-        {
-          "name": "beer_kind",
-          "type": "string"
-        },
-        {
-          "name": "volume_ml",
-          "type": "number"
-        },
-        {
-          "name": "brewing_date",
-          "type": "datetime"
-        },
-        {
-          "name": "nullable_name",
-          "type": "string"
         }
       ],
       "pandas_version": "1.4.0"
     },
     "data": [
       {
-        "price_per_l": 0.070,
-        "alcohol_degree": 8.930645161290323,
         "name": "Cuv\u00e9e des Trolls",
-        "cost": 1.55,
-        "beer_kind": "Blonde",
-        "volume_ml": 250,
-        "brewing_date": "2022-01-05",
-        "nullable_name": null
+        "cost": 1.55
       },
       {
-        "price_per_l": 0.005,
-        "alcohol_degree": 1.2437106918238994,
         "name": "Weihenstephan Hefe Weizen Alcoholarm",
-        "cost": 1.59,
-        "beer_kind": "Blanche & Weizen",
-        "volume_ml": 500,
-        "brewing_date": "2022-01-06",
-        "nullable_name": "Weihenstephan Hefe Weizen Alcoholarm"
+        "cost": 1.59
       }
     ]
   }
