@@ -66,9 +66,9 @@ class GoogleBigQueryTranslator(SQLTranslator):
         if isinstance(condition, DateBoundCondition):
             match condition.operator:
                 case "until":
-                    return functions.Cast(column_field, "datetime") >= condition.value
+                    return functions.Cast(column_field, "timestamp") >= condition.value
                 case "from":
-                    return functions.Cast(column_field, "datetime") <= condition.value
+                    return functions.Cast(column_field, "timestamp") <= condition.value
 
         return super()._get_single_condition_criterion(condition, prev_step_name)
 

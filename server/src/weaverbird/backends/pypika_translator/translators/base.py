@@ -559,11 +559,6 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "FilterStep",
     ) -> StepContext:
-        def _cast_to_timestamp(value: Any) -> Any:
-            if self.DIALECT != SQLDialect.GOOGLEBIGQUERY:
-                return functions.Cast(value, 'TIMESTAMP')
-
-            return functions.Cast(value, 'DATETIME')
 
         # To handle relative date formats
         if isinstance(step.condition, (ConditionComboAnd, ConditionComboOr)):
@@ -577,10 +572,10 @@ class SQLTranslator(ABC):
                         value_str_time = evaluate_relative_date(sub_cond.value).strftime(
                             "%Y-%m-%d %H:%M:%S"
                         )
-                        sub_cond.value = _cast_to_timestamp(value_str_time)
+                        sub_cond.value = functions.Cast(value_str_time, 'TIMESTAMP')  # type: ignore
                     elif isinstance(sub_cond.value, datetime):
                         value_str_time = sub_cond.value.strftime("%Y-%m-%d %H:%M:%S")
-                        sub_cond.value = _cast_to_timestamp(value_str_time)
+                        sub_cond.value = functions.Cast(value_str_time, 'TIMESTAMP')  # type: ignore
 
         query: "QueryBuilder" = (
             self.QUERY_CLS.from_(prev_step_name)
