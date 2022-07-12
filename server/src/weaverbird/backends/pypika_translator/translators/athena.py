@@ -32,12 +32,9 @@ class AthenaTranslator(SQLTranslator):
 
         # To handle relative date formats
         cond = step.condition
-        if isinstance(cond, ConditionComboAnd) or isinstance(cond, ConditionComboOr):
+        if isinstance(cond, (ConditionComboAnd, ConditionComboOr)):
 
-            if isinstance(cond, ConditionComboAnd):
-                operator = 'and_'
-            else:
-                operator = 'or_'
+            operator = 'and_' if isinstance(cond, ConditionComboAnd) else 'or_'
 
             for i, sub_cond in enumerate(getattr(cond, operator)):
                 if isinstance(sub_cond, DateBoundCondition):
