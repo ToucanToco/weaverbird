@@ -1,10 +1,10 @@
 from abc import ABC
 from dataclasses import dataclass
 from functools import cache
-from typing import TYPE_CHECKING, Any, Callable, Mapping, Sequence, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, Callable, Literal, Mapping, Sequence, TypeVar, Union, cast
 
 from pypika import AliasedQuery, Case, Criterion, Field, Order, Query, Schema, Table, functions
-from pypika.enums import Comparator
+from pypika.enums import Comparator, JoinType
 from pypika.queries import QueryBuilder, Selectable
 from pypika.terms import AnalyticFunction, BasicCriterion, LiteralValue
 
@@ -19,6 +19,7 @@ from weaverbird.pipeline.conditions import (
     MatchCondition,
     NullCondition,
 )
+from weaverbird.pipeline.pipeline import Pipeline
 from weaverbird.pipeline.steps.utils.combination import Reference
 
 Self = TypeVar("Self", bound="SQLTranslator")
@@ -45,6 +46,7 @@ if TYPE_CHECKING:
         FormulaStep,
         FromdateStep,
         IfthenelseStep,
+        JoinStep,
         LowercaseStep,
         PercentageStep,
         RenameStep,
@@ -668,6 +670,75 @@ class SQLTranslator(ABC):
         )
 
         return StepContext(query, columns + [step.new_column])
+
+    @staticmethod
+    def _get_join_type(join_type: Literal['left', 'inner', 'left outer']) -> JoinType:
+        match join_type:
+            case 'left':
+                return JoinType.left
+            case 'left outer':
+                return JoinType.left_outer
+            case 'inner':
+                return JoinType.inner
+
+    @staticmethod
+    def _field_list_to_name_list(fields: list[Field]) -> list[str]:
+        return [field.alias or field.name for field in fields]
+
+    def join(
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: "JoinStep",
+    ) -> StepContext:
+        try:
+            steps = Pipeline(steps=step.right_pipeline).steps
+        except Exception as exc:
+            raise NotImplementedError(
+                f"join is only possible with another pipeline: {exc}"
+            ) from exc
+        right_builder_ctx = self.__class__(
+            tables_columns=self._tables_columns, db_schema=self._db_schema_name
+        ).get_query_builder(steps=steps, query_builder=builder)
+        left_table = Table(prev_step_name)
+        right_table = Table(right_builder_ctx.table_name)
+
+        left_cols = [Field(col, table=left_table) for col in columns]
+        # Simply checking if a column is in left columns and right columns is not enough to
+        # determine if it needs to be aliased. In case of nested joins where a column is used in
+        # three or more datasets (not unlikely with columns like "id" or "name"), the aliased column
+        # may need to be suffixed several times. The join/inner_pypika_nested.yaml fixture shows an
+        # example of this kind of situation
+        right_cols: list[Field] = []
+        for col in right_builder_ctx.columns:
+            if col not in (all_cols := self._field_list_to_name_list(left_cols + right_cols)):
+                right_cols.append(Field(col, table=right_table))
+                continue
+            alias = col
+            while (alias := f'{alias}_right') in all_cols:
+                pass
+            right_cols.append(Field(col, table=right_table, alias=alias))
+
+        query = (
+            self.QUERY_CLS.from_(left_table)
+            .select(*left_cols, *right_cols)
+            .join(right_table, self._get_join_type(step.type))
+            .on(
+                Criterion.all(
+                    Field(f[0], table=left_table) == Field(f[1], table=right_table) for f in step.on
+                )
+            )
+            # Order of results is not consistent depending on the SQL Engine (inconsistencies
+            # observed with Athena and BigQuery).
+            .orderby(*(c[0] for c in step.on))
+        )
+        return StepContext(
+            query,
+            [c.name for c in left_cols] + [c.alias or c.name for c in right_cols],
+            right_builder_ctx.builder,
+        )
 
     def lowercase(
         self: Self,

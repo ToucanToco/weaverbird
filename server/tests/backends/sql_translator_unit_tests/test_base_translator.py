@@ -2,6 +2,7 @@ from typing import Any
 
 import pytest
 from pypika import AliasedQuery, Case, Field, Order, Query, Schema, Table, functions
+from pypika.enums import JoinType
 from pypika.terms import LiteralValue, ValueWrapper
 
 from weaverbird.backends.pypika_translator.translators.base import SQLTranslator
@@ -14,17 +15,31 @@ from weaverbird.pipeline.steps.utils.combination import Reference
 class BaseTranslator(SQLTranslator):
     DIALECT = "Base"
     QUERY_CLS = Query
+    _known_instances = {}
 
     def _id(self) -> str:
-        return 'base'
+        if id(self) in BaseTranslator._known_instances:
+            return BaseTranslator._known_instances[id(self)]
+        if len(BaseTranslator._known_instances.keys()) == 0:
+            BaseTranslator._known_instances[id(self)] = 'base'
+            return 'base'
+        else:
+            id_ = 'base' + str(len(BaseTranslator._known_instances.keys()))
+            BaseTranslator._known_instances[id(self)] = id_
+            return id_
 
 
-ALL_TABLES = {"users": ["name", "pseudonyme", "age"]}
+ALL_TABLES = {
+    "users": ["name", "pseudonyme", "age", "id", "project_id"],
+    "projects": ["id", "name", "created_at"],
+    "addresses": ["user_id", "street_name"],
+}
 DB_SCHEMA = "test_schema"
 
 
 @pytest.fixture
 def base_translator():
+    BaseTranslator._known_instances = {}
     return BaseTranslator(
         tables_columns=ALL_TABLES,
         db_schema=DB_SCHEMA,
@@ -535,4 +550,42 @@ def test_absolutevalue(base_translator: BaseTranslator, default_step_kwargs: dic
         *selected_columns, functions.Abs(Field(column)).as_(new_column)
     )
 
+    assert ctx.selectable.get_sql() == expected_query.get_sql()
+
+
+# Join tests
+@pytest.mark.parametrize(
+    'join_type, join_type_variant',
+    [('left', JoinType.left), ('left outer', JoinType.left_outer), ('inner', JoinType.inner)],
+)
+def test_join_simple(
+    base_translator: BaseTranslator,
+    join_type: str,
+    join_type_variant: JoinType,
+    default_step_kwargs: dict[str, Any],
+):
+    right_domain = 'projects'
+    selected_columns = ['name', 'project_id']
+    join_columns = [('project_id', 'id')]
+    previous_step = "previous_with"
+
+    step = steps.JoinStep(
+        right_pipeline=[steps.DomainStep(domain=right_domain)], type=join_type, on=join_columns
+    )
+    ctx = base_translator.join(step=step, columns=selected_columns, **default_step_kwargs)
+
+    left_table = Table(previous_step)
+    right_table = Table('__step_0_base__')
+    expected_query = (
+        Query.from_(previous_step)
+        .select(
+            *(left_table[col] for col in selected_columns),
+            right_table.id,
+            Field('name', table=right_table, alias='name_right'),
+            right_table.created_at,
+        )
+        .join(right_table, join_type_variant)
+        .on(left_table.project_id == right_table.id)
+        .orderby(left_table.project_id)
+    )
     assert ctx.selectable.get_sql() == expected_query.get_sql()
