@@ -1655,4 +1655,21 @@ describe('Pipeline interpolator', () => {
       },
     ]);
   });
+
+  it('should not interpolate dissolve steps', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'dissolve',
+        groups: ['<%= foo %>'],
+        aggregations: [],
+      },
+    ];
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'dissolve',
+        groups: ['<%= foo %>'],
+        aggregations: [],
+      },
+    ]);
+  });
 });

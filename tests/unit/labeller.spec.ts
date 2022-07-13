@@ -840,5 +840,14 @@ describe('Labeller', () => {
     it('should return empty label if there is no label', () => {
       expect(lwv(null, variableDelimiters, replaceDelimiters)).toEqual('');
     });
+
+    it('generates label for dissolve steps', () => {
+      const step: S.DissolveStep = {
+        name: 'dissolve',
+        groups: ['foo', 'bar'],
+        aggregations: [],
+      };
+      expect(hrl(step)).toEqual('Dissolve geographical data grouped by "foo", "bar"');
+    });
   });
 });

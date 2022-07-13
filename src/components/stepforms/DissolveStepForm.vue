@@ -85,18 +85,6 @@ export default class DissolveStepForm extends BaseStepForm<DissolveStep> {
     return agg;
   }
 
-  get aggregations() {
-    if (this.editedStep.aggregations.length) {
-      return this.editedStep.aggregations;
-    } else {
-      return [this.defaultAggregation];
-    }
-  }
-
-  set aggregations(newval) {
-    this.editedStep.aggregations = [...newval];
-  }
-
   submit() {
     /**
      * If different aggregations have to be performed on the same column, add a suffix
@@ -107,6 +95,20 @@ export default class DissolveStepForm extends BaseStepForm<DissolveStep> {
       agg.newcolumns = [...agg.columns];
       for (const c of agg.newcolumns) {
         newcolumnOccurences[c] = (newcolumnOccurences[c] || 0) + 1;
+      }
+    }
+    for (const agg of this.editedStep.aggregations) {
+      for (let i = 0; i < agg.newcolumns.length; i++) {
+        /**
+         * If we keep the original granularity, we keep the original value columns
+         * and add the aggregation results in new columns, so we need to suffix those
+         */
+        if (newcolumnOccurences[agg.newcolumns[i]] > 1) {
+          agg.newcolumns.splice(i, 1, `${agg.newcolumns[i]}-${agg.aggfunction}`);
+        }
+        if (this.editedStep.groups.includes(agg.newcolumns[i])) {
+          agg.newcolumns.splice(i, 1, `${agg.newcolumns[i]}-${agg.aggfunction}`);
+        }
       }
     }
     this.$$super.submit();
