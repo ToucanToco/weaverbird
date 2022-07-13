@@ -89,10 +89,7 @@ export const ACTION_CATEGORIES: ActionCategories = {
     { name: 'append', label: 'Append datasets' },
     { name: 'join', label: 'Join datasets' },
   ],
-  geo: [
-    // TO_REMOVE: category can't be instanciated without at least one step, replace it with real step after
-    { name: 'text', label: 'Fake step' },
-  ],
+  geo: [{ name: 'dissolve', label: 'Geographic dissolve' }],
 };
 
 export const SEARCH_ACTION: groupActions[] = [

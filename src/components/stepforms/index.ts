@@ -20,6 +20,7 @@ import CustomSqlStepForm from './CustomSqlStepForm.vue';
 import CustomStepForm from './CustomStepForm.vue';
 import DateExtractStepForm from './DateExtractStepForm.vue';
 import DeleteColumnStepForm from './DeleteColumnStepForm.vue';
+import DissolveStepForm from './DissolveStepForm.vue';
 import DomainStepForm from './DomainStepForm.vue';
 import DuplicateColumnStepForm from './DuplicateColumnStepForm.vue';
 import EvolutionStepForm from './EvolutionStepForm.vue';
@@ -68,6 +69,7 @@ const StepFormsComponents: { [K in PipelineStepName]: VueConstructor<StepForm> }
   customsql: CustomSqlStepForm,
   dateextract: DateExtractStepForm,
   delete: DeleteColumnStepForm,
+  dissolve: DissolveStepForm,
   duration: ComputeDurationStepForm,
   duplicate: DuplicateColumnStepForm,
   domain: DomainStepForm,

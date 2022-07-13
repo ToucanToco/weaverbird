@@ -206,6 +206,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Delete columns ${formatMulticol(step.columns)}`;
   }
 
+  dissolve(step: Readonly<S.DissolveStep>) {
+    return `Dissolve geographical data grouped by ${formatMulticol(step.groups)}`;
+  }
+
   domain(step: Readonly<S.DomainStep>) {
     const sourceLabel = S.isReferenceToExternalQuery(step.domain)
       ? `query ${step.domain.uid}`

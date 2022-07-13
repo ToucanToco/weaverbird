@@ -16,7 +16,11 @@ describe('ActionToolbar', () => {
   it('should instantiate action toolbar buttons with right classes', () => {
     const store = setupMockStore(
       // TO_REMOVE: add a ff for geo category until development is done
-      buildStateWithOnePipeline([], { featureFlags: { BASEMAP_AS_USUAL_DATASOURCE: 'enable' } }),
+      buildStateWithOnePipeline([], {
+        featureFlags: { BASEMAP_AS_USUAL_DATASOURCE: 'enable' },
+        // Required for button to be available
+        translator: 'pandas',
+      }),
     );
     const wrapper = mount(ActionToolbar, {
       propsData: {
@@ -143,7 +147,11 @@ describe('ActionToolbar', () => {
   describe('with feature flags', () => {
     it('should show action button when referent category feature flag is enabled', () => {
       const store = setupMockStore(
-        buildStateWithOnePipeline([], { featureFlags: { BASEMAP_AS_USUAL_DATASOURCE: 'enable' } }),
+        buildStateWithOnePipeline([], {
+          featureFlags: { BASEMAP_AS_USUAL_DATASOURCE: 'enable' },
+          // Required for geo to be avaialable
+          translator: 'pandas',
+        }),
       );
       const wrapper = shallowMount(ActionToolbar, { localVue, store });
       const categories = wrapper.findAll('action-toolbar-button-stub');
