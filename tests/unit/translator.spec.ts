@@ -104,19 +104,27 @@ describe('translator registration', () => {
       'snowflake',
     ]);
     expect(backendsSupporting('append')).toEqual([
+      'athena',
+      'google-big-query',
       'mongo36',
       'mongo40',
       'mongo42',
       'mongo50',
       'pandas',
+      'postgresql',
+      'redshift',
       'snowflake',
     ]);
     expect(backendsSupporting('join')).toEqual([
+      'athena',
+      'google-big-query',
       'mongo36',
       'mongo40',
       'mongo42',
       'mongo50',
       'pandas',
+      'postgresql',
+      'redshift',
       'snowflake',
     ]);
   });
