@@ -16,8 +16,6 @@ from weaverbird.backends.pypika_translator.translators import ALL_TRANSLATORS
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import handle_zero_division
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
-    ConditionComboAnd,
-    ConditionComboOr,
     DateBoundCondition,
     InclusionCondition,
     MatchCondition,
@@ -674,27 +672,6 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "FilterStep",
     ) -> StepContext:
-
-        # To handle relative date formats
-        if isinstance(step.condition, (ConditionComboAnd, ConditionComboOr)):
-            cond = step.condition
-
-            conditions = cond.and_ if isinstance(cond, ConditionComboAnd) else cond.or_
-
-            for sub_cond in conditions or []:
-                if isinstance(sub_cond, DateBoundCondition):
-                    if isinstance(sub_cond.value, RelativeDate):
-                        value_str_time = (
-                            evaluate_relative_date(sub_cond.value)
-                            .astimezone(timezone.utc)
-                            .strftime("%Y-%m-%d %H:%M:%S")
-                        )
-                        sub_cond.value = functions.Cast(value_str_time, 'TIMESTAMP')
-                    elif isinstance(sub_cond.value, datetime):
-                        value_str_time = sub_cond.value.astimezone(timezone.utc).strftime(
-                            "%Y-%m-%d %H:%M:%S"
-                        )
-                        sub_cond.value = functions.Cast(value_str_time, 'TIMESTAMP')
 
         query: "QueryBuilder" = (
             self.QUERY_CLS.from_(prev_step_name)
