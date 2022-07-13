@@ -535,22 +535,52 @@ class SQLTranslator(ABC):
                     return column_field.notin(condition.value)
 
             case MatchCondition():
+                compliant_regex = _compliant_regex(condition.value)
 
                 if condition.operator == "matches":
                     match self.REGEXP_OP:
                         case RegexOp.REGEXP:
                             return column_field.regexp(condition.value)
                         case RegexOp.SIMILAR_TO:
+
+                            compliant_regex = (
+                                compliant_regex.replace('%', '%%')
+                                if self.DIALECT in [SQLDialect.POSTGRES, SQLDialect.REDSHIFT]
+                                else compliant_regex
+                            )
                             return BasicCriterion(
                                 RegexpMatching.similar_to,
                                 column_field,
-                                column_field.wrap_constant(_compliant_regex(condition.value)),
+                                column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.CONTAINS:
                             return BasicCriterion(
                                 RegexpMatching.contains,
                                 column_field,
                                 column_field.wrap_constant(_compliant_regex(condition.value)),
+                            )
+                        case RegexOp.REGEXP_CONTAINS:
+                            compliant_regex = (
+                                compliant_regex.replace('%', '')
+                                if self.DIALECT in [SQLDialect.GOOGLEBIGQUERY]
+                                else compliant_regex
+                            )
+                            return RegexpFunction(
+                                RegexpFunction.REGEXP_CONTAINS,
+                                column_field,
+                                column_field.wrap_constant(compliant_regex),
+                            )
+                        case RegexOp.REGEXP_LIKE:
+
+                            compliant_regex = (
+                                compliant_regex.replace('%', '')
+                                if self.DIALECT in [SQLDialect.ATHENA]
+                                else compliant_regex
+                            )
+                            return RegexpFunction(
+                                RegexpFunction.REGEXP_LIKE,
+                                column_field,
+                                column_field.wrap_constant(compliant_regex),
                             )
                         case _:
                             raise NotImplementedError(
@@ -562,16 +592,21 @@ class SQLTranslator(ABC):
                         case RegexOp.REGEXP:
                             return column_field.regexp(condition.value).negate()
                         case RegexOp.SIMILAR_TO:
+                            compliant_regex = (
+                                compliant_regex.replace('%', '%%')
+                                if self.DIALECT in [SQLDialect.POSTGRES, SQLDialect.REDSHIFT]
+                                else compliant_regex
+                            )
                             return BasicCriterion(
                                 RegexpMatching.not_similar_to,
                                 column_field,
-                                column_field.wrap_constant(_compliant_regex(condition.value)),
+                                column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.CONTAINS:
                             return BasicCriterion(
                                 RegexpMatching.not_contains,
                                 column_field,
-                                column_field.wrap_constant(_compliant_regex(condition.value)),
+                                column_field.wrap_constant(compliant_regex),
                             )
                         case _:
                             raise NotImplementedError(
@@ -1124,6 +1159,19 @@ class StrToDate(functions.Function):  # type: ignore[misc]
 class ParseDate(functions.Function):  # type: ignore[misc]
     def __init__(self, term: str | Field, date_format: str, alias: str | None = None) -> None:
         super().__init__("PARSE_DATE", term, date_format, alias=alias)
+
+
+class RegexpFunction(functions.Function):
+    REGEXP_EXTRACT = "REGEXP_EXTRACT"
+    REGEXP_SUBSTR = "REGEXP_SUBSTR"
+    REGEXP_LIKE = "REGEXP_LIKE"
+    REGEXP_MATCH = "REGEXP_MATCH"
+    REGEXP_CONTAINS = "REGEXP_CONTAINS"
+
+    def __init__(
+        self, keyword: str, term: str | Field, regexp_expression: str, alias: str | None = None
+    ) -> None:
+        super().__init__(keyword, term, regexp_expression, alias=alias)
 
 
 class RegexpMatching(Comparator):  # type: ignore[misc]

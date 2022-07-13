@@ -5,6 +5,11 @@ class RegexOp(Enum):
     REGEXP = auto()
     SIMILAR_TO = auto()
     CONTAINS = auto()
+    REGEXP_LIKE = auto()
+    REGEXP_SUBSTR = auto()
+    REGEXP_EXTRACT = auto()
+    REGEXP_MATCH = auto()
+    REGEXP_CONTAINS = auto()
 
 
 class FromDateOp(Enum):
