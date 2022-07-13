@@ -14,14 +14,14 @@
         "if": {
             "column": "brewing_date",
             "operator": "from",
-            "value": "2022-01-07 00:00:00"
+            "value": "2022-01-05 00:00:00"
         },
         "then": "'tintin'",
         "else": {
           "if": {
               "column": "brewing_date",
               "operator": "until",
-              "value": "2022-01-05 00:00:00"
+              "value": "2022-01-07 00:00:00"
           },
           "then": "'toto'",
           "else": "'tata'"
@@ -60,25 +60,25 @@
         "name": "Superstrong beer",
         "cost": 2.8900001049,
         "brewing_date": "2022-01-01",
-        "cond": "tintin"
+        "cond": "toto"
       },
       {
         "name": "Ninkasi Ploploplop",
         "cost": 2.8900001049,
         "brewing_date": "2022-01-02",
-        "cond": "tintin"
+        "cond": "toto"
       },
       {
         "name": "Brewdog Nanny State Alcoholvrij",
         "cost": 2.2899999619,
         "brewing_date": "2022-01-03",
-        "cond": "tintin"
+        "cond": "toto"
       },
       {
         "name": "Ardwen Blonde",
         "cost": 2.0899999142,
         "brewing_date": "2022-01-04",
-        "cond": "tintin"
+        "cond": "toto"
       },
       {
         "name": "Cuv\u00e9e des Trolls",
@@ -102,19 +102,19 @@
         "name": "Pauwel Kwak",
         "cost": 1.6900000572,
         "brewing_date": "2022-01-08",
-        "cond": "toto"
+        "cond": "tintin"
       },
       {
         "name": "Brasserie De Sutter Brin de Folie",
         "cost": 2.1900000572,
         "brewing_date": "2022-01-09",
-        "cond": "toto"
+        "cond": "tintin"
       },
       {
         "name": "Brugse Zot blonde",
         "cost": 1.7899999619,
         "brewing_date": "2022-01-10",
-        "cond": "toto"
+        "cond": "tintin"
       }
     ]
   }
