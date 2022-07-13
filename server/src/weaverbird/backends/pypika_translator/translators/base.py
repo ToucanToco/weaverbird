@@ -20,7 +20,7 @@ from weaverbird.pipeline.conditions import (
     NullCondition,
 )
 from weaverbird.pipeline.pipeline import Pipeline
-from weaverbird.pipeline.steps.utils.combination import Reference
+from weaverbird.pipeline.steps.utils.combination import PipelineOrDomainNameOrReference, Reference
 
 Self = TypeVar("Self", bound="SQLTranslator")
 
@@ -32,6 +32,7 @@ if TYPE_CHECKING:
     from weaverbird.pipeline.steps import (
         AbsoluteValueStep,
         AggregateStep,
+        AppendStep,
         ArgmaxStep,
         ArgminStep,
         CompareTextStep,
@@ -273,6 +274,68 @@ class SQLTranslator(ABC):
                 .orderby(*step.on, order=Order.asc),
                 selected_col_names,
             )
+
+    @staticmethod
+    def _pipeline_or_domain_name_or_reference_to_pipeline(
+        pipeline: 'PipelineOrDomainNameOrReference', message: str | None = None
+    ) -> list['PipelineStep']:
+        try:
+            return Pipeline(steps=pipeline).steps
+        except Exception as exc:
+            message = message or f"could not convert {pipeline} to pipeline: {exc}"
+            raise NotImplementedError(message) from exc
+
+    def append(
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: "AppendStep",
+    ) -> StepContext:
+        pipelines = [
+            self._pipeline_or_domain_name_or_reference_to_pipeline(pipeline)
+            for pipeline in step.pipelines
+        ]
+        tables: list[str] = []
+        column_lists: list[list[str]] = []
+        for pipeline in pipelines:
+            pipeline_ctx = self.__class__(
+                tables_columns=self._tables_columns, db_schema=self._db_schema_name
+            ).get_query_builder(steps=pipeline, query_builder=builder)
+            tables.append(pipeline_ctx.table_name)
+            column_lists.append(pipeline_ctx.columns)
+            builder = pipeline_ctx.builder
+
+        # By default, UNION ALL will append columns by index in SQL, and only append as much columns
+        # as available in the first SELECT statement. Also, the columns are appended in the order of
+        # the select statement, which is not what we want either (a merge by name is probably what's
+        # expected by the user)
+        columns_to_add = []
+        for column_list in column_lists:
+            for col in column_list:
+                if col not in columns and col not in columns_to_add:
+                    columns_to_add.append(col)
+
+        all_columns = columns + columns_to_add
+
+        query = self.QUERY_CLS.from_(prev_step_name).select(
+            *columns, *(LiteralValue('NULL').as_(col) for col in columns_to_add)
+        )
+        for table, column_list in zip(tables, column_lists):
+            query = query.union_all(
+                self.QUERY_CLS.from_(table).select(
+                    *(
+                        # Selecting either the column from the dataset if it is available, or NULL
+                        # AS "col" otherwise. We iterate over all_columns rather than column_list in
+                        # order to have a merge by name
+                        col if col in column_list else LiteralValue('NULL').as_(col)
+                        for col in all_columns
+                    )
+                )
+            )
+
+        return StepContext(query.orderby(*all_columns), all_columns, builder)
 
     def argmax(
         self: Self,
@@ -693,12 +756,8 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "JoinStep",
     ) -> StepContext:
-        try:
-            steps = Pipeline(steps=step.right_pipeline).steps
-        except Exception as exc:
-            raise NotImplementedError(
-                f"join is only possible with another pipeline: {exc}"
-            ) from exc
+        steps = self._pipeline_or_domain_name_or_reference_to_pipeline(step.right_pipeline)
+
         right_builder_ctx = self.__class__(
             tables_columns=self._tables_columns, db_schema=self._db_schema_name
         ).get_query_builder(steps=steps, query_builder=builder)

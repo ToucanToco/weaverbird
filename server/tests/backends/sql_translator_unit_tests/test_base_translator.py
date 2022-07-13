@@ -589,3 +589,33 @@ def test_join_simple(
         .orderby(left_table.project_id)
     )
     assert ctx.selectable.get_sql() == expected_query.get_sql()
+
+
+def test_append_simple(base_translator: BaseTranslator, default_step_kwargs: dict[str, Any]):
+    right_domain = 'projects'
+    selected_columns = ['name', 'created_at']
+    right_selected_columns = ['name', 'user_id']
+    previous_step = "previous_with"
+
+    step = steps.AppendStep(
+        pipelines=[
+            [
+                steps.DomainStep(domain=right_domain),
+                steps.SelectStep(columns=right_selected_columns),
+            ]
+        ]
+    )
+    ctx = base_translator.append(step=step, columns=selected_columns, **default_step_kwargs)
+
+    right_table = Table('__step_1_base__')
+    expected_query = (
+        Query.from_(previous_step)
+        .select(*selected_columns, LiteralValue('NULL').as_('user_id'))
+        .union_all(
+            Query.from_(right_table).select(
+                'name', LiteralValue('NULL').as_('created_at'), 'user_id'
+            )
+        )
+        .orderby('name', 'created_at', 'user_id')
+    )
+    assert ctx.selectable.get_sql() == expected_query.get_sql()
