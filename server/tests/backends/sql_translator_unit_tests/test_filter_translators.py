@@ -1,7 +1,7 @@
 from typing import Any
 
 import pytest
-from pypika import Field, Query
+from pypika import Field, Query, functions
 from pypika.terms import BasicCriterion, ValueWrapper
 
 from weaverbird.backends.pypika_translator.operators import RegexOp
@@ -107,9 +107,13 @@ def test_datebound_filter(
     condition = conditions.DateBoundCondition(column=column, operator=op, value=datetime)
 
     if op == 'from':
-        op_func = Field(column) >= datetime
+        op_func = functions.Cast(Field(column), 'TIMESTAMP') >= functions.Cast(
+            datetime, 'TIMESTAMP'
+        )
     else:
-        op_func = Field(column) <= datetime
+        op_func = functions.Cast(Field(column), 'TIMESTAMP') <= functions.Cast(
+            datetime, 'TIMESTAMP'
+        )
 
     step = steps.FilterStep(condition=condition)
     ctx = filter_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
