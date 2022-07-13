@@ -13,6 +13,7 @@ from pypika import (
     Query,
     Schema,
     Table,
+    Tables,
     analytics,
     functions,
 )
@@ -249,65 +250,107 @@ class SQLTranslator(ABC):
         step: "AggregateStep",
     ) -> StepContext:
         agg_selected: list[Field] = []
-        groupby_window_selected: list[Field] = []
+        window_selected: list[Field] = []
+        window_subquery_list: list[Tables] = []
 
-        for aggregation in step.aggregations:
+        # Handle aggregation and analytics functions in distinct subqueries
+
+        for step_index, aggregation in enumerate(step.aggregations):
             if agg_fn := self._get_aggregate_function(aggregation.agg_function):
                 for i, column_name in enumerate(aggregation.columns):
                     column_field: Field = Table(prev_step_name)[column_name]
                     new_agg_col = agg_fn(column_field).as_(aggregation.new_columns[i])
                     agg_selected.append(new_agg_col)
+
             elif window_fn := self._get_window_function(aggregation.agg_function):
                 for i, column_name in enumerate(aggregation.columns):
                     column_field = Table(prev_step_name)[column_name]
-                    new_agg_col = (
+                    new_window_col = (
                         window_fn(column_field)
                         .over(*step.on)
                         .orderby(column_field)
                         .rows(analytics.Preceding(), analytics.Following())
                         .as_(aggregation.new_columns[i])
                     )
-                    agg_selected.append(new_agg_col)
-                    if (
-                        step.on
-                    ):  # the column must be added to the group by clause if there's a group by clause
-                        groupby_window_selected.append(column_field)
+
+                    window_selected.append(new_window_col)
+
+                window_subquery_list.append(
+                    self.QUERY_CLS.from_(prev_step_name)
+                    .select(*step.on, *window_selected)
+                    .distinct_on(*step.on)
+                    .as_(f'wq_{step_index}')
+                )
 
             else:  # pragma: no cover
                 raise NotImplementedError(
                     f"[{self.DIALECT}] Aggregation for {aggregation.agg_function!r} is not yet implemented"
                 )
+        if window_subquery_list and agg_selected:
+            all_windows_subquery = (
+                self.QUERY_CLS.from_(prev_step_name)
+                .select(*window_subquery_list)
+                .as_('window_subquery')
+            )
+
+            selected_cols: list[str | Field] = [*step.on, *agg_selected]
+            agg_query = (
+                self.QUERY_CLS.from_(prev_step_name)
+                .select(*selected_cols)
+                .groupby(*step.on)
+                .orderby(*step.on, order=Order.asc)
+            ).as_('agg_subquery')
+            merged_query = (
+                self.QUERY_CLS.from_(prev_step_name)
+                .select(*selected_cols, agg_query)
+                .inner_join(all_windows_subquery)
+                .on_field(*step.on)
+            )
+        elif agg_selected:
+            selected_cols = [*step.on, *agg_selected]
+            merged_query = (
+                self.QUERY_CLS.from_(prev_step_name)
+                .select(*selected_cols)
+                .groupby(*step.on)
+                .orderby(*step.on, order=Order.asc)
+            )
+        else:
+            merged_query = self.QUERY_CLS.from_(window_subquery_list[0]).select(
+                *step.on, *[col.alias for col in window_selected]
+            )
+            if len(window_subquery_list) > 1:
+                for q in window_subquery_list[1:]:
+                    merged_query = merged_query.join(q).on(*step.on)
+
         query: "QueryBuilder"
         selected_col_names: list[str]
 
         if step.keep_original_granularity:
-            agg_query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
-                *step.on, *agg_selected
-            )
-            agg_query = agg_query.groupby(*step.on, *groupby_window_selected)
-
+            # agg_query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
+            #     *step.on, *agg_selected
+            # )
+            # agg_query = agg_query.groupby(*step.on)
+            #
             all_agg_col_names: list[str] = [x for agg in step.aggregations for x in agg.new_columns]
-
             query = (
                 self.QUERY_CLS.from_(prev_step_name)
                 .select(
-                    *columns, *(Field(agg_col, table=agg_query) for agg_col in all_agg_col_names)
+                    *columns, *(Field(agg_col, table=merged_query) for agg_col in all_agg_col_names)
                 )
-                .left_join(agg_query)
+                .left_join(merged_query)
                 .on_field(*step.on)
-            ).orderby(*step.on + [c.name for c in groupby_window_selected])
-
+            )
             selected_col_names = [*columns, *all_agg_col_names]
             return StepContext(query, selected_col_names)
 
         else:
-            selected_cols: list[str | Field] = [*step.on, *agg_selected]
-            selected_col_names = [*step.on, *(f.alias for f in agg_selected)]
+            selected_col_names = [
+                *step.on,
+                *(f.alias for f in agg_selected),
+                *(f.alias for f in window_selected),
+            ]
             return StepContext(
-                self.QUERY_CLS.from_(prev_step_name)
-                .select(*selected_cols)
-                .groupby(*step.on, *groupby_window_selected)
-                .orderby(*step.on, order=Order.asc),
+                merged_query,
                 selected_col_names,
             )
 
