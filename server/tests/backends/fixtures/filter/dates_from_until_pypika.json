@@ -1,0 +1,63 @@
+{
+  "exclude": [
+    "mongo",
+    "mysql",
+    "pandas",
+    "postgres",
+    "snowflake"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "filter",
+        "condition": {
+          "and": [
+            {
+              "column": "brewing_date",
+              "operator": "from",
+              "value": "2022-01-05 00:00:00"
+            },
+            {
+              "column": "brewing_date",
+              "operator": "until",
+              "value": "2022-01-07 00:00:00"
+            }
+          ]
+        }
+      },
+      {
+        "name": "select",
+        "columns": [ "name", "cost" ]
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "cost",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "1.4.0"
+    },
+    "data": [
+      {
+        "name": "Cuv\u00e9e des Trolls",
+        "cost": 1.55
+      },
+      {
+        "name": "Weihenstephan Hefe Weizen Alcoholarm",
+        "cost": 1.59
+      },
+      {
+        "name": "Bellfield Lawless Village IPA",
+        "cost": 2.49
+      }
+    ]
+  }
+}

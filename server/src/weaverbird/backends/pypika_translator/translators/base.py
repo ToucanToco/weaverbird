@@ -1,5 +1,6 @@
 from abc import ABC
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from functools import cache
 from typing import TYPE_CHECKING, Any, Callable, Literal, Mapping, Sequence, TypeVar, Union, cast
 
@@ -8,17 +9,21 @@ from pypika.enums import Comparator, JoinType
 from pypika.queries import QueryBuilder, Selectable
 from pypika.terms import AnalyticFunction, BasicCriterion, LiteralValue
 
+from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relative_date
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators import ALL_TRANSLATORS
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import handle_zero_division
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
+    ConditionComboAnd,
+    ConditionComboOr,
     DateBoundCondition,
     InclusionCondition,
     MatchCondition,
     NullCondition,
 )
+from weaverbird.pipeline.dates import RelativeDate
 from weaverbird.pipeline.pipeline import Pipeline
 from weaverbird.pipeline.steps.utils.combination import PipelineOrDomainNameOrReference, Reference
 
@@ -580,9 +585,9 @@ class SQLTranslator(ABC):
                     return column_field.isnotnull()
 
             case DateBoundCondition():
-                if condition.operator == "from":
+                if condition.operator == "until":
                     return column_field <= condition.value
-                elif condition.operator == "until":
+                elif condition.operator == "from":
                     return column_field >= condition.value
 
             case _:  # pragma: no cover
@@ -617,11 +622,34 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "FilterStep",
     ) -> StepContext:
+
+        # To handle relative date formats
+        if isinstance(step.condition, (ConditionComboAnd, ConditionComboOr)):
+            cond = step.condition
+
+            conditions = cond.and_ if isinstance(cond, ConditionComboAnd) else cond.or_
+
+            for sub_cond in conditions or []:
+                if isinstance(sub_cond, DateBoundCondition):
+                    if isinstance(sub_cond.value, RelativeDate):
+                        value_str_time = (
+                            evaluate_relative_date(sub_cond.value)
+                            .astimezone(timezone.utc)
+                            .strftime("%Y-%m-%d %H:%M:%S")
+                        )
+                        sub_cond.value = functions.Cast(value_str_time, 'TIMESTAMP')
+                    elif isinstance(sub_cond.value, datetime):
+                        value_str_time = sub_cond.value.astimezone(timezone.utc).strftime(
+                            "%Y-%m-%d %H:%M:%S"
+                        )
+                        sub_cond.value = functions.Cast(value_str_time, 'TIMESTAMP')
+
         query: "QueryBuilder" = (
             self.QUERY_CLS.from_(prev_step_name)
             .select(*columns)
             .where(self._get_filter_criterion(step.condition, prev_step_name))
         )
+
         return StepContext(query, columns)
 
     def formula(
