@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import TYPE_CHECKING, Any, TypeVar
 
-from pypika import Criterion, Field, Query, Table, functions
+from pypika import Field, Query, Table, functions
 from pypika.queries import QueryBuilder
 from pypika.terms import LiteralValue
 
@@ -12,12 +12,10 @@ from weaverbird.backends.pypika_translator.translators.base import (
     SQLTranslator,
     StepContext,
 )
-from weaverbird.pipeline.conditions import DateBoundCondition
 
 Self = TypeVar("Self", bound="GoogleBigQueryTranslator")
 
 if TYPE_CHECKING:
-    from weaverbird.pipeline.conditions import SimpleCondition
     from weaverbird.pipeline.steps import SplitStep
 
 
@@ -57,20 +55,6 @@ class GoogleBigQueryTranslator(SQLTranslator):
     FROM_DATE_OP = FromDateOp.TO_CHAR
     REGEXP_OP = RegexOp.REGEXP_CONTAINS
     TO_DATE_OP = ToDateOp.PARSE_DATE
-
-    def _get_single_condition_criterion(
-        self: Self, condition: "SimpleCondition", prev_step_name: str
-    ) -> Criterion:
-        column_field: Field = Table(prev_step_name)[condition.column]
-
-        if isinstance(condition, DateBoundCondition):
-            match condition.operator:
-                case "from":
-                    return functions.Cast(column_field, "timestamp") >= condition.value
-                case "until":
-                    return functions.Cast(column_field, "timestamp") <= condition.value
-
-        return super()._get_single_condition_criterion(condition, prev_step_name)
 
     def split(
         self: Self,

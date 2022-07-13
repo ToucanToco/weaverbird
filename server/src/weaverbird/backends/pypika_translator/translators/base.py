@@ -620,10 +620,27 @@ class SQLTranslator(ABC):
                     return column_field.isnotnull()
 
             case DateBoundCondition():
-                if condition.operator == "until":
-                    return column_field <= condition.value
-                elif condition.operator == "from":
-                    return column_field >= condition.value
+                if isinstance(condition.value, RelativeDate):
+                    value_str_time = (
+                        evaluate_relative_date(condition.value)
+                        .astimezone(timezone.utc)
+                        .strftime("%Y-%m-%d %H:%M:%S")
+                    )
+                elif isinstance(condition.value, datetime):
+                    value_str_time = condition.value.astimezone(timezone.utc).strftime(
+                        "%Y-%m-%d %H:%M:%S"
+                    )
+                else:
+                    value_str_time = condition.value
+
+                if condition.operator == "from":
+                    return functions.Cast(column_field, "TIMESTAMP") >= functions.Cast(
+                        value_str_time, "TIMESTAMP"
+                    )
+                elif condition.operator == "until":
+                    return functions.Cast(column_field, "TIMESTAMP") <= functions.Cast(
+                        value_str_time, "TIMESTAMP"
+                    )
 
             case _:  # pragma: no cover
                 raise KeyError(f"Operator {condition.operator!r} does not exist")
