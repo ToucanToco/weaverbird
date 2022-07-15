@@ -380,7 +380,12 @@ describe('getter tests', () => {
   describe('unsupportedSteps', () => {
     it('should return the list of steps not supported by the translator', () => {
       const state = buildState({ translator: 'mongo36' });
-      expect(getters.unsupportedSteps(state, {}, {}, {})).toEqual(['convert', 'customsql', 'trim']);
+      expect(getters.unsupportedSteps(state, {}, {}, {})).toEqual([
+        'convert',
+        'customsql',
+        'dissolve',
+        'trim',
+      ]);
     });
   });
 

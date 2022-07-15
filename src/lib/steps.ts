@@ -217,6 +217,13 @@ export type DeleteStep = {
   columns: string[];
 };
 
+export type DissolveStep = {
+  name: 'dissolve';
+  groups: string[];
+  aggregations: Aggregation[];
+  includeNulls?: boolean;
+};
+
 export type Statistics = 'count' | 'max' | 'min' | 'average' | 'variance' | 'standard deviation';
 export type Quantile = {
   label?: string;
@@ -509,6 +516,7 @@ export type PipelineStep =
   | CustomStep
   | CustomSqlStep
   | DateExtractStep
+  | DissolveStep
   | DeleteStep
   | DuplicateColumnStep
   | DomainStep

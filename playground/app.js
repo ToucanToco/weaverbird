@@ -793,51 +793,43 @@ async function buildVueApp() {
             on: [['dep', 'code_departement']],
           },
           {
-            name: 'join',
-            right_pipeline: 'doses-vaccin-departement-france',
-            type: 'left',
-            on: [
-              ['code_departement', 'code_departement'],
-              ['code_region', 'code_region'],
+            name: 'text',
+            new_column: 'whitespace',
+            text: ' ',
+          },
+          {
+            name: 'concatenate',
+            columns: ['nom_departement', 'whitespace'],
+            separator: ',',
+            new_column_name: 'departement_nom',
+          },
+          {
+            name: 'select',
+            columns: [
+              'code_departement',
+              'departement_nom',
+              'code_region',
+              'nom_region',
+              'geometry',
             ],
           },
-          // NOTE: uncomment this once dissolve is implemented
-          // {
-          //   name: 'text',
-          //   new_column: 'whitespace',
-          //   text: ' ',
-          // },
-          // {
-          //   name: 'concatenate',
-          //   columns: ['nom_departement', 'whitespace'],
-          //   separator: ',',
-          //   new_column_name: 'departement_nom',
-          // },
-          // {
-          //   name: 'select',
-          //   columns: [
-          //     'code_departement',
-          //     'departement_nom',
-          //     'code_region',
-          //     'nom_region',
-          //     'geometry',
-          //   ],
-          // },
-          // {
-          //   name: 'dissolve',
-          //   groups: ['code_region'],
-          //   include_nulls: false,
-          //   aggregations: [
-          //     {
-          //       column: 'departement_nom',
-          //       agg_function: 'sum',
-          //     },
-          //     {
-          //       column: 'nom_region',
-          //       agg_function: 'first',
-          //     },
-          //   ],
-          // },
+          {
+            name: 'dissolve',
+            groups: ['code_region'],
+            include_nulls: false,
+            aggregations: [
+              {
+                columns: ['departement_nom'],
+                newcolumns: ['departement_nom'],
+                aggfunction: 'sum',
+              },
+              {
+                columns: ['nom_region'],
+                newcolumns: ['nom_region'],
+                aggfunction: 'first',
+              },
+            ],
+          },
         ];
       } else if (TRANSLATOR === 'athena' || TRANSLATOR === 'google-big-query') {
         registrationOpts.currentPipelineName = 'beersPipeline';

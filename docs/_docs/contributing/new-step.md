@@ -155,7 +155,7 @@ Again, this boils down to implementing a specific method, this time in the
 `PipelineInterpolator` class of the `src/lib/templating.ts` module.
 
 ```typescript
-class StepLabeller implements StepMatcher<string> {
+class PipelineInterpolator implements StepMatcher<string> {
   // […]
   columnsum(step:  Readonly<S.ColumnSumStep>): MongoStep[] {
     return { ...step };
