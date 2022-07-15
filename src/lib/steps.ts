@@ -217,15 +217,10 @@ export type DeleteStep = {
   columns: string[];
 };
 
-export type DissolveAggregation = {
-  agg_function: 'sum' | 'avg' | 'count' | 'count distinct' | 'min' | 'max' | 'first' | 'last';
-  column: string;
-};
-
 export type DissolveStep = {
   name: 'dissolve';
   groups: string[];
-  aggregations: DissolveAggregation[];
+  aggregations: Aggregation[];
   includeNulls?: boolean;
 };
 
