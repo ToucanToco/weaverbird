@@ -226,7 +226,7 @@ export type DissolveStep = {
   name: 'dissolve';
   groups: string[];
   aggregations: DissolveAggregation[];
-  include_nulls?: boolean;
+  includeNulls?: boolean;
 };
 
 export type Statistics = 'count' | 'max' | 'min' | 'average' | 'variance' | 'standard deviation';

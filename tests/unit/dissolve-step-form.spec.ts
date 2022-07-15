@@ -24,19 +24,19 @@ describe('Dissolve Step Form', () => {
       expect(widgetMultiselect.attributes('options')).toEqual('columnA,columnB,columnC');
     });
 
-    it('include_nulls should be set properly if defined in inititalStepValue', async () => {
+    it('includeNulls should be set properly if defined in inititalStepValue', async () => {
       const wrapper = runner.shallowMount(undefined, {
         propsData: {
           initialStepValue: {
             name: 'dissolve',
             groups: [''],
             aggregations: [],
-            include_nulls: true,
+            includeNulls: true,
           },
         },
       });
       await wrapper.vm.$nextTick();
-      expect(wrapper.vm.$data.editedStep.include_nulls).toEqual(true);
+      expect(wrapper.vm.$data.editedStep.includeNulls).toEqual(true);
     });
 
     it('should pass down the "on" prop to the MultiselectWidget value prop', async () => {
@@ -68,7 +68,7 @@ describe('Dissolve Step Form', () => {
             name: 'dissolve',
             groups: [],
             aggregations: [{ column: 'foo', newcolumn: 'bar', aggfunction: 'sum' }],
-            include_nulls: false,
+            includeNulls: false,
           },
         },
       });
@@ -94,7 +94,7 @@ describe('Dissolve Step Form', () => {
                 columns: ['col1'],
               },
             ],
-            include_nulls: false,
+            includeNulls: false,
           },
         },
         errors: [{ keyword: 'minLength', dataPath: '.groups[0]' }],
@@ -145,7 +145,7 @@ describe('Dissolve Step Form', () => {
           name: 'dissolve',
           groups: ['foo'],
           aggregations: [{ columns: ['bar'], newcolumns: ['bar'], aggfunction: 'sum' }],
-          include_nulls: false,
+          includeNulls: false,
         },
       },
     });

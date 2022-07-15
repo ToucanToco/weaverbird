@@ -23,7 +23,7 @@ const schema = {
       },
     },
     aggregations,
-    include_nulls: {
+    includeNulls: {
       type: 'boolean',
       description: 'If true, include null values',
     },

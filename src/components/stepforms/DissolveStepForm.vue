@@ -33,7 +33,7 @@
     <CheckboxWidget
       class="keepNullsCheckbox"
       label="Include null values in results"
-      v-model="editedStep.include_nulls"
+      v-model="editedStep.includeNulls"
     />
     <StepFormButtonbar />
   </div>
@@ -69,7 +69,7 @@ export default class DissolveStepForm extends BaseStepForm<DissolveStep> {
 
   @Prop({
     type: Object,
-    default: () => ({ name: 'dissolve', groups: [], include_nulls: false, aggregations: [] }),
+    default: () => ({ name: 'dissolve', groups: [], includeNulls: false, aggregations: [] }),
   })
   initialStepValue!: DissolveStep;
 
