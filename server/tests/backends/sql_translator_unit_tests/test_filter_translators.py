@@ -106,13 +106,16 @@ def test_datebound_filter(
 
     condition = conditions.DateBoundCondition(column=column, operator=op, value=datetime)
 
+    from dateutil import parser as dateutil_parser
+
+    value_str_time = dateutil_parser.parse(datetime).astimezone().strftime('%Y-%m-%d %H:%M:%S')
     if op == 'from':
         op_func = functions.Cast(Field(column), 'TIMESTAMP') >= functions.Cast(
-            datetime, 'TIMESTAMP'
+            value_str_time, 'TIMESTAMP'
         )
     else:
         op_func = functions.Cast(Field(column), 'TIMESTAMP') <= functions.Cast(
-            datetime, 'TIMESTAMP'
+            value_str_time, 'TIMESTAMP'
         )
 
     step = steps.FilterStep(condition=condition)
