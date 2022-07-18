@@ -48,7 +48,7 @@ def get_escape_char(sql_dialect: SQLDialect | None) -> Literal['`', '"'] | None:
     match sql_dialect:
         case None:
             return None
-        case 'snowflake' | 'redshift':
+        case 'snowflake' | 'redshift' | 'postgres':
             return '"'
         case _:
             return '`'

@@ -9,6 +9,7 @@ from weaverbird.backends.sql_translator.steps.utils.query_transformation import 
     build_selection_query,
     build_union_query,
     generate_query_by_keeping_granularity,
+    get_escape_char,
     handle_zero_division,
     remove_metadatas_columns_from_query,
     sanitize_column_name,
@@ -530,3 +531,10 @@ IS NOT NULL THEN 'EXXON' ELSE '' END AS ROCKFELLER, CASE WHEN ROCKFELLER = 'CHEV
 WHEN ROCKFELLER = 'TEXACO' THEN "CHEVRON" ELSE NULL END AS ANGLO-PERSIAN OIL COMPANY, SUM(ENRON) \
 AS SUM_ENRON, SUM(STANDARD OIL) AS SUM_STANDARD_OIL, AVG(ARAMCO) AS MOAAAR_OIL"""
     )
+
+
+@pytest.mark.parametrize(
+    'dialect, expected', [('snowflake', '"'), ('postgres', '"'), ('bigquery', '`'), (None, None)]
+)
+def test_get_escape_char(dialect: str | None, expected: str | None) -> None:
+    assert get_escape_char(dialect) == expected
