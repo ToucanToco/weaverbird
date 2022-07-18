@@ -1,6 +1,7 @@
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     apply_condition,
     build_selection_query,
+    get_escape_char,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLDialect,
@@ -30,12 +31,14 @@ def translate_filter(
         columns_filter=[]
     )
 
+    condition = apply_condition(
+        step.condition,
+        f'SELECT {completed_fields} FROM {query.query_name} WHERE ',
+        get_escape_char(sql_dialect),
+    )
     new_query = SQLQuery(
         query_name=query_name,
-        transformed_query=f"""{query.transformed_query}, {query_name} AS ({
-        apply_condition(
-            step.condition,
-            f'''SELECT {completed_fields} FROM {query.query_name} WHERE ''')})""",
+        transformed_query=f"""{query.transformed_query}, {query_name} AS ({condition})""",
         selection_query=build_selection_query(
             query.metadata_manager.retrieve_query_metadata_columns(), query_name
         ),

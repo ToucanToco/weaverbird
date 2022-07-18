@@ -1,5 +1,7 @@
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
+    escape_column_name,
+    get_escape_char,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLDialect,
@@ -25,9 +27,12 @@ def translate_table(
     sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
     """As it is always the first step add the with keyword"""
-    select_from_table = sql_query_retriever(
-        step.domain
-    )  # TODO in laputa, implement the table retrieval instead of query
+    escape_char = get_escape_char(sql_dialect)
+    # TODO in laputa, implement the table retrieval instead of query
+    select_from_table = escape_column_name(
+        sql_query_retriever(step.domain), escape_char=escape_char
+    )
+
     if len(select_from_table.split()) == 1:
         select_from_table = f"SELECT * FROM {select_from_table}"
     query_name = f'SELECT_STEP_{index}'
@@ -46,7 +51,9 @@ def translate_table(
         query_name=query_name,
         transformed_query=f'WITH {query_name} AS ({select_from_table})',
         selection_query=build_selection_query(
-            query_metadata_manager.retrieve_query_metadata_columns(), query_name
+            query_metadata_manager.retrieve_query_metadata_columns(),
+            query_name,
+            escape_char,
         ),
         metadata_manager=query_metadata_manager,
     )

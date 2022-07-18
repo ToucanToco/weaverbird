@@ -1,9 +1,9 @@
 import datetime
 import re
-from typing import Dict, List, Tuple
+from typing import Dict, List, Literal, Tuple
 
 from weaverbird.backends.sql_translator.metadata import ColumnMetadata, SqlQueryMetadataManager
-from weaverbird.backends.sql_translator.types import SQLQuery
+from weaverbird.backends.sql_translator.types import SQLDialect, SQLQuery
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
     Condition,
@@ -44,39 +44,59 @@ SQL_INCLUSION_OPERATORS = {
 }
 
 
-def apply_condition(condition: Condition, query: str) -> str:
+def get_escape_char(sql_dialect: SQLDialect | None) -> Literal['`', '"'] | None:
+    match sql_dialect:
+        case None:
+            return None
+        case 'snowflake' | 'redshift':
+            return '"'
+        case _:
+            return '`'
+
+
+def escape_column_name(name: str, escape_char: Literal['`', '"'] | None) -> str:
+    return escape_char + name + escape_char if escape_char else name
+
+
+def apply_condition(
+    condition: Condition, query: str, escape_char: Literal['`', '"'] | None = None
+) -> str:
     if isinstance(condition, ComparisonCondition):
+        condition_column = escape_column_name(condition.column, escape_char)
         try:
             if isinstance(condition.value, datetime.datetime) or isinstance(
                 condition.value, datetime.date
             ):
                 query += (
-                    f'to_timestamp({condition.column}) {SQL_COMPARISON_OPERATORS[condition.operator]} '
+                    f'to_timestamp({condition_column}) {SQL_COMPARISON_OPERATORS[condition.operator]} '
                     f'to_timestamp(\'{condition.value.isoformat()}\')'
                 )
             else:
                 float(condition.value)
-                query += f'{condition.column} {SQL_COMPARISON_OPERATORS[condition.operator]} {condition.value}'
+                query += f'{condition_column} {SQL_COMPARISON_OPERATORS[condition.operator]} {condition.value}'
         except ValueError:
             # just to escape single quotes from crashing the snowflakeSQL query
             if type(condition.value) == str:
                 condition.value = sanitize_input(condition.value)
-            query += f"{condition.column} {SQL_COMPARISON_OPERATORS[condition.operator]} '{condition.value}'"
+            query += f"{condition_column} {SQL_COMPARISON_OPERATORS[condition.operator]} '{condition.value}'"
     elif isinstance(condition, NullCondition):
-        query += f'{condition.column} {SQL_NULLITY_OPERATORS[condition.operator]}'
+        condition_column = escape_column_name(condition.column, escape_char)
+        query += f'{condition_column} {SQL_NULLITY_OPERATORS[condition.operator]}'
     elif isinstance(condition, MatchCondition):
+        condition_column = escape_column_name(condition.column, escape_char)
         # just to escape single quotes from crashing the snowflakeSQL query
         if type(condition.value) == str:
             condition.value = sanitize_input(condition.value)
-        query += f"{condition.column} {SQL_MATCH_OPERATORS[condition.operator]} '{condition.value}'"
+        query += f"{condition_column} {SQL_MATCH_OPERATORS[condition.operator]} '{condition.value}'"
     elif isinstance(condition, InclusionCondition):
+        condition_column = escape_column_name(condition.column, escape_char)
         values_tuple_str = '(' + ', '.join([f'\'{v}\'' for v in condition.value]) + ')'
         query += (
-            f'{condition.column} {SQL_INCLUSION_OPERATORS[condition.operator]} {values_tuple_str}'
+            f'{condition_column} {SQL_INCLUSION_OPERATORS[condition.operator]} {values_tuple_str}'
         )
 
     elif isinstance(condition, DateBoundCondition):
-
+        condition_column = escape_column_name(condition.column, escape_char)
         value = condition.value
         if isinstance(value, RelativeDate):
             if value.operator == 'until':
@@ -90,7 +110,7 @@ def apply_condition(condition: Condition, query: str) -> str:
             value_query_part = f"to_timestamp('{ value.isoformat() }')"
 
         # Remove time info from the column to filter on
-        column = f'to_timestamp({ condition.column })'
+        column = f'to_timestamp({ condition_column })'
         column_without_time = f"DATE_TRUNC('DAY', { column })"
         # Do the same with the value to compare it to
         value_without_time = f"DATE_TRUNC('DAY', { value_query_part })"
@@ -110,15 +130,18 @@ def apply_condition(condition: Condition, query: str) -> str:
     return query
 
 
-def build_selection_query(query_metadata: Dict[str, ColumnMetadata], query_name) -> str:
+def build_selection_query(
+    query_metadata: Dict[str, ColumnMetadata],
+    query_name: str,
+    escape_char: Literal['`', '"'] | None = None,
+) -> str:
     names = []
     for _, metadata in query_metadata.items():
-        alias = getattr(metadata, 'alias')
-        if alias:
+        if alias := metadata.alias:
             names.append(alias)
         else:
-            names.append(getattr(metadata, 'name'))
-    return f"SELECT {', '.join(names)} FROM {query_name}"
+            names.append(escape_column_name(metadata.name, escape_char))
+    return f"SELECT {', '.join(names)} FROM {escape_column_name(query_name, escape_char)}"
 
 
 def first_last_query_string_with_group_and_granularity(

@@ -69,62 +69,94 @@ class FakeStep:
         self.groupby = groupby
 
 
-def test_apply_condition_comparisons():
-    assert (
-        apply_condition(
+@pytest.mark.parametrize(
+    'condition,query,expected',
+    [
+        (
             ComparisonCondition(column='amount', operator='eq', value=10),
-            query='SELECT product FROM inventory WHERE ',
-        )
-        == 'SELECT product FROM inventory WHERE amount = 10'
-    )
-
-    assert (
-        apply_condition(
+            'SELECT product FROM inventory WHERE ',
+            'SELECT product FROM inventory WHERE amount = 10',
+        ),
+        (
             ComparisonCondition(column='amount', operator='ne', value=10),
-            query='SELECT product FROM inventory WHERE ',
-        )
-        == 'SELECT product FROM inventory WHERE amount != 10'
-    )
-
-    assert (
-        apply_condition(
+            'SELECT product FROM inventory WHERE ',
+            'SELECT product FROM inventory WHERE amount != 10',
+        ),
+        (
             ComparisonCondition(column='amount', operator='lt', value=10),
-            query='SELECT product FROM inventory WHERE ',
-        )
-        == 'SELECT product FROM inventory WHERE amount < 10'
-    )
-
-    assert (
-        apply_condition(
+            'SELECT product FROM inventory WHERE ',
+            'SELECT product FROM inventory WHERE amount < 10',
+        ),
+        (
             ComparisonCondition(column='amount', operator='le', value=10),
-            query='SELECT product FROM inventory WHERE ',
-        )
-        == 'SELECT product FROM inventory WHERE amount <= 10'
-    )
-
-    assert (
-        apply_condition(
+            'SELECT product FROM inventory WHERE ',
+            'SELECT product FROM inventory WHERE amount <= 10',
+        ),
+        (
             ComparisonCondition(column='amount', operator='gt', value=10),
-            query='SELECT product FROM inventory WHERE ',
-        )
-        == 'SELECT product FROM inventory WHERE amount > 10'
-    )
-
-    assert (
-        apply_condition(
+            'SELECT product FROM inventory WHERE ',
+            'SELECT product FROM inventory WHERE amount > 10',
+        ),
+        (
             ComparisonCondition(column='amount', operator='ge', value=10),
-            query='SELECT product FROM inventory WHERE ',
-        )
-        == 'SELECT product FROM inventory WHERE amount >= 10'
-    )
-
-    assert (
-        apply_condition(
+            'SELECT product FROM inventory WHERE ',
+            'SELECT product FROM inventory WHERE amount >= 10',
+        ),
+        (
             ComparisonCondition(column='amount', operator='ge', value='blabla'),
-            query='SELECT product FROM inventory WHERE ',
-        )
-        == "SELECT product FROM inventory WHERE amount >= 'blabla'"
-    )
+            'SELECT product FROM inventory WHERE ',
+            "SELECT product FROM inventory WHERE amount >= 'blabla'",
+        ),
+    ],
+)
+def test_apply_condition_comparisons(condition: ComparisonCondition, query: str, expected: str):
+    assert apply_condition(condition, query=query) == expected
+
+
+@pytest.mark.parametrize(
+    'condition,query,expected',
+    [
+        (
+            ComparisonCondition(column='amount', operator='eq', value=10),
+            'SELECT product FROM inventory WHERE ',
+            'SELECT product FROM inventory WHERE "amount" = 10',
+        ),
+        (
+            ComparisonCondition(column='amount', operator='ne', value=10),
+            'SELECT product FROM inventory WHERE ',
+            'SELECT product FROM inventory WHERE "amount" != 10',
+        ),
+        (
+            ComparisonCondition(column='amount', operator='lt', value=10),
+            'SELECT product FROM inventory WHERE ',
+            'SELECT product FROM inventory WHERE "amount" < 10',
+        ),
+        (
+            ComparisonCondition(column='amount', operator='le', value=10),
+            'SELECT product FROM inventory WHERE ',
+            'SELECT product FROM inventory WHERE "amount" <= 10',
+        ),
+        (
+            ComparisonCondition(column='amount', operator='gt', value=10),
+            'SELECT product FROM inventory WHERE ',
+            'SELECT product FROM inventory WHERE "amount" > 10',
+        ),
+        (
+            ComparisonCondition(column='amount', operator='ge', value=10),
+            'SELECT product FROM inventory WHERE ',
+            'SELECT product FROM inventory WHERE "amount" >= 10',
+        ),
+        (
+            ComparisonCondition(column='amount', operator='ge', value='blabla'),
+            'SELECT product FROM inventory WHERE ',
+            """SELECT product FROM inventory WHERE "amount" >= 'blabla'""",
+        ),
+    ],
+)
+def test_apply_condition_comparisons_escaped(
+    condition: ComparisonCondition, query: str, expected: str
+):
+    assert apply_condition(condition, query=query, escape_char='"') == expected
 
 
 def test_apply_condition_nullity():
@@ -235,6 +267,13 @@ def test_build_selection_query():
     assert (
         build_selection_query({'toto': ColumnMetadata(name='toto', type='tata')}, 'SELECT_STEP_0')
         == 'SELECT TOTO FROM SELECT_STEP_0'
+    )
+
+    assert (
+        build_selection_query(
+            {'toto': ColumnMetadata(name='toto', type='tata')}, 'SELECT_STEP_0', escape_char='`'
+        )
+        == 'SELECT `TOTO` FROM `SELECT_STEP_0`'
     )
 
 
