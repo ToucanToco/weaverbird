@@ -363,7 +363,7 @@ class SQLTranslator(ABC):
                 .on_field(*step.on)
             )
             selected_col_names = [*columns, *all_agg_col_names]
-            return StepContext(query.orderby(*selected_col_names), selected_col_names)
+            return StepContext(query.orderby(*step.on) if step.on else query, selected_col_names)
 
         else:
             selected_col_names = [
@@ -372,7 +372,7 @@ class SQLTranslator(ABC):
                 *(f[1].alias for f in window_selected),
             ]
             return StepContext(
-                merged_query.orderby(*selected_col_names),
+                merged_query.orderby(*step.on) if step.on else merged_query,
                 selected_col_names,
             )
 

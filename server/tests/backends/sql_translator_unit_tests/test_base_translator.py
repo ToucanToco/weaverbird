@@ -187,7 +187,7 @@ def test_aggregate(
     expected_query = (
         Query.from_(previous_step)
         .groupby(field)
-        .orderby(field, new_column)
+        .orderby(agg_field)
         .select(field, agg_func(field).as_(new_column))
     )
 
@@ -224,7 +224,7 @@ def test_aggregate_with_original_granularity(
         .left_join(agg_query)
         .on_field(agg_field)
         .select(*original_select)
-        .orderby(*original_select, new_column)
+        .orderby(agg_field)
     )
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()

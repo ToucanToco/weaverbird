@@ -35,6 +35,14 @@
           }
         ],
         "keepOriginalGranularity": true
+      },
+      {
+        "name": "select",
+        "columns": [
+          "beer_kind",
+          "volume_ml_sum",
+          "first_name"
+        ]
       }
     ]
   },
@@ -42,36 +50,8 @@
     "schema": {
       "fields": [
         {
-          "name": "price_per_l",
-          "type": "number"
-        },
-        {
-          "name": "alcohol_degree",
-          "type": "number"
-        },
-        {
-          "name": "name",
-          "type": "string"
-        },
-        {
-          "name": "cost",
-          "type": "number"
-        },
-        {
           "name": "beer_kind",
           "type": "string"
-        },
-        {
-          "name": "volume_ml",
-          "type": "integer"
-        },
-        {
-          "name": "brewing_date",
-          "type": "datetime"
-        },
-        {
-          "name": "nullable_name",
-          "type": "any"
         },
         {
           "name": "volume_ml_sum",
