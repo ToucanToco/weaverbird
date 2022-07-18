@@ -5,8 +5,8 @@
     "pandas",
     "postgres",
     "snowflake",
-    "bigquery_pypika",
-    "athena_pypika"
+    "postgres_pypika",
+    "redshift_pypika"
   ],
   "step": {
     "pipeline": [
@@ -52,43 +52,43 @@
     "data": [
       {
         "name": "Ardwen Blonde",
-        "brewing_date": "2022-01-04 00:00:00"
+        "brewing_date": "2022-01-04"
       },
       {
         "name": "Bellfield Lawless Village IPA",
-        "brewing_date": "2022-01-07 00:00:00"
+        "brewing_date": "2022-01-07"
       },
       {
         "name": "Brasserie De Sutter Brin de Folie",
-        "brewing_date": "2022-01-09 00:00:00"
+        "brewing_date": "2022-01-09"
       },
       {
         "name": "Brewdog Nanny State Alcoholvrij",
-        "brewing_date": "2022-01-03 00:00:00"
+        "brewing_date": "2022-01-03"
       },
       {
         "name": "Brugse Zot blonde",
-        "brewing_date": "2022-01-10 00:00:00"
+        "brewing_date": "2022-01-10"
       },
       {
         "name": "Cuvée des Trolls",
-        "brewing_date": "2022-01-05 00:00:00"
+        "brewing_date": "2022-01-05"
       },
       {
         "name": "Ninkasi Ploploplop",
-        "brewing_date": "2022-01-02 00:00:00"
+        "brewing_date": "2022-01-02"
       },
       {
         "name": "Pauwel Kwak",
-        "brewing_date": "2022-01-08 00:00:00"
+        "brewing_date": "2022-01-08"
       },
       {
         "name": "Superstrong beer",
-        "brewing_date": "2022-01-01 00:00:00"
+        "brewing_date": "2022-01-01"
       },
       {
         "name": "Weihenstephan Hefe Weizen Alcoholarm",
-        "brewing_date": "2022-01-06 00:00:00"
+        "brewing_date": "2022-01-06"
       }
     ]
   }
