@@ -1,12 +1,14 @@
 from enum import Enum, auto
 
 
-class RegexOp(Enum):
+class RegexOp(str, Enum):
     REGEXP = auto()
     SIMILAR_TO = auto()
     CONTAINS = auto()
-    REGEXP_LIKE = auto()
-    REGEXP_CONTAINS = auto()
+    REGEXP_LIKE = "REGEXP_LIKE"
+    REGEXP_CONTAINS = "REGEXP_CONTAINS"
+    NOT_REGEXP_LIKE = "NOT REGEXP_LIKE"
+    NOT_REGEXP_CONTAINS = "NOT REGEXP_CONTAINS"
 
 
 class FromDateOp(Enum):
