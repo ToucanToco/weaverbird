@@ -308,11 +308,10 @@ class SQLTranslator(ABC):
 
                     window_selected.append((step_index, new_window_col))
                     agg_cols.append(new_window_col)
-
                 window_subquery_list.append(
                     self.QUERY_CLS.from_(prev_step_name)
                     .select(*step.on, *agg_cols)
-                    .distinct_on(*step.on)
+                    .distinct()
                     .as_(f'wq{step_index}')
                 )
 
@@ -340,6 +339,7 @@ class SQLTranslator(ABC):
                 .select(*merged_selected)
                 .inner_join(all_windows_subquery)
                 .on_field(*step.on)
+                .orderby(*step.on, order=Order.asc)
             )
         elif agg_selected:
             selected_cols = [*step.on, *agg_selected]
@@ -375,7 +375,7 @@ class SQLTranslator(ABC):
                 *(f[1].alias for f in window_selected),
             ]
             return StepContext(
-                merged_query,
+                merged_query.orderby(*selected_col_names),
                 selected_col_names,
             )
 
