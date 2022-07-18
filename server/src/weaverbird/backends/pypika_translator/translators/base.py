@@ -564,7 +564,7 @@ class SQLTranslator(ABC):
                                 else compliant_regex
                             )
                             return RegexpFunction(
-                                RegexpFunction.REGEXP_CONTAINS,
+                                RegexOp.REGEXP_CONTAINS,
                                 column_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
@@ -575,7 +575,7 @@ class SQLTranslator(ABC):
                                 else compliant_regex
                             )
                             return RegexpFunction(
-                                RegexpFunction.REGEXP_LIKE,
+                                RegexOp.REGEXP_LIKE,
                                 column_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
@@ -612,7 +612,7 @@ class SQLTranslator(ABC):
                                 else compliant_regex
                             )
                             return RegexpFunction(
-                                RegexpFunction.NOT_REGEXP_CONTAINS,
+                                RegexOp.NOT_REGEXP_CONTAINS,
                                 column_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
@@ -623,7 +623,7 @@ class SQLTranslator(ABC):
                                 else compliant_regex
                             )
                             return RegexpFunction(
-                                RegexpFunction.NOT_REGEXP_LIKE,
+                                RegexOp.NOT_REGEXP_LIKE,
                                 column_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
@@ -1177,15 +1177,7 @@ class ParseDate(functions.Function):  # type: ignore[misc]
 
 
 class RegexpFunction(functions.Function):
-    REGEXP_LIKE = "REGEXP_LIKE"
-    REGEXP_CONTAINS = "REGEXP_CONTAINS"
-    NOT_REGEXP_LIKE = "NOT REGEXP_LIKE"
-    NOT_REGEXP_CONTAINS = "NOT REGEXP_CONTAINS"
-
-    def __init__(
-        self, keyword: str, term: str | Field, regexp_expression: str, alias: str | None = None
-    ) -> None:
-        super().__init__(keyword, term, regexp_expression, alias=alias)
+    ...
 
 
 class RegexpMatching(Comparator):  # type: ignore[misc]
