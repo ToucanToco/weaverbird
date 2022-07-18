@@ -667,7 +667,6 @@ class SQLTranslator(ABC):
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.REGEXP_LIKE:
-
                             compliant_regex = (
                                 compliant_regex.replace('%', '')
                                 if self.DIALECT in [SQLDialect.ATHENA]
@@ -675,6 +674,28 @@ class SQLTranslator(ABC):
                             )
                             return RegexpFunction(
                                 RegexpFunction.REGEXP_LIKE,
+                                column_field,
+                                column_field.wrap_constant(compliant_regex),
+                            )
+                        case RegexOp.REGEXP_CONTAINS:
+                            compliant_regex = (
+                                compliant_regex.replace('%', '')
+                                if self.DIALECT in [SQLDialect.GOOGLEBIGQUERY]
+                                else compliant_regex
+                            )
+                            return RegexpFunction(
+                                RegexpFunction.NOT_REGEXP_CONTAINS,
+                                column_field,
+                                column_field.wrap_constant(compliant_regex),
+                            )
+                        case RegexOp.REGEXP_LIKE:
+                            compliant_regex = (
+                                compliant_regex.replace('%', '')
+                                if self.DIALECT in [SQLDialect.ATHENA]
+                                else compliant_regex
+                            )
+                            return RegexpFunction(
+                                RegexpFunction.NOT_REGEXP_LIKE,
                                 column_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
@@ -1254,11 +1275,10 @@ class ParseDate(functions.Function):  # type: ignore[misc]
 
 
 class RegexpFunction(functions.Function):
-    REGEXP_EXTRACT = "REGEXP_EXTRACT"
-    REGEXP_SUBSTR = "REGEXP_SUBSTR"
     REGEXP_LIKE = "REGEXP_LIKE"
-    REGEXP_MATCH = "REGEXP_MATCH"
     REGEXP_CONTAINS = "REGEXP_CONTAINS"
+    NOT_REGEXP_LIKE = "NOT REGEXP_LIKE"
+    NOT_REGEXP_CONTAINS = "NOT REGEXP_CONTAINS"
 
     def __init__(
         self, keyword: str, term: str | Field, regexp_expression: str, alias: str | None = None
