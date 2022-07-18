@@ -21,7 +21,7 @@
           "if": {
               "column": "brewing_date",
               "operator": "until",
-              "value": "2022-01-07 00:00:00"
+              "value": "2022-01-03 00:00:00"
           },
           "then": "'toto'",
           "else": "'tata'"
@@ -78,7 +78,7 @@
         "name": "Ardwen Blonde",
         "cost": 2.0899999142,
         "brewing_date": "2022-01-04",
-        "cond": "toto"
+        "cond": "tata"
       },
       {
         "name": "Cuv\u00e9e des Trolls",
