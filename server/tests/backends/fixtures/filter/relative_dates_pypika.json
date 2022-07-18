@@ -24,7 +24,7 @@
                 "quantity": "1",
                 "duration": "day",
                 "operator": "from",
-                "date": "2022-01-05 01:00:00"
+                "date": "2022-01-05 00:00:00"
               }
             }
           ]
