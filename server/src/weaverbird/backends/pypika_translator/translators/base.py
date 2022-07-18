@@ -1,6 +1,6 @@
 from abc import ABC
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime
 from functools import cache
 from typing import TYPE_CHECKING, Any, Callable, Literal, Mapping, Sequence, TypeVar, Union, cast
 
