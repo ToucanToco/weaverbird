@@ -13,7 +13,6 @@ from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relat
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators import ALL_TRANSLATORS
-from weaverbird.backends.sql_translator.steps.utils.query_transformation import handle_zero_division
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
     DateBoundCondition,
@@ -696,7 +695,38 @@ class SQLTranslator(ABC):
         # into
         #   CAST("my age" AS float) + 1 / 2
 
-        query = query.select(LiteralValue(handle_zero_division(step.formula)).as_(step.new_column))
+        def _handle_zero_division_and_cast(formula: str) -> str:
+            """
+            This method will use regex to search for columns in the formula,
+            then wrap it inside CAST AS FLOAT and finally add a security NULLIF
+            in case of zero division.
+            Ex : formula =  3/ (price_per_l + volume_ml) / (alcohol_degree - cost)
+            - first step :
+            formula=' 3/ (CAST("price_per_l" AS FLOAT) + CAST("volume_ml" AS FLOAT)) / (CAST("alcohol_degree" AS FLOAT) - CAST("cost" AS FLOAT))'
+            - second step :
+            formula=' 3/ NULLIF((CAST("price_per_l" AS FLOAT) + CAST("volume_ml" AS FLOAT)) / (CAST("alcohol_degree" AS FLOAT) - CAST("cost" AS FLOAT)), 0)'
+            """
+            from re import sub as re_sub
+
+            # we replace brackets by quotes
+            formula = re_sub(r'[\[\]]', r'"', formula)
+            # we cast everything to float
+            formula = re_sub(r'([a-zA-Z_a-zA-Z]+)', r'CAST("\1" AS FLOAT)', formula)
+
+            if '/' in formula:
+                formula = re_sub(
+                    r'(?<=/)\s*(\w+)|(?<=/)\s*(\"?.*\"?)', r' NULLIF(\1\2, 0)', formula
+                )
+            if '%' in formula:
+                formula = re_sub(
+                    r'(?<=%)\s*(\w+)|(?<=%)\s*(\"?.*\"?)', r' NULLIF(\1\2, 0)', formula
+                )
+
+            return formula
+
+        query = query.select(
+            LiteralValue(_handle_zero_division_and_cast(step.formula)).as_(step.new_column)
+        )
 
         return StepContext(query, columns + [step.new_column])
 
