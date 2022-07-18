@@ -631,19 +631,13 @@ class SQLTranslator(ABC):
                     return column_field.notin(condition.value)
 
             case MatchCondition():
-                compliant_regex = _compliant_regex(condition.value)
+                compliant_regex = _compliant_regex(condition.value, self.DIALECT)
 
                 if condition.operator == "matches":
                     match self.REGEXP_OP:
                         case RegexOp.REGEXP:
                             return column_field.regexp(condition.value)
                         case RegexOp.SIMILAR_TO:
-
-                            compliant_regex = (
-                                compliant_regex.replace('%', '%%')
-                                if self.DIALECT in [SQLDialect.POSTGRES, SQLDialect.REDSHIFT]
-                                else compliant_regex
-                            )
                             return BasicCriterion(
                                 RegexpMatching.similar_to,
                                 column_field,
@@ -653,47 +647,27 @@ class SQLTranslator(ABC):
                             return BasicCriterion(
                                 RegexpMatching.contains,
                                 column_field,
-                                column_field.wrap_constant(_compliant_regex(condition.value)),
+                                column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.REGEXP_CONTAINS:
-                            compliant_regex = (
-                                compliant_regex.replace('%', '')
-                                if self.DIALECT in [SQLDialect.GOOGLEBIGQUERY]
-                                else compliant_regex
-                            )
                             return RegexpFunction(
                                 RegexOp.REGEXP_CONTAINS,
                                 column_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.REGEXP_LIKE:
-                            compliant_regex = (
-                                compliant_regex.replace('%', '')
-                                if self.DIALECT in [SQLDialect.ATHENA]
-                                else compliant_regex
-                            )
                             return RegexpFunction(
                                 RegexOp.REGEXP_LIKE,
                                 column_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.REGEXP_CONTAINS:
-                            compliant_regex = (
-                                compliant_regex.replace('%', '')
-                                if self.DIALECT in [SQLDialect.GOOGLEBIGQUERY]
-                                else compliant_regex
-                            )
                             return RegexpFunction(
                                 RegexOp.NOT_REGEXP_CONTAINS,
                                 column_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.REGEXP_LIKE:
-                            compliant_regex = (
-                                compliant_regex.replace('%', '')
-                                if self.DIALECT in [SQLDialect.ATHENA]
-                                else compliant_regex
-                            )
                             return RegexpFunction(
                                 RegexOp.NOT_REGEXP_LIKE,
                                 column_field,
@@ -709,11 +683,6 @@ class SQLTranslator(ABC):
                         case RegexOp.REGEXP:
                             return column_field.regexp(condition.value).negate()
                         case RegexOp.SIMILAR_TO:
-                            compliant_regex = (
-                                compliant_regex.replace('%', '%%')
-                                if self.DIALECT in [SQLDialect.POSTGRES, SQLDialect.REDSHIFT]
-                                else compliant_regex
-                            )
                             return BasicCriterion(
                                 RegexpMatching.not_similar_to,
                                 column_field,
@@ -1285,11 +1254,20 @@ class RegexpMatching(Comparator):  # type: ignore[misc]
     not_contains = " NOT CONTAINS "
 
 
-def _compliant_regex(pattern: str) -> str:
+def _compliant_regex(pattern: str, dialect: SQLDialect) -> str:
     """
     Like LIKE, the SIMILAR TO operator succeeds only if its pattern matches the entire string;
     this is unlike common regular expression behavior wherethe pattern
     can match any part of the string
     (see https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-SIMILARTO-REGEXP)
+
+    For some special cases like googlebigquery or athena, we don't need to add
+    those %
     """
+
+    if dialect in [SQLDialect.POSTGRES, SQLDialect.REDSHIFT]:
+        return f"%%{pattern}%%"
+    elif dialect in [SQLDialect.ATHENA, SQLDialect.GOOGLEBIGQUERY]:
+        return f"{pattern}"
+
     return f"%{pattern}%"
