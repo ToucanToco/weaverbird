@@ -339,18 +339,16 @@ class SQLTranslator(ABC):
                 .select(*merged_selected)
                 .inner_join(all_windows_subquery)
                 .on_field(*step.on)
-                .orderby(*step.on, order=Order.asc)
             )
         elif agg_selected:
             selected_cols = [*step.on, *agg_selected]
             merged_query = (
-                self.QUERY_CLS.from_(prev_step_name)
-                .select(*selected_cols)
-                .groupby(*step.on)
-                .orderby(*step.on, order=Order.asc)
+                self.QUERY_CLS.from_(prev_step_name).select(*selected_cols).groupby(*step.on)
             )
-        else:
+        elif window_subquery_list:
             merged_query = _build_window_subquery()
+        else:
+            merged_query = self.QUERY_CLS.from_(prev_step_name).groupby(*step.on).select(*step.on)
         query: "QueryBuilder"
         selected_col_names: list[str]
 
@@ -363,10 +361,9 @@ class SQLTranslator(ABC):
                 )
                 .left_join(merged_query)
                 .on_field(*step.on)
-                .orderby(*step.on, order=Order.asc)
             )
             selected_col_names = [*columns, *all_agg_col_names]
-            return StepContext(query, selected_col_names)
+            return StepContext(query.orderby(*selected_col_names), selected_col_names)
 
         else:
             selected_col_names = [

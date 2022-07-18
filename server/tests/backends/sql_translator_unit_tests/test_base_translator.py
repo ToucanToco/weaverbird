@@ -187,7 +187,7 @@ def test_aggregate(
     expected_query = (
         Query.from_(previous_step)
         .groupby(field)
-        .orderby(field, order=Order.asc)
+        .orderby(field, new_column)
         .select(field, agg_func(field).as_(new_column))
     )
 
@@ -224,7 +224,7 @@ def test_aggregate_with_original_granularity(
         .left_join(agg_query)
         .on_field(agg_field)
         .select(*original_select)
-        .orderby(agg_field)
+        .orderby(*original_select, new_column)
     )
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
@@ -550,7 +550,7 @@ def test_uniquegroups(base_translator: BaseTranslator, default_step_kwargs: dict
         Query.from_(previous_step)
         .select(Field(column))
         .groupby(Field(column))
-        .orderby(Field(column), order=Order.asc)
+        .orderby(Field(column))
     )
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
