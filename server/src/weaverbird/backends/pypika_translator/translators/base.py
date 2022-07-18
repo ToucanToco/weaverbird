@@ -709,15 +709,19 @@ class SQLTranslator(ABC):
                 if isinstance(condition.value, RelativeDate):
                     value_str_time = (
                         evaluate_relative_date(condition.value)
-                        .astimezone(timezone.utc)
+                        .astimezone()
                         .strftime("%Y-%m-%d %H:%M:%S")
                     )
                 elif isinstance(condition.value, datetime):
-                    value_str_time = condition.value.astimezone(timezone.utc).strftime(
-                        "%Y-%m-%d %H:%M:%S"
-                    )
+                    value_str_time = condition.value.astimezone().strftime("%Y-%m-%d %H:%M:%S")
                 else:
-                    value_str_time = condition.value
+                    from dateutil import parser as dateutil_parser
+
+                    value_str_time = (
+                        dateutil_parser.parse(condition.value)
+                        .astimezone()
+                        .strftime('%Y-%m-%d %H:%M:%S')
+                    )
 
                 if condition.operator == "from":
                     return functions.Cast(column_field, "TIMESTAMP") >= functions.Cast(
