@@ -2,9 +2,9 @@ from enum import Enum, auto
 
 
 class RegexOp(str, Enum):
-    REGEXP = auto()
-    SIMILAR_TO = auto()
-    CONTAINS = auto()
+    REGEXP = "REGEXP"
+    SIMILAR_TO = "SIMILAR TO"
+    CONTAINS = "CONTAINS"
     REGEXP_LIKE = "REGEXP_LIKE"
     REGEXP_CONTAINS = "REGEXP_CONTAINS"
     NOT_REGEXP_LIKE = "NOT REGEXP_LIKE"
