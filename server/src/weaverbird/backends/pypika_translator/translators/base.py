@@ -718,31 +718,33 @@ class SQLTranslator(ABC):
                     return column_field.isnotnull()
 
             case DateBoundCondition():
-                if isinstance(condition.value, RelativeDate):
-                    value_str_time = (
-                        evaluate_relative_date(condition.value)
-                        .astimezone()
-                        .strftime("%Y-%m-%d %H:%M:%S")
-                    )
-                elif isinstance(condition.value, datetime):
-                    value_str_time = condition.value.astimezone().strftime("%Y-%m-%d %H:%M:%S")
-                else:
-                    from dateutil import parser as dateutil_parser
 
-                    value_str_time = (
-                        dateutil_parser.parse(condition.value)
-                        .astimezone()
-                        .strftime('%Y-%m-%d %H:%M:%S')
-                    )
+                if isinstance(condition.value, (RelativeDate, datetime, str)):
+                    if isinstance(condition.value, RelativeDate):
+                        value_str_time = (
+                            evaluate_relative_date(condition.value)
+                            .astimezone()
+                            .strftime("%Y-%m-%d %H:%M:%S")
+                        )
+                    elif isinstance(condition.value, datetime):
+                        value_str_time = condition.value.astimezone().strftime("%Y-%m-%d %H:%M:%S")
+                    else:
+                        from dateutil import parser as dateutil_parser
+
+                        value_str_time = (
+                            dateutil_parser.parse(condition.value)
+                            .astimezone()
+                            .strftime('%Y-%m-%d %H:%M:%S')
+                        )
+                    value_to_compare = functions.Cast(value_str_time, "TIMESTAMP")
+
+                elif isinstance(condition.value, functions.Function):
+                    value_to_compare = condition.value
 
                 if condition.operator == "from":
-                    return functions.Cast(column_field, "TIMESTAMP") >= functions.Cast(
-                        value_str_time, "TIMESTAMP"
-                    )
+                    return functions.Cast(column_field, "TIMESTAMP") >= value_to_compare
                 elif condition.operator == "until":
-                    return functions.Cast(column_field, "TIMESTAMP") <= functions.Cast(
-                        value_str_time, "TIMESTAMP"
-                    )
+                    return functions.Cast(column_field, "TIMESTAMP") <= value_to_compare
 
             case _:  # pragma: no cover
                 raise KeyError(f"Operator {condition.operator!r} does not exist")
