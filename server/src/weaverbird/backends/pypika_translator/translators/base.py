@@ -254,13 +254,23 @@ class SQLTranslator(ABC):
         window_subquery_list: list[Tables] = []
 
         def _build_window_subquery() -> Any:
-            wq0 = Table('wq0')
-            merged_query = self.QUERY_CLS.from_(window_subquery_list[0]).select(
-                *step.on, *[getattr(wq0, col[1].alias) for col in window_selected if col[0] == 0]
+            min_window_index = min([c[0] for c in window_selected])
+            first_wq = Table(f'wq{min_window_index}')
+            merged_query = (
+                self.QUERY_CLS.from_(window_subquery_list[0])
+                .select(
+                    *step.on,
+                    *[
+                        getattr(first_wq, col[1].alias)
+                        for col in window_selected
+                        if col[0] == min_window_index
+                    ],
+                )
+                .as_('window_subquery')
             )
             if len(window_subquery_list) > 1:
-                for i, sq in enumerate(window_subquery_list[1:]):
-                    wq_temp = Table(f'wq{i + 1}')
+                for index, sq in enumerate(window_subquery_list[1:]):
+                    wq_temp = Table(f'wq{min_window_index + index + 1}')
                     merged_query = (
                         merged_query.join(sq)
                         .on_field(*step.on)
@@ -268,30 +278,32 @@ class SQLTranslator(ABC):
                             *[
                                 getattr(wq_temp, col[1].alias)
                                 for col in window_selected
-                                if col[0] == i + 1
+                                if col[0] == min_window_index + index + 1
                             ]
-                        ).as_('window_subquery')
+                        )
+                        .as_('window_subquery')
                     )
             return merged_query
+
         # Handle aggregation and analytics functions in distinct subqueries
 
         for step_index, aggregation in enumerate(step.aggregations):
             if agg_fn := self._get_aggregate_function(aggregation.agg_function):
-                for i, column_name in enumerate(aggregation.columns):
-                    column_field: Field = Table(prev_step_name)[column_name]
-                    new_agg_col = agg_fn(column_field).as_(aggregation.new_columns[i])
+                for agg_index, agg_column_name in enumerate(aggregation.columns):
+                    column_field: Field = Table(prev_step_name)[agg_column_name]
+                    new_agg_col = agg_fn(column_field).as_(aggregation.new_columns[agg_index])
                     agg_selected.append(new_agg_col)
 
             elif window_fn := self._get_window_function(aggregation.agg_function):
                 agg_cols: list[Field] = []
-                for i, column_name in enumerate(aggregation.columns):
-                    column_field = Table(prev_step_name)[column_name]
+                for window_index, window_column_name in enumerate(aggregation.columns):
+                    column_field = Table(prev_step_name)[window_column_name]
                     new_window_col = (
                         window_fn(column_field)
                         .over(*step.on)
                         .orderby(column_field)
                         .rows(analytics.Preceding(), analytics.Following())
-                        .as_(aggregation.new_columns[i])
+                        .as_(aggregation.new_columns[window_index])
                     )
 
                     window_selected.append((step_index, new_window_col))
@@ -310,21 +322,22 @@ class SQLTranslator(ABC):
                 )
         if window_subquery_list and agg_selected:
             window_table = Table('window_subquery')
-            selected_cols: list[str | Field] = [
-                *step.on,
-                *[col.alias for col in agg_selected],
-                *[getattr(window_table, col[1].alias) for col in window_selected]
-            ]
             all_windows_subquery = _build_window_subquery()
             agg_query = (
                 self.QUERY_CLS.from_(prev_step_name)
-                .select(*selected_cols)
+                .select(*agg_selected, *step.on)
                 .groupby(*step.on)
                 .orderby(*step.on, order=Order.asc)
             ).as_('agg_subquery')
+            agg_table = Table('agg_subquery')
+            merged_selected: list[str | Field] = [
+                *step.on,
+                *[getattr(agg_table, col.alias) for col in agg_selected],
+                *[getattr(window_table, col[1].alias) for col in window_selected],
+            ]
             merged_query = (
                 self.QUERY_CLS.from_(agg_query)
-                .select(*selected_cols)
+                .select(*merged_selected)
                 .inner_join(all_windows_subquery)
                 .on_field(*step.on)
             )
@@ -342,11 +355,6 @@ class SQLTranslator(ABC):
         selected_col_names: list[str]
 
         if step.keep_original_granularity:
-            # agg_query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
-            #     *step.on, *agg_selected
-            # )
-            # agg_query = agg_query.groupby(*step.on)
-            #
             all_agg_col_names: list[str] = [x for agg in step.aggregations for x in agg.new_columns]
             query = (
                 self.QUERY_CLS.from_(prev_step_name)
@@ -355,6 +363,7 @@ class SQLTranslator(ABC):
                 )
                 .left_join(merged_query)
                 .on_field(*step.on)
+                .orderby(*step.on, order=Order.asc)
             )
             selected_col_names = [*columns, *all_agg_col_names]
             return StepContext(query, selected_col_names)
