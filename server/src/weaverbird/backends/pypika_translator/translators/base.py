@@ -1,6 +1,6 @@
 from abc import ABC
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime
 from functools import cache
 from typing import TYPE_CHECKING, Any, Callable, Literal, Mapping, Sequence, TypeVar, Union, cast
 
@@ -650,25 +650,25 @@ class SQLTranslator(ABC):
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.REGEXP_CONTAINS:
-                            return RegexpFunction(
+                            return functions.Function(
                                 RegexOp.REGEXP_CONTAINS,
                                 column_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.REGEXP_LIKE:
-                            return RegexpFunction(
+                            return functions.Function(
                                 RegexOp.REGEXP_LIKE,
                                 column_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.REGEXP_CONTAINS:
-                            return RegexpFunction(
+                            return functions.Function(
                                 RegexOp.NOT_REGEXP_CONTAINS,
                                 column_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.REGEXP_LIKE:
-                            return RegexpFunction(
+                            return functions.Function(
                                 RegexOp.NOT_REGEXP_LIKE,
                                 column_field,
                                 column_field.wrap_constant(compliant_regex),
@@ -691,6 +691,18 @@ class SQLTranslator(ABC):
                         case RegexOp.CONTAINS:
                             return BasicCriterion(
                                 RegexpMatching.not_contains,
+                                column_field,
+                                column_field.wrap_constant(compliant_regex),
+                            )
+                        case RegexOp.REGEXP_CONTAINS:
+                            return functions.Function(
+                                RegexOp.NOT_REGEXP_CONTAINS,
+                                column_field,
+                                column_field.wrap_constant(compliant_regex),
+                            )
+                        case RegexOp.REGEXP_LIKE:
+                            return functions.Function(
+                                RegexOp.NOT_REGEXP_LIKE,
                                 column_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
@@ -1245,10 +1257,6 @@ class StrToDate(functions.Function):  # type: ignore[misc]
 class ParseDate(functions.Function):  # type: ignore[misc]
     def __init__(self, term: str | Field, date_format: str, alias: str | None = None) -> None:
         super().__init__("PARSE_DATE", term, date_format, alias=alias)
-
-
-class RegexpFunction(functions.Function):
-    ...
 
 
 class RegexpMatching(Comparator):  # type: ignore[misc]
