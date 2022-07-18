@@ -16,6 +16,7 @@ class MappingEnabledTranslator(SQLTranslator):
         float="DOUBLE PRECISION",
         integer="INTEGER",
         text="TEXT",
+        datetime="TIMESTAMP",
     )
 
 

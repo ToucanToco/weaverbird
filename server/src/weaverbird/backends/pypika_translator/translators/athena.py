@@ -15,6 +15,7 @@ class AthenaTranslator(SQLTranslator):
         float="FLOAT",
         integer="INTEGER",
         text="VARCHAR",
+        datetime="TIMESTAMP",
     )
 
 

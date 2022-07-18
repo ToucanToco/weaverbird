@@ -18,6 +18,13 @@
         "data_type": "text"
       },
       {
+        "name": "select",
+        "columns": [
+          "name",
+          "brewing_date"
+        ]
+      },
+      {
         "name": "sort",
         "columns": [
           {
@@ -32,35 +39,11 @@
     "schema": {
       "fields": [
         {
-          "name": "price_per_l",
-          "type": "number"
-        },
-        {
-          "name": "alcohol_degree",
-          "type": "number"
-        },
-        {
           "name": "name",
           "type": "string"
         },
         {
-          "name": "cost",
-          "type": "number"
-        },
-        {
-          "name": "beer_kind",
-          "type": "string"
-        },
-        {
-          "name": "volume_ml",
-          "type": "number"
-        },
-        {
           "name": "brewing_date",
-          "type": "string"
-        },
-        {
-          "name": "nullable_name",
           "type": "string"
         }
       ],
@@ -68,104 +51,44 @@
     },
     "data": [
       {
-        "price_per_l": 0.0559999999999999,
-        "alcohol_degree": 6.994105263157894,
         "name": "Ardwen Blonde",
-        "cost": 2.09,
-        "beer_kind": "Best-sellers",
-        "volume_ml": 330,
-        "brewing_date": "2022-01-04 00:00:00",
-        "nullable_name": "Ardwen Blonde"
+        "brewing_date": "2022-01-04 00:00:00"
       },
       {
-        "price_per_l": 0.045,
-        "alcohol_degree": 4.717409638554217,
         "name": "Bellfield Lawless Village IPA",
-        "cost": 2.49,
-        "beer_kind": "India Pale Ale",
-        "volume_ml": 330,
-        "brewing_date": "2022-01-07 00:00:00",
-        "nullable_name": "Bellfield Lawless Village IPA"
+        "brewing_date": "2022-01-07 00:00:00"
       },
       {
-        "price_per_l": 0.065,
-        "alcohol_degree": 7.747465753424658,
         "name": "Brasserie De Sutter Brin de Folie",
-        "cost": 2.19,
-        "beer_kind": "Blonde",
-        "volume_ml": 330,
-        "brewing_date": "2022-01-09 00:00:00",
-        "nullable_name": null
+        "brewing_date": "2022-01-09 00:00:00"
       },
       {
-        "price_per_l": 0.005,
-        "alcohol_degree": 0.569934497816594,
         "name": "Brewdog Nanny State Alcoholvrij",
-        "cost": 2.29,
-        "beer_kind": "Sans alcool",
-        "volume_ml": 330,
-        "brewing_date": "2022-01-03 00:00:00",
-        "nullable_name": "Brewdog Nanny State Alcoholvrij"
+        "brewing_date": "2022-01-03 00:00:00"
       },
       {
-        "price_per_l": 0.06,
-        "alcohol_degree": 8.749608938547487,
         "name": "Brugse Zot blonde",
-        "cost": 1.79,
-        "beer_kind": "Blonde",
-        "volume_ml": 330,
-        "brewing_date": "2022-01-10 00:00:00",
-        "nullable_name": "Brugse Zot blonde"
+        "brewing_date": "2022-01-10 00:00:00"
       },
       {
-        "price_per_l": 0.07,
-        "alcohol_degree": 8.930645161290323,
         "name": "Cuvée des Trolls",
-        "cost": 1.55,
-        "beer_kind": "Blonde",
-        "volume_ml": 250,
-        "brewing_date": "2022-01-05 00:00:00",
-        "nullable_name": null
+        "brewing_date": "2022-01-05 00:00:00"
       },
       {
-        "price_per_l": 0.054,
-        "alcohol_degree": 4.877377162629759,
         "name": "Ninkasi Ploploplop",
-        "cost": 2.89,
-        "beer_kind": "India Pale Ale",
-        "volume_ml": 330,
-        "brewing_date": "2022-01-02 00:00:00",
-        "nullable_name": "Ninkasi Ploploplop"
+        "brewing_date": "2022-01-02 00:00:00"
       },
       {
-        "price_per_l": 0.084,
-        "alcohol_degree": 12.974272189349117,
         "name": "Pauwel Kwak",
-        "cost": 1.69,
-        "beer_kind": "Belge blonde forte & Golden Ale",
-        "volume_ml": 330,
-        "brewing_date": "2022-01-08 00:00:00",
-        "nullable_name": "Pauwel Kwak"
+        "brewing_date": "2022-01-08 00:00:00"
       },
       {
-        "price_per_l": 0.16,
-        "alcohol_degree": 13.5,
         "name": "Superstrong beer",
-        "cost": 2.89,
-        "beer_kind": "Triple",
-        "volume_ml": 330,
-        "brewing_date": "2022-01-01 00:00:00",
-        "nullable_name": null
+        "brewing_date": "2022-01-01 00:00:00"
       },
       {
-        "price_per_l": 0.005,
-        "alcohol_degree": 1.2437106918238994,
         "name": "Weihenstephan Hefe Weizen Alcoholarm",
-        "cost": 1.59,
-        "beer_kind": "Blanche & Weizen",
-        "volume_ml": 500,
-        "brewing_date": "2022-01-06 00:00:00",
-        "nullable_name": "Weihenstephan Hefe Weizen Alcoholarm"
+        "brewing_date": "2022-01-06 00:00:00"
       }
     ]
   }

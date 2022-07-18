@@ -70,6 +70,7 @@ class DataTypeMapping:
     float: str
     integer: str
     text: str
+    datetime: str
 
 
 @dataclass

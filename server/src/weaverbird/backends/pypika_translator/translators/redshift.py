@@ -30,6 +30,7 @@ class RedshiftTranslator(PostgreSQLTranslator):
         float="DOUBLE PRECISION",
         integer="INTEGER",
         text="TEXT",
+        datetime="TIMESTAMP",
     )
     SUPPORT_ROW_NUMBER = True
     SUPPORT_SPLIT_PART = True

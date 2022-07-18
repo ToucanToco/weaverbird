@@ -45,6 +45,7 @@ class GoogleBigQueryTranslator(SQLTranslator):
         float="DOUBLE PRECISION",
         integer="INTEGER",
         text="STRING",
+        datetime="TIMESTAMP",
     )
     SUPPORT_ROW_NUMBER = True
     SUPPORT_SPLIT_PART = False
