@@ -1,9 +1,10 @@
 from abc import ABC
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from functools import cache
 from typing import TYPE_CHECKING, Any, Callable, Literal, Mapping, Sequence, TypeVar, Union, cast
 
+from dateutil import parser as dateutil_parser
 from pypika import (
     AliasedQuery,
     Case,
@@ -721,22 +722,17 @@ class SQLTranslator(ABC):
 
                 if isinstance(condition.value, (RelativeDate, datetime, str)):
                     if isinstance(condition.value, RelativeDate):
-                        value_str_time = (
-                            evaluate_relative_date(condition.value)
-                            .astimezone()
-                            .strftime("%Y-%m-%d %H:%M:%S")
-                        )
+                        dt = evaluate_relative_date(condition.value)
                     elif isinstance(condition.value, datetime):
-                        value_str_time = condition.value.astimezone().strftime("%Y-%m-%d %H:%M:%S")
+                        dt = condition.value
                     else:
-                        from dateutil import parser as dateutil_parser
-
-                        value_str_time = (
-                            dateutil_parser.parse(condition.value)
-                            .astimezone()
-                            .strftime('%Y-%m-%d %H:%M:%S')
-                        )
-                    value_to_compare = functions.Cast(value_str_time, "TIMESTAMP")
+                        dt = dateutil_parser.parse(condition.value)
+                    dt = (
+                        dt.replace(tzinfo=timezone.utc)
+                        if dt.tzinfo is None
+                        else dt.astimezone(timezone.utc)
+                    )
+                    value_to_compare = functions.Cast(dt.strftime('%Y-%m-%d %H:%M:%S'), "TIMESTAMP")
 
                 elif isinstance(condition.value, functions.Function):
                     value_to_compare = condition.value
