@@ -1,0 +1,96 @@
+{
+  "exclude": [
+    "mongo",
+    "mysql",
+    "pandas",
+    "postgres",
+    "snowflake"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "aggregate",
+        "on": [
+          "beer_kind"
+        ],
+        "aggregations": [
+          {
+            "newcolumns": [
+              "first_name"
+            ],
+            "aggfunction": "first",
+            "columns": [
+              "name"
+            ]
+          },
+          {
+            "newcolumns": [
+              "first_cost"
+            ],
+            "aggfunction": "first",
+            "columns": [
+              "cost"
+            ]
+          }
+        ],
+        "keepOriginalGranularity": false
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "beer_kind",
+          "type": "any"
+        },
+        {
+          "name": "first_name",
+          "type": "string"
+        },
+        {
+          "name": "first_cost",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "1.4.0"
+    },
+    "data": [
+      {
+        "beer_kind": "Belge blonde forte & Golden Ale",
+        "first_name": "Pauwel Kwak",
+        "first_cost": 1.69
+      },
+      {
+        "beer_kind": "Best-sellers",
+        "first_name": "Ardwen Blonde",
+        "first_cost": 2.09
+      },
+      {
+        "beer_kind": "Blanche & Weizen",
+        "first_name": "Weihenstephan Hefe Weizen Alcoholarm",
+        "first_cost": 1.59
+      },
+      {
+        "beer_kind": "Blonde",
+        "first_name": "Brasserie De Sutter Brin de Folie",
+        "first_cost": 1.55
+      },
+      {
+        "beer_kind": "India Pale Ale",
+        "first_name": "Bellfield Lawless Village IPA",
+        "first_cost": 2.49
+      },
+      {
+        "beer_kind": "Sans alcool",
+        "first_name": "Brewdog Nanny State Alcoholvrij",
+        "first_cost": 2.29
+      },
+      {
+        "beer_kind": "Triple",
+        "first_name": "Superstrong beer",
+        "first_cost": 2.89
+      }
+    ]
+  }
+}

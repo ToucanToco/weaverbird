@@ -1,0 +1,96 @@
+{
+  "exclude": [
+    "mongo",
+    "mysql",
+    "pandas",
+    "postgres",
+    "snowflake"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "aggregate",
+        "on": [
+          "beer_kind"
+        ],
+        "aggregations": [
+          {
+            "newcolumns": [
+              "first_name"
+            ],
+            "aggfunction": "first",
+            "columns": [
+              "name"
+            ]
+          },
+          {
+            "newcolumns": [
+              "avg_cost"
+            ],
+            "aggfunction": "avg",
+            "columns": [
+              "cost"
+            ]
+          }
+        ],
+        "keepOriginalGranularity": false
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "beer_kind",
+          "type": "any"
+        },
+        {
+          "name": "avg_cost",
+          "type": "number"
+        },
+        {
+          "name": "first_name",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "1.4.0"
+    },
+    "data": [
+      {
+        "beer_kind": "Belge blonde forte & Golden Ale",
+        "avg_cost": 1.69,
+        "first_name": "Pauwel Kwak"
+      },
+      {
+        "beer_kind": "Best-sellers",
+        "avg_cost": 2.09,
+        "first_name": "Ardwen Blonde"
+      },
+      {
+        "beer_kind": "Blanche & Weizen",
+        "avg_cost": 1.59,
+        "first_name": "Weihenstephan Hefe Weizen Alcoholarm"
+      },
+      {
+        "beer_kind": "Blonde",
+        "avg_cost": 1.8433333333333335,
+        "first_name": "Brasserie De Sutter Brin de Folie"
+      },
+      {
+        "beer_kind": "India Pale Ale",
+        "avg_cost": 2.6900000000000004,
+        "first_name": "Bellfield Lawless Village IPA"
+      },
+      {
+        "beer_kind": "Sans alcool",
+        "avg_cost": 2.29,
+        "first_name": "Brewdog Nanny State Alcoholvrij"
+      },
+      {
+        "beer_kind": "Triple",
+        "avg_cost": 2.89,
+        "first_name": "Superstrong beer"
+      }
+    ]
+  }
+}

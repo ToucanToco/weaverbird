@@ -142,10 +142,28 @@ def test_get_aggregate_function(base_translator: BaseTranslator, agg_type):
     assert issubclass(agg_func, functions.AggregateFunction)
 
 
-@pytest.mark.parametrize("agg_type", ["first", "last", "count distinct including empty"])
-def test_get_aggregate_function_raise_expection(base_translator: BaseTranslator, agg_type):
+@pytest.mark.parametrize("agg_type", ["first", "last"])
+def test__get_window_function(base_translator: BaseTranslator, agg_type):
+    agg_func = base_translator._get_window_function(agg_type)
+    assert issubclass(agg_func, functions.AggregateFunction)
+
+
+@pytest.mark.parametrize("agg_type", ["count distinct including empty"])
+def test_aggregate_raise_expection(
+    base_translator: BaseTranslator, agg_type: str, default_step_kwargs: dict[str, Any]
+):
+
+    new_column = "countDistinctAge"
+    agg_field = "age"
+
+    step = steps.AggregateStep(
+        on=[agg_field],
+        aggregations=[
+            steps.Aggregation(new_columns=[new_column], agg_function=agg_type, columns=[agg_field])
+        ],
+    )
     with pytest.raises(NotImplementedError):
-        base_translator._get_aggregate_function(agg_type)
+        base_translator.aggregate(step=step, columns=['*'], **default_step_kwargs)
 
 
 @pytest.mark.parametrize("agg_type", ["avg", "count", "count distinct", "max", "min", "sum"])
@@ -169,7 +187,7 @@ def test_aggregate(
     expected_query = (
         Query.from_(previous_step)
         .groupby(field)
-        .orderby(field, order=Order.asc)
+        .orderby(agg_field)
         .select(field, agg_func(field).as_(new_column))
     )
 
@@ -206,6 +224,7 @@ def test_aggregate_with_original_granularity(
         .left_join(agg_query)
         .on_field(agg_field)
         .select(*original_select)
+        .orderby(agg_field)
     )
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
@@ -531,7 +550,7 @@ def test_uniquegroups(base_translator: BaseTranslator, default_step_kwargs: dict
         Query.from_(previous_step)
         .select(Field(column))
         .groupby(Field(column))
-        .orderby(Field(column), order=Order.asc)
+        .orderby(Field(column))
     )
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
