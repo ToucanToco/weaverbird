@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from functools import cache
 from typing import TYPE_CHECKING, Any, Callable, Literal, Mapping, Sequence, TypeVar, Union, cast
 
+from dateutil import parser as dateutil_parser
 from pypika import (
     AliasedQuery,
     Case,
@@ -28,8 +29,6 @@ from weaverbird.backends.pypika_translator.translators import ALL_TRANSLATORS
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import handle_zero_division
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
-    ConditionComboAnd,
-    ConditionComboOr,
     DateBoundCondition,
     InclusionCondition,
     MatchCondition,
@@ -633,6 +632,7 @@ class SQLTranslator(ABC):
                     return column_field.notin(condition.value)
 
             case MatchCondition():
+                compliant_regex = _compliant_regex(condition.value, self.DIALECT)
 
                 if condition.operator == "matches":
                     match self.REGEXP_OP:
@@ -642,13 +642,37 @@ class SQLTranslator(ABC):
                             return BasicCriterion(
                                 RegexpMatching.similar_to,
                                 column_field,
-                                column_field.wrap_constant(_compliant_regex(condition.value)),
+                                column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.CONTAINS:
                             return BasicCriterion(
                                 RegexpMatching.contains,
                                 column_field,
-                                column_field.wrap_constant(_compliant_regex(condition.value)),
+                                column_field.wrap_constant(compliant_regex),
+                            )
+                        case RegexOp.REGEXP_CONTAINS:
+                            return functions.Function(
+                                RegexOp.REGEXP_CONTAINS,
+                                column_field,
+                                column_field.wrap_constant(compliant_regex),
+                            )
+                        case RegexOp.REGEXP_LIKE:
+                            return functions.Function(
+                                RegexOp.REGEXP_LIKE,
+                                column_field,
+                                column_field.wrap_constant(compliant_regex),
+                            )
+                        case RegexOp.REGEXP_CONTAINS:
+                            return functions.Function(
+                                RegexOp.NOT_REGEXP_CONTAINS,
+                                column_field,
+                                column_field.wrap_constant(compliant_regex),
+                            )
+                        case RegexOp.REGEXP_LIKE:
+                            return functions.Function(
+                                RegexOp.NOT_REGEXP_LIKE,
+                                column_field,
+                                column_field.wrap_constant(compliant_regex),
                             )
                         case _:
                             raise NotImplementedError(
@@ -663,13 +687,25 @@ class SQLTranslator(ABC):
                             return BasicCriterion(
                                 RegexpMatching.not_similar_to,
                                 column_field,
-                                column_field.wrap_constant(_compliant_regex(condition.value)),
+                                column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.CONTAINS:
                             return BasicCriterion(
                                 RegexpMatching.not_contains,
                                 column_field,
-                                column_field.wrap_constant(_compliant_regex(condition.value)),
+                                column_field.wrap_constant(compliant_regex),
+                            )
+                        case RegexOp.REGEXP_CONTAINS:
+                            return functions.Function(
+                                RegexOp.NOT_REGEXP_CONTAINS,
+                                column_field,
+                                column_field.wrap_constant(compliant_regex),
+                            )
+                        case RegexOp.REGEXP_LIKE:
+                            return functions.Function(
+                                RegexOp.NOT_REGEXP_LIKE,
+                                column_field,
+                                column_field.wrap_constant(compliant_regex),
                             )
                         case _:
                             raise NotImplementedError(
@@ -683,10 +719,28 @@ class SQLTranslator(ABC):
                     return column_field.isnotnull()
 
             case DateBoundCondition():
-                if condition.operator == "until":
-                    return column_field <= condition.value
-                elif condition.operator == "from":
-                    return column_field >= condition.value
+
+                if isinstance(condition.value, (RelativeDate, datetime, str)):
+                    if isinstance(condition.value, RelativeDate):
+                        dt = evaluate_relative_date(condition.value)
+                    elif isinstance(condition.value, datetime):
+                        dt = condition.value
+                    else:
+                        dt = dateutil_parser.parse(condition.value)
+                    dt = (
+                        dt.replace(tzinfo=timezone.utc)
+                        if dt.tzinfo is None
+                        else dt.astimezone(timezone.utc)
+                    )
+                    value_to_compare = functions.Cast(dt.strftime('%Y-%m-%d %H:%M:%S'), "TIMESTAMP")
+
+                elif isinstance(condition.value, functions.Function):
+                    value_to_compare = condition.value
+
+                if condition.operator == "from":
+                    return functions.Cast(column_field, "TIMESTAMP") >= value_to_compare
+                elif condition.operator == "until":
+                    return functions.Cast(column_field, "TIMESTAMP") <= value_to_compare
 
             case _:  # pragma: no cover
                 raise KeyError(f"Operator {condition.operator!r} does not exist")
@@ -720,27 +774,6 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "FilterStep",
     ) -> StepContext:
-
-        # To handle relative date formats
-        if isinstance(step.condition, (ConditionComboAnd, ConditionComboOr)):
-            cond = step.condition
-
-            conditions = cond.and_ if isinstance(cond, ConditionComboAnd) else cond.or_
-
-            for sub_cond in conditions or []:
-                if isinstance(sub_cond, DateBoundCondition):
-                    if isinstance(sub_cond.value, RelativeDate):
-                        value_str_time = (
-                            evaluate_relative_date(sub_cond.value)
-                            .astimezone(timezone.utc)
-                            .strftime("%Y-%m-%d %H:%M:%S")
-                        )
-                        sub_cond.value = functions.Cast(value_str_time, 'TIMESTAMP')
-                    elif isinstance(sub_cond.value, datetime):
-                        value_str_time = sub_cond.value.astimezone(timezone.utc).strftime(
-                            "%Y-%m-%d %H:%M:%S"
-                        )
-                        sub_cond.value = functions.Cast(value_str_time, 'TIMESTAMP')
 
         query: "QueryBuilder" = (
             self.QUERY_CLS.from_(prev_step_name)
@@ -1231,11 +1264,18 @@ class RegexpMatching(Comparator):  # type: ignore[misc]
     not_contains = " NOT CONTAINS "
 
 
-def _compliant_regex(pattern: str) -> str:
+def _compliant_regex(pattern: str, dialect: SQLDialect) -> str:
     """
     Like LIKE, the SIMILAR TO operator succeeds only if its pattern matches the entire string;
     this is unlike common regular expression behavior wherethe pattern
     can match any part of the string
     (see https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-SIMILARTO-REGEXP)
+
+    For some special cases like googlebigquery or athena, we don't need to add
+    those %
     """
+
+    if dialect in [SQLDialect.ATHENA, SQLDialect.GOOGLEBIGQUERY]:
+        return f"{pattern}"
+
     return f"%{pattern}%"

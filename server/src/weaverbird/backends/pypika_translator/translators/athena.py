@@ -1,6 +1,7 @@
 from pypika.dialects import Query
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
+from weaverbird.backends.pypika_translator.operators import RegexOp
 from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, SQLTranslator
 
 
@@ -17,6 +18,7 @@ class AthenaTranslator(SQLTranslator):
         text="VARCHAR",
         datetime="TIMESTAMP",
     )
+    REGEXP_OP = RegexOp.REGEXP_LIKE
 
 
 SQLTranslator.register(AthenaTranslator)

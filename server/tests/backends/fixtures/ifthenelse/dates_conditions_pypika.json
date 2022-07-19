@@ -1,0 +1,121 @@
+{
+  "exclude": [
+    "mongo",
+    "mysql",
+    "pandas",
+    "postgres",
+    "snowflake"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "ifthenelse",
+        "newColumn": "cond",
+        "if": {
+            "column": "brewing_date",
+            "operator": "from",
+            "value": "2022-01-05 00:00:00"
+        },
+        "then": "'tintin'",
+        "else": {
+          "if": {
+              "column": "brewing_date",
+              "operator": "until",
+              "value": "2022-01-03 00:00:00"
+          },
+          "then": "'toto'",
+          "else": "'tata'"
+        }
+      },
+      {
+        "name": "select",
+        "columns": [ "name", "cost", "cond", "brewing_date" ]
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "cost",
+          "type": "number"
+        },
+        {
+          "name": "brewing_date",
+          "type": "datetime"
+        },
+        {
+          "name": "cond",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "1.4.0"
+    },
+    "data": [
+      {
+        "name": "Superstrong beer",
+        "cost": 2.8900001049,
+        "brewing_date": "2022-01-01",
+        "cond": "toto"
+      },
+      {
+        "name": "Ninkasi Ploploplop",
+        "cost": 2.8900001049,
+        "brewing_date": "2022-01-02",
+        "cond": "toto"
+      },
+      {
+        "name": "Brewdog Nanny State Alcoholvrij",
+        "cost": 2.2899999619,
+        "brewing_date": "2022-01-03",
+        "cond": "toto"
+      },
+      {
+        "name": "Ardwen Blonde",
+        "cost": 2.0899999142,
+        "brewing_date": "2022-01-04",
+        "cond": "tata"
+      },
+      {
+        "name": "Cuv\u00e9e des Trolls",
+        "cost": 1.5499999523,
+        "brewing_date": "2022-01-05",
+        "cond": "tintin"
+      },
+      {
+        "name": "Weihenstephan Hefe Weizen Alcoholarm",
+        "cost": 1.5900000334,
+        "brewing_date": "2022-01-06",
+        "cond": "tintin"
+      },
+      {
+        "name": "Bellfield Lawless Village IPA",
+        "cost": 2.4900000095,
+        "brewing_date": "2022-01-07",
+        "cond": "tintin"
+      },
+      {
+        "name": "Pauwel Kwak",
+        "cost": 1.6900000572,
+        "brewing_date": "2022-01-08",
+        "cond": "tintin"
+      },
+      {
+        "name": "Brasserie De Sutter Brin de Folie",
+        "cost": 2.1900000572,
+        "brewing_date": "2022-01-09",
+        "cond": "tintin"
+      },
+      {
+        "name": "Brugse Zot blonde",
+        "cost": 1.7899999619,
+        "brewing_date": "2022-01-10",
+        "cond": "tintin"
+      }
+    ]
+  }
+}

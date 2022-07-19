@@ -1,0 +1,99 @@
+{
+  "exclude": [
+    "mongo",
+    "mysql",
+    "pandas",
+    "postgres",
+    "snowflake"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "ifthenelse",
+        "if": {
+          "column": "name",
+          "value": "beer",
+          "operator": "matches"
+        },
+        "newColumn": "cond",
+        "then": "'tintin'",
+        "else": "'toto'"
+      },
+      {
+        "name": "select",
+        "columns": [ "name", "cost", "cond" ]
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "cost",
+          "type": "number"
+        },
+        {
+          "name": "cond",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "1.4.0"
+    },
+    "data": [
+      {
+        "name": "Superstrong beer",
+        "cost": 2.8900001049,
+        "cond": "tintin"
+      },
+      {
+        "name": "Ninkasi Ploploplop",
+        "cost": 2.8900001049,
+        "cond": "toto"
+      },
+      {
+        "name": "Brewdog Nanny State Alcoholvrij",
+        "cost": 2.2899999619,
+        "cond": "toto"
+      },
+      {
+        "name": "Ardwen Blonde",
+        "cost": 2.0899999142,
+        "cond": "toto"
+      },
+      {
+        "name": "Cuv\u00e9e des Trolls",
+        "cost": 1.5499999523,
+        "cond": "toto"
+      },
+      {
+        "name": "Weihenstephan Hefe Weizen Alcoholarm",
+        "cost": 1.5900000334,
+        "cond": "toto"
+      },
+      {
+        "name": "Bellfield Lawless Village IPA",
+        "cost": 2.4900000095,
+        "cond": "toto"
+      },
+      {
+        "name": "Pauwel Kwak",
+        "cost": 1.6900000572,
+        "cond": "toto"
+      },
+      {
+        "name": "Brasserie De Sutter Brin de Folie",
+        "cost": 2.1900000572,
+        "cond": "toto"
+      },
+      {
+        "name": "Brugse Zot blonde",
+        "cost": 1.7899999619,
+        "cond": "toto"
+      }
+    ]
+  }
+}

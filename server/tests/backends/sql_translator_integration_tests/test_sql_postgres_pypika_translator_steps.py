@@ -10,7 +10,7 @@ import psycopg2
 import pytest
 from docker.models.images import Image
 from psycopg2 import OperationalError
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 
 from tests.utils import (
     _BEERS_TABLE_COLUMNS,
@@ -106,6 +106,6 @@ def test_sql_translator_pipeline(case_id: str, case_spec_file_path: str, engine:
         db_schema=None,
     )
     # Execute request generated from Pipeline in Postgres and get the result
-    result: pd.DataFrame = pd.read_sql(query, engine)
+    result: pd.DataFrame = pd.read_sql(text(query), engine)
     expected = pd.read_json(json.dumps(spec['expected']), orient='table')
     assert_dataframes_equals(expected, result)
