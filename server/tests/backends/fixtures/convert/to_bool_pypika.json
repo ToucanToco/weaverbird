@@ -1,0 +1,100 @@
+{
+  "exclude": [
+    "mongo",
+    "mysql",
+    "pandas",
+    "postgres",
+    "snowflake"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "convert",
+        "columns": [
+          "price_per_l"
+        ],
+        "data_type": "integer"
+      },
+      {
+        "name": "convert",
+        "columns": [
+          "price_per_l"
+        ],
+        "data_type": "boolean"
+      },
+      {
+        "name": "select",
+        "columns": [
+          "name",
+          "price_per_l"
+        ]
+      },
+      {
+        "name": "sort",
+        "columns": [
+          {
+            "column": "name",
+            "order": "asc"
+          }
+        ]
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "price_per_l",
+          "type": "boolean"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "1.4.0"
+    },
+    "data": [
+      {
+        "price_per_l": false,
+        "name": "Ardwen Blonde"
+      },
+      {
+        "price_per_l": false,
+        "name": "Bellfield Lawless Village IPA"
+      },
+      {
+        "price_per_l": false,
+        "name": "Brasserie De Sutter Brin de Folie"
+      },
+      {
+        "price_per_l": false,
+        "name": "Brewdog Nanny State Alcoholvrij"
+      },
+      {
+        "price_per_l": false,
+        "name": "Brugse Zot blonde"
+      },
+      {
+        "price_per_l": false,
+        "name": "Cuvée des Trolls"
+      },
+      {
+        "price_per_l": false,
+        "name": "Ninkasi Ploploplop"
+      },
+      {
+        "price_per_l": false,
+        "name": "Pauwel Kwak"
+      },
+      {
+        "price_per_l": false,
+        "name": "Superstrong beer"
+      },
+      {
+        "price_per_l": false,
+        "name": "Weihenstephan Hefe Weizen Alcoholarm"
+      }
+    ]
+  }
+}

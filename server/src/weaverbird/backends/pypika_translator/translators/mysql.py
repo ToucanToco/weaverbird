@@ -29,6 +29,7 @@ class MySQLTranslator(SQLTranslator):
         float="DECIMAL",
         integer="UNSIGNED",
         text="CHAR",
+        datetime="TIMESTAMP",
     )
     SUPPORT_ROW_NUMBER = False
     SUPPORT_SPLIT_PART = False

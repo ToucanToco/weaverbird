@@ -209,5 +209,4 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     if 'other_expected' in spec:
         query_expected = spec['other_expected']['sql']['query']
         assert query_expected == query
-
     assert_dataframes_equals(pandas_result_expected, result)

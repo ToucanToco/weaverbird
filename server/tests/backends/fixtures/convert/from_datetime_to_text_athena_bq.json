@@ -1,0 +1,95 @@
+{
+  "exclude": [
+    "mongo",
+    "mysql",
+    "pandas",
+    "postgres",
+    "snowflake",
+    "postgres_pypika",
+    "redshift_pypika"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "convert",
+        "columns": [
+          "brewing_date"
+        ],
+        "data_type": "text"
+      },
+      {
+        "name": "select",
+        "columns": [
+          "name",
+          "brewing_date"
+        ]
+      },
+      {
+        "name": "sort",
+        "columns": [
+          {
+            "column": "name",
+            "order": "asc"
+          }
+        ]
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "brewing_date",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "1.4.0"
+    },
+    "data": [
+      {
+        "name": "Ardwen Blonde",
+        "brewing_date": "2022-01-04"
+      },
+      {
+        "name": "Bellfield Lawless Village IPA",
+        "brewing_date": "2022-01-07"
+      },
+      {
+        "name": "Brasserie De Sutter Brin de Folie",
+        "brewing_date": "2022-01-09"
+      },
+      {
+        "name": "Brewdog Nanny State Alcoholvrij",
+        "brewing_date": "2022-01-03"
+      },
+      {
+        "name": "Brugse Zot blonde",
+        "brewing_date": "2022-01-10"
+      },
+      {
+        "name": "Cuvée des Trolls",
+        "brewing_date": "2022-01-05"
+      },
+      {
+        "name": "Ninkasi Ploploplop",
+        "brewing_date": "2022-01-02"
+      },
+      {
+        "name": "Pauwel Kwak",
+        "brewing_date": "2022-01-08"
+      },
+      {
+        "name": "Superstrong beer",
+        "brewing_date": "2022-01-01"
+      },
+      {
+        "name": "Weihenstephan Hefe Weizen Alcoholarm",
+        "brewing_date": "2022-01-06"
+      }
+    ]
+  }
+}
