@@ -120,8 +120,8 @@ def get_spec_from_json_fixture(case_id: str, case_spec_file_path: str) -> dict:
                 ):
                     try:
                         dct[k] = datetime.datetime.strptime(v, "date: %Y-%m-%d %H:%M:%S%z")
-                    except Exception as es:
-                        print(es)
+                    except ValueError:  # Raised for strings without TZ info
+                        dct[k] = datetime.datetime.strptime(v, "date: %Y-%m-%d %H:%M:%S")
             return dct
 
         # Sub-optimal but still fast enough for tests
