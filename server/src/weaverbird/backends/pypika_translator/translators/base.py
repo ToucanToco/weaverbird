@@ -1279,9 +1279,7 @@ def _compliant_regex(pattern: str, dialect: SQLDialect) -> str:
     those %
     """
 
-    if dialect in [SQLDialect.POSTGRES, SQLDialect.REDSHIFT]:
-        return f"%%{pattern}%%"
-    elif dialect in [SQLDialect.ATHENA, SQLDialect.GOOGLEBIGQUERY]:
+    if dialect in [SQLDialect.ATHENA, SQLDialect.GOOGLEBIGQUERY]:
         return f"{pattern}"
 
     return f"%{pattern}%"
