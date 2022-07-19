@@ -254,7 +254,7 @@ class SQLTranslator(ABC):
         window_subquery_list: list[Tables] = []
 
         def _build_window_subquery() -> Any:
-            min_window_index = min([c[0] for c in window_selected])
+            min_window_index = min(c[0] for c in window_selected)
             first_wq = Table(f'wq{min_window_index}')
             merged_query = (
                 self.QUERY_CLS.from_(window_subquery_list[0])
@@ -268,30 +268,31 @@ class SQLTranslator(ABC):
                 )
                 .as_('window_subquery')
             )
-            if len(window_subquery_list) > 1:
-                for index, sq in enumerate(window_subquery_list[1:]):
-                    wq_temp = Table(f'wq{min_window_index + index + 1}')
-                    merged_query = (
-                        merged_query.join(sq)
-                        .on_field(*step.on)
-                        .select(
-                            *[
-                                getattr(wq_temp, col[1].alias)
-                                for col in window_selected
-                                if col[0] == min_window_index + index + 1
-                            ]
-                        )
-                        .as_('window_subquery')
+            for index, sq in enumerate(window_subquery_list[1:]):
+                wq_temp = Table(f'wq{min_window_index + index + 1}')
+                merged_query = (
+                    merged_query.join(sq)
+                    .on_field(*step.on)
+                    .select(
+                        *[
+                            getattr(wq_temp, col[1].alias)
+                            for col in window_selected
+                            if col[0] == min_window_index + index + 1
+                        ]
                     )
+                    .as_('window_subquery')
+                )
             return merged_query
 
         # Handle aggregation and analytics functions in distinct subqueries
 
         for step_index, aggregation in enumerate(step.aggregations):
             if agg_fn := self._get_aggregate_function(aggregation.agg_function):
-                for agg_index, agg_column_name in enumerate(aggregation.columns):
+                for agg_column_name, new_column_name in zip(
+                    aggregation.columns, aggregation.new_columns
+                ):
                     column_field: Field = Table(prev_step_name)[agg_column_name]
-                    new_agg_col = agg_fn(column_field).as_(aggregation.new_columns[agg_index])
+                    new_agg_col = agg_fn(column_field).as_(new_column_name)
                     agg_selected.append(new_agg_col)
 
             elif window_fn := self._get_window_function(aggregation.agg_function):
