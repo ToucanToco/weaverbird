@@ -2,6 +2,7 @@
   "exclude": [
     "athena_pypika",
     "bigquery_pypika",
+    "snowflake_pypika",
     "redshift_pypika",
     "postgres_pypika",
     "mysql",

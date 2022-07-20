@@ -6,6 +6,7 @@
     "postgres",
     "snowflake",
     "bigquery_pypika",
+    "snowflake_pypika",
     "athena_pypika"
   ],
   "step": {
