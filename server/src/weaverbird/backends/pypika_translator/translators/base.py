@@ -806,12 +806,13 @@ class SQLTranslator(ABC):
 
         def _sanitize_formula(formula):
             # we replace [ to "
-            formula = re.sub(r'[\[\]]', self.QUOTE_CHAR, formula)
+            formula = re.sub(r'[\[\]]|["]|[`][\']', self.QUOTE_CHAR, formula)
 
             # we add quotes on columns for postgresql
             formula = re.sub(
                 r'([a-zA-Z_a-zA-Z]+)', r'{}\1{}'.format(self.QUOTE_CHAR, self.QUOTE_CHAR), formula
-            ).replace('""', self.QUOTE_CHAR)
+            )
+            formula = formula.replace(self.QUOTE_CHAR + self.QUOTE_CHAR, self.QUOTE_CHAR)
 
             if '/' in formula:
                 formula = re.sub(

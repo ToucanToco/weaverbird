@@ -4,8 +4,7 @@
     "mysql",
     "pandas",
     "postgres",
-    "snowflake",
-    "bigquery_pypika"
+    "snowflake"
   ],
   "step": {
     "pipeline": [
