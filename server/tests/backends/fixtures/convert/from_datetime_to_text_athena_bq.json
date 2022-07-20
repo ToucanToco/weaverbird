@@ -6,7 +6,8 @@
     "postgres",
     "snowflake",
     "postgres_pypika",
-    "redshift_pypika"
+    "redshift_pypika",
+    "snowflake_pypika"
   ],
   "step": {
     "pipeline": [
