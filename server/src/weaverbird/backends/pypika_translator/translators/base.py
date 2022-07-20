@@ -803,24 +803,40 @@ class SQLTranslator(ABC):
         # into
         #   CAST("my age" AS float) + 1 / 2
         # TODO : an AST should be implemented here to sanitize the formula
-
-        def _sanitize_formula(formula):
-            # we replace [ to "
-            formula = re.sub(r'[\[\]]|["]|[`][\']', self.QUOTE_CHAR, formula)
-
-            # we add quotes on columns for postgresql
+        def _sanitize_formula(formula: str) -> str:
+            """
+            This combined regex will :
+                - remove and replace quotes & brackets to the one
+                  corresponding to the translator.
+                - prevent division by zero by adding NULLIF on all division
+                  expression.
+            Exemple of a weird expression : 'cost' + (`price_per_l` / [alcohol_degree]) / (\"price_per_l\" + [volume_ml]) / 0
+            The sanitizer will return : "cost" + ("price_per_l"/ NULLIF("alcohol_degree", 0))/("price_per_l" + "volume_ml")/ NULLIF(0, 0)
+            """
+            # We remove enclosures and double spaces
+            formula = ' '.join(re.sub(r'[\[\]]|["]|[`]|[\']', '', formula).split())
+            # We add quote from the translator
             formula = re.sub(
-                r'([a-zA-Z_a-zA-Z]+)', r'{}\1{}'.format(self.QUOTE_CHAR, self.QUOTE_CHAR), formula
+                r'([a-zA-Z_a-zA-Z]+)',
+                r'{}\1{}'.format(self.QUOTE_CHAR, self.QUOTE_CHAR),
+                formula,
             )
-            formula = formula.replace(self.QUOTE_CHAR + self.QUOTE_CHAR, self.QUOTE_CHAR)
-
-            if '/' in formula:
+            # detect and encapsulate / and %
+            if '/' in step.formula:
                 formula = re.sub(
-                    r'(?<=/)\s*(\w+)|(?<=/)\s*(\"?.*\"?)', r' NULLIF(\1\2, 0)', formula
+                    '((?<=/)\{}?\w+\{}?)|((?<=/)\d+)|((?<=/)\(?.*\)?)'.format(
+                        self.QUOTE_CHAR, self.QUOTE_CHAR
+                    ),
+                    r' NULLIF(\1\2\3, 0)',
+                    formula.replace('/ ', '/'),
                 )
-            if '%' in formula:
+            if '%' in step.formula:
                 formula = re.sub(
-                    r'(?<=%)\s*(\w+)|(?<=%)\s*(\"?.*\"?)', r' NULLIF(\1\2, 0)', formula
+                    '((?<=%)\{}?\w+\{}?)|((?<=/)\d+)|((?<=/)\(?.*\)?)'.format(
+                        self.QUOTE_CHAR, self.QUOTE_CHAR
+                    ),
+                    r' NULLIF(\1\2\3, 0)',
+                    formula.replace('% ', '%'),
                 )
 
             return formula
