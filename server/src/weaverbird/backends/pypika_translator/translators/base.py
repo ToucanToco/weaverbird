@@ -128,6 +128,8 @@ class SQLTranslator(ABC):
     FROM_DATE_OP: FromDateOp
     REGEXP_OP: RegexOp
     TO_DATE_OP: ToDateOp
+    # depending on the translator, this may change to ` or '
+    QUOTE_CHAR = '"'
 
     def __init__(
         self: Self,
@@ -791,7 +793,6 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "FormulaStep",
     ) -> StepContext:
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(*columns)
         # TODO: support
         # - float casting with divisions
         # - whitespaces in column names
@@ -805,25 +806,28 @@ class SQLTranslator(ABC):
 
         def _sanitize_formula(formula):
             # we replace [ to "
-            formula = re.sub(r'[\[\]]', r'"', formula)
+            formula = re.sub(r'[\[\]]', self.QUOTE_CHAR, formula)
 
             # we add quotes on columns for postgresql
-            formula = re.sub(r'([a-zA-Z_a-zA-Z]+)', r'"\1"', formula).replace('""', '"')
+            formula = re.sub(
+                r'([a-zA-Z_a-zA-Z]+)', r'{}\1{}'.format(self.QUOTE_CHAR, self.QUOTE_CHAR), formula
+            ).replace('""', self.QUOTE_CHAR)
 
-            if '/' in formula or '%' in formula:
-                if '/' in formula:
-                    formula = re.sub(
-                        r'(?<=/)\s*(\w+)|(?<=/)\s*(\"?.*\"?)', r' NULLIF(\1\2, 0)', formula
-                    )
-                if '%' in formula:
-                    formula = re.sub(
-                        r'(?<=%)\s*(\w+)|(?<=%)\s*(\"?.*\"?)', r' NULLIF(\1\2, 0)', formula
-                    )
+            if '/' in formula:
+                formula = re.sub(
+                    r'(?<=/)\s*(\w+)|(?<=/)\s*(\"?.*\"?)', r' NULLIF(\1\2, 0)', formula
+                )
+            if '%' in formula:
+                formula = re.sub(
+                    r'(?<=%)\s*(\w+)|(?<=%)\s*(\"?.*\"?)', r' NULLIF(\1\2, 0)', formula
+                )
 
             return formula
 
         step.formula = _sanitize_formula(step.formula)
-        query = query.select(LiteralValue(step.formula).as_(step.new_column))
+        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
+            *columns, LiteralValue(step.formula).as_(step.new_column)
+        )
 
         return StepContext(query, columns + [step.new_column])
 

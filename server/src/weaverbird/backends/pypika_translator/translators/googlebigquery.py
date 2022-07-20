@@ -87,8 +87,9 @@ class GoogleBigQueryTranslator(SQLTranslator):
         columns: list[str],
         step: "FormulaStep",
     ) -> StepContext:
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(*columns)
-        query = query.select(LiteralValue(handle_zero_division(step.formula)).as_(step.new_column))
+        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
+            *columns, LiteralValue(handle_zero_division(step.formula)).as_(step.new_column)
+        )
 
         return StepContext(query, columns + [step.new_column])
 
