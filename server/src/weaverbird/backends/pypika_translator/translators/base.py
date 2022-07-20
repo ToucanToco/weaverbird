@@ -1,3 +1,4 @@
+import re
 from abc import ABC
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -26,7 +27,6 @@ from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relat
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators import ALL_TRANSLATORS
-from weaverbird.backends.sql_translator.steps.utils.query_transformation import handle_zero_division
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
     DateBoundCondition,
@@ -801,8 +801,28 @@ class SQLTranslator(ABC):
         #   [my age] + 1 / 2
         # into
         #   CAST("my age" AS float) + 1 / 2
+        # TODO : an AST should be implemented here to sanitize the formula
 
-        query = query.select(LiteralValue(handle_zero_division(step.formula)).as_(step.new_column))
+        def _sanitize_formula(formula):
+            # we replace [ to "
+            formula = re.sub(r'[\[\]]', r'"', formula)
+
+            # we add quotes on columns for postgresql
+            formula = re.sub(r'([a-zA-Z_a-zA-Z]+)', r'"\1"', formula).replace('""', '"')
+
+            if '/' in formula or '%' in formula:
+                if '/' in formula:
+                    formula = re.sub(
+                        r'(?<=/)\s*(\w+)|(?<=/)\s*(\"?.*\"?)', r' NULLIF(\1\2, 0)', formula
+                    )
+                if '%' in formula:
+                    formula = re.sub(
+                        r'(?<=%)\s*(\w+)|(?<=%)\s*(\"?.*\"?)', r' NULLIF(\1\2, 0)', formula
+                    )
+
+            return formula
+
+        query = query.select(LiteralValue(_sanitize_formula(step.formula)).as_(step.new_column))
 
         return StepContext(query, columns + [step.new_column])
 
