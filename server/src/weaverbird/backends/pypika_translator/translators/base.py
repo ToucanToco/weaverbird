@@ -129,7 +129,7 @@ class SQLTranslator(ABC):
     REGEXP_OP: RegexOp
     TO_DATE_OP: ToDateOp
     # depending on the translator, this may change to ` or '
-    QUOTE_CHAR = '"'
+    QUOTE_CHAR: str
 
     def __init__(
         self: Self,
