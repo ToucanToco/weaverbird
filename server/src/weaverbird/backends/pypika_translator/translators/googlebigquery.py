@@ -12,6 +12,8 @@ from weaverbird.backends.pypika_translator.translators.base import (
     SQLTranslator,
     StepContext,
 )
+from weaverbird.backends.sql_translator.steps.utils.query_transformation import handle_zero_division
+from weaverbird.pipeline.steps.formula import FormulaStep
 
 Self = TypeVar("Self", bound="GoogleBigQueryTranslator")
 
@@ -76,6 +78,19 @@ class GoogleBigQueryTranslator(SQLTranslator):
             *columns, *splitted_cols
         )
         return StepContext(query, columns + splitted_cols)
+
+    def formula(
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: "FormulaStep",
+    ) -> StepContext:
+        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(*columns)
+        query = query.select(LiteralValue(handle_zero_division(step.formula)).as_(step.new_column))
+
+        return StepContext(query, columns + [step.new_column])
 
 
 SQLTranslator.register(GoogleBigQueryTranslator)

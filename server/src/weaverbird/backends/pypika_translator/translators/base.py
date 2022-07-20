@@ -822,7 +822,8 @@ class SQLTranslator(ABC):
 
             return formula
 
-        query = query.select(LiteralValue(_sanitize_formula(step.formula)).as_(step.new_column))
+        step.formula = _sanitize_formula(step.formula)
+        query = query.select(LiteralValue(step.formula).as_(step.new_column))
 
         return StepContext(query, columns + [step.new_column])
 
