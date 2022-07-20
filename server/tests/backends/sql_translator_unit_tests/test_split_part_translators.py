@@ -4,16 +4,20 @@ import pytest
 from pypika import Field, Query, functions
 
 from weaverbird.backends.pypika_translator.translators.base import SQLTranslator
+from weaverbird.backends.pypika_translator.utils.regex import (
+    RegexNoEscapeMixin,
+    RegexRegexpCriterionBuilder,
+)
 from weaverbird.pipeline import steps
 
 
-class SplitEnabledTranslator(SQLTranslator):
+class SplitEnabledTranslator(SQLTranslator, RegexRegexpCriterionBuilder, RegexNoEscapeMixin):
     DIALECT = "Base"
     QUERY_CLS = Query
     SUPPORT_SPLIT_PART = True
 
 
-class SplitDisabledTranslator(SQLTranslator):
+class SplitDisabledTranslator(SQLTranslator, RegexRegexpCriterionBuilder, RegexNoEscapeMixin):
     DIALECT = "Base"
     QUERY_CLS = Query
     SUPPORT_SPLIT_PART = False

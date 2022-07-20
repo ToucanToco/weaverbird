@@ -11,6 +11,10 @@ from weaverbird.backends.pypika_translator.translators.base import (
     SQLTranslator,
     StepContext,
 )
+from weaverbird.backends.pypika_translator.utils.regex import (
+    RegexPercentEscapeMixin,
+    RegexSimilarToCriterionBuilder,
+)
 
 if TYPE_CHECKING:
     from pypika.queries import QueryBuilder
@@ -18,7 +22,7 @@ if TYPE_CHECKING:
     from weaverbird.pipeline.steps import DurationStep
 
 
-class PostgreSQLTranslator(SQLTranslator):
+class PostgreSQLTranslator(SQLTranslator, RegexSimilarToCriterionBuilder, RegexPercentEscapeMixin):
     DIALECT = SQLDialect.POSTGRES
     QUERY_CLS = PostgreSQLQuery
     DATA_TYPE_MAPPING = DataTypeMapping(

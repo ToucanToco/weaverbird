@@ -3,13 +3,17 @@ from pypika.queries import Query
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translators.base import SQLTranslator
+from weaverbird.backends.pypika_translator.utils.regex import (
+    RegexNoEscapeMixin,
+    RegexRegexpCriterionBuilder,
+)
 from weaverbird.pipeline import steps
 from weaverbird.pipeline.pipeline import Pipeline, PipelineStep
 
 
 @pytest.fixture
 def translator() -> SQLTranslator:
-    class DummyTranslator(SQLTranslator):
+    class DummyTranslator(SQLTranslator, RegexRegexpCriterionBuilder, RegexNoEscapeMixin):
         QUERY_CLS = Query
         DIALECT = SQLDialect.MYSQL
         known_instances = {}

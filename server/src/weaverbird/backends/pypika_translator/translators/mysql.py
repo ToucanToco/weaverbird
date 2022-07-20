@@ -10,6 +10,10 @@ from weaverbird.backends.pypika_translator.translators.base import (
     SQLTranslator,
     StepContext,
 )
+from weaverbird.backends.pypika_translator.utils.regex import (
+    RegexPercentEscapeMixin,
+    RegexRegexpCriterionBuilder,
+)
 
 Self = TypeVar("Self", bound="MySQLTranslator")
 
@@ -20,7 +24,7 @@ if TYPE_CHECKING:
     from weaverbird.pipeline.steps import SplitStep
 
 
-class MySQLTranslator(SQLTranslator):
+class MySQLTranslator(SQLTranslator, RegexRegexpCriterionBuilder, RegexPercentEscapeMixin):
     DIALECT = SQLDialect.MYSQL
     QUERY_CLS = MySQLQuery
     DATA_TYPE_MAPPING = DataTypeMapping(

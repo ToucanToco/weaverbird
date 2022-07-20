@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, TypeVar
 
 from pypika import functions
 from pypika.dialects import RedshiftQuery
-from pypika.queries import QueryBuilder, Table
+from pypika.queries import Table
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
@@ -14,6 +14,7 @@ from weaverbird.backends.pypika_translator.translators.base import (
 from weaverbird.backends.pypika_translator.translators.postgresql import PostgreSQLTranslator
 
 if TYPE_CHECKING:
+    from pypika.queries import QueryBuilder
 
     from weaverbird.pipeline.steps import ConcatenateStep
 
@@ -55,7 +56,7 @@ class RedshiftTranslator(PostgreSQLTranslator):
     def concatenate(
         self: Self,
         *,
-        builder: QueryBuilder,
+        builder: 'QueryBuilder',
         prev_step_name: str,
         columns: list[str],
         step: "ConcatenateStep",
@@ -68,7 +69,7 @@ class RedshiftTranslator(PostgreSQLTranslator):
             tokens.append(step.separator)
             tokens.append(the_table[col])
 
-        query: QueryBuilder = self.QUERY_CLS.from_(prev_step_name).select(
+        query: 'QueryBuilder' = self.QUERY_CLS.from_(prev_step_name).select(
             *columns,
             self._recursive_concat(None, tokens).as_(step.new_column_name),
         )

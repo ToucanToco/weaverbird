@@ -3,9 +3,13 @@ from pypika.dialects import SnowflakeQuery
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, SQLTranslator
+from weaverbird.backends.pypika_translator.utils.regex import (
+    RegexRegexpCriterionBuilder,
+    RegexWildcardEscapeMixin,
+)
 
 
-class SnowflakeTranslator(SQLTranslator):
+class SnowflakeTranslator(SQLTranslator, RegexRegexpCriterionBuilder, RegexWildcardEscapeMixin):
     DIALECT = SQLDialect.SNOWFLAKE
     QUERY_CLS = SnowflakeQuery
     DATA_TYPE_MAPPING = DataTypeMapping(
