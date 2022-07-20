@@ -153,6 +153,7 @@ def standardized_columns(df: pd.DataFrame):
 
 
 # Translation from Pipeline json to SQL query
+@pytest.mark.serial
 @pytest.mark.parametrize('case_id, case_spec_file_path', test_cases)
 def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     spec = get_spec_from_json_fixture(case_id, case_spec_file_path)

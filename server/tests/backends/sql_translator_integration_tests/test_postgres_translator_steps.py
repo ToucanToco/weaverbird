@@ -145,6 +145,7 @@ def sql_query_executor(domain: str, query_string: str = None) -> Union[pd.DataFr
 
 
 # Translation from Pipeline json to SQL query
+@pytest.mark.skip(reason='This postgres translator version is deprecated')
 @pytest.mark.parametrize('case_id, case_spec_file_path', test_cases)
 def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     spec = get_spec_from_json_fixture(case_id, case_spec_file_path)
