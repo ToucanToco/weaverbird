@@ -824,9 +824,9 @@ class SQLTranslator(ABC):
 
             return formula
 
-        step.formula = _sanitize_formula(step.formula)
+        formula = _sanitize_formula(step.formula)
         query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
-            *columns, LiteralValue(step.formula).as_(step.new_column)
+            *columns, LiteralValue(formula).as_(step.new_column)
         )
 
         return StepContext(query, columns + [step.new_column])
