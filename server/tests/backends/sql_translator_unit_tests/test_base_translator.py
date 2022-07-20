@@ -16,6 +16,7 @@ class BaseTranslator(SQLTranslator):
     DIALECT = "Base"
     QUERY_CLS = Query
     _known_instances = {}
+    QUOTE_CHAR = '"'
 
     def _id(self) -> str:
         if id(self) in BaseTranslator._known_instances:

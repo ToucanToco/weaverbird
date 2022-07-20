@@ -1,3 +1,4 @@
+import re
 from abc import ABC
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -26,7 +27,6 @@ from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relat
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators import ALL_TRANSLATORS
-from weaverbird.backends.sql_translator.steps.utils.query_transformation import handle_zero_division
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
     DateBoundCondition,
@@ -128,6 +128,8 @@ class SQLTranslator(ABC):
     FROM_DATE_OP: FromDateOp
     REGEXP_OP: RegexOp
     TO_DATE_OP: ToDateOp
+    # depending on the translator, this may change to ` or '
+    QUOTE_CHAR: str
 
     def __init__(
         self: Self,
@@ -791,7 +793,6 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "FormulaStep",
     ) -> StepContext:
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(*columns)
         # TODO: support
         # - float casting with divisions
         # - whitespaces in column names
@@ -801,8 +802,33 @@ class SQLTranslator(ABC):
         #   [my age] + 1 / 2
         # into
         #   CAST("my age" AS float) + 1 / 2
+        # TODO : an AST should be implemented here to sanitize the formula
 
-        query = query.select(LiteralValue(handle_zero_division(step.formula)).as_(step.new_column))
+        def _sanitize_formula(formula):
+            # we replace [ to "
+            formula = re.sub(r'[\[\]]|["]|[`][\']', self.QUOTE_CHAR, formula)
+
+            # we add quotes on columns for postgresql
+            formula = re.sub(
+                r'([a-zA-Z_a-zA-Z]+)', r'{}\1{}'.format(self.QUOTE_CHAR, self.QUOTE_CHAR), formula
+            )
+            formula = formula.replace(self.QUOTE_CHAR + self.QUOTE_CHAR, self.QUOTE_CHAR)
+
+            if '/' in formula:
+                formula = re.sub(
+                    r'(?<=/)\s*(\w+)|(?<=/)\s*(\"?.*\"?)', r' NULLIF(\1\2, 0)', formula
+                )
+            if '%' in formula:
+                formula = re.sub(
+                    r'(?<=%)\s*(\w+)|(?<=%)\s*(\"?.*\"?)', r' NULLIF(\1\2, 0)', formula
+                )
+
+            return formula
+
+        formula = _sanitize_formula(step.formula)
+        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
+            *columns, LiteralValue(formula).as_(step.new_column)
+        )
 
         return StepContext(query, columns + [step.new_column])
 

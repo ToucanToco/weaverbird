@@ -34,6 +34,7 @@ class PostgreSQLTranslator(SQLTranslator):
     FROM_DATE_OP = FromDateOp.TO_CHAR
     REGEXP_OP = RegexOp.SIMILAR_TO
     TO_DATE_OP = ToDateOp.TO_DATE
+    QUOTE_CHAR = '"'
 
     def duration(
         self: Self,

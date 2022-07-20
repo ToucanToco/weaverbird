@@ -56,6 +56,7 @@ class GoogleBigQueryTranslator(SQLTranslator):
     FROM_DATE_OP = FromDateOp.TO_CHAR
     REGEXP_OP = RegexOp.REGEXP_CONTAINS
     TO_DATE_OP = ToDateOp.PARSE_DATE
+    QUOTE_CHAR = "`"
 
     def split(
         self: Self,

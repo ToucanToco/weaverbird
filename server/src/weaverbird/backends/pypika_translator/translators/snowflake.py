@@ -21,6 +21,7 @@ class SnowflakeTranslator(SQLTranslator):
     FROM_DATE_OP = FromDateOp.TO_CHAR
     REGEXP_OP = RegexOp.REGEXP
     TO_DATE_OP = ToDateOp.TO_DATE
+    QUOTE_CHAR = '\''
 
     # This step is not handling all edge cases so it's commented for now
     # def cumsum(

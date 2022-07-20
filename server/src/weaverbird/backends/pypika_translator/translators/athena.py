@@ -19,6 +19,7 @@ class AthenaTranslator(SQLTranslator):
         datetime="TIMESTAMP",
     )
     REGEXP_OP = RegexOp.REGEXP_LIKE
+    QUOTE_CHAR = '"'
 
 
 SQLTranslator.register(AthenaTranslator)

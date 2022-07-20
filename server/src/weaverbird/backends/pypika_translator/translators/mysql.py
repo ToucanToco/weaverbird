@@ -36,6 +36,7 @@ class MySQLTranslator(SQLTranslator):
     FROM_DATE_OP = FromDateOp.DATE_FORMAT
     REGEXP_OP = RegexOp.REGEXP
     TO_DATE_OP = ToDateOp.STR_TO_DATE
+    QUOTE_CHAR = '`'
 
     def split(
         self: Self,
