@@ -155,7 +155,9 @@ def test_matches_regexp_filter(
     step = steps.FilterStep(condition=condition)
     ctx = regexp_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
-        Query.from_(previous_step).where(Field(column).regexp(regex)).select(*selected_columns)
+        Query.from_(previous_step)
+        .where(Field(column).regexp(f'%{regex}%'))
+        .select(*selected_columns)
     )
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
@@ -334,7 +336,9 @@ def test_matches_regexp_like_filter(
     step = steps.FilterStep(condition=condition)
     ctx = regexp_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
-        Query.from_(previous_step).where(Field(column).regexp(regex)).select(*selected_columns)
+        Query.from_(previous_step)
+        .where(Field(column).regexp(f'%{regex}%'))
+        .select(*selected_columns)
     )
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
@@ -391,7 +395,9 @@ def test_matches_regexp_contains_filter(
     step = steps.FilterStep(condition=condition)
     ctx = regexp_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
-        Query.from_(previous_step).where(Field(column).regexp(regex)).select(*selected_columns)
+        Query.from_(previous_step)
+        .where(Field(column).regexp(f'%{regex}%'))
+        .select(*selected_columns)
     )
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()

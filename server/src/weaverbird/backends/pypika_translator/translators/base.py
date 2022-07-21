@@ -639,7 +639,11 @@ class SQLTranslator(ABC):
                 if condition.operator == "matches":
                     match self.REGEXP_OP:
                         case RegexOp.REGEXP:
-                            return column_field.regexp(condition.value)
+                            return BasicCriterion(
+                                RegexpMatching.regexp,
+                                column_field,
+                                column_field.wrap_constant(compliant_regex),
+                            )
                         case RegexOp.SIMILAR_TO:
                             return BasicCriterion(
                                 RegexpMatching.similar_to,
@@ -782,7 +786,6 @@ class SQLTranslator(ABC):
             .select(*columns)
             .where(self._get_filter_criterion(step.condition, prev_step_name))
         )
-
         return StepContext(query, columns)
 
     def formula(
@@ -916,7 +919,6 @@ class SQLTranslator(ABC):
                 case_=Case(),
             ).as_(step.new_column),
         )
-
         return StepContext(query, columns + [step.new_column])
 
     @staticmethod
@@ -1288,6 +1290,7 @@ class RegexpMatching(Comparator):  # type: ignore[misc]
     not_similar_to = " NOT SIMILAR TO "
     contains = " CONTAINS "
     not_contains = " NOT CONTAINS "
+    regexp = " REGEXP "
 
 
 def _compliant_regex(pattern: str, dialect: SQLDialect) -> str:
@@ -1303,5 +1306,7 @@ def _compliant_regex(pattern: str, dialect: SQLDialect) -> str:
 
     if dialect in [SQLDialect.ATHENA, SQLDialect.GOOGLEBIGQUERY]:
         return f"{pattern}"
+    elif dialect == SQLDialect.SNOWFLAKE:
+        return f".*{pattern}.*"
 
     return f"%{pattern}%"

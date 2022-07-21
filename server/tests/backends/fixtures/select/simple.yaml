@@ -3,6 +3,7 @@ exclude:
 - bigquery_pypika
 - redshift_pypika
 - postgres_pypika
+- snowflake_pypika
 - mysql
 - postgres
 - snowflake

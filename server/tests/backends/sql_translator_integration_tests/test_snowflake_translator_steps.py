@@ -170,7 +170,7 @@ def clean_too_old_residuals_tables():
 
 
 # Translation from Pipeline json to SQL query
-@pytest.mark.skipif(not check_warehouse_available(), reason='Test warehouse unavailable')
+@pytest.mark.skip(reason='snowflake translator is deprecated')
 @pytest.mark.parametrize('case_id, case_spec_file_path', test_cases)
 def test_sql_translator_pipeline(case_id, case_spec_file_path, get_sql_alchemy_connection):
     global SNOWFLAKE_TABLES_TESTS, CLEANER_JOB_DONE
