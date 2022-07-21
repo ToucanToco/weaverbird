@@ -411,6 +411,17 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "execnet"
+version = "1.9.0"
+description = "execnet: rapid multi-Python deployment"
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+
+[package.extras]
+testing = ["pre-commit"]
+
+[[package]]
 name = "fiona"
 version = "1.8.21"
 description = "Fiona reads and writes spatial data files"
@@ -1356,6 +1367,18 @@ toml = "*"
 testing = ["fields", "hunter", "process-tests", "six", "pytest-xdist", "virtualenv"]
 
 [[package]]
+name = "pytest-forked"
+version = "1.4.0"
+description = "run tests in isolated forked subprocesses"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+py = "*"
+pytest = ">=3.10"
+
+[[package]]
 name = "pytest-mock"
 version = "3.8.1"
 description = "Thin-wrapper around the mock package for easier use with pytest"
@@ -1368,6 +1391,24 @@ pytest = ">=5.0"
 
 [package.extras]
 dev = ["pre-commit", "tox", "pytest-asyncio"]
+
+[[package]]
+name = "pytest-xdist"
+version = "2.5.0"
+description = "pytest xdist plugin for distributed testing and loop-on-failing modes"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+execnet = ">=1.1"
+pytest = ">=6.2.0"
+pytest-forked = "*"
+
+[package.extras]
+psutil = ["psutil (>=3.0)"]
+setproctitle = ["setproctitle"]
+testing = ["filelock"]
 
 [[package]]
 name = "python-dateutil"
@@ -1719,7 +1760,7 @@ requests = ">=2.23,<3.0"
 
 [[package]]
 name = "toucan-connectors"
-version = "3.15.3"
+version = "3.16.0"
 description = "Toucan Toco Connectors"
 category = "main"
 optional = false
@@ -1877,7 +1918,7 @@ playground = ["quart", "hypercorn", "pymongo", "pandas", "snowflake-connector-py
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10, <3.11"
-content-hash = "779468e8de8b0efdd6f044988c94629821bc6aa6aa846110b98bfebe380423c0"
+content-hash = "12adfbca81896f1f740a49282a940ccd28f28292439009bcf26d417d8362efd4"
 
 [metadata.files]
 aenum = [
@@ -2027,14 +2068,8 @@ black = [
 blinker = [
     {file = "blinker-1.4.tar.gz", hash = "sha256:471aee25f3992bd325afa3772f1063dbdbbca947a041b8b89466dc00d606f8b6"},
 ]
-boto3 = [
-    {file = "boto3-1.24.21-py3-none-any.whl", hash = "sha256:abe5b44010e3f50c5e0243aa4fc2338f10e5a868413faa0d6ae79131d6b507b8"},
-    {file = "boto3-1.24.21.tar.gz", hash = "sha256:551e902b70ccf9f6a58e28bb409718a0403b021b17ff6d63ab0b9af5a122386e"},
-]
-botocore = [
-    {file = "botocore-1.27.21-py3-none-any.whl", hash = "sha256:3bafa8e773d207c0ce02c63790a8820562e22d2e892abaf1eb90c343e995218a"},
-    {file = "botocore-1.27.21.tar.gz", hash = "sha256:b685ffc0ac170bf7de5fde931504eccd939f8545a9c9d10259245ca4c91101e5"},
-]
+boto3 = []
+botocore = []
 cached-property = [
     {file = "cached-property-1.5.2.tar.gz", hash = "sha256:9fa5755838eecbb2d234c3aa390bd80fbd3ac6b6869109bfc1b499f7bd89a130"},
     {file = "cached_property-1.5.2-py2.py3-none-any.whl", hash = "sha256:df4f613cf7ad9a588cc381aaf4a512d26265ecebd5eb9e1ba12f1319eb85a6a0"},
@@ -2221,6 +2256,10 @@ engarde = [
 et-xmlfile = [
     {file = "et_xmlfile-1.1.0-py3-none-any.whl", hash = "sha256:a2ba85d1d6a74ef63837eed693bcb89c3f752169b0e3e7ae5b16ca5e1b3deada"},
     {file = "et_xmlfile-1.1.0.tar.gz", hash = "sha256:8eb9e2bc2f8c97e37a2dc85a09ecdcdec9d8a396530a6d5a33b30b9a92da0c5c"},
+]
+execnet = [
+    {file = "execnet-1.9.0-py2.py3-none-any.whl", hash = "sha256:a295f7cc774947aac58dde7fdc85f4aa00c42adf5d8f5468fc630c1acf30a142"},
+    {file = "execnet-1.9.0.tar.gz", hash = "sha256:8f694f3ba9cc92cab508b152dcfe322153975c29bda272e2fd7f3f00f36e47c5"},
 ]
 fiona = [
     {file = "Fiona-1.8.21-cp310-cp310-macosx_10_10_x86_64.whl", hash = "sha256:39c656421e25b4d0d73d0b6acdcbf9848e71f3d9b74f44c27d2d516d463409ae"},
@@ -3199,9 +3238,17 @@ pytest-cov = [
     {file = "pytest-cov-2.12.1.tar.gz", hash = "sha256:261ceeb8c227b726249b376b8526b600f38667ee314f910353fa318caa01f4d7"},
     {file = "pytest_cov-2.12.1-py2.py3-none-any.whl", hash = "sha256:261bb9e47e65bd099c89c3edf92972865210c36813f80ede5277dceb77a4a62a"},
 ]
+pytest-forked = [
+    {file = "pytest-forked-1.4.0.tar.gz", hash = "sha256:8b67587c8f98cbbadfdd804539ed5455b6ed03802203485dd2f53c1422d7440e"},
+    {file = "pytest_forked-1.4.0-py3-none-any.whl", hash = "sha256:bbbb6717efc886b9d64537b41fb1497cfaf3c9601276be8da2cccfea5a3c8ad8"},
+]
 pytest-mock = [
     {file = "pytest-mock-3.8.1.tar.gz", hash = "sha256:2c6d756d5d3bf98e2e80797a959ca7f81f479e7d1f5f571611b0fdd6d1745240"},
     {file = "pytest_mock-3.8.1-py3-none-any.whl", hash = "sha256:d989f11ca4a84479e288b0cd1e6769d6ad0d3d7743dcc75e460d1416a5f2135a"},
+]
+pytest-xdist = [
+    {file = "pytest-xdist-2.5.0.tar.gz", hash = "sha256:4580deca3ff04ddb2ac53eba39d76cb5dd5edeac050cb6fbc768b0dd712b4edf"},
+    {file = "pytest_xdist-2.5.0-py3-none-any.whl", hash = "sha256:6fe5c74fec98906deb8f2d2b616b5c782022744978e7bd4695d39c8f42d0ce65"},
 ]
 python-dateutil = [
     {file = "python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86"},
@@ -3428,10 +3475,7 @@ toucan-client = [
     {file = "toucan_client-1.1.2-py3-none-any.whl", hash = "sha256:35edf56289e4e74ef5ccfedc0a1f51b6cb51678cbd58adcf5150f58d12312fd5"},
     {file = "toucan_client-1.1.2.tar.gz", hash = "sha256:e604dc04140b84cf9b3ed879b19580b5b6342c6eaffbe5e49df2b8e113edb6c0"},
 ]
-toucan-connectors = [
-    {file = "toucan-connectors-3.15.3.tar.gz", hash = "sha256:0f48749ba0bd8ffd6e06aec27e32de0449f363cb75e45c7f974dfdf11f38c9f6"},
-    {file = "toucan_connectors-3.15.3-py3-none-any.whl", hash = "sha256:c81a6e1c56a28c276b7c450c856cfb4c200d77ea376a4daf4bec02c3e461294c"},
-]
+toucan-connectors = []
 toucan-data-sdk = [
     {file = "toucan_data_sdk-7.5.0-py3-none-any.whl", hash = "sha256:1035b72ab94cafd4c45a0c0724cff73fe7d62fbb310f799c1afd4ced2ade8041"},
     {file = "toucan_data_sdk-7.5.0.tar.gz", hash = "sha256:29a2d4288ed403aba328561cad1d748077e22ead64edf1c40866ccf146125714"},

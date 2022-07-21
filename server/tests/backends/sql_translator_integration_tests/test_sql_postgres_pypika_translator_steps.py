@@ -88,6 +88,7 @@ def db_container():
 
 
 # Translation from Pipeline json to SQL query
+@pytest.mark.serial
 @pytest.mark.parametrize(
     'case_id, case_spec_file_path', retrieve_case('sql_translator', 'postgres_pypika')
 )

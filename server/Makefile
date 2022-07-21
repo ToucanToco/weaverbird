@@ -35,7 +35,11 @@ lint:
 
 .PHONY: test
 test:
-	python -m pytest --junitxml=test-report.xml --cov=weaverbird --cov-report xml -s
+	python -m pytest -n 8 -m "not serial" --junitxml=test-report.xml --cov=weaverbird --cov-report xml -s
+
+.PHONY: serial
+test-serial:
+	python -m pytest -m serial
 
 .PHONY: all
 all: test lint
