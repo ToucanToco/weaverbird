@@ -218,6 +218,105 @@ class FormulaBuilder:
             raise InvalidFormula(f'Operator {binop.op.__class__} is not supported') from excp
 
     @classmethod
+    def evaluate(cls, formula: Any):
+        """
+        This function will help validate and evaluate a basic algebra
+        expression.
+
+        Why we don't use the built-in 'eval(....)' ?
+        well, eval is very powerful, but is also very dangerous
+        if you accept strings to evaluate from untrusted input.
+        Suppose the string being evaluated is "os.system('rm -rf /')" ?
+        It will really start deleting all the files on your computer.
+
+        So, to safelly evaluate an expression we implemented this method !
+
+        Let's see some examples, given as input :
+
+            In [0]: formula_str = '10 + (3 / 12 - 5) * (3 - 7 / (7 + 100) * 8)'
+
+            - Example of basic usage on a string expression composition:
+
+                In [0]: FormulaBuilder.evaluate(formula_str)
+                Out[0]: -1.7640186915887845
+
+            - Example of basic usage on an ast expression
+
+                In [0]: formula_expr = FormulaBuilder.build_formula_tree(formula_str)
+                In [2]: FormulaBuilder.evaluate(formula_expr)
+                Out[2]: -1.7640186915887845
+        """
+        # those imports are local because they can be heavy and this function
+        # may not been called all the time !
+        import math
+        import operator
+        from functools import lru_cache
+
+        @lru_cache
+        def checkmath(x, *args):
+            if x not in [x for x in dir(math) if "__" not in x]:
+                raise InvalidFormula(f"Unknown mathematical func {x}()")
+            fun = getattr(math, x)
+            return fun(*args)
+
+        binOps = {
+            ast.Add: operator.add,
+            ast.Sub: operator.sub,
+            ast.Mult: operator.mul,
+            ast.Div: operator.truediv,
+            ast.Mod: operator.mod,
+            ast.Pow: operator.pow,
+            ast.Call: checkmath,
+            ast.BinOp: ast.BinOp,
+        }
+
+        unOps = {
+            ast.USub: operator.neg,
+            ast.UAdd: operator.pos,
+            ast.UnaryOp: ast.UnaryOp,
+        }
+
+        ops = tuple(binOps) + tuple(unOps)
+
+        tree = ast.parse(formula, mode='eval')
+
+        def _eval(node):
+            if isinstance(node, ast.Expr):
+                return _eval(node.value)
+            elif isinstance(node, ast.Expression):
+                return _eval(node.body)
+            elif isinstance(node, ast.Str):
+                return node.s
+            elif isinstance(node, ast.Num):
+                return node.value
+            elif isinstance(node, ast.Constant):
+                return node.value
+            elif isinstance(node, ast.BinOp):
+                if isinstance(node.left, ops):
+                    left = _eval(node.left)
+                else:
+                    left = getattr(node.left, 'value')
+                if isinstance(node.right, ops):
+                    right = _eval(node.right)
+                else:
+                    right = getattr(node.right, 'value')
+                return binOps[type(node.op)](left, right)  # type: ignore
+            elif isinstance(node, ast.UnaryOp):
+                if isinstance(node.operand, ops):
+                    operand = _eval(node.operand)
+                else:
+                    operand = getattr(node.operand, 'value')
+                return unOps[type(node.op)](operand)  # type: ignore
+            elif isinstance(node, ast.Call):
+                args = [_eval(x) for x in node.args]
+                r = checkmath(getattr(node.func, 'id'), *args)
+                return r
+            else:
+                raise InvalidFormula(f"Bad formula syntax, {type(node)}")
+
+        return _eval(tree)
+
+    @classmethod
     def translate_formula(cls, step: FormulaStep) -> Any:
         return formula
 
