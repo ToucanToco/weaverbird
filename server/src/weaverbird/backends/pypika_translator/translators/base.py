@@ -805,8 +805,8 @@ class SQLTranslator(ABC):
         # TODO : an AST should be implemented here to sanitize the formula
         def _sanitize_formula(formula: str) -> str:
             """
-            This combined regex will :
-                - remove and replace quotes & brackets to the one
+            These combined regexes will :
+                - remove and replace quotes & brackets with the ones
                   corresponding to the translator.
                 - prevent division by zero by adding NULLIF on all division
                   expression.
@@ -822,7 +822,7 @@ class SQLTranslator(ABC):
                 formula,
             )
             # detect and encapsulate / and %
-            if '/' in step.formula:
+            if '/' in formula:
                 formula = re.sub(
                     '((?<=/)\{}?\w+\{}?)|((?<=/)\d+)|((?<=/)\(?.*\)?)'.format(
                         self.QUOTE_CHAR, self.QUOTE_CHAR
@@ -830,7 +830,7 @@ class SQLTranslator(ABC):
                     r' NULLIF(\1\2\3, 0)',
                     formula.replace('/ ', '/'),
                 )
-            if '%' in step.formula:
+            if '%' in formula:
                 formula = re.sub(
                     '((?<=%)\{}?\w+\{}?)|((?<=/)\d+)|((?<=/)\(?.*\)?)'.format(
                         self.QUOTE_CHAR, self.QUOTE_CHAR
