@@ -1,4 +1,3 @@
-import re
 from abc import ABC
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -27,6 +26,14 @@ from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relat
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators import ALL_TRANSLATORS
+from weaverbird.backends.utils.formula import (
+    AthenaFormulaBuilder,
+    GoogleBigqueryFormulaBuilder,
+    MysqlFormulaBuilder,
+    PostgresqlFormulaBuilder,
+    SnowflakeFormulaBuilder,
+    SqlFormulaBuilder,
+)
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
     DateBoundCondition,
@@ -796,55 +803,15 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "FormulaStep",
     ) -> StepContext:
-        # TODO: support
-        # - float casting with divisions
-        # - whitespaces in column names
-        # - strings
-        # To do that we probably need to parse the formula with tokens
-        # In the end we should be able to translate:
-        #   [my age] + 1 / 2
-        # into
-        #   CAST("my age" AS float) + 1 / 2
-        # TODO : an AST should be implemented here to sanitize the formula
-        def _sanitize_formula(formula: str) -> str:
-            """
-            These combined regexes will :
-                - remove and replace quotes & brackets with the ones
-                  corresponding to the translator.
-                - prevent division by zero by adding NULLIF on all division
-                  expression.
-            Exemple of a weird expression : 'cost' + (`price_per_l` / [alcohol_degree]) / (\"price_per_l\" + [volume_ml]) / 0
-            The sanitizer will return : "cost" + ("price_per_l"/ NULLIF("alcohol_degree", 0))/("price_per_l" + "volume_ml")/ NULLIF(0, 0)
-            """
-            # We remove enclosures and double spaces
-            formula = ' '.join(re.sub(r'[\[\]]|["]|[`]|[\']', '', formula).split())
-            # We add quote from the translator
-            formula = re.sub(
-                r'([a-zA-Z_a-zA-Z]+)',
-                r'{}\1{}'.format(self.QUOTE_CHAR, self.QUOTE_CHAR),
-                formula,
-            )
-            # detect and encapsulate / and %
-            if '/' in formula:
-                formula = re.sub(
-                    '((?<=/)\{}?\w+\{}?)|((?<=/)\d+)|((?<=/)\(?.*\)?)'.format(
-                        self.QUOTE_CHAR, self.QUOTE_CHAR
-                    ),
-                    r' NULLIF(\1\2\3, 0)',
-                    formula.replace('/ ', '/'),
-                )
-            if '%' in formula:
-                formula = re.sub(
-                    '((?<=%)\{}?\w+\{}?)|((?<=/)\d+)|((?<=/)\(?.*\)?)'.format(
-                        self.QUOTE_CHAR, self.QUOTE_CHAR
-                    ),
-                    r' NULLIF(\1\2\3, 0)',
-                    formula.replace('% ', '%'),
-                )
-
-            return formula
-
-        formula = _sanitize_formula(step.formula)
+        sql_builder = {
+            'athena': AthenaFormulaBuilder,
+            'googlebigquery': GoogleBigqueryFormulaBuilder,
+            'mysql': MysqlFormulaBuilder,
+            'postgres': PostgresqlFormulaBuilder,
+            'redshift': PostgresqlFormulaBuilder,
+            'snowflake': SnowflakeFormulaBuilder,
+        }
+        formula = sql_builder[self.DIALECT.value].build_formula_tree(step.formula)
         query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
             *columns, LiteralValue(formula).as_(step.new_column)
         )

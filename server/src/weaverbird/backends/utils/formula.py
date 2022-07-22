@@ -5,7 +5,11 @@ A formula builder module for all our backends
 """
 import ast
 import re
+from functools import lru_cache
 from typing import Any
+
+import numpy as np
+from pandas import DataFrame
 
 from weaverbird.pipeline.steps import FormulaStep, formula
 
@@ -250,7 +254,6 @@ class FormulaBuilder:
         # may not been called all the time !
         import math
         import operator
-        from functools import lru_cache
 
         @lru_cache
         def checkmath(x, *args):
@@ -370,13 +373,12 @@ class MongoFormulaBuilder(FormulaBuilder):
     @classmethod
     def _node_as_name(cls, name: ast.Name, columns_aliases: dict | None = None) -> str:
 
+        key_name = name.id
         if columns_aliases:
-            key_name = name.id
-
             if key_name in columns_aliases:
-                return str(ColumnBuilder('${', columns_aliases[key_name]))
+                return str(ColumnBuilder('$', columns_aliases[key_name]))
 
-        return super()._node_as_name(name, columns_aliases)
+        return str(ColumnBuilder('$', key_name))
 
     @classmethod
     def _node_as_unaryop(cls, unop: ast.UnaryOp, columns_aliases: dict | None = None) -> Any:
@@ -477,6 +479,53 @@ class SqlFormulaBuilder(FormulaBuilder):
         return {}, formula
 
 
+class PandasFormulaBuilder:
+    """FormulaBuilder class for Pandas backend"""
+
+    COLUMN_PATTERN = re.compile(r'(\`[^\`]*\`)')
+
+    # In pandas, columns containing spaces must be escaped with backticks:
+    @classmethod
+    def clean_formula_element(cls, elem: str) -> str:
+        if cls.COLUMN_PATTERN.match(elem):
+            # this is a column name: return it as is
+            return elem
+        # - forbid '=' char
+        # - replace [ and ] with `
+        #   ([] is mongo's syntax to escape columns containing spaces)
+        return elem.replace('=', '').replace('[', '`').replace(']', '`')
+
+    @classmethod
+    def translate_formula(cls, formula: str) -> str:
+        """
+        Translate mongo's syntax to hande columns names containing spaces to pandas syntax.
+
+        Example:
+            >>> clean_formula('colA * `col B` * [col C] * `[col D]`')
+            'colA * `col B` * `col C` * `[col D]`'
+        """
+
+        formula_splitted = cls.COLUMN_PATTERN.split(formula)
+        return ''.join(cls.clean_formula_element(elem) for elem in formula_splitted)
+
+    @classmethod
+    def build_formula_tree(cls, df: DataFrame, formula: str) -> DataFrame:
+        try:
+            result = df.eval(formula)
+        except Exception:
+            # for all cases not handled by NumExpr
+            result = df.eval(formula, engine='python')
+
+        try:
+            # eval can introduce Infinity values (when dividing by 0),
+            # which do not have a JSON representation.
+            # Let's replace them by NaN:
+            return result.replace([np.inf, -np.inf], np.nan)
+        except Exception:
+            # `result` is not a Series
+            return result
+
+
 class PostgresqlFormulaBuilder(SqlFormulaBuilder):
     """FormulaBuilder class for postgresql and RedshiftSql"""
 
@@ -507,10 +556,4 @@ class GoogleBigqueryFormulaBuilder(SqlFormulaBuilder):
     """FormulaBuilder class for GoogleBigQuery"""
 
     QUOTE_CHAR = "`"
-    ...
-
-
-class PandasFormulaBuilder(FormulaBuilder):
-    """FormulaBuilder class for Pandas backend"""
-
     ...

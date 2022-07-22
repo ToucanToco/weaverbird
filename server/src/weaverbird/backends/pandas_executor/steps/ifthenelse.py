@@ -3,7 +3,10 @@ from typing import Any
 import numpy as np
 from pandas import DataFrame
 
-from weaverbird.backends.pandas_executor.steps.utils.formula import clean_formula, eval_formula
+from weaverbird.backends.pandas_executor.steps.utils.formula import (
+    build_formula_tree,
+    translate_formula,
+)
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps.ifthenelse import IfThenElse, IfthenelseStep
 
@@ -13,7 +16,7 @@ from .utils.condition import apply_condition
 # ifthenelse can take as a parameter either a formula, or a value
 def clean_if_formula(formula_or_value: Any) -> Any:
     if isinstance(formula_or_value, str):
-        return clean_formula(formula_or_value)
+        return translate_formula(formula_or_value)
     else:
         return formula_or_value
 
@@ -22,9 +25,9 @@ def _execute_ifthenelse(ifthenelse: IfThenElse, df: DataFrame, new_column) -> Da
     if isinstance(ifthenelse.else_value, IfThenElse):
         else_branch = _execute_ifthenelse(ifthenelse.else_value, df, new_column)[new_column]
     else:
-        else_branch = eval_formula(df, clean_if_formula(ifthenelse.else_value))
+        else_branch = build_formula_tree(df, clean_if_formula(ifthenelse.else_value))
 
-    then_branch = eval_formula(df, clean_if_formula(ifthenelse.then))
+    then_branch = build_formula_tree(df, clean_if_formula(ifthenelse.then))
 
     return df.assign(
         **{
