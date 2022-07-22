@@ -4,16 +4,20 @@ import pytest
 from pypika import Field, Order, Query
 
 from weaverbird.backends.pypika_translator.translators.base import RowNumber, SQLTranslator
+from weaverbird.backends.pypika_translator.utils.regex import (
+    RegexNoEscapeMixin,
+    RegexRegexpCriterionBuilder,
+)
 from weaverbird.pipeline import steps
 
 
-class RowNumberEnabledTranslator(SQLTranslator):
+class RowNumberEnabledTranslator(SQLTranslator, RegexRegexpCriterionBuilder, RegexNoEscapeMixin):
     DIALECT = "Base"
     QUERY_CLS = Query
     SUPPORT_ROW_NUMBER = True
 
 
-class RowNumberDisabledTranslator(SQLTranslator):
+class RowNumberDisabledTranslator(SQLTranslator, RegexRegexpCriterionBuilder, RegexNoEscapeMixin):
     DIALECT = "Base"
     QUERY_CLS = Query
     SUPPORT_ROW_NUMBER = False

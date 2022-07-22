@@ -1,5 +1,4 @@
 import re
-from abc import ABC
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from functools import cache
@@ -19,14 +18,15 @@ from pypika import (
     analytics,
     functions,
 )
-from pypika.enums import Comparator, JoinType
+from pypika.enums import JoinType
 from pypika.queries import QueryBuilder, Selectable
-from pypika.terms import AnalyticFunction, BasicCriterion, LiteralValue
+from pypika.terms import AnalyticFunction, LiteralValue
 
 from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relative_date
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators import ALL_TRANSLATORS
+from weaverbird.backends.pypika_translator.utils.regex import AbstractRegexMatchingCriterionBuilder
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
     DateBoundCondition,
@@ -117,7 +117,7 @@ class CustomQuery(AliasedQuery):  # type: ignore[misc]
         return cast(str, self.query)
 
 
-class SQLTranslator(ABC):
+class SQLTranslator(AbstractRegexMatchingCriterionBuilder):
     DIALECT: SQLDialect
     QUERY_CLS: Query
     DATA_TYPE_MAPPING: DataTypeMapping
@@ -634,89 +634,10 @@ class SQLTranslator(ABC):
                     return column_field.notin(condition.value)
 
             case MatchCondition():
-                compliant_regex = _compliant_regex(condition.value, self.DIALECT)
-
                 if condition.operator == "matches":
-                    match self.REGEXP_OP:
-                        case RegexOp.REGEXP:
-                            return BasicCriterion(
-                                RegexpMatching.regexp,
-                                column_field,
-                                column_field.wrap_constant(compliant_regex),
-                            )
-                        case RegexOp.SIMILAR_TO:
-                            return BasicCriterion(
-                                RegexpMatching.similar_to,
-                                column_field,
-                                column_field.wrap_constant(compliant_regex),
-                            )
-                        case RegexOp.CONTAINS:
-                            return BasicCriterion(
-                                RegexpMatching.contains,
-                                column_field,
-                                column_field.wrap_constant(compliant_regex),
-                            )
-                        case RegexOp.REGEXP_CONTAINS:
-                            return functions.Function(
-                                RegexOp.REGEXP_CONTAINS,
-                                column_field,
-                                column_field.wrap_constant(compliant_regex),
-                            )
-                        case RegexOp.REGEXP_LIKE:
-                            return functions.Function(
-                                RegexOp.REGEXP_LIKE,
-                                column_field,
-                                column_field.wrap_constant(compliant_regex),
-                            )
-                        case RegexOp.REGEXP_CONTAINS:
-                            return functions.Function(
-                                RegexOp.NOT_REGEXP_CONTAINS,
-                                column_field,
-                                column_field.wrap_constant(compliant_regex),
-                            )
-                        case RegexOp.REGEXP_LIKE:
-                            return functions.Function(
-                                RegexOp.NOT_REGEXP_LIKE,
-                                column_field,
-                                column_field.wrap_constant(compliant_regex),
-                            )
-                        case _:
-                            raise NotImplementedError(
-                                f"[{self.DIALECT}] doesn't have regexp operator"
-                            )
-
+                    return self._matches_operation(condition, column_field)
                 elif condition.operator == "notmatches":
-                    match self.REGEXP_OP:
-                        case RegexOp.REGEXP:
-                            return column_field.regexp(condition.value).negate()
-                        case RegexOp.SIMILAR_TO:
-                            return BasicCriterion(
-                                RegexpMatching.not_similar_to,
-                                column_field,
-                                column_field.wrap_constant(compliant_regex),
-                            )
-                        case RegexOp.CONTAINS:
-                            return BasicCriterion(
-                                RegexpMatching.not_contains,
-                                column_field,
-                                column_field.wrap_constant(compliant_regex),
-                            )
-                        case RegexOp.REGEXP_CONTAINS:
-                            return functions.Function(
-                                RegexOp.NOT_REGEXP_CONTAINS,
-                                column_field,
-                                column_field.wrap_constant(compliant_regex),
-                            )
-                        case RegexOp.REGEXP_LIKE:
-                            return functions.Function(
-                                RegexOp.NOT_REGEXP_LIKE,
-                                column_field,
-                                column_field.wrap_constant(compliant_regex),
-                            )
-                        case _:
-                            raise NotImplementedError(
-                                f"[{self.DIALECT}] doesn't have regexp operator"
-                            )
+                    return self._not_matches_operation(condition, column_field)
 
             case NullCondition():
                 if condition.operator == "isnull":
@@ -1299,30 +1220,3 @@ class StrToDate(functions.Function):  # type: ignore[misc]
 class ParseDate(functions.Function):  # type: ignore[misc]
     def __init__(self, term: str | Field, date_format: str, alias: str | None = None) -> None:
         super().__init__("PARSE_DATE", term, date_format, alias=alias)
-
-
-class RegexpMatching(Comparator):  # type: ignore[misc]
-    similar_to = " SIMILAR TO "
-    not_similar_to = " NOT SIMILAR TO "
-    contains = " CONTAINS "
-    not_contains = " NOT CONTAINS "
-    regexp = " REGEXP "
-
-
-def _compliant_regex(pattern: str, dialect: SQLDialect) -> str:
-    """
-    Like LIKE, the SIMILAR TO operator succeeds only if its pattern matches the entire string;
-    this is unlike common regular expression behavior wherethe pattern
-    can match any part of the string
-    (see https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-SIMILARTO-REGEXP)
-
-    For some special cases like googlebigquery or athena, we don't need to add
-    those %
-    """
-
-    if dialect in [SQLDialect.ATHENA, SQLDialect.GOOGLEBIGQUERY]:
-        return f"{pattern}"
-    elif dialect == SQLDialect.SNOWFLAKE:
-        return f".*{pattern}.*"
-
-    return f"%{pattern}%"

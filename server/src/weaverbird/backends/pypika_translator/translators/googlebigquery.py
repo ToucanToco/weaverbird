@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from pypika import Field, Query, Table, functions
 from pypika.queries import QueryBuilder
-from pypika.terms import LiteralValue
+from pypika.terms import Function, LiteralValue
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
@@ -12,11 +12,15 @@ from weaverbird.backends.pypika_translator.translators.base import (
     SQLTranslator,
     StepContext,
 )
-
-Self = TypeVar("Self", bound="GoogleBigQueryTranslator")
+from weaverbird.backends.pypika_translator.utils.regex import RegexNoEscapeMixin
 
 if TYPE_CHECKING:
+    from pypika.queries import Criterion
+
+    from weaverbird.pipeline.conditions import MatchCondition
     from weaverbird.pipeline.steps import SplitStep
+
+Self = TypeVar("Self", bound="GoogleBigQueryTranslator")
 
 
 class ExtraDialects(Enum):
@@ -40,7 +44,7 @@ class GoogleBigQueryQueryBuilder(QueryBuilder):  # type: ignore[misc]
         super().__init__(dialect=ExtraDialects.GOOGLE_BIG_QUERY, **kwargs)
 
 
-class GoogleBigQueryTranslator(SQLTranslator):
+class GoogleBigQueryTranslator(SQLTranslator, RegexNoEscapeMixin):
     DIALECT = SQLDialect.GOOGLEBIGQUERY
     QUERY_CLS = GoogleBigQueryQuery
     DATA_TYPE_MAPPING = DataTypeMapping(
@@ -77,6 +81,9 @@ class GoogleBigQueryTranslator(SQLTranslator):
             *columns, *splitted_cols
         )
         return StepContext(query, columns + splitted_cols)
+
+    def _matches_operation(self, condition: 'MatchCondition', column_field: Field) -> 'Criterion':
+        return Function(self.REGEXP_OP, column_field, column_field.wrap_constant(condition.value))
 
 
 SQLTranslator.register(GoogleBigQueryTranslator)

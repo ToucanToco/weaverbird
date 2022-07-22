@@ -6,13 +6,17 @@ from pypika.enums import JoinType
 from pypika.terms import LiteralValue, ValueWrapper
 
 from weaverbird.backends.pypika_translator.translators.base import SQLTranslator
+from weaverbird.backends.pypika_translator.utils.regex import (
+    RegexNoEscapeMixin,
+    RegexRegexpCriterionBuilder,
+)
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import handle_zero_division
 from weaverbird.pipeline import conditions, steps
 from weaverbird.pipeline.pipeline import DomainStep
 from weaverbird.pipeline.steps.utils.combination import Reference
 
 
-class BaseTranslator(SQLTranslator):
+class BaseTranslator(SQLTranslator, RegexRegexpCriterionBuilder, RegexNoEscapeMixin):
     DIALECT = "Base"
     QUERY_CLS = Query
     _known_instances = {}

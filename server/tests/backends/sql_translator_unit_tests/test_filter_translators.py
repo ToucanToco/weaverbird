@@ -2,14 +2,26 @@ from typing import Any
 
 import pytest
 from pypika import Field, Query, functions
-from pypika.terms import BasicCriterion, ValueWrapper
+from pypika.terms import BasicCriterion, Function
 
 from weaverbird.backends.pypika_translator.operators import RegexOp
-from weaverbird.backends.pypika_translator.translators.base import RegexpMatching, SQLTranslator
+from weaverbird.backends.pypika_translator.translators.athena import AthenaTranslator
+from weaverbird.backends.pypika_translator.translators.base import SQLTranslator
+from weaverbird.backends.pypika_translator.translators.googlebigquery import (
+    GoogleBigQueryQuery,
+    GoogleBigQueryTranslator,
+)
+from weaverbird.backends.pypika_translator.utils.regex import (
+    RegexNoEscapeMixin,
+    RegexPercentEscapeMixin,
+    RegexpMatchingComparator,
+    RegexRegexpCriterionBuilder,
+    RegexSimilarToCriterionBuilder,
+)
 from weaverbird.pipeline import conditions, steps
 
 
-class FilterTranslator(SQLTranslator):
+class FilterTranslator(SQLTranslator, RegexRegexpCriterionBuilder, RegexNoEscapeMixin):
     DIALECT = "Filter"
     QUERY_CLS = Query
 
@@ -128,7 +140,7 @@ def test_datebound_filter(
 # MATCHES REGEXP
 
 
-class REGEXPTranslator(SQLTranslator):
+class REGEXPTranslator(SQLTranslator, RegexRegexpCriterionBuilder, RegexPercentEscapeMixin):
     DIALECT = "REGEXP"
     QUERY_CLS = Query
     REGEXP_OP = RegexOp.REGEXP
@@ -177,7 +189,7 @@ def test_notmatches_regexp_filter(
     ctx = regexp_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
         Query.from_(previous_step)
-        .where(Field(column).regexp(regex).negate())
+        .where(Field(column).regexp(f'%{regex}%').negate())
         .select(*selected_columns)
     )
 
@@ -187,7 +199,7 @@ def test_notmatches_regexp_filter(
 # MATCHES SIMILAR TO
 
 
-class SimilarToTranslator(SQLTranslator):
+class SimilarToTranslator(SQLTranslator, RegexSimilarToCriterionBuilder, RegexNoEscapeMixin):
     DIALECT = "SIMILAR TO"
     QUERY_CLS = Query
     REGEXP_OP = RegexOp.SIMILAR_TO
@@ -207,6 +219,7 @@ def test_matches_similar_to_filter(
     selected_columns = ["name", "age"]
     previous_step = "previous_with"
     column = "name"
+    field = Field(column)
     regex = "Jane"
 
     condition = conditions.MatchCondition(column=column, operator="matches", value=regex)
@@ -215,7 +228,9 @@ def test_matches_similar_to_filter(
     ctx = similar_to_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
         Query.from_(previous_step)
-        .where(BasicCriterion(RegexpMatching.similar_to, Field(column), ValueWrapper(f"%{regex}%")))
+        .where(
+            BasicCriterion(RegexpMatchingComparator.SIMILAR_TO, field, field.wrap_constant(regex))
+        )
         .select(*selected_columns)
     )
 
@@ -228,6 +243,7 @@ def test_notmatches_similar_to_filter(
     selected_columns = ["name", "age"]
     previous_step = "previous_with"
     column = "name"
+    field = Field(column)
     regex = "Jane"
 
     condition = conditions.MatchCondition(column=column, operator="notmatches", value=regex)
@@ -237,7 +253,9 @@ def test_notmatches_similar_to_filter(
     expected_query = (
         Query.from_(previous_step)
         .where(
-            BasicCriterion(RegexpMatching.not_similar_to, Field(column), ValueWrapper(f"%{regex}%"))
+            BasicCriterion(
+                RegexpMatchingComparator.SIMILAR_TO, field, field.wrap_constant(regex)
+            ).negate()
         )
         .select(*selected_columns)
     )
@@ -245,99 +263,31 @@ def test_notmatches_similar_to_filter(
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
-# MATCHES CONTAINS
-
-
-class ContainsTranslator(SQLTranslator):
-    DIALECT = "CONTAINS"
-    QUERY_CLS = Query
-    REGEXP_OP = RegexOp.CONTAINS
-
-
+# Athena is the only translator using REGEXP_LIKE, so we're using it here
 @pytest.fixture
-def contains_translator():
-    return ContainsTranslator(
-        tables_columns=ALL_TABLES,
-        db_schema=DB_SCHEMA,
-    )
-
-
-def test_matches_contains_filter(
-    contains_translator: ContainsTranslator, default_step_kwargs: dict[str, Any]
-):
-    selected_columns = ["name", "age"]
-    previous_step = "previous_with"
-    column = "name"
-    regex = "Jane"
-
-    condition = conditions.MatchCondition(column=column, operator="matches", value=regex)
-
-    step = steps.FilterStep(condition=condition)
-    ctx = contains_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
-    expected_query = (
-        Query.from_(previous_step)
-        .where(BasicCriterion(RegexpMatching.contains, Field(column), ValueWrapper(f"%{regex}%")))
-        .select(*selected_columns)
-    )
-
-    assert ctx.selectable.get_sql() == expected_query.get_sql()
-
-
-def test_notmatches_contains_filter(
-    contains_translator: ContainsTranslator, default_step_kwargs: dict[str, Any]
-):
-    selected_columns = ["name", "age"]
-    previous_step = "previous_with"
-    column = "name"
-    regex = "Jane"
-
-    condition = conditions.MatchCondition(column=column, operator="notmatches", value=regex)
-
-    step = steps.FilterStep(condition=condition)
-    ctx = contains_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
-    expected_query = (
-        Query.from_(previous_step)
-        .where(
-            BasicCriterion(RegexpMatching.not_contains, Field(column), ValueWrapper(f"%{regex}%"))
-        )
-        .select(*selected_columns)
-    )
-
-    assert ctx.selectable.get_sql() == expected_query.get_sql()
-
-
-# RECEXP LIKE
-
-
-class REGEXP_LIKE_Translator(SQLTranslator):
-    DIALECT = "REGEXP"
-    QUERY_CLS = Query
-    REGEXP_OP = RegexOp.REGEXP_LIKE
-
-
-@pytest.fixture
-def regexp_like_translator():
-    return REGEXP_LIKE_Translator(
+def regexp_like_translator() -> AthenaTranslator:
+    return AthenaTranslator(
         tables_columns=ALL_TABLES,
         db_schema=DB_SCHEMA,
     )
 
 
 def test_matches_regexp_like_filter(
-    regexp_translator: REGEXP_LIKE_Translator, default_step_kwargs: dict[str, Any]
+    regexp_like_translator: AthenaTranslator, default_step_kwargs: dict[str, Any]
 ):
     selected_columns = ["name", "age"]
     previous_step = "previous_with"
     column = "name"
+    field = Field(column)
     regex = "Jane"
 
     condition = conditions.MatchCondition(column=column, operator="matches", value=regex)
 
     step = steps.FilterStep(condition=condition)
-    ctx = regexp_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
+    ctx = regexp_like_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
         Query.from_(previous_step)
-        .where(Field(column).regexp(f'%{regex}%'))
+        .where(Function("REGEXP_LIKE", field, field.wrap_constant(regex)))
         .select(*selected_columns)
     )
 
@@ -345,58 +295,52 @@ def test_matches_regexp_like_filter(
 
 
 def test_notmatches_regexp__like_filter(
-    regexp_translator: REGEXP_LIKE_Translator, default_step_kwargs: dict[str, Any]
+    regexp_like_translator: AthenaTranslator, default_step_kwargs: dict[str, Any]
 ):
     selected_columns = ["name", "age"]
     previous_step = "previous_with"
     column = "name"
+    field = Field(column)
     regex = "Jane"
 
     condition = conditions.MatchCondition(column=column, operator="notmatches", value=regex)
 
     step = steps.FilterStep(condition=condition)
-    ctx = regexp_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
+    ctx = regexp_like_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
         Query.from_(previous_step)
-        .where(Field(column).regexp(regex).negate())
+        .where(Function("REGEXP_LIKE", field, field.wrap_constant(regex)).negate())
         .select(*selected_columns)
     )
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
-# RECEXP CONTAINS
-
-
-class REGEXP_CONTAINS_Translator(SQLTranslator):
-    DIALECT = "REGEXP"
-    QUERY_CLS = Query
-    REGEXP_OP = RegexOp.REGEXP_CONTAINS
-
-
+# GBQ is the only translator using CONTAINS, so we're using it directly here
 @pytest.fixture
-def regexp_contains_translator():
-    return REGEXP_LIKE_Translator(
+def gbq_translator() -> GoogleBigQueryTranslator:
+    return GoogleBigQueryTranslator(
         tables_columns=ALL_TABLES,
         db_schema=DB_SCHEMA,
     )
 
 
 def test_matches_regexp_contains_filter(
-    regexp_translator: REGEXP_LIKE_Translator, default_step_kwargs: dict[str, Any]
+    gbq_translator: GoogleBigQueryTranslator, default_step_kwargs: dict[str, Any]
 ):
     selected_columns = ["name", "age"]
     previous_step = "previous_with"
     column = "name"
+    field = Field(column)
     regex = "Jane"
 
     condition = conditions.MatchCondition(column=column, operator="matches", value=regex)
 
     step = steps.FilterStep(condition=condition)
-    ctx = regexp_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
+    ctx = gbq_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
-        Query.from_(previous_step)
-        .where(Field(column).regexp(f'%{regex}%'))
+        GoogleBigQueryQuery.from_(previous_step)
+        .where(Function("REGEXP_CONTAINS", field, field.wrap_constant(regex)))
         .select(*selected_columns)
     )
 
@@ -404,20 +348,21 @@ def test_matches_regexp_contains_filter(
 
 
 def test_notmatches_regexp__contains_filter(
-    regexp_translator: REGEXP_LIKE_Translator, default_step_kwargs: dict[str, Any]
+    gbq_translator: GoogleBigQueryTranslator, default_step_kwargs: dict[str, Any]
 ):
     selected_columns = ["name", "age"]
     previous_step = "previous_with"
     column = "name"
+    field = Field(column)
     regex = "Jane"
 
     condition = conditions.MatchCondition(column=column, operator="notmatches", value=regex)
 
     step = steps.FilterStep(condition=condition)
-    ctx = regexp_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
+    ctx = gbq_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
-        Query.from_(previous_step)
-        .where(Field(column).regexp(regex).negate())
+        GoogleBigQueryQuery.from_(previous_step)
+        .where(Function("REGEXP_CONTAINS", field, field.wrap_constant(regex)).negate())
         .select(*selected_columns)
     )
 

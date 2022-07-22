@@ -5,10 +5,14 @@ from pypika import Field, Query, functions
 
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators.base import SQLTranslator
+from weaverbird.backends.pypika_translator.utils.regex import (
+    RegexNoEscapeMixin,
+    RegexRegexpCriterionBuilder,
+)
 from weaverbird.pipeline import steps
 
 
-class DateFormatTranslator(SQLTranslator):
+class DateFormatTranslator(SQLTranslator, RegexRegexpCriterionBuilder, RegexNoEscapeMixin):
     DIALECT = "Base"
     QUERY_CLS = Query
     FROM_DATE_OP = FromDateOp.TO_CHAR
