@@ -105,8 +105,8 @@ class FormulaBuilder:
                 1,
                 {
                    "$cond":[
-                      { "$in":[ 12, [ 0, "None" ] ] },
-                      "None",
+                      { "$in":[ 12, [ 0, None ] ] },
+                      None,
                       { "$divide":[ "3", 12 ] }
                    ]
                 }
@@ -114,8 +114,8 @@ class FormulaBuilder:
           },
           {
              "$cond":[
-                { "$in":[ "$askk", [ 0, "None" ] ] },
-                "None",
+                { "$in":[ "$askk", [ 0, None ] ] },
+                None,
                 { "$divide":[ 5, "$askk" ] }
              ]
           }

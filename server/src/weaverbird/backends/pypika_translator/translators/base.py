@@ -32,7 +32,6 @@ from weaverbird.backends.utils.formula import (
     MysqlFormulaBuilder,
     PostgresqlFormulaBuilder,
     SnowflakeFormulaBuilder,
-    SqlFormulaBuilder,
 )
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
