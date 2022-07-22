@@ -1,7 +1,6 @@
 import ast
 
 import pytest
-from weaverbird.backends.pandas_executor.steps.utils.formula import build_formula_tree
 
 from weaverbird.backends.utils.formula import (
     AthenaFormulaBuilder,
@@ -66,6 +65,7 @@ def test_formula_builders():
             {"$cond": [{"$in": ["$askk", [0, None]]}, None, {"$divide": [5, "$askk"]}]},
         ]
     }
+
 
 def test_formula_builders_errors():
     with pytest.raises(TypeError):

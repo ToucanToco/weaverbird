@@ -339,7 +339,7 @@ class FormulaBuilder:
             columns_aliases, sanitized_formula = cls.sanitize_formula(formula)
 
             # since it's a none recognized character by ast
-            if '`' not in sanitized_formula and not issubclass(cls, SqlFormulaBuilder):
+            if not issubclass(cls, SqlFormulaBuilder):
                 module = ast.parse(sanitized_formula)
                 expr = module.body[0]
                 if not isinstance(expr, ast.Expr):
@@ -458,7 +458,7 @@ class SqlFormulaBuilder(FormulaBuilder):
         """
         formula = cls.clean_extras_spaces_and_tabs(formula)
         # We remove enclosures and double spaces
-        formula = re.sub(r'[\[\]]|["]|[`]|[\']', '', formula)
+        formula = ' '.join(re.sub(r'[\[\]]|["]|[`]|[\']', '', formula).split())
         # We add quote from the translator
         formula = re.sub(
             r'([a-zA-Z_a-zA-Z]+)',
@@ -466,15 +466,22 @@ class SqlFormulaBuilder(FormulaBuilder):
             formula,
         )
         # detect and encapsulate / and %
-        for cha in ['/', '%']:
-            if cha in formula:
-                formula = re.sub(
-                    r'((?<={})\{}?\w+\{}?)|((?<=/)\d+)|((?<=/)\(?.*\)?)'.format(
-                        cha, cls.QUOTE_CHAR, cls.QUOTE_CHAR
-                    ),
-                    r' NULLIF(\1\2\3, 0)',
-                    formula.replace(f'{cha} ', cha),
-                )
+        if '/' in formula:
+            formula = re.sub(
+                '((?<=/)\{}?\w+\{}?)|((?<=/)\d+)|((?<=/)\(?.*\)?)'.format(
+                    cls.QUOTE_CHAR, cls.QUOTE_CHAR
+                ),
+                r' NULLIF(\1\2\3, 0)',
+                formula.replace('/ ', '/'),
+            )
+        if '%' in formula:
+            formula = re.sub(
+                '((?<=%)\{}?\w+\{}?)|((?<=/)\d+)|((?<=/)\(?.*\)?)'.format(
+                    cls.QUOTE_CHAR, cls.QUOTE_CHAR
+                ),
+                r' NULLIF(\1\2\3, 0)',
+                formula.replace('% ', '%'),
+            )
 
         return {}, formula
 

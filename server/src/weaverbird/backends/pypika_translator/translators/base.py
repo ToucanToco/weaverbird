@@ -26,13 +26,7 @@ from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relat
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators import ALL_TRANSLATORS
-from weaverbird.backends.utils.formula import (
-    AthenaFormulaBuilder,
-    GoogleBigqueryFormulaBuilder,
-    MysqlFormulaBuilder,
-    PostgresqlFormulaBuilder,
-    SnowflakeFormulaBuilder,
-)
+from weaverbird.backends.utils.formula import SqlFormulaBuilder
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
     DateBoundCondition,
@@ -802,15 +796,9 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "FormulaStep",
     ) -> StepContext:
-        sql_builder = {
-            'athena': AthenaFormulaBuilder,
-            'googlebigquery': GoogleBigqueryFormulaBuilder,
-            'mysql': MysqlFormulaBuilder,
-            'postgres': PostgresqlFormulaBuilder,
-            'redshift': PostgresqlFormulaBuilder,
-            'snowflake': SnowflakeFormulaBuilder,
-        }
-        formula = sql_builder[self.DIALECT.value].build_formula_tree(step.formula)
+        sql_builder = SqlFormulaBuilder
+        sql_builder.QUOTE_CHAR = self.QUOTE_CHAR
+        formula = sql_builder.build_formula_tree(step.formula)
         query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
             *columns, LiteralValue(formula).as_(step.new_column)
         )
