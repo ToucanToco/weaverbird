@@ -1,5 +1,8 @@
 import ast
 
+import pytest
+from weaverbird.backends.pandas_executor.steps.utils.formula import build_formula_tree
+
 from weaverbird.backends.utils.formula import (
     AthenaFormulaBuilder,
     ColumnBuilder,
@@ -24,6 +27,8 @@ def test_formula_builders():
     """some basic checks on various formulas"""
 
     assert type(FormulaBuilder.build_formula_tree('1 - "3" / 12 - 5 / askk')) == ast.Expr
+
+    assert FormulaBuilder.evaluate('1 - 3 / (12 - 5 / (9 -1) - 23)') == 1.2580645161290323
 
     assert SqlFormulaBuilder.sanitize_formula('1 - "3" / 12 - 5 / askk') == (
         {},
@@ -61,3 +66,13 @@ def test_formula_builders():
             {"$cond": [{"$in": ["$askk", [0, None]]}, None, {"$divide": [5, "$askk"]}]},
         ]
     }
+
+def test_formula_builders_errors():
+    with pytest.raises(TypeError):
+        assert FormulaBuilder.evaluate('"1" - 3')
+
+    with pytest.raises(SyntaxError):
+        assert MongoFormulaBuilder.evaluate('"1" ~ 3')
+
+    with pytest.raises(SyntaxError):
+        assert FormulaBuilder.build_formula_tree('1 ~+ "3"')
