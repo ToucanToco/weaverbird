@@ -1,4 +1,4 @@
-from weaverbird.backends.utils.formula import MongoFormulaBuilder
+from weaverbird.backends.utils.formula_builder import MongoFormulaBuilder
 from weaverbird.pipeline.steps.formula import FormulaStep
 
 

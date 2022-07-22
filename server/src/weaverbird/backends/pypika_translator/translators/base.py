@@ -26,7 +26,7 @@ from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relat
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators import ALL_TRANSLATORS
-from weaverbird.backends.utils.formula import SqlFormulaBuilder
+from weaverbird.backends.utils.formula_builder import SqlFormulaBuilder
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
     DateBoundCondition,

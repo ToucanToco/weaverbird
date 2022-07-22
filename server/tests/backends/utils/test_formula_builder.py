@@ -2,7 +2,7 @@ import ast
 
 import pytest
 
-from weaverbird.backends.utils.formula import (
+from weaverbird.backends.utils.formula_builder import (
     AthenaFormulaBuilder,
     ColumnBuilder,
     FormulaBuilder,

@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Union
 
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.backends.mongo_translator.utils import build_cond_expression
-from weaverbird.backends.utils.formula import MongoFormulaBuilder
+from weaverbird.backends.utils.formula_builder import MongoFormulaBuilder
 from weaverbird.pipeline.steps.ifthenelse import IfThenElse, IfthenelseStep
 
 

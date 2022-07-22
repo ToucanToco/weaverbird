@@ -1,6 +1,6 @@
 from pandas import DataFrame
 
-from weaverbird.backends.utils.formula import PandasFormulaBuilder
+from weaverbird.backends.utils.formula_builder import PandasFormulaBuilder
 
 
 def translate_formula(formula: str) -> str:
