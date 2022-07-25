@@ -57,6 +57,7 @@ if TYPE_CHECKING:
         DeleteStep,
         DomainStep,
         DuplicateStep,
+        EvolutionStep,
         FillnaStep,
         FilterStep,
         FormulaStep,
@@ -596,6 +597,41 @@ class SQLTranslator(ABC):
             *columns, Table(prev_step_name)[step.column].as_(step.new_column_name)
         )
         return StepContext(query, columns + [step.new_column_name])
+
+    def evolution(
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: "EvolutionStep",
+    ) -> StepContext:
+
+        DATE_UNIT = {
+            'vsLastYear': 'year',
+            'vsLastMonth': 'month',
+            'vsLastWeek': 'week',
+            'vsLastDay': 'day',
+        }
+        right = Table('right')
+        left = Table('left')
+        lagged_date = functions.DateAdd(DATE_UNIT[step.evolution_type], 1, right).as_('lagged_date')
+        right.lagged_date = lagged_date
+        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
+            *columns,
+            (
+                left.field(step.value_col) - right.field(step.value_col)
+                if step.evolution_format == 'abs'
+                else
+                left.field(step.value_col) / (right.field(step.value_col) - 1)
+            ).as_(step.new_column)
+        ).as_('left').left_join(
+            self.QUERY_CLS.from_(prev_step_name).select(lagged_date)
+        ).on(
+            *[getattr(left, idx_col) == getattr(right, idx_col) for idx_col in step.index_columns],
+            getattr(left, step.date_col) == right.lagged_date
+        )
+        return StepContext(query, [step.new_column_name])
 
     def fillna(
         self: Self,
