@@ -1,11 +1,15 @@
+import contextlib
 import datetime
 import json
+import logging
 from glob import glob
 from os import path
-from typing import Any, List
+from typing import Any, Generator, List
 
+import docker
 import pytest
 import yaml
+from docker.models.containers import Container
 from pandas import DataFrame, Series
 from pandas.testing import assert_frame_equal, assert_series_equal
 
@@ -128,3 +132,41 @@ def get_spec_from_json_fixture(case_id: str, case_spec_file_path: str) -> dict:
         spec = json.loads(json.dumps(spec), object_hook=_datetime_parser)
 
     return spec
+
+
+@contextlib.contextmanager
+def docker_container(
+    image_name: str,
+    image_version: str,
+    name: str,
+    environment: dict[str, str] | None = None,
+    ports: dict[str, str] | None = None,
+) -> Generator[Container, None, None]:
+    logger = logging.getLogger(__name__)
+
+    image_str = f'{image_name}:{image_version}'
+    docker_client = docker.from_env()
+    found = False
+    for i in docker_client.images.list():
+        try:
+            if i.tags[0] == image_str:
+                found = True
+        except IndexError:
+            pass
+    if not found:
+        logger.info(f'Downloading docker image {image_str}')
+        docker_client.images.pull(image_str)
+
+    logger.info(f'Starting docker image {image_str}')
+    container = docker_client.containers.run(
+        image=image_str,
+        name=name,
+        auto_remove=True,
+        detach=True,
+        environment=environment,
+        ports=ports,
+    )
+    try:
+        yield container
+    finally:
+        container.kill()
