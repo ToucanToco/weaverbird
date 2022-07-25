@@ -2,11 +2,12 @@
   "exclude": [
     "athena_pypika",
     "bigquery_pypika",
-    "snowflake_pypika",
-    "redshift_pypika",
     "mongo",
+    "mysql_pypika",
     "pandas",
-    "postgres_pypika"
+    "postgres_pypika",
+    "redshift_pypika",
+    "snowflake_pypika"
   ],
   "step": {
     "name": "customsql",
