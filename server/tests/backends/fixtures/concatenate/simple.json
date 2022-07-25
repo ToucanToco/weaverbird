@@ -3,7 +3,6 @@
     "athena_pypika",
     "bigquery_pypika",
     "snowflake_pypika",
-    "mysql",
     "redshift_pypika",
     "postgres_pypika"
   ],

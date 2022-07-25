@@ -5,8 +5,7 @@
     "snowflake_pypika",
     "redshift_pypika",
     "postgres_pypika",
-    "mongo",
-    "mysql"
+    "mongo"
   ],
   "step": {
     "pipeline": [
