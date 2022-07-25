@@ -64,7 +64,7 @@ def mysql_container():
                     dataset['brewing_date'] = dataset['brewing_date'].apply(pd.to_datetime)
                     engine = create_engine(_CONNECTION_STRING)
                     dataset.to_sql('beers_tiny', engine)
-            except pymysql.OperationalError as exc:
+            except pymysql.OperationalError:
                 pass
 
         yield container
