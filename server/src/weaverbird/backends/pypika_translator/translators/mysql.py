@@ -32,7 +32,8 @@ class MySQLTranslator(SQLTranslator):
         text="CHAR",
         datetime="TIMESTAMP",
     )
-    SUPPORT_ROW_NUMBER = False
+    # Requires MySQL>=8
+    SUPPORT_ROW_NUMBER = True
     SUPPORT_SPLIT_PART = False
     FROM_DATE_OP = FromDateOp.DATE_FORMAT
     REGEXP_OP = RegexOp.REGEXP
