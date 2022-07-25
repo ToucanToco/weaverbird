@@ -1324,9 +1324,9 @@ def _compliant_regex(pattern: str, dialect: SQLDialect) -> str:
     those %
     """
 
-    if dialect in [SQLDialect.ATHENA, SQLDialect.GOOGLEBIGQUERY]:
+    if dialect in (SQLDialect.ATHENA, SQLDialect.GOOGLEBIGQUERY):
         return f"{pattern}"
-    elif dialect == SQLDialect.SNOWFLAKE:
+    elif dialect in (SQLDialect.SNOWFLAKE, SQLDialect.MYSQL):
         return f".*{pattern}.*"
 
     return f"%{pattern}%"
