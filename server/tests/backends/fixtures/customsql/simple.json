@@ -5,9 +5,7 @@
     "snowflake_pypika",
     "redshift_pypika",
     "mongo",
-    "mysql",
     "pandas",
-    "postgres",
     "postgres_pypika"
   ],
   "step": {
