@@ -1,9 +1,7 @@
 exclude:
 - athena_pypika
-- mysql
 - mongo
 - pandas
-- postgres
 - postgres_pypika
 - redshift_pypika
 - snowflake_pypika

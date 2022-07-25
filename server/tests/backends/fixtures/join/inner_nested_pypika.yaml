@@ -1,8 +1,6 @@
 exclude:
-- mysql
 - mongo
 - pandas
-- postgres
 - snowflake
 expected:
   data:
@@ -155,8 +153,3 @@ step:
         columns: ['price_per_l', 'beer_kind', 'name']
       type: inner
     type: inner
-  # FIXME: After several JOINs, order of results is not necessarily guaranteed, depending on the used SQL backend
-  # - name: sort
-  #   columns:
-  #   - column: brewing_date
-  #     order: asc

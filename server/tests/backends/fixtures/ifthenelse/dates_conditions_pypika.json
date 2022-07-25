@@ -1,9 +1,7 @@
 {
   "exclude": [
     "mongo",
-    "mysql",
     "pandas",
-    "postgres",
     "snowflake"
   ],
   "step": {
@@ -12,16 +10,16 @@
         "name": "ifthenelse",
         "newColumn": "cond",
         "if": {
-            "column": "brewing_date",
-            "operator": "from",
-            "value": "2022-01-05 00:00:00"
+          "column": "brewing_date",
+          "operator": "from",
+          "value": "2022-01-05 00:00:00"
         },
         "then": "'tintin'",
         "else": {
           "if": {
-              "column": "brewing_date",
-              "operator": "until",
-              "value": "2022-01-03 00:00:00"
+            "column": "brewing_date",
+            "operator": "until",
+            "value": "2022-01-03 00:00:00"
           },
           "then": "'toto'",
           "else": "'tata'"
@@ -29,7 +27,12 @@
       },
       {
         "name": "select",
-        "columns": [ "name", "cost", "cond", "brewing_date" ]
+        "columns": [
+          "name",
+          "cost",
+          "cond",
+          "brewing_date"
+        ]
       }
     ]
   },

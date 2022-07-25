@@ -1,9 +1,7 @@
 {
   "exclude": [
     "mongo",
-    "mysql",
     "pandas",
-    "postgres",
     "snowflake"
   ],
   "step": {
@@ -21,7 +19,11 @@
       },
       {
         "name": "select",
-        "columns": [ "name", "cost", "cond" ]
+        "columns": [
+          "name",
+          "cost",
+          "cond"
+        ]
       }
     ]
   },

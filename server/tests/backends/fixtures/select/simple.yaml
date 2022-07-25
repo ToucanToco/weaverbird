@@ -4,8 +4,6 @@ exclude:
 - redshift_pypika
 - postgres_pypika
 - snowflake_pypika
-- mysql
-- postgres
 - snowflake
 expected:
   data:
