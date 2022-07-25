@@ -1,9 +1,7 @@
 {
   "exclude": [
     "mongo",
-    "mysql",
     "pandas",
-    "postgres",
     "snowflake"
   ],
   "step": {

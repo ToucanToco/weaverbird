@@ -1,20 +1,17 @@
 import json
-import logging
 import time
 from os import path
-from typing import Any, List
+from typing import Any
 
-import docker
 import pandas as pd
 import psycopg2
 import pytest
-from docker.models.images import Image
-from psycopg2 import OperationalError
 from sqlalchemy import create_engine, text
 
 from tests.utils import (
     _BEERS_TABLE_COLUMNS,
     assert_dataframes_equals,
+    docker_container,
     get_spec_from_json_fixture,
     retrieve_case,
 )
@@ -22,7 +19,6 @@ from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import translate_pipeline
 from weaverbird.pipeline import PipelineWithVariables
 
-image = {'name': 'postgres_weaverbird_test', 'image': 'postgres', 'version': '14.1-bullseye'}
 con_params = {
     'host': '127.0.0.1',
     'user': 'ubuntu',
@@ -30,7 +26,6 @@ con_params = {
     'port': 5432,
     'database': 'pg_db',
 }
-docker_client = docker.from_env()
 connection_string = f'postgresql://{con_params["user"]}:{con_params["password"]}@{con_params["host"]}:{con_params["port"]}/{con_params["database"]}'
 
 
@@ -40,51 +35,33 @@ def engine() -> Any:
 
 
 @pytest.fixture(scope='module', autouse=True)
-def db_container():
-    images: List[Image] = docker_client.images.list()
-    found = False
-    for i in images:
-        try:
-            if i.tags[0] == f'{image["image"]}:{image["version"]}':
-                found = True
-        except IndexError:
-            pass
-    if not found:
-        logging.getLogger(__name__).info(
-            f'Download docker image {image["image"]}:{image["version"]}'
-        )
-        docker_client.images.pull(f'{image["image"]}:{image["version"]}')
-
-    logging.getLogger(__name__).info(f'Start docker image {image["image"]}:{image["version"]}')
-    docker_container = docker_client.containers.run(
-        image=f'{image["image"]}:{image["version"]}',
-        name=f'{image["name"]}',
-        auto_remove=True,
-        detach=True,
+def postgres_container():
+    with docker_container(
+        image_name='postgres',
+        image_version='14.1-bullseye',
+        name='postgres_weaverbird_test',
         environment={
             'POSTGRES_DB': 'pg_db',
             'POSTGRES_USER': 'ubuntu',
             'POSTGRES_PASSWORD': 'ilovetoucan',
         },
         ports={'5432': '5432'},
-    )
-    engine = None
-    while not engine:
-        time.sleep(1)
-        try:
-            if docker_container.status == 'created' and psycopg2.connect(**con_params):
-                dataset = pd.read_csv(
-                    f'{path.join(path.dirname(path.realpath(__file__)))}/beers.csv'
-                )
-                dataset['brewing_date'] = dataset['brewing_date'].apply(pd.to_datetime)
-                engine = create_engine(connection_string)
-                dataset.to_sql('beers_tiny', engine)
-        except OperationalError:
-            pass
-    try:
-        yield docker_container
-    finally:
-        docker_container.kill()
+    ) as container:
+        engine = None
+        while not engine:
+            time.sleep(1)
+            try:
+                if container.status == 'created' and psycopg2.connect(**con_params):
+                    dataset = pd.read_csv(
+                        f'{path.join(path.dirname(path.realpath(__file__)))}/beers.csv'
+                    )
+                    dataset['brewing_date'] = dataset['brewing_date'].apply(pd.to_datetime)
+                    engine = create_engine(connection_string)
+                    dataset.to_sql('beers_tiny', engine)
+            except psycopg2.OperationalError:
+                pass
+
+        yield container
 
 
 # Translation from Pipeline json to SQL query

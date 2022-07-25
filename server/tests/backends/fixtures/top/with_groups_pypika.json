@@ -1,7 +1,5 @@
 {
   "exclude": [
-    "mysql",
-    "postgres",
     "snowflake",
     "mongo",
     "pandas"
@@ -42,40 +40,40 @@
     },
     "data": [
       {
-       "beer_kind": "Belge blonde forte & Golden Ale",
-       "price_per_l": 0.084
+        "beer_kind": "Belge blonde forte & Golden Ale",
+        "price_per_l": 0.084
       },
       {
-       "beer_kind": "Best-sellers",
-       "price_per_l": 0.0559999999999999
+        "beer_kind": "Best-sellers",
+        "price_per_l": 0.0559999999999999
       },
       {
-       "beer_kind": "Blanche & Weizen",
-       "price_per_l": 0.005
+        "beer_kind": "Blanche & Weizen",
+        "price_per_l": 0.005
       },
       {
-       "beer_kind": "Blonde",
-       "price_per_l": 0.06
+        "beer_kind": "Blonde",
+        "price_per_l": 0.06
       },
       {
         "beer_kind": "Blonde",
         "price_per_l": 0.065
       },
       {
-       "beer_kind": "India Pale Ale",
-       "price_per_l": 0.045
+        "beer_kind": "India Pale Ale",
+        "price_per_l": 0.045
       },
       {
-       "beer_kind": "India Pale Ale",
-       "price_per_l": 0.054
+        "beer_kind": "India Pale Ale",
+        "price_per_l": 0.054
       },
       {
-       "beer_kind": "Sans alcool",
-       "price_per_l": 0.005
+        "beer_kind": "Sans alcool",
+        "price_per_l": 0.005
       },
       {
-       "beer_kind": "Triple",
-       "price_per_l": 0.16
+        "beer_kind": "Triple",
+        "price_per_l": 0.16
       }
     ]
   }

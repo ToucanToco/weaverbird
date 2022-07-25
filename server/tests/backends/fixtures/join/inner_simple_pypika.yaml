@@ -1,8 +1,6 @@
 exclude:
-- mysql
 - mongo
 - pandas
-- postgres
 - snowflake
 expected:
   data:
