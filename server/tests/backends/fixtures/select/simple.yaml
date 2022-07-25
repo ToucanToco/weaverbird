@@ -1,10 +1,11 @@
 exclude:
 - athena_pypika
 - bigquery_pypika
-- redshift_pypika
+- mysql_pypika
 - postgres_pypika
-- snowflake_pypika
+- redshift_pypika
 - snowflake
+- snowflake_pypika
 expected:
   data:
   - NAME: foo

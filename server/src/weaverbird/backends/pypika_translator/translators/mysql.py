@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import TYPE_CHECKING, TypeVar
 
 from pypika import Field, Table, functions
@@ -31,7 +32,8 @@ class MySQLTranslator(SQLTranslator):
         text="CHAR",
         datetime="TIMESTAMP",
     )
-    SUPPORT_ROW_NUMBER = False
+    # Requires MySQL>=8
+    SUPPORT_ROW_NUMBER = True
     SUPPORT_SPLIT_PART = False
     FROM_DATE_OP = FromDateOp.DATE_FORMAT
     REGEXP_OP = RegexOp.REGEXP
@@ -60,6 +62,10 @@ class MySQLTranslator(SQLTranslator):
             ),
         )
         return StepContext(query, columns + new_cols)
+
+    @staticmethod
+    def _cast_to_timestamp(value: str | datetime | Field) -> functions.Function:
+        return functions.Timestamp(value)
 
 
 SQLTranslator.register(MySQLTranslator)

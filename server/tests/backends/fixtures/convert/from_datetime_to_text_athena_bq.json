@@ -1,10 +1,11 @@
 {
   "exclude": [
     "mongo",
+    "mysql_pypika",
     "pandas",
-    "snowflake",
     "postgres_pypika",
     "redshift_pypika",
+    "snowflake",
     "snowflake_pypika"
   ],
   "step": {

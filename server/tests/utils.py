@@ -141,6 +141,7 @@ def docker_container(
     name: str,
     environment: dict[str, str] | None = None,
     ports: dict[str, str] | None = None,
+    **run_kwargs: Any,
 ) -> Generator[Container, None, None]:
     logger = logging.getLogger(__name__)
 
@@ -165,6 +166,7 @@ def docker_container(
         detach=True,
         environment=environment,
         ports=ports,
+        **run_kwargs,
     )
     try:
         yield container

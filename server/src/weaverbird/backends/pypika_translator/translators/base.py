@@ -615,6 +615,10 @@ class SQLTranslator(ABC):
         )
         return StepContext(query, columns)
 
+    @staticmethod
+    def _cast_to_timestamp(value: str | datetime | Field) -> functions.Function:
+        return functions.Cast(value, "TIMESTAMP")
+
     def _get_single_condition_criterion(
         self: Self, condition: "SimpleCondition", prev_step_name: str
     ) -> Criterion:
@@ -738,15 +742,15 @@ class SQLTranslator(ABC):
                         if dt.tzinfo is None
                         else dt.astimezone(timezone.utc)
                     )
-                    value_to_compare = functions.Cast(dt.strftime('%Y-%m-%d %H:%M:%S'), "TIMESTAMP")
+                    value_to_compare = self._cast_to_timestamp(dt.strftime('%Y-%m-%d %H:%M:%S'))
 
                 elif isinstance(condition.value, functions.Function):
                     value_to_compare = condition.value
 
                 if condition.operator == "from":
-                    return functions.Cast(column_field, "TIMESTAMP") >= value_to_compare
+                    return self._cast_to_timestamp(column_field) >= value_to_compare
                 elif condition.operator == "until":
-                    return functions.Cast(column_field, "TIMESTAMP") <= value_to_compare
+                    return self._cast_to_timestamp(column_field) <= value_to_compare
 
             case _:  # pragma: no cover
                 raise KeyError(f"Operator {condition.operator!r} does not exist")
@@ -1320,9 +1324,9 @@ def _compliant_regex(pattern: str, dialect: SQLDialect) -> str:
     those %
     """
 
-    if dialect in [SQLDialect.ATHENA, SQLDialect.GOOGLEBIGQUERY]:
+    if dialect in (SQLDialect.ATHENA, SQLDialect.GOOGLEBIGQUERY):
         return f"{pattern}"
-    elif dialect == SQLDialect.SNOWFLAKE:
+    elif dialect in (SQLDialect.SNOWFLAKE, SQLDialect.MYSQL):
         return f".*{pattern}.*"
 
     return f"%{pattern}%"

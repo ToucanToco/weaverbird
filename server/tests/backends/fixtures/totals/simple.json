@@ -2,10 +2,11 @@
   "exclude": [
     "athena_pypika",
     "bigquery_pypika",
-    "snowflake_pypika",
+    "mysql_pypika",
     "pandas",
     "postgres_pypika",
-    "redshift_pypika"
+    "redshift_pypika",
+    "snowflake_pypika"
   ],
   "step": {
     "pipeline": [
