@@ -639,37 +639,3 @@ def test_append_simple(base_translator: BaseTranslator, default_step_kwargs: dic
         .orderby('name', 'created_at', 'user_id')
     )
     assert ctx.selectable.get_sql() == expected_query.get_sql()
-
-
-def test_evolution_abs_year(
-    base_translator: BaseTranslator, default_step_kwargs: dict[str, Any]
-) -> None:
-    selected_columns = ["id", "created_at"]
-    previous_step = "previous_with"
-    new_column = "evol_id"
-
-    step = steps.EvolutionStep(
-        new_column=new_column,
-        date_col='created_at',
-        value_col='id',
-        evolution_format='abs',
-        evolution_type='vsLastYear',
-        index_columns=['name'],
-    )
-
-    ctx = base_translator.evolution(step=step, columns=selected_columns, **default_step_kwargs)
-    left, right = Table(previous_step), Table('right')
-    lagged_date = functions.DateAdd('year', 1, right).as_('lagged_date')
-    right.lagged_date = lagged_date
-    expected_query = (
-        Query.from_(previous_step)
-        .select(
-            *selected_columns,
-            (left.field(step.value_col) - right.field(step.value_col)).as_(step.new_column),
-        )
-        .as_(left)
-        .left_join(right)
-        .on(left.name == right.name, left.created_at == right.lagged_date)
-        .orderby(step.date_col)
-    )
-    assert ctx.selectable.get_sql() == expected_query.get_sql()

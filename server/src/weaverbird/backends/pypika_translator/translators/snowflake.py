@@ -1,8 +1,21 @@
+from typing import TYPE_CHECKING, TypeVar
+
+from pypika import CustomFunction, Table
 from pypika.dialects import SnowflakeQuery
+from pypika.queries import QueryBuilder
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
-from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, SQLTranslator
+from weaverbird.backends.pypika_translator.translators.base import (
+    DataTypeMapping,
+    SQLTranslator,
+    StepContext,
+)
+
+Self = TypeVar("Self", bound="SQLTranslator")
+
+if TYPE_CHECKING:
+    from weaverbird.pipeline.steps import EvolutionStep
 
 
 class SnowflakeTranslator(SQLTranslator):
@@ -22,6 +35,51 @@ class SnowflakeTranslator(SQLTranslator):
     REGEXP_OP = RegexOp.REGEXP
     TO_DATE_OP = ToDateOp.TO_DATE
     QUOTE_CHAR = '\"'
+
+    def evolution(
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: "EvolutionStep",
+    ) -> StepContext:
+        DATE_UNIT = {
+            'vsLastYear': 'year',
+            'vsLastMonth': 'month',
+            'vsLastWeek': 'week',
+            'vsLastDay': 'day',
+        }
+        DateAdd = CustomFunction('DATEADD', ['interval', 'increment', 'datecol'])
+
+        prev_table = Table(prev_step_name)
+        right_table = Table('right_table')
+        new_col = step.new_column if step.new_column else 'evol'
+
+        query: "QueryBuilder" = (
+            self.QUERY_CLS.from_(prev_step_name)
+            .select(
+                *[prev_table.field(col) for col in columns],
+                (
+                    prev_table.field(step.value_col) - right_table.field(step.value_col)
+                    if step.evolution_format == 'abs'
+                    else prev_table.field(step.value_col) / (right_table.field(step.value_col) - 1)
+                ).as_(new_col),
+            )
+            .left_join(
+                self.QUERY_CLS.from_(prev_step_name)
+                .select(
+                    step.value_col,
+                    DateAdd(DATE_UNIT[step.evolution_type], 1, prev_table.field(step.date_col)).as_(
+                        step.date_col
+                    ),
+                )
+                .as_('right_table')
+            )
+            .on_field(step.date_col, *step.index_columns)
+            .orderby(step.date_col)
+        )
+        return StepContext(query, columns + [new_col])
 
     # This step is not handling all edge cases so it's commented for now
     # def cumsum(
