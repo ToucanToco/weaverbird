@@ -1,8 +1,7 @@
 {
   "exclude": [
     "mongo",
-    "pandas",
-    "mysql_pypika"
+    "pandas"
   ],
   "step": {
     "pipeline": [

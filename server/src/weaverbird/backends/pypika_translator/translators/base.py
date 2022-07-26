@@ -648,7 +648,7 @@ class SQLTranslator(ABC):
                     if step.evolution_format == 'abs'
                     else prev_table.field(step.value_col) / right_table.field(step.value_col) - 1
                 ).as_(new_col),
-                *step.index_columns,
+                *[prev_table.field(col).as_(f'left_table_{col}') for col in step.index_columns],
             )
             .left_join(
                 self.QUERY_CLS.from_(prev_step_name)
