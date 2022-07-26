@@ -63,7 +63,7 @@ class SnowflakeTranslator(SQLTranslator):
                 (
                     prev_table.field(step.value_col) - right_table.field(step.value_col)
                     if step.evolution_format == 'abs'
-                    else prev_table.field(step.value_col) / (right_table.field(step.value_col) - 1)
+                    else prev_table.field(step.value_col) / right_table.field(step.value_col) - 1
                 ).as_(new_col),
             )
             .left_join(
