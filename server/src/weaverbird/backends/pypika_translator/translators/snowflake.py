@@ -65,6 +65,7 @@ class SnowflakeTranslator(SQLTranslator):
                     if step.evolution_format == 'abs'
                     else prev_table.field(step.value_col) / right_table.field(step.value_col) - 1
                 ).as_(new_col),
+                *step.index_columns
             )
             .left_join(
                 self.QUERY_CLS.from_(prev_step_name)
@@ -73,8 +74,9 @@ class SnowflakeTranslator(SQLTranslator):
                     DateAdd(DATE_UNIT[step.evolution_type], 1, prev_table.field(step.date_col)).as_(
                         step.date_col
                     ),
+                    *step.index_columns
                 )
-                .as_('right_table')
+                .as_('right_table'),
             )
             .on_field(step.date_col, *step.index_columns)
             .orderby(step.date_col)
