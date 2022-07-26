@@ -21,7 +21,7 @@ from pypika import (
 )
 from pypika.enums import Comparator, JoinType
 from pypika.queries import QueryBuilder, Selectable
-from pypika.terms import AnalyticFunction, BasicCriterion, LiteralValue
+from pypika.terms import AnalyticFunction, BasicCriterion, CustomFunction, LiteralValue
 
 from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relative_date
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
@@ -606,37 +606,60 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "EvolutionStep",
     ) -> StepContext:
-
         DATE_UNIT = {
             'vsLastYear': 'year',
             'vsLastMonth': 'month',
             'vsLastWeek': 'week',
             'vsLastDay': 'day',
         }
-        left = Table(prev_step_name)
-        right = Table('right')
-        lagged_date = functions.DateAdd(DATE_UNIT[step.evolution_type], 1, right).as_('lagged_date')
-        right.lagged_date = lagged_date
+        DATEADD_FUNCS = {
+            'snowflake': CustomFunction('DATEADD', ['interval', 'increment', 'datecol']),
+            'redshift': CustomFunction('DATEADD', ['interval', 'increment', 'datecol']),
+            'athena': CustomFunction('DATE_ADD', ['interval', 'increment', 'datecol']),
+        }
+        DATEADD_LITERALS = {
+            'postgres': LiteralValue(
+                f"{step.date_col} + INTERVAL '1 {DATE_UNIT[step.evolution_type]}'"
+            ),
+            'mysql': LiteralValue(
+                f"DATE_ADD({step.date_col}, INTERVAL 1 {DATE_UNIT[step.evolution_type]})"
+            ),
+            'googlebigquery': LiteralValue(
+                f"DATE_ADD({step.date_col}, INTERVAL 1 {DATE_UNIT[step.evolution_type]})"
+            ),
+        }
+
+        prev_table = Table(prev_step_name)
+        right_table = Table('right_table')
         new_col = step.new_column if step.new_column else 'evol'
+        lagged_date = (
+            DATEADD_FUNCS[self.DIALECT.value](
+                DATE_UNIT[step.evolution_type], 1, prev_table.field(step.date_col)
+            ).as_(step.date_col)
+            if self.DIALECT.value in DATEADD_FUNCS
+            else DATEADD_LITERALS[self.DIALECT.value].as_(step.date_col)
+        )
         query: "QueryBuilder" = (
             self.QUERY_CLS.from_(prev_step_name)
             .select(
-                *columns,
+                *[prev_table.field(col) for col in columns],
                 (
-                    left.field(step.value_col) - right.field(step.value_col)
+                    prev_table.field(step.value_col) - right_table.field(step.value_col)
                     if step.evolution_format == 'abs'
-                    else left.field(step.value_col) / (right.field(step.value_col) - 1)
+                    else prev_table.field(step.value_col) / right_table.field(step.value_col) - 1
                 ).as_(new_col),
+                *step.index_columns,
             )
-            .as_(left)
-            .left_join(right)
-            .on(
-                *[
-                    getattr(left, idx_col) == getattr(right, idx_col)
-                    for idx_col in step.index_columns
-                ],
-                getattr(left, step.date_col) == right.lagged_date,
+            .left_join(
+                self.QUERY_CLS.from_(prev_step_name)
+                .select(
+                    step.value_col,
+                    lagged_date,
+                    *step.index_columns,
+                )
+                .as_('right_table'),
             )
+            .on_field(step.date_col, *step.index_columns)
             .orderby(step.date_col)
         )
         return StepContext(query, columns + [new_col])

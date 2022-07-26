@@ -1,11 +1,8 @@
 {
   "exclude": [
-    "athena_pypika",
-    "bigquery_pypika",
-    "mysql_pypika",
-    "redshift_pypika",
     "mongo",
-    "pandas"
+    "pandas",
+    "mysql_pypika"
   ],
   "step": {
     "pipeline": [

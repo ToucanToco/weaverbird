@@ -83,7 +83,6 @@ def test_sql_translator_pipeline(case_id: str, case_spec_file_path: str, engine:
         tables_columns={'beers_tiny': _BEERS_TABLE_COLUMNS},
         db_schema=None,
     )
-    breakpoint()
     # Execute request generated from Pipeline in Postgres and get the result
     result: pd.DataFrame = pd.read_sql(text(query), engine)
     expected = pd.read_json(json.dumps(spec['expected']), orient='table')
