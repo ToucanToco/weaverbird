@@ -21,7 +21,7 @@ from pypika import (
 )
 from pypika.enums import Comparator, JoinType
 from pypika.queries import QueryBuilder, Selectable
-from pypika.terms import AnalyticFunction, BasicCriterion, CustomFunction, LiteralValue
+from pypika.terms import AnalyticFunction, BasicCriterion, CustomFunction, LiteralValue, Term
 
 from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relative_date
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
@@ -119,6 +119,9 @@ class CustomQuery(AliasedQuery):  # type: ignore[misc]
         return cast(str, self.query)
 
 
+DATE_UNIT = Literal['second', 'minute', 'hour', 'day', 'week', 'month', 'quarter', 'year']
+
+
 class SQLTranslator(ABC):
     DIALECT: SQLDialect
     QUERY_CLS: Query
@@ -133,7 +136,7 @@ class SQLTranslator(ABC):
     # depending on the translator, this may change to ` or '
     QUOTE_CHAR: str
     DATEADD_FUNC: CustomFunction | LiteralValue
-    EVOLUTION_DATE_UNIT: dict['EVOLUTION_TYPE', str] = {
+    EVOLUTION_DATE_UNIT: dict['EVOLUTION_TYPE', DATE_UNIT] = {
         'vsLastYear': 'year',
         'vsLastMonth': 'month',
         'vsLastWeek': 'week',
@@ -605,6 +608,12 @@ class SQLTranslator(ABC):
             *columns, Table(prev_step_name)[step.column].as_(step.new_column_name)
         )
         return StepContext(query, columns + [step.new_column_name])
+
+    @classmethod
+    def _add_date(
+        cls, *, date_column: str | Field, add_date_value: int, add_date_unit: DATE_UNIT
+    ) -> Term:
+        raise NotImplementedError(f"[{cls.DIALECT}] _add_date is not implemented")
 
     def evolution(
         self: Self,
