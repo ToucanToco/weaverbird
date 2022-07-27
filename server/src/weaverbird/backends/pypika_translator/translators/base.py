@@ -21,7 +21,7 @@ from pypika import (
 )
 from pypika.enums import Comparator, JoinType
 from pypika.queries import QueryBuilder, Selectable
-from pypika.terms import AnalyticFunction, BasicCriterion, LiteralValue
+from pypika.terms import AnalyticFunction, BasicCriterion, LiteralValue, Term
 
 from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relative_date
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
@@ -57,6 +57,7 @@ if TYPE_CHECKING:
         DeleteStep,
         DomainStep,
         DuplicateStep,
+        EvolutionStep,
         FillnaStep,
         FilterStep,
         FormulaStep,
@@ -79,6 +80,7 @@ if TYPE_CHECKING:
         UppercaseStep,
     )
     from weaverbird.pipeline.steps.aggregate import AggregateFn
+    from weaverbird.pipeline.steps.evolution import EVOLUTION_TYPE
 
 
 @dataclass(kw_only=True)
@@ -117,6 +119,9 @@ class CustomQuery(AliasedQuery):  # type: ignore[misc]
         return cast(str, self.query)
 
 
+DATE_UNIT = Literal['second', 'minute', 'hour', 'day', 'week', 'month', 'quarter', 'year']
+
+
 class SQLTranslator(ABC):
     DIALECT: SQLDialect
     QUERY_CLS: Query
@@ -130,6 +135,12 @@ class SQLTranslator(ABC):
     TO_DATE_OP: ToDateOp
     # depending on the translator, this may change to ` or '
     QUOTE_CHAR: str
+    EVOLUTION_DATE_UNIT: dict['EVOLUTION_TYPE', DATE_UNIT] = {
+        'vsLastYear': 'year',
+        'vsLastMonth': 'month',
+        'vsLastWeek': 'week',
+        'vsLastDay': 'day',
+    }
 
     def __init__(
         self: Self,
@@ -596,6 +607,54 @@ class SQLTranslator(ABC):
             *columns, Table(prev_step_name)[step.column].as_(step.new_column_name)
         )
         return StepContext(query, columns + [step.new_column_name])
+
+    @classmethod
+    def _add_date(
+        cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_UNIT
+    ) -> Term:
+        raise NotImplementedError(f"[{cls.DIALECT}] _add_date is not implemented")
+
+    def evolution(
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: "EvolutionStep",
+    ) -> StepContext:
+
+        prev_table = Table(prev_step_name)
+        lagged_date = self._add_date(
+            date_column=prev_table.field(step.date_col),
+            add_date_value=1,
+            add_date_unit=self.EVOLUTION_DATE_UNIT[step.evolution_type],
+        ).as_(step.date_col)
+        right_table = Table('right_table')
+        new_col = step.new_column if step.new_column else 'evol'
+        query: "QueryBuilder" = (
+            self.QUERY_CLS.from_(prev_step_name)
+            .select(
+                *[prev_table.field(col) for col in columns],
+                (
+                    prev_table.field(step.value_col) - right_table.field(step.value_col)
+                    if step.evolution_format == 'abs'
+                    else prev_table.field(step.value_col) / right_table.field(step.value_col) - 1
+                ).as_(new_col),
+                *[prev_table.field(col).as_(f'left_table_{col}') for col in step.index_columns],
+            )
+            .left_join(
+                self.QUERY_CLS.from_(prev_step_name)
+                .select(
+                    step.value_col,
+                    lagged_date,
+                    *step.index_columns,
+                )
+                .as_('right_table'),
+            )
+            .on_field(step.date_col, *step.index_columns)
+            .orderby(step.date_col)
+        )
+        return StepContext(query, columns + [new_col])
 
     def fillna(
         self: Self,

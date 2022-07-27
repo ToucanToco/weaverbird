@@ -1,4 +1,3 @@
-from enum import Enum
 from typing import TYPE_CHECKING, Any, TypeVar
 
 from pypika import Field, Query, Table, functions
@@ -8,6 +7,7 @@ from pypika.terms import LiteralValue
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators.base import (
+    DATE_UNIT,
     DataTypeMapping,
     SQLTranslator,
     StepContext,
@@ -17,10 +17,6 @@ Self = TypeVar("Self", bound="GoogleBigQueryTranslator")
 
 if TYPE_CHECKING:
     from weaverbird.pipeline.steps import SplitStep
-
-
-class ExtraDialects(Enum):
-    GOOGLE_BIG_QUERY = "googlebigquery"
 
 
 class GoogleBigQueryQuery(Query):  # type: ignore[misc]
@@ -37,7 +33,7 @@ class GoogleBigQueryQueryBuilder(QueryBuilder):  # type: ignore[misc]
     QUERY_CLS = GoogleBigQueryQuery
 
     def __init__(self, **kwargs: Any) -> None:
-        super().__init__(dialect=ExtraDialects.GOOGLE_BIG_QUERY, **kwargs)
+        super().__init__(dialect=SQLDialect.GOOGLEBIGQUERY, **kwargs)
 
 
 class GoogleBigQueryTranslator(SQLTranslator):
@@ -57,6 +53,12 @@ class GoogleBigQueryTranslator(SQLTranslator):
     REGEXP_OP = RegexOp.REGEXP_CONTAINS
     TO_DATE_OP = ToDateOp.PARSE_DATE
     QUOTE_CHAR = "`"
+
+    @classmethod
+    def _add_date(cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_UNIT):
+        return LiteralValue(
+            f"DATE_ADD({date_column.name}, INTERVAL {add_date_value} {add_date_unit})"
+        )
 
     def split(
         self: Self,

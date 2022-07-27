@@ -1,0 +1,82 @@
+{
+  "exclude": [
+    "mongo",
+    "pandas"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "evolution",
+        "date_col": "brewing_date",
+        "value_col": "alcohol_degree",
+        "evolution_type": "vsLastDay",
+        "evolution_format": "abs",
+        "new_column": "alcoholevol"
+      },
+      {
+        "name": "select",
+        "columns": [
+          "brewing_date",
+          "alcoholevol"
+        ]
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "brewing_date",
+          "type": "datetime"
+        },
+        {
+          "name": "alcoholevol",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "brewing_date": "2022-01-01",
+        "alcoholevol": null
+      },
+      {
+        "brewing_date": "2022-01-02",
+        "alcoholevol": -8.622623
+      },
+      {
+        "brewing_date": "2022-01-03",
+        "alcoholevol": -4.307443
+      },
+      {
+        "brewing_date": "2022-01-04",
+        "alcoholevol": 6.424171
+      },
+      {
+        "brewing_date": "2022-01-05",
+        "alcoholevol": 1.936540
+      },
+      {
+        "brewing_date": "2022-01-06",
+        "alcoholevol": -7.686934
+      },
+      {
+        "brewing_date": "2022-01-07",
+        "alcoholevol": 3.473699
+      },
+      {
+        "brewing_date": "2022-01-08",
+        "alcoholevol": 8.256863
+      },
+      {
+        "brewing_date": "2022-01-09",
+        "alcoholevol": -5.226806
+      },
+      {
+        "brewing_date": "2022-01-10",
+        "alcoholevol": 1.002143
+      }
+    ]
+  }
+}

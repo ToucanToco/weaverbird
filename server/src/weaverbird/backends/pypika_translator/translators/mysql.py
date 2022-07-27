@@ -3,10 +3,12 @@ from typing import TYPE_CHECKING, TypeVar
 
 from pypika import Field, Table, functions
 from pypika.dialects import MySQLQuery
+from pypika.terms import LiteralValue
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators.base import (
+    DATE_UNIT,
     DataTypeMapping,
     SQLTranslator,
     StepContext,
@@ -39,6 +41,12 @@ class MySQLTranslator(SQLTranslator):
     REGEXP_OP = RegexOp.REGEXP
     TO_DATE_OP = ToDateOp.STR_TO_DATE
     QUOTE_CHAR = '`'
+
+    @classmethod
+    def _add_date(cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_UNIT):
+        return LiteralValue(
+            f"DATE_ADD({date_column.name}, INTERVAL {add_date_value} {add_date_unit})"
+        )
 
     def split(
         self: Self,
