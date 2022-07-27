@@ -1,4 +1,3 @@
-from enum import Enum
 from typing import TYPE_CHECKING, Any, TypeVar
 
 from pypika import Field, Query, Table, functions
@@ -20,10 +19,6 @@ if TYPE_CHECKING:
     from weaverbird.pipeline.steps import SplitStep
 
 
-class ExtraDialects(Enum):
-    GOOGLE_BIG_QUERY = "googlebigquery"
-
-
 class GoogleBigQueryQuery(Query):  # type: ignore[misc]
     @classmethod
     def _builder(cls, **kwargs: Any) -> "GoogleBigQueryQueryBuilder":
@@ -38,7 +33,7 @@ class GoogleBigQueryQueryBuilder(QueryBuilder):  # type: ignore[misc]
     QUERY_CLS = GoogleBigQueryQuery
 
     def __init__(self, **kwargs: Any) -> None:
-        super().__init__(dialect=ExtraDialects.GOOGLE_BIG_QUERY, **kwargs)
+        super().__init__(dialect=SQLDialect.GOOGLEBIGQUERY, **kwargs)
 
 
 class GoogleBigQueryTranslator(SQLTranslator):
