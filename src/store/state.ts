@@ -26,6 +26,7 @@ export interface VQBState {
   interpolateFunc?: InterpolateFunction;
 
   domains: string[];
+  queries: { name: string; uid: string }[];
   pipelines: { [name: string]: Pipeline };
 
   dataset: DataSet; // currently preview one
@@ -81,6 +82,7 @@ export function emptyState(): VQBState {
     },
     rightColumnNames: [],
     domains: [],
+    queries: [],
     currentStepFormName: undefined,
     stepFormInitialValue: undefined,
     stepFormDefaults: undefined,
