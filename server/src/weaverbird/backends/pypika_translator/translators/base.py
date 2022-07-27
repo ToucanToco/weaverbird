@@ -80,6 +80,7 @@ if TYPE_CHECKING:
         UppercaseStep,
     )
     from weaverbird.pipeline.steps.aggregate import AggregateFn
+    from weaverbird.pipeline.steps.evolution import EVOLUTION_TYPE
 
 
 @dataclass(kw_only=True)
@@ -132,7 +133,7 @@ class SQLTranslator(ABC):
     # depending on the translator, this may change to ` or '
     QUOTE_CHAR: str
     DATEADD_FUNC: CustomFunction | LiteralValue
-    EVOLUTION_DATE_UNIT = {
+    EVOLUTION_DATE_UNIT: dict['EVOLUTION_TYPE', str] = {
         'vsLastYear': 'year',
         'vsLastMonth': 'month',
         'vsLastWeek': 'week',
