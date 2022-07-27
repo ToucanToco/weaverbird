@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [0.18.0] - 2022-07-06
+
+- Pypika: evolution step
+
 ## [0.17.3] - 2022-07-06
 
 - CustomSQL step: Sanitize query
