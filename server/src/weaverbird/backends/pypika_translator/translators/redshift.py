@@ -42,8 +42,8 @@ class RedshiftTranslator(PostgreSQLTranslator):
 
     @classmethod
     def _add_date(cls, *, date_column: str | Field, add_date_value: int, add_date_unit: DATE_UNIT):
-        func = CustomFunction('DATEADD', ['interval', 'increment', 'datecol'])
-        return func(add_date_unit, add_date_value, date_column)
+        add_date_func = CustomFunction('DATEADD', ['interval', 'increment', 'datecol'])
+        return add_date_func(add_date_unit, add_date_value, date_column)
 
     # Redshift's CONCAT function does not support more than 2 terms, but concats can be nested. This
     # helpers allow to nest concatenations:
