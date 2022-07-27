@@ -610,7 +610,7 @@ class SQLTranslator(ABC):
 
     @classmethod
     def _add_date(
-        cls, *, date_column: str | Field, add_date_value: int, add_date_unit: DATE_UNIT
+        cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_UNIT
     ) -> Term:
         raise NotImplementedError(f"[{cls.DIALECT}] _add_date is not implemented")
 

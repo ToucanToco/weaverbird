@@ -39,8 +39,8 @@ class PostgreSQLTranslator(SQLTranslator):
     QUOTE_CHAR = '"'
 
     @classmethod
-    def _add_date(cls, *, date_column: str | Field, add_date_value: int, add_date_unit: DATE_UNIT):
-        return LiteralValue(f"{date_column} + INTERVAL '{add_date_value} {add_date_unit}'")
+    def _add_date(cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_UNIT):
+        return LiteralValue(f"{date_column.name} + INTERVAL '{add_date_value} {add_date_unit}'")
 
     def duration(
         self: Self,

@@ -41,7 +41,7 @@ class RedshiftTranslator(PostgreSQLTranslator):
     TO_DATE_OP = ToDateOp.TO_DATE
 
     @classmethod
-    def _add_date(cls, *, date_column: str | Field, add_date_value: int, add_date_unit: DATE_UNIT):
+    def _add_date(cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_UNIT):
         add_date_func = CustomFunction('DATEADD', ['interval', 'increment', 'datecol'])
         return add_date_func(add_date_unit, add_date_value, date_column)
 
