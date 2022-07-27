@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, TypeVar
 from pypika import functions
 from pypika.dialects import RedshiftQuery
 from pypika.queries import QueryBuilder, Table
+from pypika.terms import CustomFunction
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
@@ -37,6 +38,7 @@ class RedshiftTranslator(PostgreSQLTranslator):
     FROM_DATE_OP = FromDateOp.TO_CHAR
     REGEXP_OP = RegexOp.SIMILAR_TO
     TO_DATE_OP = ToDateOp.TO_DATE
+    DATEADD_FUNC = CustomFunction('DATEADD', ['interval', 'increment', 'datecol'])
 
     # Redshift's CONCAT function does not support more than 2 terms, but concats can be nested. This
     # helpers allow to nest concatenations:

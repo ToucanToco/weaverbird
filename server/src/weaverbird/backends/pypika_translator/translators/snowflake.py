@@ -1,6 +1,7 @@
 from typing import TypeVar
 
 from pypika.dialects import SnowflakeQuery
+from pypika.terms import CustomFunction
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
@@ -26,6 +27,7 @@ class SnowflakeTranslator(SQLTranslator):
     REGEXP_OP = RegexOp.REGEXP
     TO_DATE_OP = ToDateOp.TO_DATE
     QUOTE_CHAR = '\"'
+    DATEADD_FUNC = CustomFunction('DATEADD', ['interval', 'increment', 'datecol'])
 
 
 SQLTranslator.register(SnowflakeTranslator)

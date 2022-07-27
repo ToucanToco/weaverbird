@@ -16,7 +16,7 @@ from weaverbird.backends.pypika_translator.translators.base import (
 Self = TypeVar("Self", bound="GoogleBigQueryTranslator")
 
 if TYPE_CHECKING:
-    from weaverbird.pipeline.steps import SplitStep
+    from weaverbird.pipeline.steps import EvolutionStep, SplitStep
 
 
 class ExtraDialects(Enum):
@@ -57,6 +57,22 @@ class GoogleBigQueryTranslator(SQLTranslator):
     REGEXP_OP = RegexOp.REGEXP_CONTAINS
     TO_DATE_OP = ToDateOp.PARSE_DATE
     QUOTE_CHAR = "`"
+
+    def evolution(
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: "EvolutionStep",
+    ) -> StepContext:
+
+        self.DATEADD_FUNC = LiteralValue(
+            f"DATE_ADD({step.date_col}, INTERVAL 1 {self.EVOLUTION_DATE_UNIT[step.evolution_type]})"
+        )
+        return super().evolution(
+            builder=builder, prev_step_name=prev_step_name, columns=columns, step=step
+        )
 
     def split(
         self: Self,

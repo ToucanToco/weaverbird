@@ -131,6 +131,13 @@ class SQLTranslator(ABC):
     TO_DATE_OP: ToDateOp
     # depending on the translator, this may change to ` or '
     QUOTE_CHAR: str
+    DATEADD_FUNC: CustomFunction | LiteralValue
+    EVOLUTION_DATE_UNIT = {
+        'vsLastYear': 'year',
+        'vsLastMonth': 'month',
+        'vsLastWeek': 'week',
+        'vsLastDay': 'day',
+    }
 
     def __init__(
         self: Self,
@@ -606,39 +613,17 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "EvolutionStep",
     ) -> StepContext:
-        DATE_UNIT = {
-            'vsLastYear': 'year',
-            'vsLastMonth': 'month',
-            'vsLastWeek': 'week',
-            'vsLastDay': 'day',
-        }
-        DATEADD_FUNCS = {
-            'snowflake': CustomFunction('DATEADD', ['interval', 'increment', 'datecol']),
-            'redshift': CustomFunction('DATEADD', ['interval', 'increment', 'datecol']),
-            'athena': CustomFunction('DATE_ADD', ['interval', 'increment', 'datecol']),
-        }
-        DATEADD_LITERALS = {
-            'postgres': LiteralValue(
-                f"{step.date_col} + INTERVAL '1 {DATE_UNIT[step.evolution_type]}'"
-            ),
-            'mysql': LiteralValue(
-                f"DATE_ADD({step.date_col}, INTERVAL 1 {DATE_UNIT[step.evolution_type]})"
-            ),
-            'googlebigquery': LiteralValue(
-                f"DATE_ADD({step.date_col}, INTERVAL 1 {DATE_UNIT[step.evolution_type]})"
-            ),
-        }
 
         prev_table = Table(prev_step_name)
+        lagged_date = (
+            self.DATEADD_FUNC(
+                self.EVOLUTION_DATE_UNIT[step.evolution_type], 1, prev_table.field(step.date_col)
+            ).as_(step.date_col)
+            if isinstance(self.DATEADD_FUNC, CustomFunction)
+            else self.DATEADD_FUNC.as_(step.date_col)
+        )
         right_table = Table('right_table')
         new_col = step.new_column if step.new_column else 'evol'
-        lagged_date = (
-            DATEADD_FUNCS[self.DIALECT.value](
-                DATE_UNIT[step.evolution_type], 1, prev_table.field(step.date_col)
-            ).as_(step.date_col)
-            if self.DIALECT.value in DATEADD_FUNCS
-            else DATEADD_LITERALS[self.DIALECT.value].as_(step.date_col)
-        )
         query: "QueryBuilder" = (
             self.QUERY_CLS.from_(prev_step_name)
             .select(

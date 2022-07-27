@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, TypeVar
 
 from pypika import Field, Table, functions
 from pypika.dialects import MySQLQuery
+from pypika.terms import LiteralValue
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
@@ -18,7 +19,7 @@ Self = TypeVar("Self", bound="MySQLTranslator")
 if TYPE_CHECKING:
     from pypika.queries import QueryBuilder
 
-    from weaverbird.pipeline.steps import SplitStep
+    from weaverbird.pipeline.steps import EvolutionStep, SplitStep
 
 
 class MySQLTranslator(SQLTranslator):
@@ -39,6 +40,22 @@ class MySQLTranslator(SQLTranslator):
     REGEXP_OP = RegexOp.REGEXP
     TO_DATE_OP = ToDateOp.STR_TO_DATE
     QUOTE_CHAR = '`'
+
+    def evolution(
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: "EvolutionStep",
+    ) -> StepContext:
+
+        self.DATEADD_FUNC = LiteralValue(
+            f"DATE_ADD({step.date_col}, INTERVAL 1 {self.EVOLUTION_DATE_UNIT[step.evolution_type]})"
+        )
+        return super().evolution(
+            builder=builder, prev_step_name=prev_step_name, columns=columns, step=step
+        )
 
     def split(
         self: Self,

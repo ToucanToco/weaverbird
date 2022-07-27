@@ -1,4 +1,5 @@
 from pypika.dialects import Query
+from pypika.terms import CustomFunction
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import RegexOp
@@ -20,6 +21,7 @@ class AthenaTranslator(SQLTranslator):
     )
     REGEXP_OP = RegexOp.REGEXP_LIKE
     QUOTE_CHAR = '"'
+    DATEADD_FUNC = CustomFunction('DATE_ADD', ['interval', 'increment', 'datecol'])
 
 
 SQLTranslator.register(AthenaTranslator)
