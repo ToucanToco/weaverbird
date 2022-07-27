@@ -39,7 +39,6 @@ class RedshiftTranslator(PostgreSQLTranslator):
     FROM_DATE_OP = FromDateOp.TO_CHAR
     REGEXP_OP = RegexOp.SIMILAR_TO
     TO_DATE_OP = ToDateOp.TO_DATE
-    DATEADD_FUNC = CustomFunction('DATEADD', ['interval', 'increment', 'datecol'])
 
     @classmethod
     def _add_date(cls, *, date_column: str | Field, add_date_value: int, add_date_unit: DATE_UNIT):

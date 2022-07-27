@@ -25,7 +25,6 @@ class AthenaTranslator(SQLTranslator):
     )
     REGEXP_OP = RegexOp.REGEXP_LIKE
     QUOTE_CHAR = '"'
-    DATEADD_FUNC = CustomFunction('DATE_ADD', ['interval', 'increment', 'datecol'])
 
     @classmethod
     def _add_date(cls, *, date_column: str, add_date_value: int, add_date_unit: DATE_UNIT):

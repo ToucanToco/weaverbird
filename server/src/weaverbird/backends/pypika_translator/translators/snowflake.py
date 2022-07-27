@@ -31,7 +31,6 @@ class SnowflakeTranslator(SQLTranslator):
     REGEXP_OP = RegexOp.REGEXP
     TO_DATE_OP = ToDateOp.TO_DATE
     QUOTE_CHAR = '\"'
-    DATEADD_FUNC = CustomFunction('DATEADD', ['interval', 'increment', 'datecol'])
 
     @classmethod
     def _add_date(cls, *, date_column: str | Field, add_date_value: int, add_date_unit: DATE_UNIT):

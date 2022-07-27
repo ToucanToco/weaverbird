@@ -42,22 +42,6 @@ class PostgreSQLTranslator(SQLTranslator):
     def _add_date(cls, *, date_column: str | Field, add_date_value: int, add_date_unit: DATE_UNIT):
         return LiteralValue(f"{date_column} + INTERVAL '{add_date_value} {add_date_unit}'")
 
-    def evolution(
-        self: Self,
-        *,
-        builder: 'QueryBuilder',
-        prev_step_name: str,
-        columns: list[str],
-        step: "EvolutionStep",
-    ) -> StepContext:
-
-        self.DATEADD_FUNC = LiteralValue(
-            f"{step.date_col} + INTERVAL '1 {self.EVOLUTION_DATE_UNIT[step.evolution_type]}'"
-        )
-        return super().evolution(  # type: ignore
-            builder=builder, prev_step_name=prev_step_name, columns=columns, step=step
-        )
-
     def duration(
         self: Self,
         *,

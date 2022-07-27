@@ -135,7 +135,6 @@ class SQLTranslator(ABC):
     TO_DATE_OP: ToDateOp
     # depending on the translator, this may change to ` or '
     QUOTE_CHAR: str
-    DATEADD_FUNC: CustomFunction | LiteralValue
     EVOLUTION_DATE_UNIT: dict['EVOLUTION_TYPE', DATE_UNIT] = {
         'vsLastYear': 'year',
         'vsLastMonth': 'month',
@@ -625,13 +624,11 @@ class SQLTranslator(ABC):
     ) -> StepContext:
 
         prev_table = Table(prev_step_name)
-        lagged_date = (
-            self.DATEADD_FUNC(
-                self.EVOLUTION_DATE_UNIT[step.evolution_type], 1, prev_table.field(step.date_col)
-            ).as_(step.date_col)
-            if isinstance(self.DATEADD_FUNC, CustomFunction)
-            else self.DATEADD_FUNC.as_(step.date_col)
-        )
+        lagged_date = self._add_date(
+            date_column=prev_table.field(step.date_col),
+            add_date_value=1,
+            add_date_unit=self.EVOLUTION_DATE_UNIT[step.evolution_type],
+        ).as_(step.date_col)
         right_table = Table('right_table')
         new_col = step.new_column if step.new_column else 'evol'
         query: "QueryBuilder" = (
