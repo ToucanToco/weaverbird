@@ -210,11 +210,9 @@ class StepLabeller implements StepMatcher<string> {
     return `Dissolve geographical data grouped by ${formatMulticol(step.groups)}`;
   }
 
-  domain(step: Readonly<S.DomainStep>) {
-    const sourceLabel = S.isReferenceToExternalQuery(step.domain)
-      ? `query ${step.domain.uid}`
-      : `"${step.domain}"`;
-    return `Source: ${sourceLabel}`;
+  domain(step: Readonly<S.DomainStep>, nameForUid?: Function) {
+    const sourceLabel = nameForUid ? nameForUid(step.domain) : step.domain;
+    return `Source: "${sourceLabel}"`;
   }
 
   duplicate(step: Readonly<S.DuplicateColumnStep>) {
@@ -368,9 +366,9 @@ const LABELLER = new StepLabeller();
  * @param step the step we want to compute a label for
  * @return the human-readable label.
  */
-export function humanReadableLabel(step: S.PipelineStep) {
-  const transform = LABELLER[step.name] as (step: S.PipelineStep) => string;
-  return transform(step);
+export function humanReadableLabel(step: S.PipelineStep, nameForUid?: Function) {
+  const transform = LABELLER[step.name] as (step: S.PipelineStep, nameForUid?: Function) => string;
+  return transform(step, nameForUid);
 }
 
 function _replaceAll(str: string, search: string, replace: string) {
@@ -387,4 +385,16 @@ export function labelWithReadeableVariables(
   }
   const formattedLabel = _replaceAll(label, variableDelimiters.start, replaceDelimiters.start);
   return _replaceAll(formattedLabel, variableDelimiters.end, replaceDelimiters.end);
+}
+
+// enable to retrieve the related name of a query referenced behind an uid
+export function retrieveDomainName(
+  domain: string | S.ReferenceToExternalQuery,
+  queries: { name: string; uid: string }[],
+): string {
+  if (S.isReferenceToExternalQuery(domain)) {
+    return queries.find(q => q.uid === domain.uid)?.name ?? domain.uid;
+  } else {
+    return domain;
+  }
 }

@@ -4,6 +4,7 @@ import Vuex from 'vuex';
 import PipelineComponent from '@/components/Pipeline.vue';
 import Step from '@/components/Step.vue';
 import { DataSet } from '@/lib/dataset';
+import * as labeller from '@/lib/labeller';
 import { Pipeline } from '@/lib/steps';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
@@ -14,14 +15,21 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('Step.vue', () => {
+  let retrieveDomainNameStub: jest.SpyInstance;
+
   const createStepWrapper = ({ propsData = {} }) => {
+    retrieveDomainNameStub = jest
+      .spyOn(labeller, 'retrieveDomainName')
+      .mockImplementation(v => (typeof v === 'string' ? v : ''));
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'GoT' },
       { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
       { name: 'rename', toRename: [['region', 'kingdom']] },
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
-    const store = setupMockStore(buildStateWithOnePipeline(pipeline));
+    const store = setupMockStore(
+      buildStateWithOnePipeline(pipeline, { queries: [{ uid: '1', name: 'Query 1' }] }),
+    );
     return shallowMount(Step, {
       propsData,
       store,
@@ -128,6 +136,25 @@ describe('Step.vue', () => {
       },
     });
     expect(wrapper.find('.query-pipeline-step__name').text()).toBe('Source: "user.username"');
+  });
+
+  it('should retrieveDomainName for domain step label', () => {
+    createStepWrapper({
+      propsData: {
+        key: 0,
+        isActive: true,
+        isLastActive: true,
+        isDisabled: false,
+        isFirst: true,
+        isLast: true,
+        step: { name: 'domain', domain: { uid: '1', type: 'ref' } },
+        indexInPipeline: 0,
+        variableDelimiters: { start: '{{ ', end: ' }}' },
+      },
+    });
+    expect(retrieveDomainNameStub).toHaveBeenCalledWith({ uid: '1', type: 'ref' }, [
+      { uid: '1', name: 'Query 1' },
+    ]);
   });
 
   it('should toggle the edit mode when clicking on the edit icon and emit editStep', () => {
