@@ -142,17 +142,6 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Source: "the-domain"');
   });
 
-  it('generates label for domain steps that reference other queries', () => {
-    const step: S.DomainStep = {
-      name: 'domain',
-      domain: {
-        type: 'ref',
-        uid: 'xxx-yyy-zzz',
-      },
-    };
-    expect(hrl(step)).toEqual('Source: query xxx-yyy-zzz');
-  });
-
   it('generates label for duplicate steps', () => {
     const step: S.DuplicateColumnStep = {
       name: 'duplicate',
