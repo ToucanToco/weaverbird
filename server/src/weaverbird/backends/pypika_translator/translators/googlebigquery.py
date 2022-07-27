@@ -17,7 +17,7 @@ from weaverbird.backends.pypika_translator.translators.base import (
 Self = TypeVar("Self", bound="GoogleBigQueryTranslator")
 
 if TYPE_CHECKING:
-    from weaverbird.pipeline.steps import EvolutionStep, SplitStep
+    from weaverbird.pipeline.steps import SplitStep
 
 
 class ExtraDialects(Enum):

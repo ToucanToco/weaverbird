@@ -21,7 +21,7 @@ from pypika import (
 )
 from pypika.enums import Comparator, JoinType
 from pypika.queries import QueryBuilder, Selectable
-from pypika.terms import AnalyticFunction, BasicCriterion, CustomFunction, LiteralValue, Term
+from pypika.terms import AnalyticFunction, BasicCriterion, LiteralValue, Term
 
 from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relative_date
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
