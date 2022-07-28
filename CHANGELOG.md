@@ -1,5 +1,10 @@
 # Changelog (weaverbird npm package)
 
+## [0.86.0] - 2022-07-28
+- Domain step: retrieve name as label for external query domain
+- Steps: add dissolve step
+- Translators: enable join and append steps for pypika translator
+
 ## [0.85.0] - 2022-07-05
 
 - Translators: Add supported steps for Athena and GoogleBigQuery
@@ -1250,6 +1255,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ## Unreleased
 
+[0.86.0]: https://github.com/ToucanToco/weaverbird/compare/v0.86.0...v0.85.0
 [0.85.0]: https://github.com/ToucanToco/weaverbird/compare/v0.85.0...v0.84.0
 [0.84.0]: https://github.com/ToucanToco/weaverbird/compare/v0.84.0...v0.83.1
 [0.83.1]: https://github.com/ToucanToco/weaverbird/compare/v0.83.1...v0.83.0
