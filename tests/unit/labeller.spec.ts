@@ -1,4 +1,8 @@
-import { humanReadableLabel as hrl, labelWithReadeableVariables as lwv } from '@/lib/labeller';
+import {
+  humanReadableLabel as hrl,
+  labelWithReadeableVariables as lwv,
+  retrieveDomainName,
+} from '@/lib/labeller';
 import * as S from '@/lib/steps';
 import { VariableDelimiters } from '@/lib/variables';
 
@@ -135,18 +139,7 @@ describe('Labeller', () => {
       name: 'domain',
       domain: 'the-domain',
     };
-    expect(hrl(step)).toEqual('Source: "the-domain"');
-  });
-
-  it('generates label for domain steps that reference other queries', () => {
-    const step: S.DomainStep = {
-      name: 'domain',
-      domain: {
-        type: 'ref',
-        uid: 'xxx-yyy-zzz',
-      },
-    };
-    expect(hrl(step)).toEqual('Source: query xxx-yyy-zzz');
+    expect(hrl(step, retrieveDomainName)).toEqual('Source: "the-domain"');
   });
 
   it('generates label for duplicate steps', () => {
@@ -848,6 +841,20 @@ describe('Labeller', () => {
         aggregations: [],
       };
       expect(hrl(step)).toEqual('Dissolve geographical data grouped by "foo", "bar"');
+    });
+  });
+
+  describe('retrieveDomainName', () => {
+    it('return string if domain is a string', () => {
+      expect(retrieveDomainName('plop', [])).toBe('plop');
+    });
+    it('return query name if domain is a reference to an external query', () => {
+      expect(retrieveDomainName({ uid: '2', type: 'ref' }, [{ uid: '2', name: 'Query 2' }])).toBe(
+        'Query 2',
+      );
+    });
+    it('return query id if domain is a reference to an external query unfound', () => {
+      expect(retrieveDomainName({ uid: '2', type: 'ref' }, [])).toBe('2');
     });
   });
 });

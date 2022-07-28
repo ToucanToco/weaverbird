@@ -32,6 +32,11 @@ type DomainsMutation = {
   payload: Pick<VQBState, 'domains'>;
 };
 
+type QueriesMutation = {
+  type: 'setQueries';
+  payload: Pick<VQBState, 'queries'>;
+};
+
 type PipelineMutation = {
   type: 'setPipeline';
   payload: { pipeline: Pipeline };
@@ -96,7 +101,8 @@ export type StateMutation =
   | SetPreviewSourceRowsSubset
   | ToggleColumnSelectionMutation
   | ToggleRequestOnGoing
-  | VariableDelimitersMutation;
+  | VariableDelimitersMutation
+  | QueriesMutation;
 
 type MutationByType<M, MT> = M extends { type: MT } ? M : never;
 export type MutationCallbacks = {
@@ -201,6 +207,10 @@ class Mutations {
 
   setDomains(state: VQBState, { domains }: Pick<VQBState, 'domains'>) {
     state.domains = domains;
+  }
+
+  setQueries(state: VQBState, { queries }: Pick<VQBState, 'queries'>) {
+    state.queries = queries;
   }
 
   @resetPagination
