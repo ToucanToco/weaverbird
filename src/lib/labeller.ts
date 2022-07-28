@@ -365,10 +365,10 @@ const LABELLER = new StepLabeller();
  * @param step the step we want to compute a label for
  * @return the human-readable label.
  */
-export function humanReadableLabel(step: S.PipelineStep, retrieveDomainName: Function) {
+export function humanReadableLabel(step: S.PipelineStep, retrieveDomainName?: Function) {
   const transform = LABELLER[step.name] as (
     step: S.PipelineStep,
-    retrieveDomainName: Function,
+    retrieveDomainName?: Function,
   ) => string;
   return transform(step, retrieveDomainName);
 }
