@@ -2,7 +2,11 @@
 
 ## Unreleased
 
-## [0.18.0] - 2022-07-06
+## [0.19.0] - 2022-07-28
+
+- Pypika: snowflake dateextract step
+
+## [0.18.0] - 2022-07-27
 
 - Pypika: evolution step
 
