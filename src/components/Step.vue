@@ -130,14 +130,10 @@ export default class Step extends Vue {
     | undefined;
 
   get stepName(): string {
-    if (this.step.name === 'domain') {
-      // enable to retrieve the related name of a query referenced behind an uid
-      return humanReadableLabel(this.step, (domain: string | ReferenceToExternalQuery) =>
-        retrieveDomainName(domain, this.queries),
-      );
-    } else {
-      return humanReadableLabel(this.step);
-    }
+    // enable to retrieve the related name of a query referenced behind an uid
+    return humanReadableLabel(this.step, (domain: string | ReferenceToExternalQuery) =>
+      retrieveDomainName(domain, this.queries),
+    );
   }
 
   get canConfigurePreviewSourceSubset(): boolean {

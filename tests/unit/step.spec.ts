@@ -138,7 +138,7 @@ describe('Step.vue', () => {
     expect(wrapper.find('.query-pipeline-step__name').text()).toBe('Source: "user.username"');
   });
 
-  it('should retrieveDomainName for domain step label', () => {
+  it('should retrieveDomainName for step label', () => {
     createStepWrapper({
       propsData: {
         key: 0,
