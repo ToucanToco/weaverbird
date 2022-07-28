@@ -548,6 +548,13 @@ describe('mutation tests', () => {
     expect(state.domains).toEqual(['foo', 'bar']);
   });
 
+  it('sets queries list', () => {
+    const state = buildState({});
+    expect(state.queries).toEqual([]);
+    mutations.setQueries(state, { queries: [{ uid: '1', name: 'Query 1' }] });
+    expect(state.queries).toEqual([{ uid: '1', name: 'Query 1' }]);
+  });
+
   it('sets currentPipelineName', () => {
     const state = buildState({
       dataset: {
