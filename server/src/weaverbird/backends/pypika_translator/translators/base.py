@@ -36,12 +36,12 @@ from weaverbird.pipeline.conditions import (
 )
 from weaverbird.pipeline.dates import RelativeDate
 from weaverbird.pipeline.pipeline import Pipeline
+from weaverbird.pipeline.steps.date_extract import DATE_INFO
 from weaverbird.pipeline.steps.utils.combination import PipelineOrDomainNameOrReference, Reference
 
 Self = TypeVar("Self", bound="SQLTranslator")
 
 if TYPE_CHECKING:
-
     from weaverbird.pipeline import PipelineStep
     from weaverbird.pipeline.conditions import Condition, SimpleCondition
     from weaverbird.pipeline.steps import (
@@ -54,6 +54,7 @@ if TYPE_CHECKING:
         ConcatenateStep,
         ConvertStep,
         CustomSqlStep,
+        DateExtractStep,
         DeleteStep,
         DomainStep,
         DuplicateStep,
@@ -119,9 +120,6 @@ class CustomQuery(AliasedQuery):  # type: ignore[misc]
         return cast(str, self.query)
 
 
-DATE_UNIT = Literal['second', 'minute', 'hour', 'day', 'week', 'month', 'quarter', 'year']
-
-
 class SQLTranslator(ABC):
     DIALECT: SQLDialect
     QUERY_CLS: Query
@@ -135,7 +133,7 @@ class SQLTranslator(ABC):
     TO_DATE_OP: ToDateOp
     # depending on the translator, this may change to ` or '
     QUOTE_CHAR: str
-    EVOLUTION_DATE_UNIT: dict['EVOLUTION_TYPE', DATE_UNIT] = {
+    EVOLUTION_DATE_UNIT: dict['EVOLUTION_TYPE', DATE_INFO] = {
         'vsLastYear': 'year',
         'vsLastMonth': 'month',
         'vsLastWeek': 'week',
@@ -567,6 +565,34 @@ class SQLTranslator(ABC):
         # we have no way to know which columns remain without actually executing the query
         return StepContext(self._custom_query(step=step), ["*"])
 
+    @classmethod
+    def _get_date_extract_func(cls, *, date_unit: DATE_INFO, target_column: Field) -> LiteralValue:
+        # TODO to implement for other connectors than Snowflake
+        raise NotImplementedError(f"[{cls.DIALECT}] _get_date_extract_func is not implemented")
+
+    def dateextract(
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: "DateExtractStep",
+    ) -> StepContext:
+        date_col: Field = Table(prev_step_name)[step.column]
+        extracted_dates: list[LiteralValue] = []
+
+        for date_info, new_column_name in zip(step.date_info, step.new_columns):
+            extracted_dates.append(
+                self._get_date_extract_func(date_unit=date_info, target_column=date_col).as_(
+                    new_column_name
+                )
+            )
+        query: "Selectable" = self.QUERY_CLS.from_(prev_step_name).select(
+            *columns, *extracted_dates
+        )
+
+        return StepContext(query, columns + [col.alias for col in extracted_dates])
+
     def delete(
         self: Self,
         *,
@@ -610,7 +636,7 @@ class SQLTranslator(ABC):
 
     @classmethod
     def _add_date(
-        cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_UNIT
+        cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_INFO
     ) -> Term:
         raise NotImplementedError(f"[{cls.DIALECT}] _add_date is not implemented")
 
@@ -1171,7 +1197,7 @@ class SQLTranslator(ABC):
     ) -> StepContext:
         if self.SUPPORT_SPLIT_PART:
             col_field: Field = Table(prev_step_name)[step.column]
-            new_cols = [f"{step.column}_{i+1}" for i in range(step.number_cols_to_keep)]
+            new_cols = [f"{step.column}_{i + 1}" for i in range(step.number_cols_to_keep)]
             query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
                 *columns,
                 *(
