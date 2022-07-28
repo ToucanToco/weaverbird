@@ -8,7 +8,7 @@ from pypika.terms import LiteralValue
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators.base import (
-    DATE_UNIT,
+    DATE_INFO,
     DataTypeMapping,
     SQLTranslator,
     StepContext,
@@ -43,7 +43,7 @@ class MySQLTranslator(SQLTranslator):
     QUOTE_CHAR = '`'
 
     @classmethod
-    def _add_date(cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_UNIT):
+    def _add_date(cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_INFO):
         return LiteralValue(
             f"DATE_ADD({date_column.name}, INTERVAL {add_date_value} {add_date_unit})"
         )
