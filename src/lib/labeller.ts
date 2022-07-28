@@ -210,8 +210,8 @@ class StepLabeller implements StepMatcher<string> {
     return `Dissolve geographical data grouped by ${formatMulticol(step.groups)}`;
   }
 
-  domain(step: Readonly<S.DomainStep>, retrieveDomainName: Function) {
-    return `Source: "${retrieveDomainName(step.domain)}"`;
+  domain(step: Readonly<S.DomainStep>, retrieveDomainName?: Function) {
+    return `Source: "${retrieveDomainName!(step.domain)}"`;
   }
 
   duplicate(step: Readonly<S.DuplicateColumnStep>) {
