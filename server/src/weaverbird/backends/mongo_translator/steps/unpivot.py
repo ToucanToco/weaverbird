@@ -1,9 +1,11 @@
 from typing import List
 
+from weaverbird.backends.mongo_translator.registry import register
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import UnpivotStep
 
 
+@register
 def translate_unpivot(step: UnpivotStep) -> List[MongoStep]:
     # project_cols to be included in Mongo $project steps
     project_cols = {col: f'${col}' for col in step.keep}

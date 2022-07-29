@@ -1,5 +1,6 @@
 from typing import Any, Dict, List, Union
 
+from weaverbird.backends.mongo_translator.registry import register
 from weaverbird.backends.mongo_translator.steps.formula import build_mongo_formula_tree
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.backends.mongo_translator.utils import build_cond_expression
@@ -17,6 +18,7 @@ def transform_ifthenelse_step(step: IfThenElse) -> MongoStep:
     return {'$cond': {'if': if_expr, 'then': then_expr, 'else': else_expr}}
 
 
+@register
 def translate_ifthenelse(step: IfthenelseStep) -> List[MongoStep]:
     return [
         {

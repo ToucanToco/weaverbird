@@ -1,9 +1,11 @@
 from typing import List
 
+from weaverbird.backends.mongo_translator.registry import register
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps.pivot import PivotStep
 
 
+@register
 def translate_pivot(step: PivotStep) -> List[MongoStep]:
     group_cols = {}
     add_fields_step = {}

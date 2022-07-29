@@ -1,5 +1,6 @@
 from pandas import DataFrame, merge
 
+from weaverbird.backends.pandas_executor.registry import register
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps import JoinStep
 
@@ -7,6 +8,7 @@ from .utils.cleaning import rename_duplicated_columns
 from .utils.combination import resolve_pipeline_for_combination
 
 
+@register
 def execute_join(
     step: JoinStep,
     df: DataFrame,

@@ -1,11 +1,13 @@
 from pandas import DataFrame, concat
 
+from weaverbird.backends.pandas_executor.registry import register
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps import AggregateStep, RollupStep
 
 from .aggregate import execute_aggregate
 
 
+@register
 def execute_rollup(
     step: RollupStep,
     df: DataFrame,

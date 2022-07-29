@@ -1,5 +1,6 @@
 from typing import Dict, List
 
+from weaverbird.backends.mongo_translator.registry import register
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import RollupStep
 
@@ -8,6 +9,7 @@ def column_map(s: List[str]) -> Dict[str, str]:
     return {e: f'${e}' for e in s}
 
 
+@register
 def translate_rollup(step: RollupStep) -> List[MongoStep]:
     facet: Dict[str, List[MongoStep]] = {}
     label_col = step.label_col or 'label'

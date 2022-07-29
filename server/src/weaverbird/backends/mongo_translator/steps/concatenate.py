@@ -1,5 +1,6 @@
 from typing import Dict, List, Union
 
+from weaverbird.backends.mongo_translator.registry import register
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import ConcatenateStep
 
@@ -8,6 +9,7 @@ def _convert_to_type(input: Union[str, dict], type_: str) -> Dict[str, Union[str
     return {'$convert': {'input': input, 'to': type_}}
 
 
+@register
 def translate_concatenate(step: ConcatenateStep) -> List[MongoStep]:
     # NOTE: Translated from "../src/lib/translators/mongo.ts"'s
     # concatenate() step. The difference is that we're using mongo's

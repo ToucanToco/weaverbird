@@ -3,11 +3,14 @@ from pypika.terms import CustomFunction, Field
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import RegexOp
+from weaverbird.backends.pypika_translator.registry import pypika_registry
 from weaverbird.backends.pypika_translator.translators.base import (
     DATE_INFO,
     DataTypeMapping,
     SQLTranslator,
 )
+
+pypika_registry().child(SQLDialect.ATHENA.value)
 
 
 class AthenaTranslator(SQLTranslator):

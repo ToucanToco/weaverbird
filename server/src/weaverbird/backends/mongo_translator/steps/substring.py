@@ -1,9 +1,11 @@
 from typing import List
 
+from weaverbird.backends.mongo_translator.registry import register
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import SubstringStep
 
 
+@register
 def translate_substring(step: SubstringStep) -> List[MongoStep]:
     pos_start_index = (
         step.start_index - 1

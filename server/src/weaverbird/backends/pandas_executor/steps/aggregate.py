@@ -2,6 +2,7 @@ from typing import Any, Literal
 
 from pandas import DataFrame, concat
 
+from weaverbird.backends.pandas_executor.registry import register
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps import AggregateStep
 
@@ -30,6 +31,7 @@ def get_aggregate_fn(agg_function: str) -> Any:
     return agg_function
 
 
+@register
 def execute_aggregate(
     step: AggregateStep,
     df: DataFrame,

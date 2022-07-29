@@ -1,5 +1,6 @@
 from pandas import DataFrame
 
+from weaverbird.backends.pandas_executor.registry import register
 from weaverbird.backends.pandas_executor.steps.utils.combination import (
     resolve_pipeline_for_combination,
 )
@@ -7,6 +8,7 @@ from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineE
 from weaverbird.pipeline.steps import AppendStep
 
 
+@register
 def execute_append(
     step: AppendStep,
     df: DataFrame,

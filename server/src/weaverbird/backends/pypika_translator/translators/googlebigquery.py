@@ -6,12 +6,16 @@ from pypika.terms import LiteralValue
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
+from weaverbird.backends.pypika_translator.registry import pypika_registry
 from weaverbird.backends.pypika_translator.translators.base import (
     DATE_INFO,
     DataTypeMapping,
     SQLTranslator,
     StepContext,
 )
+
+_REGISTRY = pypika_registry().child(SQLDialect.GOOGLEBIGQUERY.value)
+override_step = _REGISTRY.override
 
 Self = TypeVar("Self", bound="GoogleBigQueryTranslator")
 
@@ -60,6 +64,7 @@ class GoogleBigQueryTranslator(SQLTranslator):
             f"DATE_ADD({date_column.name}, INTERVAL {add_date_value} {add_date_unit})"
         )
 
+    @override_step
     def split(
         self: Self,
         *,

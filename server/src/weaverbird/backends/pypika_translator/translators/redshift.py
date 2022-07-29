@@ -7,6 +7,7 @@ from pypika.terms import CustomFunction
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
+from weaverbird.backends.pypika_translator.registry import pypika_registry
 from weaverbird.backends.pypika_translator.translators.base import (
     DATE_INFO,
     DataTypeMapping,
@@ -18,6 +19,10 @@ from weaverbird.backends.pypika_translator.translators.postgresql import Postgre
 if TYPE_CHECKING:
 
     from weaverbird.pipeline.steps import ConcatenateStep
+
+
+_REGISTRY = pypika_registry().child(SQLDialect.REDSHIFT.value)
+override_step = _REGISTRY.override
 
 
 Self = TypeVar("Self", bound="RedshiftTranslator")
@@ -59,6 +64,7 @@ class RedshiftTranslator(PostgreSQLTranslator):
             return self._recursive_concat(concat, tokens[2:])
         return self._recursive_concat(functions.Concat(concat, tokens[0]), tokens[1:])
 
+    @override_step
     def concatenate(
         self: Self,
         *,

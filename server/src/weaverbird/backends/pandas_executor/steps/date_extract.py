@@ -3,6 +3,7 @@ from typing import List
 
 from pandas import DataFrame, to_datetime, to_timedelta
 
+from weaverbird.backends.pandas_executor.registry import register
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps import DateExtractStep
 from weaverbird.pipeline.steps.date_extract import DATE_INFO
@@ -16,6 +17,7 @@ OPERATIONS_MAPPING = {
 }
 
 
+@register(step_name='dateextract')
 def execute_date_extract(
     step: DateExtractStep,
     df: DataFrame,

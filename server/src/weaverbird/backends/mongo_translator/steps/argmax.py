@@ -1,9 +1,11 @@
 from typing import List
 
+from weaverbird.backends.mongo_translator.registry import register
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import ArgmaxStep
 
 
+@register
 def translate_argmax(step: ArgmaxStep) -> List[MongoStep]:
     return [
         {

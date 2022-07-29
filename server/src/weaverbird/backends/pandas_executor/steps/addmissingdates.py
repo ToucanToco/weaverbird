@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from pandas import Series
 
+from weaverbird.backends.pandas_executor.registry import register
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps import AddMissingDatesStep
 
@@ -13,6 +14,7 @@ def at_begin_period(timestamps: Series, dates_granularity: str):
     return timestamps.dt.to_period(_FREQUENCIES[dates_granularity]).dt.start_time
 
 
+@register
 def execute_addmissingdates(
     step: AddMissingDatesStep,
     df: pd.DataFrame,

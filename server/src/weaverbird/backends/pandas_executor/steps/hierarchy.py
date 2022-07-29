@@ -1,5 +1,6 @@
 import pandas as pd
 
+from weaverbird.backends.pandas_executor.registry import register
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps.dissolve import DissolveStep
 from weaverbird.pipeline.steps.hierarchy import HierarchyStep
@@ -15,6 +16,7 @@ def _dissolve_one_level(
     return dissolved
 
 
+@register
 def execute_hierarchy(
     step: HierarchyStep,
     df: pd.DataFrame,

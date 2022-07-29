@@ -7,6 +7,7 @@ from pypika.terms import LiteralValue
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
+from weaverbird.backends.pypika_translator.registry import pypika_registry
 from weaverbird.backends.pypika_translator.translators.base import (
     DATE_INFO,
     DataTypeMapping,
@@ -15,6 +16,10 @@ from weaverbird.backends.pypika_translator.translators.base import (
 )
 
 Self = TypeVar("Self", bound="MySQLTranslator")
+
+# Minimum version is 8.0 for all steps
+_REGISTRY = pypika_registry().child(SQLDialect.MYSQL.value, minimum_target_version=(8, 0))
+override_step = _REGISTRY.override
 
 
 if TYPE_CHECKING:
@@ -48,6 +53,7 @@ class MySQLTranslator(SQLTranslator):
             f"DATE_ADD({date_column.name}, INTERVAL {add_date_value} {add_date_unit})"
         )
 
+    @override_step
     def split(
         self: Self,
         *,

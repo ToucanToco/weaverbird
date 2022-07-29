@@ -2,6 +2,7 @@ import numpy
 import pandas as pd
 from pandas import DataFrame
 
+from weaverbird.backends.pandas_executor.registry import register
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps.waterfall import (
     _RESULT_COLUMN,
@@ -12,6 +13,7 @@ from weaverbird.pipeline.steps.waterfall import (
 )
 
 
+@register
 def execute_waterfall(
     step: WaterfallStep,
     df: DataFrame,

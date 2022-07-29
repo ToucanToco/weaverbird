@@ -1,6 +1,7 @@
 import itertools
 from typing import Dict, List, Tuple
 
+from weaverbird.backends.mongo_translator.registry import register
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import TotalsStep
 
@@ -18,6 +19,7 @@ def column_map(s: List[str]) -> Dict[str, str]:
     return {e: f'${e}' for e in s}
 
 
+@register
 def translate_totals(step: TotalsStep) -> List[MongoStep]:
     facet: Dict[str, List[MongoStep]] = {}
     groups: List[str] = step.groups or []
