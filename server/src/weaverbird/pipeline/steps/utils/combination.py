@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 
 class Reference(BaseModel):
-    type: Literal['ref']
+    type: Literal['ref'] = 'ref'
     uid: str
 
 
