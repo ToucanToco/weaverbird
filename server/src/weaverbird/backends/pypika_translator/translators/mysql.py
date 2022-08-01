@@ -75,7 +75,7 @@ class MySQLTranslator(SQLTranslator):
         return StepContext(query, columns + new_cols)
 
     @staticmethod
-    def _cast_to_timestamp(value: str | datetime | Field) -> functions.Function:
+    def _cast_to_timestamp(value: str | datetime | Field | Term) -> functions.Function:
         return functions.Timestamp(value)
 
 
