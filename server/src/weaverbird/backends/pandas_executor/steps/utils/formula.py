@@ -1,40 +1,21 @@
-import re
-
 import numpy as np
 from pandas import DataFrame
 
-COLUMN_PATTERN = re.compile(r'(\`[^\`]*\`)')
+from weaverbird.pipeline.formula_ast.eval import FormulaParser
+from weaverbird.pipeline.formula_ast.types import Expression, format_expr
 
 
-# In pandas, columns containing spaces must be escaped with backticks:
-def clean_formula_element(elem: str) -> str:
-    if COLUMN_PATTERN.match(elem):
-        # this is a column name: return it as is
-        return elem
-    # - forbid '=' char
-    # - replace [ and ] with `
-    #   ([] is mongo's syntax to escape columns containing spaces)
-    return elem.replace('=', '').replace('[', '`').replace(']', '`')
-
-
-def clean_formula(formula: str) -> str:
-    """
-    Translate mongo's syntax to hande columns names containing spaces to pandas syntax.
-
-    Example:
-        >>> clean_formula('colA * `col B` * [col C] * `[col D]`')
-        'colA * `col B` * `col C` * `[col D]`'
-    """
-    formula_splitted = COLUMN_PATTERN.split(formula)
-    return ''.join(clean_formula_element(elem) for elem in formula_splitted)
+def formula_expression_to_pandas(tree: Expression) -> str | int | bool | float:
+    return format_expr(tree, column_start_seq='`', column_end_seq='`', bools_as_py=True)
 
 
 def eval_formula(df: DataFrame, formula: str) -> DataFrame:
+    pandas_expr = formula_expression_to_pandas(FormulaParser(formula).parse())
     try:
-        result = df.eval(formula)
+        result = df.eval(pandas_expr)
     except Exception:
         # for all cases not handled by NumExpr
-        result = df.eval(formula, engine='python')
+        result = df.eval(pandas_expr, engine='python')
 
     try:
         # eval can introduce Infinity values (when dividing by 0),

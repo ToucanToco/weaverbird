@@ -15,7 +15,7 @@ def sample_df() -> DataFrame:
             'colA': [1, 10],
             'col B': [2, 20],
             'col C': [3, 30],
-            '[col D]': [4, 40],
+            'col D': [4, 40],
             'colE': [0, np.nan],
         }
     )
@@ -23,7 +23,7 @@ def sample_df() -> DataFrame:
 
 def test_formula(sample_df: DataFrame):
     step = FormulaStep(
-        name='formula', new_column='z', formula='(colA + `col B`) * ([col C] + `[col D]`) / 10'
+        name='formula', new_column='z', formula='(colA + [col B]) * ([col C] + [col D]) / 10'
     )
     df_result = execute_formula(step, sample_df)
 
