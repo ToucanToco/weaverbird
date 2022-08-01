@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [0.19.2] - 2022-08-01
+
+- Pypika: Snowflake Dateextract fix some formulas
+
 ## [0.19.1] - 2022-07-29
 
 - The Reference type is now hashable
