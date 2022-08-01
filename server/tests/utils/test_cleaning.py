@@ -2,7 +2,6 @@ import pytest
 from pandas import DataFrame
 
 from weaverbird.backends.pandas_executor.steps.utils.cleaning import rename_duplicated_columns
-from weaverbird.utils.iter import combinations
 
 
 @pytest.mark.parametrize(
@@ -55,15 +54,3 @@ def test_rename_duplicated_columns(columns, expected_new_columns):
 
     df_renamed = rename_duplicated_columns(df)
     assert list(df_renamed.columns) == expected_new_columns
-
-
-def test_combinations():
-    assert combinations(['A', 'B', 'C']) == [
-        ('A',),
-        ('B',),
-        ('C',),
-        ('A', 'B'),
-        ('A', 'C'),
-        ('B', 'C'),
-        ('A', 'B', 'C'),
-    ]
