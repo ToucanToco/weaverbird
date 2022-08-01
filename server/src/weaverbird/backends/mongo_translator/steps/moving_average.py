@@ -1,9 +1,11 @@
 from typing import List
 
+from weaverbird.backends.mongo_translator.registry import register
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps.moving_average import MovingAverageStep
 
 
+@register(step_name='movingaverage')
 def translate_moving_average(step: MovingAverageStep) -> List[MongoStep]:
     return [
         # Ensure the reference column is sorted to prepare for the moving average computation

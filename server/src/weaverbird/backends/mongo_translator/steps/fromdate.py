@@ -1,5 +1,6 @@
 from typing import Dict, List, Literal
 
+from weaverbird.backends.mongo_translator.registry import register
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps.fromdate import FromdateStep
 
@@ -122,6 +123,7 @@ def _translate_day_month_year(
     ]
 
 
+@register
 def translate_fromdate(step: FromdateStep) -> List[MongoStep]:
     if step.format == '%d %b %Y':
         return _translate_day_month_year(step, ' ', _SMALL_MONTH_REPLACE)

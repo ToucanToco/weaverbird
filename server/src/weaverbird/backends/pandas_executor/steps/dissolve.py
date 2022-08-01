@@ -3,6 +3,7 @@ from typing import Any, Dict, List
 from pandas import DataFrame
 
 from weaverbird.backends.pandas_executor.geo_utils import df_to_geodf
+from weaverbird.backends.pandas_executor.registry import register
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps.aggregate import Aggregation
 from weaverbird.pipeline.steps.dissolve import DissolveStep
@@ -23,6 +24,7 @@ def _translate_agg_func(aggregations: List[Aggregation]) -> Dict[str, Any]:
     }
 
 
+@register
 def execute_dissolve(
     step: DissolveStep,
     df: DataFrame,

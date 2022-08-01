@@ -26,6 +26,7 @@ from pypika.terms import AnalyticFunction, BasicCriterion, LiteralValue, Term
 from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relative_date
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
+from weaverbird.backends.pypika_translator.registry import pypika_registry
 from weaverbird.backends.pypika_translator.translators import ALL_TRANSLATORS
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
@@ -38,6 +39,9 @@ from weaverbird.pipeline.dates import RelativeDate
 from weaverbird.pipeline.pipeline import Pipeline
 from weaverbird.pipeline.steps.date_extract import DATE_INFO
 from weaverbird.pipeline.steps.utils.combination import PipelineOrDomainNameOrReference, Reference
+
+_REGISTRY = pypika_registry()
+register_step = _REGISTRY.register
 
 Self = TypeVar("Self", bound="SQLTranslator")
 
@@ -238,6 +242,7 @@ class SQLTranslator(ABC):
             case _:
                 return None
 
+    @register_step
     def absolutevalue(
         self: Self,
         *,
@@ -252,6 +257,7 @@ class SQLTranslator(ABC):
         )
         return StepContext(query, columns + [step.new_column])
 
+    @register_step
     def aggregate(
         self: Self,
         *,
@@ -398,6 +404,7 @@ class SQLTranslator(ABC):
             message = message or f"could not convert {pipeline} to pipeline: {exc}"
             raise NotImplementedError(message) from exc
 
+    @register_step
     def append(
         self: Self,
         *,
@@ -450,6 +457,7 @@ class SQLTranslator(ABC):
 
         return StepContext(query.orderby(*all_columns), all_columns, builder)
 
+    @register_step
     def argmax(
         self: Self,
         *,
@@ -467,6 +475,7 @@ class SQLTranslator(ABC):
             step=TopStep(rank_on=step.column, sort="desc", limit=1, groups=step.groups),
         )
 
+    @register_step
     def argmin(
         self: Self,
         *,
@@ -484,6 +493,7 @@ class SQLTranslator(ABC):
             step=TopStep(rank_on=step.column, sort="asc", limit=1, groups=step.groups),
         )
 
+    @register_step
     def comparetext(
         self: Self,
         *,
@@ -502,6 +512,7 @@ class SQLTranslator(ABC):
         )
         return StepContext(query, columns + [step.new_column_name])
 
+    @register_step
     def concatenate(
         self: Self,
         *,
@@ -524,6 +535,7 @@ class SQLTranslator(ABC):
         )
         return StepContext(query, columns + [step.new_column_name])
 
+    @register_step
     def convert(
         self: Self,
         *,
@@ -553,6 +565,7 @@ class SQLTranslator(ABC):
             query=step.query.replace("##PREVIOUS_STEP##", table_name),
         )
 
+    @register_step
     def customsql(
         self: Self,
         *,
@@ -570,6 +583,7 @@ class SQLTranslator(ABC):
         # TODO to implement for other connectors than Snowflake
         raise NotImplementedError(f"[{cls.DIALECT}] _get_date_extract_func is not implemented")
 
+    @register_step
     def dateextract(
         self: Self,
         *,
@@ -593,6 +607,7 @@ class SQLTranslator(ABC):
 
         return StepContext(query, columns + [col.alias for col in extracted_dates])
 
+    @register_step
     def delete(
         self: Self,
         *,
@@ -607,6 +622,7 @@ class SQLTranslator(ABC):
 
     # Prefixing domain with a '_', as it is a special case and should not be returned by
     # getattr(self, step_name)
+    @register_step(step_name='domain')
     def _domain(self: Self, *, step: "DomainStep") -> StepContext:
         try:
             if isinstance(step.domain, Reference):
@@ -621,6 +637,7 @@ class SQLTranslator(ABC):
         ).select(*selected_cols)
         return StepContext(query, selected_cols)
 
+    @register_step
     def duplicate(
         self: Self,
         *,
@@ -640,6 +657,7 @@ class SQLTranslator(ABC):
     ) -> Term:
         raise NotImplementedError(f"[{cls.DIALECT}] _add_date is not implemented")
 
+    @register_step
     def evolution(
         self: Self,
         *,
@@ -682,6 +700,7 @@ class SQLTranslator(ABC):
         )
         return StepContext(query, columns + [new_col])
 
+    @register_step
     def fillna(
         self: Self,
         *,
@@ -861,6 +880,7 @@ class SQLTranslator(ABC):
             case _:
                 return self._get_single_condition_criterion(condition, prev_step_name)
 
+    @register_step
     def filter(
         self: Self,
         *,
@@ -877,6 +897,7 @@ class SQLTranslator(ABC):
         )
         return StepContext(query, columns)
 
+    @register_step
     def formula(
         self: Self,
         *,
@@ -940,6 +961,7 @@ class SQLTranslator(ABC):
 
         return StepContext(query, columns + [step.new_column])
 
+    @register_step
     def fromdate(
         self: Self,
         *,
@@ -1006,6 +1028,7 @@ class SQLTranslator(ABC):
                 else_value = else_
                 return case_.else_(LiteralValue(else_value))
 
+    @register_step
     def ifthenelse(
         self: Self,
         *,
@@ -1040,6 +1063,7 @@ class SQLTranslator(ABC):
     def _field_list_to_name_list(fields: list[Field]) -> list[str]:
         return [field.alias or field.name for field in fields]
 
+    @register_step
     def join(
         self: Self,
         *,
@@ -1091,6 +1115,7 @@ class SQLTranslator(ABC):
             right_builder_ctx.builder,
         )
 
+    @register_step
     def lowercase(
         self: Self,
         *,
@@ -1106,6 +1131,7 @@ class SQLTranslator(ABC):
         )
         return StepContext(query, columns)
 
+    @register_step
     def percentage(
         self: Self,
         *,
@@ -1116,6 +1142,7 @@ class SQLTranslator(ABC):
     ) -> StepContext:
         raise NotImplementedError(f"[{self.DIALECT}] percentage is not implemented")
 
+    @register_step
     def rename(
         self: Self,
         *,
@@ -1137,6 +1164,7 @@ class SQLTranslator(ABC):
         query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(*selected_col_fields)
         return StepContext(query, [f.alias or f.name for f in selected_col_fields])
 
+    @register_step
     def replace(
         self: Self,
         *,
@@ -1159,6 +1187,7 @@ class SQLTranslator(ABC):
 
         return StepContext(query, columns)
 
+    @register_step
     def select(
         self: Self,
         *,
@@ -1170,6 +1199,7 @@ class SQLTranslator(ABC):
         query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(*step.columns)
         return StepContext(query, step.columns)
 
+    @register_step
     def sort(
         self: Self,
         *,
@@ -1187,6 +1217,7 @@ class SQLTranslator(ABC):
 
         return StepContext(query, columns)
 
+    @register_step
     def split(
         self: Self,
         *,
@@ -1209,6 +1240,7 @@ class SQLTranslator(ABC):
 
         raise NotImplementedError(f"[{self.DIALECT}] split is not implemented")
 
+    @register_step
     def substring(
         self: Self,
         *,
@@ -1229,6 +1261,7 @@ class SQLTranslator(ABC):
         )
         return StepContext(query, columns + [step.new_column_name])
 
+    @register_step
     def text(
         self: Self,
         *,
@@ -1244,6 +1277,7 @@ class SQLTranslator(ABC):
         )
         return StepContext(query, columns + [step.new_column])
 
+    @register_step
     def todate(
         self: Self,
         *,
@@ -1274,6 +1308,7 @@ class SQLTranslator(ABC):
         )
         return StepContext(query, columns)
 
+    @register_step
     def top(
         self: Self,
         *,
@@ -1316,6 +1351,7 @@ class SQLTranslator(ABC):
         )
         return StepContext(query, columns)
 
+    @register_step
     def trim(
         self: Self,
         *,
@@ -1331,6 +1367,7 @@ class SQLTranslator(ABC):
         )
         return StepContext(query, columns)
 
+    @register_step
     def uniquegroups(
         self: Self,
         *,
@@ -1348,6 +1385,7 @@ class SQLTranslator(ABC):
             columns=columns,
         )
 
+    @register_step
     def uppercase(
         self: Self,
         *,

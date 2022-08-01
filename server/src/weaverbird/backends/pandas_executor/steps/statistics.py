@@ -3,6 +3,7 @@ from typing import Callable, Union
 import numpy as np
 from pandas import DataFrame, Series
 
+from weaverbird.backends.pandas_executor.registry import register
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps.statistics import DUMB_GROUPBY_COLUMN_NAME, StatisticsStep
 
@@ -24,6 +25,7 @@ def percentile(nth, order):
     return f
 
 
+@register
 def execute_statistics(
     step: StatisticsStep,
     df: DataFrame,

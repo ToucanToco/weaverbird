@@ -1,9 +1,11 @@
 from typing import List
 
+from weaverbird.backends.mongo_translator.registry import register
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import SplitStep
 
 
+@register
 def translate_split(step: SplitStep) -> List[MongoStep]:
     add_fields_step = {}
     for i in range(1, step.number_cols_to_keep + 1):

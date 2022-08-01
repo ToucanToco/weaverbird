@@ -1,5 +1,6 @@
 from pandas import DataFrame, concat
 
+from weaverbird.backends.pandas_executor.registry import register
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps import AggregateStep, TotalsStep
 from weaverbird.pipeline.steps.totals import TotalDimension
@@ -65,6 +66,7 @@ def get_total_for_dimensions(step: TotalsStep, df: DataFrame) -> DataFrame:
     return result_df
 
 
+@register
 def execute_totals(
     step: TotalsStep,
     df: DataFrame,

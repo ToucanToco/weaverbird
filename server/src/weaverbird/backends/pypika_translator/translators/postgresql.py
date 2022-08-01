@@ -6,6 +6,7 @@ from pypika.terms import LiteralValue
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
+from weaverbird.backends.pypika_translator.registry import pypika_registry
 from weaverbird.backends.pypika_translator.translators.base import (
     DATE_INFO,
     DataTypeMapping,
@@ -13,6 +14,9 @@ from weaverbird.backends.pypika_translator.translators.base import (
     SQLTranslator,
     StepContext,
 )
+
+_REGISTRY = pypika_registry().child(SQLDialect.POSTGRES.value)
+register_step = _REGISTRY.register
 
 if TYPE_CHECKING:
     from pypika.queries import QueryBuilder
@@ -42,6 +46,7 @@ class PostgreSQLTranslator(SQLTranslator):
     def _add_date(cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_INFO):
         return LiteralValue(f"{date_column.name} + INTERVAL '{add_date_value} {add_date_unit}'")
 
+    @register_step
     def duration(
         self: Self,
         *,

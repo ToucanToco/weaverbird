@@ -1,5 +1,6 @@
 from typing import List
 
+from weaverbird.backends.mongo_translator.registry import register
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps.statistics import StatisticsStep
 
@@ -68,6 +69,7 @@ _STATISTICS_FORMULA = {
 }
 
 
+@register
 def translate_statistics(step: StatisticsStep) -> List[MongoStep]:
     return [
         {

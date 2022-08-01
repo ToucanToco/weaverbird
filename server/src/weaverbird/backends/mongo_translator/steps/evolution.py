@@ -1,9 +1,11 @@
 from typing import Any, Dict, List
 
+from weaverbird.backends.mongo_translator.registry import register
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import EvolutionStep
 
 
+@register
 def translate_evolution(step: EvolutionStep) -> List[MongoStep]:
     new_column = (
         step.new_column

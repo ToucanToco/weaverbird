@@ -1,5 +1,6 @@
 from typing import List, Union
 
+from weaverbird.backends.mongo_translator.registry import register
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import DateExtractStep
 
@@ -293,6 +294,7 @@ _DATE_EXTRACT_MAP = {
 }
 
 
+@register(step_name='dateextract')
 def translate_date_extract(step: DateExtractStep) -> List[MongoStep]:
     new_columns = []
     add_fields = {}

@@ -1,5 +1,6 @@
 from pandas import DataFrame
 
+from weaverbird.backends.pandas_executor.registry import register
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps import DurationStep
 
@@ -11,6 +12,7 @@ _DAY = _HOUR * 24
 DURATIONS_IN_SECOND = {'seconds': _SECOND, 'minutes': _MINUTE, 'hours': _HOUR, 'days': _DAY}
 
 
+@register
 def execute_duration(
     step: DurationStep,
     df: DataFrame,

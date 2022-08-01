@@ -1,9 +1,11 @@
 from pandas import DataFrame
 
+from weaverbird.backends.pandas_executor.registry import register
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps import MovingAverageStep
 
 
+@register(step_name='movingaverage')
 def execute_moving_average(
     step: MovingAverageStep,
     df: DataFrame,

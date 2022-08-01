@@ -1,5 +1,6 @@
 from typing import List
 
+from weaverbird.backends.mongo_translator.registry import register
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps.addmissingdates import AddMissingDatesStep, DatesGranularity
 
@@ -200,6 +201,7 @@ def _add_missing_dates_day_or_month(step: AddMissingDatesStep) -> List[MongoStep
     ]
 
 
+@register
 def translate_addmissingdates(step: AddMissingDatesStep) -> List[MongoStep]:
     return (
         _add_missing_dates_year(step)

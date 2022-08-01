@@ -1,5 +1,6 @@
 from pandas import DataFrame, DateOffset
 
+from weaverbird.backends.pandas_executor.registry import register
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.exceptions import DuplicateError
 from weaverbird.pipeline.steps import EvolutionStep
@@ -12,6 +13,7 @@ OFFSETS = {
 }
 
 
+@register
 def execute_evolution(
     step: EvolutionStep,
     df: DataFrame,

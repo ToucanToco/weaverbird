@@ -1,5 +1,6 @@
 from typing import List, Union
 
+from weaverbird.backends.mongo_translator.registry import register
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import ConvertStep
 
@@ -12,6 +13,7 @@ TYPE_MAP = {
 }
 
 
+@register
 def translate_convert(step: ConvertStep) -> List[MongoStep]:
     # /!\ we want to get the same results than with the mongo typescript
     # translator, not than with the pandas executor.

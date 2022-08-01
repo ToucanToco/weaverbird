@@ -1,9 +1,11 @@
 from typing import List, Optional, Union
 
+from weaverbird.backends.mongo_translator.registry import register
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import ToDateStep
 
 
+@register
 def translate_todate(step: ToDateStep) -> List[MongoStep]:
     date_format = step.format
 

@@ -5,10 +5,13 @@ from pypika.terms import CustomFunction, Field, LiteralValue, Term
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
+from weaverbird.backends.pypika_translator.registry import pypika_registry
 from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, SQLTranslator
 from weaverbird.pipeline.steps.date_extract import DATE_INFO
 
 Self = TypeVar("Self", bound="SQLTranslator")
+
+pypika_registry().child(SQLDialect.SNOWFLAKE.value)
 
 
 class SnowflakeTranslator(SQLTranslator):

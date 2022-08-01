@@ -2,6 +2,7 @@ import ast
 import re
 from typing import Any, Dict, Tuple, Union
 
+from weaverbird.backends.mongo_translator.registry import register
 from weaverbird.pipeline.steps import FormulaStep
 
 
@@ -82,6 +83,7 @@ def mongo_formula_for_expr(expr: ast.Expr, columns_aliases: Dict) -> Dict[str, A
         raise InvalidFormula
 
 
+@register
 def translate_formula(step: FormulaStep) -> list:
     return [{'$addFields': {step.new_column: build_mongo_formula_tree(step.formula)}}]
 

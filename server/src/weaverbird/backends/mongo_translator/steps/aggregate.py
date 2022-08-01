@@ -1,9 +1,11 @@
 from typing import Any, List
 
+from weaverbird.backends.mongo_translator.registry import register
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import AggregateStep
 
 
+@register
 def translate_aggregate(step: AggregateStep) -> List[MongoStep]:
     idblock = {col: f'${col}' for col in step.on}
     group: dict[str, dict] = {}

@@ -18,3 +18,7 @@ def translate_pipeline(
         db_schema=db_schema,
     )
     return translator.get_query_str(steps=pipeline.steps)
+
+
+def get_supported_steps(sql_dialect: SQLDialect) -> list[str]:
+    raise NotImplementedError

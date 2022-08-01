@@ -3,6 +3,7 @@ from typing import Any
 import numpy as np
 from pandas import DataFrame
 
+from weaverbird.backends.pandas_executor.registry import register
 from weaverbird.backends.pandas_executor.steps.utils.formula import clean_formula, eval_formula
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps.ifthenelse import IfThenElse, IfthenelseStep
@@ -35,6 +36,7 @@ def _execute_ifthenelse(ifthenelse: IfThenElse, df: DataFrame, new_column) -> Da
     )
 
 
+@register
 def execute_ifthenelse(
     step: IfthenelseStep,
     df: DataFrame,
