@@ -702,7 +702,7 @@ class SQLTranslator(ABC):
         return StepContext(query, columns)
 
     @staticmethod
-    def _cast_to_timestamp(value: str | datetime | Field) -> functions.Function:
+    def _cast_to_timestamp(value: str | datetime | Field | Term) -> functions.Function:
         return functions.Cast(value, "TIMESTAMP")
 
     def _get_single_condition_criterion(
@@ -1257,8 +1257,6 @@ class SQLTranslator(ABC):
 
         if step.format is not None:
             match self.TO_DATE_OP:
-                case ToDateOp.TO_DATE:
-                    convert_fn = functions.ToDate
                 case ToDateOp.STR_TO_DATE:
                     convert_fn = StrToDate
                 case ToDateOp.PARSE_DATE:
@@ -1267,7 +1265,11 @@ class SQLTranslator(ABC):
                     convert_fn = functions.Timestamp
                 case _:
                     raise NotImplementedError(f"[{self.DIALECT}] todate has no set operator")
-            date_selection = convert_fn(col_field, step.format)
+            date_selection = (
+                self._cast_to_timestamp(convert_fn(col_field, step.format))
+                if convert_fn != ToDateOp.TO_TIMESTAMP
+                else convert_fn(col_field, step.format)
+            )
         else:
             date_selection = self._cast_to_timestamp(col_field)
 
