@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [0.20.0] - 2022-08-01
+
+- Pypika: force converted date to timestamps
+
 ## [0.19.2] - 2022-08-01
 
 - Pypika: Snowflake Dateextract fix some formulas
