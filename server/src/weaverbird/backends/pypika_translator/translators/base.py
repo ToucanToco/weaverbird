@@ -641,10 +641,6 @@ class SQLTranslator(ABC):
     ) -> Term:
         raise NotImplementedError(f"[{cls.DIALECT}] _add_date is not implemented")
 
-    @classmethod
-    def _to_timestamp(cls, *, date_column: Field) -> Term:
-        raise NotImplementedError(f"[{cls.DIALECT}] _to_timestamp is not implemented")
-
     def evolution(
         self: Self,
         *,
@@ -1273,7 +1269,7 @@ class SQLTranslator(ABC):
                     raise NotImplementedError(f"[{self.DIALECT}] todate has no set operator")
             date_selection = convert_fn(col_field, step.format)
         else:
-            date_selection = functions.Cast(col_field, self.DATA_TYPE_MAPPING.timestamp)
+            date_selection = self._cast_to_timestamp(col_field)
 
         query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
             *(c for c in columns if c != step.column),
