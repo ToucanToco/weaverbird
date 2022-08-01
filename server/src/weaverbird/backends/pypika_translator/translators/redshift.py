@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, TypeVar
 from pypika import Field, functions
 from pypika.dialects import RedshiftQuery
 from pypika.queries import QueryBuilder, Table
-from pypika.terms import CustomFunction
+from pypika.terms import CustomFunction, Term
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
@@ -33,15 +33,18 @@ class RedshiftTranslator(PostgreSQLTranslator):
         integer="INTEGER",
         text="TEXT",
         datetime="TIMESTAMP",
+        timestamp="TIMESTAMP",
     )
     SUPPORT_ROW_NUMBER = True
     SUPPORT_SPLIT_PART = True
     FROM_DATE_OP = FromDateOp.TO_CHAR
     REGEXP_OP = RegexOp.SIMILAR_TO
-    TO_DATE_OP = ToDateOp.TO_DATE
+    TO_DATE_OP = ToDateOp.TO_TIMESTAMP
 
     @classmethod
-    def _add_date(cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_INFO):
+    def _add_date(
+        cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_INFO
+    ) -> Term:
         add_date_func = CustomFunction('DATEADD', ['interval', 'increment', 'datecol'])
         return add_date_func(add_date_unit, add_date_value, date_column)
 

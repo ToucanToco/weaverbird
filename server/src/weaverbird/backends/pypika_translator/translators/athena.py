@@ -1,8 +1,8 @@
 from pypika.dialects import Query
-from pypika.terms import CustomFunction, Field
+from pypika.terms import CustomFunction, Field, LiteralValue, Term
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
-from weaverbird.backends.pypika_translator.operators import RegexOp
+from weaverbird.backends.pypika_translator.operators import RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators.base import (
     DATE_INFO,
     DataTypeMapping,
@@ -22,14 +22,22 @@ class AthenaTranslator(SQLTranslator):
         integer="INTEGER",
         text="VARCHAR",
         datetime="TIMESTAMP",
+        timestamp="TIMESTAMP",
     )
     REGEXP_OP = RegexOp.REGEXP_LIKE
     QUOTE_CHAR = '"'
+    TO_DATE_OP = ToDateOp.TO_TIMESTAMP
 
     @classmethod
-    def _add_date(cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_INFO):
+    def _add_date(
+        cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_INFO
+    ) -> Term:
         add_date_func = CustomFunction('DATE_ADD', ['interval', 'increment', 'datecol'])
         return add_date_func(add_date_unit, add_date_value, date_column)
+
+    @classmethod
+    def _to_timestamp(cls, *, date_column: Field) -> Term:
+        return LiteralValue(f'from_iso8601_timestamp({date_column.name})')
 
 
 SQLTranslator.register(AthenaTranslator)

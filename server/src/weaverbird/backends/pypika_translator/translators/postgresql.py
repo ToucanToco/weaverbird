@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from pypika import Field, functions
 from pypika.dialects import PostgreSQLQuery
-from pypika.terms import LiteralValue
+from pypika.terms import LiteralValue, Term
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
@@ -30,6 +30,7 @@ class PostgreSQLTranslator(SQLTranslator):
         integer="INTEGER",
         text="TEXT",
         datetime="TIMESTAMP",
+        timestamp="TIMESTAMP",
     )
     SUPPORT_ROW_NUMBER = True
     SUPPORT_SPLIT_PART = True
@@ -39,7 +40,9 @@ class PostgreSQLTranslator(SQLTranslator):
     QUOTE_CHAR = '"'
 
     @classmethod
-    def _add_date(cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_INFO):
+    def _add_date(
+        cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_INFO
+    ) -> Term:
         return LiteralValue(f"{date_column.name} + INTERVAL '{add_date_value} {add_date_unit}'")
 
     def duration(

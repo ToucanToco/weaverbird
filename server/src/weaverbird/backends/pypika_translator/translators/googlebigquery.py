@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from pypika import Field, Query, Table, functions
 from pypika.queries import QueryBuilder
-from pypika.terms import LiteralValue
+from pypika.terms import LiteralValue, Term
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
@@ -46,16 +46,19 @@ class GoogleBigQueryTranslator(SQLTranslator):
         integer="INTEGER",
         text="STRING",
         datetime="TIMESTAMP",
+        timestamp="TIMESTAMP",
     )
     SUPPORT_ROW_NUMBER = True
     SUPPORT_SPLIT_PART = False
     FROM_DATE_OP = FromDateOp.TO_CHAR
     REGEXP_OP = RegexOp.REGEXP_CONTAINS
-    TO_DATE_OP = ToDateOp.PARSE_DATE
+    TO_DATE_OP = ToDateOp.TO_TIMESTAMP
     QUOTE_CHAR = "`"
 
     @classmethod
-    def _add_date(cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_INFO):
+    def _add_date(
+        cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_INFO
+    ) -> Term:
         return LiteralValue(
             f"DATE_ADD({date_column.name}, INTERVAL {add_date_value} {add_date_unit})"
         )

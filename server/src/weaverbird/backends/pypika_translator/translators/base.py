@@ -92,6 +92,7 @@ class DataTypeMapping:
     integer: str
     text: str
     datetime: str
+    timestamp: str
 
 
 @dataclass
@@ -639,6 +640,10 @@ class SQLTranslator(ABC):
         cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_INFO
     ) -> Term:
         raise NotImplementedError(f"[{cls.DIALECT}] _add_date is not implemented")
+
+    @classmethod
+    def _to_timestamp(cls, *, date_column: Field) -> Term:
+        raise NotImplementedError(f"[{cls.DIALECT}] _to_timestamp is not implemented")
 
     def evolution(
         self: Self,
@@ -1262,11 +1267,13 @@ class SQLTranslator(ABC):
                     convert_fn = StrToDate
                 case ToDateOp.PARSE_DATE:
                     convert_fn = ParseDate
+                case ToDateOp.TO_TIMESTAMP:
+                    convert_fn = functions.Timestamp
                 case _:
                     raise NotImplementedError(f"[{self.DIALECT}] todate has no set operator")
             date_selection = convert_fn(col_field, step.format)
         else:
-            date_selection = functions.Cast(col_field, self.DATA_TYPE_MAPPING.date)
+            date_selection = functions.Cast(col_field, self.DATA_TYPE_MAPPING.timestamp)
 
         query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
             *(c for c in columns if c != step.column),
