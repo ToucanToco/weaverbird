@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [0.20.1] - 2022-08-02
+
+- Bumped flake8 and fixed dependency lock file
+
 ## [0.20.0] - 2022-08-01
 
 - Pypika: force converted date to timestamps
