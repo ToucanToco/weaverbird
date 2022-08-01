@@ -17,6 +17,7 @@ class MappingEnabledTranslator(SQLTranslator):
         integer="INTEGER",
         text="TEXT",
         datetime="TIMESTAMP",
+        timestamp="TIMESTAMP",
     )
 
 
