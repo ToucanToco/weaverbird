@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, TypeVar
 
 from pypika import Field, Table, functions
 from pypika.dialects import MySQLQuery
-from pypika.terms import LiteralValue
+from pypika.terms import LiteralValue, Term
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
@@ -33,6 +33,7 @@ class MySQLTranslator(SQLTranslator):
         integer="UNSIGNED",
         text="CHAR",
         datetime="TIMESTAMP",
+        timestamp="TIMESTAMP",
     )
     # Requires MySQL>=8
     SUPPORT_ROW_NUMBER = True
@@ -43,7 +44,9 @@ class MySQLTranslator(SQLTranslator):
     QUOTE_CHAR = '`'
 
     @classmethod
-    def _add_date(cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_INFO):
+    def _add_date(
+        cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_INFO
+    ) -> Term:
         return LiteralValue(
             f"DATE_ADD({date_column.name}, INTERVAL {add_date_value} {add_date_unit})"
         )

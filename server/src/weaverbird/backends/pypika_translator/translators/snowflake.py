@@ -21,16 +21,19 @@ class SnowflakeTranslator(SQLTranslator):
         integer="INTEGER",
         text="TEXT",
         datetime="TIMESTAMP",
+        timestamp="TIMESTAMP",
     )
     SUPPORT_ROW_NUMBER = True
     SUPPORT_SPLIT_PART = True
     FROM_DATE_OP = FromDateOp.TO_CHAR
     REGEXP_OP = RegexOp.REGEXP
-    TO_DATE_OP = ToDateOp.TO_DATE
+    TO_DATE_OP = ToDateOp.TO_TIMESTAMP
     QUOTE_CHAR = '\"'
 
     @classmethod
-    def _add_date(cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_INFO):
+    def _add_date(
+        cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_INFO
+    ) -> Term:
         add_date_func = CustomFunction('DATEADD', ['interval', 'increment', 'datecol'])
         return add_date_func(add_date_unit, add_date_value, date_column)
 
