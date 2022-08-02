@@ -52,8 +52,8 @@ def test_ifthenelse_nested_else():
             then='foo * 2',
             else_value=IfThenElse(
                 condition=ComparisonCondition(column='foo', operator='gt', value=2),
-                then='foo**2',
-                else_value='foo**3',
+                then='foo % 2',
+                else_value='foo % 3',
             ),
         )
     ) == [
@@ -66,11 +66,23 @@ def test_ifthenelse_nested_else():
                         'else': {
                             '$cond': {
                                 'if': {'$gt': ['$foo', 2]},
-                                'then': {'$pow': ['$foo', 2]},
-                                'else': {'$pow': ['$foo', 3]},
+                                'then': {
+                                    '$cond': [
+                                        {'$in': [2, [0, None]]},
+                                        None,
+                                        {'$mod': ['$foo', 2]},
+                                    ]
+                                },
+                                'else': {
+                                    '$cond': [
+                                        {'$in': [3, [0, None]]},
+                                        None,
+                                        {'$mod': ['$foo', 3]},
+                                    ]
+                                },
                             }
                         },
-                    },
+                    }
                 }
             }
         }

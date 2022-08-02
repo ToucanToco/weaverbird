@@ -180,15 +180,15 @@ def test_special_column_name():
     assert translate_formula(
         FormulaStep(
             new_column='test',
-            formula='[column with space and + and, oh a - and_also *] + [an other ^column]',
+            formula='[column with spaces] + [an other column]',
         )
     ) == [
         {
             '$addFields': {
                 'test': {
                     '$add': [
-                        '$column with space and + and, oh a - and_also *',
-                        '$an other ^column',
+                        '$column with spaces',
+                        '$an other column',
                     ],
                 },
             },
@@ -198,14 +198,12 @@ def test_special_column_name():
 
 def test_special_column_name_and_normal_column_name():
     assert translate_formula(
-        FormulaStep(
-            new_column='test', formula='[column with space and + and, oh a - and_also *] + A'
-        )
+        FormulaStep(new_column='test', formula='[column with spaces] + A')
     ) == [
         {
             '$addFields': {
                 'test': {
-                    '$add': ['$column with space and + and, oh a - and_also *', '$A'],
+                    '$add': ['$column with spaces', '$A'],
                 },
             },
         },
