@@ -109,16 +109,33 @@ class FormulaParser:
             case _:
                 raise UnsupportedOperator(f'Unsupported operator: {op}')
 
+    def _build_name(self, name: str) -> types.ColumnName | bool:
+        if name == 'true':
+            return True
+        if name == 'false':
+            return False
+        if name in self._columns:
+            return types.ColumnName(name=self._columns[name], alias=name)
+        else:
+            return types.ColumnName(name=name, alias=name)
+
     def _parse_expr(self, expr: ast.expr) -> types.Expression:
         match expr:
-            case ast.UnaryOp(op=op, operand=ast.Constant(value=value)):
-                match op:
-                    case ast.UAdd():  # +n
-                        return value
-                    case ast.USub():  # -n
-                        return -value
-                    case _:
-                        raise UnsupportedExpression(f"Unsupported expression: {ast.dump(expr)}")
+            # +LITERAL: +1, +13.37
+            case ast.UnaryOp(op=ast.UAdd(), operand=ast.Constant(value=value)):
+                return value
+            # -LITERAL: -1, -13.37
+            case ast.UnaryOp(op=ast.USub(), operand=ast.Constant(value=value)):
+                return -value
+            # +colname: +mycol, +[my col]
+            case ast.UnaryOp(op=ast.UAdd(), operand=ast.Name(id=name)):
+                return self._build_name(name)
+            # -colname: -mycol, -[my col]
+            case ast.UnaryOp(op=ast.USub(), operand=ast.Name(id=name)):
+                # Cheating a bit here, assuming the column is numeric
+                return types.Operation(
+                    left=-1, operator=types.Operator.MUL, right=self._build_name(name)
+                )
             case ast.BinOp(left=left, right=right, op=op):
                 operator = self._operator_from_ast_op(op)
                 return types.Operation(
@@ -135,14 +152,7 @@ class FormulaParser:
                         f"Unsupported constant '{expr}' of type {type(value)}"
                     )
             case ast.Name(id=name):
-                if name == 'true':
-                    return True
-                if name == 'false':
-                    return False
-                if name in self._columns:
-                    return types.ColumnName(name=self._columns[name], alias=name)
-                else:
-                    return types.ColumnName(name=name, alias=name)
+                return self._build_name(name)
             case _:
                 raise UnsupportedExpression(f"Unsupported expression: {ast.dump(expr)}")
 
