@@ -1,27 +1,37 @@
+import operator
+from ast import literal_eval
+
 import numpy as np
-from pandas import DataFrame
+from pandas import DataFrame, Series
 
 from weaverbird.pipeline.formula_ast.eval import FormulaParser
-from weaverbird.pipeline.formula_ast.types import Expression, format_expr
+from weaverbird.pipeline.formula_ast.types import ColumnName, Expression, Operation, Operator
+
+_OP_MAP = {
+    Operator.ADD: operator.add,
+    Operator.SUB: operator.sub,
+    Operator.MUL: operator.mul,
+    Operator.DIV: operator.truediv,
+    Operator.MOD: operator.mod,
+}
 
 
-def formula_expression_to_pandas(tree: Expression) -> str | int | bool | float:
-    return format_expr(tree, column_start_seq='`', column_end_seq='`', bools_as_py=True)
+def _eval_operation(df: DataFrame, op: Operation) -> Series:
+    return _OP_MAP[op.operator](
+        _eval_expression(df, op.left), _eval_expression(df, op.right)
+    ).replace([np.inf, -np.inf], np.nan)
 
 
-def eval_formula(df: DataFrame, formula: str) -> DataFrame:
-    pandas_expr = formula_expression_to_pandas(FormulaParser(formula).parse())
-    try:
-        result = df.eval(pandas_expr)
-    except Exception:
-        # for all cases not handled by NumExpr
-        result = df.eval(pandas_expr, engine='python')
+def _eval_expression(df: DataFrame, expr: Expression) -> Series:
+    if isinstance(expr, Operation):
+        return _eval_operation(df, expr)
+    elif isinstance(expr, ColumnName):
+        return df[expr.name]
+    elif isinstance(expr, str):
+        # we want unquoted strings
+        expr = literal_eval(expr)
+    return Series(expr, index=df.index)
 
-    try:
-        # eval can introduce Infinity values (when dividing by 0),
-        # which do not have a JSON representation.
-        # Let's replace them by NaN:
-        return result.replace([np.inf, -np.inf], np.nan)
-    except Exception:
-        # `result` is not a Series
-        return result
+
+def eval_formula(df: DataFrame, formula: str) -> Series:
+    return _eval_expression(df, FormulaParser(formula).parse())
