@@ -13,7 +13,7 @@ class DateFormatTranslator(SQLTranslator):
     QUERY_CLS = Query
     FROM_DATE_OP = FromDateOp.TO_CHAR
     REGEXP_OP = RegexOp.SIMILAR_TO
-    TO_DATE_OP = ToDateOp.TO_TIMESTAMP
+    TO_DATE_OP = ToDateOp.TIMESTAMP
 
 
 ALL_TABLES = {"users": ["name", "pseudonyme", "age"]}

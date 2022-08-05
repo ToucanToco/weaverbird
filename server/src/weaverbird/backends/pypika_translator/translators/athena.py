@@ -26,7 +26,7 @@ class AthenaTranslator(SQLTranslator):
     )
     REGEXP_OP = RegexOp.REGEXP_LIKE
     QUOTE_CHAR = '"'
-    TO_DATE_OP = ToDateOp.TO_TIMESTAMP
+    TO_DATE_OP = ToDateOp.TIMESTAMP
 
     @classmethod
     def _add_date(

@@ -1261,13 +1261,15 @@ class SQLTranslator(ABC):
                     convert_fn = StrToDate
                 case ToDateOp.PARSE_DATE:
                     convert_fn = ParseDate
-                case ToDateOp.TO_TIMESTAMP:
+                case ToDateOp.TIMESTAMP:
                     convert_fn = functions.Timestamp
+                case ToDateOp.TO_TIMESTAMP_NTZ:
+                    convert_fn = ToTimestampNTZ
                 case _:
                     raise NotImplementedError(f"[{self.DIALECT}] todate has no set operator")
             date_selection = (
                 self._cast_to_timestamp(convert_fn(col_field, step.format))
-                if convert_fn != ToDateOp.TO_TIMESTAMP
+                if convert_fn != ToDateOp.TIMESTAMP
                 else convert_fn(col_field, step.format)
             )
         else:
@@ -1394,6 +1396,9 @@ class ParseDate(functions.Function):  # type: ignore[misc]
     def __init__(self, term: str | Field, date_format: str, alias: str | None = None) -> None:
         super().__init__("PARSE_DATE", term, date_format, alias=alias)
 
+class ToTimestampNTZ(functions.Function):  # type: ignore[misc]
+    def __init__(self, term: str | Field, date_format: str, alias: str | None = None) -> None:
+        super().__init__("TO_TIMESTAMP_NTZ", term, date_format, alias=alias)
 
 class RegexpMatching(Comparator):  # type: ignore[misc]
     similar_to = " SIMILAR TO "
