@@ -78,6 +78,60 @@ class MySQLTranslator(SQLTranslator):
     def _cast_to_timestamp(value: str | datetime | Field | Term) -> functions.Function:
         return functions.Timestamp(value)
 
+    @classmethod
+    def _get_date_extract_func(cls, *, date_unit: DATE_INFO, target_column: Field) -> Term:
+        if date_unit.lower() in [
+            "seconds",
+            "minutes",
+            "hour",
+            "day",
+            "dayofweekiso",
+            "week",
+            "weekiso",
+            "month",
+            "milliseconds",
+            "quarter",
+            "year",
+            "yearofweek",
+            "yearofweekiso",
+        ]:
+            return LiteralValue(
+                f"EXTRACT({date_unit[:-1] if date_unit in ['seconds', 'minutes'] else date_unit} "
+                f"from {target_column.name})"
+            )
+        else:
+            date_func: dict[DATE_INFO, str] = {
+                # Returning numbers
+                # -----------------
+                "dayOfYear": "EXTRACT('doy' from ____target____)",
+                "isoDayOfWeek": "EXTRACT('isodow' FROM ____target____)",
+                "isoWeek": "EXTRACT('week' FROM ____target____)",
+                "isoYear": "EXTRACT('isoyear' FROM ____target____)",
+                # same problem as 'week' behaviour
+                "previousWeek": "EXTRACT('week' FROM ____target____ - interval '1 week')",
+                "previousIsoWeek": "EXTRACT('week' FROM ____target____ - interval '1 week')",
+                "previousMonth": "EXTRACT('month' FROM ____target____ - interval '1 month')",
+                "previousQuarter": "EXTRACT('quarter' FROM ____target____ - interval '3 month')",
+                "previousYear": "EXTRACT('year' FROM ____target____ - interval '1 year')",
+                "dayOfWeek": "MOD(EXTRACT('isodow' FROM ____target____), 7) + 1",
+                # Returning dates
+                # ---------------
+                "previousDay": "DATE_TRUNC('day', ____target____ - interval '1 day')",
+                "firstDayOfWeek": "DATE_TRUNC('day', ____target____ -(CAST(MOD(EXTRACT('isodow' from ____target____), 7) || ' days' as Interval) + interval '1 day')+ interval '1 day')",
+                "firstDayOfIsoWeek": "DATE_TRUNC('week', ____target____)",
+                "firstDayOfMonth": "DATE_TRUNC('month', ____target____)",
+                "firstDayOfQuarter": "DATE_TRUNC('quarter', ____target____)",
+                "firstDayOfYear": "DATE_TRUNC('year', ____target____)",
+                "firstDayOfPreviousWeek": "DATE_TRUNC('day', ____target____ -(CAST(MOD(EXTRACT('isodow' from ____target____), 7) || ' days' as Interval) + interval '1 day')+ interval '1 day') - interval '1 week'",
+                "firstDayOfPreviousIsoWeek": "DATE_TRUNC('week', ____target____ - interval '1 week')",
+                "firstDayOfPreviousMonth": "DATE_TRUNC('month', ____target____) - interval '1 month'",
+                "firstDayOfPreviousQuarter": "DATE_TRUNC('quarter', ____target____) - interval '3 months'",
+                "firstDayOfPreviousYear": "DATE_TRUNC('year', ____target____) - interval '1 year'",
+            }
+            return LiteralValue(
+                f'{date_func[date_unit].replace("____target____", target_column.name)}'
+            )
+
 
 SQLTranslator.register(MySQLTranslator)
 

@@ -3,7 +3,6 @@
     "athena_pypika",
     "bigquery_pypika",
     "mongo",
-    "mysql_pypika",
     "pandas",
     "redshift_pypika"
   ],
