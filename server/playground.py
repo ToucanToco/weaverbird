@@ -26,10 +26,9 @@ Environment variables:
 - for snowflake, SNOWFLAKE_USER, SNOWFLAKE_PASSWORD, SNOWFLAKE_ACCOUNT and SNOWFLAKE_DATABASE
 - for postgresql, POSTGRESQL_CONNECTION_STRING
 """
-from contextlib import suppress
-from csv import Dialect
 import json
 import os
+from contextlib import suppress
 from datetime import datetime
 from enum import Enum
 from functools import cache
@@ -59,9 +58,6 @@ from weaverbird.backends.pandas_executor.pipeline_executor import (
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import (
     translate_pipeline as pypika_translate_pipeline,
-)
-from weaverbird.backends.sql_translator.sql_pipeline_translator import (
-    translate_pipeline as sql_translate_pipeline,
 )
 from weaverbird.pipeline import Pipeline
 
@@ -400,7 +396,9 @@ def get_table_columns():
     for table in tables_info:
         with suppress(Exception):
             table_name = table[1]
-            infos = snowflake_connexion.cursor().execute(f'DESCRIBE TABLE "{table_name}";').fetchall()
+            infos = (
+                snowflake_connexion.cursor().execute(f'DESCRIBE TABLE "{table_name}";').fetchall()
+            )
             tables_columns[table_name] = [info[0] for info in infos if info[2] == "COLUMN"]
     return tables_columns
 
@@ -420,7 +418,12 @@ async def handle_snowflake_backend_request():
 
         tables_columns = get_table_columns()
 
-        query = pypika_translate_pipeline(sql_dialect=SQLDialect.SNOWFLAKE,  pipeline=Pipeline(steps=pipeline), db_schema="PUBLIC", tables_columns=tables_columns) 
+        query = pypika_translate_pipeline(
+            sql_dialect=SQLDialect.SNOWFLAKE,
+            pipeline=Pipeline(steps=pipeline),
+            db_schema="PUBLIC",
+            tables_columns=tables_columns,
+        )
 
         total_count = (
             snowflake_connexion.cursor().execute(f'SELECT COUNT(*) FROM ({ query })').fetchone()[0]

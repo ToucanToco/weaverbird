@@ -1396,9 +1396,11 @@ class ParseDate(functions.Function):  # type: ignore[misc]
     def __init__(self, term: str | Field, date_format: str, alias: str | None = None) -> None:
         super().__init__("PARSE_DATE", term, date_format, alias=alias)
 
+
 class ToTimestampNTZ(functions.Function):  # type: ignore[misc]
     def __init__(self, term: str | Field, date_format: str, alias: str | None = None) -> None:
         super().__init__("TO_TIMESTAMP_NTZ", term, date_format, alias=alias)
+
 
 class RegexpMatching(Comparator):  # type: ignore[misc]
     similar_to = " SIMILAR TO "
