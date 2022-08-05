@@ -407,7 +407,7 @@ def get_table_columns():
 async def handle_snowflake_backend_request():
     if request.method == 'GET':
         tables_info = get_table_columns()
-        return jsonify([key for key in tables_info.keys()])
+        return jsonify(list(tables_info.keys()))
 
     elif request.method == 'POST':
         pipeline = await parse_request_json(request)
