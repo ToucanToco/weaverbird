@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## [0.21.0] - 2022-08-05
+
+- Switched Snowflake backend in the playground to PyPika
+- Added a `TO_TIMESTAMP_NTZ` operator to the ToDateOp enum
+- Renamed `TIMESTAMP` operator to `TO_TIMESTAMP`
+- Bumped dependencies in lockfile
+
 ## [0.20.1] - 2022-08-02
 
 - Bumped flake8 and fixed dependency lock file
