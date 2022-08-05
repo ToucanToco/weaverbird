@@ -28,6 +28,7 @@ Environment variables:
 """
 import json
 import os
+from contextlib import suppress
 from datetime import datetime
 from enum import Enum
 from functools import cache
@@ -57,9 +58,6 @@ from weaverbird.backends.pandas_executor.pipeline_executor import (
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import (
     translate_pipeline as pypika_translate_pipeline,
-)
-from weaverbird.backends.sql_translator.sql_pipeline_translator import (
-    translate_pipeline as sql_translate_pipeline,
 )
 from weaverbird.pipeline import Pipeline
 
@@ -392,11 +390,24 @@ def snowflake_query_executor(domain: str, query_string: str = None) -> Union[pd.
         return res.fetch_pandas_all()
 
 
+def get_table_columns():
+    tables_info = snowflake_connexion.cursor().execute('SHOW TABLES;').fetchall()
+    tables_columns = {}
+    for table in tables_info:
+        with suppress(Exception):
+            table_name = table[1]
+            infos = (
+                snowflake_connexion.cursor().execute(f'DESCRIBE TABLE "{table_name}";').fetchall()
+            )
+            tables_columns[table_name] = [info[0] for info in infos if info[2] == "COLUMN"]
+    return tables_columns
+
+
 @app.route('/snowflake', methods=['GET', 'POST'])
 async def handle_snowflake_backend_request():
     if request.method == 'GET':
-        tables_info = snowflake_connexion.cursor().execute('SHOW TABLES;').fetchall()
-        return jsonify([table_infos[1] for table_infos in tables_info])
+        tables_info = get_table_columns()
+        return jsonify(list(tables_info.keys()))
 
     elif request.method == 'POST':
         pipeline = await parse_request_json(request)
@@ -405,11 +416,13 @@ async def handle_snowflake_backend_request():
         limit = int(request.args.get('limit', 50))
         offset = int(request.args.get('offset', 0))
 
-        query, _ = sql_translate_pipeline(
-            Pipeline(steps=pipeline),
-            sql_query_retriever=sql_table_retriever,
-            sql_query_describer=snowflake_query_describer,
-            sql_query_executor=snowflake_query_executor,
+        tables_columns = get_table_columns()
+
+        query = pypika_translate_pipeline(
+            sql_dialect=SQLDialect.SNOWFLAKE,
+            pipeline=Pipeline(steps=pipeline),
+            db_schema="PUBLIC",
+            tables_columns=tables_columns,
         )
 
         total_count = (

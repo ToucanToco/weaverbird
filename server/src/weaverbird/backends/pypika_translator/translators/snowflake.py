@@ -27,7 +27,7 @@ class SnowflakeTranslator(SQLTranslator):
     SUPPORT_SPLIT_PART = True
     FROM_DATE_OP = FromDateOp.TO_CHAR
     REGEXP_OP = RegexOp.REGEXP
-    TO_DATE_OP = ToDateOp.TO_TIMESTAMP
+    TO_DATE_OP = ToDateOp.TO_TIMESTAMP_NTZ
     QUOTE_CHAR = '\"'
 
     @classmethod

@@ -52,7 +52,7 @@ class GoogleBigQueryTranslator(SQLTranslator):
     SUPPORT_SPLIT_PART = False
     FROM_DATE_OP = FromDateOp.TO_CHAR
     REGEXP_OP = RegexOp.REGEXP_CONTAINS
-    TO_DATE_OP = ToDateOp.TO_TIMESTAMP
+    TO_DATE_OP = ToDateOp.TIMESTAMP
     QUOTE_CHAR = "`"
 
     @classmethod
