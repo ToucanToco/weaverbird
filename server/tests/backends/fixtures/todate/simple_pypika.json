@@ -1,0 +1,62 @@
+{
+  "exclude": [
+    "snowflake",
+    "pandas",
+    "mongo"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "todate",
+        "column": "brewing_date"
+      },
+      {
+        "name": "select",
+        "columns":["brewing_date"]
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "brewing_date",
+          "type": "datetime"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "brewing_date": "2022-01-01 00:00:00"
+      },
+      {
+        "brewing_date": "2022-01-02 00:00:00"
+      },
+      {
+        "brewing_date": "2022-01-03 00:00:00"
+      },
+      {
+        "brewing_date": "2022-01-04 00:00:00"
+      },
+      {
+        "brewing_date": "2022-01-05 00:00:00"
+      },
+      {
+        "brewing_date": "2022-01-06 00:00:00"
+      },
+      {
+        "brewing_date": "2022-01-07 00:00:00"
+      },
+      {
+        "brewing_date": "2022-01-08 00:00:00"
+      },
+      {
+        "brewing_date": "2022-01-09 00:00:00"
+      },
+      {
+        "brewing_date": "2022-01-10 00:00:00"
+      }
+    ]
+  }
+}

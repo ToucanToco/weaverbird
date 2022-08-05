@@ -75,7 +75,6 @@ def test_sql_translator_pipeline(case_id: str, case_spec_file_path: str, engine:
     steps = spec['step']['pipeline']
     steps.insert(0, {'name': 'domain', 'domain': 'beers_tiny'})
     pipeline = PipelineWithVariables(steps=steps)
-
     # Convert Pipeline object to Postgres Query
     query = translate_pipeline(
         sql_dialect=SQLDialect.POSTGRES,
