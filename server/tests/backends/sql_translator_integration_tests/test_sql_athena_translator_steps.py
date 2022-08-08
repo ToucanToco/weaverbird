@@ -56,6 +56,6 @@ def test_athena_translator_pipeline(boto_session: Session, case_id: str, case_sp
     )
     expected = pd.read_json(json.dumps(pipeline_spec['expected']), orient='table')
     result = wr.athena.read_sql_query(
-        query, database=_DB, boto3_session=boto_session, s3_output=_OUTPUT
+        query, database=_DB, boto3_session=boto_session, s3_output=_OUTPUT, ctas_approach=False
     )
     assert_dataframes_equals(expected, result)
