@@ -19,7 +19,6 @@ if TYPE_CHECKING:
 
     from weaverbird.pipeline.steps import ConcatenateStep
 
-
 Self = TypeVar("Self", bound="RedshiftTranslator")
 
 
@@ -37,6 +36,7 @@ class RedshiftTranslator(PostgreSQLTranslator):
     )
     SUPPORT_ROW_NUMBER = True
     SUPPORT_SPLIT_PART = True
+    SUPPORT_UNPIVOT = True
     FROM_DATE_OP = FromDateOp.TO_CHAR
     REGEXP_OP = RegexOp.SIMILAR_TO
     TO_DATE_OP = ToDateOp.TIMESTAMP
@@ -51,6 +51,7 @@ class RedshiftTranslator(PostgreSQLTranslator):
     # Redshift's CONCAT function does not support more than 2 terms, but concats can be nested. This
     # helpers allow to nest concatenations:
     # https://docs.aws.amazon.com/redshift/latest/dg/r_CONCAT.html
+
     def _recursive_concat(
         self, concat: functions.Concat | None, tokens: list[str]
     ) -> functions.Concat:

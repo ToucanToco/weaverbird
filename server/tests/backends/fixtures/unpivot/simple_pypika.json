@@ -1,0 +1,84 @@
+{
+  "exclude": [
+    "mongo",
+    "pandas",
+    "snowflake",
+    "postgres",
+    "mongo",
+    "mysql"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "unpivot",
+        "keep": ["cost"],
+        "unpivot": ["beer_kind", "name"],
+        "unpivot_column_name": "variable",
+        "value_column_name": "value",
+        "dropna": false
+      },
+      {
+        "name": "sort",
+        "columns": [
+         {
+          "column": "cost",
+          "order": "asc"
+         },
+         {
+            "column": "variable",
+            "order": "asc"
+          },
+          {
+            "column": "value",
+            "order": "asc"
+          }
+        ]
+      },
+      {
+        "name": "lowercase",
+        "column": "variable"
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "cost",
+          "type": "number"
+        },
+        {
+          "name": "variable",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "1.4.0"
+    },
+    "data": [
+       {"cost": 1.55, "variable": "beer_kind", "value": "Blonde"},
+       {"cost": 1.55, "variable": "name", "value": "Cuvée des Trolls"},
+       {"cost": 1.59, "variable": "beer_kind", "value": "Blanche & Weizen"},
+       {"cost": 1.59, "variable": "name", "value": "Weihenstephan Hefe Weizen Alcoholarm"},
+       {"cost": 1.69, "variable": "beer_kind", "value": "Belge blonde forte & Golden Ale"},
+       {"cost": 1.69, "variable": "name", "value": "Pauwel Kwak"},
+       {"cost": 1.79, "variable": "beer_kind", "value": "Blonde"},
+       {"cost": 1.79, "variable": "name", "value": "Brugse Zot blonde"},
+       {"cost": 2.09, "variable": "beer_kind", "value": "Best-sellers"},
+       {"cost": 2.09, "variable": "name", "value": "Ardwen Blonde"},
+       {"cost": 2.19, "variable": "beer_kind", "value": "Blonde"},
+       {"cost": 2.19, "variable": "name", "value": "Brasserie De Sutter Brin de Folie"},
+       {"cost": 2.29, "variable": "beer_kind", "value": "Sans alcool"},
+       {"cost": 2.29, "variable": "name", "value": "Brewdog Nanny State Alcoholvrij"},
+       {"cost": 2.49, "variable": "beer_kind", "value": "India Pale Ale"},
+       {"cost": 2.49, "variable": "name", "value": "Bellfield Lawless Village IPA"},
+       {"cost": 2.89, "variable": "beer_kind", "value": "India Pale Ale"},
+       {"cost": 2.89, "variable": "beer_kind", "value": "Triple"},
+       {"cost": 2.89, "variable": "name", "value": "Ninkasi Ploploplop"},
+       {"cost": 2.89, "variable": "name", "value": "Superstrong beer"}
+    ]
+  }
+}

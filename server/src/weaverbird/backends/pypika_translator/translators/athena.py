@@ -15,6 +15,7 @@ class AthenaTranslator(SQLTranslator):
     QUERY_CLS = Query
     SUPPORT_ROW_NUMBER = True
     SUPPORT_SPLIT_PART = True
+    SUPPORT_UNPIVOT = False
     DATA_TYPE_MAPPING = DataTypeMapping(
         boolean="BOOLEAN",
         date="DATE",
@@ -25,7 +26,6 @@ class AthenaTranslator(SQLTranslator):
         timestamp="TIMESTAMP",
     )
     REGEXP_OP = RegexOp.REGEXP_LIKE
-    QUOTE_CHAR = '"'
     TO_DATE_OP = ToDateOp.TIMESTAMP
 
     @classmethod

@@ -50,10 +50,10 @@ class GoogleBigQueryTranslator(SQLTranslator):
     )
     SUPPORT_ROW_NUMBER = True
     SUPPORT_SPLIT_PART = False
+    SUPPORT_UNPIVOT = True
     FROM_DATE_OP = FromDateOp.TO_CHAR
     REGEXP_OP = RegexOp.REGEXP_CONTAINS
     TO_DATE_OP = ToDateOp.TIMESTAMP
-    QUOTE_CHAR = "`"
 
     @classmethod
     def _add_date(
