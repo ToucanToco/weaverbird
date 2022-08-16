@@ -7,7 +7,7 @@ from pypika.terms import LiteralValue
 
 from weaverbird.backends.pypika_translator.translators.snowflake import SnowflakeTranslator
 from weaverbird.pipeline import steps
-from weaverbird.pipeline.steps import DateExtractStep
+from weaverbird.pipeline.steps import DateExtractStep, UnpivotStep
 
 
 @pytest.fixture
@@ -142,3 +142,18 @@ def test_date_extract_func(
         LiteralValue('WEEKISO(to_timestamp(brewing_date))').as_('brewing_week'),
     )
     assert ctx.selectable.get_sql(quote_char='"') == expected_query.get_sql(quote_char='"')
+
+
+def test__build_unpivot_col(snowflake_translator: SnowflakeTranslator) -> None:
+    unpivot = snowflake_translator._build_unpivot_col(
+        step=UnpivotStep(
+            keep=['foo', 'bar'],
+            unpivot=['too', 'roo'],
+            unpivot_column_name='yaaaa',
+            value_column_name='booo',
+            dropna=False,
+        ),
+        quote_char=None,
+        secondary_quote_char="'",
+    )
+    assert unpivot == 'UNPIVOT(booo FOR yaaaa IN (too, roo))'

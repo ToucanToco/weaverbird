@@ -9,7 +9,7 @@ def redshift_translator() -> RedshiftTranslator:
     return RedshiftTranslator(tables_columns={})
 
 
-def test_recursive_concat(redshift_translator: RedshiftTranslator):
+def test_recursive_concat(redshift_translator: RedshiftTranslator) -> None:
     the_table = Table('table')
     concat = redshift_translator._recursive_concat(
         None, [the_table['col1'], ' - ', the_table['col2'], ' - ', the_table['col3']]

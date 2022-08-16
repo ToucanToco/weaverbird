@@ -22,6 +22,7 @@ from pypika import (
 from pypika.enums import Comparator, JoinType
 from pypika.queries import QueryBuilder, Selectable
 from pypika.terms import AnalyticFunction, BasicCriterion, LiteralValue, Term
+from pypika.utils import format_quotes
 
 from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relative_date
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
@@ -78,6 +79,7 @@ if TYPE_CHECKING:
         TopStep,
         TrimStep,
         UniqueGroupsStep,
+        UnpivotStep,
         UppercaseStep,
     )
     from weaverbird.pipeline.steps.aggregate import AggregateFn
@@ -97,7 +99,7 @@ class DataTypeMapping:
 
 @dataclass
 class StepContext:
-    selectable: Selectable
+    selectable: Selectable | LiteralValue
     columns: list[str]
     builder: QueryBuilder | None = None
 
@@ -128,12 +130,11 @@ class SQLTranslator(ABC):
     # supported extra functions
     SUPPORT_ROW_NUMBER: bool
     SUPPORT_SPLIT_PART: bool
+    SUPPORT_UNPIVOT: bool = False
     # which operators should be used
     FROM_DATE_OP: FromDateOp
     REGEXP_OP: RegexOp
     TO_DATE_OP: ToDateOp
-    # depending on the translator, this may change to ` or '
-    QUOTE_CHAR: str
     EVOLUTION_DATE_UNIT: dict['EVOLUTION_TYPE', DATE_INFO] = {
         'vsLastYear': 'year',
         'vsLastMonth': 'month',
@@ -908,17 +909,18 @@ class SQLTranslator(ABC):
             """
             # We remove enclosures and double spaces
             formula = ' '.join(re.sub(r'[\[\]]|["]|[`]|[\']', '', formula).split())
+            quote_char = builder.QUOTE_CHAR if builder.QUOTE_CHAR else '\"'
             # We add quote from the translator
             formula = re.sub(
                 r'([a-zA-Z_a-zA-Z]+)',
-                r'{}\1{}'.format(self.QUOTE_CHAR, self.QUOTE_CHAR),
+                r'{}\1{}'.format(quote_char, quote_char),
                 formula,
             )
             # detect and encapsulate / and %
             if '/' in formula:
                 formula = re.sub(
                     '((?<=/)\{}?\w+\{}?)|((?<=/)\d+)|((?<=/)\(?.*\)?)'.format(
-                        self.QUOTE_CHAR, self.QUOTE_CHAR
+                        quote_char, quote_char
                     ),
                     r' NULLIF(\1\2\3, 0)',
                     formula.replace('/ ', '/'),
@@ -926,7 +928,7 @@ class SQLTranslator(ABC):
             if '%' in formula:
                 formula = re.sub(
                     '((?<=%)\{}?\w+\{}?)|((?<=/)\d+)|((?<=/)\(?.*\)?)'.format(
-                        self.QUOTE_CHAR, self.QUOTE_CHAR
+                        quote_char, quote_char
                     ),
                     r' NULLIF(\1\2\3, 0)',
                     formula.replace('% ', '%'),
@@ -1354,6 +1356,37 @@ class SQLTranslator(ABC):
             prev_step_name=prev_step_name,
             columns=columns,
         )
+
+    @classmethod
+    def _build_unpivot_col(
+        cls, *, step: 'UnpivotStep', quote_char: str | None, secondary_quote_char: str
+    ) -> str:
+        value_col = format_quotes(step.value_column_name, quote_char)
+        unpivot_col = format_quotes(step.unpivot_column_name, quote_char)
+        in_cols = ', '.join(format_quotes(col, quote_char) for col in step.unpivot)
+        if cls.SUPPORT_UNPIVOT:
+            return f'UNPIVOT({value_col} FOR {unpivot_col} IN ({in_cols}))'
+        in_single_quote_cols = ', '.join(
+            format_quotes(col, secondary_quote_char) for col in step.unpivot
+        )
+        return f' t1 CROSS JOIN UNNEST(ARRAY[{in_single_quote_cols}], ARRAY[{in_cols}]) t2 ({unpivot_col}, {value_col})'
+
+    def unpivot(
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: 'UnpivotStep',
+    ) -> StepContext:
+        unpivot = self._build_unpivot_col(
+            step=step,
+            quote_char=builder.QUOTE_CHAR,
+            secondary_quote_char=builder.SECONDARY_QUOTE_CHAR,
+        )
+        cols = step.keep + [step.unpivot_column_name] + [step.value_column_name]
+        query = LiteralValue(f'{self.QUERY_CLS.from_(prev_step_name).select(*cols)!s} {unpivot}')
+        return StepContext(query, cols)
 
     def uppercase(
         self: Self,

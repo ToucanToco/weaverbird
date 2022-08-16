@@ -122,6 +122,10 @@ export class PypikaTranslator extends BaseTranslator {
     return step;
   }
 
+  unpivot(step: Readonly<S.UnpivotStep>) {
+    return step;
+  }
+
   uppercase(step: Readonly<S.ToUpperStep>) {
     return step;
   }
