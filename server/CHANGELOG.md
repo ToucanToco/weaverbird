@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## [0.22.0] - 2022-08-18
+
+- Added Pypika's `UNPIVOT` step
+
+
 ## [0.21.0] - 2022-08-05
 
 - Switched Snowflake backend in the playground to PyPika
