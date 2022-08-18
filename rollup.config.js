@@ -36,7 +36,10 @@ export default {
     { file: 'dist/weaverbird.esm.js', format: 'esm' },
     { file: 'dist/weaverbird.browser.js', format: 'umd', name: 'vqb' },
   ],
-  external: ['vue', 'vuex'],
+  external: {
+    vue: 'Vue',
+    vuex: 'Vuex',
+  },
   plugins: [
     typescript({ module: 'es2015' }),
     resolve({
