@@ -20,7 +20,8 @@
 <script lang="ts">
 import _isEmpty from 'lodash/isEmpty';
 import _isEqual from 'lodash/isEqual';
-import DatePicker from 'v-calendar/src/components/DatePicker.vue';
+// @ts-ignore
+import DatePicker from 'v-calendar/lib/components/date-picker.umd';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import { clampRange, DatePickerHighlight, DateRange, isDateRange } from '@/lib/dates';
