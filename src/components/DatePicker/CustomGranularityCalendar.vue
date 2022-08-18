@@ -53,7 +53,8 @@
 </template>
 
 <script lang="ts">
-import { DateTime } from 'luxon';
+// @ts-ignore
+import { DateTime } from 'luxon/build/es6/luxon';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';

@@ -1,4 +1,5 @@
-import { DateTime } from 'luxon';
+// @ts-ignore
+import { DateTime } from 'luxon/build/es6/luxon';
 
 import { DateRange } from '@/lib/dates';
 import t, { DEFAULT_LOCALE, LocaleIdentifier } from '@/lib/internationalization';

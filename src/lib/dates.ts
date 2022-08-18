@@ -1,5 +1,6 @@
 import _has from 'lodash/has';
-import { DateTime } from 'luxon';
+// @ts-ignore
+import { DateTime } from 'luxon/build/es6/luxon';
 
 import t, { DEFAULT_LOCALE, LocaleIdentifier } from '@/lib/internationalization';
 

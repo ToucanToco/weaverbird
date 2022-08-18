@@ -1,4 +1,5 @@
-import { DateTime } from 'luxon';
+// @ts-ignore
+import { DateTime } from 'luxon/build/es6/luxon';
 
 import { DateRange, isDateRange, RELATIVE_DATE_OPERATORS, RelativeDate } from '@/lib/dates';
 import { retrieveVariable, VariableDelimiters, VariablesBucket } from '@/lib/variables';
