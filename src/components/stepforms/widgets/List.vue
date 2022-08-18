@@ -45,7 +45,7 @@ import { Component, Mixins, Prop, Vue } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { TotalDimension } from '@/lib/steps.ts';
+import { TotalDimension } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 import FormWidget from './FormWidget.vue';

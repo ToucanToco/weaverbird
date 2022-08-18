@@ -1,7 +1,7 @@
 import { ActionContext, ActionTree } from 'vuex';
 
 import { BackendError } from '@/lib/backend';
-import { addLocalUniquesToDataset, updateLocalUniquesFromDatabase } from '@/lib/dataset/helpers.ts';
+import { addLocalUniquesToDataset, updateLocalUniquesFromDatabase } from '@/lib/dataset/helpers';
 import { pageOffset } from '@/lib/dataset/pagination';
 import { Pipeline, PipelineStep } from '@/lib/steps';
 

@@ -33,11 +33,11 @@ import {
   buildConditionsEditorTree,
   buildFilterStepTree,
   castFilterStepTreeValue,
-} from '@/components/stepforms/convert-filter-step-tree.ts';
+} from '@/components/stepforms/convert-filter-step-tree';
 import FilterSimpleConditionWidget, {
   DEFAULT_FILTER,
 } from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
-import { ColumnTypeMapping } from '@/lib/dataset/index.ts';
+import { ColumnTypeMapping } from '@/lib/dataset/index';
 import { FilterCondition } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 

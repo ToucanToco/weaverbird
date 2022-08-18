@@ -3,7 +3,7 @@ import {
   buildFilterStepTree,
   castFilterStepTreeValue,
   isFilterCombo,
-} from '@/components/stepforms/convert-filter-step-tree.ts';
+} from '@/components/stepforms/convert-filter-step-tree';
 
 describe('Convert filter step tree', () => {
   describe('isFilterCombo', () => {
