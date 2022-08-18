@@ -1,15 +1,15 @@
 import alias from '@rollup/plugin-alias';
+import commonjs from '@rollup/plugin-commonjs';
+import json from '@rollup/plugin-json';
+import resolve from '@rollup/plugin-node-resolve';
+import replace from '@rollup/plugin-replace';
+import typescript from '@rollup/plugin-typescript';
 import autoprefixer from 'autoprefixer';
 import fs from 'fs';
 import path from 'path';
 import postcssPresetEnv from 'postcss-preset-env';
-import commonjs from 'rollup-plugin-commonjs';
-import json from 'rollup-plugin-json';
-import resolve from 'rollup-plugin-node-resolve';
 import postcss from 'rollup-plugin-postcss';
-import replace from 'rollup-plugin-replace';
 import { terser } from 'rollup-plugin-terser';
-import typescript from 'rollup-plugin-typescript';
 import vue from 'rollup-plugin-vue';
 
 const production = process.env.NODE_ENV === 'production' || !process.env.ROLLUP_WATCH;
