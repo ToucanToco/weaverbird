@@ -2884,7 +2884,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
     try {
       translator.translate(pipeline);
     } catch (e) {
-      expect(e.message).toBe('Unsupported step <convert>');
+      expect(e instanceof Error ? e.message : `${e}`).toBe('Unsupported step <convert>');
     }
   });
 

@@ -79,8 +79,10 @@ describe('Rename Step Form', () => {
         },
       });
       await wrapper.vm.$nextTick();
-    } catch (error) {
-      expect(error.message).toBe('should not try to set null in rename "toRename" field');
+    } catch (e) {
+      expect(e instanceof Error ? e.message : `${e}`).toBe(
+        'should not try to set null in rename "toRename" field',
+      );
     }
   });
 

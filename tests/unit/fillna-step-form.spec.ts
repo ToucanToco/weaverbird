@@ -97,8 +97,10 @@ describe('Fillna Step Form', () => {
         },
       });
       await wrapper.vm.$nextTick();
-    } catch (error) {
-      expect(error.message).toBe('should not try to set null on fillna "column" field');
+    } catch (e) {
+      expect(e instanceof Error ? e.message : `${e}`).toBe(
+        'should not try to set null on fillna "column" field',
+      );
     }
   });
 
