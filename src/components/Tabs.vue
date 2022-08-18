@@ -37,7 +37,7 @@ export default class Tabs extends Vue {
   selectedTab!: string;
 
   @Prop({ default: () => (tab: string) => `${tab}` })
-  formatTab!: Function;
+  formatTab!: (tab: string) => string;
 
   @Prop({ default: false })
   compactMode!: boolean;

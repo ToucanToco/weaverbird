@@ -23,7 +23,7 @@ export type CodeEditorConfig = VueConstructor<Vue>;
 let CodeEditor: CodeEditorConfig = DefaultCodeEditor;
 
 type CodeEditorConfigs = { [name: string]: CodeEditorConfig };
-let CodeEditorConfigs: CodeEditorConfigs = {};
+let codeEditorConfigs: CodeEditorConfigs = {};
 
 function setAvailableCodeEditors({
   configs,
@@ -32,12 +32,12 @@ function setAvailableCodeEditors({
   configs: CodeEditorConfigs;
   defaultConfig?: string;
 }) {
-  CodeEditorConfigs = configs;
+  codeEditorConfigs = configs;
   // Define the default config to use
   CodeEditor =
-    defaultConfig && CodeEditorConfigs[defaultConfig]
-      ? CodeEditorConfigs[defaultConfig]
-      : Object.values(CodeEditorConfigs)[0];
+    defaultConfig && codeEditorConfigs[defaultConfig]
+      ? codeEditorConfigs[defaultConfig]
+      : Object.values(codeEditorConfigs)[0];
 }
 
-export { CodeEditor, CodeEditorConfigs, setAvailableCodeEditors };
+export { CodeEditor, codeEditorConfigs as CodeEditorConfigs, setAvailableCodeEditors };

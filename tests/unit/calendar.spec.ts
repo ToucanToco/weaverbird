@@ -1,5 +1,4 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 import DatePicker from 'v-calendar/lib/components/date-picker.umd';
 

@@ -103,8 +103,7 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   supports(stepname: S.PipelineStepName) {
     return !this.unsupportedSteps.includes(stepname);
   }
-
-  /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars, @typescript-eslint/no-unused-vars-experimental, @typescript-eslint/no-empty-function */
+  /* eslint-disable @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars */
   @unsupported
   absolutevalue(step: Readonly<S.AbsoluteValueStep>) {}
 
@@ -245,8 +244,7 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
 
   @unsupported
   waterfall(step: Readonly<S.WaterfallStep>) {}
-
-  /* eslint-enable no-unused-vars, @typescript-eslint/no-unused-vars, @typescript-eslint/no-unused-vars-experimental */
+  /* eslint-enable no-unused-vars, @typescript-eslint/no-unused-vars */
 
   /**
    * translates an input pipeline into a list of steps that makes sense for the
@@ -273,6 +271,7 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
    * validate the query written in a custom step
    * return null if no error
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validate(_customEditedStep: S.CustomStep | S.CustomSqlStep): ValidationError[] | null {
     return null;
   }

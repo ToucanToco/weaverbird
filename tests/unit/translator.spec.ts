@@ -8,7 +8,7 @@ import {
 import { ALL_STEP_NAMES, BaseTranslator } from '@/lib/translators/base';
 
 class DummyStringTranslator extends BaseTranslator {
-  /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars, @typescript-eslint/no-unused-vars-experimental */
+  /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
   domain(step: S.DomainStep) {
     return 'domain';
   }
@@ -18,7 +18,7 @@ class DummyStringTranslator extends BaseTranslator {
   rename(step: S.RenameStep) {
     return 'rename';
   }
-  /* eslint-enable no-unused-vars, @typescript-eslint/no-unused-vars, @typescript-eslint/no-unused-vars-experimental */
+  /* eslint-enable no-unused-vars, @typescript-eslint/no-unused-vars */
 }
 
 describe('base translator class', () => {

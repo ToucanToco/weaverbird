@@ -33,31 +33,16 @@ module.exports = {
       },
     ],
     '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'no-public' }],
-    '@typescript-eslint/camelcase': [
-      'error',
-      {
-        properties: 'never',
-      },
-    ],
+
+    // TODO
+    '@typescript-eslint/ban-ts-comment': 'off',
+    '@typescript-eslint/ban-types': 'off',
+    '@typescript-eslint/naming-convention': 'off',
+    '@typescript-eslint/no-non-null-assertion': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
+    '@typescript-eslint/prefer-as-const': 'off',
     '@typescript-eslint/prefer-interface': 'off',
-    'no-unused-vars': [
-      'error',
-      {
-        argsIgnorePattern: '^_',
-      },
-    ],
-    '@typescript-eslint/no-unused-vars': [
-      'error',
-      {
-        argsIgnorePattern: '^_',
-      },
-    ],
-    '@typescript-eslint/no-unused-vars-experimental': [
-      'error',
-      {
-        ignoredNamesRegex: '^_',
-      },
-    ],
+
     'space-before-function-paren': [
       'error',
       {
