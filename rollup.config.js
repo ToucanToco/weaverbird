@@ -1,8 +1,8 @@
+import alias from '@rollup/plugin-alias';
 import autoprefixer from 'autoprefixer';
 import fs from 'fs';
 import path from 'path';
 import postcssPresetEnv from 'postcss-preset-env';
-import alias from 'rollup-plugin-alias';
 import commonjs from 'rollup-plugin-commonjs';
 import json from 'rollup-plugin-json';
 import resolve from 'rollup-plugin-node-resolve';
@@ -49,8 +49,8 @@ export default {
       extensions: ['.mjs', '.js', '.ts', '.json', '.node', '.vue'],
     }),
     alias({
-      resolve: ['.vue', '.json'],
-      '@': path.join(packageDir(), '/src'),
+      entries: [{ find: '@', replacement: path.join(packageDir(), '/src') }],
+      customResolver: resolve({ extensions: ['.vue', '.json'] }),
     }),
     // date-fns comes from v-calendar
     commonjs({
