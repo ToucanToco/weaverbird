@@ -93,7 +93,7 @@
     "tslib": "^2.4.0",
     "typedoc": "^0.15.0",
     "typedoc-plugin-markdown": "^1.1.27",
-    "typescript": "^3.7.0",
+    "typescript": "^4.7.4",
     "typescript-eslint": "^0.0.1-alpha.0",
     "v-calendar": "^2.3.4",
     "v-tooltip": "^2.0.3",
