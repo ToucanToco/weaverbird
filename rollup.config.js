@@ -68,7 +68,6 @@ export default {
         autoprefixer(),
       ],
       // extract option break CSS live reload in Storybook, comment it to get it back
-      extract: true,
       extract: 'weaverbird.css',
     }),
     replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
