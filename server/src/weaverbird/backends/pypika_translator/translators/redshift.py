@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, TypeVar
 from pypika import Field, functions
 from pypika.dialects import RedshiftQuery
 from pypika.queries import QueryBuilder, Table
-from pypika.terms import CustomFunction, Term
+from pypika.terms import CustomFunction, Term, LiteralValue
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
@@ -17,7 +17,7 @@ from weaverbird.backends.pypika_translator.translators.postgresql import Postgre
 
 if TYPE_CHECKING:
 
-    from weaverbird.pipeline.steps import ConcatenateStep
+    from weaverbird.pipeline.steps import ConcatenateStep, PivotStep
 
 Self = TypeVar("Self", bound="RedshiftTranslator")
 
@@ -37,6 +37,7 @@ class RedshiftTranslator(PostgreSQLTranslator):
     SUPPORT_ROW_NUMBER = True
     SUPPORT_SPLIT_PART = True
     SUPPORT_UNPIVOT = True
+    SUPPORT_PIVOT = True
     FROM_DATE_OP = FromDateOp.TO_CHAR
     REGEXP_OP = RegexOp.SIMILAR_TO
     TO_DATE_OP = ToDateOp.TIMESTAMP
@@ -84,6 +85,30 @@ class RedshiftTranslator(PostgreSQLTranslator):
             self._recursive_concat(None, tokens).as_(step.new_column_name),
         )
         return StepContext(query, columns + [step.new_column_name])
+
+    def pivot(
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: 'PivotStep'
+    ) -> StepContext:
+        if not(self.SUPPORT_PIVOT):
+            raise NotImplementedError(f"[{self.DIALECT}] pivot is not implemented")
+        pivot = self._build_pivot_col(
+            step=step,
+            quote_char=builder.QUOTE_CHAR,
+            secondary_quote_char=builder.SECONDARY_QUOTE_CHAR,
+        )
+        cols = step.index + step.values
+        query = LiteralValue(
+            f'''{self.QUERY_CLS.from_(self.QUERY_CLS.from_(prev_step_name).select(
+                *[step.column_to_pivot, step.value_column, *step.index])
+            )
+            .select(*cols)!s} {pivot})'''
+        )
+        return StepContext(query, cols)
 
 
 SQLTranslator.register(RedshiftTranslator)

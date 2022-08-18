@@ -4,10 +4,11 @@ import pytest
 from pypika import CustomFunction
 from pypika.queries import Query, Table
 from pypika.terms import LiteralValue
+from pypika.dialects import SnowflakeQuery, SnowflakeQueryBuilder
 
 from weaverbird.backends.pypika_translator.translators.snowflake import SnowflakeTranslator
 from weaverbird.pipeline import steps
-from weaverbird.pipeline.steps import DateExtractStep, UnpivotStep
+from weaverbird.pipeline.steps import DateExtractStep, UnpivotStep, PivotStep
 
 
 @pytest.fixture
@@ -157,3 +158,18 @@ def test__build_unpivot_col(snowflake_translator: SnowflakeTranslator) -> None:
         secondary_quote_char="'",
     )
     assert unpivot == 'UNPIVOT(booo FOR yaaaa IN (too, roo))'
+
+
+def test__build_pivot_col(snowflake_translator: SnowflakeTranslator) -> None:
+    pivot = snowflake_translator._build_pivot_col(
+        step=PivotStep(
+            index=['foo', 'bar'],
+            column_to_pivot='too',
+            agg_function='avg',
+            value_column='booo',
+            values=[1, 3]
+        ),
+        quote_char=None,
+        secondary_quote_char="'",
+    )
+    assert pivot == "PIVOT(avg(booo) FOR too IN (1, 3)) AS P"

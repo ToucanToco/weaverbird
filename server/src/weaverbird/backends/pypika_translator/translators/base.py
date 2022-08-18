@@ -17,7 +17,7 @@ from pypika import (
     Table,
     Tables,
     analytics,
-    functions,
+    functions
 )
 from pypika.enums import Comparator, JoinType
 from pypika.queries import QueryBuilder, Selectable
@@ -68,8 +68,10 @@ if TYPE_CHECKING:
         JoinStep,
         LowercaseStep,
         PercentageStep,
+        PivotStep,
         RenameStep,
         ReplaceStep,
+        RollupStep,
         SelectStep,
         SortStep,
         SplitStep,
@@ -131,6 +133,7 @@ class SQLTranslator(ABC):
     SUPPORT_ROW_NUMBER: bool
     SUPPORT_SPLIT_PART: bool
     SUPPORT_UNPIVOT: bool = False
+    SUPPORT_PIVOT: bool = False
     # which operators should be used
     FROM_DATE_OP: FromDateOp
     REGEXP_OP: RegexOp
@@ -1119,6 +1122,33 @@ class SQLTranslator(ABC):
     ) -> StepContext:
         raise NotImplementedError(f"[{self.DIALECT}] percentage is not implemented")
 
+    @classmethod
+    def _build_pivot_col(cls, *, step: 'PivotStep', quote_char: str | None, secondary_quote_char: str) -> str:
+        pivot_col = format_quotes(step.column_to_pivot, quote_char)
+        aggregated_col = f'{step.agg_function}({format_quotes(step.value_column, quote_char)})'
+        value_cols = ', '.join(step.values)
+        return f'PIVOT({aggregated_col} FOR {pivot_col} IN ({value_cols})) AS P'
+
+    def pivot(
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: 'PivotStep'
+    ) -> StepContext:
+        if not(self.SUPPORT_PIVOT):
+            raise NotImplementedError(f"[{self.DIALECT}] pivot is not implemented")
+        pivot = self._build_pivot_col(
+            step=step,
+            quote_char=builder.QUOTE_CHAR,
+            secondary_quote_char=builder.SECONDARY_QUOTE_CHAR,
+        )
+        selected_value_cols = [Field(val).as_(val.replace(builder.QUOTE_CHAR, '')) for val in step.values]
+        cols = step.index + selected_value_cols
+        query = LiteralValue(f'{self.QUERY_CLS.from_(prev_step_name).select(*cols)!s} {pivot}')
+        return StepContext(query, cols)
+
     def rename(
         self: Self,
         *,
@@ -1161,6 +1191,7 @@ class SQLTranslator(ABC):
         )
 
         return StepContext(query, columns)
+
 
     def select(
         self: Self,

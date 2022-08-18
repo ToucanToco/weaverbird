@@ -26,6 +26,7 @@ class SnowflakeTranslator(SQLTranslator):
     SUPPORT_ROW_NUMBER = True
     SUPPORT_SPLIT_PART = True
     SUPPORT_UNPIVOT = True
+    SUPPORT_PIVOT = True
     FROM_DATE_OP = FromDateOp.TO_CHAR
     REGEXP_OP = RegexOp.REGEXP
     TO_DATE_OP = ToDateOp.TO_TIMESTAMP_NTZ
