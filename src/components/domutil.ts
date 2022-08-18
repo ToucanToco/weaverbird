@@ -71,6 +71,7 @@ function completeClientRect(customRect: Partial<ClientRect> = {}): ClientRect {
     bottom: 0,
     right: 0,
   };
+  // @ts-ignore TODO some props are actually missing from defaultRect
   return { ...defaultRect, ..._toPlainObj(customRect) };
 }
 

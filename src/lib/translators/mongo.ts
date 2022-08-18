@@ -2334,7 +2334,7 @@ export class Mongo36Translator extends BaseTranslator {
         {
           keyword: 'json',
           dataPath: '.query',
-          message: e.message,
+          message: e instanceof Error ? e.message : `${e}`,
         },
       ];
     }

@@ -116,7 +116,7 @@ function _getPipelineNamesReferencedBy(
         );
       }
       // we retreive the result
-      referenceNames.push(...cachedResults.get(pipelineName));
+      referenceNames.push(...(cachedResults.get(pipelineName) ?? []));
     }
   } else if (isReferenceToExternalQuery(reference)) {
     // do nothing - it should not be dereferenced by the UI

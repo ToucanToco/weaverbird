@@ -179,7 +179,7 @@ export class SnowflakeTranslator extends BaseTranslator {
         {
           keyword: 'sql',
           dataPath: '.query',
-          message: e.message,
+          message: e instanceof Error ? e.message : `${e}`,
         },
       ];
     }
