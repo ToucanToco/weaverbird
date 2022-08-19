@@ -1,12 +1,19 @@
 from typing import TypeVar
 
 from pypika.dialects import SnowflakeQuery
+from pypika.queries import QueryBuilder
 from pypika.terms import CustomFunction, Field, LiteralValue, Term
+from pypika.utils import format_quotes
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
-from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, SQLTranslator
+from weaverbird.backends.pypika_translator.translators.base import (
+    DataTypeMapping,
+    SQLTranslator,
+    StepContext,
+)
 from weaverbird.pipeline.steps.date_extract import DATE_INFO
+from weaverbird.pipeline.steps.pivot import PivotStep
 
 Self = TypeVar("Self", bound="SQLTranslator")
 
@@ -91,6 +98,36 @@ class SnowflakeTranslator(SQLTranslator):
             return LiteralValue(
                 f'{date_func[date_unit].replace("____target____", target_column.name)}'
             )
+
+    def pivot(
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: 'PivotStep',
+    ) -> StepContext:
+        if not (self.SUPPORT_PIVOT):
+            raise NotImplementedError(f"[{self.DIALECT}] pivot is not implemented")
+        pivot = self._build_pivot_col(
+            step=step,
+            quote_char=builder.QUOTE_CHAR,
+            secondary_quote_char=builder.SECONDARY_QUOTE_CHAR,
+            prev_step_name=None,
+        )
+        assert step.values
+        values_as_cols = [
+            Field(
+                format_quotes(
+                    format_quotes(val, builder.SECONDARY_QUOTE_CHAR),
+                    builder.QUOTE_CHAR if builder.QUOTE_CHAR else '"',
+                )
+            ).as_(val)
+            for val in step.values
+        ]
+        cols = step.index + values_as_cols
+        query = LiteralValue(f'{self.QUERY_CLS.from_(prev_step_name).select(*cols)!s} {pivot}')
+        return StepContext(query, step.index + step.values)
 
 
 SQLTranslator.register(SnowflakeTranslator)

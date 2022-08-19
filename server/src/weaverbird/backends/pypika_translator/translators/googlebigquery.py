@@ -12,6 +12,7 @@ from weaverbird.backends.pypika_translator.translators.base import (
     SQLTranslator,
     StepContext,
 )
+from weaverbird.pipeline.steps.pivot import PivotStep
 
 Self = TypeVar("Self", bound="GoogleBigQueryTranslator")
 
@@ -63,6 +64,27 @@ class GoogleBigQueryTranslator(SQLTranslator):
         return LiteralValue(
             f"DATE_ADD({date_column.name}, INTERVAL {add_date_value} {add_date_unit})"
         )
+
+    def pivot(
+        self: Self,
+        *,
+        builder: 'QueryBuilder',
+        prev_step_name: str,
+        columns: list[str],
+        step: 'PivotStep',
+    ) -> StepContext:
+        if not (self.SUPPORT_PIVOT):
+            raise NotImplementedError(f"[{self.DIALECT}] pivot is not implemented")
+        pivot = self._build_pivot_col(
+            step=step,
+            quote_char=builder.QUOTE_CHAR,
+            secondary_quote_char=builder.SECONDARY_QUOTE_CHAR,
+            prev_step_name=None,
+        )
+        assert step.values
+        cols = step.index + step.values
+        query = LiteralValue(f'{self.QUERY_CLS.from_(prev_step_name).select(*cols)!s} {pivot}')
+        return StepContext(query, cols)
 
     def split(
         self: Self,

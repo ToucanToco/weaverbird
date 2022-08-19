@@ -1,4 +1,4 @@
-from typing import List, Literal, Union, Any
+from typing import Any, List, Literal, Union
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMixin

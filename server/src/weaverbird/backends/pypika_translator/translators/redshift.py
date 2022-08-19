@@ -3,7 +3,8 @@ from typing import TYPE_CHECKING, TypeVar
 from pypika import Field, functions
 from pypika.dialects import RedshiftQuery
 from pypika.queries import QueryBuilder, Table
-from pypika.terms import CustomFunction, Term, LiteralValue
+from pypika.terms import CustomFunction, LiteralValue, Term
+from pypika.utils import format_quotes
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
@@ -86,28 +87,47 @@ class RedshiftTranslator(PostgreSQLTranslator):
         )
         return StepContext(query, columns + [step.new_column_name])
 
+    @classmethod
+    def _build_pivot_col(
+        cls,
+        *,
+        step: 'PivotStep',
+        quote_char: str | None,
+        secondary_quote_char: str,
+        prev_step_name: str | None,
+    ) -> str:
+        pivot_col = format_quotes(step.column_to_pivot, quote_char)
+        aggregated_col = f'{step.agg_function}({format_quotes(step.value_column, quote_char)})'
+        assert step.values
+        value_cols = ', '.join(format_quotes(val, secondary_quote_char) for val in step.values)
+        selected_cols = (
+            ', '.join(step.index)
+            + ', '
+            + pivot_col
+            + ', '
+            + format_quotes(step.value_column, quote_char)
+        )
+        return f'(SELECT {selected_cols} FROM {prev_step_name}) PIVOT({aggregated_col} FOR {pivot_col} IN ({value_cols}))'
+
     def pivot(
         self: Self,
         *,
         builder: 'QueryBuilder',
         prev_step_name: str,
         columns: list[str],
-        step: 'PivotStep'
+        step: 'PivotStep',
     ) -> StepContext:
-        if not(self.SUPPORT_PIVOT):
+        if not (self.SUPPORT_PIVOT):
             raise NotImplementedError(f"[{self.DIALECT}] pivot is not implemented")
         pivot = self._build_pivot_col(
             step=step,
             quote_char=builder.QUOTE_CHAR,
             secondary_quote_char=builder.SECONDARY_QUOTE_CHAR,
+            prev_step_name=prev_step_name,
         )
+        assert step.values
         cols = step.index + step.values
-        query = LiteralValue(
-            f'''{self.QUERY_CLS.from_(self.QUERY_CLS.from_(prev_step_name).select(
-                *[step.column_to_pivot, step.value_column, *step.index])
-            )
-            .select(*cols)!s} {pivot})'''
-        )
+        query = LiteralValue(f'SELECT {", ".join(cols)} FROM {pivot}')
         return StepContext(query, cols)
 
 
