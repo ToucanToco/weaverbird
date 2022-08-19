@@ -38,6 +38,17 @@
       :variable-delimiters="variableDelimiters"
       :errors="errors"
     />
+    <MultiInputTextWidget
+      addFieldName="values"
+      class="valuesInput"
+      name="Values to pivot:"
+      v-model="editedStep.values"
+      placeholder="Input Values"
+      :defaultItem="['', '']"
+      data-path=".values"
+      :errors="errors"
+      unstyled-items
+    />
     <AutocompleteWidget
       class="aggregationFunctionInput"
       v-model="editedStep.agg_function"
@@ -87,6 +98,7 @@ export default class PivotStepForm extends BaseStepForm<PivotStep> {
       index: [],
       column_to_pivot: '',
       value_column: '',
+      values: undefined,
       agg_function: 'sum',
     }),
   })

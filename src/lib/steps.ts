@@ -368,6 +368,7 @@ export type PivotStep = {
   column_to_pivot: string;
   value_column: string;
   agg_function: 'sum' | 'avg' | 'count' | 'min' | 'max';
+  values?: string[] | number[];
 };
 
 export type RankStep = {

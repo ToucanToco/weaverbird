@@ -37,6 +37,11 @@ export default {
         placeholder: 'Select a column',
       },
     },
+    values: {
+      type: 'array',
+      title: 'Values to pivot',
+      description: 'Values to pivot from Column to Pivot',
+    },
     agg_function: {
       type: 'string',
       enum: ['sum', 'avg', 'count', 'min', 'max'],
