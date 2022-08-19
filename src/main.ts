@@ -7,7 +7,7 @@ export { setAvailableCodeEditors } from './components/code-editor';
 export { defineSendAnalytics } from './lib/send-analytics';
 
 // export store entrypoints
-export { dereferencePipelines, getPipelineNamesReferencing } from '@/lib/dereference-pipeline';
+export { dereferencePipelines, getPipelineNamesReferencing } from './lib/dereference-pipeline';
 export {
   setupStore,
   registerModule,
@@ -15,19 +15,19 @@ export {
   VQBModule,
   VQBnamespace,
   VQB_MODULE_NAME,
-} from '@/store';
+} from './store';
 
-import '@/lib/icons';
+import './lib/icons';
 
 // export Vue components
-import DataViewer from '@/components/DataViewer.vue';
-import FilterEditor from '@/components/FilterEditor.vue';
-import Pagination from '@/components/Pagination.vue';
-import PipelineSelector from '@/components/PipelineSelector.vue';
-import QueryBuilder from '@/components/QueryBuilder.vue';
-import DateRangeInput from '@/components/stepforms/widgets/DateComponents/DateRangeInput.vue';
-import NewDateInput from '@/components/stepforms/widgets/DateComponents/NewDateInput.vue';
-import Vqb from '@/components/Vqb.vue';
+import DataViewer from './components/DataViewer.vue';
+import FilterEditor from './components/FilterEditor.vue';
+import Pagination from './components/Pagination.vue';
+import PipelineSelector from './components/PipelineSelector.vue';
+import QueryBuilder from './components/QueryBuilder.vue';
+import DateRangeInput from './components/stepforms/widgets/DateComponents/DateRangeInput.vue';
+import NewDateInput from './components/stepforms/widgets/DateComponents/NewDateInput.vue';
+import Vqb from './components/Vqb.vue';
 
 export {
   // All-in-one component
@@ -44,9 +44,9 @@ export {
 };
 
 // export helpers/utils
-export { exampleInterpolateFunc } from '@/lib/templating';
-export { transformValueToDateRange } from '@/components/DatePicker/transform-value-to-date-or-range';
-export { dateRangeToString } from '@/lib/dates';
+export { exampleInterpolateFunc } from './lib/templating';
+export { transformValueToDateRange } from './components/DatePicker/transform-value-to-date-or-range';
+export { dateRangeToString } from './lib/dates';
 
 // export directives
-export { resizable } from '@/directives/resizable/resizable';
+export { resizable } from './directives/resizable/resizable';
