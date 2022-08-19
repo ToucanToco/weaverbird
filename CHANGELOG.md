@@ -1,5 +1,8 @@
 # Changelog (weaverbird npm package)
 
+## [0.88.0] - 2022-08-18
+- Translators: enable unpivot step for pypika translator
+
 ## [0.87.0] - 2022-08-05
 - Translators: enable todate steps for pypika translator
 
@@ -1258,6 +1261,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ## Unreleased
 
+[0.88.0]: https://github.com/ToucanToco/weaverbird/compare/v0.88.0...v0.87.0
 [0.87.0]: https://github.com/ToucanToco/weaverbird/compare/v0.87.0...v0.86.0
 [0.86.0]: https://github.com/ToucanToco/weaverbird/compare/v0.86.0...v0.85.0
 [0.85.0]: https://github.com/ToucanToco/weaverbird/compare/v0.85.0...v0.84.0
