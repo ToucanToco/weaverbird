@@ -15,6 +15,13 @@ module.exports = {
   transformIgnorePatterns: ['/node_modules/(?!v-calendar)', 'tests/*.js', 'playground/*'],
   collectCoverage: true,
   collectCoverageFrom: ['src/**/*.{vue,ts,js}'],
-  coveragePathIgnorePatterns: ['/node_modules/', 'playground/', 'tests/', 'src/typings/', 'src/main.ts'],
+  coveragePathIgnorePatterns: [
+    '/node_modules/',
+    'playground/',
+    'tests/',
+    'src/typings/',
+    'src/main.ts',
+    'src/types.ts',
+  ],
   coverageDirectory: 'coverage',
 };

@@ -1,17 +1,16 @@
+import autoprefixer from 'autoprefixer';
 import fs from 'fs';
 import path from 'path';
-
+import postcssPresetEnv from 'postcss-preset-env';
 import alias from 'rollup-plugin-alias';
-import autoprefixer from "autoprefixer";
 import commonjs from 'rollup-plugin-commonjs';
 import json from 'rollup-plugin-json';
-import postcss from 'rollup-plugin-postcss'
-import postcssPresetEnv from 'postcss-preset-env';
-import replace from 'rollup-plugin-replace';
 import resolve from 'rollup-plugin-node-resolve';
+import postcss from 'rollup-plugin-postcss';
+import replace from 'rollup-plugin-replace';
+import { terser } from 'rollup-plugin-terser';
 import typescript from 'rollup-plugin-typescript';
 import vue from 'rollup-plugin-vue';
-import { terser } from 'rollup-plugin-terser';
 
 const production = process.env.NODE_ENV === 'production' || !process.env.ROLLUP_WATCH;
 /**
@@ -44,14 +43,19 @@ export default {
       // Default extensions ['.mjs', '.js', '.json', '.node']
       // We need to add the '.vue' extension because of the import of the component from v-calendar
       // which contains relative paths without extensions.
-      extensions: ['.mjs', '.js', '.ts', '.json', '.node', '.vue']
+      extensions: ['.mjs', '.js', '.ts', '.json', '.node', '.vue'],
     }),
     alias({
       resolve: ['.vue', '.json'],
       '@': path.join(packageDir(), '/src'),
     }),
     // date-fns comes from v-calendar
-    commonjs({ namedExports: { 'node_modules/mathjs/index.js': ['parse'], 'node_modules/date-fns/index.js': ['addDays'] } }),
+    commonjs({
+      namedExports: {
+        'node_modules/mathjs/index.js': ['parse'],
+        'node_modules/date-fns/index.js': ['addDays'],
+      },
+    }),
     // since we are using a v-calendar component directly we need to use postcss and apply the same config
     postcss({
       plugins: [
@@ -61,11 +65,10 @@ export default {
             'nesting-rules': true,
           },
         }),
-        autoprefixer()
+        autoprefixer(),
       ],
       // extract option break CSS live reload in Storybook, comment it to get it back
-      extract: true,
-      extract: 'weaverbird.css'
+      extract: 'weaverbird.css',
     }),
     replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
     vue({ css: false }),

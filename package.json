@@ -1,6 +1,7 @@
 {
   "name": "weaverbird",
-  "version": "0.88.0",
+  "version": "0.89.0",
+  "types": "./dist/types/types.d.ts",
   "description": "A generic Visual Query Builder built in Vue.js",
   "bugs": {
     "url": "https://github.com/ToucanToco/weaverbird/issues",
@@ -19,8 +20,9 @@
     "lint": "eslint --no-error-on-unmatched-pattern \"src/{components,lib,store}/**/*.{ts,vue}\" \"tests/**/*.ts\"",
     "lint:fix": "eslint --fix --no-error-on-unmatched-pattern \"src/{components,lib,store}/**/*.{ts,vue}\" \"tests/**/*.ts\"",
     "lint:ci": "yarn lint --output-file lint-report.json --format json",
-    "build": "yarn build-bundle",
+    "build": "yarn run build-bundle && yarn run build-types",
     "build-bundle": "rollup -c",
+    "build-types": ". ./build-types.sh",
     "build-doc": "typedoc --tsconfig tsconfig.json --readme README.md --out dist/docs src/",
     "storybook": "concurrently \"yarn storybook:bundle --watch\" \"start-storybook -p 9001 -c .storybook\"",
     "storybook:build": "build-storybook -o .storybook/dist -c .storybook",

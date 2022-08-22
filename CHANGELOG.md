@@ -1,12 +1,19 @@
 # Changelog (weaverbird npm package)
 
+## [0.89.0] - 2022-08-19
+
+- Export type definitions
+
 ## [0.88.0] - 2022-08-18
+
 - Translators: enable unpivot step for pypika translator
 
 ## [0.87.0] - 2022-08-05
+
 - Translators: enable todate steps for pypika translator
 
 ## [0.86.0] - 2022-07-28
+
 - Domain step: retrieve name as label for external query domain
 - Steps: add dissolve step
 - Translators: enable join and append steps for pypika translator
@@ -23,24 +30,29 @@
 ## [0.83.1] - 2022-05-27
 
 ### Fixed
+
 - Fix ifthenelse step with date conditions
 
 ## [0.83.0] - 2022-05-24
 
 ### Changed
+
 - Use 'desc' order by default for top step
 
 ### Feat
+
 - Add top step in other options
 
 ## [0.82.3] - 2022-03-23
 
 ### Fixed
+
 - Mongo translator: handle years and timestamps correctly
 
 ## [0.82.2] - 2022-02-03
 
 ### Changed
+
 - Dataviewer: add data cy element for e2e tests
 
 ## [0.82.1] - 2022-02-02
@@ -62,9 +74,11 @@
 ## [0.81.0] - 2022-01-24
 
 ### Added
+
 - Query: domains can be replaced by references to other queries
 
 ### Fixed
+
 - Step: Hide previous step error when creating a new step
 
 ## [0.80.0] - 2022-01-19
@@ -105,11 +119,13 @@
 ## [0.79.1] - 2021-12-16
 
 ### Added
+
 - DateRangeToString: export method to use it outside of app
 
 ## [0.79.0] - 2021-12-16
 
 ### Added
+
 Preview source subset: improve design and move component under domain step
 
 ## [0.78.1] - 2021-12-10
@@ -137,11 +153,13 @@ Preview source subset: improve design and move component under domain step
 ## [0.76.2] - 2021-11-22
 
 ### Fixed
+
 - Variable input: don't clear field when selecting variables in multiple mode
 
 ## [0.76.1] - 2021-11-17
 
 ### Fixed
+
 - Calendars: reset value and update nav position when selected value is outside of updated bounds
 
 ## [0.76.0] - 2021-11-16
@@ -157,6 +175,7 @@ Preview source subset: improve design and move component under domain step
 ## [0.75.0] - 2021-11-09
 
 ### Changed
+
 - UI: DateRangeInput: remove background of the reset button
 - UI: Relative date selection: rename before/after to from/until
 
@@ -182,34 +201,41 @@ Preview source subset: improve design and move component under domain step
 ## [0.72.1] - 2021-10-29
 
 ### Fixed
+
 TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars contains selected tab
 
 ## [0.72.0] - 2021-10-28
 
 ### Added
+
 - DateRangeInput: ability to customize the format of the date range
 
 ## [0.71.0] - 2021-10-27
 
 ### Added
+
 - DateRangeInput: enable to use custom css variables to stylize component colors
 
 ## [0.70.0] - 2021-10-27
 
 ### Added
+
 - DateRangeInput: internationalization for fixed periods (English and French)
 
 ### Fixed
+
 - DateRangeInput: better preview with new system to keep popovers always opened
 
 ## [0.69.2] - 2021-10-26
 
 ## Fix
+
 - Multiselect: restore display of text in variables tags
 
 ## [0.69.1] - 2021-10-21
 
 ### Fix
+
 - DateRangeInput: display tabs header correctly
 - DateRangeInput: display date separator correctly and clean unecessary html tag
 - Calendar: use correct post css
@@ -217,9 +243,11 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 ## [0.69.0] - 2021-10-20
 
 ### Added
+
 - Dates input components: friendlier labels for calendar ranges
 
 ### Fix
+
 - WidgetList: display trash icon
 - Store: avoid console error messages due to state mutation
 - DateRangeInput: make all input clickable
@@ -231,14 +259,17 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 ## [0.68.0] - 2021-10-19
 
 ### Added
+
 - DateRangeInput: implement bounds in custom granularity calendars (years, quarters, months, weeks)
 
 ### Fix
+
 - DateRangeInput: force popover to update position when clicking on `custom` option
 
 ## [0.67.1] - 2021-10-19
 
 ### Fix
+
 - DateRangeInput: remove `daterangeUpdated` emitter and export method directly from main file
 - Date components: rename `Dynamic` tab to `Relative`
 - CustomVariableList: show only the label of options
@@ -269,9 +300,11 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 ## [0.65.0] - 2021-10-13
 
 ### Added
+
 - DateRangeInput: hide 'unactive' variables needed for computations from UI
 
 ### Fix
+
 - Calendar: use UTC timezone
 
 ## [0.64.1] - 2021-10-12
@@ -285,6 +318,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 ## [0.64.0] - 2021-10-12
 
 ### Changed
+
 - DateRangeInput: enable to use relative date as bounds
 
 ## [0.63.0] - 2021-10-12
@@ -297,6 +331,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 - DateRangeInput: hide/show custom editor depding on `enableCustom` variable
 
 ### Changed
+
 - DateRangeInput: replace range-calendar with a simple calendar using a range
 - DateRangeInput: Disable save custom date button if value is incomplete
 
@@ -311,7 +346,6 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 ### Added
 
 - Export for dates components
-
 
 ## [0.60.9] - 2021-09-30
 
