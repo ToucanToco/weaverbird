@@ -1,0 +1,55 @@
+exclude:
+- mongo
+- pandas
+- snowflake
+expected:
+  data:
+  - cost: 2.8900001049
+    foobar: 0.0008564093792128205
+    name: Superstrong beer
+  - cost: 2.8900001049
+    foobar: 0.004573576622447484
+    name: Ninkasi Ploploplop
+  - cost: 2.2899999619
+    foobar: -0.005285130909497125
+    name: Brewdog Nanny State Alcoholvrij
+  - cost: 2.0899999142
+    foobar: 0.0018534199747333156
+    name: Ardwen Blonde
+  - cost: 1.5499999523
+    foobar: 0.001625419008551731
+    name: "Cuv\xE9e des Trolls"
+  - cost: 1.5900000334
+    foobar: -0.017326379587638916
+    name: Weihenstephan Hefe Weizen Alcoholarm
+  - cost: 2.4900000095
+    foobar: 0.0040808252928322495
+    name: Bellfield Lawless Village IPA
+  - cost: 1.6900000572
+    foobar: 0.0008054215174623021
+    name: Pauwel Kwak
+  - cost: 2.1900000572
+    foobar: 0.0016354790498403738
+    name: Brasserie De Sutter Brin de Folie
+  - cost: 1.7899999619
+    foobar: 0.001306001038143873
+    name: Brugse Zot blonde
+  schema:
+    fields:
+    - name: name
+      type: string
+    - name: cost
+      type: number
+    - name: foobar
+      type: number
+    pandas_version: 1.4.0
+step:
+  pipeline:
+  - formula: ' 3/ (price_per_l + volume_ml) / (alcohol_degree - cost)'
+    name: formula
+    new_column: foobar
+  - columns:
+    - name
+    - cost
+    - foobar
+    name: select

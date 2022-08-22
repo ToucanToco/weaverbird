@@ -3,10 +3,9 @@ from typing import Any
 import pytest
 from pypika import AliasedQuery, Case, Field, Order, Query, Schema, Table, functions
 from pypika.enums import JoinType
-from pypika.terms import LiteralValue, ValueWrapper
+from pypika.terms import LiteralValue, Term, ValueWrapper
 
 from weaverbird.backends.pypika_translator.translators.base import SQLTranslator
-from weaverbird.backends.sql_translator.steps.utils.query_transformation import handle_zero_division
 from weaverbird.pipeline import conditions, steps
 from weaverbird.pipeline.pipeline import DomainStep
 from weaverbird.pipeline.steps.utils.combination import Reference
@@ -365,15 +364,18 @@ def test_formula(base_translator: BaseTranslator, default_step_kwargs: dict[str,
     selected_columns = ["name", "pseudonyme"]
     previous_step = "previous_with"
     new_column_name = "fancy division"
-    formula = "2/4"
+    formula = "2 / 4 + [column name] * other_col"
 
     step = steps.FormulaStep(new_column=new_column_name, formula=formula)
     ctx = base_translator.formula(step=step, columns=selected_columns, **default_step_kwargs)
 
     expected_query = Query.from_(previous_step).select(
-        *selected_columns, LiteralValue(handle_zero_division(formula)).as_(new_column_name)
+        *selected_columns,
+        (
+            Term.wrap_constant(2) / functions.NullIf(Term.wrap_constant(4), 0)
+            + Field('column name') * Field('other_col')
+        ).as_(new_column_name),
     )
-
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 

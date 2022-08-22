@@ -89,9 +89,11 @@ class FormulaParser:
 
     def sanitize_formula(self) -> str:
         self._columns = {}
+        # Stripping because strings starting with whitespace raise UnexpectedIndent when parsed by
+        # the ast module
         return ' '.join(
             self._iterate_tokens(tokenize.tokenize(BytesIO(self._formula.encode()).readline))
-        )
+        ).strip()
 
     @staticmethod
     def _operator_from_ast_op(op: ast.operator) -> types.Operator:

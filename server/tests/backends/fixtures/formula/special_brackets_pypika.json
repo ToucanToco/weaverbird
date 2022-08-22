@@ -9,7 +9,7 @@
       {
         "name": "formula",
         "new_column": "foobar",
-        "formula": " 'cost' - (price_per_l / [ cost]) + (`price_per_l` / 0) / (\"price_per_l\" + [ volume_ml  ])"
+        "formula": " [cost] - (price_per_l / [ cost]) + ([price_per_l  ] / 0) / (price_per_l + [  volume_ml  ])"
       },
       {
         "name": "select",
