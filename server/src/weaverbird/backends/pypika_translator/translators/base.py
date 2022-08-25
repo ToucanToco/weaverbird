@@ -1,4 +1,3 @@
-import re
 from abc import ABC
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -28,6 +27,7 @@ from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relat
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators import ALL_TRANSLATORS
+from weaverbird.backends.pypika_translator.utils.formula import formula_to_term
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
     DateBoundCondition,
@@ -887,60 +887,8 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "FormulaStep",
     ) -> StepContext:
-        # TODO: support
-        # - float casting with divisions
-        # - whitespaces in column names
-        # - strings
-        # To do that we probably need to parse the formula with tokens
-        # In the end we should be able to translate:
-        #   [my age] + 1 / 2
-        # into
-        #   CAST("my age" AS float) + 1 / 2
-        # TODO : an AST should be implemented here to sanitize the formula
-        def _sanitize_formula(formula: str) -> str:
-            """
-            These combined regexes will :
-                - remove and replace quotes & brackets with the ones
-                  corresponding to the translator.
-                - prevent division by zero by adding NULLIF on all division
-                  expression.
-            Exemple of a weird expression : 'cost' + (`price_per_l` / [alcohol_degree]) / (\"price_per_l\" + [volume_ml]) / 0
-            The sanitizer will return : "cost" + ("price_per_l"/ NULLIF("alcohol_degree", 0))/("price_per_l" + "volume_ml")/ NULLIF(0, 0)
-            """
-            # We remove enclosures and double spaces
-            formula = ' '.join(re.sub(r'[\[\]]|["]|[`]|[\']', '', formula).split())
-            quote_char = builder.QUOTE_CHAR if builder.QUOTE_CHAR else '\"'
-            # We add quote from the translator
-            formula = re.sub(
-                r'([a-zA-Z_a-zA-Z]+)',
-                r'{}\1{}'.format(quote_char, quote_char),
-                formula,
-            )
-            # detect and encapsulate / and %
-            if '/' in formula:
-                formula = re.sub(
-                    '((?<=/)\{}?\w+\{}?)|((?<=/)\d+)|((?<=/)\(?.*\)?)'.format(
-                        quote_char, quote_char
-                    ),
-                    r' NULLIF(\1\2\3, 0)',
-                    formula.replace('/ ', '/'),
-                )
-            if '%' in formula:
-                formula = re.sub(
-                    '((?<=%)\{}?\w+\{}?)|((?<=/)\d+)|((?<=/)\(?.*\)?)'.format(
-                        quote_char, quote_char
-                    ),
-                    r' NULLIF(\1\2\3, 0)',
-                    formula.replace('% ', '%'),
-                )
-
-            return formula
-
-        formula = _sanitize_formula(step.formula)
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
-            *columns, LiteralValue(formula).as_(step.new_column)
-        )
-
+        formula = formula_to_term(step.formula, Table(prev_step_name))
+        query = Query.from_(prev_step_name).select(*(columns), formula.as_(step.new_column))
         return StepContext(query, columns + [step.new_column])
 
     def fromdate(

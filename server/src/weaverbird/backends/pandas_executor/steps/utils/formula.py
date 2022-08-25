@@ -1,46 +1,37 @@
-import re
+import operator
+from ast import literal_eval
 
 import numpy as np
-from pandas import DataFrame
+from pandas import DataFrame, Series
 
-COLUMN_PATTERN = re.compile(r'(\`[^\`]*\`)')
+from weaverbird.pipeline.formula_ast.eval import FormulaParser
+from weaverbird.pipeline.formula_ast.types import ColumnName, Expression, Operation, Operator
 
-
-# In pandas, columns containing spaces must be escaped with backticks:
-def clean_formula_element(elem: str) -> str:
-    if COLUMN_PATTERN.match(elem):
-        # this is a column name: return it as is
-        return elem
-    # - forbid '=' char
-    # - replace [ and ] with `
-    #   ([] is mongo's syntax to escape columns containing spaces)
-    return elem.replace('=', '').replace('[', '`').replace(']', '`')
+_OP_MAP = {
+    Operator.ADD: operator.add,
+    Operator.SUB: operator.sub,
+    Operator.MUL: operator.mul,
+    Operator.DIV: operator.truediv,
+    Operator.MOD: operator.mod,
+}
 
 
-def clean_formula(formula: str) -> str:
-    """
-    Translate mongo's syntax to hande columns names containing spaces to pandas syntax.
-
-    Example:
-        >>> clean_formula('colA * `col B` * [col C] * `[col D]`')
-        'colA * `col B` * `col C` * `[col D]`'
-    """
-    formula_splitted = COLUMN_PATTERN.split(formula)
-    return ''.join(clean_formula_element(elem) for elem in formula_splitted)
+def _eval_operation(df: DataFrame, op: Operation) -> Series:
+    return _OP_MAP[op.operator](
+        _eval_expression(df, op.left), _eval_expression(df, op.right)
+    ).replace([np.inf, -np.inf], np.nan)
 
 
-def eval_formula(df: DataFrame, formula: str) -> DataFrame:
-    try:
-        result = df.eval(formula)
-    except Exception:
-        # for all cases not handled by NumExpr
-        result = df.eval(formula, engine='python')
+def _eval_expression(df: DataFrame, expr: Expression) -> Series:
+    if isinstance(expr, Operation):
+        return _eval_operation(df, expr)
+    elif isinstance(expr, ColumnName):
+        return df[expr.name]
+    elif isinstance(expr, str):
+        # we want unquoted strings
+        expr = literal_eval(expr)
+    return Series(expr, index=df.index)
 
-    try:
-        # eval can introduce Infinity values (when dividing by 0),
-        # which do not have a JSON representation.
-        # Let's replace them by NaN:
-        return result.replace([np.inf, -np.inf], np.nan)
-    except Exception:
-        # `result` is not a Series
-        return result
+
+def eval_formula(df: DataFrame, formula: str) -> Series:
+    return _eval_expression(df, FormulaParser(formula).parse())

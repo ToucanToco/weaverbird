@@ -1640,9 +1640,9 @@ This is expressed by using a `RelativeDate` object instead of the value, of the 
 ### `formula` step
 
 Add a computation based on a formula. Usually column names do not need to be
-escaped, unless they include whitespaces, in such a case you need to use
-brackets '[]' (e.g. \[myColumn]). Any characters string escaped with quotes
-(simple or double) will be considered as a string.
+escaped, unless they include whitespaces, in which case you'll need to use
+brackets '[]' (e.g. \[myColumn]). Any string escaped with quotes (`'`, `"`, `'''`, `"""`)
+will be considered a string literal.
 
 ```javascript
 {
@@ -1653,6 +1653,16 @@ brackets '[]' (e.g. \[myColumn]). Any characters string escaped with quotes
   }
 }
 ```
+
+#### Supported operators
+
+The following operators are supported by the formula step (note that a value can be a column name or a literal, such as `42` or `foo`).
+
+* `+`: Does an addition of two numeric values. **See the `concatenate` step to append strings**
+* `-`: Does an substraction of two numeric values. **See the `replace` step to remove a part of a string**
+* `*`: Multiplies two numeric values.
+* `/`: Divides a numeric value by another. Divisions by zero will return `null`.
+* `%`: Returns the rest of an integer division. Divisions by zero will return `null`.
 
 #### Example 1: Basic usage
 
