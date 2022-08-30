@@ -147,25 +147,35 @@ class SQLTranslator(ABC):
         *,
         tables_columns: Mapping[str, Sequence[str]] | None = None,
         db_schema: str | None = None,
+        known_instances: dict[str, str] | None = None,
     ) -> None:
         self._tables_columns: Mapping[str, Sequence[str]] = tables_columns or {}
         self._db_schema_name = db_schema
         self._db_schema: Schema | None = Schema(db_schema) if db_schema is not None else None
-        self._i = 0
+        self._known_instances: dict[int, str] = known_instances or {}
+        self._step_count = 0
 
     def __init_subclass__(cls) -> None:
         ALL_TRANSLATORS[cls.DIALECT] = cls
 
     @cache
     def _id(self: Self) -> str:
-        return str(id(self))
+        if id(self) in self._known_instances:
+            return self._known_instances[id(self)]
+        if len(self._known_instances.keys()) == 0:
+            self._known_instances[id(self)] = 'id'
+            return 'id'
+        else:
+            id_ = 'id' + str(len(self._known_instances.keys()))
+            self._known_instances[id(self)] = id_
+            return id_
 
     def _step_name(self: Self) -> str:
-        return f'__step_{self._i}_{self._id()}__'
+        return f'__step_{self._step_count}_{self._id()}__'
 
     def _next_step_name(self: Self) -> str:
         name = self._step_name()
-        self._i += 1
+        self._step_count += 1
         return name
 
     def _step_context_from_first_step(
@@ -186,7 +196,7 @@ class SQLTranslator(ABC):
         if len(steps) < 0:
             ValueError('No steps provided')
         assert steps[0].name == "domain" or steps[0].name == "customsql"
-        self._i = 0
+        self._step_count = 0
 
         ctx = self._step_context_from_first_step(steps[0])
         table_name = self._next_step_name()
@@ -416,7 +426,9 @@ class SQLTranslator(ABC):
         column_lists: list[list[str]] = []
         for pipeline in pipelines:
             pipeline_ctx = self.__class__(
-                tables_columns=self._tables_columns, db_schema=self._db_schema_name
+                tables_columns=self._tables_columns,
+                db_schema=self._db_schema_name,
+                known_instances=self._known_instances,
             ).get_query_builder(steps=pipeline, query_builder=builder)
             tables.append(pipeline_ctx.table_name)
             column_lists.append(pipeline_ctx.columns)
@@ -1054,7 +1066,9 @@ class SQLTranslator(ABC):
         steps = self._pipeline_or_domain_name_or_reference_to_pipeline(step.right_pipeline)
 
         right_builder_ctx = self.__class__(
-            tables_columns=self._tables_columns, db_schema=self._db_schema_name
+            tables_columns=self._tables_columns,
+            db_schema=self._db_schema_name,
+            known_instances=self._known_instances,
         ).get_query_builder(steps=steps, query_builder=builder)
         left_table = Table(prev_step_name)
         right_table = Table(right_builder_ctx.table_name)
