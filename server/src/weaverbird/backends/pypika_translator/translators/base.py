@@ -163,10 +163,10 @@ class SQLTranslator(ABC):
         if id(self) in self._known_instances:
             return self._known_instances[id(self)]
         if len(self._known_instances.keys()) == 0:
-            self._known_instances[id(self)] = 'id'
-            return 'id'
+            id_ = self._known_instances[id(self)] = self.__class__.__name__.lower()
+            return id_
         else:
-            id_ = 'id' + str(len(self._known_instances.keys()))
+            id_ = self.__class__.__name__.lower() + str(len(self._known_instances.keys()))
             self._known_instances[id(self)] = id_
             return id_
 
