@@ -147,7 +147,7 @@ class SQLTranslator(ABC):
         *,
         tables_columns: Mapping[str, Sequence[str]] | None = None,
         db_schema: str | None = None,
-        known_instances: dict[str, str] | None = None,
+        known_instances: dict[int, str] | None = None,
     ) -> None:
         self._tables_columns: Mapping[str, Sequence[str]] = tables_columns or {}
         self._db_schema_name = db_schema
