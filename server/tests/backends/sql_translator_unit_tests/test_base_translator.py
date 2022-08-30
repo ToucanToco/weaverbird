@@ -14,19 +14,7 @@ from weaverbird.pipeline.steps.utils.combination import Reference
 class BaseTranslator(SQLTranslator):
     DIALECT = "Base"
     QUERY_CLS = Query
-    _known_instances = {}
     QUOTE_CHAR = '"'
-
-    def _id(self) -> str:
-        if id(self) in BaseTranslator._known_instances:
-            return BaseTranslator._known_instances[id(self)]
-        if len(BaseTranslator._known_instances.keys()) == 0:
-            BaseTranslator._known_instances[id(self)] = 'base'
-            return 'base'
-        else:
-            id_ = 'base' + str(len(BaseTranslator._known_instances.keys()))
-            BaseTranslator._known_instances[id(self)] = id_
-            return id_
 
 
 ALL_TABLES = {
@@ -39,7 +27,6 @@ DB_SCHEMA = "test_schema"
 
 @pytest.fixture
 def base_translator():
-    BaseTranslator._known_instances = {}
     return BaseTranslator(
         tables_columns=ALL_TABLES,
         db_schema=DB_SCHEMA,
@@ -53,8 +40,8 @@ def test_get_query_builder(base_translator: BaseTranslator):
 
     step_1_query = Query.from_(schema.users).select(*ALL_TABLES["users"])
     expected = (
-        Query.with_(step_1_query, "__step_0_base__")
-        .from_("__step_0_base__")
+        Query.with_(step_1_query, "__step_0_basetranslator__")
+        .from_("__step_0_basetranslator__")
         .select(*ALL_TABLES['users'])
     )
 
@@ -79,8 +66,8 @@ def test_get_query_builder_with_custom_query(base_translator: BaseTranslator):
 
     step_1_query = Query.select(1)
     expected = (
-        Query.with_(step_1_query, "__step_0_base__")
-        .from_(AliasedQuery('"__step_0_base__"'))
+        Query.with_(step_1_query, "__step_0_basetranslator__")
+        .from_(AliasedQuery('"__step_0_basetranslator__"'))
         .select("*")
     )
 
@@ -99,19 +86,21 @@ def test_get_query_builder_more_than_one_step(base_translator: BaseTranslator):
     schema = Schema(DB_SCHEMA)
 
     step_0_query = Query.from_(schema.users).select(*ALL_TABLES["users"])
-    expected = Query.with_(step_0_query, "__step_0_base__").from_(schema.users).select("*")
+    expected = (
+        Query.with_(step_0_query, "__step_0_basetranslator__").from_(schema.users).select("*")
+    )
 
     columns = (
         Field(col) if col is not to_rename else Field(col).as_(rename_as)
         for col in ALL_TABLES["users"]
     )
     expected_cols = (col if col != to_rename else rename_as for col in ALL_TABLES['users'])
-    step_1_query = Query.from_(AliasedQuery('"__step_0_base__"')).select(*columns)
+    step_1_query = Query.from_(AliasedQuery('"__step_0_basetranslator__"')).select(*columns)
 
     expected = (
-        Query.with_(step_0_query, "__step_0_base__")
-        .with_(step_1_query, "__step_1_base__")
-        .from_('__step_1_base__')
+        Query.with_(step_0_query, "__step_0_basetranslator__")
+        .with_(step_1_query, "__step_1_basetranslator__")
+        .from_('__step_1_basetranslator__')
         .select(*expected_cols)
     )
 
@@ -126,8 +115,8 @@ def test_get_query_str(base_translator: BaseTranslator):
 
     step_1_query = Query.from_(schema.users).select(*ALL_TABLES["users"])
     expected = (
-        Query.with_(step_1_query, "__step_0_base__")
-        .from_('__step_0_base__')
+        Query.with_(step_1_query, "__step_0_basetranslator__")
+        .from_('__step_0_basetranslator__')
         .select(*ALL_TABLES["users"])
         .get_sql()
     )
@@ -597,7 +586,7 @@ def test_join_simple(
     ctx = base_translator.join(step=step, columns=selected_columns, **default_step_kwargs)
 
     left_table = Table(previous_step)
-    right_table = Table('__step_0_base__')
+    right_table = Table('__step_0_basetranslator__')
     expected_query = (
         Query.from_(previous_step)
         .select(
@@ -629,7 +618,7 @@ def test_append_simple(base_translator: BaseTranslator, default_step_kwargs: dic
     )
     ctx = base_translator.append(step=step, columns=selected_columns, **default_step_kwargs)
 
-    right_table = Table('__step_1_base__')
+    right_table = Table('__step_1_basetranslator__')
     expected_query = (
         Query.from_(previous_step)
         .select(*selected_columns, LiteralValue('NULL').as_('user_id'))
