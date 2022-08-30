@@ -15,7 +15,6 @@ from weaverbird.pipeline.steps.utils.combination import Reference
 class BaseTranslator(SQLTranslator):
     DIALECT = "Base"
     QUERY_CLS = Query
-    _known_instances = {}
     QUOTE_CHAR = '"'
 
 
@@ -29,7 +28,6 @@ DB_SCHEMA = "test_schema"
 
 @pytest.fixture
 def base_translator():
-    BaseTranslator._known_instances = {}
     return BaseTranslator(
         tables_columns=ALL_TABLES,
         db_schema=DB_SCHEMA,
