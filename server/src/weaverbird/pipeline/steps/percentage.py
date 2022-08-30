@@ -10,4 +10,4 @@ class PercentageStep(BaseStep):
     name: Literal['percentage'] = 'percentage'
     column: ColumnName
     group: List[ColumnName] = Field(default=[])
-    new_column_name: ColumnName = Field(alias='newColumnName', default=None)
+    new_column_name: ColumnName = Field(alias='newColumnName', default=None)  # type: ignore
