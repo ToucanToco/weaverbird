@@ -2,10 +2,16 @@
 
 ## Unreleased
 
+## [0.23.0] - 2022-08-30
+
+- PyPika translator: Changed the way translator IDs are generated in order to have predictible queries. This allows to use
+  translated queries as cache keys.
+- Refactored the `formula` step in all backends. Formulas are now converted to an AST and evaluated by the
+  different backends for increased consistency.
+
 ## [0.22.0] - 2022-08-18
 
 - Added Pypika's `UNPIVOT` step
-
 
 ## [0.21.0] - 2022-08-05
 
