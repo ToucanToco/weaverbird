@@ -2,10 +2,11 @@ from typing import Any, Dict, List
 
 from weaverbird.backends.mongo_translator.steps import mongo_step_translator
 from weaverbird.pipeline import Pipeline, PipelineStep
+from weaverbird.pipeline.pipeline import PipelineWithVariables
 
 
 def translate_pipeline(
-    pipeline_to_translate: Pipeline,
+    pipeline_to_translate: Pipeline | PipelineWithVariables,
 ) -> List[Dict[str, Any]]:
     mongo_pipeline = []
     for index, step in enumerate(pipeline_to_translate.steps):
