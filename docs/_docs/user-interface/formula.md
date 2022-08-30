@@ -12,6 +12,8 @@ whitespaces, in such a case you need to use brackets '[]' (e.g. \[myColumn]).
 Any characters string escaped with quotes (simple or double) will be considered
 as a string.
 
+The supported operators are : addition (`+`), substraction (`-`), multiplication (`*`), division (`/`), modulo (`%`).
+
 **This step is supported by the following backends:**
 
 - Mongo 5.0
