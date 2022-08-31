@@ -2,10 +2,10 @@ import contextlib
 import datetime
 import json
 import logging
+from collections.abc import Generator
 from glob import glob
 from os import path
 from typing import Any, List
-from collections.abc import Generator
 
 import docker
 import pytest

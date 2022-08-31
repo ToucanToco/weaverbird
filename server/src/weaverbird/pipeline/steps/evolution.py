@@ -21,6 +21,4 @@ class EvolutionStep(BaseStep):
 
 
 class EvolutionStepWithVariable(EvolutionStep, StepWithVariablesMixin):
-    index_columns: TemplatedVariable | list[TemplatedVariable] = Field(
-        [], alias="indexColumns"
-    )
+    index_columns: TemplatedVariable | list[TemplatedVariable] = Field([], alias="indexColumns")

@@ -1,5 +1,5 @@
-from typing import List, Literal, Optional, Union
 from collections.abc import Sequence
+from typing import List, Literal, Optional, Union
 
 from pydantic import Field
 

@@ -1,5 +1,5 @@
-from typing import Any, Dict
 from collections.abc import Callable
+from typing import Any, Dict
 
 from .base import BaseStep
 

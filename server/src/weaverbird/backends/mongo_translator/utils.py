@@ -27,7 +27,7 @@ class UnsupportedOperatorError(Exception):
 
 
 def build_cond_expression(
-    cond: SimpleCondition | ConditionComboOr | ConditionComboAnd
+    cond: SimpleCondition | ConditionComboOr | ConditionComboAnd,
 ) -> MongoStep:
     operator_mapping = {
         "eq": "$eq",

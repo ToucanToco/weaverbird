@@ -1,9 +1,8 @@
 from abc import ABC
 from datetime import datetime
-from typing import Any, List, Literal, Union
+from typing import Annotated, Any, List, Literal, Union
 
 from pydantic import BaseConfig, BaseModel, Field
-from typing import Annotated
 
 from weaverbird.pipeline.dates import RelativeDate
 from weaverbird.pipeline.types import ColumnName

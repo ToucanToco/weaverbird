@@ -1,7 +1,6 @@
-from typing import Any, Dict, List, Union
+from typing import Annotated, Any, Dict, List, Union
 
 from pydantic import BaseModel, Field
-from typing import Annotated
 
 from weaverbird.pipeline.steps.hierarchy import HierarchyStep
 

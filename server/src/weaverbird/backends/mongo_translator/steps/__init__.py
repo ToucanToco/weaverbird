@@ -1,5 +1,5 @@
-from typing import Any, Dict
 from collections.abc import Callable
+from typing import Any, Dict
 
 from weaverbird.backends.mongo_translator.steps.absolutevalue import translate_absolutevalue
 from weaverbird.backends.mongo_translator.steps.addmissingdates import translate_addmissingdates

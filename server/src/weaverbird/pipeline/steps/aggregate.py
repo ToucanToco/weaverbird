@@ -1,5 +1,5 @@
-from typing import List, Literal, Optional
 from collections.abc import Sequence
+from typing import List, Literal, Optional
 
 from pydantic import BaseConfig, BaseModel, Field, root_validator, validator
 
@@ -46,9 +46,7 @@ class AggregateStep(BaseStep):
     name: Literal["aggregate"] = "aggregate"
     on: list[ColumnName] = []
     aggregations: Sequence[Aggregation]
-    keep_original_granularity: bool | None = Field(
-        default=False, alias="keepOriginalGranularity"
-    )
+    keep_original_granularity: bool | None = Field(default=False, alias="keepOriginalGranularity")
 
 
 class AggregationWithVariables(Aggregation):

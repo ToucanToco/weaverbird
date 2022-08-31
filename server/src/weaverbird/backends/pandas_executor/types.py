@@ -1,5 +1,5 @@
-from typing import Any, List, Optional, Protocol, Tuple, Union
 from collections.abc import Callable
+from typing import Any, List, Optional, Protocol, Tuple, Union
 
 from pandas import DataFrame
 from pydantic import BaseModel, Field
