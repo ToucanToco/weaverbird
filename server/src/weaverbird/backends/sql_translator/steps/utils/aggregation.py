@@ -1,4 +1,3 @@
-
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     first_last_query_string_with_group_and_granularity,
     generate_query_by_keeping_granularity,

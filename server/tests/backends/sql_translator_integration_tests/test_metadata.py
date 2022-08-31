@@ -1,4 +1,3 @@
-
 import pytest
 
 from weaverbird.backends.sql_translator.metadata import (

@@ -1,4 +1,3 @@
-
 from weaverbird.backends.sql_translator.types import SQLQuery, SQLStepTranslationReport
 from weaverbird.pipeline import Pipeline, PipelineStep
 

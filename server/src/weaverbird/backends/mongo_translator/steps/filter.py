@@ -1,4 +1,3 @@
-
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,

@@ -1,4 +1,3 @@
-
 from pydantic import BaseConfig, BaseModel, Extra
 
 
