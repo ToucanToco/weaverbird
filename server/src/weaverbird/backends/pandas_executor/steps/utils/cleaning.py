@@ -1,6 +1,5 @@
 import re
 from collections import defaultdict
-from typing import DefaultDict
 
 from pandas import DataFrame
 
@@ -22,7 +21,7 @@ def rename_duplicated_columns(df: DataFrame) -> DataFrame:
     Processes inplace.
     """
     old_cols = list(df.columns)
-    max_suffix: DefaultDict[ColumnName, int] = defaultdict(lambda: 0)
+    max_suffix: defaultdict[ColumnName, int] = defaultdict(lambda: 0)
 
     # First step: find the current max suffix for each column name
     for column in old_cols:

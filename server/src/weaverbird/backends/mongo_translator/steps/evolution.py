@@ -1,17 +1,17 @@
-from typing import Any, Dict, List
+from typing import Any
 
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import EvolutionStep
 
 
-def translate_evolution(step: EvolutionStep) -> List[MongoStep]:
+def translate_evolution(step: EvolutionStep) -> list[MongoStep]:
     new_column = (
         step.new_column
         if step.new_column
         else f"{step.value_col}_EVOL_{step.evolution_format.upper()}"
     )
     error_msg = "Error: More than one previous date found for the specified index columns"
-    add_field_result: Dict[str, Any] = {}
+    add_field_result: dict[str, Any] = {}
 
     if step.evolution_format == "abs":
         add_field_result[new_column] = {

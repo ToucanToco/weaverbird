@@ -1,5 +1,4 @@
 import logging
-from typing import List
 
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.backends.mongo_translator.utils import column_to_user_variable
@@ -9,8 +8,8 @@ from weaverbird.pipeline.steps import DomainStep, JoinStep
 logger = logging.getLogger(__name__)
 
 
-def translate_join(step: JoinStep) -> List[MongoStep]:
-    mongo_pipeline: List[dict] = []
+def translate_join(step: JoinStep) -> list[MongoStep]:
+    mongo_pipeline: list[dict] = []
     right = step.right_pipeline
     right_without_domain = Pipeline(steps=[])
 

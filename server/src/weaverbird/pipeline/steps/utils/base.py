@@ -1,5 +1,3 @@
-from typing import Dict
-
 from pydantic import BaseConfig, BaseModel, Extra
 
 
@@ -11,5 +9,5 @@ class BaseStep(BaseModel):
         extra = Extra.forbid
 
     # None values are excluded, to avoid triggering validations error in front-ends
-    def dict(self, *, exclude_none: bool = True, **kwargs) -> Dict:
+    def dict(self, *, exclude_none: bool = True, **kwargs) -> dict:
         return super().dict(exclude_none=True, **kwargs)

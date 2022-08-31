@@ -2,9 +2,10 @@ import contextlib
 import datetime
 import json
 import logging
+from collections.abc import Generator
 from glob import glob
 from os import path
-from typing import Any, Generator, List
+from typing import Any
 
 import docker
 import pytest
@@ -49,7 +50,7 @@ def assert_dataframes_content_equals(left: DataFrame, right: DataFrame):
     )
 
 
-def assert_column_equals(serie: Series, values: List[Any]):
+def assert_column_equals(serie: Series, values: list[Any]):
     """
     Compare vales of a dataframe's column (series)
     """
@@ -80,7 +81,7 @@ type_code_mapping = {
 
 
 def load_fixture_file(filename: str) -> dict:
-    with open(filename, "r") as fd:
+    with open(filename) as fd:
         if filename.endswith(".yml") or filename.endswith(".yaml"):
             return yaml.safe_load(fd)
         return json.load(fd)

@@ -1,4 +1,4 @@
-from typing import Any, List, Literal, Tuple, Union
+from typing import Any, Literal
 
 from pydantic import Field
 
@@ -10,8 +10,8 @@ from weaverbird.pipeline.types import ColumnName, TemplatedVariable
 class ReplaceStep(BaseStep):
     name: Literal["replace"] = "replace"
     search_column: ColumnName
-    to_replace: List[Tuple[Any, Any]] = Field(min_items=1)
+    to_replace: list[tuple[Any, Any]] = Field(min_items=1)
 
 
 class ReplaceStepWithVariable(ReplaceStep, StepWithVariablesMixin):
-    to_replace: Union[TemplatedVariable, List[Tuple[TemplatedVariable, TemplatedVariable]]]
+    to_replace: TemplatedVariable | list[tuple[TemplatedVariable, TemplatedVariable]]

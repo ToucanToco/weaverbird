@@ -1,3 +1,3 @@
-from typing import Any, Dict
+from typing import Any
 
-MongoStep = Dict[str, Any]
+MongoStep = dict[str, Any]

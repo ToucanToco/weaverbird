@@ -1,4 +1,4 @@
-from typing import List, Literal, Union
+from typing import Literal
 
 from pydantic import BaseModel
 
@@ -13,5 +13,5 @@ class Reference(BaseModel):
         return hash(f"__ref__{self.uid}")
 
 
-PipelineOrDomainName = Union[List[dict], str]  # can be either a domain name or a complete pipeline
-PipelineOrDomainNameOrReference = Union[PipelineOrDomainName, Reference]
+PipelineOrDomainName = list[dict] | str  # can be either a domain name or a complete pipeline
+PipelineOrDomainNameOrReference = PipelineOrDomainName | Reference

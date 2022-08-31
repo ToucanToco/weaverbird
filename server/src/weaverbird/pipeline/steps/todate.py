@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import Literal
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.types import ColumnName
@@ -7,4 +7,4 @@ from weaverbird.pipeline.types import ColumnName
 class ToDateStep(BaseStep):
     name: Literal["todate"] = "todate"
     column: ColumnName
-    format: Optional[str]
+    format: str | None

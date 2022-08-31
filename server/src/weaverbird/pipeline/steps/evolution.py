@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional, Union
+from typing import Literal
 
 from pydantic import Field
 
@@ -16,11 +16,9 @@ class EvolutionStep(BaseStep):
     value_col: str = Field(alias="valueCol")
     evolution_type: EVOLUTION_TYPE = Field(alias="evolutionType")
     evolution_format: EVOLUTION_FORMAT = Field(alias="evolutionFormat")
-    index_columns: List[str] = Field([], alias="indexColumns")
-    new_column: Optional[str] = Field(alias="newColumn")
+    index_columns: list[str] = Field([], alias="indexColumns")
+    new_column: str | None = Field(alias="newColumn")
 
 
 class EvolutionStepWithVariable(EvolutionStep, StepWithVariablesMixin):
-    index_columns: Union[TemplatedVariable, List[TemplatedVariable]] = Field(
-        [], alias="indexColumns"
-    )
+    index_columns: TemplatedVariable | list[TemplatedVariable] = Field([], alias="indexColumns")

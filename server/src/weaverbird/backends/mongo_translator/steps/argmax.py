@@ -1,10 +1,8 @@
-from typing import List
-
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import ArgmaxStep
 
 
-def translate_argmax(step: ArgmaxStep) -> List[MongoStep]:
+def translate_argmax(step: ArgmaxStep) -> list[MongoStep]:
     return [
         {
             "$group": {

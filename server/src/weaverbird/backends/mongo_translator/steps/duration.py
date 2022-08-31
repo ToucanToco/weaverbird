@@ -1,5 +1,3 @@
-from typing import List
-
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import DurationStep
 
@@ -12,7 +10,7 @@ DURATION_MULTIPLIER_MAP = {
 }
 
 
-def translate_duration(step: DurationStep) -> List[MongoStep]:
+def translate_duration(step: DurationStep) -> list[MongoStep]:
     return [
         {
             "$addFields": {

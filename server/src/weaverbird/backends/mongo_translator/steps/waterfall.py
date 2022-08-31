@@ -1,10 +1,8 @@
-from typing import List
-
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import WaterfallStep
 
 
-def translate_waterfall(step: WaterfallStep) -> List[MongoStep]:
+def translate_waterfall(step: WaterfallStep) -> list[MongoStep]:
     concatMongo = {}
     facet = {}
     groupby = step.groupby

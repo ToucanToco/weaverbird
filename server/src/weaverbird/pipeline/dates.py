@@ -1,11 +1,11 @@
 from datetime import datetime
-from typing import Literal, Optional, Union
+from typing import Literal
 
 from pydantic import BaseModel
 
 
 class RelativeDate(BaseModel):
-    date: Optional[Union[datetime, str]]
+    date: datetime | str | None
     operator: Literal["from", "until", "before", "after"]
     quantity: int
     duration: Literal["year", "quarter", "month", "week", "day"]

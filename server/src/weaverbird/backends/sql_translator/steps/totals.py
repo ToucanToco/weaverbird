@@ -1,5 +1,5 @@
+from collections.abc import Sequence
 from distutils import log
-from typing import List, Sequence
 
 from weaverbird.backends.sql_translator.metadata import ColumnMetadata, SqlQueryMetadataManager
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
@@ -20,8 +20,8 @@ from weaverbird.pipeline.types import ColumnName
 from weaverbird.utils.iter import combinations
 
 
-def make_totals_query(step: TotalsStep, parent_query: SQLQuery) -> (str, List[ColumnMetadata]):
-    def select_total_dimensions(total_dimensions: List[TotalDimension]) -> List[ColumnMetadata]:
+def make_totals_query(step: TotalsStep, parent_query: SQLQuery) -> (str, list[ColumnMetadata]):
+    def select_total_dimensions(total_dimensions: list[TotalDimension]) -> list[ColumnMetadata]:
         selects = []
         for dimension in total_dimensions:
             selects.append(
@@ -37,7 +37,7 @@ def make_totals_query(step: TotalsStep, parent_query: SQLQuery) -> (str, List[Co
             )
         return selects
 
-    def select_aggregate(aggregations: Sequence[Aggregation]) -> List[ColumnMetadata]:
+    def select_aggregate(aggregations: Sequence[Aggregation]) -> list[ColumnMetadata]:
         aggregated_cols = []
         for aggregation in [
             aggregation
@@ -59,7 +59,7 @@ def make_totals_query(step: TotalsStep, parent_query: SQLQuery) -> (str, List[Co
                     )
         return aggregated_cols
 
-    def with_alias(selects: List[ColumnMetadata]) -> List[str]:
+    def with_alias(selects: list[ColumnMetadata]) -> list[str]:
         selects_with_alias = []
         for select in selects:
             select_str = select.original_name
@@ -68,9 +68,9 @@ def make_totals_query(step: TotalsStep, parent_query: SQLQuery) -> (str, List[Co
             selects_with_alias.append(select_str)
         return selects_with_alias
 
-    total_dimensions: List[ColumnName] = list(map(lambda x: x.total_column, step.total_dimensions))
+    total_dimensions: list[ColumnName] = list(map(lambda x: x.total_column, step.total_dimensions))
 
-    selects: List[ColumnMetadata] = (
+    selects: list[ColumnMetadata] = (
         select_total_dimensions(step.total_dimensions)
         + select_aggregate(step.aggregations)
         + [

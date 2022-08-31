@@ -1,10 +1,8 @@
-from typing import List
-
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import SortStep
 
 
-def translate_sort(step: SortStep) -> List[MongoStep]:
+def translate_sort(step: SortStep) -> list[MongoStep]:
     return [
         {
             "$sort": {

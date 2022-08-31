@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional, Tuple, Union
+from typing import Literal
 
 from pydantic import Field, root_validator
 
@@ -9,9 +9,9 @@ from weaverbird.pipeline.types import ColumnName, TemplatedVariable
 
 class CumSumStep(BaseStep):
     name: Literal["cumsum"] = "cumsum"
-    to_cumsum: List[Tuple[str, Optional[str]]] = Field(..., alias="toCumSum")
+    to_cumsum: list[tuple[str, str | None]] = Field(..., alias="toCumSum")
     reference_column: ColumnName = Field(..., alias="referenceColumn")
-    groupby: Optional[List[ColumnName]]
+    groupby: list[ColumnName] | None
 
     @root_validator(pre=True)
     def handle_legacy_syntax(cls, values):
@@ -26,6 +26,6 @@ class CumSumStep(BaseStep):
 
 
 class CumSumStepWithVariable(CumSumStep, StepWithVariablesMixin):
-    to_cumsum: Union[TemplatedVariable, List[Tuple[TemplatedVariable, TemplatedVariable]]] = Field(
+    to_cumsum: TemplatedVariable | list[tuple[TemplatedVariable, TemplatedVariable]] = Field(
         ..., alias="toCumSum"
     )

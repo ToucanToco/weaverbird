@@ -1,4 +1,4 @@
-from typing import Callable, Union
+from collections.abc import Callable
 
 import numpy as np
 from pandas import DataFrame, Series
@@ -7,7 +7,7 @@ from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineE
 from weaverbird.pipeline.steps.statistics import DUMB_GROUPBY_COLUMN_NAME, StatisticsStep
 
 
-def statistic_to_pandas_method(s: str) -> Union[str, Callable[[Series], float]]:
+def statistic_to_pandas_method(s: str) -> str | Callable[[Series], float]:
     if s == "average":
         return "mean"
     elif s == "variance":

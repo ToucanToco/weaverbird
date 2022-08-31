@@ -1,9 +1,9 @@
-from typing import Dict, List, Literal
+from typing import Literal
 
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps.fromdate import FromdateStep
 
-MonthReplacement = Dict[Literal["$switch"], Dict[Literal["branches"], List[MongoStep]]]
+MonthReplacement = dict[Literal["$switch"], dict[Literal["branches"], list[MongoStep]]]
 
 _SMALL_MONTH_REPLACE = {
     "$switch": {
@@ -46,7 +46,7 @@ _FULL_MONTH_REPLACE = {
 
 def _translate_month_year(
     step: FromdateStep, concat_separator: Literal[" ", "-"], month_dict: MongoStep
-) -> List[MongoStep]:
+) -> list[MongoStep]:
     return [
         {
             "$addFields": {
@@ -78,7 +78,7 @@ def _translate_month_year(
 
 def _translate_day_month_year(
     step: FromdateStep, concat_separator: Literal[" ", "-"], month_dict: MongoStep
-) -> List[MongoStep]:
+) -> list[MongoStep]:
     return [
         {
             "$addFields": {
@@ -122,7 +122,7 @@ def _translate_day_month_year(
     ]
 
 
-def translate_fromdate(step: FromdateStep) -> List[MongoStep]:
+def translate_fromdate(step: FromdateStep) -> list[MongoStep]:
     if step.format == "%d %b %Y":
         return _translate_day_month_year(step, " ", _SMALL_MONTH_REPLACE)
     if step.format == "%d-%b-%Y":

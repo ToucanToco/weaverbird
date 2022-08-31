@@ -1,5 +1,3 @@
-from typing import Dict, List
-
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
@@ -29,7 +27,7 @@ operator_mapping = {
     "until": "$lte",
 }
 
-RELATIVE_DATE_OPERATORS: Dict[str, int] = {"until": -1, "from": +1}
+RELATIVE_DATE_OPERATORS: dict[str, int] = {"until": -1, "from": +1}
 
 
 def translate_relative_date(value: RelativeDate):
@@ -89,5 +87,5 @@ def build_match_tree(condition: Condition, parent_operator="and") -> dict:
         }
 
 
-def translate_filter(step: FilterStep) -> List[MongoStep]:
+def translate_filter(step: FilterStep) -> list[MongoStep]:
     return [{"$match": build_match_tree(step.condition)}]

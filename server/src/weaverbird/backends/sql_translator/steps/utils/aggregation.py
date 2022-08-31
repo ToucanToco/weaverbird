@@ -1,5 +1,3 @@
-from typing import Tuple
-
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     first_last_query_string_with_group_and_granularity,
     generate_query_by_keeping_granularity,
@@ -50,7 +48,7 @@ def build_first_or_last_aggregation(
     step: AggregateStep,
     query_name: str,
     new_as_columns=None,
-) -> Tuple[SQLQuery, str]:
+) -> tuple[SQLQuery, str]:
     """
     This method will help us build the first-last aggregation query
 
@@ -133,7 +131,7 @@ def prepare_aggregation_query(
     aggregated_string: str,
     query: SQLQuery,
     step: AggregateStep,
-) -> Tuple[SQLQuery, str, list]:
+) -> tuple[SQLQuery, str, list]:
     new_as_columns: list = []
 
     for agg in step.aggregations:  # TODO the front should restrict - usage in column names

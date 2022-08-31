@@ -13,7 +13,7 @@ class Operator(str, Enum):
     MOD = "%"
 
 
-Constant = Union[int, bool, float, str]
+Constant = int | bool | float | str
 
 
 class ColumnName(BaseModel):

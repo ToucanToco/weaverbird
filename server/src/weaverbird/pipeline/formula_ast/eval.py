@@ -1,7 +1,7 @@
 import ast
 import tokenize
+from collections.abc import Generator, Iterator
 from io import BytesIO
-from typing import Generator, Iterator
 
 from . import types
 

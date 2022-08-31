@@ -1,10 +1,8 @@
-from typing import List
-
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps.top import TopStep
 
 
-def translate_top(step: TopStep) -> List[MongoStep]:
+def translate_top(step: TopStep) -> list[MongoStep]:
     sort_order = 1 if step.sort == "asc" else -1
     group_cols = {g: f"${g}" for g in step.groups} if step.groups else None
     return [

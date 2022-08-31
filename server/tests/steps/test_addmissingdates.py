@@ -1,7 +1,7 @@
 import datetime
 import random
 from datetime import timedelta
-from typing import Any, List, Optional, cast
+from typing import Any, cast
 
 import pandas as pd
 import pytest
@@ -98,7 +98,7 @@ def test_missing_date_with_groups_correct_indexing(today):
             df,
             pd.DataFrame(
                 {
-                    "country": cast(List[Optional[Any]], ["France"] * 2 + ["USA"] * 2),
+                    "country": cast(list[Any], ["France"] * 2 + ["USA"] * 2),
                     "date": missing_dates * 2,
                     "value": [None, None] * 2,
                 }
@@ -136,7 +136,7 @@ def test_missing_date_with_groups_various_length(today):
             pd.DataFrame(
                 {
                     "country": cast(
-                        List[Optional[Any]],
+                        list[Any],
                         ["France"] * len(missing_dates) + ["USA"] * len(missing_dates),
                     ),
                     "date": missing_dates * 2,

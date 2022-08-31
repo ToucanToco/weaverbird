@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional, Union
+from typing import Literal, Union
 
 from pydantic import Field
 
@@ -49,10 +49,10 @@ DATE_INFO = Union[
 class DateExtractStep(BaseStep):
     name: Literal["dateextract"] = "dateextract"
     column: str
-    date_info: List[DATE_INFO] = Field([], alias=("dateInfo"))
-    new_columns: List[ColumnName] = Field([], alias="newColumns")
-    operation: Optional[BASIC_DATE_PARTS]
-    new_column_name: Optional[ColumnName]
+    date_info: list[DATE_INFO] = Field([], alias=("dateInfo"))
+    new_columns: list[ColumnName] = Field([], alias="newColumns")
+    operation: BASIC_DATE_PARTS | None
+    new_column_name: ColumnName | None
 
 
 class DateExtractStepWithVariable(DateExtractStep, StepWithVariablesMixin):

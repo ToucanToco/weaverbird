@@ -1,4 +1,5 @@
-from typing import List, Literal, Sequence, Union
+from collections.abc import Sequence
+from typing import Literal
 
 from pydantic import BaseConfig, BaseModel, Field, validator
 
@@ -19,9 +20,9 @@ class TotalDimension(BaseModel):
 
 class TotalsStep(BaseStep):
     name: Literal["totals"] = "totals"
-    total_dimensions: List[TotalDimension] = Field(alias="totalDimensions")
+    total_dimensions: list[TotalDimension] = Field(alias="totalDimensions")
     aggregations: Sequence[Aggregation]
-    groups: List[ColumnName] = Field(min_items=0, default=[])
+    groups: list[ColumnName] = Field(min_items=0, default=[])
 
     @validator("aggregations")
     def aggregation_must_not_be_empty(cls, value):
@@ -32,4 +33,4 @@ class TotalsStep(BaseStep):
 
 class TotalsStepWithVariable(TotalsStep, StepWithVariablesMixin):
     aggregations: Sequence[AggregationWithVariables]
-    groups: Union[TemplatedVariable, List[TemplatedVariable]]
+    groups: TemplatedVariable | list[TemplatedVariable]

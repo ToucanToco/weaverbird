@@ -1,10 +1,8 @@
-from typing import List
-
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import RankStep
 
 
-def translate_rank(step: RankStep) -> List[MongoStep]:
+def translate_rank(step: RankStep) -> list[MongoStep]:
 
     """
     Here we define the order variable that will be used in the '$reduce' step

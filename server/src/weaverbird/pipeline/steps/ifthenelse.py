@@ -1,4 +1,4 @@
-from typing import Any, Literal, Union
+from typing import Any, Literal
 
 from pydantic import BaseConfig, BaseModel, Field
 
@@ -15,7 +15,7 @@ class IfThenElse(BaseModel):
 
     condition: Condition = Field(alias="if")
     then: Any
-    else_value: Union["IfThenElse", Any] = Field(alias="else")
+    else_value: "IfThenElse" | Any = Field(alias="else")
 
 
 IfThenElse.update_forward_refs()

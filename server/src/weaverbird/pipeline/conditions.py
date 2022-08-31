@@ -1,9 +1,8 @@
 from abc import ABC
 from datetime import datetime
-from typing import Any, List, Literal, Union
+from typing import Annotated, Any, Literal
 
 from pydantic import BaseConfig, BaseModel, Field
-from typing_extensions import Annotated
 
 from weaverbird.pipeline.dates import RelativeDate
 from weaverbird.pipeline.types import ColumnName
@@ -22,7 +21,7 @@ class ComparisonCondition(BaseCondition):
 class InclusionCondition(BaseCondition):
     column: ColumnName
     operator: Literal["in", "nin"]
-    value: List[Any]
+    value: list[Any]
 
 
 class NullCondition(BaseCondition):
@@ -39,17 +38,11 @@ class MatchCondition(BaseCondition):
 class DateBoundCondition(BaseModel):
     column: ColumnName
     operator: Literal["from", "until"]
-    value: Union[RelativeDate, datetime, str]
+    value: RelativeDate | datetime | str
 
 
 SimpleCondition = Annotated[
-    Union[
-        ComparisonCondition,
-        InclusionCondition,
-        NullCondition,
-        MatchCondition,
-        DateBoundCondition,
-    ],
+    ComparisonCondition | InclusionCondition | NullCondition | MatchCondition | DateBoundCondition,
     Field(discriminator="operator"),  # noqa: F821
 ]
 
@@ -63,13 +56,13 @@ class BaseConditionCombo(BaseCondition, ABC):
 
 
 class ConditionComboAnd(BaseConditionCombo):
-    and_: List["Condition"] = Field(..., alias="and")
+    and_: list["Condition"] = Field(..., alias="and")
 
 
 class ConditionComboOr(BaseConditionCombo):
-    or_: List["Condition"] = Field(..., alias="or")
+    or_: list["Condition"] = Field(..., alias="or")
 
 
-Condition = Union[ConditionComboAnd, ConditionComboOr, SimpleCondition]
+Condition = ConditionComboAnd | ConditionComboOr | SimpleCondition
 ConditionComboOr.update_forward_refs()
 ConditionComboAnd.update_forward_refs()

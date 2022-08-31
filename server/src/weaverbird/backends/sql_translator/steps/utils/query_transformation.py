@@ -1,6 +1,5 @@
 import datetime
 import re
-from typing import Dict, List, Tuple
 
 from weaverbird.backends.sql_translator.metadata import ColumnMetadata, SqlQueryMetadataManager
 from weaverbird.backends.sql_translator.types import SQLQuery
@@ -110,7 +109,7 @@ def apply_condition(condition: Condition, query: str) -> str:
     return query
 
 
-def build_selection_query(query_metadata: Dict[str, ColumnMetadata], query_name) -> str:
+def build_selection_query(query_metadata: dict[str, ColumnMetadata], query_name) -> str:
     names = []
     for _, metadata in query_metadata.items():
         alias = getattr(metadata, "alias")
@@ -125,7 +124,7 @@ def first_last_query_string_with_group_and_granularity(
     step: AggregateStep,
     query: SQLQuery,
     scope_cols: list,
-) -> Tuple[SQLQuery, str]:
+) -> tuple[SQLQuery, str]:
     """
     This function will... depending on the group by of the aggregate and the granularity conservation, generate
     the appropriate final query and clean/update the query's metadata columns
@@ -197,7 +196,7 @@ def first_last_query_string_with_group_and_granularity(
 
 def remove_metadatas_columns_from_query(
     query: SQLQuery, array_cols: list, first_last_string: str, first_or_last_aggregate: bool = True
-) -> Tuple[SQLQuery, str]:
+) -> tuple[SQLQuery, str]:
     """
     For the given query, this function will remove metadata columns if its not on a given list
     then concatenate the join on array_cols list to the final query
@@ -229,7 +228,7 @@ def generate_query_by_keeping_granularity(
     query_to_complete: str = "",
     aggregated_cols=None,
     group_by_except_target_columns=None,
-) -> Tuple[SQLQuery, str, list]:
+) -> tuple[SQLQuery, str, list]:
     """
     On some steps, when we do the Group By we will need to keep the granularity of
     all our precedents columns, this method will do that operation but with an innerjoin on the precedent dataset
@@ -333,9 +332,9 @@ def handle_zero_division(formula: str) -> str:
     Use regular expression replacement to detect '/' or '%' in formulas
     and substitute a 0 divisor by NULL
     For example in '1 % BLAAA / "BLA    BLA"'
-    this r'(?<=%)\s*(\w+)' captures BLAAA and this r' NULLIF(\1, 0)' replaces it
+    this r'(?<=%)\\s*(\\w+)' captures BLAAA and this r' NULLIF(\1, 0)' replaces it
     by NULLIF(BLAAA, 0).
-    this r'(?<=/)\s*(\"?.*\"?)' captures "BLA    BLA" and this r'NULLIFF(\2, 0)' replaces it
+    this r'(?<=/)\\s*(\"?.*\"?)' captures "BLA    BLA" and this r'NULLIFF(\2, 0)' replaces it
     by NULLIF("BLA    BLA", 0).
     """
     if "/" not in formula and "%" not in formula:
@@ -350,7 +349,7 @@ def handle_zero_division(formula: str) -> str:
 def build_union_query(
     query_metadata_manager: SqlQueryMetadataManager,
     current_query_name: str,
-    appended_tables_name: List[str],
+    appended_tables_name: list[str],
 ) -> str:
     new_query = f"SELECT {query_metadata_manager.retrieve_query_metadata_columns_as_str()} FROM {current_query_name}"
     max_column_number = len(query_metadata_manager.retrieve_query_metadata_columns_as_list())

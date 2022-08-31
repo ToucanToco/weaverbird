@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -11,7 +11,7 @@ Statistics = Literal["count", "max", "min", "average", "variance", "standard dev
 
 
 class Quantile(BaseModel):
-    label: Optional[str]
+    label: str | None
     nth: int
     order: int
 
@@ -19,9 +19,9 @@ class Quantile(BaseModel):
 class StatisticsStep(BaseStep):
     name: Literal["statistics"] = "statistics"
     column: ColumnName
-    groupby_columns: List[ColumnName] = Field([], alias="groupbyColumns")
-    statistics: List[Statistics]
+    groupby_columns: list[ColumnName] = Field([], alias="groupbyColumns")
+    statistics: list[Statistics]
     # Array of quantiles. Examples:
     # - median is 1rst quantile of order 2
     # - last decile is 9th quantile of order 10
-    quantiles: List[Quantile]
+    quantiles: list[Quantile]

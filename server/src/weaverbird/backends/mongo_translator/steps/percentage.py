@@ -1,10 +1,8 @@
-from typing import List
-
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import PercentageStep
 
 
-def translate_percentage(step: PercentageStep) -> List[MongoStep]:
+def translate_percentage(step: PercentageStep) -> list[MongoStep]:
     return [
         {
             "$group": {

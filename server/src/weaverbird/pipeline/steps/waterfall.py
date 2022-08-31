@@ -1,4 +1,4 @@
-from typing import Any, List, Literal, Optional, Union
+from typing import Any, Literal
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMixin
@@ -20,9 +20,9 @@ class WaterfallStep(BaseStep):
     labelsColumn: ColumnName
     sortBy: Literal["value", "label"]
     order: Literal["desc", "asc"]
-    parentsColumn: Optional[ColumnName]
-    groupby: List[ColumnName] = []
+    parentsColumn: ColumnName | None
+    groupby: list[ColumnName] = []
 
 
 class WaterfallStepWithVariable(WaterfallStep, StepWithVariablesMixin):
-    groupby: Union[TemplatedVariable, List[TemplatedVariable]]
+    groupby: TemplatedVariable | list[TemplatedVariable]

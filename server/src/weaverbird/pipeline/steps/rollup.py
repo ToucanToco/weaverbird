@@ -1,4 +1,5 @@
-from typing import List, Literal, Optional, Sequence, Union
+from collections.abc import Sequence
+from typing import Literal
 
 from pydantic import Field
 
@@ -11,20 +12,20 @@ from .aggregate import Aggregation, AggregationWithVariables
 
 class RollupStep(BaseStep):
     name: Literal["rollup"] = "rollup"
-    hierarchy: List[ColumnName]
+    hierarchy: list[ColumnName]
     # The list of columnns to aggregate, with related aggregation function to use:
     aggregations: Sequence[Aggregation]
     # Groupby columns if rollup has to be performed by groups:
-    groupby: Optional[List[ColumnName]]
+    groupby: list[ColumnName] | None
     # To give a custom name to the output label column:
-    label_col: Optional[ColumnName] = Field(alias="labelCol")
+    label_col: ColumnName | None = Field(alias="labelCol")
     # To give a custom name to the output level column:
-    level_col: Optional[ColumnName] = Field(alias="levelCol")
+    level_col: ColumnName | None = Field(alias="levelCol")
     # To give a custom name to the output parent column:
-    parent_label_col: Optional[ColumnName] = Field(alias="parentLabelCol")
+    parent_label_col: ColumnName | None = Field(alias="parentLabelCol")
 
 
 class RollupStepWithVariable(RollupStep, StepWithVariablesMixin):
     aggregations: Sequence[AggregationWithVariables]
-    hierarchy: Union[TemplatedVariable, List[TemplatedVariable]]
-    groupby: Union[TemplatedVariable, List[TemplatedVariable]]
+    hierarchy: TemplatedVariable | list[TemplatedVariable]
+    groupby: TemplatedVariable | list[TemplatedVariable]

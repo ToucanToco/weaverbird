@@ -1,4 +1,4 @@
-from typing import Any, List, Literal
+from typing import Any, Literal
 
 from pydantic import Field, root_validator
 
@@ -9,7 +9,7 @@ from weaverbird.pipeline.types import ColumnName
 
 class FillnaStep(BaseStep):
     name: Literal["fillna"] = "fillna"
-    columns: List[ColumnName] = Field(min_items=1)
+    columns: list[ColumnName] = Field(min_items=1)
     value: Any
 
     @root_validator(pre=True)

@@ -1,8 +1,9 @@
 from abc import ABC
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from functools import cache
-from typing import TYPE_CHECKING, Any, Callable, Literal, Mapping, Sequence, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, Literal, TypeVar, cast
 
 from dateutil import parser as dateutil_parser
 from pypika import (
@@ -178,9 +179,7 @@ class SQLTranslator(ABC):
         self._step_count += 1
         return name
 
-    def _step_context_from_first_step(
-        self, step: Union["DomainStep", "CustomSqlStep"]
-    ) -> StepContext:
+    def _step_context_from_first_step(self, step: "DomainStep | CustomSqlStep") -> StepContext:
         return (
             self._domain(step=step)
             if step.name == "domain"
@@ -860,17 +859,13 @@ class SQLTranslator(ABC):
         match condition:
             case ConditionComboOr():
                 return Criterion.any(
-                    (
-                        self._get_filter_criterion(condition, prev_step_name)
-                        for condition in condition.or_
-                    )
+                    self._get_filter_criterion(condition, prev_step_name)
+                    for condition in condition.or_
                 )
             case ConditionComboAnd():
                 return Criterion.all(
-                    (
-                        self._get_filter_criterion(condition, prev_step_name)
-                        for condition in condition.and_
-                    )
+                    self._get_filter_criterion(condition, prev_step_name)
+                    for condition in condition.and_
                 )
             case _:
                 return self._get_single_condition_criterion(condition, prev_step_name)

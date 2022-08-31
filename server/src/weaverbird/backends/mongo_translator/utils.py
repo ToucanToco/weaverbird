@@ -1,6 +1,6 @@
 import datetime
 from re import sub
-from typing import Any, Dict, List, Union
+from typing import Any
 
 from weaverbird.backends.mongo_translator.steps.filter import (
     translate_relative_date,
@@ -27,7 +27,7 @@ class UnsupportedOperatorError(Exception):
 
 
 def build_cond_expression(
-    cond: Union[SimpleCondition, ConditionComboOr, ConditionComboAnd]
+    cond: SimpleCondition | ConditionComboOr | ConditionComboAnd,
 ) -> MongoStep:
     operator_mapping = {
         "eq": "$eq",
@@ -45,7 +45,7 @@ def build_cond_expression(
         "from": "$gte",
         "until": "$lte",
     }
-    unsupported_operators: List = []
+    unsupported_operators: list = []
 
     if isinstance(cond, ConditionComboAnd):
         return build_and_expression(cond)
@@ -72,7 +72,7 @@ def build_cond_expression(
 
 
 def build_dates_expressions(
-    cond: SimpleCondition, cond_expression: Dict[str, Any], operator_mapping: Dict[str, str]
+    cond: SimpleCondition, cond_expression: dict[str, Any], operator_mapping: dict[str, str]
 ):
     if cond.operator == "until":
         if isinstance(cond.value, datetime.datetime):

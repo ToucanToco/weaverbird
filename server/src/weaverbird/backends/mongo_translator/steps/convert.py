@@ -1,5 +1,3 @@
-from typing import List, Union
-
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import ConvertStep
 
@@ -12,7 +10,7 @@ TYPE_MAP = {
 }
 
 
-def translate_convert(step: ConvertStep) -> List[MongoStep]:
+def translate_convert(step: ConvertStep) -> list[MongoStep]:
     # /!\ we want to get the same results than with the mongo typescript
     # translator, not than with the pandas executor.
 
@@ -21,7 +19,7 @@ def translate_convert(step: ConvertStep) -> List[MongoStep]:
     for column in step.columns:
         # Mongo cannot cast integers into date but only long into date, so we
         # manage the cast from int to long when needed.
-        _input: Union[dict, str]
+        _input: dict | str
         if mongo_type == "date":
             _input = {
                 "$cond": [
