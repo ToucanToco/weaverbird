@@ -34,7 +34,6 @@ def translate_percentage(
         f"step: {step}\n"
     )
 
-    new_column_name = f"{step.column}_PCT" if step.new_column_name is None else step.new_column_name
     group_query = (
         (f' GROUP BY {", ".join(step.group + [step.column])}' if len(step.group) > 0 else "")
         if step.group is not None
@@ -55,18 +54,18 @@ def translate_percentage(
         )
 
     for table in query.metadata_manager.tables:
-        query.metadata_manager.add_table_column(table, new_column_name, "float")
+        query.metadata_manager.add_table_column(table, step.new_column_name, "float")
 
         if step.group is not None and len(step.group) > 0:
             for col in query.metadata_manager.retrieve_columns_as_list(table):
-                if col not in (step.group + [step.column, new_column_name]):
+                if col not in (step.group + [step.column, step.new_column_name]):
                     query.metadata_manager.remove_query_metadata_column(col)
 
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
         f""" (SELECT {select_fields},"""
-        f""" RATIO_TO_REPORT({step.column}) OVER () AS {new_column_name}"""
+        f""" RATIO_TO_REPORT({step.column}) OVER () AS {step.new_column_name}"""
         f""" FROM {query.query_name}{group_query})""",
         selection_query=build_selection_query(
             query.metadata_manager.retrieve_query_metadata_columns(), query_name
