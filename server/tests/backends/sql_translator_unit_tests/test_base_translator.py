@@ -296,6 +296,20 @@ def test_domain(base_translator: BaseTranslator):
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
+def test_domain_with_source_rows_subset(base_translator: BaseTranslator, mocker):
+    mocker.patch.object(base_translator, "_source_rows_subset", new=42)
+
+    domain = "users"
+    step = steps.DomainStep(domain=domain)
+    ctx = base_translator._domain(step=step)
+
+    schema = Schema(DB_SCHEMA)
+    users = Table(domain, schema)
+    expected_query = Query.from_(users).select(*ALL_TABLES["users"]).limit(42)
+
+    assert ctx.selectable.get_sql() == expected_query.get_sql()
+
+
 # this seems wrong for me...
 def test_domain_with_wrong_domain_name(base_translator: BaseTranslator):
     domain = "people"
