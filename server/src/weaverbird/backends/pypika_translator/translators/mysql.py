@@ -94,7 +94,7 @@ class MySQLTranslator(SQLTranslator):
 SQLTranslator.register(MySQLTranslator)
 
 
-class SubstringIndex(functions.Function):  # type: ignore[misc]
+class SubstringIndex(functions.Function):
     def __init__(
         self, term: str | Field, delimiter: str, count: int, alias: str | None = None
     ) -> None:

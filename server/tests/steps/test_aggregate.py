@@ -34,7 +34,7 @@ def test_duplicate_aggregation_columns():
     df = DataFrame(
         {
             "Label": ["Label 1", "Label 2", "Label 3"],
-            "Group": ["Group 1"] * 3,  # type: ignore
+            "Group": ["Group 1"] * 3,
             "Value1": [13, 7, 20],
         }
     )

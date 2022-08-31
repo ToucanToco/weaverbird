@@ -29,7 +29,7 @@ def test_rename(sample_df: DataFrame):
 
 
 def test_rename_legacy_syntax(sample_df: DataFrame):
-    step = RenameStep(name="rename", oldname="NAME", newname="name")  # type: ignore
+    step = RenameStep(name="rename", oldname="NAME", newname="name")
     df_result = execute_rename(step, sample_df)
 
     expected_result = DataFrame({"name": ["foo", "bar"], "AGE": [42, 43], "SCORE": [100, 200]})

@@ -24,7 +24,7 @@ def test_simple_fillna(sample_df):
 
 
 def test_simple_fillna_legacy_syntax(sample_df):
-    step = FillnaStep(name="fillna", column="colB", value=-1)  # type: ignore
+    step = FillnaStep(name="fillna", column="colB", value=-1)
     result = execute_fillna(step, sample_df, None, None)
     assert_dataframes_equals(
         result,
