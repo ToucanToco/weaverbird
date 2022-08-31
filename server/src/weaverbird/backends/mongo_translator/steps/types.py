@@ -1,3 +1,3 @@
-from typing import Any, Dict
+from typing import Any
 
 MongoStep = dict[str, Any]

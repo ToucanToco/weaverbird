@@ -1,4 +1,3 @@
-from typing import Dict
 
 from ..types import SQLStepTranslator
 from .aggregate import translate_aggregate

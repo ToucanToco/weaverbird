@@ -1,6 +1,6 @@
 from abc import ABC
 from datetime import datetime
-from typing import Annotated, Any, List, Literal, Union
+from typing import Annotated, Any, Literal, Union
 
 from pydantic import BaseConfig, BaseModel, Field
 

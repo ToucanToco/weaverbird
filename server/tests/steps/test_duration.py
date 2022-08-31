@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from typing import Dict
 
 import pandas as pd
 import pytest

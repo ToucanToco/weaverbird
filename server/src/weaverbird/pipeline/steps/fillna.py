@@ -1,4 +1,4 @@
-from typing import Any, List, Literal
+from typing import Any, Literal
 
 from pydantic import Field, root_validator
 

@@ -1,6 +1,5 @@
 from collections.abc import Sequence
 from distutils import log
-from typing import List
 
 from weaverbird.backends.sql_translator.metadata import ColumnMetadata, SqlQueryMetadataManager
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (

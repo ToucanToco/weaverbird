@@ -1,5 +1,5 @@
 import itertools
-from typing import Any, List, Tuple
+from typing import Any
 
 
 def combinations(items: list[Any]) -> list[tuple[Any, ...]]:

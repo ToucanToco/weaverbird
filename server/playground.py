@@ -34,7 +34,6 @@ from enum import Enum
 from functools import cache
 from glob import glob
 from os.path import basename, splitext
-from typing import Dict, Union
 
 import awswrangler as wr
 import boto3

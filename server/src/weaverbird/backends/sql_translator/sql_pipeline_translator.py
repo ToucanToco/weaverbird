@@ -1,4 +1,3 @@
-from typing import Tuple
 
 from weaverbird.backends.sql_translator.types import SQLQuery, SQLStepTranslationReport
 from weaverbird.pipeline import Pipeline, PipelineStep

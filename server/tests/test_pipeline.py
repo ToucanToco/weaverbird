@@ -1,6 +1,5 @@
 import glob
 import json
-from typing import Dict, List
 
 import pytest
 from pydantic import BaseModel

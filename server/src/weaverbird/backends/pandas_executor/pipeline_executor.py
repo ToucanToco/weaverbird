@@ -1,6 +1,5 @@
 import json
 import logging
-from typing import Tuple
 
 from geopandas import GeoDataFrame
 from pandas import DataFrame

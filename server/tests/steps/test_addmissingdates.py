@@ -1,7 +1,7 @@
 import datetime
 import random
 from datetime import timedelta
-from typing import Any, List, Optional, cast
+from typing import Any, Optional, cast
 
 import pandas as pd
 import pytest

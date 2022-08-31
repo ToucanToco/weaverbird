@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from typing import List, Literal, Union
+from typing import Literal
 
 from pydantic import BaseConfig, BaseModel, Field, validator
 

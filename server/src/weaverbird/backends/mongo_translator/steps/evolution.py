@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Any
 
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import EvolutionStep

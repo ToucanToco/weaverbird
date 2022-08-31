@@ -1,4 +1,3 @@
-from typing import Dict
 
 from pydantic import BaseConfig, BaseModel, Extra
 

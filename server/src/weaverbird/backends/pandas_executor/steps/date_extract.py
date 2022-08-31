@@ -1,5 +1,4 @@
 from contextlib import suppress
-from typing import List
 
 from pandas import DataFrame, to_datetime, to_timedelta
 

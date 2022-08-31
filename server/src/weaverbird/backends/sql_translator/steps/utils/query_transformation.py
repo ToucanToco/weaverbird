@@ -1,6 +1,5 @@
 import datetime
 import re
-from typing import Dict, List, Tuple
 
 from weaverbird.backends.sql_translator.metadata import ColumnMetadata, SqlQueryMetadataManager
 from weaverbird.backends.sql_translator.types import SQLQuery
