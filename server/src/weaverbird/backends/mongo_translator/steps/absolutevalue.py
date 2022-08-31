@@ -5,4 +5,4 @@ from weaverbird.pipeline.steps import AbsoluteValueStep
 
 
 def translate_absolutevalue(step: AbsoluteValueStep) -> List[MongoStep]:
-    return [{'$addFields': {step.new_column: {'$abs': f'${step.column}'}}}]
+    return [{"$addFields": {step.new_column: {"$abs": f"${step.column}"}}}]

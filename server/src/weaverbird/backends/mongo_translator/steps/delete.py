@@ -5,4 +5,4 @@ from weaverbird.pipeline.steps import DeleteStep
 
 
 def translate_delete(step: DeleteStep) -> List[MongoStep]:
-    return [{'$project': {c: 0 for c in step.columns}}]
+    return [{"$project": {c: 0 for c in step.columns}}]

@@ -13,20 +13,20 @@ class TotalDimension(BaseModel):
     class Config(PopulatedWithFieldnames):
         ...
 
-    total_column: ColumnName = Field(alias='totalColumn')
-    total_rows_label: str = Field(alias='totalRowsLabel')
+    total_column: ColumnName = Field(alias="totalColumn")
+    total_rows_label: str = Field(alias="totalRowsLabel")
 
 
 class TotalsStep(BaseStep):
-    name: Literal['totals'] = 'totals'
-    total_dimensions: List[TotalDimension] = Field(alias='totalDimensions')
+    name: Literal["totals"] = "totals"
+    total_dimensions: List[TotalDimension] = Field(alias="totalDimensions")
     aggregations: Sequence[Aggregation]
     groups: List[ColumnName] = Field(min_items=0, default=[])
 
-    @validator('aggregations')
+    @validator("aggregations")
     def aggregation_must_not_be_empty(cls, value):
         if len(value) < 1:
-            raise ValueError('aggregations must contain at least one item')
+            raise ValueError("aggregations must contain at least one item")
         return value
 
 

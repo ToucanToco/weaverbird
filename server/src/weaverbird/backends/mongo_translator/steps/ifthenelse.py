@@ -14,13 +14,13 @@ def transform_ifthenelse_step(step: IfThenElse) -> MongoStep:
 
     if_expr = build_cond_expression(step.condition)
     then_expr = build_mongo_formula_tree(FormulaParser(str(step.then)).parse())
-    return {'$cond': {'if': if_expr, 'then': then_expr, 'else': else_expr}}
+    return {"$cond": {"if": if_expr, "then": then_expr, "else": else_expr}}
 
 
 def translate_ifthenelse(step: IfthenelseStep) -> list[MongoStep]:
     return [
         {
-            '$addFields': {
+            "$addFields": {
                 step.new_column: transform_ifthenelse_step(
                     IfThenElse(condition=step.condition, then=step.then, else_value=step.else_value)  # type: ignore
                 )

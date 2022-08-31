@@ -6,7 +6,7 @@ from weaverbird.pipeline.types import ColumnName
 
 
 class FormulaStep(BaseStep):
-    name: Literal['formula'] = 'formula'
+    name: Literal["formula"] = "formula"
     new_column: ColumnName
     formula: str
 

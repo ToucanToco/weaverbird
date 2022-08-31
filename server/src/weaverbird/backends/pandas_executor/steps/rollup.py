@@ -12,9 +12,9 @@ def execute_rollup(
     domain_retriever: DomainRetriever = None,
     execute_pipeline: PipelineExecutor = None,
 ) -> DataFrame:
-    label_col = step.label_col or 'label'
-    level_col = step.level_col or 'level'
-    parent_label_col = step.parent_label_col or 'parent'
+    label_col = step.label_col or "label"
+    level_col = step.level_col or "level"
+    parent_label_col = step.parent_label_col or "parent"
 
     full_current_hierarchy = []
     all_results = []
@@ -25,7 +25,7 @@ def execute_rollup(
         aggregate_on_cols = (step.groupby or []) + full_current_hierarchy
         results_for_this_level = execute_aggregate(
             AggregateStep(
-                name='aggregate',
+                name="aggregate",
                 on=aggregate_on_cols,
                 aggregations=step.aggregations,
                 keepOriginalGranularity=False,

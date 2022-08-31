@@ -25,15 +25,15 @@ def translate_unpivot(
     subcall_from_other_pipeline_count: int = None,
     sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
-    query_name = f'UNPIVOT_STEP_{index}'
+    query_name = f"UNPIVOT_STEP_{index}"
 
     log.debug(
-        '############################################################'
-        f'query_name: {query_name}\n'
-        '------------------------------------------------------------'
-        f'step: {step}\n'
-        f'query.transformed_query: {query.transformed_query}\n'
-        f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
+        "############################################################"
+        f"query_name: {query_name}\n"
+        "------------------------------------------------------------"
+        f"step: {step}\n"
+        f"query.transformed_query: {query.transformed_query}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n"
     )
     unpivot_query = f"""SELECT {', '.join(step.keep + [step.unpivot_column_name.upper(),
                                                        step.value_column_name.upper()])}\
@@ -53,7 +53,7 @@ def translate_unpivot(
         ]
     )
     query.metadata_manager.add_query_metadata_column(
-        column_name=step.unpivot_column_name, column_type='text'
+        column_name=step.unpivot_column_name, column_type="text"
     )
     query.metadata_manager.add_query_metadata_column(
         column_name=step.value_column_name,
@@ -72,9 +72,9 @@ def translate_unpivot(
     )
 
     log.debug(
-        '------------------------------------------------------------'
-        f'SQLquery: {new_query.transformed_query}'
-        '############################################################'
+        "------------------------------------------------------------"
+        f"SQLquery: {new_query.transformed_query}"
+        "############################################################"
     )
 
     return new_query

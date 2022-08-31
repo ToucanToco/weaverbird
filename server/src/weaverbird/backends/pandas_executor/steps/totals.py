@@ -24,7 +24,7 @@ def get_total_for_dimension(
         aggregations.append(agg)
 
     aggregation_step = AggregateStep(
-        name='aggregate',
+        name="aggregate",
         keepOriginalGranularity=False,
         aggregations=aggregations,
         on=group_by_columns,
@@ -52,7 +52,7 @@ def get_total_for_dimensions(step: TotalsStep, df: DataFrame) -> DataFrame:
     group_by_columns = step.groups + [dim.total_column for dim in step.total_dimensions]
 
     aggregation_step = AggregateStep(
-        name='aggregate',
+        name="aggregate",
         keepOriginalGranularity=False,
         aggregations=step.aggregations,
         on=group_by_columns,

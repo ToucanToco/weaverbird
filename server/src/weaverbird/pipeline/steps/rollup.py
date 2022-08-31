@@ -10,18 +10,18 @@ from .aggregate import Aggregation, AggregationWithVariables
 
 
 class RollupStep(BaseStep):
-    name: Literal['rollup'] = 'rollup'
+    name: Literal["rollup"] = "rollup"
     hierarchy: List[ColumnName]
     # The list of columnns to aggregate, with related aggregation function to use:
     aggregations: Sequence[Aggregation]
     # Groupby columns if rollup has to be performed by groups:
     groupby: Optional[List[ColumnName]]
     # To give a custom name to the output label column:
-    label_col: Optional[ColumnName] = Field(alias='labelCol')
+    label_col: Optional[ColumnName] = Field(alias="labelCol")
     # To give a custom name to the output level column:
-    level_col: Optional[ColumnName] = Field(alias='levelCol')
+    level_col: Optional[ColumnName] = Field(alias="levelCol")
     # To give a custom name to the output parent column:
-    parent_label_col: Optional[ColumnName] = Field(alias='parentLabelCol')
+    parent_label_col: Optional[ColumnName] = Field(alias="parentLabelCol")
 
 
 class RollupStepWithVariable(RollupStep, StepWithVariablesMixin):

@@ -6,7 +6,7 @@ from weaverbird.pipeline.types import ColumnName, TemplatedVariable
 
 
 class UnpivotStep(BaseStep):
-    name: Literal['unpivot'] = 'unpivot'
+    name: Literal["unpivot"] = "unpivot"
     keep: List[ColumnName]
     unpivot: List[ColumnName]
     unpivot_column_name: ColumnName

@@ -25,22 +25,22 @@ def translate_duration(
     subcall_from_other_pipeline_count: int = None,
     sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
-    query_name = f'DURATION_STEP_{index}'
+    query_name = f"DURATION_STEP_{index}"
 
     log.debug(
-        '############################################################'
-        f'query_name: {query_name}\n'
-        '------------------------------------------------------------'
-        f'step: {step}\n'
-        f'query.transformed_query: {query.transformed_query}\n'
-        f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
+        "############################################################"
+        f"query_name: {query_name}\n"
+        "------------------------------------------------------------"
+        f"step: {step}\n"
+        f"query.transformed_query: {query.transformed_query}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n"
     )
     # we complete fields
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
         columns_filter=[step.new_column_name]
     )
 
-    if sql_dialect == 'postgres':
+    if sql_dialect == "postgres":
         interval_date = (
             f" EXTRACT({step.duration_in} FROM ({step.end_date_column}-{step.start_date_column}))"
         )
@@ -73,9 +73,9 @@ def translate_duration(
     )
 
     log.debug(
-        '------------------------------------------------------------'
-        f'SQLquery: {new_query.transformed_query}'
-        '############################################################'
+        "------------------------------------------------------------"
+        f"SQLquery: {new_query.transformed_query}"
+        "############################################################"
     )
 
     return new_query

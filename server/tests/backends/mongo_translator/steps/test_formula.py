@@ -3,49 +3,49 @@ from weaverbird.pipeline.steps import FormulaStep
 
 
 def test_formula_basic_operators():
-    assert translate_formula(FormulaStep(new_column='mewto', formula='mew * 2')) == [
-        {'$addFields': {'mewto': {'$multiply': ['$mew', 2]}}}
+    assert translate_formula(FormulaStep(new_column="mewto", formula="mew * 2")) == [
+        {"$addFields": {"mewto": {"$multiply": ["$mew", 2]}}}
     ]
-    assert translate_formula(FormulaStep(new_column='plant', formula='4 + 5')) == [
-        {'$addFields': {'plant': {'$add': [4, 5]}}}
+    assert translate_formula(FormulaStep(new_column="plant", formula="4 + 5")) == [
+        {"$addFields": {"plant": {"$add": [4, 5]}}}
     ]
-    assert translate_formula(FormulaStep(new_column='diff', formula='you - two')) == [
-        {'$addFields': {'diff': {'$subtract': ['$you', '$two']}}}
+    assert translate_formula(FormulaStep(new_column="diff", formula="you - two")) == [
+        {"$addFields": {"diff": {"$subtract": ["$you", "$two"]}}}
     ]
-    assert translate_formula(FormulaStep(new_column='conquer', formula='1 / pi')) == [
+    assert translate_formula(FormulaStep(new_column="conquer", formula="1 / pi")) == [
         {
-            '$addFields': {
-                'conquer': {'$cond': [{'$in': ['$pi', [0, None]]}, None, {'$divide': [1, '$pi']}]}
+            "$addFields": {
+                "conquer": {"$cond": [{"$in": ["$pi", [0, None]]}, None, {"$divide": [1, "$pi"]}]}
             }
         }
     ]
 
 
 def test_formula_with_unique_value():
-    assert translate_formula(FormulaStep(new_column='sacred', formula='graal')) == [
-        {'$addFields': {'sacred': '$graal'}}
+    assert translate_formula(FormulaStep(new_column="sacred", formula="graal")) == [
+        {"$addFields": {"sacred": "$graal"}}
     ]
-    assert translate_formula(FormulaStep(new_column='team_number', formula='10')) == [
-        {'$addFields': {'team_number': 10}}
+    assert translate_formula(FormulaStep(new_column="team_number", formula="10")) == [
+        {"$addFields": {"team_number": 10}}
     ]
 
 
 def test_formula_nested():
     assert translate_formula(
-        FormulaStep(new_column='foo', formula='(column_1 + column_2) / column_3 - column_4 * 100')
+        FormulaStep(new_column="foo", formula="(column_1 + column_2) / column_3 - column_4 * 100")
     ) == [
         {
-            '$addFields': {
-                'foo': {
-                    '$subtract': [
+            "$addFields": {
+                "foo": {
+                    "$subtract": [
                         {
-                            '$cond': [
-                                {'$in': ['$column_3', [0, None]]},
+                            "$cond": [
+                                {"$in": ["$column_3", [0, None]]},
                                 None,
-                                {'$divide': [{'$add': ['$column_1', '$column_2']}, '$column_3']},
+                                {"$divide": [{"$add": ["$column_1", "$column_2"]}, "$column_3"]},
                             ]
                         },
-                        {'$multiply': ['$column_4', 100]},
+                        {"$multiply": ["$column_4", 100]},
                     ]
                 }
             }
@@ -53,20 +53,20 @@ def test_formula_nested():
     ]
 
     assert translate_formula(
-        FormulaStep(new_column='bar', formula='1 / ((column_1 + column_2 + column_3)) * 10')
+        FormulaStep(new_column="bar", formula="1 / ((column_1 + column_2 + column_3)) * 10")
     ) == [
         {
-            '$addFields': {
-                'bar': {
-                    '$multiply': [
+            "$addFields": {
+                "bar": {
+                    "$multiply": [
                         {
-                            '$cond': [
+                            "$cond": [
                                 {
-                                    '$in': [
+                                    "$in": [
                                         {
-                                            '$add': [
-                                                {'$add': ['$column_1', '$column_2']},
-                                                '$column_3',
+                                            "$add": [
+                                                {"$add": ["$column_1", "$column_2"]},
+                                                "$column_3",
                                             ]
                                         },
                                         [0, None],
@@ -74,12 +74,12 @@ def test_formula_nested():
                                 },
                                 None,
                                 {
-                                    '$divide': [
+                                    "$divide": [
                                         1,
                                         {
-                                            '$add': [
-                                                {'$add': ['$column_1', '$column_2']},
-                                                '$column_3',
+                                            "$add": [
+                                                {"$add": ["$column_1", "$column_2"]},
+                                                "$column_3",
                                             ]
                                         },
                                     ]
@@ -94,17 +94,17 @@ def test_formula_nested():
     ]
 
     assert translate_formula(
-        FormulaStep(new_column='test_precedence', formula='column_1 + column_2 + column_3 * 10')
+        FormulaStep(new_column="test_precedence", formula="column_1 + column_2 + column_3 * 10")
     ) == [
         {
-            '$addFields': {
-                'test_precedence': {
-                    '$add': [
+            "$addFields": {
+                "test_precedence": {
+                    "$add": [
                         {
-                            '$add': ['$column_1', '$column_2'],
+                            "$add": ["$column_1", "$column_2"],
                         },
                         {
-                            '$multiply': ['$column_3', 10],
+                            "$multiply": ["$column_3", 10],
                         },
                     ],
                 }
@@ -114,13 +114,13 @@ def test_formula_nested():
 
 
 def test_signed_column_name():
-    assert translate_formula(FormulaStep(new_column='test', formula='-column_1 + 10')) == [
+    assert translate_formula(FormulaStep(new_column="test", formula="-column_1 + 10")) == [
         {
-            '$addFields': {
-                'test': {
-                    '$add': [
+            "$addFields": {
+                "test": {
+                    "$add": [
                         {
-                            '$multiply': [-1, '$column_1'],
+                            "$multiply": [-1, "$column_1"],
                         },
                         10,
                     ],
@@ -136,37 +136,37 @@ def test_signed_column_name():
 def test_zero_division():
     assert translate_formula(
         FormulaStep(
-            new_column='foo',
-            formula='column_1 / 10 + column_1 / column_2 + column_1 / (column_2 + 10)',
+            new_column="foo",
+            formula="column_1 / 10 + column_1 / column_2 + column_1 / (column_2 + 10)",
         )
     ) == [
         {
-            '$addFields': {
-                'foo': {
-                    '$add': [
+            "$addFields": {
+                "foo": {
+                    "$add": [
                         {
-                            '$add': [
+                            "$add": [
                                 {
-                                    '$cond': [
-                                        {'$in': [10, [0, None]]},
+                                    "$cond": [
+                                        {"$in": [10, [0, None]]},
                                         None,
-                                        {'$divide': ['$column_1', 10]},
+                                        {"$divide": ["$column_1", 10]},
                                     ]
                                 },
                                 {
-                                    '$cond': [
-                                        {'$in': ['$column_2', [0, None]]},
+                                    "$cond": [
+                                        {"$in": ["$column_2", [0, None]]},
                                         None,
-                                        {'$divide': ['$column_1', '$column_2']},
+                                        {"$divide": ["$column_1", "$column_2"]},
                                     ]
                                 },
                             ]
                         },
                         {
-                            '$cond': [
-                                {'$in': [{'$add': ['$column_2', 10]}, [0, None]]},
+                            "$cond": [
+                                {"$in": [{"$add": ["$column_2", 10]}, [0, None]]},
                                 None,
-                                {'$divide': ['$column_1', {'$add': ['$column_2', 10]}]},
+                                {"$divide": ["$column_1", {"$add": ["$column_2", 10]}]},
                             ]
                         },
                     ]
@@ -179,16 +179,16 @@ def test_zero_division():
 def test_special_column_name():
     assert translate_formula(
         FormulaStep(
-            new_column='test',
-            formula='[column with spaces] + [an other column]',
+            new_column="test",
+            formula="[column with spaces] + [an other column]",
         )
     ) == [
         {
-            '$addFields': {
-                'test': {
-                    '$add': [
-                        '$column with spaces',
-                        '$an other column',
+            "$addFields": {
+                "test": {
+                    "$add": [
+                        "$column with spaces",
+                        "$an other column",
                     ],
                 },
             },
@@ -198,12 +198,12 @@ def test_special_column_name():
 
 def test_special_column_name_and_normal_column_name():
     assert translate_formula(
-        FormulaStep(new_column='test', formula='[column with spaces] + A')
+        FormulaStep(new_column="test", formula="[column with spaces] + A")
     ) == [
         {
-            '$addFields': {
-                'test': {
-                    '$add': ['$column with spaces', '$A'],
+            "$addFields": {
+                "test": {
+                    "$add": ["$column with spaces", "$A"],
                 },
             },
         },

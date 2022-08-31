@@ -13,10 +13,10 @@ def test_benchmark_convert(benchmark):
     ]
     df = pandas.DataFrame(
         {
-            'date': dates,
+            "date": dates,
         }
     )
-    step = ConvertStep(name='convert', columns=['date'], data_type='date')
+    step = ConvertStep(name="convert", columns=["date"], data_type="date")
 
     benchmark(execute_convert, step, df)
 
@@ -24,13 +24,13 @@ def test_benchmark_convert(benchmark):
 def test_convert_str_to_date():
     df = pandas.DataFrame(
         {
-            'date': ['21/03/2006 21:50:00'],
+            "date": ["21/03/2006 21:50:00"],
         }
     )
-    step = ConvertStep(name='convert', columns=['date'], data_type='date')
+    step = ConvertStep(name="convert", columns=["date"], data_type="date")
     result = execute_convert(step, df)
-    date_result = result.at[0, 'date']
-    assert str(date_result) == '2006-03-21 21:50:00'
+    date_result = result.at[0, "date"]
+    assert str(date_result) == "2006-03-21 21:50:00"
 
 
 def test_convert_timestamp_to_date():
@@ -40,13 +40,13 @@ def test_convert_timestamp_to_date():
     """
     df = pandas.DataFrame(
         {
-            'timestamp_ms': [1142977800000],
+            "timestamp_ms": [1142977800000],
         }
     )
-    step = ConvertStep(name='convert', columns=['timestamp_ms'], data_type='date')
+    step = ConvertStep(name="convert", columns=["timestamp_ms"], data_type="date")
     result = execute_convert(step, df)
-    date_result = result.at[0, 'timestamp_ms']
-    assert str(date_result) == '2006-03-21 21:50:00'
+    date_result = result.at[0, "timestamp_ms"]
+    assert str(date_result) == "2006-03-21 21:50:00"
 
 
 def test_convert_date_to_timestamp():
@@ -55,10 +55,10 @@ def test_convert_date_to_timestamp():
     """
     df = pandas.DataFrame(
         {
-            'date': [pandas.to_datetime('21/03/2006 21:50:00')],
+            "date": [pandas.to_datetime("21/03/2006 21:50:00")],
         }
     )
-    step = ConvertStep(name='convert', columns=['date'], data_type='integer')
+    step = ConvertStep(name="convert", columns=["date"], data_type="integer")
     result = execute_convert(step, df)
-    timestamp_result = result.at[0, 'date']
-    assert str(timestamp_result) == '1142977800000'
+    timestamp_result = result.at[0, "date"]
+    assert str(timestamp_result) == "1142977800000"

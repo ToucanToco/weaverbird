@@ -26,13 +26,13 @@ def translate_dateextract(
     subcall_from_other_pipeline_count: int = None,
     sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
-    query_name = f'DATEEXTRACT_STEP_{index}'
+    query_name = f"DATEEXTRACT_STEP_{index}"
 
     log.debug(
-        '############################################################'
-        f'query_name: {query_name}\n'
-        '------------------------------------------------------------'
-        f'step: {step}\n'
+        "############################################################"
+        f"query_name: {query_name}\n"
+        "------------------------------------------------------------"
+        f"step: {step}\n"
     )
 
     def new_column_name(d: str, idd: int) -> str:
@@ -48,10 +48,10 @@ def translate_dateextract(
                 # if index is in step.new_columns
                 step.new_columns[idd]
                 if idd < len(step.new_columns)
-                else f'{step.column}_{d.upper()}'
+                else f"{step.column}_{d.upper()}"
             )
             if len(step.new_columns) > 0
-            else f'{step.column}_{d.upper()}'
+            else f"{step.column}_{d.upper()}"
         )
 
     to_extract_string: str = ", ".join(
@@ -67,7 +67,7 @@ def translate_dateextract(
     select_fields = ""
     # added the new column
     for table in query.metadata_manager.tables:
-        select_fields = ', '.join(query.metadata_manager.retrieve_columns_as_list(table))
+        select_fields = ", ".join(query.metadata_manager.retrieve_columns_as_list(table))
 
     if len(select_fields) > 0:
         to_extract_string = ", " + to_extract_string
@@ -83,9 +83,9 @@ def translate_dateextract(
     )
 
     log.debug(
-        '------------------------------------------------------------'
-        f'SQLquery: {new_query.transformed_query}'
-        '############################################################'
+        "------------------------------------------------------------"
+        f"SQLquery: {new_query.transformed_query}"
+        "############################################################"
     )
 
     return new_query

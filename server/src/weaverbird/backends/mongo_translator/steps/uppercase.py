@@ -5,4 +5,4 @@ from weaverbird.pipeline.steps import UppercaseStep
 
 
 def translate_uppercase(step: UppercaseStep) -> List[MongoStep]:
-    return [{'$addFields': {step.column: {'$toUpper': f'${step.column}'}}}]
+    return [{"$addFields": {step.column: {"$toUpper": f"${step.column}"}}}]

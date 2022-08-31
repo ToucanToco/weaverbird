@@ -8,11 +8,11 @@ from weaverbird.pipeline.steps.statistics import DUMB_GROUPBY_COLUMN_NAME, Stati
 
 
 def statistic_to_pandas_method(s: str) -> Union[str, Callable[[Series], float]]:
-    if s == 'average':
-        return 'mean'
-    elif s == 'variance':
+    if s == "average":
+        return "mean"
+    elif s == "variance":
         return lambda x: x.var(ddof=0)
-    elif s == 'standard deviation':
+    elif s == "standard deviation":
         return lambda x: x.std(ddof=0)
     return s
 
@@ -42,7 +42,7 @@ def execute_statistics(
     result = df.groupby(groupby_columns)[step.column].agg(stat_funcs).reset_index()
 
     # Now, just fix the column names:
-    quantile_names = [q.label or f'{q.nth}-th {q.order}-quantile' for q in step.quantiles]
+    quantile_names = [q.label or f"{q.nth}-th {q.order}-quantile" for q in step.quantiles]
     column_names = groupby_columns + step.statistics + quantile_names  # type: ignore
     result.columns = column_names
 

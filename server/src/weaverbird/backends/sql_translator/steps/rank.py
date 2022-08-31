@@ -25,15 +25,15 @@ def translate_rank(
     subcall_from_other_pipeline_count: int = None,
     sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
-    query_name = f'RANK_STEP_{index}'
+    query_name = f"RANK_STEP_{index}"
 
     log.debug(
-        '############################################################'
-        f'query_name: {query_name}\n'
-        '------------------------------------------------------------'
-        f'step: {step}\n'
-        f'query.transformed_query: {query.transformed_query}\n'
-        f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
+        "############################################################"
+        f"query_name: {query_name}\n"
+        "------------------------------------------------------------"
+        f"step: {step}\n"
+        f"query.transformed_query: {query.transformed_query}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n"
     )
 
     rank_mode = "DENSE_RANK()" if step.method == "dense" else "RANK()"
@@ -50,9 +50,9 @@ def translate_rank(
             f"ORDER BY {step.value_col} {step.order})) AS {step.new_column_name}"
         )
 
-        order_on_groupby = ' ASC, '.join(step.groupby)
+        order_on_groupby = " ASC, ".join(step.groupby)
         if len(step.groupby) > 0:
-            order_on_groupby += ' ASC'
+            order_on_groupby += " ASC"
 
         order_by_query = f"ORDER BY {step.new_column_name} ASC, {order_on_groupby}"
     else:
@@ -69,7 +69,7 @@ def translate_rank(
     )
 
     # we add the column to the metadata
-    query.metadata_manager.add_query_metadata_column(step.new_column_name, 'int')
+    query.metadata_manager.add_query_metadata_column(step.new_column_name, "int")
 
     new_query = SQLQuery(
         query_name=query_name,
@@ -81,9 +81,9 @@ def translate_rank(
     )
 
     log.debug(
-        '------------------------------------------------------------'
-        f'SQLquery: {new_query.transformed_query}'
-        '############################################################'
+        "------------------------------------------------------------"
+        f"SQLquery: {new_query.transformed_query}"
+        "############################################################"
     )
 
     return new_query

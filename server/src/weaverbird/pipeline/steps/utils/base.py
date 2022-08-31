@@ -9,7 +9,7 @@ class BaseStep(BaseModel):
     name: str
 
     class Config(PopulatedWithFieldnames):
-        extra = 'forbid'
+        extra = "forbid"
 
     # None values are excluded, to avoid triggering validations error in front-ends
     def dict(self, *, exclude_none: bool = True, **kwargs) -> Dict:

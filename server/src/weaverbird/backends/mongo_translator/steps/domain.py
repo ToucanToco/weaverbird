@@ -5,4 +5,4 @@ from weaverbird.pipeline.steps import DomainStep
 
 
 def translate_domain(step: DomainStep) -> List[MongoStep]:
-    return [{'$match': {'domain': step.domain}}]
+    return [{"$match": {"domain": step.domain}}]

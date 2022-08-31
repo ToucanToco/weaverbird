@@ -12,9 +12,9 @@ JoinColumnsPair = Tuple[ColumnName, ColumnName]
 
 
 class JoinStep(BaseStep):
-    name: Literal['join'] = 'join'
+    name: Literal["join"] = "join"
     right_pipeline: PipelineOrDomainNameOrReference
-    type: Literal['left', 'inner', 'left outer']
+    type: Literal["left", "inner", "left outer"]
     on: List[JoinColumnsPair] = Field(..., min_items=1)
 
 

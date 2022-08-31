@@ -20,7 +20,7 @@ class Case(BaseModel):
 
 def get_render_variables_test_cases():
     test_cases = []
-    globs = glob.glob('./tests/fixtures/fixtures_templating/*.json')
+    globs = glob.glob("./tests/fixtures/fixtures_templating/*.json")
     for file in globs:
         with open(file) as json_file:
             file_content = json.load(json_file)
@@ -34,7 +34,7 @@ cases = get_render_variables_test_cases()
 ids = map(lambda x: x.filename, cases)
 
 
-@pytest.mark.parametrize('case', cases, ids=ids)
+@pytest.mark.parametrize("case", cases, ids=ids)
 def test_step_with_variables(case: Case):
     pipeline_with_variables = PipelineWithVariables(**case.data)
 
@@ -49,11 +49,11 @@ def test_step_with_variables(case: Case):
 def test_to_dict():
     pipeline = Pipeline(
         steps=[
-            DomainStep(name='domain', domain='foobar'),
+            DomainStep(name="domain", domain="foobar"),
             RollupStep(
-                name='rollup',
-                hierarchy=['a', 'b'],
-                aggregations=[Aggregation(newcolumns=['a'], aggfunction='sum', columns=['a'])],
+                name="rollup",
+                hierarchy=["a", "b"],
+                aggregations=[Aggregation(newcolumns=["a"], aggfunction="sum", columns=["a"])],
             ),
         ]
     )
@@ -61,12 +61,12 @@ def test_to_dict():
     actual_dict = pipeline.dict()
 
     expected_dict = {
-        'steps': [
-            {'domain': 'foobar', 'name': 'domain'},
+        "steps": [
+            {"domain": "foobar", "name": "domain"},
             {
-                'name': 'rollup',
-                'hierarchy': ['a', 'b'],
-                'aggregations': [{'new_columns': ['a'], 'agg_function': 'sum', 'columns': ['a']}],
+                "name": "rollup",
+                "hierarchy": ["a", "b"],
+                "aggregations": [{"new_columns": ["a"], "agg_function": "sum", "columns": ["a"]}],
             },
         ]
     }

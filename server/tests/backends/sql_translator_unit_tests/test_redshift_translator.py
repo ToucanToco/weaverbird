@@ -10,8 +10,8 @@ def redshift_translator() -> RedshiftTranslator:
 
 
 def test_recursive_concat(redshift_translator: RedshiftTranslator) -> None:
-    the_table = Table('table')
+    the_table = Table("table")
     concat = redshift_translator._recursive_concat(
-        None, [the_table['col1'], ' - ', the_table['col2'], ' - ', the_table['col3']]
+        None, [the_table["col1"], " - ", the_table["col2"], " - ", the_table["col3"]]
     )
     assert str(concat) == """CONCAT(CONCAT(CONCAT(CONCAT("col1",' - '),"col2"),' - '),"col3")"""

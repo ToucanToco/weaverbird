@@ -10,9 +10,9 @@ def execute_rank(
     domain_retriever: DomainRetriever = None,
     execute_pipeline: PipelineExecutor = None,
 ) -> DataFrame:
-    new_column_name = step.new_column_name or f'{step.value_col}_RANK'
-    rank_method = 'min' if step.method == 'standard' else step.method
-    ascending = step.order == 'asc'
+    new_column_name = step.new_column_name or f"{step.value_col}_RANK"
+    rank_method = "min" if step.method == "standard" else step.method
+    ascending = step.order == "asc"
     if step.groupby:
         serie = df.groupby(step.groupby, dropna=False)[step.value_col]
     else:

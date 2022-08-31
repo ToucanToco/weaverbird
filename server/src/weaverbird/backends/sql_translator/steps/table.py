@@ -30,12 +30,12 @@ def translate_table(
     )  # TODO in laputa, implement the table retrieval instead of query
     if len(select_from_table.split()) == 1:
         select_from_table = f"SELECT * FROM {select_from_table}"
-    query_name = f'SELECT_STEP_{index}'
+    query_name = f"SELECT_STEP_{index}"
     query_name += (
-        f'_{subcall_from_other_pipeline_count}'
+        f"_{subcall_from_other_pipeline_count}"
         if isinstance(subcall_from_other_pipeline_count, int)
         and subcall_from_other_pipeline_count >= 0
-        else ''
+        else ""
     )
     query_description = sql_query_describer(step.domain)
     query_metadata_manager = SqlQueryMetadataManager(
@@ -44,7 +44,7 @@ def translate_table(
 
     sql_query = SQLQuery(
         query_name=query_name,
-        transformed_query=f'WITH {query_name} AS ({select_from_table})',
+        transformed_query=f"WITH {query_name} AS ({select_from_table})",
         selection_query=build_selection_query(
             query_metadata_manager.retrieve_query_metadata_columns(), query_name
         ),

@@ -25,24 +25,24 @@ def translate_customsql(
     subcall_from_other_pipeline_count: int = None,
     sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
-    query_name = f'CUSTOMSQL_STEP_{index}'
+    query_name = f"CUSTOMSQL_STEP_{index}"
 
     log.debug(
-        '############################################################'
-        f'query_name: {query_name}\n'
-        '------------------------------------------------------------'
-        f'step: {step}\n'
-        f'query.transformed_query: {query.transformed_query}\n'
-        f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
+        "############################################################"
+        f"query_name: {query_name}\n"
+        "------------------------------------------------------------"
+        f"step: {step}\n"
+        f"query.transformed_query: {query.transformed_query}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n"
     )
     injected_query = (
-        step.query.replace('##PREVIOUS_STEP##', query.query_name).replace(';', '').strip()
+        step.query.replace("##PREVIOUS_STEP##", query.query_name).replace(";", "").strip()
     )
     transformed_query = f"""{query.transformed_query}, {query_name} AS ({injected_query})"""
     query.metadata_manager.remove_query_metadata_all_columns()
     query.metadata_manager.add_query_metadata_columns(
         sql_query_describer(
-            domain=None, query_string=f'{transformed_query} SELECT * FROM {query_name}'
+            domain=None, query_string=f"{transformed_query} SELECT * FROM {query_name}"
         )
     )
 

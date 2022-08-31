@@ -42,7 +42,7 @@ def test_get_query_builder(base_translator: BaseTranslator):
     expected = (
         Query.with_(step_1_query, "__step_0_basetranslator__")
         .from_("__step_0_basetranslator__")
-        .select(*ALL_TABLES['users'])
+        .select(*ALL_TABLES["users"])
     )
 
     qb_context = base_translator.get_query_builder(steps=steps)
@@ -94,13 +94,13 @@ def test_get_query_builder_more_than_one_step(base_translator: BaseTranslator):
         Field(col) if col is not to_rename else Field(col).as_(rename_as)
         for col in ALL_TABLES["users"]
     )
-    expected_cols = (col if col != to_rename else rename_as for col in ALL_TABLES['users'])
+    expected_cols = (col if col != to_rename else rename_as for col in ALL_TABLES["users"])
     step_1_query = Query.from_(AliasedQuery('"__step_0_basetranslator__"')).select(*columns)
 
     expected = (
         Query.with_(step_0_query, "__step_0_basetranslator__")
         .with_(step_1_query, "__step_1_basetranslator__")
-        .from_('__step_1_basetranslator__')
+        .from_("__step_1_basetranslator__")
         .select(*expected_cols)
     )
 
@@ -116,7 +116,7 @@ def test_get_query_str(base_translator: BaseTranslator):
     step_1_query = Query.from_(schema.users).select(*ALL_TABLES["users"])
     expected = (
         Query.with_(step_1_query, "__step_0_basetranslator__")
-        .from_('__step_0_basetranslator__')
+        .from_("__step_0_basetranslator__")
         .select(*ALL_TABLES["users"])
         .get_sql()
     )
@@ -152,7 +152,7 @@ def test_aggregate_raise_expection(
         ],
     )
     with pytest.raises(NotImplementedError):
-        base_translator.aggregate(step=step, columns=['*'], **default_step_kwargs)
+        base_translator.aggregate(step=step, columns=["*"], **default_step_kwargs)
 
 
 @pytest.mark.parametrize("agg_type", ["avg", "count", "count distinct", "max", "min", "sum"])
@@ -169,7 +169,7 @@ def test_aggregate(
             steps.Aggregation(new_columns=[new_column], agg_function=agg_type, columns=[agg_field])
         ],
     )
-    ctx = base_translator.aggregate(step=step, columns=['*'], **default_step_kwargs)
+    ctx = base_translator.aggregate(step=step, columns=["*"], **default_step_kwargs)
 
     agg_func = base_translator._get_aggregate_function(agg_type)
     field = Field(agg_field)
@@ -243,7 +243,7 @@ def test_concatenate(base_translator: BaseTranslator, default_step_kwargs: dict[
     selected_columns = ["*"]
     new_column_name = "new_name"
     concat_columns = ["name", "pseudonyme"]
-    separator = ','
+    separator = ","
 
     step = steps.ConcatenateStep(
         columns=concat_columns, separator=separator, new_column_name=new_column_name
@@ -362,7 +362,7 @@ def test_formula(base_translator: BaseTranslator, default_step_kwargs: dict[str,
         *selected_columns,
         (
             Term.wrap_constant(2) / functions.NullIf(Term.wrap_constant(4), 0)
-            + Field('column name') * Field('other_col')
+            + Field("column name") * Field("other_col")
         ).as_(new_column_name),
     )
     assert ctx.selectable.get_sql() == expected_query.get_sql()
@@ -374,7 +374,7 @@ def test_ifthenelse(base_translator: BaseTranslator, default_step_kwargs: dict[s
     new_column_name = "fancy division"
     column = "name"
     value = "goerge"
-    statement = conditions.ComparisonCondition(column=column, operator='eq', value=value)
+    statement = conditions.ComparisonCondition(column=column, operator="eq", value=value)
     then = "a"
     reject = "b"
 
@@ -467,7 +467,7 @@ def test_select(base_translator: BaseTranslator, default_step_kwargs: dict[str, 
 def test_sort(base_translator: BaseTranslator, default_step_kwargs: dict[str, Any]):
     selected_columns = ["name", "pseudonyme"]
     previous_step = "previous_with"
-    columns = [{'column': "name", 'order': "asc"}]
+    columns = [{"column": "name", "order": "asc"}]
 
     step = steps.SortStep(columns=columns)
     ctx = base_translator.sort(step=step, columns=selected_columns, **default_step_kwargs)
@@ -566,8 +566,8 @@ def test_absolutevalue(base_translator: BaseTranslator, default_step_kwargs: dic
 
 # Join tests
 @pytest.mark.parametrize(
-    'join_type, join_type_variant',
-    [('left', JoinType.left), ('left outer', JoinType.left_outer), ('inner', JoinType.inner)],
+    "join_type, join_type_variant",
+    [("left", JoinType.left), ("left outer", JoinType.left_outer), ("inner", JoinType.inner)],
 )
 def test_join_simple(
     base_translator: BaseTranslator,
@@ -575,9 +575,9 @@ def test_join_simple(
     join_type_variant: JoinType,
     default_step_kwargs: dict[str, Any],
 ):
-    right_domain = 'projects'
-    selected_columns = ['name', 'project_id']
-    join_columns = [('project_id', 'id')]
+    right_domain = "projects"
+    selected_columns = ["name", "project_id"]
+    join_columns = [("project_id", "id")]
     previous_step = "previous_with"
 
     step = steps.JoinStep(
@@ -586,13 +586,13 @@ def test_join_simple(
     ctx = base_translator.join(step=step, columns=selected_columns, **default_step_kwargs)
 
     left_table = Table(previous_step)
-    right_table = Table('__step_0_basetranslator__')
+    right_table = Table("__step_0_basetranslator__")
     expected_query = (
         Query.from_(previous_step)
         .select(
             *(left_table[col] for col in selected_columns),
             right_table.id,
-            Field('name', table=right_table, alias='name_right'),
+            Field("name", table=right_table, alias="name_right"),
             right_table.created_at,
         )
         .join(right_table, join_type_variant)
@@ -603,9 +603,9 @@ def test_join_simple(
 
 
 def test_append_simple(base_translator: BaseTranslator, default_step_kwargs: dict[str, Any]):
-    right_domain = 'projects'
-    selected_columns = ['name', 'created_at']
-    right_selected_columns = ['name', 'user_id']
+    right_domain = "projects"
+    selected_columns = ["name", "created_at"]
+    right_selected_columns = ["name", "user_id"]
     previous_step = "previous_with"
 
     step = steps.AppendStep(
@@ -618,15 +618,15 @@ def test_append_simple(base_translator: BaseTranslator, default_step_kwargs: dic
     )
     ctx = base_translator.append(step=step, columns=selected_columns, **default_step_kwargs)
 
-    right_table = Table('__step_1_basetranslator__')
+    right_table = Table("__step_1_basetranslator__")
     expected_query = (
         Query.from_(previous_step)
-        .select(*selected_columns, LiteralValue('NULL').as_('user_id'))
+        .select(*selected_columns, LiteralValue("NULL").as_("user_id"))
         .union_all(
             Query.from_(right_table).select(
-                'name', LiteralValue('NULL').as_('created_at'), 'user_id'
+                "name", LiteralValue("NULL").as_("created_at"), "user_id"
             )
         )
-        .orderby('name', 'created_at', 'user_id')
+        .orderby("name", "created_at", "user_id")
     )
     assert ctx.selectable.get_sql() == expected_query.get_sql()

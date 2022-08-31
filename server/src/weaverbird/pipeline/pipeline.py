@@ -138,7 +138,7 @@ PipelineStep = Annotated[
         UppercaseStep,
         WaterfallStep,
     ],
-    Field(discriminator='name'),  # noqa: F821
+    Field(discriminator="name"),  # noqa: F821
 ]
 
 
@@ -181,7 +181,7 @@ PipelineStepWithVariables = Annotated[
         UnpivotStepWithVariable,
         WaterfallStepWithVariable,
     ],
-    Field(discriminator='name'),  # noqa: F821
+    Field(discriminator="name"),  # noqa: F821
 ]
 
 
@@ -191,7 +191,7 @@ class PipelineWithVariables(BaseModel):
     def render(self, variables: Dict[str, Any], renderer) -> Pipeline:
         # TODO it must be more efficient to render the full pipeline once
         steps_rendered = [
-            step.render(variables, renderer) if hasattr(step, 'render') else step  # type: ignore
+            step.render(variables, renderer) if hasattr(step, "render") else step  # type: ignore
             for step in self.steps
         ]
         return Pipeline(steps=steps_rendered)

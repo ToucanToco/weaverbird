@@ -5,5 +5,5 @@ from weaverbird.pipeline.types import ColumnName
 
 
 class UppercaseStep(BaseStep):
-    name: Literal['uppercase'] = 'uppercase'
+    name: Literal["uppercase"] = "uppercase"
     column: ColumnName

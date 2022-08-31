@@ -6,11 +6,11 @@ from pydantic import BaseModel
 
 
 class Operator(str, Enum):
-    ADD = '+'
-    SUB = '-'
-    MUL = '*'
-    DIV = '/'
-    MOD = '%'
+    ADD = "+"
+    SUB = "-"
+    MUL = "*"
+    DIV = "/"
+    MOD = "%"
 
 
 Constant = Union[int, bool, float, str]
@@ -21,7 +21,7 @@ class ColumnName(BaseModel):
     alias: str
 
 
-Expression = Union['Operation', ColumnName, Constant]
+Expression = Union["Operation", ColumnName, Constant]
 
 
 # Dataclasses do not supported recursive types for now
@@ -39,8 +39,8 @@ def format_expr(
     *,
     parenthesize_operations: bool = False,
     str_quote_seq: str = "'",
-    column_start_seq: str = '[',
-    column_end_seq: str = ']',
+    column_start_seq: str = "[",
+    column_end_seq: str = "]",
     bools_as_py: bool = False,
 ) -> str | int | float:
     if isinstance(expr, Operation):
@@ -58,10 +58,10 @@ def format_expr(
             column_start_seq=column_start_seq,
             column_end_seq=column_end_seq,
         )
-        str_ = f'{left} {expr.operator} {right}'
-        return f'({str_})' if parenthesize_operations else str_
+        str_ = f"{left} {expr.operator} {right}"
+        return f"({str_})" if parenthesize_operations else str_
     elif isinstance(expr, ColumnName):
-        return f'{column_start_seq}{expr.name}{column_end_seq}'
+        return f"{column_start_seq}{expr.name}{column_end_seq}"
     elif isinstance(expr, str):
         # Unquoting
         return f"{str_quote_seq}{literal_eval(expr)}{str_quote_seq}"
@@ -69,4 +69,4 @@ def format_expr(
     elif isinstance(expr, (int, float)) and not isinstance(expr, bool):
         return expr
     elif isinstance(expr, bool):
-        return expr if bools_as_py else ('true' if expr else 'false')
+        return expr if bools_as_py else ("true" if expr else "false")

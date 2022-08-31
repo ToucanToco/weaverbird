@@ -18,16 +18,16 @@ def translator() -> SQLTranslator:
             if id(self) in DummyTranslator.known_instances:
                 return DummyTranslator.known_instances[id(self)]
             if len(DummyTranslator.known_instances.keys()) == 0:
-                DummyTranslator.known_instances[id(self)] = 'dummy'
-                return 'dummy'
+                DummyTranslator.known_instances[id(self)] = "dummy"
+                return "dummy"
             else:
-                id_ = 'dummy' + str(len(DummyTranslator.known_instances.keys()))
+                id_ = "dummy" + str(len(DummyTranslator.known_instances.keys()))
                 DummyTranslator.known_instances[id(self)] = id_
                 return id_
 
     return DummyTranslator(
         tables_columns={
-            'beers_tiny': [
+            "beers_tiny": [
                 "price_per_l",
                 "alcohol_degree",
                 "name",
@@ -43,16 +43,16 @@ def translator() -> SQLTranslator:
 
 _CASES: list[tuple[list[dict | PipelineStep], str]] = [
     (
-        [steps.CustomSqlStep(query='SELECT * FROM beers_tiny')],
+        [steps.CustomSqlStep(query="SELECT * FROM beers_tiny")],
         'WITH __step_0_dummy__ AS (SELECT * FROM beers_tiny) SELECT * FROM "__step_0_dummy__"',
     ),
     (
         [
-            steps.DomainStep(domain='beers_tiny'),
+            steps.DomainStep(domain="beers_tiny"),
             steps.AggregateStep(
-                on=['beer_kind'],
+                on=["beer_kind"],
                 aggregations=[
-                    {'aggfunction': 'count', 'new_columns': ['beer_count'], 'columns': ['name']}
+                    {"aggfunction": "count", "new_columns": ["beer_count"], "columns": ["name"]}
                 ],
             ),
         ],
@@ -60,11 +60,11 @@ _CASES: list[tuple[list[dict | PipelineStep], str]] = [
     ),
     (
         [
-            steps.DomainStep(domain='beers_tiny'),
+            steps.DomainStep(domain="beers_tiny"),
             steps.AggregateStep(
-                on=['beer_kind'],
+                on=["beer_kind"],
                 aggregations=[
-                    {'aggfunction': 'count', 'new_columns': ['beer_count'], 'columns': ['name']}
+                    {"aggfunction": "count", "new_columns": ["beer_count"], "columns": ["name"]}
                 ],
                 keep_original_granularity=True,
             ),
@@ -73,32 +73,32 @@ _CASES: list[tuple[list[dict | PipelineStep], str]] = [
     ),
     (
         [
-            steps.DomainStep(domain='beers_tiny'),
+            steps.DomainStep(domain="beers_tiny"),
             steps.AggregateStep(
-                on=['beer_kind'],
+                on=["beer_kind"],
                 aggregations=[
-                    {'aggfunction': 'count', 'new_columns': ['beer_count'], 'columns': ['name']},
+                    {"aggfunction": "count", "new_columns": ["beer_count"], "columns": ["name"]},
                     {
-                        'aggfunction': 'avg',
-                        'new_columns': ['avg_price_per_l'],
-                        'columns': ['price_per_l'],
+                        "aggfunction": "avg",
+                        "new_columns": ["avg_price_per_l"],
+                        "columns": ["price_per_l"],
                     },
                 ],
             ),
-            steps.AbsoluteValueStep(column='avg_price_per_l', new_column='avg_price_per_l_abs'),
+            steps.AbsoluteValueStep(column="avg_price_per_l", new_column="avg_price_per_l_abs"),
         ],
         'WITH __step_0_dummy__ AS (SELECT "price_per_l","alcohol_degree","name","cost","beer_kind","volume_ml","brewing_date","nullable_name" FROM "beers_tiny") ,__step_1_dummy__ AS (SELECT "beer_kind",COUNT("name") "beer_count",AVG("price_per_l") "avg_price_per_l" FROM "__step_0_dummy__" GROUP BY "beer_kind" ORDER BY "beer_kind") ,__step_2_dummy__ AS (SELECT "beer_kind","beer_count","avg_price_per_l",ABS("avg_price_per_l") "avg_price_per_l_abs" FROM "__step_1_dummy__") SELECT "beer_kind","beer_count","avg_price_per_l","avg_price_per_l_abs" FROM "__step_2_dummy__"',
     ),
     (
         [
-            steps.DomainStep(domain='beers_tiny'),
-            steps.SelectStep(columns=['name', 'beer_kind']),
+            steps.DomainStep(domain="beers_tiny"),
+            steps.SelectStep(columns=["name", "beer_kind"]),
             steps.JoinStep(
-                type='left',
-                on=[('name', 'name')],
+                type="left",
+                on=[("name", "name")],
                 right_pipeline=[
-                    steps.DomainStep(domain='beers_tiny'),
-                    steps.SelectStep(columns=['name', 'price_per_l']),
+                    steps.DomainStep(domain="beers_tiny"),
+                    steps.SelectStep(columns=["name", "price_per_l"]),
                 ],
             ),
         ],
@@ -106,15 +106,15 @@ _CASES: list[tuple[list[dict | PipelineStep], str]] = [
     ),
     (
         [
-            steps.DomainStep(domain='beers_tiny'),
-            steps.SelectStep(columns=['name', 'beer_kind']),
+            steps.DomainStep(domain="beers_tiny"),
+            steps.SelectStep(columns=["name", "beer_kind"]),
             steps.JoinStep(
-                type='left',
-                on=[('name', 'renamed')],
+                type="left",
+                on=[("name", "renamed")],
                 right_pipeline=[
-                    steps.DomainStep(domain='beers_tiny'),
-                    steps.SelectStep(columns=['name', 'price_per_l']),
-                    steps.RenameStep(to_rename=[('name', 'renamed')]),
+                    steps.DomainStep(domain="beers_tiny"),
+                    steps.SelectStep(columns=["name", "price_per_l"]),
+                    steps.RenameStep(to_rename=[("name", "renamed")]),
                 ],
             ),
         ],
@@ -122,23 +122,23 @@ _CASES: list[tuple[list[dict | PipelineStep], str]] = [
     ),
     (
         [
-            steps.DomainStep(domain='beers_tiny'),
-            steps.SelectStep(columns=['name', 'beer_kind']),
+            steps.DomainStep(domain="beers_tiny"),
+            steps.SelectStep(columns=["name", "beer_kind"]),
             steps.JoinStep(
-                type='left',
-                on=[('name', 'name')],
+                type="left",
+                on=[("name", "name")],
                 right_pipeline=[
-                    steps.DomainStep(domain='beers_tiny'),
-                    steps.SelectStep(columns=['name', 'price_per_l']),
+                    steps.DomainStep(domain="beers_tiny"),
+                    steps.SelectStep(columns=["name", "price_per_l"]),
                     steps.JoinStep(
-                        type='left',
-                        on=[('name', 'name')],
+                        type="left",
+                        on=[("name", "name")],
                         right_pipeline=[
-                            steps.DomainStep(domain='beers_tiny'),
-                            steps.SelectStep(columns=['name', 'cost']),
+                            steps.DomainStep(domain="beers_tiny"),
+                            steps.SelectStep(columns=["name", "cost"]),
                         ],
                     ),
-                    steps.SelectStep(columns=['name', 'cost', 'price_per_l']),
+                    steps.SelectStep(columns=["name", "cost", "price_per_l"]),
                 ],
             ),
         ],
@@ -147,7 +147,7 @@ _CASES: list[tuple[list[dict | PipelineStep], str]] = [
 ]
 
 
-@pytest.mark.parametrize('steps, expected', _CASES)
+@pytest.mark.parametrize("steps, expected", _CASES)
 def test_base_translator(translator: SQLTranslator, steps: list[str | PipelineStep], expected: str):
     pipeline = Pipeline(steps=steps)
     assert translator.get_query_str(steps=pipeline.steps) == expected

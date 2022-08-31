@@ -5,6 +5,6 @@ from weaverbird.pipeline.types import ColumnName
 
 
 class DuplicateStep(BaseStep):
-    name: Literal['duplicate'] = 'duplicate'
+    name: Literal["duplicate"] = "duplicate"
     column: ColumnName
     new_column_name: ColumnName

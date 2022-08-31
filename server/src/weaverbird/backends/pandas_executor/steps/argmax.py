@@ -3,7 +3,7 @@ from pandas import DataFrame
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps import ArgmaxStep
 
-_TMP_GROUP_COL_NAME = '__TMP_COL_NAME'
+_TMP_GROUP_COL_NAME = "__TMP_COL_NAME"
 
 
 def execute_argmax(
@@ -20,7 +20,7 @@ def execute_argmax(
         df[_TMP_GROUP_COL_NAME] = 1
         group = [_TMP_GROUP_COL_NAME]
 
-    aggregated_df = df.groupby(group, as_index=False, dropna=False).agg({step.column: 'max'})
+    aggregated_df = df.groupby(group, as_index=False, dropna=False).agg({step.column: "max"})
 
     if len(step.groups) == 0:
         # we now remove the ugly temp column that we grouped on

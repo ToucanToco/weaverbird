@@ -8,9 +8,9 @@ from weaverbird.pipeline.steps.aggregate import Aggregation
 from weaverbird.pipeline.steps.dissolve import DissolveStep
 
 _AGG_FUNC_ALIASES = {
-    'avg': 'mean',
-    'count distinct': 'nunique',
-    'count distinct including empty': len,
+    "avg": "mean",
+    "count distinct": "nunique",
+    "count distinct including empty": len,
 }
 
 
@@ -33,8 +33,8 @@ def execute_dissolve(
         aggfunc: dict[str, Any] | str = _translate_agg_func(step.aggregations)
         geo_df = df_to_geodf(df)
     else:
-        aggfunc = 'first'  # placeholder, can't be None
-        columns_to_keep = set(step.groups + ['geometry'])
+        aggfunc = "first"  # placeholder, can't be None
+        columns_to_keep = set(step.groups + ["geometry"])
         geo_df = df_to_geodf(df).drop(list(set(df.columns) - columns_to_keep), axis=1)
 
     return DataFrame(

@@ -7,16 +7,16 @@ from weaverbird.pipeline.steps import ReplaceStep
 def translate_replace(step: ReplaceStep) -> List[MongoStep]:
     branches: List[MongoStep] = [
         {
-            'case': {'$eq': [f'${step.search_column}', old_value]},
-            'then': new_value,
+            "case": {"$eq": [f"${step.search_column}", old_value]},
+            "then": new_value,
         }
         for (old_value, new_value) in step.to_replace
     ]
     return [
         {
-            '$addFields': {
-                f'{step.search_column}': {
-                    '$switch': {'branches': branches, 'default': f'${step.search_column}'},
+            "$addFields": {
+                f"{step.search_column}": {
+                    "$switch": {"branches": branches, "default": f"${step.search_column}"},
                 }
             }
         }

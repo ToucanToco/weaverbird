@@ -10,7 +10,7 @@ def execute_top(
     domain_retriever: DomainRetriever = None,
     execute_pipeline: PipelineExecutor = None,
 ) -> DataFrame:
-    pandas_method = 'nlargest' if step.sort == 'desc' else 'nsmallest'
+    pandas_method = "nlargest" if step.sort == "desc" else "nsmallest"
     if step.groups:
         return (
             df.groupby(step.groups)

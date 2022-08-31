@@ -9,17 +9,17 @@ from weaverbird.pipeline.steps import TableStep
 @pytest.fixture
 def sql_query_describer():
     def f(domain):
-        return {'toto': 'integer', 'raichu': 'integer'}
+        return {"toto": "integer", "raichu": "integer"}
 
     return f
 
 
 def test_translate_table(sql_query_describer):
     sql_table_retriever_mock = Mock(
-        return_value='SELECT * FROM products'
+        return_value="SELECT * FROM products"
     )  # TODO update when retrieve_query will be updated
 
-    step = TableStep(name='domain', domain='kalimdor')
+    step = TableStep(name="domain", domain="kalimdor")
     query = translate_table(
         step,
         None,
@@ -28,10 +28,10 @@ def test_translate_table(sql_query_describer):
         index=0,
     )
 
-    sql_table_retriever_mock.assert_called_once_with('kalimdor')
-    assert query.transformed_query == 'WITH SELECT_STEP_0 AS (SELECT * FROM products)'
-    assert query.selection_query == 'SELECT TOTO, RAICHU FROM SELECT_STEP_0'
-    assert query.query_name == 'SELECT_STEP_0'
+    sql_table_retriever_mock.assert_called_once_with("kalimdor")
+    assert query.transformed_query == "WITH SELECT_STEP_0 AS (SELECT * FROM products)"
+    assert query.selection_query == "SELECT TOTO, RAICHU FROM SELECT_STEP_0"
+    assert query.query_name == "SELECT_STEP_0"
 
 
 def test_translate_table_error_retrieve_table(sql_query_describer):
@@ -39,7 +39,7 @@ def test_translate_table_error_retrieve_table(sql_query_describer):
         side_effect=Exception
     )  # TODO update when retrieve_query will be updated
 
-    step = TableStep(name='domain', domain='kalimdor')
+    step = TableStep(name="domain", domain="kalimdor")
     with pytest.raises(Exception):
         translate_table(
             step,

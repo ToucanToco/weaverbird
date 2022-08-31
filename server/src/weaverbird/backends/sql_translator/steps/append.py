@@ -29,19 +29,19 @@ def translate_append(
     subcall_from_other_pipeline_count: int = None,
     sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
-    query_name = f'APPEND_STEP_{index}'
+    query_name = f"APPEND_STEP_{index}"
     log.debug(
-        '############################################################'
-        f'query_name: {query_name}\n'
-        '------------------------------------------------------------'
-        f'step: {step}\n'
-        f'query.transformed_query: {query.transformed_query}\n'
-        f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
+        "############################################################"
+        f"query_name: {query_name}\n"
+        "------------------------------------------------------------"
+        f"step: {step}\n"
+        f"query.transformed_query: {query.transformed_query}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n"
     )
     queries_to_append = {}
     query_to_union_metadata = {}
 
-    transformed_query = f'{query.transformed_query}'
+    transformed_query = f"{query.transformed_query}"
 
     for index, pipeline in enumerate(step.pipelines):
         query_string = resolve_sql_pipeline_for_combination(
@@ -52,25 +52,25 @@ def translate_append(
             sql_query_executor=sql_query_executor,
             subcall_from_other_pipeline_count=index,
         )
-        unioned_query_name = f'APPEND_STEP_UNION_{index}'
+        unioned_query_name = f"APPEND_STEP_UNION_{index}"
         queries_to_append[unioned_query_name] = query_string
         query_to_union_metadata[unioned_query_name] = sql_query_describer(
             domain=None, query_string=query_string
         )
         log.debug(
-            '------------------------------------------------------------'
-            f'SQLquery: {transformed_query}'
-            '############################################################'
+            "------------------------------------------------------------"
+            f"SQLquery: {transformed_query}"
+            "############################################################"
         )
         query.metadata_manager.create_table(unioned_query_name)
         query.metadata_manager.add_table_columns_from_dict(
             unioned_query_name, query_to_union_metadata[unioned_query_name]
         )
-        transformed_query += f', {unioned_query_name} AS ({query_string})'
+        transformed_query += f", {unioned_query_name} AS ({query_string})"
 
     query.metadata_manager.append_queries_metadata(unioned_tables=queries_to_append.keys())
-    transformed_query += f', {query_name} AS\
- ({build_union_query(query.metadata_manager, query.query_name, queries_to_append.keys())})'
+    transformed_query += f", {query_name} AS\
+ ({build_union_query(query.metadata_manager, query.query_name, queries_to_append.keys())})"
     query.metadata_manager.rename_union_columns()
 
     return SQLQuery(

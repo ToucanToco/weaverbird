@@ -17,10 +17,10 @@ from weaverbird.pipeline.steps.ifthenelse import IfThenElse
 
 
 def build_conditional_expression(step: IfthenelseStep):
-    built_string = ''
+    built_string = ""
     current_nested_step = step
 
-    while hasattr(current_nested_step, 'else_value') and isinstance(
+    while hasattr(current_nested_step, "else_value") and isinstance(
         current_nested_step.else_value, IfThenElse
     ):
         built_string += (
@@ -48,14 +48,14 @@ def translate_ifthenelse(
     subcall_from_other_pipeline_count: int = None,
     sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
-    query_name = f'IFTHENELSE_STEP_{index}'
+    query_name = f"IFTHENELSE_STEP_{index}"
 
     log.debug(
-        '############################################################'
-        f'query_name: {query_name}\n'
-        '------------------------------------------------------------'
-        f'query.transformed_query: {query.transformed_query}\n'
-        f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
+        "############################################################"
+        f"query_name: {query_name}\n"
+        "------------------------------------------------------------"
+        f"query.transformed_query: {query.transformed_query}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n"
     )
 
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
@@ -69,7 +69,7 @@ def translate_ifthenelse(
         f""" FROM {query.query_name})""",
     )
 
-    query.metadata_manager.add_query_metadata_column(step.new_column, 'str')
+    query.metadata_manager.add_query_metadata_column(step.new_column, "str")
 
     new_query.selection_query = build_selection_query(
         query.metadata_manager.retrieve_query_metadata_columns(), query_name
@@ -77,9 +77,9 @@ def translate_ifthenelse(
     new_query.metadata_manager = query.metadata_manager
 
     log.debug(
-        '------------------------------------------------------------'
-        f'SQLquery: {new_query.transformed_query}'
-        '############################################################'
+        "------------------------------------------------------------"
+        f"SQLquery: {new_query.transformed_query}"
+        "############################################################"
     )
 
     return new_query

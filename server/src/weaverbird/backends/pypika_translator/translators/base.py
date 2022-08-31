@@ -135,11 +135,11 @@ class SQLTranslator(ABC):
     FROM_DATE_OP: FromDateOp
     REGEXP_OP: RegexOp
     TO_DATE_OP: ToDateOp
-    EVOLUTION_DATE_UNIT: dict['EVOLUTION_TYPE', DATE_INFO] = {
-        'vsLastYear': 'year',
-        'vsLastMonth': 'month',
-        'vsLastWeek': 'week',
-        'vsLastDay': 'day',
+    EVOLUTION_DATE_UNIT: dict["EVOLUTION_TYPE", DATE_INFO] = {
+        "vsLastYear": "year",
+        "vsLastMonth": "month",
+        "vsLastWeek": "week",
+        "vsLastDay": "day",
     }
 
     def __init__(
@@ -171,7 +171,7 @@ class SQLTranslator(ABC):
             return id_
 
     def _step_name(self: Self) -> str:
-        return f'__step_{self._step_count}_{self._id()}__'
+        return f"__step_{self._step_count}_{self._id()}__"
 
     def _next_step_name(self: Self) -> str:
         name = self._step_name()
@@ -179,12 +179,12 @@ class SQLTranslator(ABC):
         return name
 
     def _step_context_from_first_step(
-        self, step: Union['DomainStep', 'CustomSqlStep']
+        self, step: Union["DomainStep", "CustomSqlStep"]
     ) -> StepContext:
         return (
             self._domain(step=step)
-            if step.name == 'domain'
-            else StepContext(self._custom_query(step=step), ['*'])
+            if step.name == "domain"
+            else StepContext(self._custom_query(step=step), ["*"])
         )
 
     def get_query_builder(
@@ -194,7 +194,7 @@ class SQLTranslator(ABC):
         query_builder: QueryBuilder | None = None,
     ) -> QueryBuilderContext:
         if len(steps) < 0:
-            ValueError('No steps provided')
+            ValueError("No steps provided")
         assert steps[0].name == "domain" or steps[0].name == "customsql"
         self._step_count = 0
 
@@ -243,9 +243,9 @@ class SQLTranslator(ABC):
         self: Self, window_function: "AggregateFn"
     ) -> analytics.AnalyticFunction | None:
         match window_function:
-            case 'first':
+            case "first":
                 return analytics.FirstValue
-            case 'last':
+            case "last":
                 return analytics.LastValue
             case _:
                 return None
@@ -253,7 +253,7 @@ class SQLTranslator(ABC):
     def absolutevalue(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "AbsoluteValueStep",
@@ -267,7 +267,7 @@ class SQLTranslator(ABC):
     def aggregate(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "AggregateStep",
@@ -278,7 +278,7 @@ class SQLTranslator(ABC):
 
         def _build_window_subquery() -> Any:
             min_window_index = min(c[0] for c in window_selected)
-            first_wq = Table(f'wq{min_window_index}')
+            first_wq = Table(f"wq{min_window_index}")
             merged_query = (
                 self.QUERY_CLS.from_(window_subquery_list[0])
                 .select(
@@ -289,10 +289,10 @@ class SQLTranslator(ABC):
                         if col[0] == min_window_index
                     ],
                 )
-                .as_('window_subquery')
+                .as_("window_subquery")
             )
             for index, sq in enumerate(window_subquery_list[1:]):
-                wq_temp = Table(f'wq{min_window_index + index + 1}')
+                wq_temp = Table(f"wq{min_window_index + index + 1}")
                 merged_query = (
                     merged_query.join(sq)
                     .on_field(*step.on)
@@ -303,7 +303,7 @@ class SQLTranslator(ABC):
                             if col[0] == min_window_index + index + 1
                         ]
                     )
-                    .as_('window_subquery')
+                    .as_("window_subquery")
                 )
             return merged_query
 
@@ -336,7 +336,7 @@ class SQLTranslator(ABC):
                     self.QUERY_CLS.from_(prev_step_name)
                     .select(*step.on, *agg_cols)
                     .distinct()
-                    .as_(f'wq{step_index}')
+                    .as_(f"wq{step_index}")
                 )
 
             else:  # pragma: no cover
@@ -344,15 +344,15 @@ class SQLTranslator(ABC):
                     f"[{self.DIALECT}] Aggregation for {aggregation.agg_function!r} is not yet implemented"
                 )
         if window_subquery_list and agg_selected:
-            window_table = Table('window_subquery')
+            window_table = Table("window_subquery")
             all_windows_subquery = _build_window_subquery()
             agg_query = (
                 self.QUERY_CLS.from_(prev_step_name)
                 .select(*agg_selected, *step.on)
                 .groupby(*step.on)
                 .orderby(*step.on, order=Order.asc)
-            ).as_('agg_subquery')
-            agg_table = Table('agg_subquery')
+            ).as_("agg_subquery")
+            agg_table = Table("agg_subquery")
             merged_selected: list[str | Field] = [
                 *step.on,
                 *[getattr(agg_table, col.alias) for col in agg_selected],
@@ -402,8 +402,8 @@ class SQLTranslator(ABC):
 
     @staticmethod
     def _pipeline_or_domain_name_or_reference_to_pipeline(
-        pipeline: 'PipelineOrDomainNameOrReference', message: str | None = None
-    ) -> list['PipelineStep']:
+        pipeline: "PipelineOrDomainNameOrReference", message: str | None = None
+    ) -> list["PipelineStep"]:
         try:
             return Pipeline(steps=pipeline).steps
         except Exception as exc:
@@ -413,7 +413,7 @@ class SQLTranslator(ABC):
     def append(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "AppendStep",
@@ -447,7 +447,7 @@ class SQLTranslator(ABC):
         all_columns = columns + columns_to_add
 
         query = self.QUERY_CLS.from_(prev_step_name).select(
-            *columns, *(LiteralValue('NULL').as_(col) for col in columns_to_add)
+            *columns, *(LiteralValue("NULL").as_(col) for col in columns_to_add)
         )
         for table, column_list in zip(tables, column_lists):
             query = query.union_all(
@@ -456,7 +456,7 @@ class SQLTranslator(ABC):
                         # Selecting either the column from the dataset if it is available, or NULL
                         # AS "col" otherwise. We iterate over all_columns rather than column_list in
                         # order to have a merge by name
-                        col if col in column_list else LiteralValue('NULL').as_(col)
+                        col if col in column_list else LiteralValue("NULL").as_(col)
                         for col in all_columns
                     )
                 )
@@ -467,7 +467,7 @@ class SQLTranslator(ABC):
     def argmax(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "ArgmaxStep",
@@ -484,7 +484,7 @@ class SQLTranslator(ABC):
     def argmin(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "ArgminStep",
@@ -501,7 +501,7 @@ class SQLTranslator(ABC):
     def comparetext(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "CompareTextStep",
@@ -519,7 +519,7 @@ class SQLTranslator(ABC):
     def concatenate(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "ConcatenateStep",
@@ -541,7 +541,7 @@ class SQLTranslator(ABC):
     def convert(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "ConvertStep",
@@ -559,9 +559,9 @@ class SQLTranslator(ABC):
         return StepContext(query, columns)
 
     def _custom_query(
-        self: Self, *, step: 'CustomSqlStep', prev_step_name: str | None = None
+        self: Self, *, step: "CustomSqlStep", prev_step_name: str | None = None
     ) -> CustomQuery:
-        table_name = prev_step_name or '_'
+        table_name = prev_step_name or "_"
         return CustomQuery(
             name=f"custom_from_{table_name}",
             query=step.query.replace("##PREVIOUS_STEP##", table_name),
@@ -570,7 +570,7 @@ class SQLTranslator(ABC):
     def customsql(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "CustomSqlStep",
@@ -587,7 +587,7 @@ class SQLTranslator(ABC):
     def dateextract(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "DateExtractStep",
@@ -610,7 +610,7 @@ class SQLTranslator(ABC):
     def delete(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "DeleteStep",
@@ -638,7 +638,7 @@ class SQLTranslator(ABC):
     def duplicate(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "DuplicateStep",
@@ -657,7 +657,7 @@ class SQLTranslator(ABC):
     def evolution(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "EvolutionStep",
@@ -669,18 +669,18 @@ class SQLTranslator(ABC):
             add_date_value=1,
             add_date_unit=self.EVOLUTION_DATE_UNIT[step.evolution_type],
         ).as_(step.date_col)
-        right_table = Table('right_table')
-        new_col = step.new_column if step.new_column else 'evol'
+        right_table = Table("right_table")
+        new_col = step.new_column if step.new_column else "evol"
         query: "QueryBuilder" = (
             self.QUERY_CLS.from_(prev_step_name)
             .select(
                 *[prev_table.field(col) for col in columns],
                 (
                     prev_table.field(step.value_col) - right_table.field(step.value_col)
-                    if step.evolution_format == 'abs'
+                    if step.evolution_format == "abs"
                     else prev_table.field(step.value_col) / right_table.field(step.value_col) - 1
                 ).as_(new_col),
-                *[prev_table.field(col).as_(f'left_table_{col}') for col in step.index_columns],
+                *[prev_table.field(col).as_(f"left_table_{col}") for col in step.index_columns],
             )
             .left_join(
                 self.QUERY_CLS.from_(prev_step_name)
@@ -689,7 +689,7 @@ class SQLTranslator(ABC):
                     lagged_date,
                     *step.index_columns,
                 )
-                .as_('right_table'),
+                .as_("right_table"),
             )
             .on_field(step.date_col, *step.index_columns)
             .orderby(step.date_col)
@@ -699,7 +699,7 @@ class SQLTranslator(ABC):
     def fillna(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "FillnaStep",
@@ -841,7 +841,7 @@ class SQLTranslator(ABC):
                         if dt.tzinfo is None
                         else dt.astimezone(timezone.utc)
                     )
-                    value_to_compare = self._cast_to_timestamp(dt.strftime('%Y-%m-%d %H:%M:%S'))
+                    value_to_compare = self._cast_to_timestamp(dt.strftime("%Y-%m-%d %H:%M:%S"))
 
                 elif isinstance(condition.value, functions.Function):
                     value_to_compare = condition.value
@@ -878,7 +878,7 @@ class SQLTranslator(ABC):
     def filter(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "FilterStep",
@@ -894,7 +894,7 @@ class SQLTranslator(ABC):
     def formula(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "FormulaStep",
@@ -906,7 +906,7 @@ class SQLTranslator(ABC):
     def fromdate(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "FromdateStep",
@@ -972,7 +972,7 @@ class SQLTranslator(ABC):
     def ifthenelse(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "IfthenelseStep",
@@ -990,13 +990,13 @@ class SQLTranslator(ABC):
         return StepContext(query, columns + [step.new_column])
 
     @staticmethod
-    def _get_join_type(join_type: Literal['left', 'inner', 'left outer']) -> JoinType:
+    def _get_join_type(join_type: Literal["left", "inner", "left outer"]) -> JoinType:
         match join_type:
-            case 'left':
+            case "left":
                 return JoinType.left
-            case 'left outer':
+            case "left outer":
                 return JoinType.left_outer
-            case 'inner':
+            case "inner":
                 return JoinType.inner
 
     @staticmethod
@@ -1006,7 +1006,7 @@ class SQLTranslator(ABC):
     def join(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "JoinStep",
@@ -1033,7 +1033,7 @@ class SQLTranslator(ABC):
                 right_cols.append(Field(col, table=right_table))
                 continue
             alias = col
-            while (alias := f'{alias}_right') in all_cols:
+            while (alias := f"{alias}_right") in all_cols:
                 pass
             right_cols.append(Field(col, table=right_table, alias=alias))
 
@@ -1059,7 +1059,7 @@ class SQLTranslator(ABC):
     def lowercase(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "LowercaseStep",
@@ -1074,7 +1074,7 @@ class SQLTranslator(ABC):
     def percentage(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "PercentageStep",
@@ -1084,7 +1084,7 @@ class SQLTranslator(ABC):
     def rename(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "RenameStep",
@@ -1105,7 +1105,7 @@ class SQLTranslator(ABC):
     def replace(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "ReplaceStep",
@@ -1127,7 +1127,7 @@ class SQLTranslator(ABC):
     def select(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "SelectStep",
@@ -1138,7 +1138,7 @@ class SQLTranslator(ABC):
     def sort(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "SortStep",
@@ -1155,7 +1155,7 @@ class SQLTranslator(ABC):
     def split(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "SplitStep",
@@ -1177,7 +1177,7 @@ class SQLTranslator(ABC):
     def substring(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "SubstringStep",
@@ -1197,7 +1197,7 @@ class SQLTranslator(ABC):
     def text(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "TextStep",
@@ -1212,7 +1212,7 @@ class SQLTranslator(ABC):
     def todate(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "ToDateStep",
@@ -1248,7 +1248,7 @@ class SQLTranslator(ABC):
     def top(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "TopStep",
@@ -1290,7 +1290,7 @@ class SQLTranslator(ABC):
     def trim(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "TrimStep",
@@ -1305,7 +1305,7 @@ class SQLTranslator(ABC):
     def uniquegroups(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "UniqueGroupsStep",
@@ -1321,25 +1321,25 @@ class SQLTranslator(ABC):
 
     @classmethod
     def _build_unpivot_col(
-        cls, *, step: 'UnpivotStep', quote_char: str | None, secondary_quote_char: str
+        cls, *, step: "UnpivotStep", quote_char: str | None, secondary_quote_char: str
     ) -> str:
         value_col = format_quotes(step.value_column_name, quote_char)
         unpivot_col = format_quotes(step.unpivot_column_name, quote_char)
-        in_cols = ', '.join(format_quotes(col, quote_char) for col in step.unpivot)
+        in_cols = ", ".join(format_quotes(col, quote_char) for col in step.unpivot)
         if cls.SUPPORT_UNPIVOT:
-            return f'UNPIVOT({value_col} FOR {unpivot_col} IN ({in_cols}))'
-        in_single_quote_cols = ', '.join(
+            return f"UNPIVOT({value_col} FOR {unpivot_col} IN ({in_cols}))"
+        in_single_quote_cols = ", ".join(
             format_quotes(col, secondary_quote_char) for col in step.unpivot
         )
-        return f' t1 CROSS JOIN UNNEST(ARRAY[{in_single_quote_cols}], ARRAY[{in_cols}]) t2 ({unpivot_col}, {value_col})'
+        return f" t1 CROSS JOIN UNNEST(ARRAY[{in_single_quote_cols}], ARRAY[{in_cols}]) t2 ({unpivot_col}, {value_col})"
 
     def unpivot(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
-        step: 'UnpivotStep',
+        step: "UnpivotStep",
     ) -> StepContext:
         unpivot = self._build_unpivot_col(
             step=step,
@@ -1347,13 +1347,13 @@ class SQLTranslator(ABC):
             secondary_quote_char=builder.SECONDARY_QUOTE_CHAR,
         )
         cols = step.keep + [step.unpivot_column_name] + [step.value_column_name]
-        query = LiteralValue(f'{self.QUERY_CLS.from_(prev_step_name).select(*cols)!s} {unpivot}')
+        query = LiteralValue(f"{self.QUERY_CLS.from_(prev_step_name).select(*cols)!s} {unpivot}")
         return StepContext(query, cols)
 
     def uppercase(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "UppercaseStep",

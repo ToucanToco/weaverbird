@@ -5,5 +5,5 @@ from weaverbird.pipeline.steps.utils.combination import Reference
 
 
 class DomainStep(BaseStep):
-    name: Literal['domain'] = 'domain'
+    name: Literal["domain"] = "domain"
     domain: Union[str, Reference]

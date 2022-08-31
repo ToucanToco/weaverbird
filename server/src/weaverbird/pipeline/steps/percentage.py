@@ -7,7 +7,7 @@ from weaverbird.pipeline.types import ColumnName
 
 
 class PercentageStep(BaseStep):
-    name: Literal['percentage'] = 'percentage'
+    name: Literal["percentage"] = "percentage"
     column: ColumnName
     group: List[ColumnName] = Field(default=[])
-    new_column_name: ColumnName = Field(alias='newColumnName', default=None)  # type: ignore
+    new_column_name: ColumnName = Field(alias="newColumnName", default=None)  # type: ignore

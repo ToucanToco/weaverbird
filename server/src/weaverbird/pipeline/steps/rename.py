@@ -8,17 +8,17 @@ from weaverbird.pipeline.types import TemplatedVariable
 
 
 class RenameStep(BaseStep):
-    name: Literal['rename'] = 'rename'
-    to_rename: List[Tuple[str, str]] = Field(..., alias='toRename')
+    name: Literal["rename"] = "rename"
+    to_rename: List[Tuple[str, str]] = Field(..., alias="toRename")
 
     @root_validator(pre=True)
     def handle_legacy_syntax(cls, values):
-        if 'oldname' in values and 'newname' in values:
-            values['to_rename'] = [(values.pop('oldname'), values.pop('newname'))]
+        if "oldname" in values and "newname" in values:
+            values["to_rename"] = [(values.pop("oldname"), values.pop("newname"))]
         return values
 
 
 class RenameStepWithVariable(RenameStep, StepWithVariablesMixin):
     to_rename: Union[TemplatedVariable, List[Tuple[TemplatedVariable, TemplatedVariable]]] = Field(
-        ..., alias='toRename'
+        ..., alias="toRename"
     )

@@ -6,7 +6,7 @@ from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineE
 from weaverbird.pipeline.steps import AddMissingDatesStep
 
 # cf. https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases
-_FREQUENCIES = {'day': 'D', 'week': 'W', 'month': 'M', 'year': 'Y'}
+_FREQUENCIES = {"day": "D", "week": "W", "month": "M", "year": "Y"}
 
 
 def at_begin_period(timestamps: Series, dates_granularity: str):
@@ -22,7 +22,7 @@ def execute_addmissingdates(
     if len(step.groups) > 0:
         groups = df.groupby(step.groups, as_index=False, dropna=False)
     else:
-        groups = [('', df)]
+        groups = [("", df)]
 
     result = pd.DataFrame()
     for (key, group) in groups:
@@ -31,17 +31,17 @@ def execute_addmissingdates(
 
         group_with_missing_dates = group.groupby(
             pd.Grouper(key=step.dates_column, freq=_FREQUENCIES[step.dates_granularity])
-        ).agg('first')
+        ).agg("first")
 
         group_with_missing_dates = group_with_missing_dates.reset_index()
         group_with_missing_dates[step.groups] = key
 
         group_with_missing_dates[step.dates_column] = np.where(
-            pd.isna(group_with_missing_dates['_old_date']),
+            pd.isna(group_with_missing_dates["_old_date"]),
             at_begin_period(group_with_missing_dates[step.dates_column], step.dates_granularity),
-            group_with_missing_dates['_old_date'],
+            group_with_missing_dates["_old_date"],
         )
-        del group_with_missing_dates['_old_date']
+        del group_with_missing_dates["_old_date"]
         # Each group could have duplicate indexes with the previous ones
         # Ignoring the index prevents duplicate index values
         result = pd.concat([result, group_with_missing_dates], ignore_index=True)

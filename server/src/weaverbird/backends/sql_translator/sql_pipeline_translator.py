@@ -49,7 +49,7 @@ def translate_pipeline(
         except Exception as e:
             raise SQLPipelineTranslationFailure(step, index, e) from e
 
-    query_string = f'{query.transformed_query} {query.selection_query}'
+    query_string = f"{query.transformed_query} {query.selection_query}"
     return query_string, SQLPipelineTranslationReport(
         sql_steps_translation_reports=translate_report
     )
@@ -62,5 +62,5 @@ class SQLPipelineTranslationFailure(Exception):
         self.step = step
         self.index = index
         self.original_exception = original_exception
-        self.message = f'Step #{index + 1} ({step.name}) failed: {original_exception}'
-        self.details = {'index': index, 'message': self.message}
+        self.message = f"Step #{index + 1} ({step.name}) failed: {original_exception}"
+        self.details = {"index": index, "message": self.message}

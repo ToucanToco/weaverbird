@@ -15,14 +15,14 @@ def combinations(iterable: list) -> list:
 
 
 def column_map(s: List[str]) -> Dict[str, str]:
-    return {e: f'${e}' for e in s}
+    return {e: f"${e}" for e in s}
 
 
 def translate_totals(step: TotalsStep) -> List[MongoStep]:
     facet: Dict[str, List[MongoStep]] = {}
     groups: List[str] = step.groups or []
     add_fields: MongoStep = {}
-    project: MongoStep = {'_id': 0}  # ensures $project stage will never be empty
+    project: MongoStep = {"_id": 0}  # ensures $project stage will never be empty
     # list of columns to combine
     to_combine: List[str] = [c.total_column for c in step.total_dimensions]
     # get combinations, remove last combo (most granular combination of columns
@@ -32,11 +32,11 @@ def translate_totals(step: TotalsStep) -> List[MongoStep]:
 
     for agg_step in step.aggregations:
         for i in range(len(agg_step.columns)):
-            add_fields[agg_step.new_columns[i]] = f'${agg_step.columns[i]}'
+            add_fields[agg_step.new_columns[i]] = f"${agg_step.columns[i]}"
             if agg_step.new_columns[i] != agg_step.columns[i]:
                 project[agg_step.columns[i]] = 0
 
-    facet['originalData'] = [{'$addFields': add_fields}, {'$project': project}]
+    facet["originalData"] = [{"$addFields": add_fields}, {"$project": project}]
 
     for i in range(len(combos)):
         comb = combos[i]
@@ -53,33 +53,33 @@ def translate_totals(step: TotalsStep) -> List[MongoStep]:
                 value_col = agg_step.columns[j]
                 aggregated_col = agg_step.new_columns[j]
                 agg_func = agg_step.agg_function
-                if agg_func == 'count':
-                    aggs[aggregated_col] = {'$sum': 1}
-                elif agg_func == 'count distinct':
+                if agg_func == "count":
+                    aggs[aggregated_col] = {"$sum": 1}
+                elif agg_func == "count distinct":
                     # build a set of unique values
-                    aggs[aggregated_col] = {'$addToSet': f'${value_col}'}
+                    aggs[aggregated_col] = {"$addToSet": f"${value_col}"}
                     # count the number of items in the set
-                    count_distinct_add_fields[aggregated_col] = {'$size': f'${aggregated_col}'}
+                    count_distinct_add_fields[aggregated_col] = {"$size": f"${aggregated_col}"}
                 else:
-                    aggs[aggregated_col] = {f'${agg_func}': f'${value_col}'}
+                    aggs[aggregated_col] = {f"${agg_func}": f"${value_col}"}
 
         add_fields_to_add_to_pipeline = (
-            [{'$addFields': count_distinct_add_fields}] if count_distinct_add_fields else []
+            [{"$addFields": count_distinct_add_fields}] if count_distinct_add_fields else []
         )
 
-        facet[f'combo_{i}'] = [
+        facet[f"combo_{i}"] = [
             {
-                '$group': {
-                    '_id': id,
+                "$group": {
+                    "_id": id,
                     **aggs,
                 },
             },
             *add_fields_to_add_to_pipeline,
             {
-                '$project': {
-                    '_id': 0,
+                "$project": {
+                    "_id": 0,
                     # Return id fields (untouched)
-                    **{k: f'$_id.{k}' for k in id.keys()},
+                    **{k: f"$_id.{k}" for k in id.keys()},
                     # Return computed aggregation fields
                     **{k: 1 for k in aggs.keys()},
                     # Project the label of total rows for those columns
@@ -93,12 +93,12 @@ def translate_totals(step: TotalsStep) -> List[MongoStep]:
         ]
 
     return [
-        {'$facet': facet},
+        {"$facet": facet},
         {
-            '$project': {
-                '_vqbCombos': {'$concatArrays': [f'${k}' for k in facet]},
+            "$project": {
+                "_vqbCombos": {"$concatArrays": [f"${k}" for k in facet]},
             },
         },
-        {'$unwind': '$_vqbCombos'},
-        {'$replaceRoot': {'newRoot': '$_vqbCombos'}},
+        {"$unwind": "$_vqbCombos"},
+        {"$replaceRoot": {"newRoot": "$_vqbCombos"}},
     ]

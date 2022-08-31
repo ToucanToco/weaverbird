@@ -6,11 +6,11 @@ from weaverbird.pipeline.steps import ConvertStep
 from .utils.cast import cast_to_bool, cast_to_datetime, cast_to_float, cast_to_int, cast_to_str
 
 CAST_FUNCTIONS = {
-    'integer': cast_to_int,
-    'float': cast_to_float,
-    'text': cast_to_str,
-    'date': cast_to_datetime,
-    'boolean': cast_to_bool,
+    "integer": cast_to_int,
+    "float": cast_to_float,
+    "text": cast_to_str,
+    "date": cast_to_datetime,
+    "boolean": cast_to_bool,
 }
 
 

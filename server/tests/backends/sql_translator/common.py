@@ -9,7 +9,7 @@ import pandas as pd
 def standardized_columns(df: pd.DataFrame, colname_lowercase: bool = False):
 
     df.columns = [
-        (c.replace('-', '_').lower() if colname_lowercase else c.replace('-', '_'))
+        (c.replace("-", "_").lower() if colname_lowercase else c.replace("-", "_"))
         for c in df.columns
     ]
 
@@ -25,7 +25,7 @@ def standardized_values(df: pd.DataFrame, convert_nan_to_none: bool = False) -> 
                 df[colname].values[i] = math.floor(v * 10**10) / 10**10
 
     for colname in df:
-        if df[colname].dtype == 'object':
+        if df[colname].dtype == "object":
             # get the first non-null value in the series.
             # if it's a float, try to convert the whole serie with the
             # precision we want.

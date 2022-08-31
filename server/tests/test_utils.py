@@ -6,43 +6,43 @@ from weaverbird.utils.iter import combinations
 
 
 @pytest.mark.parametrize(
-    ('columns', 'expected_new_columns'),
+    ("columns", "expected_new_columns"),
     [
         (
-            ['foo'],
-            ['foo'],
+            ["foo"],
+            ["foo"],
         ),
         (
-            ['foo', 'foo'],
-            ['foo', 'foo_1'],
+            ["foo", "foo"],
+            ["foo", "foo_1"],
         ),
         (
-            ['foo', 'foo_1', 'foo_2', 'foo_3', 'foo'],
-            ['foo', 'foo_1', 'foo_2', 'foo_3', 'foo_4'],
+            ["foo", "foo_1", "foo_2", "foo_3", "foo"],
+            ["foo", "foo_1", "foo_2", "foo_3", "foo_4"],
         ),
         (
-            ['foo_1', 'foo_1'],
-            ['foo_1', 'foo_2'],
+            ["foo_1", "foo_1"],
+            ["foo_1", "foo_2"],
         ),
         (
-            ['foo_1', 'foo_1', 'foo_2'],
-            ['foo_1', 'foo_3', 'foo_2'],
+            ["foo_1", "foo_1", "foo_2"],
+            ["foo_1", "foo_3", "foo_2"],
         ),
         (
-            ['foo', 'foo', 'foo_1'],
-            ['foo', 'foo_2', 'foo_1'],
+            ["foo", "foo", "foo_1"],
+            ["foo", "foo_2", "foo_1"],
         ),
         (
-            ['foo', 'foo_3', 'foo'],
-            ['foo', 'foo_3', 'foo_4'],
+            ["foo", "foo_3", "foo"],
+            ["foo", "foo_3", "foo_4"],
         ),
         (
-            ['foo', 'foo', 'foo_5', 'foo_5'],
-            ['foo', 'foo_6', 'foo_5', 'foo_7'],
+            ["foo", "foo", "foo_5", "foo_5"],
+            ["foo", "foo_6", "foo_5", "foo_7"],
         ),
         (
-            ['plop', 'foo', 'bar', 'foo', 'foo', 'bar', 'plip', 'foo_2', 'bar_1'],
-            ['plop', 'foo', 'bar', 'foo_3', 'foo_4', 'bar_2', 'plip', 'foo_2', 'bar_1'],
+            ["plop", "foo", "bar", "foo", "foo", "bar", "plip", "foo_2", "bar_1"],
+            ["plop", "foo", "bar", "foo_3", "foo_4", "bar_2", "plip", "foo_2", "bar_1"],
         ),
     ],
 )
@@ -58,12 +58,12 @@ def test_rename_duplicated_columns(columns, expected_new_columns):
 
 
 def test_combinations():
-    assert combinations(['A', 'B', 'C']) == [
-        ('A',),
-        ('B',),
-        ('C',),
-        ('A', 'B'),
-        ('A', 'C'),
-        ('B', 'C'),
-        ('A', 'B', 'C'),
+    assert combinations(["A", "B", "C"]) == [
+        ("A",),
+        ("B",),
+        ("C",),
+        ("A", "B"),
+        ("A", "C"),
+        ("B", "C"),
+        ("A", "B", "C"),
     ]

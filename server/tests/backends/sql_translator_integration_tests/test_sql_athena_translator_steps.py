@@ -11,11 +11,11 @@ from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import translate_pipeline
 from weaverbird.pipeline import Pipeline
 
-_REGION = environ['ATHENA_REGION']
-_DB = environ['ATHENA_DATABASE']
-_ACCESS_KEY_ID = environ['ATHENA_ACCESS_KEY_ID']
-_SECRET_ACCESS_KEY = environ['ATHENA_SECRET_ACCESS_KEY']
-_OUTPUT = environ['ATHENA_OUTPUT']
+_REGION = environ["ATHENA_REGION"]
+_DB = environ["ATHENA_DATABASE"]
+_ACCESS_KEY_ID = environ["ATHENA_ACCESS_KEY_ID"]
+_SECRET_ACCESS_KEY = environ["ATHENA_SECRET_ACCESS_KEY"]
+_OUTPUT = environ["ATHENA_OUTPUT"]
 
 
 @pytest.fixture
@@ -40,21 +40,21 @@ _BEERS_TABLE_COLUMNS = [
 
 
 @pytest.mark.parametrize(
-    'case_id, case_spec_file', retrieve_case('sql_translator', 'athena_pypika')
+    "case_id, case_spec_file", retrieve_case("sql_translator", "athena_pypika")
 )
 def test_athena_translator_pipeline(boto_session: Session, case_id: str, case_spec_file: str):
     pipeline_spec = get_spec_from_json_fixture(case_id, case_spec_file)
 
-    steps = [{'name': 'domain', 'domain': 'beers_tiny'}] + pipeline_spec['step']['pipeline']
+    steps = [{"name": "domain", "domain": "beers_tiny"}] + pipeline_spec["step"]["pipeline"]
     pipeline = Pipeline(steps=steps)
 
     query = translate_pipeline(
         sql_dialect=SQLDialect.ATHENA,
         pipeline=pipeline,
-        tables_columns={'beers_tiny': _BEERS_TABLE_COLUMNS},
+        tables_columns={"beers_tiny": _BEERS_TABLE_COLUMNS},
         db_schema=None,
     )
-    expected = pd.read_json(json.dumps(pipeline_spec['expected']), orient='table')
+    expected = pd.read_json(json.dumps(pipeline_spec["expected"]), orient="table")
     result = wr.athena.read_sql_query(
         query, database=_DB, boto3_session=boto_session, s3_output=_OUTPUT, ctas_approach=False
     )

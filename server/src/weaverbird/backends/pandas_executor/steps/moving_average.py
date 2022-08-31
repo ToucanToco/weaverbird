@@ -10,7 +10,7 @@ def execute_moving_average(
     domain_retriever: DomainRetriever = None,
     execute_pipeline: PipelineExecutor = None,
 ) -> DataFrame:
-    new_column_name = step.new_column_name or f'{step.value_column}_MOVING_AVG'
+    new_column_name = step.new_column_name or f"{step.value_column}_MOVING_AVG"
     df = df.sort_values(by=step.groups + [step.column_to_sort]).reset_index(drop=True)
     if step.groups:
         df_grouped = df.groupby(step.groups, dropna=False)

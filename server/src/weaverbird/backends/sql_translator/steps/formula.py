@@ -36,15 +36,15 @@ def translate_formula(
     See: https://docs.snowflake.com/en/sql-reference/operators-arithmetic.html
     """
 
-    query_name = f'FORMULA_STEP_{index}'
+    query_name = f"FORMULA_STEP_{index}"
     log.debug(
-        '############################################################'
-        f'query_name: {query_name}\n'
-        '------------------------------------------------------------'
-        f'step.formula: {step.formula}\n'
-        f'step.new_column: {step.new_column}\n'
-        f'query.transformed_query: {query.transformed_query}\n'
-        f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
+        "############################################################"
+        f"query_name: {query_name}\n"
+        "------------------------------------------------------------"
+        f"step.formula: {step.formula}\n"
+        f"step.new_column: {step.new_column}\n"
+        f"query.transformed_query: {query.transformed_query}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n"
     )
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
         columns_filter=[]
@@ -56,7 +56,7 @@ def translate_formula(
         f""" FROM {query.query_name})"""
     )
     # query.metadata_manager.add_column(column_name=step.new_column, column_type='float')
-    query.metadata_manager.add_query_metadata_column(step.new_column, 'float')
+    query.metadata_manager.add_query_metadata_column(step.new_column, "float")
 
     new_query = SQLQuery(
         query_name=query_name,
@@ -67,9 +67,9 @@ def translate_formula(
         metadata_manager=query.metadata_manager,
     )
     log.debug(
-        '------------------------------------------------------------'
-        f'SQLquery: {new_query.transformed_query}'
-        '############################################################'
+        "------------------------------------------------------------"
+        f"SQLquery: {new_query.transformed_query}"
+        "############################################################"
     )
 
     return new_query

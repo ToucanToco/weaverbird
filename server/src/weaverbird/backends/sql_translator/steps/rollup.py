@@ -25,15 +25,15 @@ def translate_rollup(
     sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
 
-    query_name = f'ROLLUP_STEP_{index}'
+    query_name = f"ROLLUP_STEP_{index}"
     all_columns = build_hierarchical_columns_list(step)
-    group_by_part = f"GROUP BY {', '.join(step.groupby)}, " if step.groupby else 'GROUP BY '
+    group_by_part = f"GROUP BY {', '.join(step.groupby)}, " if step.groupby else "GROUP BY "
     rollup_part = f"ROLLUP({', '.join(step.hierarchy)}) HAVING {step.hierarchy[0]} IS NOT NULL"
     transformed_query = f"""{query.transformed_query}, {query_name} AS (SELECT {all_columns} FROM {query.query_name} {group_by_part}{rollup_part})"""
     query.metadata_manager.remove_query_metadata_all_columns()
     query.metadata_manager.add_query_metadata_columns(
         sql_query_describer(
-            domain=None, query_string=f'{transformed_query} SELECT * FROM {query_name}'
+            domain=None, query_string=f"{transformed_query} SELECT * FROM {query_name}"
         )
     )
     return SQLQuery(

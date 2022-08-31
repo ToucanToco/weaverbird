@@ -24,7 +24,7 @@ def translate_filter(
     subcall_from_other_pipeline_count: int = None,
     sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
-    query_name = f'FILTER_STEP_{index}'
+    query_name = f"FILTER_STEP_{index}"
 
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
         columns_filter=[]

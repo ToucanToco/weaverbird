@@ -8,7 +8,7 @@ from weaverbird.pipeline.types import ColumnName
 
 
 class SplitStep(BaseStep):
-    name: Literal['split'] = 'split'
+    name: Literal["split"] = "split"
     column: ColumnName
     delimiter: str
     # at least one col to keep

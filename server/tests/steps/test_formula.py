@@ -11,19 +11,19 @@ from weaverbird.pipeline.steps import FormulaStep
 def sample_df() -> DataFrame:
     return DataFrame(
         {
-            'NAME': ['foo', 'bar'],
-            'colA': [1, 10],
-            'col B': [2, 20],
-            'col C': [3, 30],
-            'col D': [4, 40],
-            'colE': [0, np.nan],
+            "NAME": ["foo", "bar"],
+            "colA": [1, 10],
+            "col B": [2, 20],
+            "col C": [3, 30],
+            "col D": [4, 40],
+            "colE": [0, np.nan],
         }
     )
 
 
 def test_formula(sample_df: DataFrame):
     step = FormulaStep(
-        name='formula', new_column='z', formula='(colA + [col B]) * ([col C] + [col D]) / 10'
+        name="formula", new_column="z", formula="(colA + [col B]) * ([col C] + [col D]) / 10"
     )
     df_result = execute_formula(step, sample_df)
 
@@ -32,16 +32,16 @@ def test_formula(sample_df: DataFrame):
 
 
 @pytest.mark.parametrize(
-    'bad_expression', ['', 'print("hello")', 'import re', 'x = colA * 2', '%*$$::!']
+    "bad_expression", ["", 'print("hello")', "import re", "x = colA * 2", "%*$$::!"]
 )
 def test_bad_formula(sample_df: DataFrame, bad_expression):
-    bad_step = FormulaStep(name='formula', new_column='z', formula=bad_expression)
+    bad_step = FormulaStep(name="formula", new_column="z", formula=bad_expression)
     with pytest.raises(Exception):
         execute_formula(bad_step, sample_df)
 
 
 def test_formula_division_by_zero_o_null(sample_df: DataFrame):
-    step = FormulaStep(name='formula', new_column='z', formula='colA / colE')
+    step = FormulaStep(name="formula", new_column="z", formula="colA / colE")
     df_result = execute_formula(step, sample_df)
 
     expected_result = sample_df.assign(z=[np.nan, np.nan])

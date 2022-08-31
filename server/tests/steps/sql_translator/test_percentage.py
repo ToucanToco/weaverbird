@@ -3,7 +3,7 @@ from weaverbird.pipeline.steps import PercentageStep
 
 
 def test_translate_no_new_column_percentage(query):
-    step = PercentageStep(name='percentage', column='RAICHU')
+    step = PercentageStep(name="percentage", column="RAICHU")
 
     query = translate_percentage(
         step,
@@ -17,13 +17,13 @@ def test_translate_no_new_column_percentage(query):
     assert query.transformed_query == expected_transformed_query
     assert (
         query.selection_query
-        == 'SELECT TOTO, RAICHU, FLORIZARRE, RAICHU_PCT FROM PERCENTAGE_STEP_1'
+        == "SELECT TOTO, RAICHU, FLORIZARRE, RAICHU_PCT FROM PERCENTAGE_STEP_1"
     )
-    assert query.query_name == 'PERCENTAGE_STEP_1'
+    assert query.query_name == "PERCENTAGE_STEP_1"
 
 
 def test_translate_simple_percentage(query):
-    step = PercentageStep(name='percentage', column='RAICHU', new_column_name="RAICHU_COLUMN")
+    step = PercentageStep(name="percentage", column="RAICHU", new_column_name="RAICHU_COLUMN")
 
     query = translate_percentage(
         step,
@@ -37,16 +37,16 @@ def test_translate_simple_percentage(query):
     assert query.transformed_query == expected_transformed_query
     assert (
         query.selection_query
-        == 'SELECT TOTO, RAICHU, FLORIZARRE, RAICHU_COLUMN FROM PERCENTAGE_STEP_1'
+        == "SELECT TOTO, RAICHU, FLORIZARRE, RAICHU_COLUMN FROM PERCENTAGE_STEP_1"
     )
-    assert query.query_name == 'PERCENTAGE_STEP_1'
+    assert query.query_name == "PERCENTAGE_STEP_1"
 
 
 def test_translate_group_percentage(query):
     step = PercentageStep(
-        name='percentage',
-        column='COLUMN_TEST',
-        group=['TOTO', 'FLORIZARRE'],
+        name="percentage",
+        column="COLUMN_TEST",
+        group=["TOTO", "FLORIZARRE"],
         new_column_name="RAICHU_COLUMN",
     )
 
@@ -60,5 +60,5 @@ def test_translate_group_percentage(query):
         "RATIO_TO_REPORT(COLUMN_TEST) OVER () AS RAICHU_COLUMN FROM SELECT_STEP_0 GROUP BY TOTO, FLORIZARRE, COLUMN_TEST)"
     )
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT TOTO, FLORIZARRE, RAICHU_COLUMN FROM PERCENTAGE_STEP_1'
-    assert query.query_name == 'PERCENTAGE_STEP_1'
+    assert query.selection_query == "SELECT TOTO, FLORIZARRE, RAICHU_COLUMN FROM PERCENTAGE_STEP_1"
+    assert query.query_name == "PERCENTAGE_STEP_1"
