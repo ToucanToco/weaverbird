@@ -22,7 +22,7 @@ def translate_ifthenelse(step: IfthenelseStep) -> list[MongoStep]:
         {
             "$addFields": {
                 step.new_column: transform_ifthenelse_step(
-                    IfThenElse(condition=step.condition, then=step.then, else_value=step.else_value)  # type: ignore
+                    IfThenElse(condition=step.condition, then=step.then, else_value=step.else_value)
                 )
             }
         }

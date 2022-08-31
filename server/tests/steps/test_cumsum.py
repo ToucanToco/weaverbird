@@ -7,7 +7,7 @@ from weaverbird.pipeline.steps import CumSumStep
 
 def test_cumsum_legacy_syntax():
     df = DataFrame({"x": [1, 2, 3], "date": ["2020", "2021", "2022"]})
-    step = CumSumStep(name="cumsum", referenceColumn="date", valueColumn="x", newColumn="y")  # type: ignore
+    step = CumSumStep(name="cumsum", referenceColumn="date", valueColumn="x", newColumn="y")
     df_result = execute_cumsum(step, df)
 
     expected_result = DataFrame({"x": [1, 2, 3], "y": [1, 3, 6], "date": ["2020", "2021", "2022"]})

@@ -71,7 +71,7 @@ mongo_step_translator: Dict[str, Callable[[Any], list]] = {
     "filter": translate_filter,
     "formula": translate_formula,
     "fromdate": translate_fromdate,
-    "ifthenelse": translate_ifthenelse,  # type: ignore
+    "ifthenelse": translate_ifthenelse,
     "join": translate_join,
     "lowercase": translate_lowercase,
     "movingaverage": translate_moving_average,

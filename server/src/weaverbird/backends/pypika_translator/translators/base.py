@@ -118,7 +118,7 @@ class QueryBuilderContext:
         return self.builder.from_(self.table_name).select(*self.columns)
 
 
-class CustomQuery(AliasedQuery):  # type: ignore[misc]
+class CustomQuery(AliasedQuery):
     def get_sql(self, **kwargs: Any) -> str:
         return cast(str, self.query)
 
@@ -1313,7 +1313,7 @@ class SQLTranslator(ABC):
         from weaverbird.pipeline.steps import AggregateStep
 
         return self.aggregate(
-            step=AggregateStep(on=step.on, aggregations=[], keepOriginalGranularity=False),
+            step=AggregateStep(on=step.on, aggregations=[], keep_original_granularity=False),
             builder=builder,
             prev_step_name=prev_step_name,
             columns=columns,
@@ -1366,38 +1366,38 @@ class SQLTranslator(ABC):
         return StepContext(query, columns)
 
 
-class CountDistinct(functions.Count):  # type: ignore[misc]
+class CountDistinct(functions.Count):
     def __init__(self, param: str | Field, alias: str | None = None) -> None:
         super().__init__(param, alias)
         self._distinct = True
 
 
-class DateFormat(functions.Function):  # type: ignore[misc]
+class DateFormat(functions.Function):
     def __init__(self, term: str | Field, date_format: str, alias: str | None = None) -> None:
         super().__init__("DATE_FORMAT", term, date_format, alias=alias)
 
 
-class RowNumber(AnalyticFunction):  # type: ignore[misc]
+class RowNumber(AnalyticFunction):
     def __init__(self, **kwargs: Any) -> None:
         super().__init__("ROW_NUMBER", **kwargs)
 
 
-class StrToDate(functions.Function):  # type: ignore[misc]
+class StrToDate(functions.Function):
     def __init__(self, term: str | Field, date_format: str, alias: str | None = None) -> None:
         super().__init__("STR_TO_DATE", term, date_format, alias=alias)
 
 
-class ParseDate(functions.Function):  # type: ignore[misc]
+class ParseDate(functions.Function):
     def __init__(self, term: str | Field, date_format: str, alias: str | None = None) -> None:
         super().__init__("PARSE_DATE", term, date_format, alias=alias)
 
 
-class ToTimestampNTZ(functions.Function):  # type: ignore[misc]
+class ToTimestampNTZ(functions.Function):
     def __init__(self, term: str | Field, date_format: str, alias: str | None = None) -> None:
         super().__init__("TO_TIMESTAMP_NTZ", term, date_format, alias=alias)
 
 
-class RegexpMatching(Comparator):  # type: ignore[misc]
+class RegexpMatching(Comparator):
     similar_to = " SIMILAR TO "
     not_similar_to = " NOT SIMILAR TO "
     contains = " CONTAINS "

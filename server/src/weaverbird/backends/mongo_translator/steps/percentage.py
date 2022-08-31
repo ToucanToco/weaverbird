@@ -16,8 +16,7 @@ def translate_percentage(step: PercentageStep) -> List[MongoStep]:
         {"$unwind": "$_vqbAppArray"},
         {
             "$project": {
-                step.new_column_name
-                or f"{step.column}_PCT": {
+                step.new_column_name: {
                     "$cond": [
                         {"$eq": ["$_vqbTotalDenum", 0]},
                         None,

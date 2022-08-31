@@ -2,11 +2,11 @@ from abc import ABC
 from datetime import datetime
 from typing import Any, List, Literal, Union
 
-from pydantic import BaseModel, Field
+from pydantic import BaseConfig, BaseModel, Field
 from typing_extensions import Annotated
 
 from weaverbird.pipeline.dates import RelativeDate
-from weaverbird.pipeline.types import ColumnName, PopulatedWithFieldnames
+from weaverbird.pipeline.types import ColumnName
 
 
 class BaseCondition(BaseModel):
@@ -55,8 +55,8 @@ SimpleCondition = Annotated[
 
 
 class BaseConditionCombo(BaseCondition, ABC):
-    class Config(PopulatedWithFieldnames):
-        ...
+    class Config(BaseConfig):
+        allow_population_by_field_name = True
 
     def to_dict(self):
         return self.dict(by_alias=True)

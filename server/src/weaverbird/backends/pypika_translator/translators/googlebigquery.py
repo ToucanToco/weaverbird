@@ -19,13 +19,13 @@ if TYPE_CHECKING:
     from weaverbird.pipeline.steps import SplitStep
 
 
-class GoogleBigQueryQuery(Query):  # type: ignore[misc]
+class GoogleBigQueryQuery(Query):
     @classmethod
     def _builder(cls, **kwargs: Any) -> "GoogleBigQueryQueryBuilder":
         return GoogleBigQueryQueryBuilder(**kwargs)
 
 
-class GoogleBigQueryQueryBuilder(QueryBuilder):  # type: ignore[misc]
+class GoogleBigQueryQueryBuilder(QueryBuilder):
     QUOTE_CHAR = "`"
     SECONDARY_QUOTE_CHAR = "'"
     ALIAS_QUOTE_CHAR = None
@@ -87,6 +87,6 @@ class GoogleBigQueryTranslator(SQLTranslator):
 SQLTranslator.register(GoogleBigQueryTranslator)
 
 
-class ParseDatetime(functions.Function):  # type: ignore[misc]
+class ParseDatetime(functions.Function):
     def __init__(self, format: str, term: str | Field, alias: str | None = None) -> None:
         super().__init__("parse_datetime", format, term, alias=alias)
