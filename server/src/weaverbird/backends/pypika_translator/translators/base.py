@@ -1313,7 +1313,7 @@ class SQLTranslator(ABC):
         from weaverbird.pipeline.steps import AggregateStep
 
         return self.aggregate(
-            step=AggregateStep(on=step.on, aggregations=[], keepOriginalGranularity=False),
+            step=AggregateStep(on=step.on, aggregations=[], keep_original_granularity=False),
             builder=builder,
             prev_step_name=prev_step_name,
             columns=columns,

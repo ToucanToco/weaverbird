@@ -28,7 +28,7 @@ def execute_rollup(
                 name="aggregate",
                 on=aggregate_on_cols,
                 aggregations=step.aggregations,
-                keepOriginalGranularity=False,
+                keep_original_granularity=False,
             ),
             df,
         )

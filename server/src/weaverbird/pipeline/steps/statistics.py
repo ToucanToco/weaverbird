@@ -3,7 +3,7 @@ from typing import List, Literal, Optional
 from pydantic import BaseModel, Field
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
-from weaverbird.pipeline.types import ColumnName, PopulatedWithFieldnames
+from weaverbird.pipeline.types import ColumnName
 
 DUMB_GROUPBY_COLUMN_NAME = "__dumb_groupby_column_name__"
 
@@ -17,9 +17,6 @@ class Quantile(BaseModel):
 
 
 class StatisticsStep(BaseStep):
-    class Config(PopulatedWithFieldnames):
-        ...
-
     name: Literal["statistics"] = "statistics"
     column: ColumnName
     groupby_columns: List[ColumnName] = Field([], alias="groupbyColumns")

@@ -1,12 +1,11 @@
 from typing import List, Literal, Optional, Sequence
 
-from pydantic import Field, root_validator, validator
-from pydantic.main import BaseModel
+from pydantic import BaseConfig, BaseModel, Field, root_validator, validator
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMixin
 from weaverbird.pipeline.steps.utils.validation import validate_unique_columns
-from weaverbird.pipeline.types import ColumnName, PopulatedWithFieldnames, TemplatedVariable
+from weaverbird.pipeline.types import ColumnName, TemplatedVariable
 
 AggregateFn = Literal[
     "avg",
@@ -22,12 +21,12 @@ AggregateFn = Literal[
 
 
 class Aggregation(BaseModel):
-    class Config(PopulatedWithFieldnames):
-        ...
-
     new_columns: List[ColumnName] = Field(alias="newcolumns")
     agg_function: AggregateFn = Field(alias="aggfunction")
     columns: List[ColumnName]
+
+    class Config(BaseConfig):
+        allow_population_by_field_name = True
 
     @validator("columns", pre=True)
     def validate_unique_columns(cls, value):
@@ -50,14 +49,8 @@ class AggregateStep(BaseStep):
         default=False, alias="keepOriginalGranularity"
     )
 
-    class Config(PopulatedWithFieldnames):
-        ...
-
 
 class AggregationWithVariables(Aggregation):
-    class Config(PopulatedWithFieldnames):
-        ...
-
     new_columns: List[TemplatedVariable] = Field(alias="newcolumns")
     agg_function: TemplatedVariable = Field(alias="aggfunction")
     columns: List[TemplatedVariable]

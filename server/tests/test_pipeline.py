@@ -3,7 +3,7 @@ import json
 from typing import Dict, List
 
 import pytest
-from pydantic.main import BaseModel
+from pydantic import BaseModel
 from toucan_connectors.common import nosql_apply_parameters_to_query
 
 from weaverbird.pipeline.pipeline import Pipeline, PipelineWithVariables

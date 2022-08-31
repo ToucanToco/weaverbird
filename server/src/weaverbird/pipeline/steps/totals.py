@@ -1,20 +1,20 @@
 from typing import List, Literal, Sequence, Union
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseConfig, BaseModel, Field, validator
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMixin
-from weaverbird.pipeline.types import ColumnName, PopulatedWithFieldnames, TemplatedVariable
+from weaverbird.pipeline.types import ColumnName, TemplatedVariable
 
 from .aggregate import Aggregation, AggregationWithVariables
 
 
 class TotalDimension(BaseModel):
-    class Config(PopulatedWithFieldnames):
-        ...
-
     total_column: ColumnName = Field(alias="totalColumn")
     total_rows_label: str = Field(alias="totalRowsLabel")
+
+    class Config(BaseConfig):
+        allow_population_by_field_name = True
 
 
 class TotalsStep(BaseStep):

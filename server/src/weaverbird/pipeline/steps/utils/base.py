@@ -1,15 +1,14 @@
 from typing import Dict
 
-from pydantic.main import BaseModel
-
-from weaverbird.pipeline.types import PopulatedWithFieldnames
+from pydantic import BaseConfig, BaseModel, Extra
 
 
 class BaseStep(BaseModel):
     name: str
 
-    class Config(PopulatedWithFieldnames):
-        extra = "forbid"
+    class Config(BaseConfig):
+        allow_population_by_field_name = True
+        extra = Extra.forbid
 
     # None values are excluded, to avoid triggering validations error in front-ends
     def dict(self, *, exclude_none: bool = True, **kwargs) -> Dict:
