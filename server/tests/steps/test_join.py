@@ -13,20 +13,20 @@ from weaverbird.pipeline.steps import JoinStep
 
 @pytest.fixture
 def sample_df():
-    return DataFrame({'NAME': ['foo', 'bar'], 'AGE': [42, 43]})
+    return DataFrame({"NAME": ["foo", "bar"], "AGE": [42, 43]})
 
 
 @pytest.fixture
 def mock_execute_pipeline() -> PipelineExecutor:
     return lambda p, _: (
-        DataFrame({'name': ['bar', 'baz'], 'score': [100, 200]}),
+        DataFrame({"name": ["bar", "baz"], "score": [100, 200]}),
         PipelineExecutionReport(steps_reports=[]),
     )
 
 
 @pytest.fixture
 def mock_domain_retriever() -> DomainRetriever:
-    return lambda p: DataFrame({'name': ['bar', 'baz'], 'score': [1, 2]})
+    return lambda p: DataFrame({"name": ["bar", "baz"], "score": [1, 2]})
 
 
 def test_join_left(
@@ -35,12 +35,12 @@ def test_join_left(
     mock_execute_pipeline: PipelineExecutor,
 ):
     step = JoinStep(
-        name='join',
-        right_pipeline=[{'name': 'domain', 'domain': 'buzz'}],
+        name="join",
+        right_pipeline=[{"name": "domain", "domain": "buzz"}],
         on=[
-            ['NAME', 'name'],
+            ["NAME", "name"],
         ],
-        type='left',
+        type="left",
     )
     df_result = execute_join(
         step,
@@ -50,7 +50,7 @@ def test_join_left(
     )
 
     expected_result = DataFrame(
-        {'NAME': ['foo', 'bar'], 'name': [None, 'bar'], 'AGE': [42, 43], 'score': [None, 100]}
+        {"NAME": ["foo", "bar"], "name": [None, "bar"], "AGE": [42, 43], "score": [None, 100]}
     )
     assert_dataframes_equals(df_result, expected_result)
 
@@ -61,12 +61,12 @@ def test_join_outer(
     mock_execute_pipeline: PipelineExecutor,
 ):
     step = JoinStep(
-        name='join',
-        right_pipeline=[{'name': 'domain', 'domain': 'buzz'}],
+        name="join",
+        right_pipeline=[{"name": "domain", "domain": "buzz"}],
         on=[
-            ['NAME', 'name'],
+            ["NAME", "name"],
         ],
-        type='left outer',
+        type="left outer",
     )
     df_result = execute_join(
         step,
@@ -77,10 +77,10 @@ def test_join_outer(
 
     expected_result = DataFrame(
         {
-            'NAME': ['foo', 'bar', None],
-            'name': [None, 'bar', 'baz'],
-            'AGE': [42, 43, None],
-            'score': [None, 100, 200],
+            "NAME": ["foo", "bar", None],
+            "name": [None, "bar", "baz"],
+            "AGE": [42, 43, None],
+            "score": [None, 100, 200],
         }
     )
     assert_dataframes_equals(df_result, expected_result)
@@ -92,12 +92,12 @@ def test_join_inner(
     mock_execute_pipeline: PipelineExecutor,
 ):
     step = JoinStep(
-        name='join',
-        right_pipeline=[{'name': 'domain', 'domain': 'buzz'}],
+        name="join",
+        right_pipeline=[{"name": "domain", "domain": "buzz"}],
         on=[
-            ['NAME', 'name'],
+            ["NAME", "name"],
         ],
-        type='inner',
+        type="inner",
     )
     df_result = execute_join(
         step,
@@ -108,10 +108,10 @@ def test_join_inner(
 
     expected_result = DataFrame(
         {
-            'NAME': ['bar'],
-            'name': ['bar'],
-            'AGE': [43],
-            'score': [100],
+            "NAME": ["bar"],
+            "name": ["bar"],
+            "AGE": [43],
+            "score": [100],
         }
     )
     assert_dataframes_equals(df_result, expected_result)
@@ -126,12 +126,12 @@ def test_join_domain_name(
     It should accept a domain name instead of a complete pipeline
     """
     step = JoinStep(
-        name='join',
-        right_pipeline='plop',
+        name="join",
+        right_pipeline="plop",
         on=[
-            ['NAME', 'name'],
+            ["NAME", "name"],
         ],
-        type='left',
+        type="left",
     )
     df_result = execute_join(
         step,
@@ -141,7 +141,7 @@ def test_join_domain_name(
     )
 
     expected_result = DataFrame(
-        {'NAME': ['foo', 'bar'], 'name': [None, 'bar'], 'AGE': [42, 43], 'score': [None, 1]}
+        {"NAME": ["foo", "bar"], "name": [None, "bar"], "AGE": [42, 43], "score": [None, 1]}
     )
     assert_dataframes_equals(df_result, expected_result)
 
@@ -153,11 +153,11 @@ def test_benchmark_join(
     mock_execute_pipeline: PipelineExecutor,
 ):
     step = JoinStep(
-        name='join',
-        right_pipeline=[{'name': 'domain', 'domain': 'buzz'}],
+        name="join",
+        right_pipeline=[{"name": "domain", "domain": "buzz"}],
         on=[
-            ['NAME', 'name'],
+            ["NAME", "name"],
         ],
-        type='left',
+        type="left",
     )
     benchmark(execute_join, step, sample_df, mock_domain_retriever, mock_execute_pipeline)

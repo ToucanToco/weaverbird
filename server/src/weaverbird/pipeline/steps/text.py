@@ -6,7 +6,7 @@ from weaverbird.pipeline.types import ColumnName
 
 
 class TextStep(BaseStep):
-    name: Literal['text'] = 'text'
+    name: Literal["text"] = "text"
     text: str
     new_column: ColumnName
 

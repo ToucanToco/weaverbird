@@ -20,44 +20,44 @@ from weaverbird.backends.pypika_translator.translate import translate_pipeline
 from weaverbird.pipeline import PipelineWithVariables
 
 con_params = {
-    'host': '127.0.0.1',
-    'user': 'ubuntu',
-    'password': 'ilovetoucan',
-    'port': 5432,
-    'database': 'pg_db',
+    "host": "127.0.0.1",
+    "user": "ubuntu",
+    "password": "ilovetoucan",
+    "port": 5432,
+    "database": "pg_db",
 }
 connection_string = f'postgresql://{con_params["user"]}:{con_params["password"]}@{con_params["host"]}:{con_params["port"]}/{con_params["database"]}'
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def engine() -> Any:
     return create_engine(connection_string)
 
 
-@pytest.fixture(scope='module', autouse=True)
+@pytest.fixture(scope="module", autouse=True)
 def postgres_container():
     with docker_container(
-        image_name='postgres',
-        image_version='14.1-bullseye',
-        name='postgres_weaverbird_test',
+        image_name="postgres",
+        image_version="14.1-bullseye",
+        name="postgres_weaverbird_test",
         environment={
-            'POSTGRES_DB': 'pg_db',
-            'POSTGRES_USER': 'ubuntu',
-            'POSTGRES_PASSWORD': 'ilovetoucan',
+            "POSTGRES_DB": "pg_db",
+            "POSTGRES_USER": "ubuntu",
+            "POSTGRES_PASSWORD": "ilovetoucan",
         },
-        ports={'5432': '5432'},
+        ports={"5432": "5432"},
     ) as container:
         engine = None
         while not engine:
             time.sleep(1)
             try:
-                if container.status == 'created' and psycopg2.connect(**con_params):
+                if container.status == "created" and psycopg2.connect(**con_params):
                     dataset = pd.read_csv(
-                        f'{path.join(path.dirname(path.realpath(__file__)))}/beers.csv'
+                        f"{path.join(path.dirname(path.realpath(__file__)))}/beers.csv"
                     )
-                    dataset['brewing_date'] = dataset['brewing_date'].apply(pd.to_datetime)
+                    dataset["brewing_date"] = dataset["brewing_date"].apply(pd.to_datetime)
                     engine = create_engine(connection_string)
-                    dataset.to_sql('beers_tiny', engine)
+                    dataset.to_sql("beers_tiny", engine)
             except psycopg2.OperationalError:
                 pass
 
@@ -67,23 +67,23 @@ def postgres_container():
 # Translation from Pipeline json to SQL query
 @pytest.mark.serial
 @pytest.mark.parametrize(
-    'case_id, case_spec_file_path', retrieve_case('sql_translator', 'postgres_pypika')
+    "case_id, case_spec_file_path", retrieve_case("sql_translator", "postgres_pypika")
 )
 def test_sql_translator_pipeline(case_id: str, case_spec_file_path: str, engine: Any):
     spec = get_spec_from_json_fixture(case_id, case_spec_file_path)
 
-    steps = spec['step']['pipeline']
-    steps.insert(0, {'name': 'domain', 'domain': 'beers_tiny'})
+    steps = spec["step"]["pipeline"]
+    steps.insert(0, {"name": "domain", "domain": "beers_tiny"})
     pipeline = PipelineWithVariables(steps=steps)
 
     # Convert Pipeline object to Postgres Query
     query = translate_pipeline(
         sql_dialect=SQLDialect.POSTGRES,
         pipeline=pipeline,
-        tables_columns={'beers_tiny': _BEERS_TABLE_COLUMNS},
+        tables_columns={"beers_tiny": _BEERS_TABLE_COLUMNS},
         db_schema=None,
     )
     # Execute request generated from Pipeline in Postgres and get the result
     result: pd.DataFrame = pd.read_sql(text(query), engine)
-    expected = pd.read_json(json.dumps(spec['expected']), orient='table')
+    expected = pd.read_json(json.dumps(spec["expected"]), orient="table")
     assert_dataframes_equals(expected, result)

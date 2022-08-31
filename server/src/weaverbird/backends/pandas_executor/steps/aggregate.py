@@ -6,21 +6,21 @@ from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineE
 from weaverbird.pipeline.steps import AggregateStep
 
 AggregateFn = Literal[
-    'avg',
-    'sum',
-    'min',
-    'max',
-    'count',
-    'count distinct',
-    'first',
-    'last',
-    'count distinct including empty',
+    "avg",
+    "sum",
+    "min",
+    "max",
+    "count",
+    "count distinct",
+    "first",
+    "last",
+    "count distinct including empty",
 ]
 
 functions_aliases = {
-    'avg': 'mean',
-    'count distinct': 'nunique',
-    'count distinct including empty': len,
+    "avg": "mean",
+    "count distinct": "nunique",
+    "count distinct including empty": len,
 }
 
 
@@ -40,7 +40,7 @@ def execute_aggregate(
 
     # if no group is specified, we create a pseudo column with a single value
     if len(group_by_columns) == 0:
-        group_by_columns = ['__VQB__GROUP_BY__']
+        group_by_columns = ["__VQB__GROUP_BY__"]
         df = df.assign(**{group_by_columns[0]: True})
 
     grouped_by_df = df.groupby(group_by_columns, dropna=False)
@@ -63,7 +63,7 @@ def execute_aggregate(
 
     # it is faster this way, than to transform the original df
     if step.keep_original_granularity:
-        df_result = df.merge(df_result, on=group_by_columns, how='left')
+        df_result = df.merge(df_result, on=group_by_columns, how="left")
 
     # we do not want the pseudo column to ever leave this function
     if len(step.on) == 0:

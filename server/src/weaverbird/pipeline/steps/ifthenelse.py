@@ -13,9 +13,9 @@ class IfThenElse(BaseModel):
     class Config(PopulatedWithFieldnames):
         ...
 
-    condition: Condition = Field(alias='if')
+    condition: Condition = Field(alias="if")
     then: Any
-    else_value: Union['IfThenElse', Any] = Field(alias='else')
+    else_value: Union["IfThenElse", Any] = Field(alias="else")
 
 
 IfThenElse.update_forward_refs()
@@ -25,8 +25,8 @@ class IfthenelseStep(BaseStep, IfThenElse):
     class Config(PopulatedWithFieldnames):
         ...
 
-    name: Literal['ifthenelse'] = 'ifthenelse'
-    new_column: ColumnName = Field(alias='newColumn')
+    name: Literal["ifthenelse"] = "ifthenelse"
+    new_column: ColumnName = Field(alias="newColumn")
 
 
 class IfThenElseStepWithVariables(IfthenelseStep, StepWithVariablesMixin):

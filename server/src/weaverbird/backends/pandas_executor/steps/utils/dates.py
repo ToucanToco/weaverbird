@@ -10,19 +10,19 @@ def evaluate_relative_date(relative_date: RelativeDate) -> datetime:
     """
     From a RelativeDate definition, compute the actual corresponding datetime.
     """
-    if relative_date.operator == 'until':
+    if relative_date.operator == "until":
         operation = operator.sub
-    elif relative_date.operator == 'from':
+    elif relative_date.operator == "from":
         operation = operator.add
     else:
         raise NotImplementedError
 
-    if relative_date.duration == 'quarter':
+    if relative_date.duration == "quarter":
         quantity = relative_date.quantity * 3
-        duration = 'months'
+        duration = "months"
     else:
         quantity = relative_date.quantity
-        duration = relative_date.duration + 's'
+        duration = relative_date.duration + "s"
 
     return operation(
         relative_date.date,

@@ -5,6 +5,6 @@ from weaverbird.pipeline.types import ColumnName
 
 
 class FromdateStep(BaseStep):
-    name: Literal['fromdate'] = 'fromdate'
+    name: Literal["fromdate"] = "fromdate"
     column: ColumnName
     format: str

@@ -23,11 +23,11 @@ def sort_columns_to_sql(columns: List[ColumnSort]) -> str:
     params:
     columns: List[ColumnSort]
     """
-    compiled_query: str = ''
+    compiled_query: str = ""
     for index, c in enumerate(columns):
         if index > 0:
-            compiled_query += ', '
-        compiled_query += f'{c.column} {c.order}'
+            compiled_query += ", "
+        compiled_query += f"{c.column} {c.order}"
 
     return compiled_query
 
@@ -43,15 +43,15 @@ def translate_sort(
     subcall_from_other_pipeline_count: int = None,
     sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
-    query_name = f'SORT_STEP_{index}'
+    query_name = f"SORT_STEP_{index}"
 
     log.debug(
-        '############################################################'
-        f'query_name: {query_name}\n'
-        '------------------------------------------------------------'
-        f'step.columns: {step.columns}\n'
-        f'query.transformed_query: {query.transformed_query}\n'
-        f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
+        "############################################################"
+        f"query_name: {query_name}\n"
+        "------------------------------------------------------------"
+        f"step.columns: {step.columns}\n"
+        f"query.transformed_query: {query.transformed_query}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n"
     )
 
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str()
@@ -68,9 +68,9 @@ def translate_sort(
     )
 
     log.debug(
-        '------------------------------------------------------------'
-        f'SQLquery: {new_query.transformed_query}'
-        '############################################################'
+        "------------------------------------------------------------"
+        f"SQLquery: {new_query.transformed_query}"
+        "############################################################"
     )
 
     return new_query

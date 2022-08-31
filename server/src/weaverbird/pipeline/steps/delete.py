@@ -5,5 +5,5 @@ from weaverbird.pipeline.types import ColumnName
 
 
 class DeleteStep(BaseStep):
-    name: Literal['delete'] = 'delete'
+    name: Literal["delete"] = "delete"
     columns: List[ColumnName]

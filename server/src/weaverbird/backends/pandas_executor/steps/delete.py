@@ -10,4 +10,4 @@ def execute_delete(
     domain_retriever: DomainRetriever = None,
     execute_pipeline: PipelineExecutor = None,
 ) -> DataFrame:
-    return df.drop(step.columns, axis=1, errors='ignore')
+    return df.drop(step.columns, axis=1, errors="ignore")

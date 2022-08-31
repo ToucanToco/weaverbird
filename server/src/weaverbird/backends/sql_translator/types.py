@@ -34,7 +34,7 @@ SQLPipelineTranslator = Callable[
     [Pipeline, SQLQueryRetriever, SQLQueryDescriber, SQLQueryExecutor],
     Tuple[str, SQLPipelineTranslationReport],
 ]
-SQLDialect = Literal['snowflake', 'postgres']
+SQLDialect = Literal["snowflake", "postgres"]
 
 
 class SQLStepTranslator(Protocol):

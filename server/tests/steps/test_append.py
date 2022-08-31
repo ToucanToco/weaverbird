@@ -8,10 +8,10 @@ from weaverbird.pipeline.steps import AppendStep
 
 
 def test_benchmark_append(benchmark):
-    df_left = pd.DataFrame({'values': np.random.random(1000)})
-    df_right = pd.DataFrame({'values': np.random.random(1000)})
+    df_left = pd.DataFrame({"values": np.random.random(1000)})
+    df_right = pd.DataFrame({"values": np.random.random(1000)})
 
-    step = AppendStep(name='append', pipelines=['other'])
+    step = AppendStep(name="append", pipelines=["other"])
 
     df_result = benchmark(
         execute_append,

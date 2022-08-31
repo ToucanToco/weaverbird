@@ -14,7 +14,7 @@ def execute_pivot(
         values=step.value_column,
         index=step.index,
         columns=step.column_to_pivot,
-        aggfunc='mean' if step.agg_function == 'avg' else step.agg_function,
+        aggfunc="mean" if step.agg_function == "avg" else step.agg_function,
     ).reset_index()
     pivoted_df.columns.name = None
     return pivoted_df

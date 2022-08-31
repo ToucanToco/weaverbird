@@ -20,22 +20,22 @@ def execute_waterfall(
 ) -> DataFrame:
     # first milestone
     start_df = df[df[step.milestonesColumn] == step.start].rename(
-        columns={step.valueColumn: f'{step.valueColumn}_start'}
+        columns={step.valueColumn: f"{step.valueColumn}_start"}
     )
     # second milestone
     end_df = df[df[step.milestonesColumn] == step.end].rename(
-        columns={step.valueColumn: f'{step.valueColumn}_end'}
+        columns={step.valueColumn: f"{step.valueColumn}_end"}
     )
 
     upper = compute_agg_milestone(
         step,
         df,
-        start_df.rename(columns={f'{step.valueColumn}_start': step.valueColumn}),
+        start_df.rename(columns={f"{step.valueColumn}_start": step.valueColumn}),
         step.start,
     )
     mid = compute_mid(step, merge(step, start_df, end_df), df)
     downer = compute_agg_milestone(
-        step, df, end_df.rename(columns={f'{step.valueColumn}_end': step.valueColumn}), step.end
+        step, df, end_df.rename(columns={f"{step.valueColumn}_end": step.valueColumn}), step.end
     )
     return pd.concat([upper, mid, downer])
 
@@ -49,28 +49,28 @@ def merge(step: WaterfallStep, start_df: DataFrame, end_df: DataFrame) -> DataFr
         group_by_columns = group_by_columns + [step.parentsColumn]
     start_df = (
         start_df.groupby(by=group_by_columns)
-        .agg({step.valueColumn + '_start': 'sum'})
+        .agg({step.valueColumn + "_start": "sum"})
         .merge(start_df[group_by_columns], on=group_by_columns)
-        .rename(columns={step.labelsColumn + '_x': step.labelsColumn})
+        .rename(columns={step.labelsColumn + "_x": step.labelsColumn})
         .drop_duplicates()
     )
 
     end_df = (
         end_df.groupby(by=group_by_columns)
-        .agg({step.valueColumn + '_end': 'sum'})
+        .agg({step.valueColumn + "_end": "sum"})
         .merge(end_df[group_by_columns], on=group_by_columns)
-        .rename(columns={step.labelsColumn + '_x': step.labelsColumn})
+        .rename(columns={step.labelsColumn + "_x": step.labelsColumn})
         .drop_duplicates()
     )
     # we join the result to compare them
     merged_df = start_df.merge(end_df, on=get_join_key(step))
     merged_df[_RESULT_COLUMN] = (
-        merged_df[f'{step.valueColumn}_end'] - merged_df[f'{step.valueColumn}_start']
+        merged_df[f"{step.valueColumn}_end"] - merged_df[f"{step.valueColumn}_start"]
     )
     merged_df = merged_df.drop(
         columns=[
-            f'{step.valueColumn}_start',
-            f'{step.valueColumn}_end',
+            f"{step.valueColumn}_start",
+            f"{step.valueColumn}_end",
         ]
     )
 
@@ -78,7 +78,7 @@ def merge(step: WaterfallStep, start_df: DataFrame, end_df: DataFrame) -> DataFr
     if step.parentsColumn is not None:
         parents_results = merged_df.groupby(
             step.groupby + [step.parentsColumn], as_index=False
-        ).agg({_RESULT_COLUMN: 'sum'})
+        ).agg({_RESULT_COLUMN: "sum"})
         parents_results[step.labelsColumn] = parents_results[step.parentsColumn]
         return pd.concat([merged_df, parents_results])
     return merged_df
@@ -94,19 +94,19 @@ def compute_agg_milestone(
         groups = df[step.groupby].drop_duplicates()
         group_by = step.groupby
     else:
-        groups = pd.DataFrame({'_VQB_GROUP': [0]})  # pseudo group
-        start_df['_VQB_GROUP'] = 0
-        groups['_VQB_GROUP'] = 0
-        group_by = ['_VQB_GROUP']
+        groups = pd.DataFrame({"_VQB_GROUP": [0]})  # pseudo group
+        start_df["_VQB_GROUP"] = 0
+        groups["_VQB_GROUP"] = 0
+        group_by = ["_VQB_GROUP"]
 
     groups = groups.assign(**{step.labelsColumn: milestone})
 
-    agg = start_df.groupby(group_by).agg({f'{step.valueColumn}': 'sum'})
+    agg = start_df.groupby(group_by).agg({f"{step.valueColumn}": "sum"})
     agg = (
         groups.merge(agg, on=group_by)
         .sort_values(
-            by=step.valueColumn if step.sortBy == 'value' else step.labelsColumn,
-            ascending=step.order == 'asc',
+            by=step.valueColumn if step.sortBy == "value" else step.labelsColumn,
+            ascending=step.order == "asc",
         )
         .rename(columns={step.labelsColumn: LABEL_WATERFALL_COLUMN})
     )
@@ -116,8 +116,8 @@ def compute_agg_milestone(
     agg[TYPE_WATERFALL_COLUMN] = None
     agg[LABEL_WATERFALL_COLUMN] = agg[LABEL_WATERFALL_COLUMN].astype(str)
     if len(step.groupby) == 0:
-        del start_df['_VQB_GROUP']
-        del agg['_VQB_GROUP']
+        del start_df["_VQB_GROUP"]
+        del agg["_VQB_GROUP"]
     return agg
 
 
@@ -126,34 +126,34 @@ def compute_mid(step: WaterfallStep, merged_df: DataFrame, df: DataFrame) -> Dat
     result_df = DataFrame(
         {
             LABEL_WATERFALL_COLUMN: merged_df.sort_values(
-                by=get_sort_column(step), ascending=step.order == 'asc'
+                by=get_sort_column(step), ascending=step.order == "asc"
             )[step.labelsColumn].astype(str)
         }
     )
     result_df[step.groupby] = merged_df.sort_values(
-        by=get_sort_column(step), ascending=step.order == 'asc'
+        by=get_sort_column(step), ascending=step.order == "asc"
     )[step.groupby]
 
     if step.parentsColumn is None:
-        result_df[TYPE_WATERFALL_COLUMN] = 'Parent'
+        result_df[TYPE_WATERFALL_COLUMN] = "Parent"
     else:
         result_df[GROUP_WATERFALL_COLUMN] = merged_df.sort_values(
-            by=get_sort_column(step), ascending=step.order == 'asc'
+            by=get_sort_column(step), ascending=step.order == "asc"
         )[step.parentsColumn]
         result_df[TYPE_WATERFALL_COLUMN] = numpy.where(
-            result_df['LABEL_waterfall'] == (result_df[GROUP_WATERFALL_COLUMN]),
-            ['parent'],
-            ['child'],
+            result_df["LABEL_waterfall"] == (result_df[GROUP_WATERFALL_COLUMN]),
+            ["parent"],
+            ["child"],
         )
 
     result_df[step.valueColumn] = merged_df.sort_values(
-        by=get_sort_column(step), ascending=step.order == 'asc'
+        by=get_sort_column(step), ascending=step.order == "asc"
     )[_RESULT_COLUMN]
     return result_df
 
 
 def get_sort_column(step: WaterfallStep):
-    if step.sortBy == 'value':
+    if step.sortBy == "value":
         return _RESULT_COLUMN
     else:
         return step.labelsColumn

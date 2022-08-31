@@ -7,6 +7,6 @@ from weaverbird.pipeline.steps import DuplicateStep
 def translate_duplicate(step: DuplicateStep) -> List[MongoStep]:
     return [
         {
-            '$addFields': {(step.new_column_name): f'${step.column}'},
+            "$addFields": {(step.new_column_name): f"${step.column}"},
         }
     ]

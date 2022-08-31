@@ -5,10 +5,10 @@ from weaverbird.pipeline.formula_ast.types import ColumnName, Expression, Operat
 from weaverbird.pipeline.steps import FormulaStep
 
 _MONGO_OPERATOR_MAP = {
-    Operator.ADD: '$add',
-    Operator.SUB: '$subtract',
-    Operator.MUL: '$multiply',
-    Operator.DIV: '$divide',
+    Operator.ADD: "$add",
+    Operator.SUB: "$subtract",
+    Operator.MUL: "$multiply",
+    Operator.DIV: "$divide",
     Operator.MOD: "$mod",
 }
 
@@ -27,8 +27,8 @@ def mongo_formula_for_operation(op: Operation) -> dict:
     #  operation
     if op.operator in (Operator.DIV, Operator.MOD):
         return {
-            '$cond': [
-                {'$in': [right_tree, [0, None]]},
+            "$cond": [
+                {"$in": [right_tree, [0, None]]},
                 None,
                 translated_op,
             ]
@@ -41,7 +41,7 @@ def build_mongo_formula_tree(expr: Expression) -> dict | str | int | bool | floa
     if isinstance(expr, Operation):
         return mongo_formula_for_operation(expr)
     elif isinstance(expr, ColumnName):
-        return '$' + expr.name
+        return "$" + expr.name
     elif isinstance(expr, str):
         # We want unquoted strings
         return literal_eval(expr)
@@ -52,4 +52,4 @@ def build_mongo_formula_tree(expr: Expression) -> dict | str | int | bool | floa
 def translate_formula(step: FormulaStep) -> list:
     tree = FormulaParser(step.formula).parse()
     mongo_tree = build_mongo_formula_tree(tree)
-    return [{'$addFields': {step.new_column: mongo_tree}}]
+    return [{"$addFields": {step.new_column: mongo_tree}}]

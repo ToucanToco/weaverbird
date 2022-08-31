@@ -47,7 +47,7 @@ class PostgreSQLTranslator(SQLTranslator):
     def duration(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "DurationStep",

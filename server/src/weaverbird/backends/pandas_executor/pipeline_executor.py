@@ -42,19 +42,19 @@ def execute_pipeline(
                     execute_pipeline=execute_pipeline,
                 )
             logger.info(
-                '[step-monitor]',
+                "[step-monitor]",
                 extra={
-                    'type': 'monitoring',
-                    'step': {
-                        'type': 'pandas',
-                        'index': index + 1,
-                        'name': step.name,
-                        'details': step.dict(),
-                        'elapsed_time': stopwatch.interval * 1000,
-                        'sizes': {
-                            'memory_used': convert_size(df.memory_usage(deep=True).sum()),
-                            'rows': len(df),
-                            'columns': len(df.columns),
+                    "type": "monitoring",
+                    "step": {
+                        "type": "pandas",
+                        "index": index + 1,
+                        "name": step.name,
+                        "details": step.dict(),
+                        "elapsed_time": stopwatch.interval * 1000,
+                        "sizes": {
+                            "memory_used": convert_size(df.memory_usage(deep=True).sum()),
+                            "rows": len(df),
+                            "columns": len(df.columns),
                         },
                     },
                 },
@@ -89,19 +89,19 @@ def preview_pipeline(
     df, _ = execute_pipeline(pipeline, domain_retriever)
 
     def _default_formatter(obj):
-        if hasattr(obj, 'geom_type'):
+        if hasattr(obj, "geom_type"):
             return obj.geom_type
         return obj
 
     return json.dumps(
         {
-            'schema': build_table_schema(df, index=False),
-            'offset': offset,
-            'limit': limit,
-            'total': df.shape[0],
-            'data': json.loads(
+            "schema": build_table_schema(df, index=False),
+            "offset": offset,
+            "limit": limit,
+            "total": df.shape[0],
+            "data": json.loads(
                 df[offset : offset + limit].to_json(
-                    orient='records', default_handler=_default_formatter
+                    orient="records", default_handler=_default_formatter
                 )
             ),
         }
@@ -115,5 +115,5 @@ class PipelineExecutionFailure(Exception):
         self.step = step
         self.index = index
         self.original_exception = original_exception
-        self.message = f'Step #{index + 1} ({step.name}) failed: {original_exception}'
-        self.details = {'index': index, 'message': self.message}
+        self.message = f"Step #{index + 1} ({step.name}) failed: {original_exception}"
+        self.details = {"index": index, "message": self.message}

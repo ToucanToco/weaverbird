@@ -14,7 +14,7 @@ def execute_cumsum(
     df_grouped = df.groupby(step.groupby, dropna=False) if step.groupby else df
 
     for col in step.to_cumsum:
-        dst_column = col[1] or f'{col[0]}_CUMSUM'
+        dst_column = col[1] or f"{col[0]}_CUMSUM"
         cumsum_serie = df_grouped[col[0]].cumsum()
         df = df.assign(**{dst_column: cumsum_serie})
 

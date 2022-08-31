@@ -42,19 +42,19 @@ def make_totals_query(step: TotalsStep, parent_query: SQLQuery) -> (str, List[Co
         for aggregation in [
             aggregation
             for aggregation in aggregations
-            if aggregation.agg_function not in ['first', 'last']
+            if aggregation.agg_function not in ["first", "last"]
         ]:
             for col, new_col in zip(aggregation.columns, aggregation.new_columns):
-                if aggregation.agg_function == 'count distinct':
+                if aggregation.agg_function == "count distinct":
                     aggregated_cols.append(
-                        ColumnMetadata(name=f'COUNT(DISTINCT {col})', alias=new_col, type='FLOAT')
+                        ColumnMetadata(name=f"COUNT(DISTINCT {col})", alias=new_col, type="FLOAT")
                     )
                 else:
                     aggregated_cols.append(
                         ColumnMetadata(
-                            name=f'{aggregation.agg_function.upper()}({col})',
+                            name=f"{aggregation.agg_function.upper()}({col})",
                             alias=new_col,
-                            type='FLOAT',
+                            type="FLOAT",
                         )
                     )
         return aggregated_cols
@@ -86,9 +86,9 @@ def make_totals_query(step: TotalsStep, parent_query: SQLQuery) -> (str, List[Co
 
     group_sets = []
     for combination in combinations(total_dimensions):
-        group_sets.append('(' + ', '.join(combination) + ')')
-    group_sets.append('()')
-    group_by = step.groups + ['GROUPING SETS(' + (', '.join(group_sets)) + ')']
+        group_sets.append("(" + ", ".join(combination) + ")")
+    group_sets.append("()")
+    group_by = step.groups + ["GROUPING SETS(" + (", ".join(group_sets)) + ")"]
 
     query = f"""SELECT {', '.join(with_alias(selects))} FROM {parent_query.query_name} GROUP BY {', '.join(group_by)}"""
 
@@ -106,15 +106,15 @@ def translate_totals(
     subcall_from_other_pipeline_count: int = None,
     sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
-    query_name = f'TOTALS_STEP_{index}'
+    query_name = f"TOTALS_STEP_{index}"
 
     log.debug(
-        '############################################################'
-        f'query_name: {query_name}\n'
-        '------------------------------------------------------------'
-        f'step: {step}\n'
-        f'query.transformed_query: {query.transformed_query}\n'
-        f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
+        "############################################################"
+        f"query_name: {query_name}\n"
+        "------------------------------------------------------------"
+        f"step: {step}\n"
+        f"query.transformed_query: {query.transformed_query}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n"
     )
 
     sql_query, selects = make_totals_query(step, query)
@@ -135,9 +135,9 @@ def translate_totals(
         new_query.metadata_manager.retrieve_query_metadata_columns(), query_name
     )
     log.debug(
-        '------------------------------------------------------------'
-        f'SQLquery: {new_query.transformed_query}'
-        '############################################################'
+        "------------------------------------------------------------"
+        f"SQLquery: {new_query.transformed_query}"
+        "############################################################"
     )
 
     return new_query

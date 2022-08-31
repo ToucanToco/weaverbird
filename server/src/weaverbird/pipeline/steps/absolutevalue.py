@@ -6,7 +6,7 @@ from weaverbird.pipeline.types import ColumnName
 
 
 class AbsoluteValueStep(BaseStep):
-    name: Literal['absolutevalue'] = 'absolutevalue'
+    name: Literal["absolutevalue"] = "absolutevalue"
     column: ColumnName
     new_column: ColumnName
 

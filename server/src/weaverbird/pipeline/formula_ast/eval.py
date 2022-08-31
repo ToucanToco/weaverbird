@@ -49,7 +49,7 @@ class FormulaParser:
         # Removing outer quotes
         unquoted = ast.literal_eval(s)
         # Escaping single quotes in the string
-        with_escaped_single_quotes = unquoted.replace('\'', r'\'')
+        with_escaped_single_quotes = unquoted.replace("'", r"\'")
         # Wrapping the entire thing in single quotes
         return f"'{with_escaped_single_quotes}'"
 
@@ -70,17 +70,17 @@ class FormulaParser:
                 if tok.type == tokenize.NAME:
                     chunks.append(tok.string)
                 # We reached the end of the column name. Store an alias for it and yield the alias
-                elif tok.type == tokenize.OP and tok.string == ']':
+                elif tok.type == tokenize.OP and tok.string == "]":
                     if len(chunks) < 1:
-                        raise EmptyColumnName(f'Got an empty column name at {prev_token.start[1]}')
-                    col_name = f'__VQB_COL__{len(self._columns)}'
-                    self._columns[col_name] = ' '.join(chunks)
+                        raise EmptyColumnName(f"Got an empty column name at {prev_token.start[1]}")
+                    col_name = f"__VQB_COL__{len(self._columns)}"
+                    self._columns[col_name] = " ".join(chunks)
                     return col_name
                 else:
                     raise UnexpectedToken(f"Unexpected token {tok} in column name")
                 prev_token = tok
             raise UnclosedColumnName(
-                f'Expected column to be closed near {prev_token.string} at {prev_token.start[1]}'
+                f"Expected column to be closed near {prev_token.string} at {prev_token.start[1]}"
             )
 
         while token := next_token():
@@ -95,7 +95,7 @@ class FormulaParser:
             elif token.type == tokenize.STRING:
                 # In case we have a string literal, we sanitize it
                 yield self.sanitize_string(token.string)
-            elif token.type == tokenize.OP and token.string == '[':
+            elif token.type == tokenize.OP and token.string == "[":
                 # Square brackets are delimiters for column names, so here we read everyhting until
                 # the closing bracket
                 yield parse_col_name(token)
@@ -110,7 +110,7 @@ class FormulaParser:
         self._columns = {}
         # Stripping because strings starting with whitespace raise UnexpectedIndent when parsed by
         # the ast module
-        return ' '.join(
+        return " ".join(
             self._iterate_tokens(tokenize.tokenize(BytesIO(self._formula.encode()).readline))
         ).strip()
 
@@ -132,7 +132,7 @@ class FormulaParser:
             case ast.Mod():
                 return types.Operator.MOD
             case _:
-                raise UnsupportedOperator(f'Unsupported operator: {op}')
+                raise UnsupportedOperator(f"Unsupported operator: {op}")
 
     def _build_name(self, name: str) -> types.ColumnName | bool:
         """Builds a ColumnName from a raw name.
@@ -140,9 +140,9 @@ class FormulaParser:
         In case the name is "true" or "false", returns the equivalent boolean
         (users do not expect to have to capitalize booleans).
         """
-        if name == 'true':
+        if name == "true":
             return True
-        if name == 'false':
+        if name == "false":
             return False
         return (
             types.ColumnName(name=self._columns[name], alias=name)

@@ -8,7 +8,7 @@ from weaverbird.pipeline.types import ColumnName, TemplatedVariable
 
 
 class ReplaceStep(BaseStep):
-    name: Literal['replace'] = 'replace'
+    name: Literal["replace"] = "replace"
     search_column: ColumnName
     to_replace: List[Tuple[Any, Any]] = Field(min_items=1)
 

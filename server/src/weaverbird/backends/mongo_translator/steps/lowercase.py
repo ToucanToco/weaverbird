@@ -5,4 +5,4 @@ from weaverbird.pipeline.steps import LowercaseStep
 
 
 def translate_lowercase(step: LowercaseStep) -> List[MongoStep]:
-    return [{'$addFields': {step.column: {'$toLower': f'${step.column}'}}}]
+    return [{"$addFields": {step.column: {"$toLower": f"${step.column}"}}}]

@@ -29,28 +29,28 @@ def apply_condition(condition: Condition, df: DataFrame) -> Series:
         return getattr(df[condition.column], condition.operator)(condition.value)
     elif isinstance(condition, InclusionCondition):
         f = df[condition.column].isin(condition.value)
-        if condition.operator.startswith('n'):
+        if condition.operator.startswith("n"):
             return ~f
         else:
             return f
     elif isinstance(condition, NullCondition):
         f = df[condition.column].isnull()
-        if condition.operator.startswith('not'):
+        if condition.operator.startswith("not"):
             return ~f
         else:
             return f
     elif isinstance(condition, MatchCondition):
         f = df[condition.column].str.contains(condition.value)
-        if condition.operator.startswith('not'):
+        if condition.operator.startswith("not"):
             return ~f
         else:
             return f
 
     elif isinstance(condition, DateBoundCondition):
-        if condition.operator == 'until':
-            comparison_method = 'le'
-        elif condition.operator == 'from':
-            comparison_method = 'ge'
+        if condition.operator == "until":
+            comparison_method = "le"
+        elif condition.operator == "from":
+            comparison_method = "ge"
         else:
             raise NotImplementedError
 

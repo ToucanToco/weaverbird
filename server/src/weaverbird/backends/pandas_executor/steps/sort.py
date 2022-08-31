@@ -12,5 +12,5 @@ def execute_sort(
 ) -> DataFrame:
     return df.sort_values(
         by=[sort.column for sort in step.columns],
-        ascending=[sort.order == 'asc' for sort in step.columns],
+        ascending=[sort.order == "asc" for sort in step.columns],
     )

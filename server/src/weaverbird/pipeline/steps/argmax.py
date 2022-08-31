@@ -6,7 +6,7 @@ from weaverbird.pipeline.types import ColumnName, TemplatedVariable
 
 
 class ArgmaxStep(BaseStep):
-    name: Literal['argmax'] = 'argmax'
+    name: Literal["argmax"] = "argmax"
     column: ColumnName
     groups: List[str] = []
 

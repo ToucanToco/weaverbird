@@ -64,13 +64,13 @@ from weaverbird.pipeline import Pipeline
 app = Quart(__name__)
 
 
-@app.route('/health', methods=['GET'])
+@app.route("/health", methods=["GET"])
 def handle_health_request():
-    return 'OK'
+    return "OK"
 
 
 def parse_js_datetime(v):
-    if isinstance(v, str) and v.endswith('Z'):
+    if isinstance(v, str) and v.endswith("Z"):
         try:
             return datetime.fromisoformat(v[:-1])
         except ValueError:
@@ -98,25 +98,25 @@ async def parse_request_json(request: Request):
 
 
 class ColumnType(str, Enum):
-    INTEGER = 'integer'
-    FLOAT = 'float'
-    BOOLEAN = 'boolean'
-    DATE = 'date'
-    STRING = 'string'
-    OBJECT = 'object'
+    INTEGER = "integer"
+    FLOAT = "float"
+    BOOLEAN = "boolean"
+    DATE = "date"
+    STRING = "string"
+    OBJECT = "object"
 
 
 ### Pandas back-end routes
 
 # Load all csv in playground's pandas datastore
-csv_files = glob('../playground/datastore/*.csv')
-json_files = glob('../playground/datastore/*.json')
-geojson_files = glob('../playground/datastore/*.geojson')
+csv_files = glob("../playground/datastore/*.csv")
+json_files = glob("../playground/datastore/*.json")
+geojson_files = glob("../playground/datastore/*.geojson")
 
 DOMAINS = {
     **{splitext(basename(csv_file))[0]: pd.read_csv(csv_file) for csv_file in csv_files},
     **{
-        splitext(basename(json_file))[0]: pd.read_json(json_file, orient='table')
+        splitext(basename(json_file))[0]: pd.read_json(json_file, orient="table")
         for json_file in json_files
     },
     **{
@@ -135,10 +135,10 @@ def execute_pipeline(pipeline_steps, **kwargs) -> str:
     pipeline = Pipeline(steps=pipeline_steps)
 
     # Url parameters are only strings, these two must be understood as numbers
-    if 'limit' in kwargs:
-        kwargs['limit'] = int(kwargs['limit'])
-    if 'offset' in kwargs:
-        kwargs['offset'] = int(kwargs['offset'])
+    if "limit" in kwargs:
+        kwargs["limit"] = int(kwargs["limit"])
+    if "offset" in kwargs:
+        kwargs["offset"] = int(kwargs["offset"])
 
     return pandas_preview_pipeline(
         pipeline=pipeline,
@@ -147,37 +147,37 @@ def execute_pipeline(pipeline_steps, **kwargs) -> str:
     )
 
 
-@app.route('/pandas', methods=['GET', 'POST'])
+@app.route("/pandas", methods=["GET", "POST"])
 async def handle_pandas_backend_request():
-    if request.method == 'GET':
+    if request.method == "GET":
         return jsonify(get_available_domains())
 
-    elif request.method == 'POST':
+    elif request.method == "POST":
         try:
             pipeline = await parse_request_json(request)
             return Response(
                 execute_pipeline(pipeline, **request.args),
-                mimetype='application/json',
+                mimetype="application/json",
             )
         except PipelineExecutionFailure as e:
             return (
                 jsonify(
                     {
-                        'step': e.step.dict(),
-                        'index': e.index,
-                        'message': e.message,
+                        "step": e.step.dict(),
+                        "index": e.index,
+                        "message": e.message,
                     }
                 ),
                 400,
             )
         except Exception as e:
-            errmsg = f'{e.__class__.__name__}: {e}'
+            errmsg = f"{e.__class__.__name__}: {e}"
             return jsonify(errmsg), 400
 
 
 ### Mongo back-end routes
-mongo_client = MongoClient(os.getenv('MONGODB_CONNECTION_STRING'))
-mongo_db = mongo_client[os.getenv('MONGODB_DATABASE_NAME', default='data')]
+mongo_client = MongoClient(os.getenv("MONGODB_CONNECTION_STRING"))
+mongo_db = mongo_client[os.getenv("MONGODB_DATABASE_NAME", default="data")]
 
 
 def facetize_mongo_aggregation(query, limit, offset):
@@ -187,98 +187,98 @@ def facetize_mongo_aggregation(query, limit, offset):
     the query results.
     """
     if not len(query):
-        query = [{'$match': {}}]
+        query = [{"$match": {}}]
 
     new_query = [
         *query,
         {
-            '$facet': {
-                'state_total_count': [
+            "$facet": {
+                "state_total_count": [
                     {
-                        '$group': {
-                            '_id': None,
-                            'count': {
-                                '$sum': 1,
+                        "$group": {
+                            "_id": None,
+                            "count": {
+                                "$sum": 1,
                             },
                         },
                     },
                 ],
-                'stage_results': [
+                "stage_results": [
                     {
-                        '$skip': offset,
+                        "$skip": offset,
                     },
                     {
-                        '$limit': limit,
+                        "$limit": limit,
                     },
-                    {'$project': {'_id': 0}},
+                    {"$project": {"_id": 0}},
                 ],
-                'stage_types': [
+                "stage_types": [
                     {
-                        '$skip': offset,
+                        "$skip": offset,
                     },
                     {
-                        '$limit': limit,
+                        "$limit": limit,
                     },
-                    {'$group': {'_id': None, '_vqbAppArray': {'$push': '$$ROOT'}}},
-                    {'$unwind': {'path': "$_vqbAppArray", 'includeArrayIndex': "_vqbAppIndex"}},
+                    {"$group": {"_id": None, "_vqbAppArray": {"$push": "$$ROOT"}}},
+                    {"$unwind": {"path": "$_vqbAppArray", "includeArrayIndex": "_vqbAppIndex"}},
                     {
-                        '$project': {
-                            '_vqbAppArray': {
-                                '$objectToArray': '$_vqbAppArray',
+                        "$project": {
+                            "_vqbAppArray": {
+                                "$objectToArray": "$_vqbAppArray",
                             },
-                            '_vqbAppIndex': 1,
+                            "_vqbAppIndex": 1,
                         },
                     },
                     {
-                        '$unwind': '$_vqbAppArray',
+                        "$unwind": "$_vqbAppArray",
                     },
                     {
-                        '$project': {
-                            'column': '$_vqbAppArray.k',
-                            'type': {
-                                '$type': '$_vqbAppArray.v',
+                        "$project": {
+                            "column": "$_vqbAppArray.k",
+                            "type": {
+                                "$type": "$_vqbAppArray.v",
                             },
-                            '_vqbAppIndex': 1,
+                            "_vqbAppIndex": 1,
                         },
                     },
                     {
-                        '$group': {
-                            '_id': '$_vqbAppIndex',
-                            '_vqbAppArray': {
-                                '$addToSet': {
-                                    'column': '$column',
-                                    'type': '$type',
+                        "$group": {
+                            "_id": "$_vqbAppIndex",
+                            "_vqbAppArray": {
+                                "$addToSet": {
+                                    "column": "$column",
+                                    "type": "$type",
                                 },
                             },
                         },
                     },
                     {
-                        '$project': {
-                            '_vqbAppTmpObj': {
-                                '$arrayToObject': {
-                                    '$zip': {
-                                        'inputs': ['$_vqbAppArray.column', '$_vqbAppArray.type'],
+                        "$project": {
+                            "_vqbAppTmpObj": {
+                                "$arrayToObject": {
+                                    "$zip": {
+                                        "inputs": ["$_vqbAppArray.column", "$_vqbAppArray.type"],
                                     },
                                 },
                             },
                         },
                     },
                     {
-                        '$replaceRoot': {
-                            'newRoot': '$_vqbAppTmpObj',
+                        "$replaceRoot": {
+                            "newRoot": "$_vqbAppTmpObj",
                         },
                     },
                 ],
             },
         },
         {
-            '$unwind': '$state_total_count',
+            "$unwind": "$state_total_count",
         },
         {
-            '$project': {
-                'count': '$state_total_count.count',
-                'data': '$stage_results',
-                'types': '$stage_types',
+            "$project": {
+                "count": "$state_total_count.count",
+                "data": "$stage_results",
+                "types": "$stage_types",
             },
         },
     ]
@@ -291,66 +291,66 @@ def execute_mongo_aggregation_query(collection, query, limit, offset):
     results = list(mongo_db[collection].aggregate(facetized_query))
     # ObjectID are not JSON serializable, so remove them
     for row in results:
-        if '_id' in row:
-            del row['_id']
+        if "_id" in row:
+            del row["_id"]
 
     # Aggregation does not return correct fields if there is no results
     if len(results) == 0:
-        results = [{'count': 0, 'data': [], 'types': []}]
+        results = [{"count": 0, "data": [], "types": []}]
     return results
 
 
-@app.route('/mongo', methods=['GET', 'POST'])
+@app.route("/mongo", methods=["GET", "POST"])
 async def handle_mongo_backend_request():
-    if request.method == 'GET':
+    if request.method == "GET":
         return jsonify(mongo_db.list_collection_names())
-    elif request.method == 'POST':
+    elif request.method == "POST":
         try:
             req_params = await parse_request_json(request)
-            pipeline = Pipeline(steps=req_params['pipeline'])  # Validation
+            pipeline = Pipeline(steps=req_params["pipeline"])  # Validation
             mongo_query = mongo_translate_pipeline(pipeline)
             results = execute_mongo_aggregation_query(
-                req_params['collection'],
+                req_params["collection"],
                 mongo_query,
-                req_params['limit'],
-                req_params['offset'],
+                req_params["limit"],
+                req_params["offset"],
             )[0]
 
             return jsonify(
                 {
-                    'offset': req_params['offset'],
-                    'limit': req_params['limit'],
-                    'total': results['count'],
-                    'data': results['data'],
-                    'types': results['types'],
-                    'query': mongo_query,  # provided for inspection purposes
+                    "offset": req_params["offset"],
+                    "limit": req_params["limit"],
+                    "total": results["count"],
+                    "data": results["data"],
+                    "types": results["types"],
+                    "query": mongo_query,  # provided for inspection purposes
                 }
             )
         except Exception as e:
-            errmsg = f'{e.__class__.__name__}: {e}'
+            errmsg = f"{e.__class__.__name__}: {e}"
             return jsonify(errmsg), 400
 
 
-@app.route('/mongo-translated', methods=['POST'])
+@app.route("/mongo-translated", methods=["POST"])
 async def handle_mongo_translated_backend_request():
     try:
         req_params = await parse_request_json(request)
         results = execute_mongo_aggregation_query(
-            req_params['collection'], req_params['query'], req_params['limit'], req_params['offset']
+            req_params["collection"], req_params["query"], req_params["limit"], req_params["offset"]
         )
         return jsonify(results)
     except Exception as e:
-        errmsg = f'{e.__class__.__name__}: {e}'
+        errmsg = f"{e.__class__.__name__}: {e}"
         return jsonify(errmsg), 400
 
 
 ### Snowflake back-end routes
-if os.getenv('SNOWFLAKE_ACCOUNT'):
+if os.getenv("SNOWFLAKE_ACCOUNT"):
     snowflake_connexion = snowflake.connector.connect(
-        user=os.getenv('SNOWFLAKE_USER'),
-        password=os.getenv('SNOWFLAKE_PASSWORD'),
-        account=os.getenv('SNOWFLAKE_ACCOUNT'),
-        database=os.getenv('SNOWFLAKE_DATABASE'),
+        user=os.getenv("SNOWFLAKE_USER"),
+        password=os.getenv("SNOWFLAKE_PASSWORD"),
+        account=os.getenv("SNOWFLAKE_ACCOUNT"),
+        database=os.getenv("SNOWFLAKE_DATABASE"),
         client_session_keep_alive=True,
     )
 
@@ -362,20 +362,20 @@ def sql_table_retriever(t):
 def snowflake_query_describer(domain: str, query_string: str = None) -> Union[Dict[str, str], None]:
     #  See https://docs.snowflake.com/en/user-guide/python-connector-api.html#type-codes
     type_code_mapping = {
-        0: 'float',
-        1: 'real',
-        2: 'text',
-        3: 'date',
-        4: 'timestamp',
-        5: 'variant',
-        6: 'timestamp_ltz',
-        7: 'timestamp_tz',
-        8: 'timestamp_ntz',
-        9: 'object',
-        10: 'array',
-        11: 'binary',
-        12: 'time',
-        13: 'boolean',
+        0: "float",
+        1: "real",
+        2: "text",
+        3: "date",
+        4: "timestamp",
+        5: "variant",
+        6: "timestamp_ltz",
+        7: "timestamp_tz",
+        8: "timestamp_ntz",
+        9: "object",
+        10: "array",
+        11: "binary",
+        12: "time",
+        13: "boolean",
     }
 
     with snowflake_connexion.cursor() as cursor:
@@ -391,7 +391,7 @@ def snowflake_query_executor(domain: str, query_string: str = None) -> Union[pd.
 
 
 def get_table_columns():
-    tables_info = snowflake_connexion.cursor().execute('SHOW TABLES;').fetchall()
+    tables_info = snowflake_connexion.cursor().execute("SHOW TABLES;").fetchall()
     tables_columns = {}
     for table in tables_info:
         with suppress(Exception):
@@ -403,18 +403,18 @@ def get_table_columns():
     return tables_columns
 
 
-@app.route('/snowflake', methods=['GET', 'POST'])
+@app.route("/snowflake", methods=["GET", "POST"])
 async def handle_snowflake_backend_request():
-    if request.method == 'GET':
+    if request.method == "GET":
         tables_info = get_table_columns()
         return jsonify(list(tables_info.keys()))
 
-    elif request.method == 'POST':
+    elif request.method == "POST":
         pipeline = await parse_request_json(request)
 
         # Url parameters are only strings, these two must be understood as numbers
-        limit = int(request.args.get('limit', 50))
-        offset = int(request.args.get('offset', 0))
+        limit = int(request.args.get("limit", 50))
+        offset = int(request.args.get("offset", 0))
 
         tables_columns = get_table_columns()
 
@@ -426,28 +426,28 @@ async def handle_snowflake_backend_request():
         )
 
         total_count = (
-            snowflake_connexion.cursor().execute(f'SELECT COUNT(*) FROM ({ query })').fetchone()[0]
+            snowflake_connexion.cursor().execute(f"SELECT COUNT(*) FROM ({ query })").fetchone()[0]
         )
         # By using snowflake's connector ability to turn results into a DataFrame,
         # we can re-use all the methods to parse this data- interchange format in the front-end
         df_results = (
             snowflake_connexion.cursor()
-            .execute(f'SELECT * FROM ({ query }) LIMIT { limit } OFFSET { offset }')
+            .execute(f"SELECT * FROM ({ query }) LIMIT { limit } OFFSET { offset }")
             .fetch_pandas_all()
         )
 
         return Response(
             json.dumps(
                 {
-                    'offset': offset,
-                    'limit': limit,
-                    'total': total_count,
-                    'schema': build_table_schema(df_results, index=False),
-                    'data': json.loads(df_results.to_json(orient='records')),
-                    'query': query,  # provided for inspection purposes
+                    "offset": offset,
+                    "limit": limit,
+                    "total": total_count,
+                    "schema": build_table_schema(df_results, index=False),
+                    "data": json.loads(df_results.to_json(orient="records")),
+                    "query": query,  # provided for inspection purposes
                 }
             ),
-            mimetype='application/json',
+            mimetype="application/json",
         )
 
 
@@ -457,36 +457,36 @@ async def handle_snowflake_backend_request():
 def postgresql_type_to_data_type(pg_type: str) -> ColumnType | None:
     # https://www.postgresql.org/docs/current/datatype-numeric.html
     if (
-        'float' in pg_type
-        or 'double' in pg_type
-        or 'serial' in pg_type
-        or pg_type in ('decimal', 'numeric', 'real', 'money')
+        "float" in pg_type
+        or "double" in pg_type
+        or "serial" in pg_type
+        or pg_type in ("decimal", "numeric", "real", "money")
     ):
         return ColumnType.FLOAT
-    elif 'int' in pg_type:
+    elif "int" in pg_type:
         return ColumnType.INTEGER
     # https://www.postgresql.org/docs/current/datatype-datetime.html
-    elif 'time' in pg_type or 'date' in pg_type:
+    elif "time" in pg_type or "date" in pg_type:
         return ColumnType.DATE
     # https://www.postgresql.org/docs/current/datatype-character.html
-    elif 'char' in pg_type or pg_type == 'text':
+    elif "char" in pg_type or pg_type == "text":
         return ColumnType.STRING
     # https://www.postgresql.org/docs/current/datatype-boolean.html
-    elif 'bool' in pg_type:
+    elif "bool" in pg_type:
         return ColumnType.BOOLEAN
     else:
         return ColumnType.OBJECT
 
 
-@app.route('/postgresql', methods=['GET', 'POST'])
+@app.route("/postgresql", methods=["GET", "POST"])
 async def handle_postgres_backend_request():
     # improve by using a connexion pool
     postgresql_connexion = await psycopg.AsyncConnection.connect(
-        os.getenv('POSTGRESQL_CONNECTION_STRING')
+        os.getenv("POSTGRESQL_CONNECTION_STRING")
     )
-    db_schema = 'public'
+    db_schema = "public"
 
-    if request.method == 'GET':
+    if request.method == "GET":
         async with postgresql_connexion.cursor() as cur:
             tables_info_exec = await cur.execute(
                 f"SELECT * FROM pg_catalog.pg_tables WHERE schemaname='{db_schema}';"
@@ -494,12 +494,12 @@ async def handle_postgres_backend_request():
             tables_info = await tables_info_exec.fetchall()
             return jsonify([table_infos[1] for table_infos in tables_info])
 
-    if request.method == 'POST':
+    if request.method == "POST":
         pipeline = await parse_request_json(request)
 
         # Url parameters are only strings, these two must be understood as numbers
-        limit = int(request.args.get('limit', 50))
-        offset = int(request.args.get('offset', 0))
+        limit = int(request.args.get("limit", 50))
+        offset = int(request.args.get("offset", 0))
 
         # Find all columns for all available tables
         async with postgresql_connexion.cursor() as cur:
@@ -522,13 +522,13 @@ async def handle_postgres_backend_request():
 
         async with postgresql_connexion.cursor() as cur:
             query_total_count_exec = await cur.execute(
-                f'WITH Q AS ({ sql_query }) SELECT COUNT(*) FROM Q'
+                f"WITH Q AS ({ sql_query }) SELECT COUNT(*) FROM Q"
             )
             query_total_count = await query_total_count_exec.fetchone()
 
         async with postgresql_connexion.cursor() as cur:
             query_results_page_exec = await cur.execute(
-                f'WITH Q AS ({ sql_query }) SELECT * FROM Q LIMIT { limit } OFFSET { offset }',
+                f"WITH Q AS ({ sql_query }) SELECT * FROM Q LIMIT { limit } OFFSET { offset }",
             )
             query_results_page = await query_results_page_exec.fetchall()
             query_results_desc = query_results_page_exec.description
@@ -538,14 +538,14 @@ async def handle_postgres_backend_request():
             # oid of columns of query results are provided in the "description" attribute
             # They are mapped to base types in the system pg_type table
             types_exec = await cur.execute(
-                'SELECT oid, typname FROM pg_type WHERE oid = ANY(%s)',
+                "SELECT oid, typname FROM pg_type WHERE oid = ANY(%s)",
                 ([c.type_code for c in query_results_desc or []],),
             )
             types = await types_exec.fetchall()
             query_results_columns = [
                 {
-                    'name': c.name,
-                    'type': [
+                    "name": c.name,
+                    "type": [
                         postgresql_type_to_data_type(t[1]) for t in types if t[0] == c.type_code
                     ][0],
                 }
@@ -553,14 +553,14 @@ async def handle_postgres_backend_request():
             ]
 
         return {
-            'offset': offset,
-            'limit': limit,
-            'total': query_total_count,
-            'results': {
-                'headers': query_results_columns,
-                'data': query_results_page,
+            "offset": offset,
+            "limit": limit,
+            "total": query_total_count,
+            "results": {
+                "headers": query_results_columns,
+                "data": query_results_page,
             },
-            'query': sql_query,  # provided for inspection purposes
+            "query": sql_query,  # provided for inspection purposes
         }
 
 
@@ -568,40 +568,40 @@ async def handle_postgres_backend_request():
 @cache
 def _aws_wrangler_kwargs() -> dict[str, str | boto3.Session]:
     return {
-        'boto3_session': boto3.Session(
-            aws_access_key_id=os.environ['ATHENA_ACCESS_KEY_ID'],
-            aws_secret_access_key=os.environ['ATHENA_SECRET_ACCESS_KEY'],
-            region_name=os.environ['ATHENA_REGION'],
+        "boto3_session": boto3.Session(
+            aws_access_key_id=os.environ["ATHENA_ACCESS_KEY_ID"],
+            aws_secret_access_key=os.environ["ATHENA_SECRET_ACCESS_KEY"],
+            region_name=os.environ["ATHENA_REGION"],
         ),
-        'database': os.environ['ATHENA_DATABASE'],
-        's3_output': os.environ['ATHENA_OUTPUT'],
+        "database": os.environ["ATHENA_DATABASE"],
+        "s3_output": os.environ["ATHENA_OUTPUT"],
     }
 
 
 @cache
 def _athena_table_info() -> pd.DataFrame:
     kwargs = _aws_wrangler_kwargs()
-    df = wr.catalog.tables(boto3_session=kwargs['boto3_session'], database=kwargs['database'])
-    return df[~df['Table'].str.startswith('temp_table')]
+    df = wr.catalog.tables(boto3_session=kwargs["boto3_session"], database=kwargs["database"])
+    return df[~df["Table"].str.startswith("temp_table")]
 
 
-@app.get('/athena')
+@app.get("/athena")
 async def handle_athena_get_request():
-    return jsonify(_athena_table_info()['Table'].to_list())
+    return jsonify(_athena_table_info()["Table"].to_list())
 
 
-@app.post('/athena')
+@app.post("/athena")
 async def handle_athena_post_request():
     pipeline = await parse_request_json(request)
 
     # Url parameters are only strings, these two must be understood as numbers
-    limit = int(request.args.get('limit', 50))
-    offset = int(request.args.get('offset', 0))
+    limit = int(request.args.get("limit", 50))
+    offset = int(request.args.get("offset", 0))
 
     # Find all columns for all available tables
     table_info = _athena_table_info()
     tables_columns = {
-        row['Table']: [c.strip() for c in row['Columns'].split(',')]
+        row["Table"]: [c.strip() for c in row["Columns"].split(",")]
         for _, row in table_info.iterrows()
     }
 
@@ -611,20 +611,20 @@ async def handle_athena_post_request():
             pipeline=Pipeline(steps=pipeline),
             tables_columns=tables_columns,
         )
-        + f' OFFSET {offset} LIMIT {limit}'
+        + f" OFFSET {offset} LIMIT {limit}"
     )
     result = wr.athena.read_sql_query(sql_query, **_aws_wrangler_kwargs())
     return {
-        'offset': offset,
-        'limit': limit,
+        "offset": offset,
+        "limit": limit,
         # Dirty, but we don't want whole scans on athena
-        'total': offset + limit + 1 if len(result) == limit else offset + len(result),
-        'results': {
-            'headers': result.columns.to_list(),
-            'data': json.loads(result.to_json(orient='records')),
-            'schema': build_table_schema(result, index=False),
+        "total": offset + limit + 1 if len(result) == limit else offset + len(result),
+        "results": {
+            "headers": result.columns.to_list(),
+            "data": json.loads(result.to_json(orient="records")),
+            "schema": build_table_schema(result, index=False),
         },
-        'query': sql_query,  # provided for inspection purposes
+        "query": sql_query,  # provided for inspection purposes
     }
 
 
@@ -633,7 +633,7 @@ async def handle_athena_post_request():
 
 @cache
 def _bigquery_creds() -> Credentials:
-    return Credentials.from_service_account_file(os.environ['GOOGLE_BIG_QUERY_CREDENTIALS_FILE'])
+    return Credentials.from_service_account_file(os.environ["GOOGLE_BIG_QUERY_CREDENTIALS_FILE"])
 
 
 def _bigquery_client() -> bigquery.Client:
@@ -644,7 +644,7 @@ def _bigquery_tables_list(client: bigquery.Client) -> list[str]:
     return [
         # This is in the `project:dataset.table` by default but SQL requires the members to be
         # separated by dots
-        t.full_table_id.replace(':', '.')
+        t.full_table_id.replace(":", ".")
         for dataset in client.list_datasets()
         for t in client.list_tables(dataset)
     ]
@@ -657,18 +657,18 @@ def _bigquery_tables_info(client: bigquery.Client) -> dict[str, list[str]]:
     }
 
 
-@app.get('/google-big-query')
+@app.get("/google-big-query")
 async def hangle_bigquery_get_request():
     return jsonify(_bigquery_tables_list(_bigquery_client()))
 
 
-@app.post('/google-big-query')
+@app.post("/google-big-query")
 async def hangle_bigquery_post_request():
     pipeline = await parse_request_json(request)
 
     # Url parameters are only strings, these two must be understood as numbers
-    limit = int(request.args.get('limit', 50))
-    offset = int(request.args.get('offset', 0))
+    limit = int(request.args.get("limit", 50))
+    offset = int(request.args.get("offset", 0))
 
     client = _bigquery_client()
     tables_columns = _bigquery_tables_info(client)
@@ -679,29 +679,29 @@ async def hangle_bigquery_post_request():
             pipeline=Pipeline(steps=pipeline),
             tables_columns=tables_columns,
         )
-        + f' LIMIT {limit} OFFSET {offset}'
+        + f" LIMIT {limit} OFFSET {offset}"
     )
 
     result = client.query(sql_query).result().to_dataframe()
     return {
-        'offset': offset,
-        'limit': limit,
+        "offset": offset,
+        "limit": limit,
         # Dirty, but we don't want whole scans on BigQuery
-        'total': offset + limit + 1 if len(result) == limit else offset + len(result),
-        'results': {
-            'headers': result.columns.to_list(),
-            'data': json.loads(result.to_json(orient='records')),
-            'schema': build_table_schema(result, index=False),
+        "total": offset + limit + 1 if len(result) == limit else offset + len(result),
+        "results": {
+            "headers": result.columns.to_list(),
+            "data": json.loads(result.to_json(orient="records")),
+            "schema": build_table_schema(result, index=False),
         },
-        'query': sql_query,  # provided for inspection purposes
+        "query": sql_query,  # provided for inspection purposes
     }
 
 
 ### UI files
 
 
-@app.route('/', methods=['GET'])
-@app.route('/<path:filename>', methods=['GET'])
+@app.route("/", methods=["GET"])
+@app.route("/<path:filename>", methods=["GET"])
 async def handle_static_files_request(filename=None):
-    filename = filename or 'index.html'
-    return await send_file('static/' + filename)
+    filename = filename or "index.html"
+    return await send_file("static/" + filename)

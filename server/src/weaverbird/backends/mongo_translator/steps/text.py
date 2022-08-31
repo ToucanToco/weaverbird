@@ -7,6 +7,6 @@ from weaverbird.pipeline.steps import TextStep
 def translate_text(step: TextStep) -> List[MongoStep]:
     return [
         {
-            '$addFields': {step.new_column: {'$literal': step.text}},
+            "$addFields": {step.new_column: {"$literal": step.text}},
         }
     ]

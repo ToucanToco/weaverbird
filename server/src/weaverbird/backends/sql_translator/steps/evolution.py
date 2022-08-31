@@ -34,26 +34,26 @@ def translate_evolution(
     """
 
     DATE_UNIT = {
-        'vsLastYear': 'year',
-        'vsLastMonth': 'month',
-        'vsLastWeek': 'week',
-        'vsLastDay': 'day',
+        "vsLastYear": "year",
+        "vsLastMonth": "month",
+        "vsLastWeek": "week",
+        "vsLastDay": "day",
     }
 
-    query_name = f'EVOLUTION_STEP_{index}'
+    query_name = f"EVOLUTION_STEP_{index}"
     new_column_name = (
         step.new_column.upper()
         if step.new_column
-        else f'{step.value_col}_EVOL_{step.evolution_format.upper()}'
+        else f"{step.value_col}_EVOL_{step.evolution_format.upper()}"
     )
 
-    if step.evolution_format == 'abs':
-        new_column = f'''(A.{step.value_col} - B.{step.value_col}) AS {new_column_name}'''
+    if step.evolution_format == "abs":
+        new_column = f"""(A.{step.value_col} - B.{step.value_col}) AS {new_column_name}"""
     else:
-        new_column = f'''((A.{step.value_col} / B.{step.value_col}) - 1) AS {new_column_name}'''
+        new_column = f"""((A.{step.value_col} / B.{step.value_col}) - 1) AS {new_column_name}"""
 
     selected_columns = [
-        f'A.{c} AS {c}' for c in query.metadata_manager.retrieve_query_metadata_columns()
+        f"A.{c} AS {c}" for c in query.metadata_manager.retrieve_query_metadata_columns()
     ] + [new_column]
 
     date_join = (
@@ -70,7 +70,7 @@ def translate_evolution(
 
     transformed_query = f"{query.transformed_query}, {query_name} AS ({final_query})"
 
-    query.metadata_manager.add_query_metadata_column(new_column_name, 'float')
+    query.metadata_manager.add_query_metadata_column(new_column_name, "float")
 
     return SQLQuery(
         query_name=query_name,

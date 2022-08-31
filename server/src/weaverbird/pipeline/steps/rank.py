@@ -8,12 +8,12 @@ from weaverbird.pipeline.types import ColumnName, TemplatedVariable
 
 
 class RankStep(BaseStep):
-    name: Literal['rank'] = 'rank'
-    value_col: ColumnName = Field(alias='valueCol')
-    order: Literal['asc', 'desc']
-    method: Literal['standard', 'dense']
+    name: Literal["rank"] = "rank"
+    value_col: ColumnName = Field(alias="valueCol")
+    order: Literal["asc", "desc"]
+    method: Literal["standard", "dense"]
     groupby: List[ColumnName] = []
-    new_column_name: Optional[ColumnName] = Field(None, alias='newColumnName')
+    new_column_name: Optional[ColumnName] = Field(None, alias="newColumnName")
 
 
 class RankStepWithVariable(RankStep, StepWithVariablesMixin):

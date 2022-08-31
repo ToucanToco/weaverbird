@@ -13,18 +13,15 @@ from weaverbird.backends.sql_translator.types import (
 )
 from weaverbird.pipeline.steps import ConvertStep
 
-PG_BOOLEAN_VALUES = ','.join(
-    [
-        f'\'{el}\''
-        for el in ['t', 'true', 'y', 'yes', 'on', '1', 'f', 'false', 'n', 'no', 'off', '0']
-    ]
+PG_BOOLEAN_VALUES = ",".join(
+    [f"'{el}'" for el in ["t", "true", "y", "yes", "on", "1", "f", "false", "n", "no", "off", "0"]]
 )
 
 
 def build_psql(retrieved_col_type, data_type, col):
-    if retrieved_col_type == 'TEXT' and data_type == 'boolean':
-        return f'CASE WHEN {col} IN ({PG_BOOLEAN_VALUES}) THEN CAST({col} AS {data_type}) ELSE FALSE END AS {col}'
-    if retrieved_col_type == 'TEXT' and data_type == 'integer':
+    if retrieved_col_type == "TEXT" and data_type == "boolean":
+        return f"CASE WHEN {col} IN ({PG_BOOLEAN_VALUES}) THEN CAST({col} AS {data_type}) ELSE FALSE END AS {col}"
+    if retrieved_col_type == "TEXT" and data_type == "integer":
         # To ensure we have a unified behavior between pandas, Snowflake & Postgres,
         # additional logic is required to
         # 1. replace any non-numeric valid string by ''
@@ -33,25 +30,25 @@ def build_psql(retrieved_col_type, data_type, col):
         # 3. Nullify the output if 1 or 2 results in empty strings i e non numeric value
         # 4. Cast the resulting NULL or string representation of integer as Integer
         return (
-            f'CAST(NULLIF(SPLIT_PART(REGEXP_REPLACE({col}, \'[^0-9.]*\', \'\'), \'.\', 1), \'\') '
-            f'AS {data_type}) AS {col}'
+            f"CAST(NULLIF(SPLIT_PART(REGEXP_REPLACE({col}, '[^0-9.]*', ''), '.', 1), '') "
+            f"AS {data_type}) AS {col}"
         )
-    if retrieved_col_type == 'FLOAT' and data_type == 'integer':
-        return f'TRUNC({col}) AS {col}'
+    if retrieved_col_type == "FLOAT" and data_type == "integer":
+        return f"TRUNC({col}) AS {col}"
 
-    return f'CAST({col} AS {data_type}) AS {col}'
+    return f"CAST({col} AS {data_type}) AS {col}"
 
 
 def build_snowflake(retrieved_col_type, data_type, col):
-    if (retrieved_col_type == 'FLOAT' or retrieved_col_type == 'REAL') and data_type == 'integer':
-        return f'TRUNCATE({col}) AS {col}'
-    elif retrieved_col_type == 'TEXT' and data_type == 'integer':
+    if (retrieved_col_type == "FLOAT" or retrieved_col_type == "REAL") and data_type == "integer":
+        return f"TRUNCATE({col}) AS {col}"
+    elif retrieved_col_type == "TEXT" and data_type == "integer":
         return f"CAST(SPLIT_PART({col}, '.', 0) AS {data_type}) AS {col}"
     elif (
-        retrieved_col_type == 'TIMESTAMP_NTZ' or retrieved_col_type == 'DATE'
-    ) and data_type == 'integer':
+        retrieved_col_type == "TIMESTAMP_NTZ" or retrieved_col_type == "DATE"
+    ) and data_type == "integer":
         return f"CAST(DATE_PART('EPOCH_MILLISECOND', TO_TIMESTAMP({col})) AS {data_type}) AS {col}"
-    return f'CAST({col} AS {data_type}) AS {col}'
+    return f"CAST({col} AS {data_type}) AS {col}"
 
 
 def translate_convert(
@@ -65,19 +62,19 @@ def translate_convert(
     subcall_from_other_pipeline_count: int = None,
     sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
-    query_name = f'CONVERT_STEP_{index}'
+    query_name = f"CONVERT_STEP_{index}"
 
     log.debug(
-        '############################################################'
-        f'query_name: {query_name}\n'
-        '------------------------------------------------------------'
-        f'step.columns: {step.columns}\n'
-        f'step.data_type: {step.data_type}\n'
-        f'query.transformed_query: {query.transformed_query}\n'
-        f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
+        "############################################################"
+        f"query_name: {query_name}\n"
+        "------------------------------------------------------------"
+        f"step.columns: {step.columns}\n"
+        f"step.data_type: {step.data_type}\n"
+        f"query.transformed_query: {query.transformed_query}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n"
     )
 
-    is_postgres = sql_dialect == 'postgres'
+    is_postgres = sql_dialect == "postgres"
 
     to_cast = []
     for col in step.columns:
@@ -97,9 +94,9 @@ def translate_convert(
         columns_filter=step.columns
     )
 
-    compiled_query = ', '.join(to_cast)
+    compiled_query = ", ".join(to_cast)
     if len(completed_fields):
-        compiled_query = f', {compiled_query}'
+        compiled_query = f", {compiled_query}"
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
@@ -112,9 +109,9 @@ def translate_convert(
     )
 
     log.debug(
-        '------------------------------------------------------------'
-        f'SQLquery: {new_query.transformed_query}'
-        '############################################################'
+        "------------------------------------------------------------"
+        f"SQLquery: {new_query.transformed_query}"
+        "############################################################"
     )
 
     return new_query

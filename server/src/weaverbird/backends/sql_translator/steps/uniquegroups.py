@@ -25,16 +25,16 @@ def translate_uniquegroups(
     subcall_from_other_pipeline_count: int = None,
     sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
-    query_name = f'UNIQUEGROUPS_STEP_{index}'
+    query_name = f"UNIQUEGROUPS_STEP_{index}"
 
     log.debug(
-        '############################################################'
-        f'query_name: {query_name}\n'
-        '------------------------------------------------------------'
-        f'step.name: {step.name}\n'
-        f'step.on: {step.on}\n'
-        f'query.transformed_query: {query.transformed_query}\n'
-        f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
+        "############################################################"
+        f"query_name: {query_name}\n"
+        "------------------------------------------------------------"
+        f"step.name: {step.name}\n"
+        f"step.on: {step.on}\n"
+        f"query.transformed_query: {query.transformed_query}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n"
     )
 
     columns = [c.upper() for c in step.on]
@@ -43,7 +43,7 @@ def translate_uniquegroups(
         cols_to_remove = [c for c in cols if c not in columns]
         query.metadata_manager.remove_query_metadata_columns(cols_to_remove)
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str()
-    group_query = f' GROUP BY {completed_fields})' if len(columns) > 0 else ')'
+    group_query = f" GROUP BY {completed_fields})" if len(columns) > 0 else ")"
 
     new_query = SQLQuery(
         query_name=query_name,
@@ -60,9 +60,9 @@ def translate_uniquegroups(
     )
 
     log.debug(
-        '------------------------------------------------------------'
-        f'SQLquery: {new_query.transformed_query}'
-        '############################################################'
+        "------------------------------------------------------------"
+        f"SQLquery: {new_query.transformed_query}"
+        "############################################################"
     )
 
     return new_query

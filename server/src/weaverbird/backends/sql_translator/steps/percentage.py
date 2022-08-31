@@ -25,20 +25,20 @@ def translate_percentage(
     subcall_from_other_pipeline_count: int = None,
     sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
-    query_name = f'PERCENTAGE_STEP_{index}'
+    query_name = f"PERCENTAGE_STEP_{index}"
 
     log.debug(
-        '############################################################'
-        f'query_name: {query_name}\n'
-        '------------------------------------------------------------'
-        f'step: {step}\n'
+        "############################################################"
+        f"query_name: {query_name}\n"
+        "------------------------------------------------------------"
+        f"step: {step}\n"
     )
 
-    new_column_name = f'{step.column}_PCT' if step.new_column_name is None else step.new_column_name
+    new_column_name = f"{step.column}_PCT" if step.new_column_name is None else step.new_column_name
     group_query = (
-        (f' GROUP BY {", ".join(step.group + [step.column])}' if len(step.group) > 0 else '')
+        (f' GROUP BY {", ".join(step.group + [step.column])}' if len(step.group) > 0 else "")
         if step.group is not None
-        else ''
+        else ""
     )
 
     select_fields = ""
@@ -46,16 +46,16 @@ def translate_percentage(
     for table in query.metadata_manager.tables:
         select_fields = (
             (
-                ', '.join(step.group + [step.column])
+                ", ".join(step.group + [step.column])
                 if len(step.group) > 0
-                else ', '.join(query.metadata_manager.retrieve_columns_as_list(table))
+                else ", ".join(query.metadata_manager.retrieve_columns_as_list(table))
             )
             if step.group is not None
-            else ', '.join(query.metadata_manager.retrieve_columns_as_list(table))
+            else ", ".join(query.metadata_manager.retrieve_columns_as_list(table))
         )
 
     for table in query.metadata_manager.tables:
-        query.metadata_manager.add_table_column(table, new_column_name, 'float')
+        query.metadata_manager.add_table_column(table, new_column_name, "float")
 
         if step.group is not None and len(step.group) > 0:
             for col in query.metadata_manager.retrieve_columns_as_list(table):
@@ -75,9 +75,9 @@ def translate_percentage(
     )
 
     log.debug(
-        '------------------------------------------------------------'
-        f'SQLquery: {new_query.transformed_query}'
-        '############################################################'
+        "------------------------------------------------------------"
+        f"SQLquery: {new_query.transformed_query}"
+        "############################################################"
     )
 
     return new_query

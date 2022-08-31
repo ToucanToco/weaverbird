@@ -25,32 +25,32 @@ def translate_replace(
     subcall_from_other_pipeline_count: int = None,
     sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
-    query_name = f'REPLACE_STEP_{index}'
+    query_name = f"REPLACE_STEP_{index}"
 
     log.debug(
-        '############################################################'
-        f'query_name: {query_name}\n'
-        '------------------------------------------------------------'
-        f'step.name: {step.name}\n'
-        f'step.search_column: {step.search_column}\n'
-        f'step.to_replace: {step.to_replace}\n'
-        f'query.transformed_query: {query.transformed_query}\n'
-        f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
+        "############################################################"
+        f"query_name: {query_name}\n"
+        "------------------------------------------------------------"
+        f"step.name: {step.name}\n"
+        f"step.search_column: {step.search_column}\n"
+        f"step.to_replace: {step.to_replace}\n"
+        f"query.transformed_query: {query.transformed_query}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n"
     )
 
     def _clean_str(value):
         if not isinstance(value, float) and not isinstance(value, int):
-            value = value.strip('"').strip("'").replace('"', "\'").replace("'", "\\'")
-            return f'\'{value}\''
+            value = value.strip('"').strip("'").replace('"', "'").replace("'", "\\'")
+            return f"'{value}'"
         return value
 
-    compiled_query: str = 'CASE '
+    compiled_query: str = "CASE "
     for element_to_replace in step.to_replace:
         from_value, to_value = element_to_replace
         compiled_query += (
-            f'WHEN {step.search_column}={_clean_str(from_value)} THEN {_clean_str(to_value)} '
+            f"WHEN {step.search_column}={_clean_str(from_value)} THEN {_clean_str(to_value)} "
         )
-    compiled_query += f'ELSE {step.search_column} END AS {step.search_column}'
+    compiled_query += f"ELSE {step.search_column} END AS {step.search_column}"
 
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
         columns_filter=[step.search_column]
@@ -69,9 +69,9 @@ def translate_replace(
     )
 
     log.debug(
-        '------------------------------------------------------------'
-        f'SQLquery: {new_query.transformed_query}'
-        '############################################################'
+        "------------------------------------------------------------"
+        f"SQLquery: {new_query.transformed_query}"
+        "############################################################"
     )
 
     return new_query

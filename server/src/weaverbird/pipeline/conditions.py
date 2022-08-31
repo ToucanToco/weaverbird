@@ -15,30 +15,30 @@ class BaseCondition(BaseModel):
 
 class ComparisonCondition(BaseCondition):
     column: ColumnName
-    operator: Literal['eq', 'ne', 'lt', 'le', 'gt', 'ge']
+    operator: Literal["eq", "ne", "lt", "le", "gt", "ge"]
     value: Any
 
 
 class InclusionCondition(BaseCondition):
     column: ColumnName
-    operator: Literal['in', 'nin']
+    operator: Literal["in", "nin"]
     value: List[Any]
 
 
 class NullCondition(BaseCondition):
     column: ColumnName
-    operator: Literal['isnull', 'notnull']
+    operator: Literal["isnull", "notnull"]
 
 
 class MatchCondition(BaseCondition):
     column: ColumnName
-    operator: Literal['matches', 'notmatches']
+    operator: Literal["matches", "notmatches"]
     value: str
 
 
 class DateBoundCondition(BaseModel):
     column: ColumnName
-    operator: Literal['from', 'until']
+    operator: Literal["from", "until"]
     value: Union[RelativeDate, datetime, str]
 
 
@@ -50,7 +50,7 @@ SimpleCondition = Annotated[
         MatchCondition,
         DateBoundCondition,
     ],
-    Field(discriminator='operator'),  # noqa: F821
+    Field(discriminator="operator"),  # noqa: F821
 ]
 
 
@@ -63,11 +63,11 @@ class BaseConditionCombo(BaseCondition, ABC):
 
 
 class ConditionComboAnd(BaseConditionCombo):
-    and_: List['Condition'] = Field(..., alias='and')
+    and_: List["Condition"] = Field(..., alias="and")
 
 
 class ConditionComboOr(BaseConditionCombo):
-    or_: List['Condition'] = Field(..., alias='or')
+    or_: List["Condition"] = Field(..., alias="or")
 
 
 Condition = Union[ConditionComboAnd, ConditionComboOr, SimpleCondition]

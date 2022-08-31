@@ -25,15 +25,15 @@ def translate_rename(
     subcall_from_other_pipeline_count: int = None,
     sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
-    query_name = f'RENAME_STEP_{index}'
+    query_name = f"RENAME_STEP_{index}"
 
     log.debug(
-        '############################################################'
-        f'query_name: {query_name}\n'
-        '------------------------------------------------------------'
-        f'step.to_rename: {step.to_rename}\n'
-        f'query.transformed_query: {query.transformed_query}\n'
-        f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
+        "############################################################"
+        f"query_name: {query_name}\n"
+        "------------------------------------------------------------"
+        f"step.to_rename: {step.to_rename}\n"
+        f"query.transformed_query: {query.transformed_query}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n"
     )
 
     fields = []
@@ -44,9 +44,9 @@ def translate_rename(
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
         columns_filter=fields
     )
-    renamed_fields = ', '.join([f'{old} AS {new.upper()}' for old, new in step.to_rename])
+    renamed_fields = ", ".join([f"{old} AS {new.upper()}" for old, new in step.to_rename])
     if len(completed_fields):
-        renamed_fields = f'{completed_fields}, {renamed_fields}'
+        renamed_fields = f"{completed_fields}, {renamed_fields}"
 
     new_query = SQLQuery(
         query_name=query_name,
@@ -60,9 +60,9 @@ def translate_rename(
     )
 
     log.debug(
-        '------------------------------------------------------------'
-        f'SQLquery: {new_query.transformed_query}'
-        '############################################################'
+        "------------------------------------------------------------"
+        f"SQLquery: {new_query.transformed_query}"
+        "############################################################"
     )
 
     return new_query

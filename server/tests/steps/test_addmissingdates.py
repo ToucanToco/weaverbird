@@ -24,19 +24,19 @@ def test_missing_date(today):
     values = [idx for (idx, value) in enumerate(dates)]
     df = pd.DataFrame(
         {
-            'date': dates,
-            'value': values,
+            "date": dates,
+            "value": values,
         }
     )
 
     step = AddMissingDatesStep(
-        name='addmissingdates', datesColumn='date', datesGranularity='day', groups=[]
+        name="addmissingdates", datesColumn="date", datesGranularity="day", groups=[]
     )
 
     result = execute_addmissingdates(step, df)
     expected_result = pd.concat(
-        [df, pd.DataFrame({'date': missing_dates, 'value': [None, None]})]
-    ).sort_values(by='date')
+        [df, pd.DataFrame({"date": missing_dates, "value": [None, None]})]
+    ).sort_values(by="date")
 
     assert_dataframes_equals(result, expected_result)
 
@@ -56,19 +56,19 @@ def test_missing_date_years(today):
 
     df = pd.DataFrame(
         {
-            'date': dates,
-            'value': values,
+            "date": dates,
+            "value": values,
         }
     )
 
     step = AddMissingDatesStep(
-        name='addmissingdates', datesColumn='date', datesGranularity='year', groups=[]
+        name="addmissingdates", datesColumn="date", datesGranularity="year", groups=[]
     )
 
     result = execute_addmissingdates(step, df)
     expected_result = pd.concat(
-        [df, pd.DataFrame({'date': missing_dates, 'value': [None, None]})]
-    ).sort_values(by='date')
+        [df, pd.DataFrame({"date": missing_dates, "value": [None, None]})]
+    ).sort_values(by="date")
 
     assert_dataframes_equals(result, expected_result)
 
@@ -83,14 +83,14 @@ def test_missing_date_with_groups_correct_indexing(today):
     values = [idx for (idx, value) in enumerate(dates)]
     df = pd.DataFrame(
         {
-            'date': dates * 2,
-            'country': ['France'] * len(dates) + ['USA'] * len(dates),
-            'value': values * 2,
+            "date": dates * 2,
+            "country": ["France"] * len(dates) + ["USA"] * len(dates),
+            "value": values * 2,
         }
     )
 
     step = AddMissingDatesStep(
-        name='addmissingdates', datesColumn='date', datesGranularity='day', groups=['country']
+        name="addmissingdates", datesColumn="date", datesGranularity="day", groups=["country"]
     )
     result = execute_addmissingdates(step, df)
     expected_result = pd.concat(
@@ -98,13 +98,13 @@ def test_missing_date_with_groups_correct_indexing(today):
             df,
             pd.DataFrame(
                 {
-                    'country': cast(List[Optional[Any]], ['France'] * 2 + ['USA'] * 2),
-                    'date': missing_dates * 2,
-                    'value': [None, None] * 2,
+                    "country": cast(List[Optional[Any]], ["France"] * 2 + ["USA"] * 2),
+                    "date": missing_dates * 2,
+                    "value": [None, None] * 2,
                 }
             ),
         ]
-    ).sort_values(by=['country', 'date'])
+    ).sort_values(by=["country", "date"])
     assert_dataframes_equals(result, expected_result)
     assert not result.index.has_duplicates
 
@@ -120,14 +120,14 @@ def test_missing_date_with_groups_various_length(today):
     values = [idx for (idx, value) in enumerate(dates)]
     df = pd.DataFrame(
         {
-            'date': dates + dates[0:-1],
-            'country': ['France'] * len(dates) + ['USA'] * (len(dates) - 1),
-            'value': values + values[0:-1],
+            "date": dates + dates[0:-1],
+            "country": ["France"] * len(dates) + ["USA"] * (len(dates) - 1),
+            "value": values + values[0:-1],
         }
     )
 
     step = AddMissingDatesStep(
-        name='addmissingdates', datesColumn='date', datesGranularity='month', groups=['country']
+        name="addmissingdates", datesColumn="date", datesGranularity="month", groups=["country"]
     )
     result = execute_addmissingdates(step, df)
     expected_result = pd.concat(
@@ -135,16 +135,16 @@ def test_missing_date_with_groups_various_length(today):
             df,
             pd.DataFrame(
                 {
-                    'country': cast(
+                    "country": cast(
                         List[Optional[Any]],
-                        ['France'] * len(missing_dates) + ['USA'] * len(missing_dates),
+                        ["France"] * len(missing_dates) + ["USA"] * len(missing_dates),
                     ),
-                    'date': missing_dates * 2,
-                    'value': [None] * len(missing_dates) * 2,
+                    "date": missing_dates * 2,
+                    "value": [None] * len(missing_dates) * 2,
                 }
             ),
         ]
-    ).sort_values(by=['country', 'date'])
+    ).sort_values(by=["country", "date"])
     assert_dataframes_equals(result, expected_result)
 
 
@@ -160,13 +160,13 @@ def test_benchmark_addmissingdate(benchmark, today):
     values = [idx for (idx, value) in enumerate(dates)]
     df = pd.DataFrame(
         {
-            'date': dates,
-            'value': values,
+            "date": dates,
+            "value": values,
         }
     )
 
     step = AddMissingDatesStep(
-        name='addmissingdates', datesColumn='date', datesGranularity='day', groups=[]
+        name="addmissingdates", datesColumn="date", datesGranularity="day", groups=[]
     )
 
     result = benchmark(execute_addmissingdates, step, df)

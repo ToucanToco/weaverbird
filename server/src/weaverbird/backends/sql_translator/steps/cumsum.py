@@ -25,22 +25,22 @@ def translate_cumsum(
     subcall_from_other_pipeline_count: int = None,
     sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
-    query_name = f'CUMSUM_STEP_{index}'
+    query_name = f"CUMSUM_STEP_{index}"
 
     log.debug(
-        '############################################################'
-        f'query_name: {query_name}\n'
-        '------------------------------------------------------------'
-        f'step: {step}\n'
-        f'query.transformed_query: {query.transformed_query}\n'
-        f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
+        "############################################################"
+        f"query_name: {query_name}\n"
+        "------------------------------------------------------------"
+        f"step: {step}\n"
+        f"query.transformed_query: {query.transformed_query}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n"
     )
 
     # the partition by sub query
-    partition_by_sub_query = 'NULL'
+    partition_by_sub_query = "NULL"
     # if there is a group by query
     if step.groupby is not None and len(step.groupby):
-        partition_by_sub_query = ', '.join(step.groupby)
+        partition_by_sub_query = ", ".join(step.groupby)
 
     new_columns = []
     cumsum_part = ""
@@ -81,9 +81,9 @@ def translate_cumsum(
     )
 
     log.debug(
-        '------------------------------------------------------------'
-        f'SQLquery: {new_query.transformed_query}'
-        '############################################################'
+        "------------------------------------------------------------"
+        f"SQLquery: {new_query.transformed_query}"
+        "############################################################"
     )
 
     return new_query

@@ -17,8 +17,8 @@ def execute_join(
         step.right_pipeline, domain_retriever, execute_pipeline
     )
 
-    if step.type == 'left outer':
-        how = 'outer'
+    if step.type == "left outer":
+        how = "outer"
     else:
         how = step.type
 
@@ -28,6 +28,6 @@ def execute_join(
         left_on=[o[0] for o in step.on],
         right_on=[o[1] for o in step.on],
         how=how,
-        suffixes=('', '_JOIN'),
+        suffixes=("", "_JOIN"),
     )
     return rename_duplicated_columns(result)

@@ -66,7 +66,7 @@ class GoogleBigQueryTranslator(SQLTranslator):
     def split(
         self: Self,
         *,
-        builder: 'QueryBuilder',
+        builder: "QueryBuilder",
         prev_step_name: str,
         columns: list[str],
         step: "SplitStep",

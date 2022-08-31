@@ -13,5 +13,5 @@ def execute_split(
     all_new_col = {}
     new_serie = df[step.column].str.split(step.delimiter)
     for i in range(step.number_cols_to_keep):
-        all_new_col[f'{step.column}_{i + 1}'] = new_serie.str[i]
+        all_new_col[f"{step.column}_{i + 1}"] = new_serie.str[i]
     return df.assign(**all_new_col)

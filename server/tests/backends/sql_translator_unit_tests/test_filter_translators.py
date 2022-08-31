@@ -26,7 +26,7 @@ def filter_translator():
     )
 
 
-@pytest.mark.parametrize('op', ['eq', 'ne', 'lt', 'le', 'gt', 'ge'])
+@pytest.mark.parametrize("op", ["eq", "ne", "lt", "le", "gt", "ge"])
 def test_comparison_filter(
     filter_translator: FilterTranslator, op: str, default_step_kwargs: dict[str, Any]
 ):
@@ -52,7 +52,7 @@ def test_comparison_filter(
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
-@pytest.mark.parametrize('op', ['in', 'nin'])
+@pytest.mark.parametrize("op", ["in", "nin"])
 def test_inclusion_filter(
     filter_translator: FilterTranslator, op: str, default_step_kwargs: dict[str, Any]
 ):
@@ -63,7 +63,7 @@ def test_inclusion_filter(
 
     condition = conditions.InclusionCondition(column=column, operator=op, value=inclusion)
 
-    op_func = {'in': Field(column).isin, 'nin': Field(column).notin}
+    op_func = {"in": Field(column).isin, "nin": Field(column).notin}
 
     step = steps.FilterStep(condition=condition)
     ctx = filter_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
@@ -75,7 +75,7 @@ def test_inclusion_filter(
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
-@pytest.mark.parametrize('op', ['isnull', 'notnull'])
+@pytest.mark.parametrize("op", ["isnull", "notnull"])
 def test_null_filter(
     filter_translator: FilterTranslator, op: str, default_step_kwargs: dict[str, Any]
 ):
@@ -85,7 +85,7 @@ def test_null_filter(
 
     condition = conditions.NullCondition(column=column, operator=op)
 
-    op_func = {'isnull': Field(column).isnull, 'notnull': Field(column).isnotnull}
+    op_func = {"isnull": Field(column).isnull, "notnull": Field(column).isnotnull}
 
     step = steps.FilterStep(condition=condition)
     ctx = filter_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
@@ -95,7 +95,7 @@ def test_null_filter(
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
-@pytest.mark.parametrize('op', ['from', 'until'])
+@pytest.mark.parametrize("op", ["from", "until"])
 def test_datebound_filter(
     filter_translator: FilterTranslator, op: str, default_step_kwargs: dict[str, Any]
 ):
@@ -108,14 +108,14 @@ def test_datebound_filter(
 
     from dateutil import parser as dateutil_parser
 
-    value_str_time = dateutil_parser.parse(datetime).astimezone().strftime('%Y-%m-%d %H:%M:%S')
-    if op == 'from':
-        op_func = functions.Cast(Field(column), 'TIMESTAMP') >= functions.Cast(
-            value_str_time, 'TIMESTAMP'
+    value_str_time = dateutil_parser.parse(datetime).astimezone().strftime("%Y-%m-%d %H:%M:%S")
+    if op == "from":
+        op_func = functions.Cast(Field(column), "TIMESTAMP") >= functions.Cast(
+            value_str_time, "TIMESTAMP"
         )
     else:
-        op_func = functions.Cast(Field(column), 'TIMESTAMP') <= functions.Cast(
-            value_str_time, 'TIMESTAMP'
+        op_func = functions.Cast(Field(column), "TIMESTAMP") <= functions.Cast(
+            value_str_time, "TIMESTAMP"
         )
 
     step = steps.FilterStep(condition=condition)
@@ -156,7 +156,7 @@ def test_matches_regexp_filter(
     ctx = regexp_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
         Query.from_(previous_step)
-        .where(Field(column).regexp(f'%{regex}%'))
+        .where(Field(column).regexp(f"%{regex}%"))
         .select(*selected_columns)
     )
 
@@ -337,7 +337,7 @@ def test_matches_regexp_like_filter(
     ctx = regexp_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
         Query.from_(previous_step)
-        .where(Field(column).regexp(f'%{regex}%'))
+        .where(Field(column).regexp(f"%{regex}%"))
         .select(*selected_columns)
     )
 
@@ -396,7 +396,7 @@ def test_matches_regexp_contains_filter(
     ctx = regexp_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
         Query.from_(previous_step)
-        .where(Field(column).regexp(f'%{regex}%'))
+        .where(Field(column).regexp(f"%{regex}%"))
         .select(*selected_columns)
     )
 

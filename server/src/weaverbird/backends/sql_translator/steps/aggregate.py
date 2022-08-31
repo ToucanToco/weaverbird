@@ -27,11 +27,11 @@ def translate_aggregate(
     subcall_from_other_pipeline_count: int = None,
     sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
-    query_name = f'AGGREGATE_STEP_{index}'
+    query_name = f"AGGREGATE_STEP_{index}"
 
     aggregated_cols = []
-    aggregated_string = ''
-    first_last_string = ''
+    aggregated_string = ""
+    first_last_string = ""
 
     query, aggregated_string, new_as_columns = prepare_aggregation_query(
         query_name, aggregated_cols, aggregated_string, query, step
@@ -43,7 +43,7 @@ def translate_aggregate(
 
     new_query = SQLQuery(
         query_name=query_name,
-        transformed_query=f'{query.transformed_query}, {query_name} AS ({query_string})',
+        transformed_query=f"{query.transformed_query}, {query_name} AS ({query_string})",
     )
 
     new_query.metadata_manager = query.metadata_manager

@@ -74,7 +74,7 @@ def build_first_or_last_aggregation(
         """This pseudo method will remove all columns except the one provided"""
         return remove_metadatas_columns_from_query(
             query=query,
-            array_cols=[f'{c[1]}' for c in aggregate_cols] + step.on + new_as_columns,
+            array_cols=[f"{c[1]}" for c in aggregate_cols] + step.on + new_as_columns,
             first_last_string=query_string,
             first_or_last_aggregate=False,
         )
@@ -137,19 +137,19 @@ def prepare_aggregation_query(
     new_as_columns: list = []
 
     for agg in step.aggregations:  # TODO the front should restrict - usage in column names
-        agg.new_columns = [x.replace('-', '_').replace(' ', '_') for x in agg.new_columns]
+        agg.new_columns = [x.replace("-", "_").replace(" ", "_") for x in agg.new_columns]
 
     for aggregation in [
         aggregation
         for aggregation in step.aggregations
-        if aggregation.agg_function not in ['first', 'last']
+        if aggregation.agg_function not in ["first", "last"]
     ]:
 
         for col, new_col in zip(aggregation.columns, aggregation.new_columns):
-            if aggregation.agg_function == 'count distinct':
-                aggregated_cols.append(f'COUNT(DISTINCT {col}) AS {new_col}')
+            if aggregation.agg_function == "count distinct":
+                aggregated_cols.append(f"COUNT(DISTINCT {col}) AS {new_col}")
             else:
-                aggregated_cols.append(f'{aggregation.agg_function.upper()}({col}) AS {new_col}')
+                aggregated_cols.append(f"{aggregation.agg_function.upper()}({col}) AS {new_col}")
 
     if len(step.on) and len(aggregated_cols):
         if step.keep_original_granularity:

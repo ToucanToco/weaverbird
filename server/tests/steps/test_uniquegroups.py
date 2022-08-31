@@ -13,36 +13,36 @@ from weaverbird.pipeline.steps import UniqueGroupsStep
 def sample_df():
     return DataFrame(
         {
-            'NAME': ['foo', 'bar', 'foo', 'foo', 'bar', 'foo'],
-            'AGE': [42, 43, 42, 42, 43, 44],
-            'SCORE': [100, 200, 800, 100, 200, 900],
+            "NAME": ["foo", "bar", "foo", "foo", "bar", "foo"],
+            "AGE": [42, 43, 42, 42, 43, 44],
+            "SCORE": [100, 200, 800, 100, 200, 900],
         }
     )
 
 
 def test_uniquegroups(sample_df: DataFrame):
     step = UniqueGroupsStep(
-        name='uniquegroups',
-        on=['NAME', 'AGE'],
+        name="uniquegroups",
+        on=["NAME", "AGE"],
     )
     df_result = execute_uniquegroups(step, sample_df)
 
-    expected_result = DataFrame({'NAME': ['foo', 'bar', 'foo'], 'AGE': [42, 43, 44]})
+    expected_result = DataFrame({"NAME": ["foo", "bar", "foo"], "AGE": [42, 43, 44]})
     assert_dataframes_equals(df_result, expected_result)
 
 
 def test_benchmark_uniquegroups(benchmark):
-    groups = ['group_1', 'group_2']
+    groups = ["group_1", "group_2"]
     df = DataFrame(
         {
-            'value': np.random.random(1000),
-            'id': list(range(1000)),
-            'group': [random.choice(groups) for _ in range(1000)],
+            "value": np.random.random(1000),
+            "id": list(range(1000)),
+            "group": [random.choice(groups) for _ in range(1000)],
         }
     )
 
     step = UniqueGroupsStep(
-        name='uniquegroups',
-        on=['group', 'value'],
+        name="uniquegroups",
+        on=["group", "value"],
     )
     benchmark(execute_uniquegroups, step, df)

@@ -25,24 +25,24 @@ def translate_top(
     subcall_from_other_pipeline_count: int = None,
     sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
-    query_name = f'TOP_STEP_{index}'
+    query_name = f"TOP_STEP_{index}"
 
     log.debug(
-        '############################################################'
-        f'query_name: {query_name}\n'
-        '------------------------------------------------------------'
-        f'step: {step}\n'
-        f'query.transformed_query: {query.transformed_query}\n'
-        f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
+        "############################################################"
+        f"query_name: {query_name}\n"
+        "------------------------------------------------------------"
+        f"step: {step}\n"
+        f"query.transformed_query: {query.transformed_query}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n"
     )
 
     # fields to complete the query
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str()
 
     if len(step.groups) > 0:
-        order_on_groupby = ' ASC, '.join(step.groups)
+        order_on_groupby = " ASC, ".join(step.groups)
         if len(step.groups) > 0:
-            order_on_groupby += ' ASC'
+            order_on_groupby += " ASC"
 
         final_query = (
             f"SELECT * FROM (SELECT * FROM {query.query_name} QUALIFY ROW_NUMBER() "
@@ -65,9 +65,9 @@ def translate_top(
     )
 
     log.debug(
-        '------------------------------------------------------------'
-        f'SQLquery: {new_query.transformed_query}'
-        '############################################################'
+        "------------------------------------------------------------"
+        f"SQLquery: {new_query.transformed_query}"
+        "############################################################"
     )
 
     return new_query

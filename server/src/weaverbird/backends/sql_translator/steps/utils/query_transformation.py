@@ -18,29 +18,29 @@ from weaverbird.pipeline.dates import RelativeDate
 from weaverbird.pipeline.steps import AggregateStep
 
 SQL_COMPARISON_OPERATORS = {
-    'eq': '=',
-    'ne': '!=',
-    'lt': '<',
-    'le': '<=',
-    'gt': '>',
-    'ge': '>=',
-    'from': '>=',
-    'until': '<=',
+    "eq": "=",
+    "ne": "!=",
+    "lt": "<",
+    "le": "<=",
+    "gt": ">",
+    "ge": ">=",
+    "from": ">=",
+    "until": "<=",
 }
 
 SQL_NULLITY_OPERATORS = {
-    'isnull': 'IS NULL',
-    'notnull': 'IS NOT NULL',
+    "isnull": "IS NULL",
+    "notnull": "IS NOT NULL",
 }
 
 SQL_MATCH_OPERATORS = {
-    'matches': 'RLIKE',
-    'notmatches': 'NOT RLIKE',
+    "matches": "RLIKE",
+    "notmatches": "NOT RLIKE",
 }
 
 SQL_INCLUSION_OPERATORS = {
-    'in': 'IN',
-    'nin': 'NOT IN',
+    "in": "IN",
+    "nin": "NOT IN",
 }
 
 
@@ -51,37 +51,37 @@ def apply_condition(condition: Condition, query: str) -> str:
                 condition.value, datetime.date
             ):
                 query += (
-                    f'to_timestamp({condition.column}) {SQL_COMPARISON_OPERATORS[condition.operator]} '
-                    f'to_timestamp(\'{condition.value.isoformat()}\')'
+                    f"to_timestamp({condition.column}) {SQL_COMPARISON_OPERATORS[condition.operator]} "
+                    f"to_timestamp('{condition.value.isoformat()}')"
                 )
             else:
                 float(condition.value)
-                query += f'{condition.column} {SQL_COMPARISON_OPERATORS[condition.operator]} {condition.value}'
+                query += f"{condition.column} {SQL_COMPARISON_OPERATORS[condition.operator]} {condition.value}"
         except ValueError:
             # just to escape single quotes from crashing the snowflakeSQL query
             if type(condition.value) == str:
                 condition.value = sanitize_input(condition.value)
             query += f"{condition.column} {SQL_COMPARISON_OPERATORS[condition.operator]} '{condition.value}'"
     elif isinstance(condition, NullCondition):
-        query += f'{condition.column} {SQL_NULLITY_OPERATORS[condition.operator]}'
+        query += f"{condition.column} {SQL_NULLITY_OPERATORS[condition.operator]}"
     elif isinstance(condition, MatchCondition):
         # just to escape single quotes from crashing the snowflakeSQL query
         if type(condition.value) == str:
             condition.value = sanitize_input(condition.value)
         query += f"{condition.column} {SQL_MATCH_OPERATORS[condition.operator]} '{condition.value}'"
     elif isinstance(condition, InclusionCondition):
-        values_tuple_str = '(' + ', '.join([f'\'{v}\'' for v in condition.value]) + ')'
+        values_tuple_str = "(" + ", ".join([f"'{v}'" for v in condition.value]) + ")"
         query += (
-            f'{condition.column} {SQL_INCLUSION_OPERATORS[condition.operator]} {values_tuple_str}'
+            f"{condition.column} {SQL_INCLUSION_OPERATORS[condition.operator]} {values_tuple_str}"
         )
 
     elif isinstance(condition, DateBoundCondition):
 
         value = condition.value
         if isinstance(value, RelativeDate):
-            if value.operator == 'until':
+            if value.operator == "until":
                 sign = -1
-            elif value.operator == 'from':
+            elif value.operator == "from":
                 sign = 1
             else:
                 raise NotImplementedError
@@ -90,34 +90,34 @@ def apply_condition(condition: Condition, query: str) -> str:
             value_query_part = f"to_timestamp('{ value.isoformat() }')"
 
         # Remove time info from the column to filter on
-        column = f'to_timestamp({ condition.column })'
+        column = f"to_timestamp({ condition.column })"
         column_without_time = f"DATE_TRUNC('DAY', { column })"
         # Do the same with the value to compare it to
         value_without_time = f"DATE_TRUNC('DAY', { value_query_part })"
 
-        query += f'{ column_without_time } { SQL_COMPARISON_OPERATORS[condition.operator] } { value_without_time }'
+        query += f"{ column_without_time } { SQL_COMPARISON_OPERATORS[condition.operator] } { value_without_time }"
 
     elif isinstance(condition, ConditionComboAnd):
         query = apply_condition(condition.and_[0], query)
         for c in condition.and_[1:]:
-            query = apply_condition(c, f'{query} AND ')
+            query = apply_condition(c, f"{query} AND ")
     elif isinstance(condition, ConditionComboOr):
         query = apply_condition(condition.or_[0], query)
         for c in condition.or_[1:]:
-            query = apply_condition(c, f'{query} OR ')
+            query = apply_condition(c, f"{query} OR ")
     else:
-        raise NotImplementedError('Only comparison conditions are implemented')
+        raise NotImplementedError("Only comparison conditions are implemented")
     return query
 
 
 def build_selection_query(query_metadata: Dict[str, ColumnMetadata], query_name) -> str:
     names = []
     for _, metadata in query_metadata.items():
-        alias = getattr(metadata, 'alias')
+        alias = getattr(metadata, "alias")
         if alias:
             names.append(alias)
         else:
-            names.append(getattr(metadata, 'name'))
+            names.append(getattr(metadata, "name"))
     return f"SELECT {', '.join(names)} FROM {query_name}"
 
 
@@ -142,7 +142,7 @@ def first_last_query_string_with_group_and_granularity(
         # depending on the granularity keep parameter
         # we should remove unnecessary columns
         if step.keep_original_granularity:
-            groupby_alias = ', '.join([f'{cc} AS X_{cc}' for cc in step.on])
+            groupby_alias = ", ".join([f"{cc} AS X_{cc}" for cc in step.on])
             end_query = (
                 f"SELECT {groupby_alias},{', '.join([f'{col} AS {new_col}' for (col, new_col) in scope_cols]+['ROW_NUMBER()'])}"
                 f" OVER (PARTITION BY {', '.join(step.on)}"
@@ -275,7 +275,7 @@ def generate_query_by_keeping_granularity(
         ) + f"({sub_field} = {query.query_name}_ALIAS.{gb})"
 
         # The GROUP BY query
-        group_by_query += ('GROUP BY ' if index == 0 else ', ') + sub_field
+        group_by_query += ("GROUP BY " if index == 0 else ", ") + sub_field
 
     new_as_columns: list = []
     for index, ag in enumerate(aggregated_cols):
@@ -311,19 +311,19 @@ def snowflake_date_format(input_format: str) -> str:
     # for a valid snowflake date format
     input_format = (
         None
-        if input_format is None or input_format == ''
-        else input_format.replace('"', '')
-        .replace("'", '')
-        .replace('%b', 'MON')
-        .replace('%B', 'MMMM')
-        .replace('%y', 'YYYY')
-        .replace('%Y', 'YYYY')
-        .replace('%M', 'MM')
-        .replace('%m', 'MM')
-        .replace('%D', 'DD')
-        .replace('%d', 'DD')
+        if input_format is None or input_format == ""
+        else input_format.replace('"', "")
+        .replace("'", "")
+        .replace("%b", "MON")
+        .replace("%B", "MMMM")
+        .replace("%y", "YYYY")
+        .replace("%Y", "YYYY")
+        .replace("%M", "MM")
+        .replace("%m", "MM")
+        .replace("%D", "DD")
+        .replace("%d", "DD")
     )
-    input_format = '' if input_format is None or input_format == '' else f", '{input_format}'"
+    input_format = "" if input_format is None or input_format == "" else f", '{input_format}'"
 
     return input_format
 
@@ -338,12 +338,12 @@ def handle_zero_division(formula: str) -> str:
     this r'(?<=/)\s*(\"?.*\"?)' captures "BLA    BLA" and this r'NULLIFF(\2, 0)' replaces it
     by NULLIF("BLA    BLA", 0).
     """
-    if '/' not in formula and '%' not in formula:
+    if "/" not in formula and "%" not in formula:
         return formula
-    if '/' in formula:
-        formula = re.sub(r'(?<=/)\s*(\w+)|(?<=/)\s*(\"?.*\"?)', r' NULLIF(\1\2, 0)', formula)
-    if '%' in formula:
-        formula = re.sub(r'(?<=%)\s*(\w+)|(?<=%)\s*(\"?.*\"?)', r' NULLIF(\1\2, 0)', formula)
+    if "/" in formula:
+        formula = re.sub(r"(?<=/)\s*(\w+)|(?<=/)\s*(\"?.*\"?)", r" NULLIF(\1\2, 0)", formula)
+    if "%" in formula:
+        formula = re.sub(r"(?<=%)\s*(\w+)|(?<=%)\s*(\"?.*\"?)", r" NULLIF(\1\2, 0)", formula)
     return formula
 
 
@@ -352,12 +352,12 @@ def build_union_query(
     current_query_name: str,
     appended_tables_name: List[str],
 ) -> str:
-    new_query = f'SELECT {query_metadata_manager.retrieve_query_metadata_columns_as_str()} FROM {current_query_name}'
+    new_query = f"SELECT {query_metadata_manager.retrieve_query_metadata_columns_as_str()} FROM {current_query_name}"
     max_column_number = len(query_metadata_manager.retrieve_query_metadata_columns_as_list())
     for t in appended_tables_name:
         table_columns = query_metadata_manager.retrieve_columns_as_list(t)
         missing_columns = max_column_number - len(table_columns)
-        all_columns = table_columns + ['NULL'] * missing_columns
+        all_columns = table_columns + ["NULL"] * missing_columns
         new_query += f" UNION ALL SELECT {', '.join(all_columns)} FROM {t}"
     return new_query
 
@@ -440,7 +440,7 @@ def sanitize_column_name(col: str) -> str:
     if col[0].isdigit():
         return f"_{col[0]}{re.sub(r'[^0-9a-zA-Z_$]', '_', col[1:])}"
     else:
-        return re.sub(r'[^0-9a-zA-Z_$]', '_', col)
+        return re.sub(r"[^0-9a-zA-Z_$]", "_", col)
 
 
 def build_aggregated_columns(aggregations):
@@ -448,15 +448,15 @@ def build_aggregated_columns(aggregations):
     for aggregation in aggregations:
         for col, newcol in zip(aggregation.columns, aggregation.new_columns):
             aggregated_columns.append(
-                f'{aggregation.agg_function.upper()}({col}) AS {newcol}'
-                if aggregation.agg_function != 'count distinct'
-                else f'COUNT(DISTINCT {col}) AS {newcol}'
+                f"{aggregation.agg_function.upper()}({col}) AS {newcol}"
+                if aggregation.agg_function != "count distinct"
+                else f"COUNT(DISTINCT {col}) AS {newcol}"
             )
     return aggregated_columns
 
 
 def build_hierarchical_columns_list(step):
-    level_columns = ' '.join(
+    level_columns = " ".join(
         [f"WHEN {c} IS NOT NULL THEN '{c.upper()}'" for c in step.hierarchy[::-1]]
     )
     level_columns = f"CASE {level_columns} ELSE '' END AS {step.level_col or 'LEVEL'}"
@@ -478,4 +478,4 @@ def build_hierarchical_columns_list(step):
         + [label_columns, level_columns, parent_columns]
         + aggregated_columns
     )
-    return ', '.join(all_columns)
+    return ", ".join(all_columns)

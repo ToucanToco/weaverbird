@@ -8,14 +8,14 @@ from weaverbird.pipeline.types import ColumnName
 
 
 class FillnaStep(BaseStep):
-    name: Literal['fillna'] = 'fillna'
+    name: Literal["fillna"] = "fillna"
     columns: List[ColumnName] = Field(min_items=1)
     value: Any
 
     @root_validator(pre=True)
     def handle_legacy_syntax(cls, values):
-        if 'column' in values:
-            values['columns'] = [values.pop('column')]
+        if "column" in values:
+            values["columns"] = [values.pop("column")]
         return values
 
 

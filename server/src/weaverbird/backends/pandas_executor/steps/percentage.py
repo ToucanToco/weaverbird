@@ -10,10 +10,10 @@ def execute_percentage(
     domain_retriever: DomainRetriever = None,
     execute_pipeline: PipelineExecutor = None,
 ) -> DataFrame:
-    new_column_name = step.new_column_name or f'{step.column}_PCT'
+    new_column_name = step.new_column_name or f"{step.column}_PCT"
 
     if len(step.group) > 0:
-        sums = df.groupby(step.group, dropna=False)[step.column].transform('sum')
+        sums = df.groupby(step.group, dropna=False)[step.column].transform("sum")
     else:
         sums = df[step.column].sum()
     return df.assign(**{new_column_name: df[step.column] / sums})

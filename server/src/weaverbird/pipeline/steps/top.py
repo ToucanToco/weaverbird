@@ -6,10 +6,10 @@ from weaverbird.pipeline.types import ColumnName, TemplatedVariable
 
 
 class TopStep(BaseStep):
-    name: Literal['top'] = 'top'
+    name: Literal["top"] = "top"
     groups: List[ColumnName] = []
     rank_on: ColumnName
-    sort: Literal['asc', 'desc']
+    sort: Literal["asc", "desc"]
     limit: int
 
 

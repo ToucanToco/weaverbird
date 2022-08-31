@@ -13,31 +13,31 @@ from weaverbird.pipeline.steps.duration import DurationStep
 @pytest.mark.parametrize(
     "time_delta_parameters,duration_in, expected_result",
     [
-        ({'days': 30}, 'hours', 30.0 * 24),
-        ({'days': 1, 'hours': 12}, 'hours', 36),
-        ({'hours': 1}, 'days', 1 / 24.0),
+        ({"days": 30}, "hours", 30.0 * 24),
+        ({"days": 1, "hours": 12}, "hours", 36),
+        ({"hours": 1}, "days", 1 / 24.0),
     ],
 )
 def test_duration(time_delta_parameters: Dict[str, int], duration_in: str, expected_result: float):
     step = DurationStep(
-        name='duration',
-        newColumnName='DURATION',
-        startDateColumn='START_DATE',
-        endDateColumn='END_DATE',
+        name="duration",
+        newColumnName="DURATION",
+        startDateColumn="START_DATE",
+        endDateColumn="END_DATE",
         durationIn=duration_in,
     )
 
     now = datetime.now()
     delta = timedelta(**time_delta_parameters)
-    sample_df = pd.DataFrame({'START_DATE': [now], 'END_DATE': [now + delta]})
+    sample_df = pd.DataFrame({"START_DATE": [now], "END_DATE": [now + delta]})
 
     result_df = execute_duration(step, sample_df)
 
     expected_result = pd.DataFrame(
         {
-            'START_DATE': [now],
-            'END_DATE': [now + delta],
-            'DURATION': [expected_result],
+            "START_DATE": [now],
+            "END_DATE": [now + delta],
+            "DURATION": [expected_result],
         }
     )
 
@@ -50,16 +50,16 @@ def test_benchmark_duration(benchmark):
 
     df = DataFrame(
         {
-            'date': dates,
-            'date2': after_dates,
+            "date": dates,
+            "date2": after_dates,
         }
     )
     step = DurationStep(
-        name='duration',
-        newColumnName='DURATION',
-        startDateColumn='date',
-        endDateColumn='date2',
-        durationIn='days',
+        name="duration",
+        newColumnName="DURATION",
+        startDateColumn="date",
+        endDateColumn="date2",
+        durationIn="days",
     )
 
     benchmark(execute_duration, step, df)

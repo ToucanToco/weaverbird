@@ -23,5 +23,5 @@ class PipelineTranslationFailure(Exception):
         self.step = step
         self.index = index
         self.original_exception = original_exception
-        self.message = f'Step #{index + 1} ({step.name}) failed: {original_exception}'
-        self.details = {'index': index, 'message': self.message}
+        self.message = f"Step #{index + 1} ({step.name}) failed: {original_exception}"
+        self.details = {"index": index, "message": self.message}

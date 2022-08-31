@@ -7,7 +7,7 @@ from ..conditions import Condition
 
 
 class FilterStep(BaseStep):
-    name: Literal['filter'] = 'filter'
+    name: Literal["filter"] = "filter"
     condition: Condition
 
 

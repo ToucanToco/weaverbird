@@ -26,21 +26,21 @@ def translate_pivot(
     subcall_from_other_pipeline_count: int = None,
     sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
-    query_name = f'PIVOT_STEP_{index}'
+    query_name = f"PIVOT_STEP_{index}"
 
     log.debug(
-        '############################################################'
-        f'query_name: {query_name}\n'
-        '------------------------------------------------------------'
-        f'step: {step}\n'
-        f'query.transformed_query: {query.transformed_query}\n'
-        f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
+        "############################################################"
+        f"query_name: {query_name}\n"
+        "------------------------------------------------------------"
+        f"step: {step}\n"
+        f"query.transformed_query: {query.transformed_query}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n"
     )
-    aggregate_part = f'{step.agg_function}({step.value_column})'
+    aggregate_part = f"{step.agg_function}({step.value_column})"
     pivot_values = sql_query_executor(
         domain=None,
         query_string=f"""{query.transformed_query} SELECT DISTINCT({step.column_to_pivot}) FROM {query.query_name}""",
-    )[f'{step.column_to_pivot}'].values.tolist()
+    )[f"{step.column_to_pivot}"].values.tolist()
     sanitized_columns = [sanitize_column_name(p) for p in pivot_values]
 
     pivoted_values_column_type = query.metadata_manager.retrieve_query_metadata_column_type_by_name(
@@ -54,8 +54,8 @@ def translate_pivot(
     )
 
     prepivot_query = (
-        f'''PRE_{query_name} AS (SELECT {', '.join(step.index + [step.column_to_pivot, step.value_column])} FROM'''
-        f''' {query.query_name})'''
+        f"""PRE_{query_name} AS (SELECT {', '.join(step.index + [step.column_to_pivot, step.value_column])} FROM"""
+        f""" {query.query_name})"""
     )
     pivot_query = (
         f"""SELECT {query.metadata_manager.retrieve_query_metadata_columns_as_str()}"""
@@ -76,9 +76,9 @@ def translate_pivot(
     )
 
     log.debug(
-        '------------------------------------------------------------'
-        f'SQLquery: {new_query.transformed_query}'
-        '############################################################'
+        "------------------------------------------------------------"
+        f"SQLquery: {new_query.transformed_query}"
+        "############################################################"
     )
 
     query.metadata_manager.update_query_metadata_column_names_with_alias()

@@ -6,7 +6,7 @@ from pandas import DataFrame
 
 from weaverbird.pipeline.types import ColumnName
 
-REGEX_COLUMN_NAME_WITH_SUFFIX = re.compile(r'(.*)_(\d+)')
+REGEX_COLUMN_NAME_WITH_SUFFIX = re.compile(r"(.*)_(\d+)")
 
 
 def rename_duplicated_columns(df: DataFrame) -> DataFrame:
@@ -44,7 +44,7 @@ def rename_duplicated_columns(df: DataFrame) -> DataFrame:
             new_suffix = max_suffix[column_basename]
         else:
             column_basename, new_suffix = column, max_suffix[column]
-        new_column = f'{column_basename}_{new_suffix}'
+        new_column = f"{column_basename}_{new_suffix}"
         max_suffix[column_basename] += 1  # increment the current max suffix
         return new_column
 

@@ -5,6 +5,6 @@ from weaverbird.pipeline.types import ColumnName
 
 
 class ConvertStep(BaseStep):
-    name: Literal['convert'] = 'convert'
+    name: Literal["convert"] = "convert"
     columns: List[ColumnName]
-    data_type: Literal['integer', 'float', 'text', 'date', 'boolean']
+    data_type: Literal["integer", "float", "text", "date", "boolean"]

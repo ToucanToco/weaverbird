@@ -24,13 +24,13 @@ def translate_fillna(
     subcall_from_other_pipeline_count: int = None,
     sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
-    query_name = f'FILLNA_STEP_{index}'
+    query_name = f"FILLNA_STEP_{index}"
 
     unchanged_colums = query.metadata_manager.retrieve_query_metadata_columns_as_str(
         columns_filter=step.columns
     )
     fill_value = f"'{sanitize_input(step.value)}'" if isinstance(step.value, str) else step.value
-    filled_columns = ', '.join([f'COALESCE({col}, {fill_value}) AS {col}' for col in step.columns])
+    filled_columns = ", ".join([f"COALESCE({col}, {fill_value}) AS {col}" for col in step.columns])
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS (SELECT {unchanged_colums}, {filled_columns}\
