@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Union
+from typing import Annotated, Any
 
 from pydantic import BaseModel, Field
 
@@ -85,58 +85,56 @@ from .steps import (
 )
 
 PipelineStep = Annotated[
-    Union[
-        AbsoluteValueStep,
-        AddMissingDatesStep,
-        AggregateStep,
-        AppendStep,
-        ArgmaxStep,
-        ArgminStep,
-        CompareTextStep,
-        ConcatenateStep,
-        ConvertStep,
-        CumSumStep,
-        CustomSqlStep,
-        CustomStep,
-        DateExtractStep,
-        DeleteStep,
-        DissolveStep,
-        DomainStep,
-        DuplicateStep,
-        DurationStep,
-        EvolutionStep,
-        FillnaStep,
-        FilterStep,
-        FormulaStep,
-        FromdateStep,
-        FromdateStep,
-        HierarchyStep,
-        IfthenelseStep,
-        JoinStep,
-        LowercaseStep,
-        MovingAverageStep,
-        PercentageStep,
-        PivotStep,
-        RankStep,
-        RenameStep,
-        ReplaceStep,
-        RollupStep,
-        SelectStep,
-        SimplifyStep,
-        SortStep,
-        SplitStep,
-        StatisticsStep,
-        SubstringStep,
-        TextStep,
-        ToDateStep,
-        TopStep,
-        TotalsStep,
-        TrimStep,
-        UniqueGroupsStep,
-        UnpivotStep,
-        UppercaseStep,
-        WaterfallStep,
-    ],
+    AbsoluteValueStep
+    | AddMissingDatesStep
+    | AggregateStep
+    | AppendStep
+    | ArgmaxStep
+    | ArgminStep
+    | CompareTextStep
+    | ConcatenateStep
+    | ConvertStep
+    | CumSumStep
+    | CustomSqlStep
+    | CustomStep
+    | DateExtractStep
+    | DeleteStep
+    | DissolveStep
+    | DomainStep
+    | DuplicateStep
+    | DurationStep
+    | EvolutionStep
+    | FillnaStep
+    | FilterStep
+    | FormulaStep
+    | FromdateStep
+    | FromdateStep
+    | HierarchyStep
+    | IfthenelseStep
+    | JoinStep
+    | LowercaseStep
+    | MovingAverageStep
+    | PercentageStep
+    | PivotStep
+    | RankStep
+    | RenameStep
+    | ReplaceStep
+    | RollupStep
+    | SelectStep
+    | SimplifyStep
+    | SortStep
+    | SplitStep
+    | StatisticsStep
+    | SubstringStep
+    | TextStep
+    | ToDateStep
+    | TopStep
+    | TotalsStep
+    | TrimStep
+    | UniqueGroupsStep
+    | UnpivotStep
+    | UppercaseStep
+    | WaterfallStep,
     Field(discriminator="name"),  # noqa: F821
 ]
 
@@ -149,37 +147,35 @@ class Pipeline(BaseModel):
 
 
 PipelineStepWithVariables = Annotated[
-    Union[
-        AbsoluteValueStepWithVariable,
-        AddMissingDatesStepWithVariables,
-        AggregateStepWithVariables,
-        AppendStepWithVariable,
-        ArgmaxStepWithVariable,
-        ArgminStepWithVariable,
-        CompareTextStepWithVariables,
-        ConcatenateStepWithVariable,
-        CumSumStepWithVariable,
-        DateExtractStepWithVariable,
-        DurationStepWithVariable,
-        EvolutionStepWithVariable,
-        FillnaStepWithVariable,
-        FilterStepWithVariables,
-        FormulaStepWithVariable,
-        IfThenElseStepWithVariables,
-        JoinStepWithVariable,
-        PivotStepWithVariable,
-        RankStepWithVariable,
-        RenameStepWithVariable,
-        ReplaceStepWithVariable,
-        RollupStepWithVariable,
-        SplitStepWithVariable,
-        TextStepWithVariable,
-        TopStepWithVariables,
-        TotalsStepWithVariable,
-        UniqueGroupsStepWithVariable,
-        UnpivotStepWithVariable,
-        WaterfallStepWithVariable,
-    ],
+    AbsoluteValueStepWithVariable
+    | AddMissingDatesStepWithVariables
+    | AggregateStepWithVariables
+    | AppendStepWithVariable
+    | ArgmaxStepWithVariable
+    | ArgminStepWithVariable
+    | CompareTextStepWithVariables
+    | ConcatenateStepWithVariable
+    | CumSumStepWithVariable
+    | DateExtractStepWithVariable
+    | DurationStepWithVariable
+    | EvolutionStepWithVariable
+    | FillnaStepWithVariable
+    | FilterStepWithVariables
+    | FormulaStepWithVariable
+    | IfThenElseStepWithVariables
+    | JoinStepWithVariable
+    | PivotStepWithVariable
+    | RankStepWithVariable
+    | RenameStepWithVariable
+    | ReplaceStepWithVariable
+    | RollupStepWithVariable
+    | SplitStepWithVariable
+    | TextStepWithVariable
+    | TopStepWithVariables
+    | TotalsStepWithVariable
+    | UniqueGroupsStepWithVariable
+    | UnpivotStepWithVariable
+    | WaterfallStepWithVariable,
     Field(discriminator="name"),  # noqa: F821
 ]
 

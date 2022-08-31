@@ -1,6 +1,6 @@
 from abc import ABC
 from datetime import datetime
-from typing import Annotated, Any, Literal, Union
+from typing import Annotated, Any, Literal
 
 from pydantic import BaseConfig, BaseModel, Field
 
@@ -42,13 +42,7 @@ class DateBoundCondition(BaseModel):
 
 
 SimpleCondition = Annotated[
-    Union[
-        ComparisonCondition,
-        InclusionCondition,
-        NullCondition,
-        MatchCondition,
-        DateBoundCondition,
-    ],
+    ComparisonCondition | InclusionCondition | NullCondition | MatchCondition | DateBoundCondition,
     Field(discriminator="operator"),  # noqa: F821
 ]
 
@@ -69,6 +63,6 @@ class ConditionComboOr(BaseConditionCombo):
     or_: list["Condition"] = Field(..., alias="or")
 
 
-Condition = Union[ConditionComboAnd, ConditionComboOr, SimpleCondition]
+Condition = ConditionComboAnd | ConditionComboOr | SimpleCondition
 ConditionComboOr.update_forward_refs()
 ConditionComboAnd.update_forward_refs()

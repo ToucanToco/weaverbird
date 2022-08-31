@@ -1,4 +1,4 @@
-from typing import Literal, Union
+from typing import Literal
 
 from pydantic import Field
 
@@ -6,7 +6,7 @@ from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMixin
 from weaverbird.pipeline.types import ColumnName, TemplatedVariable
 
-DatesGranularity = Union[Literal["day"], Literal["week"], Literal["month"], Literal["year"]]
+DatesGranularity = Literal["day", "week", "month", "year"]
 
 
 class AddMissingDatesStep(BaseStep):

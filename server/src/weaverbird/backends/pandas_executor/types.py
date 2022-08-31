@@ -1,5 +1,5 @@
 from collections.abc import Callable
-from typing import Any, Protocol, Union
+from typing import Any, Protocol
 
 from pandas import DataFrame
 from pydantic import BaseModel, Field
@@ -18,7 +18,7 @@ class PipelineExecutionReport(BaseModel):
     steps_reports: list[StepExecutionReport] = Field(min_items=0)
 
 
-DomainRetriever = Callable[[Union[str, Reference]], DataFrame]
+DomainRetriever = Callable[[str | Reference], DataFrame]
 PipelineExecutor = Callable[[Pipeline, DomainRetriever], tuple[DataFrame, PipelineExecutionReport]]
 
 
