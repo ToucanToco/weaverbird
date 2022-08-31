@@ -4,12 +4,12 @@ from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import RollupStep
 
 
-def column_map(s: List[str]) -> Dict[str, str]:
+def column_map(s: list[str]) -> dict[str, str]:
     return {e: f"${e}" for e in s}
 
 
-def translate_rollup(step: RollupStep) -> List[MongoStep]:
-    facet: Dict[str, List[MongoStep]] = {}
+def translate_rollup(step: RollupStep) -> list[MongoStep]:
+    facet: dict[str, list[MongoStep]] = {}
     label_col = step.label_col or "label"
     level_col = step.level_col or "level"
     parent_label_col = step.parent_label_col or "parent"
@@ -17,7 +17,7 @@ def translate_rollup(step: RollupStep) -> List[MongoStep]:
 
     for idx, elem in enumerate(step.hierarchy):
         id = column_map(step.hierarchy[: idx + 1] + (step.groupby or []))
-        aggs: Dict[str, dict] = {}
+        aggs: dict[str, dict] = {}
         for agg_step in step.aggregations:
             cols = agg_step.columns
             new_cols = agg_step.new_columns

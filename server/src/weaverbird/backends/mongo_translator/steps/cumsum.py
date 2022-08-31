@@ -4,7 +4,7 @@ from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps.cumsum import CumSumStep
 
 
-def translate_cumsum(step: CumSumStep) -> List[MongoStep]:
+def translate_cumsum(step: CumSumStep) -> list[MongoStep]:
     groupby = step.groupby or []
 
     return [

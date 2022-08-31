@@ -6,4 +6,4 @@ from weaverbird.pipeline.types import ColumnName
 
 class TrimStep(BaseStep):
     name: Literal["trim"] = "trim"
-    columns: List[ColumnName]
+    columns: list[ColumnName]

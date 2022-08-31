@@ -4,7 +4,7 @@ from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import AggregateStep
 
 
-def translate_aggregate(step: AggregateStep) -> List[MongoStep]:
+def translate_aggregate(step: AggregateStep) -> list[MongoStep]:
     idblock = {col: f"${col}" for col in step.on}
     group: dict[str, dict] = {}
     project: dict[str, Any] = {}

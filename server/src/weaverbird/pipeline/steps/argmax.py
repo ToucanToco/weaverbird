@@ -8,8 +8,8 @@ from weaverbird.pipeline.types import ColumnName, TemplatedVariable
 class ArgmaxStep(BaseStep):
     name: Literal["argmax"] = "argmax"
     column: ColumnName
-    groups: List[str] = []
+    groups: list[str] = []
 
 
 class ArgmaxStepWithVariable(ArgmaxStep, StepWithVariablesMixin):
-    groups: Union[TemplatedVariable, List[TemplatedVariable]]
+    groups: TemplatedVariable | list[TemplatedVariable]

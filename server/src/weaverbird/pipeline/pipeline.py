@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Union
 
 from pydantic import BaseModel, Field
-from typing_extensions import Annotated
+from typing import Annotated
 
 from weaverbird.pipeline.steps.hierarchy import HierarchyStep
 
@@ -143,9 +143,9 @@ PipelineStep = Annotated[
 
 
 class Pipeline(BaseModel):
-    steps: List[PipelineStep]
+    steps: list[PipelineStep]
 
-    def dict(self, *, exclude_none: bool = True, **kwargs) -> Dict:
+    def dict(self, *, exclude_none: bool = True, **kwargs) -> dict:
         return super().dict(exclude_none=True, **kwargs)
 
 
@@ -186,9 +186,9 @@ PipelineStepWithVariables = Annotated[
 
 
 class PipelineWithVariables(BaseModel):
-    steps: List[Union[PipelineStepWithVariables, PipelineStep]]
+    steps: list[PipelineStepWithVariables | PipelineStep]
 
-    def render(self, variables: Dict[str, Any], renderer) -> Pipeline:
+    def render(self, variables: dict[str, Any], renderer) -> Pipeline:
         # TODO it must be more efficient to render the full pipeline once
         steps_rendered = [
             step.render(variables, renderer) if hasattr(step, "render") else step  # type: ignore

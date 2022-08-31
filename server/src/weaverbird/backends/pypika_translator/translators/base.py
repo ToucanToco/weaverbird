@@ -2,7 +2,8 @@ from abc import ABC
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from functools import cache
-from typing import TYPE_CHECKING, Any, Callable, Literal, Mapping, Sequence, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, Literal, TypeVar, Union, cast
+from collections.abc import Callable, Mapping, Sequence
 
 from dateutil import parser as dateutil_parser
 from pypika import (
@@ -860,17 +861,13 @@ class SQLTranslator(ABC):
         match condition:
             case ConditionComboOr():
                 return Criterion.any(
-                    (
                         self._get_filter_criterion(condition, prev_step_name)
                         for condition in condition.or_
-                    )
                 )
             case ConditionComboAnd():
                 return Criterion.all(
-                    (
                         self._get_filter_criterion(condition, prev_step_name)
                         for condition in condition.and_
-                    )
                 )
             case _:
                 return self._get_single_condition_criterion(condition, prev_step_name)

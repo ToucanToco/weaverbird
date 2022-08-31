@@ -68,7 +68,7 @@ _STATISTICS_FORMULA = {
 }
 
 
-def translate_statistics(step: StatisticsStep) -> List[MongoStep]:
+def translate_statistics(step: StatisticsStep) -> list[MongoStep]:
     return [
         {
             "$project": {

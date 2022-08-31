@@ -18,7 +18,7 @@ from weaverbird.pipeline.steps.duration import DurationStep
         ({"hours": 1}, "days", 1 / 24.0),
     ],
 )
-def test_duration(time_delta_parameters: Dict[str, int], duration_in: str, expected_result: float):
+def test_duration(time_delta_parameters: dict[str, int], duration_in: str, expected_result: float):
     step = DurationStep(
         name="duration",
         newColumnName="DURATION",

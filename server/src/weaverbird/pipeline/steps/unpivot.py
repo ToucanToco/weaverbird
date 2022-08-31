@@ -7,13 +7,13 @@ from weaverbird.pipeline.types import ColumnName, TemplatedVariable
 
 class UnpivotStep(BaseStep):
     name: Literal["unpivot"] = "unpivot"
-    keep: List[ColumnName]
-    unpivot: List[ColumnName]
+    keep: list[ColumnName]
+    unpivot: list[ColumnName]
     unpivot_column_name: ColumnName
     value_column_name: ColumnName
     dropna: bool
 
 
 class UnpivotStepWithVariable(UnpivotStep, StepWithVariablesMixin):
-    keep: Union[TemplatedVariable, List[TemplatedVariable]]
-    unpivot: Union[TemplatedVariable, List[TemplatedVariable]]
+    keep: TemplatedVariable | list[TemplatedVariable]
+    unpivot: TemplatedVariable | list[TemplatedVariable]

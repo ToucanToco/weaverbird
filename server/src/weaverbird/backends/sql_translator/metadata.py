@@ -12,12 +12,12 @@ class MetadataError(Exception):
 
 class ColumnMetadata(BaseModel):
     name: str
-    original_name: Optional[str]
+    original_name: str | None
     type: str
-    original_type: Optional[str]
-    alias: Optional[str]
+    original_type: str | None
+    alias: str | None
 
-    delete: Optional[bool] = False
+    delete: bool | None = False
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -62,11 +62,11 @@ class ColumnMetadata(BaseModel):
 
 class TableMetadata(BaseModel):
     name: str
-    original_name: Optional[str]
+    original_name: str | None
 
-    delete: Optional[bool] = False
+    delete: bool | None = False
 
-    columns: Optional[Dict[str, ColumnMetadata]] = {}
+    columns: dict[str, ColumnMetadata] | None = {}
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -84,7 +84,7 @@ class TableMetadata(BaseModel):
 
     def retrieve_column_by_column_name(
         self, column_name: str, deleted: bool = False
-    ) -> Optional[ColumnMetadata]:
+    ) -> ColumnMetadata | None:
         c_name = column_name.upper()
         if c_name in self.columns and (
             (deleted and self.columns[c_name].is_deleted()) or not self.columns[c_name].is_deleted()
@@ -92,8 +92,8 @@ class TableMetadata(BaseModel):
             return self.columns[c_name]
         return None
 
-    def retrieve_columns(self, deleted: bool = False) -> Dict[str, ColumnMetadata]:
-        l: Dict[str, ColumnMetadata] = {}
+    def retrieve_columns(self, deleted: bool = False) -> dict[str, ColumnMetadata]:
+        l: dict[str, ColumnMetadata] = {}
         for c_name in self.columns:
             if (deleted and self.columns[c_name].is_deleted()) or not self.columns[
                 c_name
@@ -103,9 +103,9 @@ class TableMetadata(BaseModel):
 
     def retrieve_column_by_type(
         self, column_type: str, deleted: bool = False
-    ) -> Dict[str, ColumnMetadata]:
+    ) -> dict[str, ColumnMetadata]:
         c_type = column_type.upper()
-        result: Dict[str, ColumnMetadata] = {}
+        result: dict[str, ColumnMetadata] = {}
         for c_name, column in self.columns:
             if (
                 column.type == c_type
@@ -120,19 +120,19 @@ class TableMetadata(BaseModel):
         self.columns[c_name] = column
         return self
 
-    def add_columns_o(self, columns: List[ColumnMetadata]) -> TableMetadata:
+    def add_columns_o(self, columns: list[ColumnMetadata]) -> TableMetadata:
         for c in columns:
             self.add_column_o(column=c)
         return self
 
     def add_column(
-        self, column_name: str, column_type: str, alias: Optional[str] = None
+        self, column_name: str, column_type: str, alias: str | None = None
     ) -> TableMetadata:
         c = ColumnMetadata(name=column_name, type=column_type, alias=alias)
         self.add_column_o(c)
         return self
 
-    def add_columns(self, columns: Dict[str, str]) -> TableMetadata:
+    def add_columns(self, columns: dict[str, str]) -> TableMetadata:
         for k, v in columns.items():
             self.add_column(column_name=k, column_type=v)
         return self
@@ -168,7 +168,7 @@ class TableMetadata(BaseModel):
             self.columns[c_name].remove()
         # else warn that column does not exist
 
-    def remove_columns(self, columns_name: List[str]) -> int:
+    def remove_columns(self, columns_name: list[str]) -> int:
         i = 0
         for name in columns_name:
             c_name = name.upper()
@@ -198,7 +198,7 @@ class TableMetadata(BaseModel):
 
 
 class SqlQueryMetadataManager(BaseModel):
-    tables: Optional[Dict[str, TableMetadata]]
+    tables: dict[str, TableMetadata] | None
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -304,11 +304,11 @@ class SqlQueryMetadataManager(BaseModel):
 
         return self
 
-    def append_queries_metadata(self, unioned_tables: List[str]) -> SqlQueryMetadataManager:
+    def append_queries_metadata(self, unioned_tables: list[str]) -> SqlQueryMetadataManager:
         try:
             all_columns = [self.retrieve_columns_as_list(t) for t in unioned_tables]
             all_columns.sort(key=len)
-            max_column_number = max([len(cl) for cl in all_columns])
+            max_column_number = max(len(cl) for cl in all_columns)
         except ValueError:
             raise MetadataError("Impossible to append tables - Table does not exist")
 
@@ -327,7 +327,7 @@ class SqlQueryMetadataManager(BaseModel):
         return self
 
     def add_table_column(
-        self, table_name: str, column_name: str, column_type: str, alias: Optional[str] = None
+        self, table_name: str, column_name: str, column_type: str, alias: str | None = None
     ) -> TableMetadata:
         t_name = table_name.upper()
         if t_name not in self.tables:
@@ -337,7 +337,7 @@ class SqlQueryMetadataManager(BaseModel):
         self.tables[t_name] = self.tables[t_name].add_column(column_name, column_type, alias)
         return self.tables[t_name]
 
-    def add_table_columns_from_dict(self, table_name: str, columns_dict: Dict[str, str]):
+    def add_table_columns_from_dict(self, table_name: str, columns_dict: dict[str, str]):
         t_name = table_name.upper()
         if t_name not in self.tables:
             raise MetadataError(
@@ -347,11 +347,11 @@ class SqlQueryMetadataManager(BaseModel):
             self.tables[t_name] = self.tables[t_name].add_column(name, type)
 
     def add_query_metadata_column(
-        self, column_name: str, column_type: str, alias: Optional[str] = None
+        self, column_name: str, column_type: str, alias: str | None = None
     ) -> TableMetadata:
         return self.add_table_column("__INTERNAL__", column_name, column_type, alias)
 
-    def add_query_metadata_columns(self, columns: Dict[str, str]) -> TableMetadata:
+    def add_query_metadata_columns(self, columns: dict[str, str]) -> TableMetadata:
         return self.add_table_columns_from_dict("__INTERNAL__", columns)
 
     def update_column_name(
@@ -424,7 +424,7 @@ class SqlQueryMetadataManager(BaseModel):
     def remove_query_metadata_column_alias(self, column_name: str) -> TableMetadata:
         return self.remove_column_alias("__INTERNAL__", column_name)
 
-    def remove_table_columns(self, table_name: str, columns_name: List[str]) -> TableMetadata:
+    def remove_table_columns(self, table_name: str, columns_name: list[str]) -> TableMetadata:
         t_name = table_name.upper()
         if t_name not in self.tables:
             raise MetadataError(
@@ -433,7 +433,7 @@ class SqlQueryMetadataManager(BaseModel):
         self.tables[t_name].remove_columns(columns_name)
         return self.tables[t_name]
 
-    def remove_query_metadata_columns(self, columns_name: List[str]) -> TableMetadata:
+    def remove_query_metadata_columns(self, columns_name: list[str]) -> TableMetadata:
         return self.remove_table_columns("__INTERNAL__", columns_name)
 
     def remove_table_all_columns(self, table_name: str) -> int:
@@ -447,7 +447,7 @@ class SqlQueryMetadataManager(BaseModel):
     def remove_query_metadata_all_columns(self) -> int:
         return self.remove_table_all_columns("__INTERNAL__")
 
-    def retrieve_table(self, table_name: str, deleted: bool = False) -> Optional[TableMetadata]:
+    def retrieve_table(self, table_name: str, deleted: bool = False) -> TableMetadata | None:
         t_name = table_name.upper()
         if t_name in self.tables and (
             (deleted and self.tables[t_name].is_deleted()) or not self.tables[t_name].is_deleted()
@@ -460,7 +460,7 @@ class SqlQueryMetadataManager(BaseModel):
 
     def retrieve_table_columns(
         self, table_name: str, deleted: bool = False
-    ) -> Dict[str, ColumnMetadata]:
+    ) -> dict[str, ColumnMetadata]:
         t_name = table_name.upper()
         if t_name not in self.tables:
             raise MetadataError(
@@ -468,17 +468,17 @@ class SqlQueryMetadataManager(BaseModel):
             )
         return self.tables[t_name].retrieve_columns(deleted)
 
-    def retrieve_query_metadata_columns(self, deleted: bool = False) -> Dict[str, ColumnMetadata]:
+    def retrieve_query_metadata_columns(self, deleted: bool = False) -> dict[str, ColumnMetadata]:
         return self.retrieve_table_columns("__INTERNAL__", deleted)
 
     def retrieve_columns_as_list(
-        self, table_name: str, columns_filter: List[str] = None, deleted: bool = False
-    ) -> List[str]:
+        self, table_name: str, columns_filter: list[str] = None, deleted: bool = False
+    ) -> list[str]:
         columns = self.retrieve_table_columns(table_name, deleted)
         filter_format = []
         if columns_filter is not None:
             filter_format = [f.upper() for f in columns_filter]
-        result: List[str] = []
+        result: list[str] = []
         for name, column_metadata in columns.items():
             if name not in filter_format:
                 alias = getattr(column_metadata, "alias")
@@ -489,7 +489,7 @@ class SqlQueryMetadataManager(BaseModel):
         return result
 
     def retrieve_columns_as_str(
-        self, table_name: str, columns_filter: List[str] = None, deleted: bool = False
+        self, table_name: str, columns_filter: list[str] = None, deleted: bool = False
     ) -> str:
         return ", ".join(
             self.retrieve_columns_as_list(
@@ -498,7 +498,7 @@ class SqlQueryMetadataManager(BaseModel):
         )
 
     def retrieve_query_metadata_columns_as_str(
-        self, columns_filter: List[str] = None, deleted: bool = False
+        self, columns_filter: list[str] = None, deleted: bool = False
     ) -> str:
         return ", ".join(
             self.retrieve_columns_as_list(
@@ -507,8 +507,8 @@ class SqlQueryMetadataManager(BaseModel):
         )
 
     def retrieve_query_metadata_columns_as_list(
-        self, columns_filter: List[str] = None, deleted: bool = False
-    ) -> List[str]:
+        self, columns_filter: list[str] = None, deleted: bool = False
+    ) -> list[str]:
         return self.retrieve_columns_as_list(
             "__INTERNAL__", columns_filter=columns_filter, deleted=deleted
         )
@@ -535,7 +535,7 @@ class SqlQueryMetadataManager(BaseModel):
 
     def retrieve_columns_by_type(
         self, table_name: str, column_type: str, deleted: bool = False
-    ) -> Dict[str, ColumnMetadata]:
+    ) -> dict[str, ColumnMetadata]:
         t_name = table_name.upper()
         if t_name not in self.tables:
             raise MetadataError(
@@ -543,10 +543,10 @@ class SqlQueryMetadataManager(BaseModel):
             )
         return self.tables[t_name].retrieve_column_by_type(column_type, deleted)
 
-    def retrieve_query_metadata_column_by_type(self, column_type: str) -> Dict[str, ColumnMetadata]:
+    def retrieve_query_metadata_column_by_type(self, column_type: str) -> dict[str, ColumnMetadata]:
         return self.retrieve_columns_by_type("__INTERNAL__", column_type)
 
-    def cast_column_to_string(self, columns: Dict[str, ColumnMetadata]):
+    def cast_column_to_string(self, columns: dict[str, ColumnMetadata]):
         return ", ".join([cname for cname, column in columns])
 
     def update_query_metadata_column_names_with_alias(self):

@@ -4,7 +4,7 @@ from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps.moving_average import MovingAverageStep
 
 
-def translate_moving_average(step: MovingAverageStep) -> List[MongoStep]:
+def translate_moving_average(step: MovingAverageStep) -> list[MongoStep]:
     return [
         # Ensure the reference column is sorted to prepare for the moving average computation
         {"$sort": {step.column_to_sort: 1}},

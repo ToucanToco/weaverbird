@@ -1,4 +1,5 @@
-from typing import Any, Callable, Dict
+from typing import Any, Dict
+from collections.abc import Callable
 
 from weaverbird.backends.mongo_translator.steps.absolutevalue import translate_absolutevalue
 from weaverbird.backends.mongo_translator.steps.addmissingdates import translate_addmissingdates
@@ -49,7 +50,7 @@ from weaverbird.backends.mongo_translator.steps.waterfall import translate_water
 # I would like to have a better type for the callable, but I don't know how to do it.
 # each of this function take a particular step as input
 # so it is not possible to use `Dict[str, Callable[[BaseStep], list]]
-mongo_step_translator: Dict[str, Callable[[Any], list]] = {
+mongo_step_translator: dict[str, Callable[[Any], list]] = {
     "absolutevalue": translate_absolutevalue,
     "addmissingdates": translate_addmissingdates,
     "aggregate": translate_aggregate,

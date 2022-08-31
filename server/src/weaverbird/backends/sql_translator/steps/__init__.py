@@ -40,7 +40,7 @@ from .uniquegroups import translate_uniquegroups
 from .unpivot import translate_unpivot
 from .uppercase import translate_uppercase
 
-sql_steps_translators: Dict[str, SQLStepTranslator] = {
+sql_steps_translators: dict[str, SQLStepTranslator] = {
     "domain": translate_table,  # type ignore # TODO to update
     "filter": translate_filter,
     "aggregate": translate_aggregate,

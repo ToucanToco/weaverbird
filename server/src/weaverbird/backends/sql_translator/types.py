@@ -1,4 +1,5 @@
-from typing import Any, Callable, List, Literal, Optional, Protocol, Tuple
+from typing import Any, List, Literal, Optional, Protocol, Tuple
+from collections.abc import Callable
 
 from pandas import DataFrame
 from pydantic import BaseModel
@@ -12,7 +13,7 @@ class SQLStepTranslationReport(BaseModel):
 
 
 class SQLPipelineTranslationReport(BaseModel):
-    sql_steps_translation_reports: List[SQLStepTranslationReport]
+    sql_steps_translation_reports: list[SQLStepTranslationReport]
 
 
 class TableMetadataUpdateError(Exception):
@@ -20,10 +21,10 @@ class TableMetadataUpdateError(Exception):
 
 
 class SQLQuery(BaseModel):
-    query_name: Optional[str]
-    transformed_query: Optional[str]
-    selection_query: Optional[str]
-    metadata_manager: Optional[SqlQueryMetadataManager]
+    query_name: str | None
+    transformed_query: str | None
+    selection_query: str | None
+    metadata_manager: SqlQueryMetadataManager | None
 
 
 SQLQueryRetriever = Callable[[str], str]
@@ -32,7 +33,7 @@ SQLQueryExecutor = Callable[[str, str], DataFrame]
 
 SQLPipelineTranslator = Callable[
     [Pipeline, SQLQueryRetriever, SQLQueryDescriber, SQLQueryExecutor],
-    Tuple[str, SQLPipelineTranslationReport],
+    tuple[str, SQLPipelineTranslationReport],
 ]
 SQLDialect = Literal["snowflake", "postgres"]
 
@@ -43,11 +44,11 @@ class SQLStepTranslator(Protocol):
         step: Any,
         query: SQLQuery,
         index,
-        sql_query_retriever: Optional[SQLQueryRetriever],
-        sql_query_describer: Optional[SQLQueryDescriber],
-        sql_query_executor: Optional[SQLQueryExecutor],
-        sql_translate_pipeline: Optional[SQLPipelineTranslator],
-        subcall_from_other_pipeline_count: Optional[int],
-        sql_dialect: Optional[SQLDialect],
+        sql_query_retriever: SQLQueryRetriever | None,
+        sql_query_describer: SQLQueryDescriber | None,
+        sql_query_executor: SQLQueryExecutor | None,
+        sql_translate_pipeline: SQLPipelineTranslator | None,
+        subcall_from_other_pipeline_count: int | None,
+        sql_dialect: SQLDialect | None,
     ):
         ...

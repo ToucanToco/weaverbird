@@ -143,11 +143,11 @@ def test_remove_all_columns_table_not_exist(sql_query_metadata):
 
 
 def test_remove_all_columns(sql_query_metadata):
-    columns: Dict[str, ColumnMetadata] = sql_query_metadata.retrieve_table_columns("table_1")
+    columns: dict[str, ColumnMetadata] = sql_query_metadata.retrieve_table_columns("table_1")
     assert len(columns) == 4
     i: int = sql_query_metadata.remove_table_all_columns("table_1")
     assert i == 4
-    columns: Dict[str, ColumnMetadata] = sql_query_metadata.retrieve_table_columns("table_1")
+    columns: dict[str, ColumnMetadata] = sql_query_metadata.retrieve_table_columns("table_1")
     assert len(columns) == 0
 
 
@@ -172,7 +172,7 @@ def test_join_query_metadata(sql_query_metadata):
 
 
 def test_retrieve_as_list(sql_query_metadata):
-    columns: List[str] = sql_query_metadata.retrieve_columns_as_list(
+    columns: list[str] = sql_query_metadata.retrieve_columns_as_list(
         "table_1", columns_filter=["column_1_1"]
     )
     assert len(columns) == 3

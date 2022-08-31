@@ -20,7 +20,7 @@ def translate_pipeline(
     sql_query_executor: SQLQueryExecutor,
     subcall_from_other_pipeline_count: int = None,
     sql_dialect: SQLDialect = None,
-) -> Tuple[SQLQuery, SQLPipelineTranslationReport]:
+) -> tuple[SQLQuery, SQLPipelineTranslationReport]:
     """
     The main function of the module. Translates a pipeline and returns the result as a transformed query.
     For example, a Select step chained with a filter step will output a query string like this:

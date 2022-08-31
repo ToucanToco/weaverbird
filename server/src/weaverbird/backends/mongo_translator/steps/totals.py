@@ -14,20 +14,20 @@ def combinations(iterable: list) -> list:
     )
 
 
-def column_map(s: List[str]) -> Dict[str, str]:
+def column_map(s: list[str]) -> dict[str, str]:
     return {e: f"${e}" for e in s}
 
 
-def translate_totals(step: TotalsStep) -> List[MongoStep]:
-    facet: Dict[str, List[MongoStep]] = {}
-    groups: List[str] = step.groups or []
+def translate_totals(step: TotalsStep) -> list[MongoStep]:
+    facet: dict[str, list[MongoStep]] = {}
+    groups: list[str] = step.groups or []
     add_fields: MongoStep = {}
     project: MongoStep = {"_id": 0}  # ensures $project stage will never be empty
     # list of columns to combine
-    to_combine: List[str] = [c.total_column for c in step.total_dimensions]
+    to_combine: list[str] = [c.total_column for c in step.total_dimensions]
     # get combinations, remove last combo (most granular combination of columns
     # so not useful to compute total rows) and add an empty tuple (to compute the grand total)
-    combos: List[Tuple] = combinations(to_combine)[:-1]
+    combos: list[tuple] = combinations(to_combine)[:-1]
     combos.append(tuple())
 
     for agg_step in step.aggregations:
@@ -43,9 +43,9 @@ def translate_totals(step: TotalsStep) -> List[MongoStep]:
         # List of columns that that will be used to group the aggregations computation
         # i.e. we will compute total rows for dimensions not included in this group id
         id = column_map(list(comb) + list(groups))
-        aggs: Dict[str, dict] = {}
+        aggs: dict[str, dict] = {}
         # get columns not in aggregation, i.e. columns that will hold the total rows labels
-        total_columns: List[str] = [e for e in to_combine if e not in comb]
+        total_columns: list[str] = [e for e in to_combine if e not in comb]
         count_distinct_add_fields = {}
 
         for agg_step in step.aggregations:

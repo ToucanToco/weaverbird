@@ -4,7 +4,7 @@ from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps.addmissingdates import AddMissingDatesStep, DatesGranularity
 
 
-def _add_missing_dates_year(step: AddMissingDatesStep) -> List[MongoStep]:
+def _add_missing_dates_year(step: AddMissingDatesStep) -> list[MongoStep]:
     groups = step.groups or []
     # add missing dates by looping over the unique dates array and adding a given date
     # if it's not already present in the original dataset
@@ -69,7 +69,7 @@ def _generate_date_from_parts(mongo_date: str, granularity: DatesGranularity) ->
     return date_from_parts
 
 
-def _add_missing_dates_day_or_month(step: AddMissingDatesStep) -> List[MongoStep]:
+def _add_missing_dates_day_or_month(step: AddMissingDatesStep) -> list[MongoStep]:
     groups = step.groups or []
     # Create a sorted array of all dates (in days) ranging from min to
     # max dates found in the whole dataset. At this stage for the
@@ -200,7 +200,7 @@ def _add_missing_dates_day_or_month(step: AddMissingDatesStep) -> List[MongoStep
     ]
 
 
-def translate_addmissingdates(step: AddMissingDatesStep) -> List[MongoStep]:
+def translate_addmissingdates(step: AddMissingDatesStep) -> list[MongoStep]:
     return (
         _add_missing_dates_year(step)
         if step.dates_granularity == "year"

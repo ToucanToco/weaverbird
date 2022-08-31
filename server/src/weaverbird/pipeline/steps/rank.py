@@ -12,9 +12,9 @@ class RankStep(BaseStep):
     value_col: ColumnName = Field(alias="valueCol")
     order: Literal["asc", "desc"]
     method: Literal["standard", "dense"]
-    groupby: List[ColumnName] = []
-    new_column_name: Optional[ColumnName] = Field(None, alias="newColumnName")
+    groupby: list[ColumnName] = []
+    new_column_name: ColumnName | None = Field(None, alias="newColumnName")
 
 
 class RankStepWithVariable(RankStep, StepWithVariablesMixin):
-    groupby: Union[TemplatedVariable, List[TemplatedVariable]]
+    groupby: TemplatedVariable | list[TemplatedVariable]

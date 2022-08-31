@@ -13,5 +13,5 @@ class Reference(BaseModel):
         return hash(f"__ref__{self.uid}")
 
 
-PipelineOrDomainName = Union[List[dict], str]  # can be either a domain name or a complete pipeline
+PipelineOrDomainName = Union[list[dict], str]  # can be either a domain name or a complete pipeline
 PipelineOrDomainNameOrReference = Union[PipelineOrDomainName, Reference]

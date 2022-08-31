@@ -49,7 +49,7 @@ from .unpivot import execute_unpivot
 from .uppercase import execute_uppercase
 from .waterfall import execute_waterfall
 
-steps_executors: Dict[str, StepExecutor] = {
+steps_executors: dict[str, StepExecutor] = {
     "absolutevalue": execute_absolutevalue,
     "addmissingdates": execute_addmissingdates,
     "aggregate": execute_aggregate,

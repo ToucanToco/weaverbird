@@ -13,9 +13,9 @@ from weaverbird.pipeline.steps.aggregate import Aggregation
 
 class Case(BaseModel):
     filename: str
-    data: Dict
-    context: Dict
-    expected_result: List
+    data: dict
+    context: dict
+    expected_result: list
 
 
 def get_render_variables_test_cases():

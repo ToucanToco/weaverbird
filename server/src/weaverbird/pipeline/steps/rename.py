@@ -9,7 +9,7 @@ from weaverbird.pipeline.types import TemplatedVariable
 
 class RenameStep(BaseStep):
     name: Literal["rename"] = "rename"
-    to_rename: List[Tuple[str, str]] = Field(..., alias="toRename")
+    to_rename: list[tuple[str, str]] = Field(..., alias="toRename")
 
     @root_validator(pre=True)
     def handle_legacy_syntax(cls, values):
@@ -19,6 +19,6 @@ class RenameStep(BaseStep):
 
 
 class RenameStepWithVariable(RenameStep, StepWithVariablesMixin):
-    to_rename: Union[TemplatedVariable, List[Tuple[TemplatedVariable, TemplatedVariable]]] = Field(
+    to_rename: TemplatedVariable | list[tuple[TemplatedVariable, TemplatedVariable]] = Field(
         ..., alias="toRename"
     )

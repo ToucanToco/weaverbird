@@ -16,7 +16,7 @@ from weaverbird.pipeline.steps import SortStep
 from weaverbird.pipeline.steps.sort import ColumnSort
 
 
-def sort_columns_to_sql(columns: List[ColumnSort]) -> str:
+def sort_columns_to_sql(columns: list[ColumnSort]) -> str:
     """
     Concatenate fields and order's fields
 

@@ -4,7 +4,7 @@ from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps.pivot import PivotStep
 
 
-def translate_pivot(step: PivotStep) -> List[MongoStep]:
+def translate_pivot(step: PivotStep) -> list[MongoStep]:
     group_cols = {}
     add_fields_step = {}
 
@@ -13,7 +13,7 @@ def translate_pivot(step: PivotStep) -> List[MongoStep]:
         group_cols[col] = f"$_id.{col}"
         add_fields_step[f"_vqbAppTmpObj.{col}"] = f"$_id.{col}"
 
-    pivot_mongo_agg_stages: List[MongoStep] = [
+    pivot_mongo_agg_stages: list[MongoStep] = [
         # First we perform the aggregation with the _id including the column to pivot
         {
             "$group": {

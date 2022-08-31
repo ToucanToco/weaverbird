@@ -45,7 +45,7 @@ def execute_rollup(
         step.hierarchy[::-1]
         + (step.groupby or [])
         + [label_col, level_col, parent_label_col]
-        + sum([agg.new_columns for agg in step.aggregations], start=[])
+        + sum((agg.new_columns for agg in step.aggregations), start=[])
     )
 
     df = concat(all_results)[columns]

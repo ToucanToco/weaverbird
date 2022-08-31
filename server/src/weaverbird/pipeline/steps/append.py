@@ -8,7 +8,7 @@ from .utils.combination import PipelineOrDomainNameOrReference
 
 class AppendStep(BaseStep):
     name: Literal["append"] = "append"
-    pipelines: List[PipelineOrDomainNameOrReference]
+    pipelines: list[PipelineOrDomainNameOrReference]
 
 
 class AppendStepWithVariable(AppendStep, StepWithVariablesMixin):

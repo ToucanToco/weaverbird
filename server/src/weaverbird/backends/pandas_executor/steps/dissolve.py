@@ -14,7 +14,7 @@ _AGG_FUNC_ALIASES = {
 }
 
 
-def _translate_agg_func(aggregations: List[Aggregation]) -> Dict[str, Any]:
+def _translate_agg_func(aggregations: list[Aggregation]) -> dict[str, Any]:
     return {
         agg.columns[0]: _AGG_FUNC_ALIASES[agg.agg_function]
         if agg.agg_function in _AGG_FUNC_ALIASES

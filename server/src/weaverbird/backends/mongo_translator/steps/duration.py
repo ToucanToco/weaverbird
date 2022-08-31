@@ -12,7 +12,7 @@ DURATION_MULTIPLIER_MAP = {
 }
 
 
-def translate_duration(step: DurationStep) -> List[MongoStep]:
+def translate_duration(step: DurationStep) -> list[MongoStep]:
     return [
         {
             "$addFields": {

@@ -1,4 +1,5 @@
-from typing import List, Literal, Optional, Sequence
+from typing import List, Literal, Optional
+from collections.abc import Sequence
 
 from pydantic import BaseConfig, BaseModel, Field, root_validator, validator
 
@@ -21,9 +22,9 @@ AggregateFn = Literal[
 
 
 class Aggregation(BaseModel):
-    new_columns: List[ColumnName] = Field(alias="newcolumns")
+    new_columns: list[ColumnName] = Field(alias="newcolumns")
     agg_function: AggregateFn = Field(alias="aggfunction")
-    columns: List[ColumnName]
+    columns: list[ColumnName]
 
     class Config(BaseConfig):
         allow_population_by_field_name = True
@@ -43,17 +44,17 @@ class Aggregation(BaseModel):
 
 class AggregateStep(BaseStep):
     name: Literal["aggregate"] = "aggregate"
-    on: List[ColumnName] = []
+    on: list[ColumnName] = []
     aggregations: Sequence[Aggregation]
-    keep_original_granularity: Optional[bool] = Field(
+    keep_original_granularity: bool | None = Field(
         default=False, alias="keepOriginalGranularity"
     )
 
 
 class AggregationWithVariables(Aggregation):
-    new_columns: List[TemplatedVariable] = Field(alias="newcolumns")
+    new_columns: list[TemplatedVariable] = Field(alias="newcolumns")
     agg_function: TemplatedVariable = Field(alias="aggfunction")
-    columns: List[TemplatedVariable]
+    columns: list[TemplatedVariable]
 
 
 class AggregateStepWithVariables(AggregateStep, StepWithVariablesMixin):

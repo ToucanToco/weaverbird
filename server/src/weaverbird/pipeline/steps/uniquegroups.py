@@ -7,8 +7,8 @@ from weaverbird.pipeline.types import ColumnName, TemplatedVariable
 
 class UniqueGroupsStep(BaseStep):
     name: Literal["uniquegroups"] = "uniquegroups"
-    on: List[ColumnName]
+    on: list[ColumnName]
 
 
 class UniqueGroupsStepWithVariable(UniqueGroupsStep, StepWithVariablesMixin):
-    on: Union[TemplatedVariable, List[TemplatedVariable]]
+    on: TemplatedVariable | list[TemplatedVariable]

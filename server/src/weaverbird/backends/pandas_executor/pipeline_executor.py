@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 def execute_pipeline(
     pipeline: Pipeline, domain_retriever: DomainRetriever
-) -> Tuple[DataFrame, PipelineExecutionReport]:
+) -> tuple[DataFrame, PipelineExecutionReport]:
     """
     The main function of the module. Execute a pipeline and returns the result as a pandas DataFrame.
 

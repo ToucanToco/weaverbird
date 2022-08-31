@@ -7,7 +7,7 @@ from weaverbird.pipeline.pipeline import PipelineWithVariables
 
 def translate_pipeline(
     pipeline_to_translate: Pipeline | PipelineWithVariables,
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     mongo_pipeline = []
     for index, step in enumerate(pipeline_to_translate.steps):
         try:

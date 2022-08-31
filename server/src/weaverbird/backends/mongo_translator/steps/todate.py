@@ -4,7 +4,7 @@ from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import ToDateStep
 
 
-def translate_todate(step: ToDateStep) -> List[MongoStep]:
+def translate_todate(step: ToDateStep) -> list[MongoStep]:
     date_format = step.format
 
     col_as_string = {"$toString": f"${step.column}"}
@@ -202,7 +202,7 @@ MONTH_REPLACEMENT_STEP: MongoStep = {
 
 
 def _extract_date_parts_to_temp_fields(
-    year_position: int, month_position: Optional[int] = None, day_position: Optional[int] = None
+    year_position: int, month_position: int | None = None, day_position: int | None = None
 ) -> MongoStep:
     date_parts_temp_fields: MongoStep = {
         "_vqbTempYear": {"$arrayElemAt": ["$_vqbTempArray", year_position]},
@@ -227,7 +227,7 @@ def _clean_temp_fields():
     }
 
 
-def _concat_fields_to_date(target_col: str, fields: List[Union[str, dict]], format: str):
+def _concat_fields_to_date(target_col: str, fields: list[str | dict], format: str):
     return {
         "$addFields": {
             target_col: {

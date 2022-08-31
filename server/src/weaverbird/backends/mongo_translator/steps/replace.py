@@ -4,8 +4,8 @@ from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import ReplaceStep
 
 
-def translate_replace(step: ReplaceStep) -> List[MongoStep]:
-    branches: List[MongoStep] = [
+def translate_replace(step: ReplaceStep) -> list[MongoStep]:
+    branches: list[MongoStep] = [
         {
             "case": {"$eq": [f"${step.search_column}", old_value]},
             "then": new_value,

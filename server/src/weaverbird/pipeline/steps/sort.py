@@ -13,4 +13,4 @@ class ColumnSort(BaseModel):
 
 class SortStep(BaseStep):
     name: Literal["sort"] = "sort"
-    columns: List[ColumnSort]
+    columns: list[ColumnSort]

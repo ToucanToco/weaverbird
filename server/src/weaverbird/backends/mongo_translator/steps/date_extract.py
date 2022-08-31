@@ -4,7 +4,7 @@ from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import DateExtractStep
 
 
-def _truncate_date_to_day(expr: Union[dict, str]) -> MongoStep:
+def _truncate_date_to_day(expr: dict | str) -> MongoStep:
     return {
         "$dateTrunc": {
             "unit": "day",
@@ -293,7 +293,7 @@ _DATE_EXTRACT_MAP = {
 }
 
 
-def translate_date_extract(step: DateExtractStep) -> List[MongoStep]:
+def translate_date_extract(step: DateExtractStep) -> list[MongoStep]:
     new_columns = []
     add_fields = {}
 

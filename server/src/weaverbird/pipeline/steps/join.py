@@ -8,14 +8,14 @@ from weaverbird.pipeline.types import ColumnName
 
 from .utils.combination import PipelineOrDomainNameOrReference
 
-JoinColumnsPair = Tuple[ColumnName, ColumnName]
+JoinColumnsPair = tuple[ColumnName, ColumnName]
 
 
 class JoinStep(BaseStep):
     name: Literal["join"] = "join"
     right_pipeline: PipelineOrDomainNameOrReference
     type: Literal["left", "inner", "left outer"]
-    on: List[JoinColumnsPair] = Field(..., min_items=1)
+    on: list[JoinColumnsPair] = Field(..., min_items=1)
 
 
 class JoinStepWithVariable(JoinStep, StepWithVariablesMixin):

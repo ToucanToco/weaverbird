@@ -359,7 +359,7 @@ def sql_table_retriever(t):
     return f'SELECT * FROM "{t}"'
 
 
-def snowflake_query_describer(domain: str, query_string: str = None) -> Union[Dict[str, str], None]:
+def snowflake_query_describer(domain: str, query_string: str = None) -> dict[str, str] | None:
     #  See https://docs.snowflake.com/en/user-guide/python-connector-api.html#type-codes
     type_code_mapping = {
         0: "float",
@@ -384,7 +384,7 @@ def snowflake_query_describer(domain: str, query_string: str = None) -> Union[Di
         return res
 
 
-def snowflake_query_executor(domain: str, query_string: str = None) -> Union[pd.DataFrame, None]:
+def snowflake_query_executor(domain: str, query_string: str = None) -> pd.DataFrame | None:
     with snowflake_connexion.cursor() as cursor:
         res = cursor.execute(domain if domain else query_string).fetchall()
         return res.fetch_pandas_all()

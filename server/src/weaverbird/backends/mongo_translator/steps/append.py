@@ -8,7 +8,7 @@ from weaverbird.pipeline.steps import AppendStep, DomainStep
 logger = logging.getLogger(__name__)
 
 
-def translate_append(step: AppendStep) -> List[MongoStep]:
+def translate_append(step: AppendStep) -> list[MongoStep]:
     from weaverbird.backends.mongo_translator.mongo_pipeline_translator import translate_pipeline
 
     pipelines = step.pipelines

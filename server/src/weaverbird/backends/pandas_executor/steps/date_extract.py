@@ -22,7 +22,7 @@ def execute_date_extract(
     domain_retriever: DomainRetriever = None,
     execute_pipeline: PipelineExecutor = None,
 ) -> DataFrame:
-    date_info: List[DATE_INFO]
+    date_info: list[DATE_INFO]
     if step.operation:  # for retrocompatibility
         date_info = [step.operation]
         new_columns = [step.new_column_name or f"{step.column}_{step.operation}"]
