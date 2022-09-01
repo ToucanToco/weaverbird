@@ -149,12 +149,14 @@ class SQLTranslator(ABC):
         tables_columns: Mapping[str, Sequence[str]] | None = None,
         db_schema: str | None = None,
         known_instances: dict[int, str] | None = None,
+        source_rows_subset: int | None = None,
     ) -> None:
         self._tables_columns: Mapping[str, Sequence[str]] = tables_columns or {}
         self._db_schema_name = db_schema
         self._db_schema: Schema | None = Schema(db_schema) if db_schema is not None else None
         self._known_instances: dict[int, str] = known_instances or {}
         self._step_count = 0
+        self._source_rows_subset = source_rows_subset
 
     def __init_subclass__(cls) -> None:
         ALL_TRANSLATORS[cls.DIALECT] = cls
@@ -632,6 +634,8 @@ class SQLTranslator(ABC):
         query: "QueryBuilder" = self.QUERY_CLS.from_(
             Table(step.domain, schema=self._db_schema)
         ).select(*selected_cols)
+        if self._source_rows_subset:
+            query = query.limit(self._source_rows_subset)
         return StepContext(query, selected_cols)
 
     def duplicate(
