@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## [0.24.0] - 2022-09-01
+
+- PyPika translator: Added a `source_rows_subset` options allowing to work only on a subset of domains
+- Added missing typing and adapted all typing to python 3.10 syntax
+
 ## [0.23.0] - 2022-08-30
 
 - PyPika translator: Changed the way translator IDs are generated in order to have predictible queries. This allows to use
