@@ -295,6 +295,7 @@ QUART_APP=playground QUART_ENV=development quart run
 Once the server is started, you should be able to open the
 `http://localhost:5000` in your favorite browser and enjoy!
 
+
 ### Mongo back-end
 
 The default back-end for the playground is a small server passing queries to MongoDB.
@@ -340,3 +341,8 @@ it at the root of the `weaverbird` repo and name it `bigquery-credentials.json`.
 CSVs from `playground/datastore` are available to use in the playground with pandas.
 You can override this folder when running the container using by adding a volume parameter:
 `-v /path/to/your/folder/with/csv:/weaverbird/playground/datastore`.
+
+### Use another front-end
+
+You can point a front-end to another API by using a query parameter: `?api=http://localhost:5000`.
+This is particularly useful for front-end development, with `yarn build-bundle --watch`.

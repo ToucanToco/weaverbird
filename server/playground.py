@@ -46,6 +46,7 @@ from google.oauth2.service_account import Credentials
 from pandas.io.json import build_table_schema
 from pymongo import MongoClient
 from quart import Quart, Request, Response, jsonify, request, send_file
+from quart_cors import cors
 
 from weaverbird.backends.mongo_translator.mongo_pipeline_translator import (
     translate_pipeline as mongo_translate_pipeline,
@@ -61,6 +62,8 @@ from weaverbird.backends.pypika_translator.translate import (
 from weaverbird.pipeline import Pipeline
 
 app = Quart(__name__)
+if os.environ.get("ALLOW_ORIGIN"):
+    app = cors(app, allow_origin=os.environ.get("ALLOW_ORIGIN"))
 
 
 @app.route("/health", methods=["GET"])

@@ -19,6 +19,7 @@ const args = new URLSearchParams(location.search);
 const TRANSLATOR = args.get('backend') || 'mongo50';
 
 const USE_MONGO_BACKEND_TRANSLATOR = args.get('mongo-python') === 'enable';
+const API_BASEROUTE = args.get('api') || window.location.origin;
 
 const mongoTranslator = getTranslator('mongo50');
 const pandasTranslator = getTranslator('pandas');
@@ -187,7 +188,7 @@ function autocastDataset(dataset) {
 
 class MongoService {
   async listCollections() {
-    const response = await fetch('/mongo');
+    const response = await fetch(API_BASEROUTE + '/mongo');
     return response.json();
   }
 
@@ -207,7 +208,7 @@ class MongoService {
         dereferencedPipelineWithoutVariables,
       );
 
-      const response = await fetch('/mongo', {
+      const response = await fetch(API_BASEROUTE + '/mongo', {
         method: 'POST',
         body: JSON.stringify({
           limit: limit,
@@ -253,7 +254,7 @@ class MongoService {
   }
 
   async executeQuery(query, collection, limit, offset) {
-    const response = await fetch('/mongo-translated', {
+    const response = await fetch(API_BASEROUTE + '/mongo-translated', {
       method: 'POST',
       body: JSON.stringify({
         query,
@@ -274,7 +275,7 @@ class MongoService {
 
 class PandasService {
   async listCollections() {
-    const response = await fetch('/pandas');
+    const response = await fetch(API_BASEROUTE + '/pandas');
     return response.json();
   }
 
@@ -289,7 +290,7 @@ class PandasService {
       VARIABLES,
     );
 
-    const url = new URL(window.location.origin + '/pandas');
+    const url = new URL(API_BASEROUTE + '/pandas');
     url.searchParams.set('limit', limit);
     url.searchParams.set('offset', offset);
 
@@ -332,7 +333,7 @@ class PandasService {
 
 class SnowflakeService {
   async listCollections() {
-    const response = await fetch('/snowflake');
+    const response = await fetch(API_BASEROUTE + '/snowflake');
     return response.json();
   }
 
@@ -346,7 +347,7 @@ class SnowflakeService {
       VARIABLES,
     );
 
-    const url = new URL(window.location.origin + '/snowflake');
+    const url = new URL(API_BASEROUTE + '/snowflake');
     url.searchParams.set('limit', limit);
     url.searchParams.set('offset', offset);
 
@@ -384,7 +385,7 @@ class SnowflakeService {
 
 class AthenaService {
   async listCollections() {
-    const response = await fetch('/athena');
+    const response = await fetch(API_BASEROUTE + '/athena');
     return response.json();
   }
 
@@ -398,7 +399,7 @@ class AthenaService {
       VARIABLES,
     );
 
-    const url = new URL(window.location.origin + '/athena');
+    const url = new URL(API_BASEROUTE + '/athena');
     url.searchParams.set('limit', limit);
     url.searchParams.set('offset', offset);
 
@@ -436,7 +437,7 @@ class AthenaService {
 
 class GoogleBigQueryService {
   async listCollections() {
-    const response = await fetch('/google-big-query');
+    const response = await fetch(API_BASEROUTE + '/google-big-query');
     return response.json();
   }
 
@@ -488,7 +489,7 @@ class GoogleBigQueryService {
 
 class MySqlService {
   async listCollections() {
-    const response = await fetch('/mysql');
+    const response = await fetch(API_BASEROUTE + '/mysql');
     return response.json();
   }
 
@@ -502,7 +503,7 @@ class MySqlService {
       VARIABLES,
     );
 
-    const url = new URL(window.location.origin + '/mysql');
+    const url = new URL(API_BASEROUTE + '/mysql');
     url.searchParams.set('limit', limit);
     url.searchParams.set('offset', offset);
 
@@ -540,7 +541,7 @@ class MySqlService {
 
 class PostgresqlService {
   async listCollections() {
-    const response = await fetch('/postgresql');
+    const response = await fetch(API_BASEROUTE + '/postgresql');
     return response.json();
   }
 
@@ -554,7 +555,7 @@ class PostgresqlService {
       VARIABLES,
     );
 
-    const url = new URL(window.location.origin + '/postgresql');
+    const url = new URL(API_BASEROUTE + '/postgresql');
     url.searchParams.set('limit', limit);
     url.searchParams.set('offset', offset);
 
@@ -592,7 +593,7 @@ class PostgresqlService {
 
 class RedshiftService {
   async listCollections() {
-    const response = await fetch('/redshift');
+    const response = await fetch(API_BASEROUTE + '/redshift');
     return response.json();
   }
 
@@ -606,7 +607,7 @@ class RedshiftService {
       VARIABLES,
     );
 
-    const url = new URL(window.location.origin + '/redshift');
+    const url = new URL(API_BASEROUTE + '/redshift');
     url.searchParams.set('limit', limit);
     url.searchParams.set('offset', offset);
 

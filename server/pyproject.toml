@@ -20,6 +20,7 @@ typing_extensions = "^4.2"
 
 # Dependencies for extras
 quart = {version = "^0.17", optional = true}
+Quart-CORS = {version = "^0.5.0", optional = true}
 hypercorn = {version = "^0.13", optional = true}
 pymongo = {version = ">=4.2.0", optional = true, extras = ["srv", "tls"]}
 snowflake-connector-python = {version = "^2.7.8", extras = ["pandas"], optional = true}
@@ -55,7 +56,7 @@ google-cloud-bigquery = {version = "^3.3.0", extras = ["pandas", "bqstorage"]}
 PyYAML = "^6.0"
 
 [tool.poetry.extras]
-playground = ["quart", "hypercorn", "pymongo", "pandas", "snowflake-connector-python", "psycopg", "google-cloud-bigquery", "toucan-connectors"]
+playground = ["quart", "Quart-CORS", "hypercorn", "pymongo", "pandas", "snowflake-connector-python", "psycopg", "google-cloud-bigquery", "toucan-connectors"]
 
 [tool.black]
 line-length = 100
