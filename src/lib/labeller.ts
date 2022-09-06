@@ -245,6 +245,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Convert "${step.column}" into text`;
   }
 
+  hierarchy(step: Readonly<S.HierarchyStep>) {
+    return `Hierarchy on ${step.hierarchy.join(', ')}`;
+  }
+
   ifthenelse(step: Readonly<S.IfThenElseStep>) {
     return `Add conditional column "${step.newColumn}"`;
   }
