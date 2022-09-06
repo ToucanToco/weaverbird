@@ -98,6 +98,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  hierarchy(step: Readonly<S.HierarchyStep>) {
+    return step;
+  }
+
   ifthenelse(step: Readonly<S.IfThenElseStep>) {
     return step;
   }

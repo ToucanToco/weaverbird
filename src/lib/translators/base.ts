@@ -172,6 +172,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   formula(step: Readonly<S.FormulaStep>) {}
 
   @unsupported
+  hierarchy(step: Readonly<S.HierarchyStep>) {}
+
+  @unsupported
   join(step: Readonly<S.JoinStep>) {}
 
   @unsupported
