@@ -14,6 +14,7 @@
             :is="widget"
             v-bind="componentProps"
             :value="child.value"
+            :options="options"
             :available-variables="availableVariables"
             :variable-delimiters="variableDelimiters"
             @input="updateChildValue($event, index)"
@@ -79,6 +80,9 @@ export default class ListWidget extends Mixins(FormWidget) {
 
   @Prop({ type: Array, default: () => [] })
   value!: any[];
+
+  @Prop({ type: Array, default: () => [] })
+  options!: string[];
 
   @Prop({
     type: Function,
