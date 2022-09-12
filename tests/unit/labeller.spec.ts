@@ -444,6 +444,15 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Convert "foo" into text');
   });
 
+  it('generates label for hierarchy steps', () => {
+    const step: S.HierarchyStep = {
+      name: 'hierarchy',
+      hierarchy: ['foo', 'bar'],
+      hierarchyLevelColumn: 'plop',
+    };
+    expect(hrl(step)).toEqual('Aggregate geography');
+  });
+
   it('generates label for join steps', () => {
     const step: S.JoinStep = {
       name: 'join',
