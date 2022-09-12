@@ -11,3 +11,7 @@ class BaseStep(BaseModel):
     # None values are excluded, to avoid triggering validations error in front-ends
     def dict(self, *, exclude_none: bool = True, **kwargs) -> dict:
         return super().dict(exclude_none=True, **kwargs)
+
+
+def to_camelcase(string: str) -> str:
+    return "".join(word.capitalize() for word in string.split("_"))
