@@ -14,4 +14,5 @@ class BaseStep(BaseModel):
 
 
 def to_camelcase(string: str) -> str:
-    return "".join(word.capitalize() for word in string.split("_"))
+    first_word, *other_words = string.split("_")
+    return first_word + "".join(word.capitalize() for word in other_words)
