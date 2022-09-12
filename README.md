@@ -346,3 +346,5 @@ You can override this folder when running the container using by adding a volume
 
 You can point a front-end to another API by using a query parameter: `?api=http://localhost:5000`.
 This is particularly useful for front-end development, with `yarn build-bundle --watch`.
+
+> To avoid CORS issues when front-end and back-end are on different domains, whitelist your front-end domain using `ALLOW_ORIGIN=<front-end domain>` or `ALLOW_ORIGIN=*`.
