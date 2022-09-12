@@ -246,7 +246,7 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   hierarchy(step: Readonly<S.HierarchyStep>) {
-    return `Hierarchy on ${step.hierarchy.join(', ')}`;
+    return `Aggregate geographical data by hierarchy of ${step.hierarchy.join(', ')}`;
   }
 
   ifthenelse(step: Readonly<S.IfThenElseStep>) {

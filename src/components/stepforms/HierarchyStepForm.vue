@@ -62,7 +62,7 @@ export default class HierarchyStepForm extends BaseStepForm<HierarchyStep> {
   })
   initialStepValue!: HierarchyStep;
 
-  readonly title: string = 'Hierarchy';
+  readonly title: string = 'Aggregate geographical data by hierarchy';
   widgetAutocomplete = AutocompleteWidget;
 
   submit() {
