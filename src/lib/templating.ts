@@ -319,7 +319,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   hierarchy(step: Readonly<S.HierarchyStep>) {
-    return { ...step };
+    return {...step};
   }
 
   ifthenelse(step: Readonly<S.IfThenElseStep>) {
