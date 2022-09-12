@@ -1,6 +1,6 @@
 import HierarchyStepForm from '@/components/stepforms/HierarchyStepForm.vue';
 
-import { BasicStepFormTestRunner } from './utils';
+import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
 jest.mock('@/components/FAIcon.vue');
 
@@ -13,4 +13,21 @@ describe('Hierarchy Step Form', () => {
   });
   runner.testCancel();
   runner.testResetSelectedIndex();
+
+  runner.testValidate({
+    testlabel: 'submitted data is valid',
+    store: setupMockStore({
+      dataset: {
+        headers: [{ name: 'columnA' }],
+        data: [],
+      },
+    }),
+    props: {
+      initialStepValue: {
+        name: 'hierarchy',
+        hierarchyLevelColumn: 'type',
+        hierarchy: ['columnA'],
+      },
+    },
+  });
 });
