@@ -108,7 +108,7 @@ export class BasicStepFormTestRunner {
 
   testExpectedComponents(componentSpec: { [prop: string]: number }, initialState: object = {}) {
     const specStr = Object.entries(componentSpec)
-      .map((k, v) => `${v} ${k}`)
+      .map(([k, v]) => `${v} ${k}`)
       .join(', ');
     it(`should generate ${specStr} components`, () => {
       const wrapper = this.shallowMount(initialState);
