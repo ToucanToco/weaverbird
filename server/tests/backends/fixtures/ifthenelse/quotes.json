@@ -5,15 +5,20 @@
     "mysql_pypika",
     "postgres_pypika",
     "redshift_pypika",
-    "snowflake",
     "snowflake_pypika"
   ],
   "step": {
     "pipeline": [
       {
-        "name": "formula",
-        "new_column": "foobar",
-        "formula": "[column with spaces - and + ops] + [another column  with double  spaces]"
+        "name": "ifthenelse",
+        "if": {
+          "column": "AGE",
+          "value": 20,
+          "operator": "gt"
+        },
+        "newColumn": "COND",
+        "then": "'tintin'",
+        "else": "some ' stuff with \" annoying 'quotes'"
       }
     ]
   },
@@ -25,11 +30,11 @@
           "type": "string"
         },
         {
-          "name": "column with spaces - and + ops",
+          "name": "AGE",
           "type": "integer"
         },
         {
-          "name": "another column  with double  spaces",
+          "name": "SCORE",
           "type": "integer"
         }
       ],
@@ -38,13 +43,13 @@
     "data": [
       {
         "NAME": "foo",
-        "column with spaces - and + ops": 42,
-        "another column  with double  spaces": 100
+        "AGE": 42,
+        "SCORE": 100
       },
       {
-        "NAME": "Azz",
-        "column with spaces - and + ops": 21,
-        "another column  with double  spaces": 100
+        "NAME": "bar",
+        "AGE": 20,
+        "SCORE": 200
       }
     ]
   },
@@ -56,16 +61,16 @@
           "type": "string"
         },
         {
-          "name": "column with spaces - and + ops",
+          "name": "AGE",
           "type": "number"
         },
         {
-          "name": "another column  with double  spaces",
+          "name": "SCORE",
           "type": "integer"
         },
         {
-          "name": "foobar",
-          "type": "number"
+          "name": "COND",
+          "type": "string"
         }
       ],
       "pandas_version": "0.20.0"
@@ -73,15 +78,15 @@
     "data": [
       {
         "NAME": "foo",
-        "column with spaces - and + ops": 42,
-        "another column  with double  spaces": 100,
-        "foobar": 142
+        "AGE": 42,
+        "SCORE": 100,
+        "COND": "tintin"
       },
       {
-        "NAME": "Azz",
-        "column with spaces - and + ops": 21,
-        "another column  with double  spaces": 100,
-        "foobar": 121
+        "NAME": "bar",
+        "AGE": 20,
+        "SCORE": 200,
+        "COND": "some ' stuff with \" annoying 'quotes'"
       }
     ]
   }

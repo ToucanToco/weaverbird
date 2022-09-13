@@ -934,6 +934,7 @@ class SQLTranslator(ABC):
         else_: "Condition" | Any,
         prev_step_name: str,
         case_: Case,
+        table: Table,
     ) -> Case:
         import json
 
@@ -944,8 +945,8 @@ class SQLTranslator(ABC):
             then_value = json.loads(then_)
             case_ = case_.when(self._get_filter_criterion(if_, prev_step_name), then_value)
         except (json.JSONDecodeError, TypeError):
-            # the value is a formula
-            then_value = then_
+            # the value is a formula or a string literal that can't be parsed
+            then_value = formula_to_term(then_, table)
             case_ = case_.when(
                 self._get_filter_criterion(if_, prev_step_name), LiteralValue(then_value)
             )
@@ -957,6 +958,7 @@ class SQLTranslator(ABC):
                 else_=else_.else_value,
                 prev_step_name=prev_step_name,
                 case_=case_,
+                table=table,
             )
         else:
             try:
@@ -964,9 +966,9 @@ class SQLTranslator(ABC):
                 else_value = json.loads(else_)  # type: ignore
                 return case_.else_(else_value)
             except (json.JSONDecodeError, TypeError):
-                # the value is a formula
-                else_value = else_
-                return case_.else_(LiteralValue(else_value))
+                # the value is a formula or a string literal that can't be parsed
+                else_value = formula_to_term(else_, table)  # type: ignore
+                return case_.else_(else_value)
 
     def ifthenelse(
         self: Self,
@@ -984,6 +986,7 @@ class SQLTranslator(ABC):
                 else_=step.else_value,
                 prev_step_name=prev_step_name,
                 case_=Case(),
+                table=Table(prev_step_name),
             ).as_(step.new_column),
         )
         return StepContext(query, columns + [step.new_column])

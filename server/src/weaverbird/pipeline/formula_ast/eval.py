@@ -3,6 +3,8 @@ import tokenize
 from collections.abc import Generator, Iterator
 from io import BytesIO
 
+from weaverbird.pipeline.formula_ast.utils import unquote_string
+
 from . import types
 
 
@@ -47,7 +49,7 @@ class FormulaParser:
     def sanitize_string(s: str) -> str:
         """Unquotes strings, escapes single quotes and wraps them in single quotes"""
         # Removing outer quotes
-        unquoted = ast.literal_eval(s)
+        unquoted = unquote_string(s)
         # Escaping single quotes in the string
         with_escaped_single_quotes = unquoted.replace("'", r"\'")
         # Wrapping the entire thing in single quotes
@@ -63,21 +65,19 @@ class FormulaParser:
                 return None
 
         def parse_col_name(prev_token: tokenize.TokenInfo) -> str:
-            chunks = []
+            # NOTE: position is expressed as a (posLine, posColumn) tuple. We assume that the
+            # formula is written on a single line
+            start = prev_token.end[1]
             # Skipping the current token, which is [
             while tok := next_token():
-                # We have an identifier, append it
-                if tok.type == tokenize.NAME:
-                    chunks.append(tok.string)
                 # We reached the end of the column name. Store an alias for it and yield the alias
-                elif tok.type == tokenize.OP and tok.string == "]":
-                    if len(chunks) < 1:
+                if tok.type == tokenize.OP and tok.string == "]":
+                    end = tok.start[1]
+                    if end - start < 1:
                         raise EmptyColumnName(f"Got an empty column name at {prev_token.start[1]}")
                     col_name = f"__VQB_COL__{len(self._columns)}"
-                    self._columns[col_name] = " ".join(chunks)
+                    self._columns[col_name] = self._formula[start:end]
                     return col_name
-                else:
-                    raise UnexpectedToken(f"Unexpected token {tok} in column name")
                 prev_token = tok
             raise UnclosedColumnName(
                 f"Expected column to be closed near {prev_token.string} at {prev_token.start[1]}"

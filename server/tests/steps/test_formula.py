@@ -31,9 +31,7 @@ def test_formula(sample_df: DataFrame):
     assert_dataframes_equals(df_result, expected_result)
 
 
-@pytest.mark.parametrize(
-    "bad_expression", ["", 'print("hello")', "import re", "x = colA * 2", "%*$$::!"]
-)
+@pytest.mark.parametrize("bad_expression", ["", 'print("hello")', "import re", "x = colA * 2"])
 def test_bad_formula(sample_df: DataFrame, bad_expression):
     bad_step = FormulaStep(name="formula", new_column="z", formula=bad_expression)
     with pytest.raises(Exception):
