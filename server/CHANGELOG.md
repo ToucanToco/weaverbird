@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## [0.24.1] - 2022-09-14
+
+- Formula AST: Change column name parser implementation to be more permissive with column names
+  (everything between two square brackets is now considered part of the column name, including
+  whitespace)
+- Formula AST: Allow string literals to contain quote chars
+
 ## [0.24.0] - 2022-09-01
 
 - PyPika translator: Added a `source_rows_subset` options allowing to work only on a subset of domains
