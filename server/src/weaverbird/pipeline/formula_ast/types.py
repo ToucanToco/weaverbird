@@ -1,8 +1,9 @@
-from ast import literal_eval
 from enum import Enum
 from typing import Union
 
 from pydantic import BaseModel
+
+from weaverbird.pipeline.formula_ast.utils import unquote_string
 
 
 class Operator(str, Enum):
@@ -64,7 +65,7 @@ def format_expr(
         return f"{column_start_seq}{expr.name}{column_end_seq}"
     elif isinstance(expr, str):
         # Unquoting
-        return f"{str_quote_seq}{literal_eval(expr)}{str_quote_seq}"
+        return f"{str_quote_seq}{unquote_string(expr)}{str_quote_seq}"
     # bool is a subtype of int, but we don't want to have 1 and 0 replaced with 'true' or 'false'
     elif isinstance(expr, (int, float)) and not isinstance(expr, bool):
         return expr

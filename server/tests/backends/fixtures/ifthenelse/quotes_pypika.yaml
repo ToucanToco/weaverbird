@@ -2,27 +2,24 @@
   "exclude": [
     "mongo",
     "pandas",
-    "snowflake"
+    "snowflake",
+    # TODO: PyPika escapes single quotes in string literals by replacing them with a double single quote,
+    # which is standard SQL. This works with all backends, except BigQuery. We'll need to have a special
+    # case for GQB to escape single quotes
+    "bigquery_pypika"
   ],
   "step": {
     "pipeline": [
       {
         "name": "ifthenelse",
         "if": {
-          "column": "nullable_name",
-          "value": "",
-          "operator": "eq"
+          "column": "cost",
+          "value": 2,
+          "operator": "gt"
         },
-        "newColumn": "new_nullable_name",
-        "then": "null",
-        "else": "nullable_name"
-      },
-      {
-        "name": "fillna",
-        "columns": [
-          "new_nullable_name"
-        ],
-        "value": "FILLER"
+        "newColumn": "cond",
+        "then": "'tintin'",
+        "else": "some ' stuff with \" annoying 'quotes'"
       }
     ]
   },
@@ -62,7 +59,7 @@
           "type": "string"
         },
         {
-          "name": "new_nullable_name",
+          "name": "cond",
           "type": "string"
         }
       ],
@@ -78,7 +75,7 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-01",
         "nullable_name": null,
-        "new_nullable_name": "FILLER"
+        "cond": "tintin"
       },
       {
         "price_per_l": 0.0540000014,
@@ -89,7 +86,7 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-02",
         "nullable_name": "Ninkasi Ploploplop",
-        "new_nullable_name": "Ninkasi Ploploplop"
+        "cond": "tintin"
       },
       {
         "price_per_l": 0.0049999999,
@@ -100,7 +97,7 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-03",
         "nullable_name": "Brewdog Nanny State Alcoholvrij",
-        "new_nullable_name": "Brewdog Nanny State Alcoholvrij"
+        "cond": "tintin"
       },
       {
         "price_per_l": 0.0560000017,
@@ -111,7 +108,7 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-04",
         "nullable_name": "Ardwen Blonde",
-        "new_nullable_name": "Ardwen Blonde"
+        "cond": "tintin"
       },
       {
         "price_per_l": 0.0700000003,
@@ -122,7 +119,7 @@
         "volume_ml": 250.0,
         "brewing_date": "2022-01-05",
         "nullable_name": null,
-        "new_nullable_name": "FILLER"
+        "cond": "some ' stuff with \" annoying 'quotes'"
       },
       {
         "price_per_l": 0.0049999999,
@@ -133,7 +130,7 @@
         "volume_ml": 500.0,
         "brewing_date": "2022-01-06",
         "nullable_name": "Weihenstephan Hefe Weizen Alcoholarm",
-        "new_nullable_name": "Weihenstephan Hefe Weizen Alcoholarm"
+        "cond": "some ' stuff with \" annoying 'quotes'"
       },
       {
         "price_per_l": 0.0450000018,
@@ -144,7 +141,7 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-07",
         "nullable_name": "Bellfield Lawless Village IPA",
-        "new_nullable_name": "Bellfield Lawless Village IPA"
+        "cond": "tintin"
       },
       {
         "price_per_l": 0.0839999989,
@@ -155,7 +152,7 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-08",
         "nullable_name": "Pauwel Kwak",
-        "new_nullable_name": "Pauwel Kwak"
+        "cond": "some ' stuff with \" annoying 'quotes'"
       },
       {
         "price_per_l": 0.0649999976,
@@ -166,7 +163,7 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-09",
         "nullable_name": null,
-        "new_nullable_name": "FILLER"
+        "cond": "tintin"
       },
       {
         "price_per_l": 0.0599999987,
@@ -177,7 +174,7 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-10",
         "nullable_name": "Brugse Zot blonde",
-        "new_nullable_name": "Brugse Zot blonde"
+        "cond": "some ' stuff with \" annoying 'quotes'"
       }
     ]
   }

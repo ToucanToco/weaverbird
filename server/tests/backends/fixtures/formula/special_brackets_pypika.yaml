@@ -1,0 +1,71 @@
+exclude:
+- mongo
+- pandas
+- snowflake
+# google.api_core.exceptions.BadRequest: 400 Invalid field name "cost - with   double space and  - op".
+# Fields must contain only letters, numbers, and underscores, start with a letter or
+# underscore, and be at most 300 characters long.
+- bigquery_pypika
+# FIXME: Skipping as snowflake columns are unquoted for now... We'd probably have to
+# implement our own SnowflakeQueryBuilder as pypika's has no QUOTE_CHAR for now, and Snowflake
+# is supposed to support '"'.
+# Links:
+# * https://github.com/kayak/pypika/blob/master/pypika/dialects.py#L38
+# * https://docs.snowflake.com/en/sql-reference/identifiers-syntax.html
+- snowflake_pypika
+expected:
+  data:
+  - cost - with   double space and  - op: 2.8900001049
+    foobar: null
+    name: Superstrong beer
+  - cost - with   double space and  - op: 2.8900001049
+    foobar: null
+    name: Ninkasi Ploploplop
+  - cost - with   double space and  - op: 2.2899999619
+    foobar: null
+    name: Brewdog Nanny State Alcoholvrij
+  - cost - with   double space and  - op: 2.0899999142
+    foobar: null
+    name: Ardwen Blonde
+  - cost - with   double space and  - op: 1.5499999523
+    foobar: null
+    name: "Cuv\xE9e des Trolls"
+  - cost - with   double space and  - op: 1.5900000334
+    foobar: null
+    name: Weihenstephan Hefe Weizen Alcoholarm
+  - cost - with   double space and  - op: 2.4900000095
+    foobar: null
+    name: Bellfield Lawless Village IPA
+  - cost - with   double space and  - op: 1.6900000572
+    foobar: null
+    name: Pauwel Kwak
+  - cost - with   double space and  - op: 2.1900000572
+    foobar: null
+    name: Brasserie De Sutter Brin de Folie
+  - cost - with   double space and  - op: 1.7899999619
+    foobar: null
+    name: Brugse Zot blonde
+  schema:
+    fields:
+    - name: name
+      type: string
+    - name: cost - with   double space and  - op
+      type: number
+    - name: foobar
+      type: number
+    pandas_version: 1.4.0
+step:
+  pipeline:
+  - name: rename
+    to_rename:
+    - - cost
+      - cost - with   double space and  - op
+  - formula: ' [cost - with   double space and  - op] - (price_per_l / [cost - with   double
+      space and  - op]) + ([price_per_l] / 0) / (price_per_l + [volume_ml])'
+    name: formula
+    new_column: foobar
+  - columns:
+    - name
+    - cost - with   double space and  - op
+    - foobar
+    name: select

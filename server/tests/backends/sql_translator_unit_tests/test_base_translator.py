@@ -382,7 +382,7 @@ def test_formula(base_translator: BaseTranslator, default_step_kwargs: dict[str,
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
-def test_ifthenelse(base_translator: BaseTranslator, default_step_kwargs: dict[str, Any]):
+def test_ifthenelse_columns(base_translator: BaseTranslator, default_step_kwargs: dict[str, Any]):
     selected_columns = ["name", "pseudonyme"]
     previous_step = "previous_with"
     new_column_name = "fancy division"
@@ -399,12 +399,31 @@ def test_ifthenelse(base_translator: BaseTranslator, default_step_kwargs: dict[s
 
     expected_query = Query.from_(previous_step).select(
         *selected_columns,
-        Case()
-        .when(Field(column) == value, LiteralValue(then))
-        .else_(LiteralValue(reject))
-        .as_(new_column_name),
+        Case().when(Field(column) == value, Field(then)).else_(Field(reject)).as_(new_column_name),
     )
 
+    assert ctx.selectable.get_sql() == expected_query.get_sql()
+
+
+def test_ifthenelse_strings(base_translator: BaseTranslator, default_step_kwargs: dict[str, Any]):
+    selected_columns = ["name", "pseudonyme"]
+    previous_step = "previous_with"
+    new_column_name = "fancy division"
+    column = "name"
+    value = "goerge"
+    statement = conditions.ComparisonCondition(column=column, operator="eq", value=value)
+    then = "'a'"
+    reject = '"b"'
+
+    step = steps.IfthenelseStep(
+        condition=statement, then=then, else_value=reject, newColumn=new_column_name
+    )
+    ctx = base_translator.ifthenelse(step=step, columns=selected_columns, **default_step_kwargs)
+
+    expected_query = Query.from_(previous_step).select(
+        *selected_columns,
+        Case().when(Field(column) == value, "a").else_("b").as_(new_column_name),
+    )
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 

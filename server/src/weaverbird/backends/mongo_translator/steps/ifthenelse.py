@@ -10,10 +10,17 @@ def transform_ifthenelse_step(step: IfThenElse) -> MongoStep:
     if isinstance(step.else_value, IfThenElse):
         else_expr = transform_ifthenelse_step(step.else_value)
     else:
-        else_expr = build_mongo_formula_tree(FormulaParser(str(step.else_value)).parse())
+        try:
+            else_expr = build_mongo_formula_tree(FormulaParser(str(step.else_value)).parse())
+        except SyntaxError:  # else_expr is a badly formatted string
+            else_expr = step.else_value
 
     if_expr = build_cond_expression(step.condition)
-    then_expr = build_mongo_formula_tree(FormulaParser(str(step.then)).parse())
+    try:
+        then_expr = build_mongo_formula_tree(FormulaParser(str(step.then)).parse())
+    except SyntaxError:  # step is a badly formatted string
+        return step.then
+
     return {"$cond": {"if": if_expr, "then": then_expr, "else": else_expr}}
 
 

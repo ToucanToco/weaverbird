@@ -1,5 +1,4 @@
 import operator
-from ast import literal_eval
 
 from pypika import Table
 from pypika.functions import NullIf
@@ -7,6 +6,7 @@ from pypika.terms import Term
 
 from weaverbird.pipeline.formula_ast.eval import FormulaParser
 from weaverbird.pipeline.formula_ast.types import ColumnName, Expression, Operation, Operator
+from weaverbird.pipeline.formula_ast.utils import unquote_string
 
 _OP_MAP = {
     Operator.ADD: operator.add,
@@ -33,9 +33,12 @@ def _eval_expression(expr: Expression, table: Table) -> Term:
         return table[expr.name]
     elif isinstance(expr, str):
         # unquoting
-        expr = literal_eval(expr)
+        expr = unquote_string(expr)
     return Term.wrap_constant(expr)
 
 
 def formula_to_term(formula: str, table: Table) -> Term:
-    return _eval_expression(FormulaParser(formula).parse(), table)
+    try:
+        return _eval_expression(FormulaParser(formula).parse(), table)
+    except SyntaxError:  # Can happen in case formula is actually a string literal
+        return Term.wrap_constant(formula)
