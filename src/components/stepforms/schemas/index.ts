@@ -21,6 +21,7 @@ import fillnaSchema from './fillna';
 import filterSchema from './filter';
 import formulaSchema from './formula';
 import fromDateSchema from './fromdate';
+import hierarchySchema from './hierarchy';
 import ifthenelseSchema from './ifthenelse';
 import joinSchema from './join';
 import movingAverageBuildSchema from './movingaverage';
@@ -72,6 +73,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   filter: filterSchema,
   formula: formulaSchema,
   fromdate: fromDateSchema,
+  hierarchy: hierarchySchema,
   ifthenelse: ifthenelseSchema,
   join: joinSchema,
   lowercase: toLowerSchema,

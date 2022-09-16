@@ -89,7 +89,10 @@ export const ACTION_CATEGORIES: ActionCategories = {
     { name: 'append', label: 'Append datasets' },
     { name: 'join', label: 'Join datasets' },
   ],
-  geo: [{ name: 'dissolve', label: 'Geographic dissolve' }],
+  geo: [
+    { name: 'dissolve', label: 'Geographic dissolve' },
+    { name: 'hierarchy', label: 'Geographic hierarchy' },
+  ],
 };
 
 export const SEARCH_ACTION: groupActions[] = [

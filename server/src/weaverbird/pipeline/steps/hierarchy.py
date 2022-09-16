@@ -1,15 +1,18 @@
 from typing import Literal
 
-from pydantic import validator
+from pydantic import Field, validator
 
-from weaverbird.pipeline.steps.utils.base import BaseStep
+from weaverbird.pipeline.steps.utils.base import BaseStep, to_camelcase
 
 
 class HierarchyStep(BaseStep):
+    class Config:
+        alias_generator = to_camelcase
+
     name: Literal["hierarchy"] = "hierarchy"
-    hierarchy_level_column: str = "hierarchy_level"
+    hierarchy_level_column: str = Field(default="hierarchy_level")
     hierarchy: list[str]
-    include_nulls: bool = False
+    include_nulls: bool = Field(default=False)
 
     @validator("hierarchy")
     def _ensure_hierarchy(cls, values: list[str]) -> list[str]:

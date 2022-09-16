@@ -317,6 +317,18 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual(pipeline);
   });
 
+  it('should leave hierarchy steps untouched', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'hierarchy',
+        hierarchy: ['<%= foo %>'],
+        hierarchyLevelColumn: '<%= egg %>',
+        includeNulls: true,
+      },
+    ];
+    expect(translate(pipeline)).toEqual(pipeline);
+  });
+
   it('should interpolate dateextract steps', () => {
     const pipeline: Pipeline = [
       {

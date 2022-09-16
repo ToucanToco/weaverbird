@@ -384,6 +384,7 @@ describe('getter tests', () => {
         'convert',
         'customsql',
         'dissolve',
+        'hierarchy',
         'trim',
       ]);
     });

@@ -28,6 +28,7 @@ import FillnaStepForm from './FillnaStepForm.vue';
 import FilterStepForm from './FilterStepForm.vue';
 import FormulaStepForm from './FormulaStepForm.vue';
 import FromDateStepForm from './FromDateStepForm.vue';
+import HierarchyStepForm from './HierarchyStepForm.vue';
 import IfThenElseStepForm from './IfThenElseStepForm.vue';
 import JoinStepForm from './JoinStepForm.vue';
 import MovingAverageStepForm from './MovingAverageStepForm.vue';
@@ -76,6 +77,7 @@ const StepFormsComponents: { [K in PipelineStepName]: VueConstructor<StepForm> }
   evolution: EvolutionStepForm,
   fillna: FillnaStepForm,
   filter: FilterStepForm,
+  hierarchy: HierarchyStepForm,
   ifthenelse: IfThenElseStepForm,
   formula: FormulaStepForm,
   fromdate: FromDateStepForm,
