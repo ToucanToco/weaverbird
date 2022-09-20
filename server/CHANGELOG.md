@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [0.24.2] - 2022-09-20
+
+- PyPika translator: SQLDialect now uses the same values than frontend translator names
+
 ## [0.24.1] - 2022-09-14
 
 - Formula AST: Change column name parser implementation to be more permissive with column names
