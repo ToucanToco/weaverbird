@@ -45,7 +45,7 @@ def test_evolution_abs_day(
             Query.from_(previous_step)
             .select(
                 step.value_col,
-                DateAddWithoutUnderscore("days", 1, prev_table.field(step.date_col)).as_(
+                DateAddWithoutUnderscore("day", 1, prev_table.field(step.date_col)).as_(
                     step.date_col
                 ),
             )
@@ -89,7 +89,7 @@ def test_evolution_perc_groups_day(
             .select(
                 step.value_col,
                 DateAddWithoutUnderscore(
-                    date_part="days", interval=1, term=prev_table.field(step.date_col)
+                    date_part="day", interval=1, term=prev_table.field(step.date_col)
                 ).as_(step.date_col),
                 *step.index_columns,
             )
