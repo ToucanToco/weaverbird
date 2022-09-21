@@ -2,9 +2,11 @@ from typing import Any
 
 import pytest
 from pypika import CustomFunction
+from pypika.functions import Cast, Extract
 from pypika.queries import Query, Table
 from pypika.terms import LiteralValue
 
+from weaverbird.backends.pypika_translator.translators.base import DateAddWithoutUnderscore
 from weaverbird.backends.pypika_translator.translators.snowflake import SnowflakeTranslator
 from weaverbird.pipeline import steps
 from weaverbird.pipeline.steps import DateExtractStep, UnpivotStep
@@ -45,7 +47,9 @@ def test_evolution_abs_day(
             Query.from_(previous_step)
             .select(
                 step.value_col,
-                DateAdd("day", 1, prev_table.field(step.date_col)).as_(step.date_col),
+                DateAddWithoutUnderscore("days", 1, prev_table.field(step.date_col)).as_(
+                    step.date_col
+                ),
             )
             .as_("right_table")
         )
@@ -70,7 +74,6 @@ def test_evolution_perc_groups_day(
         evolution_type="vsLastDay",
         index_columns=["volume_ml"],
     )
-    DateAdd = CustomFunction("DATEADD", ["interval", "increment", "datecol"])
     right_table = Table("right_table")
     prev_table = Table(previous_step)
     ctx = snowflake_translator.evolution(step=step, columns=selected_columns, **default_step_kwargs)
@@ -87,7 +90,9 @@ def test_evolution_perc_groups_day(
             Query.from_(previous_step)
             .select(
                 step.value_col,
-                DateAdd("day", 1, prev_table.field(step.date_col)).as_(step.date_col),
+                DateAddWithoutUnderscore(
+                    date_part="days", interval=1, term=prev_table.field(step.date_col)
+                ).as_(step.date_col),
                 *step.index_columns,
             )
             .as_("right_table")
@@ -115,9 +120,9 @@ def test_date_extract_extract_kw(
     )
     expected_query = Query.from_(previous_step).select(
         *[prev_table.field(col) for col in selected_columns],
-        LiteralValue("EXTRACT(year from to_timestamp(brewing_date))").as_("brewing_year"),
-        LiteralValue("EXTRACT(month from to_timestamp(brewing_date))").as_("brewing_month"),
-        LiteralValue("EXTRACT(day from to_timestamp(brewing_date))").as_("brewing_day"),
+        Extract("year", Cast(prev_table.brewing_date, "timestamp")).as_("brewing_year"),
+        Extract("month", Cast(prev_table.brewing_date, "timestamp")).as_("brewing_month"),
+        Extract("day", Cast(prev_table.brewing_date, "timestamp")).as_("brewing_day"),
     )
     assert ctx.selectable.get_sql(quote_char='"') == expected_query.get_sql(quote_char='"')
 
@@ -139,7 +144,7 @@ def test_date_extract_func(
     )
     expected_query = Query.from_(previous_step).select(
         *[prev_table.field(col) for col in selected_columns],
-        LiteralValue("WEEKISO(to_timestamp(brewing_date))").as_("brewing_week"),
+        Extract("week", prev_table.brewing_date).as_("brewing_week"),
     )
     assert ctx.selectable.get_sql(quote_char='"') == expected_query.get_sql(quote_char='"')
 
