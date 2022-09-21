@@ -67,6 +67,10 @@ class PostgreSQLTranslator(SQLTranslator):
         return StepContext(query, columns + [step.new_column_name])
 
     @classmethod
+    def _date_add(cls, *, target_column: Field, duration: int, unit: str) -> Term:
+        return target_column + Interval(**{unit: duration})
+
+    @classmethod
     def _get_date_extract_func(cls, *, date_unit: DATE_INFO, target_column: Field) -> Term:
         if (lowered_date_unit := date_unit.lower()) in (
             "seconds",
@@ -77,6 +81,7 @@ class PostgreSQLTranslator(SQLTranslator):
             "quarter",
             "year",
             "yearofweek",
+            "milliseconds",
         ):
             return Extract(lowered_date_unit.removesuffix("s"), target_column)
         elif lowered_date_unit == "dayofweek":
@@ -104,22 +109,39 @@ class PostgreSQLTranslator(SQLTranslator):
         elif lowered_date_unit == "previousday":
             return target_column - Interval(days=1)
         elif lowered_date_unit == "previousyear":
-            return Extract("year", target_column - Interval(years=1))
+            return Extract(
+                "year",
+                cls._date_add(target_column=target_column, unit="years", duration=-1),
+            )
         elif lowered_date_unit == "previousmonth":
-            return Extract("month", target_column - Interval(months=1))
+            return Extract(
+                "month",
+                cls._date_add(target_column=target_column, unit="months", duration=-1),
+            )
         elif lowered_date_unit == "previousweek":
             return Extract("week", target_column - Interval(weeks=1))
         elif lowered_date_unit == "previousisoweek":
             return Extract("week", target_column - Interval(weeks=1))
         elif lowered_date_unit == "previousquarter":
-            return Extract("quarter", target_column - Interval(months=3))
+            return Extract(
+                "quarter",
+                cls._date_add(
+                    target_column=DateTrunc("quarter", target_column), unit="months", duration=-3
+                ),
+            )
         elif lowered_date_unit == "firstdayofpreviousyear":
-            return DateTrunc("year", target_column) - Interval(years=1)
+            return cls._date_add(
+                target_column=DateTrunc("year", target_column), unit="years", duration=-1
+            )
         elif lowered_date_unit == "firstdayofpreviousmonth":
-            return DateTrunc("month", target_column) - Interval(months=1)
+            return cls._date_add(
+                target_column=DateTrunc("year", target_column), unit="months", duration=-1
+            )
         elif lowered_date_unit == "firstdayofpreviousquarter":
             # Postgres does not support quarters in intervals
-            return DateTrunc("quarter", target_column) - Interval(months=3)
+            return cls._date_add(
+                target_column=DateTrunc("year", target_column), unit="months", duration=-3
+            )
         elif lowered_date_unit == "firstdayofpreviousweek":
             return (
                 DateTrunc("week", target_column + Interval(days=1))
@@ -128,7 +150,9 @@ class PostgreSQLTranslator(SQLTranslator):
             )
         elif lowered_date_unit == "firstdayofpreviousisoweek":
             return DateTrunc("week", target_column) - Interval(weeks=1)
-        return Extract(lowered_date_unit, target_column)
+        # Postgres supports EXTRACT(isoyear) but redshift doesn't so...
+        elif lowered_date_unit == "isoyear":
+            return Extract("year", DateTrunc("week", target_column))
 
 
 SQLTranslator.register(PostgreSQLTranslator)
