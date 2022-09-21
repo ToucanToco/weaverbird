@@ -1,13 +1,10 @@
 from pypika.dialects import Query
-from pypika.terms import CustomFunction, Field, Term
+from pypika.enums import Dialects
+from pypika.terms import Field, Interval, Term
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import RegexOp, ToDateOp
-from weaverbird.backends.pypika_translator.translators.base import (
-    DATE_INFO,
-    DataTypeMapping,
-    SQLTranslator,
-)
+from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, SQLTranslator
 
 
 class AthenaTranslator(SQLTranslator):
@@ -30,10 +27,10 @@ class AthenaTranslator(SQLTranslator):
 
     @classmethod
     def _add_date(
-        cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_INFO
+        cls, *, target_column: Field, duration: int, unit: str, dialect: Dialects | None = None
     ) -> Term:
-        add_date_func = CustomFunction("DATE_ADD", ["interval", "increment", "datecol"])
-        return add_date_func(add_date_unit, add_date_value, date_column)
+        # Cheating a bit here: MySQL's syntax is compatible with Athena for intervals
+        return target_column + Interval(**{unit: duration, "dialect": Dialects.MYSQL})
 
 
 SQLTranslator.register(AthenaTranslator)

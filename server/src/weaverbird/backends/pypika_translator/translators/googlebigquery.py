@@ -1,13 +1,13 @@
 from typing import TYPE_CHECKING, Any, TypeVar
 
 from pypika import Field, Query, Table, functions
+from pypika.enums import Dialects
 from pypika.queries import QueryBuilder
-from pypika.terms import LiteralValue, Term
+from pypika.terms import Function, Interval, LiteralValue, Term
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators.base import (
-    DATE_INFO,
     DataTypeMapping,
     SQLTranslator,
     StepContext,
@@ -36,6 +36,11 @@ class GoogleBigQueryQueryBuilder(QueryBuilder):
         super().__init__(dialect=SQLDialect.GOOGLEBIGQUERY, **kwargs)
 
 
+class GoogleBigQueryDateAdd(Function):
+    def __init__(self, *, target_column: Field, interval: Interval) -> None:
+        super().__init__("DATE_ADD", target_column, interval)
+
+
 class GoogleBigQueryTranslator(SQLTranslator):
     DIALECT = SQLDialect.GOOGLEBIGQUERY
     QUERY_CLS = GoogleBigQueryQuery
@@ -57,10 +62,12 @@ class GoogleBigQueryTranslator(SQLTranslator):
 
     @classmethod
     def _add_date(
-        cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_INFO
+        cls, *, target_column: Field, duration: int, unit: str, dialect: Dialects | None = None
     ) -> Term:
-        return LiteralValue(
-            f"DATE_ADD({date_column.name}, INTERVAL {add_date_value} {add_date_unit})"
+        return GoogleBigQueryDateAdd(
+            target_column=target_column,
+            # Cheating a bit here: MySQL's syntax is compatible with GBQ for intervals
+            interval=Interval(**{unit: duration, "dialect": Dialects.MYSQL}),
         )
 
     def split(

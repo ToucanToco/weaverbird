@@ -2,13 +2,10 @@ from typing import TYPE_CHECKING
 
 from pypika import Field, functions
 from pypika.dialects import PostgreSQLQuery
-from pypika.functions import Extract, Function
-from pypika.terms import Interval, LiteralValue, Term
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators.base import (
-    DATE_INFO,
     DataTypeMapping,
     Self,
     SQLTranslator,
@@ -19,11 +16,6 @@ if TYPE_CHECKING:
     from pypika.queries import QueryBuilder
 
     from weaverbird.pipeline.steps import DurationStep
-
-
-class DateTrunc(Function):
-    def __init__(self, date_format: str, field: Field, alias: str | None = None):
-        super(DateTrunc, self).__init__("DATE_TRUNC", date_format, field, alias=alias)
 
 
 class PostgreSQLTranslator(SQLTranslator):
@@ -44,12 +36,6 @@ class PostgreSQLTranslator(SQLTranslator):
     REGEXP_OP = RegexOp.SIMILAR_TO
     TO_DATE_OP = ToDateOp.TIMESTAMP
 
-    @classmethod
-    def _add_date(
-        cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_INFO
-    ) -> Term:
-        return LiteralValue(f"{date_column.name} + INTERVAL '{add_date_value} {add_date_unit}'")
-
     def duration(
         self: Self,
         *,
@@ -65,94 +51,6 @@ class PostgreSQLTranslator(SQLTranslator):
             ).as_(step.new_column_name),
         )
         return StepContext(query, columns + [step.new_column_name])
-
-    @classmethod
-    def _date_add(cls, *, target_column: Field, duration: int, unit: str) -> Term:
-        return target_column + Interval(**{unit: duration})
-
-    @classmethod
-    def _get_date_extract_func(cls, *, date_unit: DATE_INFO, target_column: Field) -> Term:
-        if (lowered_date_unit := date_unit.lower()) in (
-            "seconds",
-            "minutes",
-            "hour",
-            "day",
-            "month",
-            "quarter",
-            "year",
-            "yearofweek",
-            "milliseconds",
-        ):
-            return Extract(lowered_date_unit.removesuffix("s"), target_column)
-        elif lowered_date_unit == "dayofweek":
-            return (Extract("dow", target_column) % 7) + 1
-        elif lowered_date_unit == "dayofyear":
-            return Extract("doy", target_column)
-        elif lowered_date_unit == "isoweek":
-            return Extract("week", target_column)
-        elif lowered_date_unit == "week":
-            return Extract("week", target_column)
-        elif lowered_date_unit == "isodayofweek":
-            return Extract("isodow", target_column)
-        elif lowered_date_unit == "firstdayofyear":
-            return DateTrunc("year", target_column)
-        elif lowered_date_unit == "firstdayofmonth":
-            return DateTrunc("month", target_column)
-        elif lowered_date_unit == "firstdayofweek":
-            # 'week' considers monday to be the first day of the week, we want sunday. Thus, we
-            # shift the timestamp back and forth
-            return DateTrunc("week", target_column + Interval(days=1)) - Interval(days=1)
-        elif lowered_date_unit == "firstdayofquarter":
-            return DateTrunc("quarter", target_column)
-        elif lowered_date_unit == "firstdayofisoweek":
-            return DateTrunc("week", target_column)
-        elif lowered_date_unit == "previousday":
-            return target_column - Interval(days=1)
-        elif lowered_date_unit == "previousyear":
-            return Extract(
-                "year",
-                cls._date_add(target_column=target_column, unit="years", duration=-1),
-            )
-        elif lowered_date_unit == "previousmonth":
-            return Extract(
-                "month",
-                cls._date_add(target_column=target_column, unit="months", duration=-1),
-            )
-        elif lowered_date_unit == "previousweek":
-            return Extract("week", target_column - Interval(weeks=1))
-        elif lowered_date_unit == "previousisoweek":
-            return Extract("week", target_column - Interval(weeks=1))
-        elif lowered_date_unit == "previousquarter":
-            return Extract(
-                "quarter",
-                cls._date_add(
-                    target_column=DateTrunc("quarter", target_column), unit="months", duration=-3
-                ),
-            )
-        elif lowered_date_unit == "firstdayofpreviousyear":
-            return cls._date_add(
-                target_column=DateTrunc("year", target_column), unit="years", duration=-1
-            )
-        elif lowered_date_unit == "firstdayofpreviousmonth":
-            return cls._date_add(
-                target_column=DateTrunc("year", target_column), unit="months", duration=-1
-            )
-        elif lowered_date_unit == "firstdayofpreviousquarter":
-            # Postgres does not support quarters in intervals
-            return cls._date_add(
-                target_column=DateTrunc("year", target_column), unit="months", duration=-3
-            )
-        elif lowered_date_unit == "firstdayofpreviousweek":
-            return (
-                DateTrunc("week", target_column + Interval(days=1))
-                - Interval(days=1)
-                - Interval(weeks=1)
-            )
-        elif lowered_date_unit == "firstdayofpreviousisoweek":
-            return DateTrunc("week", target_column) - Interval(weeks=1)
-        # Postgres supports EXTRACT(isoyear) but redshift doesn't so...
-        elif lowered_date_unit == "isoyear":
-            return Extract("year", DateTrunc("week", target_column))
 
 
 SQLTranslator.register(PostgreSQLTranslator)
