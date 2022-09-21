@@ -1,10 +1,8 @@
 from typing import Any
 
 import pytest
-from pypika import CustomFunction
 from pypika.functions import Cast, Extract
 from pypika.queries import Query, Table
-from pypika.terms import LiteralValue
 
 from weaverbird.backends.pypika_translator.translators.base import DateAddWithoutUnderscore
 from weaverbird.backends.pypika_translator.translators.snowflake import SnowflakeTranslator
@@ -31,7 +29,7 @@ def test_evolution_abs_day(
         evolution_format="abs",
         evolution_type="vsLastDay",
     )
-    DateAdd = CustomFunction("DATEADD", ["interval", "increment", "datecol"])
+
     right_table = Table("right_table")
     prev_table = Table(previous_step)
     ctx = snowflake_translator.evolution(step=step, columns=selected_columns, **default_step_kwargs)

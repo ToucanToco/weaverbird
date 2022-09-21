@@ -38,7 +38,9 @@ class SnowflakeTranslator(SQLTranslator):
     def _add_date(
         cls, *, target_column: Field, duration: int, unit: str, dialect: Dialects | None = None
     ) -> Term:
-        return DateAddWithoutUnderscore(date_part=unit, interval=duration, term=target_column)
+        return DateAddWithoutUnderscore(
+            date_part=unit.removesuffix("s"), interval=duration, term=target_column
+        )
 
 
 SQLTranslator.register(SnowflakeTranslator)
