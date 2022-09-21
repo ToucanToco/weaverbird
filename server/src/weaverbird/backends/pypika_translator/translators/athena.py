@@ -1,6 +1,6 @@
 from pypika.dialects import Query
 from pypika.enums import Dialects
-from pypika.terms import Field, Interval, Term
+from pypika.terms import CustomFunction, Field, Term
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import RegexOp, ToDateOp
@@ -29,8 +29,10 @@ class AthenaTranslator(SQLTranslator):
     def _add_date(
         cls, *, target_column: Field, duration: int, unit: str, dialect: Dialects | None = None
     ) -> Term:
-        # Cheating a bit here: MySQL's syntax is compatible with Athena for intervals
-        return target_column + Interval(**{unit: duration, "dialect": Dialects.MYSQL})
+        # We need implement our own function for athena because Presto requires the units to be
+        # quoted. PyPika's DateAdd function removes them by applying LiteralValue to the unit
+        custom = CustomFunction("DATE_ADD", ["unit", "duration", "target"])
+        return custom(Term.wrap_constant(unit.removesuffix("s")), duration, target_column)
 
 
 SQLTranslator.register(AthenaTranslator)

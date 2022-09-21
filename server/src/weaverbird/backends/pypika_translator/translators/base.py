@@ -596,8 +596,6 @@ class SQLTranslator(ABC):
 
     @classmethod
     def _get_date_extract_func(cls, *, date_unit: DATE_INFO, target_column: Field) -> Term:
-        # # TODO to implement for other connectors than Snowflake
-        # raise NotImplementedError(f"[{cls.DIALECT}] _get_date_extract_func is not implemented")
         if (lowered_date_unit := date_unit.lower()) in (
             "seconds",
             "minutes",
@@ -608,11 +606,13 @@ class SQLTranslator(ABC):
             "year",
             "yearofweek",
         ):
-            return Extract(lowered_date_unit.removesuffix("s"), target_column)
+            return Extract(
+                lowered_date_unit.removesuffix("s"), cls._cast_to_timestamp(target_column)
+            )
         # ms aren't supported by snowflake's EXTRACT, even if the docs state otherwise:
         # https://community.snowflake.com/s/question/0D50Z00008dWkrpSAC/supported-time-parts-in-datepart
         elif lowered_date_unit == "milliseconds":
-            return Extract("second", target_column) * 1000
+            return Extract("second", cls._cast_to_timestamp(target_column)) * 1000
         elif lowered_date_unit == "dayofweek":
             return (Extract("dow", target_column) % 7) + 1
         elif lowered_date_unit == "dayofyear":
@@ -636,13 +636,19 @@ class SQLTranslator(ABC):
         elif lowered_date_unit == "firstdayofweek":
             # 'week' considers monday to be the first day of the week, we want sunday. Thus, we
             # shift the timestamp back and forth
-            return DateTrunc("week", target_column + Interval(days=1)) - Interval(days=1)
+            return cls._add_date(
+                target_column=DateTrunc(
+                    "week", cls._add_date(target_column=target_column, duration=1, unit="days")
+                ),
+                duration=-1,
+                unit="days",
+            )
         elif lowered_date_unit == "firstdayofquarter":
             return DateTrunc("quarter", target_column)
         elif lowered_date_unit == "firstdayofisoweek":
             return DateTrunc("week", target_column)
         elif lowered_date_unit == "previousday":
-            return target_column - Interval(days=1)
+            return cls._add_date(target_column=target_column, unit="days", duration=-1)
         elif lowered_date_unit == "previousyear":
             return Extract(
                 "year",
@@ -654,9 +660,13 @@ class SQLTranslator(ABC):
                 cls._add_date(target_column=target_column, unit="months", duration=-1),
             )
         elif lowered_date_unit == "previousweek":
-            return Extract("week", target_column - Interval(weeks=1))
+            return Extract(
+                "week", cls._add_date(target_column=target_column, unit="weeks", duration=-1)
+            )
         elif lowered_date_unit == "previousisoweek":
-            return Extract("week", target_column - Interval(weeks=1))
+            return Extract(
+                "week", cls._add_date(target_column=target_column, unit="weeks", duration=-1)
+            )
         elif lowered_date_unit == "previousquarter":
             return Extract(
                 "quarter",
@@ -678,13 +688,21 @@ class SQLTranslator(ABC):
                 target_column=DateTrunc("year", target_column), unit="months", duration=-3
             )
         elif lowered_date_unit == "firstdayofpreviousweek":
-            return (
-                DateTrunc("week", target_column + Interval(days=1))
-                - Interval(days=1)
-                - Interval(weeks=1)
+            return cls._add_date(
+                target_column=cls._add_date(
+                    target_column=DateTrunc(
+                        "week", cls._add_date(target_column=target_column, unit="days", duration=1)
+                    ),
+                    unit="days",
+                    duration=-1,
+                ),
+                unit="weeks",
+                duration=-1,
             )
         elif lowered_date_unit == "firstdayofpreviousisoweek":
-            return DateTrunc("week", target_column) - Interval(weeks=1)
+            return cls._add_date(
+                target_column=DateTrunc("week", target_column), unit="weeks", duration=-1
+            )
         # Postgres supports EXTRACT(isoyear) but redshift doesn't so...
         elif lowered_date_unit == "isoyear":
             return Extract("year", DateTrunc("week", target_column))

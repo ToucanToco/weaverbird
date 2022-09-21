@@ -1,6 +1,5 @@
 {
   "exclude": [
-    "athena_pypika",
     "bigquery_pypika",
     "mongo",
     "mysql_pypika",
