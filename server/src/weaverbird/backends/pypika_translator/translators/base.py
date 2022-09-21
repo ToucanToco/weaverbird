@@ -127,7 +127,7 @@ class CustomQuery(AliasedQuery):
 
 class DateTrunc(Function):
     def __init__(self, date_format: str, field: Field, alias: str | None = None):
-        super(DateTrunc, self).__init__("DATE_TRUNC", date_format, field, alias=alias)
+        super().__init__("DATE_TRUNC", date_format, field, alias=alias)
 
 
 class DateAddWithoutUnderscore(functions.Function):
@@ -595,12 +595,21 @@ class SQLTranslator(ABC):
         return StepContext(self._custom_query(step=step), ["*"])
 
     @classmethod
+    def _day_of_week(cls, target_column: Field) -> Term:
+        return Extract("dow", target_column)
+
+    @classmethod
+    def _date_trunc(cls, date_part: str, target_column: Field) -> Term:
+        return DateTrunc(date_part, target_column)
+
+    @classmethod
     def _get_date_extract_func(cls, *, date_unit: DATE_INFO, target_column: Field) -> Term:
         if (lowered_date_unit := date_unit.lower()) in (
             "seconds",
             "minutes",
             "hour",
             "day",
+            "week",
             "month",
             "quarter",
             "year",
@@ -614,39 +623,36 @@ class SQLTranslator(ABC):
         elif lowered_date_unit == "milliseconds":
             return Extract("second", cls._cast_to_timestamp(target_column)) * 1000
         elif lowered_date_unit == "dayofweek":
-            return (Extract("dow", target_column) % 7) + 1
+            return (cls._day_of_week(target_column) % 7) + 1
         elif lowered_date_unit == "dayofyear":
             return Extract("doy", target_column)
         elif lowered_date_unit == "isoweek":
-            return Extract("week", target_column)
-        elif lowered_date_unit == "week":
             return Extract("week", target_column)
         elif lowered_date_unit == "isodayofweek":
             # We want monday as 1, sunday as 7. Redshift goes from sunday as 0 to saturday as 6
             return (
                 Case()
-                .when(functions.Extract("dow", target_column) == 0, 7)
-                .else_(functions.Extract("dow", target_column))
+                .when(cls._day_of_week(target_column) == 0, 7)
+                .else_(cls._day_of_week(target_column))
             )
-            # return Extract("isodow", target_column)
         elif lowered_date_unit == "firstdayofyear":
-            return DateTrunc("year", target_column)
+            return cls._date_trunc("year", target_column)
         elif lowered_date_unit == "firstdayofmonth":
-            return DateTrunc("month", target_column)
+            return cls._date_trunc("month", target_column)
         elif lowered_date_unit == "firstdayofweek":
             # 'week' considers monday to be the first day of the week, we want sunday. Thus, we
             # shift the timestamp back and forth
             return cls._add_date(
-                target_column=DateTrunc(
+                target_column=cls._date_trunc(
                     "week", cls._add_date(target_column=target_column, duration=1, unit="days")
                 ),
                 duration=-1,
                 unit="days",
             )
         elif lowered_date_unit == "firstdayofquarter":
-            return DateTrunc("quarter", target_column)
+            return cls._date_trunc("quarter", target_column)
         elif lowered_date_unit == "firstdayofisoweek":
-            return DateTrunc("week", target_column)
+            return cls._date_trunc("week", target_column)
         elif lowered_date_unit == "previousday":
             return cls._add_date(target_column=target_column, unit="days", duration=-1)
         elif lowered_date_unit == "previousyear":
@@ -671,26 +677,28 @@ class SQLTranslator(ABC):
             return Extract(
                 "quarter",
                 cls._add_date(
-                    target_column=DateTrunc("quarter", target_column), unit="months", duration=-3
+                    target_column=cls._date_trunc("quarter", target_column),
+                    unit="months",
+                    duration=-3,
                 ),
             )
         elif lowered_date_unit == "firstdayofpreviousyear":
             return cls._add_date(
-                target_column=DateTrunc("year", target_column), unit="years", duration=-1
+                target_column=cls._date_trunc("year", target_column), unit="years", duration=-1
             )
         elif lowered_date_unit == "firstdayofpreviousmonth":
             return cls._add_date(
-                target_column=DateTrunc("year", target_column), unit="months", duration=-1
+                target_column=cls._date_trunc("year", target_column), unit="months", duration=-1
             )
         elif lowered_date_unit == "firstdayofpreviousquarter":
             # Postgres does not support quarters in intervals
             return cls._add_date(
-                target_column=DateTrunc("year", target_column), unit="months", duration=-3
+                target_column=cls._date_trunc("year", target_column), unit="months", duration=-3
             )
         elif lowered_date_unit == "firstdayofpreviousweek":
             return cls._add_date(
                 target_column=cls._add_date(
-                    target_column=DateTrunc(
+                    target_column=cls._date_trunc(
                         "week", cls._add_date(target_column=target_column, unit="days", duration=1)
                     ),
                     unit="days",
@@ -701,11 +709,11 @@ class SQLTranslator(ABC):
             )
         elif lowered_date_unit == "firstdayofpreviousisoweek":
             return cls._add_date(
-                target_column=DateTrunc("week", target_column), unit="weeks", duration=-1
+                target_column=cls._date_trunc("week", target_column), unit="weeks", duration=-1
             )
         # Postgres supports EXTRACT(isoyear) but redshift doesn't so...
         elif lowered_date_unit == "isoyear":
-            return Extract("year", DateTrunc("week", target_column))
+            return Extract("year", cls._date_trunc("week", target_column))
 
     def dateextract(
         self: Self,
