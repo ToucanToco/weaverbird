@@ -72,6 +72,9 @@ class Actions {
         pageOffset(state.pagesize, getters.pageno),
         getters.previewSourceRowsSubset,
       );
+      if (response.translator) {
+        commit('setTranslator', { translator: response.translator });
+      }
       const backendMessages = response.error || response.warning || [];
       commit('logBackendMessages', { backendMessages });
       if (response.data) {

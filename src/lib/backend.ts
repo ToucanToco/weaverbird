@@ -14,8 +14,8 @@ export type BackendWarning = {
 };
 
 export type BackendResponse<T> =
-  | Promise<{ data: T; error?: never; warning?: BackendWarning[] }>
-  | Promise<{ data?: never; error: BackendError[] }>;
+  | Promise<{ data: T; translator?: string; error?: never; warning?: BackendWarning[] }>
+  | Promise<{ data?: never; translator?: string; error: BackendError[] }>;
 
 export interface BackendService {
   /**
