@@ -6,6 +6,10 @@ import { PypikaTranslator } from './pypika';
 export class PostgresqlTranslator extends PypikaTranslator {
   static label = 'PostgreSQL';
 
+  dateextract(step: Readonly<S.DateExtractStep>) {
+    return step;
+  }
+
   duration(step: Readonly<S.ComputeDurationStep>) {
     return step;
   }
