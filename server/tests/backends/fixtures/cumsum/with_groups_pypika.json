@@ -1,0 +1,117 @@
+{
+  "exclude": [
+    "pandas",
+    "mongo"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "cumsum",
+        "toCumSum": [
+          [
+            "price_per_l",
+            "price_per_l_cumulated"
+          ]
+        ],
+        "referenceColumn": "name",
+        "groupby": [
+          "beer_kind"
+        ]
+      },
+      {
+        "name": "select",
+        "columns": [
+          "name",
+          "price_per_l",
+          "beer_kind",
+          "price_per_l_cumulated"
+        ]
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "price_per_l",
+          "type": "number"
+        },
+        {
+          "name": "beer_kind",
+          "type": "string"
+        },
+        {
+          "name": "price_per_l_cumulated",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "1.4.0"
+    },
+    "data": [
+      {
+        "name": "Pauwel Kwak",
+        "price_per_l": 0.084,
+        "beer_kind": "Belge blonde forte & Golden Ale",
+        "price_per_l_cumulated": 0.084
+      },
+      {
+        "name": "Ardwen Blonde",
+        "price_per_l": 0.056,
+        "beer_kind": "Best-sellers",
+        "price_per_l_cumulated": 0.056
+      },
+      {
+        "name": "Weihenstephan Hefe Weizen Alcoholarm",
+        "price_per_l": 0.005,
+        "beer_kind": "Blanche & Weizen",
+        "price_per_l_cumulated": 0.005
+      },
+      {
+        "name": "Brasserie De Sutter Brin de Folie",
+        "price_per_l": 0.065,
+        "beer_kind": "Blonde",
+        "price_per_l_cumulated": 0.065
+      },
+      {
+        "name": "Brugse Zot blonde",
+        "price_per_l": 0.06,
+        "beer_kind": "Blonde",
+        "price_per_l_cumulated": 0.125
+      },
+      {
+        "name": "Cuvée des Trolls",
+        "price_per_l": 0.07,
+        "beer_kind": "Blonde",
+        "price_per_l_cumulated": 0.195
+      },
+      {
+        "name": "Bellfield Lawless Village IPA",
+        "price_per_l": 0.045,
+        "beer_kind": "India Pale Ale",
+        "price_per_l_cumulated": 0.045
+      },
+      {
+        "name": "Ninkasi Ploploplop",
+        "price_per_l": 0.054,
+        "beer_kind": "India Pale Ale",
+        "price_per_l_cumulated": 0.099
+      },
+      {
+        "name": "Brewdog Nanny State Alcoholvrij",
+        "price_per_l": 0.005,
+        "beer_kind": "Sans alcool",
+        "price_per_l_cumulated": 0.005
+      },
+      {
+        "name": "Superstrong beer",
+        "price_per_l": 0.16,
+        "beer_kind": "Triple",
+        "price_per_l_cumulated": 0.16
+      }
+    ]
+  }
+}

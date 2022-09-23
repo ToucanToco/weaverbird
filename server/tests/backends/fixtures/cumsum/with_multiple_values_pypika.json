@@ -1,0 +1,151 @@
+{
+  "exclude": [
+    "mongo",
+    "pandas"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "cumsum",
+        "toCumSum": [
+          [
+            "price_per_l",
+            "price_per_l_cumulated"
+          ],
+          [
+            "alcohol_degree",
+            "alcohol_degree_cumulated"
+          ]
+        ],
+        "referenceColumn": "name",
+        "groupby": [
+          "beer_kind"
+        ]
+      },
+      {
+        "name": "select",
+        "columns": [
+          "name",
+          "price_per_l",
+          "beer_kind",
+          "alcohol_degree",
+          "price_per_l_cumulated",
+          "alcohol_degree_cumulated"
+        ]
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "price_per_l",
+          "type": "number"
+        },
+        {
+          "name": "beer_kind",
+          "type": "string"
+        },
+        {
+          "name": "alcohol_degree",
+          "type": "number"
+        },
+        {
+          "name": "price_per_l_cumulated",
+          "type": "number"
+        },
+        {
+          "name": "alcohol_degree_cumulated",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "1.4.0"
+    },
+    "data": [
+      {
+        "name": "Pauwel Kwak",
+        "price_per_l": 0.084,
+        "beer_kind": "Belge blonde forte & Golden Ale",
+        "alcohol_degree": 12.9742721893,
+        "price_per_l_cumulated": 0.084,
+        "alcohol_degree_cumulated": 12.9742721893
+      },
+      {
+        "name": "Ardwen Blonde",
+        "price_per_l": 0.056,
+        "beer_kind": "Best-sellers",
+        "alcohol_degree": 6.9941052632,
+        "price_per_l_cumulated": 0.056,
+        "alcohol_degree_cumulated": 6.9941052632
+      },
+      {
+        "name": "Weihenstephan Hefe Weizen Alcoholarm",
+        "price_per_l": 0.005,
+        "beer_kind": "Blanche & Weizen",
+        "alcohol_degree": 1.2437106918,
+        "price_per_l_cumulated": 0.005,
+        "alcohol_degree_cumulated": 1.2437106918
+      },
+      {
+        "name": "Brasserie De Sutter Brin de Folie",
+        "price_per_l": 0.065,
+        "beer_kind": "Blonde",
+        "alcohol_degree": 7.7474657534,
+        "price_per_l_cumulated": 0.065,
+        "alcohol_degree_cumulated": 7.7474657534
+      },
+      {
+        "name": "Brugse Zot blonde",
+        "price_per_l": 0.06,
+        "beer_kind": "Blonde",
+        "alcohol_degree": 8.7496089385,
+        "price_per_l_cumulated": 0.125,
+        "alcohol_degree_cumulated": 16.497074692
+      },
+      {
+        "name": "Cuvée des Trolls",
+        "price_per_l": 0.07,
+        "beer_kind": "Blonde",
+        "alcohol_degree": 8.9306451613,
+        "price_per_l_cumulated": 0.195,
+        "alcohol_degree_cumulated": 25.4277198533
+      },
+      {
+        "name": "Bellfield Lawless Village IPA",
+        "price_per_l": 0.045,
+        "beer_kind": "India Pale Ale",
+        "alcohol_degree": 4.7174096386,
+        "price_per_l_cumulated": 0.045,
+        "alcohol_degree_cumulated": 4.7174096386
+      },
+      {
+        "name": "Ninkasi Ploploplop",
+        "price_per_l": 0.054,
+        "beer_kind": "India Pale Ale",
+        "alcohol_degree": 4.8773771626,
+        "price_per_l_cumulated": 0.099,
+        "alcohol_degree_cumulated": 9.5947868012
+      },
+      {
+        "name": "Brewdog Nanny State Alcoholvrij",
+        "price_per_l": 0.005,
+        "beer_kind": "Sans alcool",
+        "alcohol_degree": 0.5699344978,
+        "price_per_l_cumulated": 0.005,
+        "alcohol_degree_cumulated": 0.5699344978
+      },
+      {
+        "name": "Superstrong beer",
+        "price_per_l": 0.16,
+        "beer_kind": "Triple",
+        "alcohol_degree": 13.5,
+        "price_per_l_cumulated": 0.16,
+        "alcohol_degree_cumulated": 13.5
+      }
+    ]
+  }
+}
