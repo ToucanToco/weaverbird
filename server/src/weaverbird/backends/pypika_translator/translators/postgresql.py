@@ -2,12 +2,10 @@ from typing import TYPE_CHECKING
 
 from pypika import Field, functions
 from pypika.dialects import PostgreSQLQuery
-from pypika.terms import LiteralValue, Term
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators.base import (
-    DATE_INFO,
     DataTypeMapping,
     Self,
     SQLTranslator,
@@ -37,12 +35,6 @@ class PostgreSQLTranslator(SQLTranslator):
     FROM_DATE_OP = FromDateOp.TO_CHAR
     REGEXP_OP = RegexOp.SIMILAR_TO
     TO_DATE_OP = ToDateOp.TIMESTAMP
-
-    @classmethod
-    def _add_date(
-        cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_INFO
-    ) -> Term:
-        return LiteralValue(f"{date_column.name} + INTERVAL '{add_date_value} {add_date_unit}'")
 
     def duration(
         self: Self,

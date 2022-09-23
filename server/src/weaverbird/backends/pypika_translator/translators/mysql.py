@@ -3,14 +3,13 @@ from typing import TYPE_CHECKING, TypeVar
 
 from pypika import Field, Table, functions
 from pypika.dialects import MySQLQuery
-from pypika.queries import QueryBuilder
-from pypika.terms import LiteralValue, Term
+from pypika.enums import Dialects
+from pypika.terms import Term
 from pypika.utils import format_quotes
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators.base import (
-    DATE_INFO,
     DataTypeMapping,
     SQLTranslator,
     StepContext,
@@ -20,6 +19,8 @@ from weaverbird.pipeline.steps import UnpivotStep
 Self = TypeVar("Self", bound="MySQLTranslator")
 
 if TYPE_CHECKING:
+    from pypika.queries import QueryBuilder
+
     from weaverbird.pipeline.steps import SplitStep
 
 
@@ -41,14 +42,6 @@ class MySQLTranslator(SQLTranslator):
     FROM_DATE_OP = FromDateOp.DATE_FORMAT
     REGEXP_OP = RegexOp.REGEXP
     TO_DATE_OP = ToDateOp.STR_TO_DATE
-
-    @classmethod
-    def _add_date(
-        cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_INFO
-    ) -> Term:
-        return LiteralValue(
-            f"DATE_ADD({date_column.name}, INTERVAL {add_date_value} {add_date_unit})"
-        )
 
     @classmethod
     def _build_unpivot_col(
@@ -89,6 +82,17 @@ class MySQLTranslator(SQLTranslator):
     @staticmethod
     def _cast_to_timestamp(value: str | datetime | Field | Term) -> functions.Function:
         return functions.Timestamp(value)
+
+    @classmethod
+    def _add_date(
+        cls, *, target_column: Field, duration: int, unit: str, dialect: Dialects | None = None
+    ) -> Term:
+        return super()._add_date(
+            target_column=target_column,
+            duration=duration,
+            unit=unit,
+            dialect=dialect or Dialects.MYSQL,
+        )
 
 
 SQLTranslator.register(MySQLTranslator)

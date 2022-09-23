@@ -1,15 +1,17 @@
+from dataclasses import Field
 from typing import TYPE_CHECKING, TypeVar
 
-from pypika import Field, functions
+from pypika import functions
 from pypika.dialects import RedshiftQuery
+from pypika.enums import Dialects
 from pypika.queries import QueryBuilder, Table
-from pypika.terms import CustomFunction, Term
+from pypika.terms import Term
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators.base import (
-    DATE_INFO,
     DataTypeMapping,
+    DateAddWithoutUnderscore,
     SQLTranslator,
     StepContext,
 )
@@ -40,13 +42,6 @@ class RedshiftTranslator(PostgreSQLTranslator):
     FROM_DATE_OP = FromDateOp.TO_CHAR
     REGEXP_OP = RegexOp.SIMILAR_TO
     TO_DATE_OP = ToDateOp.TIMESTAMP
-
-    @classmethod
-    def _add_date(
-        cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_INFO
-    ) -> Term:
-        add_date_func = CustomFunction("DATEADD", ["interval", "increment", "datecol"])
-        return add_date_func(add_date_unit, add_date_value, date_column)
 
     # Redshift's CONCAT function does not support more than 2 terms, but concats can be nested. This
     # helpers allow to nest concatenations:
@@ -84,6 +79,12 @@ class RedshiftTranslator(PostgreSQLTranslator):
             self._recursive_concat(None, tokens).as_(step.new_column_name),
         )
         return StepContext(query, columns + [step.new_column_name])
+
+    @classmethod
+    def _add_date(
+        cls, *, target_column: Field, duration: int, unit: str, dialect: Dialects | None = None
+    ) -> Term:
+        return DateAddWithoutUnderscore(date_part=unit, interval=duration, term=target_column)
 
 
 SQLTranslator.register(RedshiftTranslator)

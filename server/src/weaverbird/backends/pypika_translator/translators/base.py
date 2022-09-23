@@ -19,9 +19,10 @@ from pypika import (
     analytics,
     functions,
 )
-from pypika.enums import Comparator, JoinType
+from pypika.enums import Comparator, Dialects, JoinType
+from pypika.functions import Extract
 from pypika.queries import QueryBuilder, Selectable
-from pypika.terms import AnalyticFunction, BasicCriterion, LiteralValue, Term
+from pypika.terms import AnalyticFunction, BasicCriterion, Function, Interval, LiteralValue, Term
 from pypika.utils import format_quotes
 
 from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relative_date
@@ -124,6 +125,19 @@ class CustomQuery(AliasedQuery):
         return cast(str, self.query)
 
 
+class DateTrunc(Function):
+    def __init__(self, date_format: str, field: Field, alias: str | None = None):
+        super().__init__("DATE_TRUNC", date_format, field, alias=alias)
+
+
+class DateAddWithoutUnderscore(functions.Function):
+    """PyPika's DateAdd is DATE_ADD, Some of our target engines require DATEADD"""
+
+    def __init__(self, date_part, interval, term, alias=None):
+        date_part = getattr(date_part, "value", date_part)
+        super().__init__("DATEADD", LiteralValue(date_part), interval, term, alias=alias)
+
+
 class SQLTranslator(ABC):
     DIALECT: SQLDialect
     QUERY_CLS: Query
@@ -136,11 +150,11 @@ class SQLTranslator(ABC):
     FROM_DATE_OP: FromDateOp
     REGEXP_OP: RegexOp
     TO_DATE_OP: ToDateOp
-    EVOLUTION_DATE_UNIT: dict["EVOLUTION_TYPE", DATE_INFO] = {
-        "vsLastYear": "year",
-        "vsLastMonth": "month",
-        "vsLastWeek": "week",
-        "vsLastDay": "day",
+    EVOLUTION_DATE_UNIT: dict["EVOLUTION_TYPE", str] = {
+        "vsLastYear": "years",
+        "vsLastMonth": "months",
+        "vsLastWeek": "weeks",
+        "vsLastDay": "days",
     }
 
     def __init__(
@@ -581,9 +595,125 @@ class SQLTranslator(ABC):
         return StepContext(self._custom_query(step=step), ["*"])
 
     @classmethod
-    def _get_date_extract_func(cls, *, date_unit: DATE_INFO, target_column: Field) -> LiteralValue:
-        # TODO to implement for other connectors than Snowflake
-        raise NotImplementedError(f"[{cls.DIALECT}] _get_date_extract_func is not implemented")
+    def _day_of_week(cls, target_column: Field) -> Term:
+        return Extract("dow", target_column)
+
+    @classmethod
+    def _date_trunc(cls, date_part: str, target_column: Field) -> Term:
+        return DateTrunc(date_part, target_column)
+
+    @classmethod
+    def _get_date_extract_func(cls, *, date_unit: DATE_INFO, target_column: Field) -> Term:
+        if (lowered_date_unit := date_unit.lower()) in (
+            "seconds",
+            "minutes",
+            "hour",
+            "day",
+            "week",
+            "month",
+            "quarter",
+            "year",
+            "yearofweek",
+        ):
+            return Extract(
+                lowered_date_unit.removesuffix("s"), cls._cast_to_timestamp(target_column)
+            )
+        # ms aren't supported by snowflake's EXTRACT, even if the docs state otherwise:
+        # https://community.snowflake.com/s/question/0D50Z00008dWkrpSAC/supported-time-parts-in-datepart
+        elif lowered_date_unit == "milliseconds":
+            return Extract("second", cls._cast_to_timestamp(target_column)) * 1000
+        elif lowered_date_unit == "dayofweek":
+            return (cls._day_of_week(target_column) % 7) + 1
+        elif lowered_date_unit == "dayofyear":
+            return Extract("doy", target_column)
+        elif lowered_date_unit == "isoweek":
+            return Extract("week", target_column)
+        elif lowered_date_unit == "isodayofweek":
+            # We want monday as 1, sunday as 7. Redshift goes from sunday as 0 to saturday as 6
+            return (
+                Case()
+                .when(cls._day_of_week(target_column) == 0, 7)
+                .else_(cls._day_of_week(target_column))
+            )
+        elif lowered_date_unit == "firstdayofyear":
+            return cls._date_trunc("year", target_column)
+        elif lowered_date_unit == "firstdayofmonth":
+            return cls._date_trunc("month", target_column)
+        elif lowered_date_unit == "firstdayofweek":
+            # 'week' considers monday to be the first day of the week, we want sunday. Thus, we
+            # shift the timestamp back and forth
+            return cls._add_date(
+                target_column=cls._date_trunc(
+                    "week", cls._add_date(target_column=target_column, duration=1, unit="days")
+                ),
+                duration=-1,
+                unit="days",
+            )
+        elif lowered_date_unit == "firstdayofquarter":
+            return cls._date_trunc("quarter", target_column)
+        elif lowered_date_unit == "firstdayofisoweek":
+            return cls._date_trunc("week", target_column)
+        elif lowered_date_unit == "previousday":
+            return cls._add_date(target_column=target_column, unit="days", duration=-1)
+        elif lowered_date_unit == "previousyear":
+            return Extract(
+                "year",
+                cls._add_date(target_column=target_column, unit="years", duration=-1),
+            )
+        elif lowered_date_unit == "previousmonth":
+            return Extract(
+                "month",
+                cls._add_date(target_column=target_column, unit="months", duration=-1),
+            )
+        elif lowered_date_unit == "previousweek":
+            return Extract(
+                "week", cls._add_date(target_column=target_column, unit="weeks", duration=-1)
+            )
+        elif lowered_date_unit == "previousisoweek":
+            return Extract(
+                "week", cls._add_date(target_column=target_column, unit="weeks", duration=-1)
+            )
+        elif lowered_date_unit == "previousquarter":
+            return Extract(
+                "quarter",
+                cls._add_date(
+                    target_column=cls._date_trunc("quarter", target_column),
+                    unit="months",
+                    duration=-3,
+                ),
+            )
+        elif lowered_date_unit == "firstdayofpreviousyear":
+            return cls._add_date(
+                target_column=cls._date_trunc("year", target_column), unit="years", duration=-1
+            )
+        elif lowered_date_unit == "firstdayofpreviousmonth":
+            return cls._add_date(
+                target_column=cls._date_trunc("year", target_column), unit="months", duration=-1
+            )
+        elif lowered_date_unit == "firstdayofpreviousquarter":
+            # Postgres does not support quarters in intervals
+            return cls._add_date(
+                target_column=cls._date_trunc("year", target_column), unit="months", duration=-3
+            )
+        elif lowered_date_unit == "firstdayofpreviousweek":
+            return cls._add_date(
+                target_column=cls._add_date(
+                    target_column=cls._date_trunc(
+                        "week", cls._add_date(target_column=target_column, unit="days", duration=1)
+                    ),
+                    unit="days",
+                    duration=-1,
+                ),
+                unit="weeks",
+                duration=-1,
+            )
+        elif lowered_date_unit == "firstdayofpreviousisoweek":
+            return cls._add_date(
+                target_column=cls._date_trunc("week", target_column), unit="weeks", duration=-1
+            )
+        # Postgres supports EXTRACT(isoyear) but redshift doesn't so...
+        elif lowered_date_unit == "isoyear":
+            return Extract("year", cls._date_trunc("week", target_column))
 
     def dateextract(
         self: Self,
@@ -653,9 +783,9 @@ class SQLTranslator(ABC):
 
     @classmethod
     def _add_date(
-        cls, *, date_column: Field, add_date_value: int, add_date_unit: DATE_INFO
+        cls, *, target_column: Field, duration: int, unit: str, dialect: Dialects | None = None
     ) -> Term:
-        raise NotImplementedError(f"[{cls.DIALECT}] _add_date is not implemented")
+        return target_column + Interval(**{unit: duration, "dialect": dialect})
 
     def evolution(
         self: Self,
@@ -668,9 +798,9 @@ class SQLTranslator(ABC):
 
         prev_table = Table(prev_step_name)
         lagged_date = self._add_date(
-            date_column=prev_table.field(step.date_col),
-            add_date_value=1,
-            add_date_unit=self.EVOLUTION_DATE_UNIT[step.evolution_type],
+            target_column=prev_table.field(step.date_col),
+            duration=1,
+            unit=self.EVOLUTION_DATE_UNIT[step.evolution_type],
         ).as_(step.date_col)
         right_table = Table("right_table")
         new_col = step.new_column if step.new_column else "evol"
