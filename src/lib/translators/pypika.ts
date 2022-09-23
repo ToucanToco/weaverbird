@@ -42,6 +42,10 @@ export class PypikaTranslator extends BaseTranslator {
     return step;
   }
 
+  cumsum(step: Readonly<S.CumSumStep>) {
+    return step;
+  }
+
   delete(step: Readonly<S.DeleteStep>) {
     return step;
   }
