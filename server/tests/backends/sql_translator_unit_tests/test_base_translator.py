@@ -1,7 +1,7 @@
 from typing import Any
 
 import pytest
-from pypika import AliasedQuery, Case, Field, Order, Query, Schema, Table, functions
+from pypika import AliasedQuery, Case, Field, Order, Query, Schema, Table, analytics, functions
 from pypika.enums import JoinType
 from pypika.terms import LiteralValue, Term, ValueWrapper
 
@@ -253,6 +253,37 @@ def test_concatenate(base_translator: BaseTranslator, default_step_kwargs: dict[
     expected_query = Query.from_(previous_step).select(
         *selected_columns,
         functions.Concat(Field("name"), separator, Field("pseudonyme")).as_(new_column_name),
+    )
+
+    assert ctx.selectable.get_sql() == expected_query.get_sql()
+
+
+def test_cumsum(base_translator: BaseTranslator, default_step_kwargs: dict[str, Any]):
+    previous_step = "previous_with"
+    selected_columns = ["select1", "select 2"]
+    to_cum_sum = [["a", None], ["b", "b_sum"]]
+    reference_column = "ref"
+    groupby = ["group1", "group2"]
+
+    step = steps.CumSumStep(toCumSum=to_cum_sum, referenceColumn=reference_column, groupby=groupby)
+    ctx = base_translator.cumsum(step=step, columns=selected_columns, **default_step_kwargs)
+
+    expected_query = (
+        Query.from_(previous_step)
+        .select(
+            *selected_columns,
+            analytics.Sum(Field("a"))
+            .over(*(Field(group) for group in groupby))
+            .orderby(Field(reference_column))
+            .rows(analytics.Preceding())
+            .as_("a_cumsum"),
+            analytics.Sum(Field("b"))
+            .over(*(Field(group) for group in groupby))
+            .orderby(Field(reference_column))
+            .rows(analytics.Preceding())
+            .as_("b_sum"),
+        )
+        .orderby(reference_column)
     )
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
