@@ -245,7 +245,7 @@ class MongoService {
         dataset = annotateDataset(dataset, types[0]);
         dataset = autocastDataset(dataset);
       }
-      return { data: dataset };
+      return { data: dataset, translator: 'mongo50' };
     } else {
       return {
         error: [{ type: 'error', message: responseContent.errmsg }],
@@ -316,7 +316,7 @@ class PandasService {
         pageno: Math.floor(offset / limit) + 1,
       };
       dataset = autocastDataset(dataset);
-      return { data: dataset };
+      return { data: dataset, translator: 'pandas' };
     } else {
       let error = { type: 'error' };
       if (typeof result === 'string') {
@@ -373,7 +373,7 @@ class SnowflakeService {
       };
       dataset = autocastDataset(dataset);
       updateLastExecutedQuery(result.query);
-      return { data: dataset };
+      return { data: dataset, translator: 'snowflake' };
     } else {
       updateLastExecutedQuery(null);
       return {
@@ -425,7 +425,7 @@ class AthenaService {
       };
       dataset = autocastDataset(dataset);
       updateLastExecutedQuery(result.query);
-      return { data: dataset };
+      return { data: dataset, translator: 'athena' };
     } else {
       updateLastExecutedQuery(null);
       return {
@@ -477,7 +477,7 @@ class GoogleBigQueryService {
       };
       dataset = autocastDataset(dataset);
       updateLastExecutedQuery(result.query);
-      return { data: dataset };
+      return { data: dataset, translator: 'google-big-query' };
     } else {
       updateLastExecutedQuery(null);
       return {
@@ -529,7 +529,7 @@ class MySqlService {
       };
       dataset = autocastDataset(dataset);
       updateLastExecutedQuery(result.query);
-      return { data: dataset };
+      return { data: dataset, translator: 'mysql' };
     } else {
       updateLastExecutedQuery(null);
       return {
@@ -581,7 +581,7 @@ class PostgresqlService {
       };
       // dataset = autocastDataset(dataset);
       updateLastExecutedQuery(result.query);
-      return { data: dataset };
+      return { data: dataset, translator: 'postgresql' };
     } else {
       updateLastExecutedQuery(null);
       return {
@@ -633,7 +633,7 @@ class RedshiftService {
       };
       dataset = autocastDataset(dataset);
       updateLastExecutedQuery(result.query);
-      return { data: dataset };
+      return { data: dataset, translator: 'redshift' };
     } else {
       updateLastExecutedQuery(null);
       return {
