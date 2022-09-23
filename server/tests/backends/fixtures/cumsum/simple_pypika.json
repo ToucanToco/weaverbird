@@ -20,7 +20,7 @@
         "columns": [
           "name",
           "price_per_l",
-          "price_per_l_CUMSUM"
+          "price_per_l_cumsum"
         ]
       }
     ]
@@ -37,7 +37,7 @@
           "type": "number"
         },
         {
-          "name": "price_per_l_CUMSUM",
+          "name": "price_per_l_cumsum",
           "type": "number"
         }
       ],
@@ -47,52 +47,52 @@
       {
         "name": "Ardwen Blonde",
         "price_per_l": 0.056,
-        "price_per_l_CUMSUM": 0.056
+        "price_per_l_cumsum": 0.056
       },
       {
         "name": "Bellfield Lawless Village IPA",
         "price_per_l": 0.045,
-        "price_per_l_CUMSUM": 0.101
+        "price_per_l_cumsum": 0.101
       },
       {
         "name": "Brasserie De Sutter Brin de Folie",
         "price_per_l": 0.065,
-        "price_per_l_CUMSUM": 0.166
+        "price_per_l_cumsum": 0.166
       },
       {
         "name": "Brewdog Nanny State Alcoholvrij",
         "price_per_l": 0.005,
-        "price_per_l_CUMSUM": 0.171
+        "price_per_l_cumsum": 0.171
       },
       {
         "name": "Brugse Zot blonde",
         "price_per_l": 0.06,
-        "price_per_l_CUMSUM": 0.231
+        "price_per_l_cumsum": 0.231
       },
       {
         "name": "Cuvée des Trolls",
         "price_per_l": 0.07,
-        "price_per_l_CUMSUM": 0.301
+        "price_per_l_cumsum": 0.301
       },
       {
         "name": "Ninkasi Ploploplop",
         "price_per_l": 0.054,
-        "price_per_l_CUMSUM": 0.355
+        "price_per_l_cumsum": 0.355
       },
       {
         "name": "Pauwel Kwak",
         "price_per_l": 0.084,
-        "price_per_l_CUMSUM": 0.439
+        "price_per_l_cumsum": 0.439
       },
       {
         "name": "Superstrong beer",
         "price_per_l": 0.16,
-        "price_per_l_CUMSUM": 0.599
+        "price_per_l_cumsum": 0.599
       },
       {
         "name": "Weihenstephan Hefe Weizen Alcoholarm",
         "price_per_l": 0.005,
-        "price_per_l_CUMSUM": 0.604
+        "price_per_l_cumsum": 0.604
       }
     ]
   }

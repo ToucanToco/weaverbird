@@ -67,14 +67,6 @@
     },
     "data": [
       {
-        "name": "Pauwel Kwak",
-        "price_per_l": 0.084,
-        "beer_kind": "Belge blonde forte & Golden Ale",
-        "alcohol_degree": 12.9742721893,
-        "price_per_l_cumulated": 0.084,
-        "alcohol_degree_cumulated": 12.9742721893
-      },
-      {
         "name": "Ardwen Blonde",
         "price_per_l": 0.056,
         "beer_kind": "Best-sellers",
@@ -83,12 +75,12 @@
         "alcohol_degree_cumulated": 6.9941052632
       },
       {
-        "name": "Weihenstephan Hefe Weizen Alcoholarm",
-        "price_per_l": 0.005,
-        "beer_kind": "Blanche & Weizen",
-        "alcohol_degree": 1.2437106918,
-        "price_per_l_cumulated": 0.005,
-        "alcohol_degree_cumulated": 1.2437106918
+        "name": "Bellfield Lawless Village IPA",
+        "price_per_l": 0.045,
+        "beer_kind": "India Pale Ale",
+        "alcohol_degree": 4.7174096386,
+        "price_per_l_cumulated": 0.045,
+        "alcohol_degree_cumulated": 4.7174096386
       },
       {
         "name": "Brasserie De Sutter Brin de Folie",
@@ -97,6 +89,14 @@
         "alcohol_degree": 7.7474657534,
         "price_per_l_cumulated": 0.065,
         "alcohol_degree_cumulated": 7.7474657534
+      },
+      {
+        "name": "Brewdog Nanny State Alcoholvrij",
+        "price_per_l": 0.005,
+        "beer_kind": "Sans alcool",
+        "alcohol_degree": 0.5699344978,
+        "price_per_l_cumulated": 0.005,
+        "alcohol_degree_cumulated": 0.5699344978
       },
       {
         "name": "Brugse Zot blonde",
@@ -115,14 +115,6 @@
         "alcohol_degree_cumulated": 25.4277198533
       },
       {
-        "name": "Bellfield Lawless Village IPA",
-        "price_per_l": 0.045,
-        "beer_kind": "India Pale Ale",
-        "alcohol_degree": 4.7174096386,
-        "price_per_l_cumulated": 0.045,
-        "alcohol_degree_cumulated": 4.7174096386
-      },
-      {
         "name": "Ninkasi Ploploplop",
         "price_per_l": 0.054,
         "beer_kind": "India Pale Ale",
@@ -131,12 +123,12 @@
         "alcohol_degree_cumulated": 9.5947868012
       },
       {
-        "name": "Brewdog Nanny State Alcoholvrij",
-        "price_per_l": 0.005,
-        "beer_kind": "Sans alcool",
-        "alcohol_degree": 0.5699344978,
-        "price_per_l_cumulated": 0.005,
-        "alcohol_degree_cumulated": 0.5699344978
+        "name": "Pauwel Kwak",
+        "price_per_l": 0.084,
+        "beer_kind": "Belge blonde forte & Golden Ale",
+        "alcohol_degree": 12.9742721893,
+        "price_per_l_cumulated": 0.084,
+        "alcohol_degree_cumulated": 12.9742721893
       },
       {
         "name": "Superstrong beer",
@@ -145,6 +137,14 @@
         "alcohol_degree": 13.5,
         "price_per_l_cumulated": 0.16,
         "alcohol_degree_cumulated": 13.5
+      },
+      {
+        "name": "Weihenstephan Hefe Weizen Alcoholarm",
+        "price_per_l": 0.005,
+        "beer_kind": "Blanche & Weizen",
+        "alcohol_degree": 1.2437106918,
+        "price_per_l_cumulated": 0.005,
+        "alcohol_degree_cumulated": 1.2437106918
       }
     ]
   }

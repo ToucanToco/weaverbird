@@ -588,14 +588,18 @@ class SQLTranslator(ABC):
             analytics.Sum(Field(col))
             .over(*partition_over)
             .orderby(order_by)
-            .as_(new_col or f"{col}_CUMSUM")
+            .rows(analytics.Preceding())
+            .as_(new_col or f"{col}_cumsum")
             for col, new_col in step.to_cumsum
         ]
         cumsum_colnames = [col.alias for col in cumsum_cols]
         # In case some cumsum columns have overwritten previously exising columns, don't select twice
         original_column_names = [col for col in columns if col not in cumsum_colnames]
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
-            *original_column_names, *cumsum_cols
+        query: "QueryBuilder" = (
+            self.QUERY_CLS.from_(prev_step_name).select(*original_column_names, *cumsum_cols)
+            # Depending on the backend, results are ordered by partition or by reference colum, so
+            # we choose an arbitrary ordering here
+            .orderby(order_by)
         )
         return StepContext(query, original_column_names + cumsum_colnames)
 
