@@ -1,7 +1,7 @@
 import { ActionContext, ActionTree } from 'vuex';
 
 import { BackendError } from '@/lib/backend';
-import { addLocalUniquesToDataset, updateLocalUniquesFromDatabase } from '@/lib/dataset/helpers.ts';
+import { addLocalUniquesToDataset, updateLocalUniquesFromDatabase } from '@/lib/dataset/helpers';
 import { pageOffset } from '@/lib/dataset/pagination';
 import { Pipeline, PipelineStep } from '@/lib/steps';
 
@@ -72,6 +72,8 @@ class Actions {
         pageOffset(state.pagesize, getters.pageno),
         getters.previewSourceRowsSubset,
       );
+      const translator = response.translator ?? 'mongo50'; // mongo50 is not send by backend
+      commit('setTranslator', { translator });
       const backendMessages = response.error || response.warning || [];
       commit('logBackendMessages', { backendMessages });
       if (response.data) {
