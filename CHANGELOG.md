@@ -1,5 +1,10 @@
 # Changelog (weaverbird npm package)
 
+## [0.90.0] - 2022-09-26
+
+- Add geographical steps
+- Retrieve translator from execute pipeline meta
+
 ## [0.89.0] - 2022-08-19
 
 - Export type definitions
@@ -1295,6 +1300,8 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ## Unreleased
 
+[0.90.0]: https://github.com/ToucanToco/weaverbird/compare/v0.90.0...v0.89.0
+[0.89.0]: https://github.com/ToucanToco/weaverbird/compare/v0.89.0...v0.88.0
 [0.88.0]: https://github.com/ToucanToco/weaverbird/compare/v0.88.0...v0.87.0
 [0.87.0]: https://github.com/ToucanToco/weaverbird/compare/v0.87.0...v0.86.0
 [0.86.0]: https://github.com/ToucanToco/weaverbird/compare/v0.86.0...v0.85.0
