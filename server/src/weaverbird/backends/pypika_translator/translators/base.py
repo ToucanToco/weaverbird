@@ -39,7 +39,6 @@ from weaverbird.pipeline.conditions import (
 )
 from weaverbird.pipeline.dates import RelativeDate
 from weaverbird.pipeline.pipeline import Pipeline
-from weaverbird.pipeline.steps.cumsum import CumSumStep
 from weaverbird.pipeline.steps.date_extract import DATE_INFO
 from weaverbird.pipeline.steps.utils.combination import PipelineOrDomainNameOrReference, Reference
 
@@ -57,6 +56,7 @@ if TYPE_CHECKING:
         CompareTextStep,
         ConcatenateStep,
         ConvertStep,
+        CumSumStep,
         CustomSqlStep,
         DateExtractStep,
         DeleteStep,
