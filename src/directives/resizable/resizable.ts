@@ -22,7 +22,7 @@
 import { DirectiveOptions } from 'vue';
 import { DirectiveBinding } from 'vue/types/options';
 
-import ResizableTable, { ResizableTableOptions } from './ResizableTable';
+import ResizableTable, { DEFAULT_OPTIONS, ResizableTableOptions } from './ResizableTable';
 
 // stock table to destroy referent listeners when component is destroyed
 export let resizableTable: ResizableTable | null;
@@ -33,7 +33,17 @@ export const resizable: DirectiveOptions = {
     if (el.nodeName != 'TABLE') return;
     // instantiate resizable table
     const options: ResizableTableOptions = node.value;
-    resizableTable = new ResizableTable(el, options);
+    const maxColumns = options.maxHandleableColumns ?? DEFAULT_OPTIONS.maxHandleableColumns;
+    const isDisabled = options.columns.length > maxColumns;
+    if (isDisabled) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        `Resizable feature is disabled because of columns count (${options.columns.length} > ${maxColumns})`,
+      );
+      resizableTable = null;
+    } else {
+      resizableTable = new ResizableTable(el, options);
+    }
   },
   async componentUpdated(_, node: DirectiveBinding) {
     const options: ResizableTableOptions = node.value;

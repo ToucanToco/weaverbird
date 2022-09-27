@@ -12,6 +12,7 @@ export const DEFAULT_OPTIONS: ResizableTableOptions = {
     handler: 'table__handler',
   },
   columns: [],
+  maxHandleableColumns: 100,
   firstDisplayCharsPerCol: 7.5,
   maxCharsPerCol: 20,
   labelTargetClass: '',
@@ -23,6 +24,7 @@ export interface ResizableTableOptions {
     handler: string; // class applied to col handler
   };
   columns: string[] | number[]; // the columns associated to cols handlers
+  maxHandleableColumns: number; // the number of columns directive can handle without being disabled
   firstDisplayCharsPerCol: number; // The number of chars per col display on first render
   maxCharsPerCol: number; // The max number of chars to display per col
   labelTargetClass: string; // DOM class to select label in col
