@@ -17,7 +17,7 @@ pandas = "^1.2.5"
 pydantic = "^1.9.1"
 numexpr = "^2.8.1"
 typing_extensions = "^4.2"
-geopandas = ">=0.11.1,<1"
+geopandas = "^0.11.1"
 PyPika = "^0.48.9"
 
 # Dependencies for extras
