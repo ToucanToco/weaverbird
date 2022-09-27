@@ -710,7 +710,7 @@ python-versions = ">=3.6.1"
 
 [[package]]
 name = "hypercorn"
-version = "0.13.2"
+version = "0.14.3"
 description = "A ASGI Server based on Hyper libraries and inspired by Gunicorn"
 category = "main"
 optional = true
@@ -724,6 +724,7 @@ toml = "*"
 wsproto = ">=0.14.0"
 
 [package.extras]
+docs = ["pydata_sphinx_theme"]
 h3 = ["aioquic (>=0.9.0,<1.0)"]
 trio = ["trio (>=0.11.0)"]
 uvloop = ["uvloop"]
@@ -1953,7 +1954,7 @@ playground = ["quart", "Quart-CORS", "hypercorn", "pymongo", "pandas", "snowflak
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10, <3.11"
-content-hash = "7f39fcf47f33509742f83a6abf2f13486fc78c16fb7046a7148aba301910fe77"
+content-hash = "9d4721ec7a6bfc84f92fc2ba2ae55cac955a45f759a7aa57986c91057fcb0b95"
 
 [metadata.files]
 aenum = [
@@ -2591,8 +2592,8 @@ hpack = [
     {file = "hpack-4.0.0.tar.gz", hash = "sha256:fc41de0c63e687ebffde81187a948221294896f6bdc0ae2312708df339430095"},
 ]
 hypercorn = [
-    {file = "Hypercorn-0.13.2-py3-none-any.whl", hash = "sha256:ca18f91ab3fa823cbe9e949738f9f2cc07027cd647c80d8f93e4b1a2a175f112"},
-    {file = "Hypercorn-0.13.2.tar.gz", hash = "sha256:6307be5cbdf6ba411967d4661202dc4f79bd511b5d318bc4eed88b09418427f8"},
+    {file = "Hypercorn-0.14.3-py3-none-any.whl", hash = "sha256:7c491d5184f28ee960dcdc14ab45d14633ca79d72ddd13cf4fcb4cb854d679ab"},
+    {file = "Hypercorn-0.14.3.tar.gz", hash = "sha256:4a87a0b7bbe9dc75fab06dbe4b301b9b90416e9866c23a377df21a969d6ab8dd"},
 ]
 hyperframe = [
     {file = "hyperframe-6.0.1-py3-none-any.whl", hash = "sha256:0ec6bafd80d8ad2195c4f03aacba3a8265e57bc4cff261e802bf39970ed02a15"},
