@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## [0.25.0] - 2022-09-27
+
+- PyPika translator: Added support for cumsum step
+- PyPika translator: Added support for dateextract step to all translators except MySQL
+
 ## [0.24.2] - 2022-09-20
 
 - PyPika translator: SQLDialect now uses the same values than frontend translator names
