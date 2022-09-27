@@ -1,5 +1,10 @@
 # Changelog (weaverbird npm package)
 
+## [0.91.0] - 2022-09-27
+
+- Add cumsum step to PyPika translator
+- Add dateextract step to all PyPika translators except MySQL
+
 ## [0.90.0] - 2022-09-26
 
 - Add geographical steps
@@ -1300,6 +1305,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ## Unreleased
 
+[0.91.0]: https://github.com/ToucanToco/weaverbird/compare/v0.91.0...v0.90.0
 [0.90.0]: https://github.com/ToucanToco/weaverbird/compare/v0.90.0...v0.89.0
 [0.89.0]: https://github.com/ToucanToco/weaverbird/compare/v0.89.0...v0.88.0
 [0.88.0]: https://github.com/ToucanToco/weaverbird/compare/v0.88.0...v0.87.0
