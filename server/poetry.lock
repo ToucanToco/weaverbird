@@ -467,17 +467,18 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "geopandas"
-version = "0.10.2"
+version = "0.11.1"
 description = "Geographic pandas extensions"
 category = "main"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 
 [package.dependencies]
 fiona = ">=1.8"
-pandas = ">=0.25.0"
-pyproj = ">=2.2.0"
-shapely = ">=1.6"
+packaging = "*"
+pandas = ">=1.0.0"
+pyproj = ">=2.6.1.post1"
+shapely = ">=1.7,<2"
 
 [[package]]
 name = "google-api-core"
@@ -1776,7 +1777,7 @@ requests = ">=2.23,<3.0"
 
 [[package]]
 name = "toucan-connectors"
-version = "3.21.0"
+version = "3.21.1"
 description = "Toucan Toco Connectors"
 category = "main"
 optional = false
@@ -1795,10 +1796,10 @@ toucan-data-sdk = ">=7.4.2,<8.0.0"
 
 [package.extras]
 ROK = ["PyJWT (>=1.5.3,<3)", "requests (>=2.28.0,<3.0.0)", "simplejson (>=3.17.6,<4.0.0)"]
-Redshift = ["lxml (==4.6.5)", "redshift-connector (>=2.0.907,<3.0.0)"]
+Redshift = ["lxml (==4.9.1)", "redshift-connector (>=2.0.907,<3.0.0)"]
 adobe = ["adobe-analytics (>=1.2.3,<2.0.0)"]
 aircall = ["bearer (==3.1.0)"]
-all = ["PyHive[hive] (>=0.6.5,<1.0)", "PyJWT (>=1.5.3,<3)", "PyMySQL (>=1.0.2,<2.0.0)", "adobe-analytics (>=1.2.3,<2.0.0)", "awswrangler (>=2.15.1,<3.0.0)", "bearer (==3.1.0)", "clickhouse-driver (>=0.2.3,<1.0)", "cx-Oracle (>=8.3.0,<9.0.0)", "dataiku-api-client (>=9.0.1,<10.0.0)", "elasticsearch (>=7.11.0,<8)", "facebook-sdk (>=3.1.0,<4.0.0)", "google-api-python-client (>=2,<3)", "google-cloud-bigquery[bqstorage,pandas] (>=2,<3)", "googleads (>=32.0.0,<33.0.0)", "gspread (>=5.4.0,<6.0.0)", "lxml (==4.6.5)", "oauth2client (>=4.1.3,<5.0.0)", "oauthlib (==3.2.0)", "openpyxl (>=3.0.9,<4.0.0)", "psycopg2 (>=2.7.4,<3.0.0)", "pyarrow (<7)", "pyhdb (>=0.3.4,<1.0)", "pymongo (>=3.12.0)", "pyodbc (>=4,<5)", "python-graphql-client (>=0.4.3,<1.0)", "redshift-connector (>=2.0.907,<3.0.0)", "requests-oauthlib (==1.3.1)", "simplejson (>=3.17.6,<4.0.0)", "snowflake-connector-python (>=2.7.8,<3.0.0)", "tctc-odata (>=0.3,<1.0)", "toucan-client (>=1.0.1,<2.0.0)", "xmltodict (>=0.13.0,<1.0)", "zeep (>=4.1.0,<5.0.0)"]
+all = ["PyHive[hive] (>=0.6.5,<1.0)", "PyJWT (>=1.5.3,<3)", "PyMySQL (>=1.0.2,<2.0.0)", "adobe-analytics (>=1.2.3,<2.0.0)", "awswrangler (>=2.15.1,<3.0.0)", "bearer (==3.1.0)", "clickhouse-driver (>=0.2.3,<1.0)", "cx-Oracle (>=8.3.0,<9.0.0)", "dataiku-api-client (>=9.0.1,<10.0.0)", "elasticsearch (>=7.11.0,<8)", "facebook-sdk (>=3.1.0,<4.0.0)", "google-api-python-client (>=2,<3)", "google-cloud-bigquery[bqstorage,pandas] (>=2,<4)", "googleads (>=32,<34)", "gspread (>=5.4.0,<6.0.0)", "lxml (==4.9.1)", "oauth2client (>=4.1.3,<5.0.0)", "oauthlib (==3.2.1)", "openpyxl (>=3.0.9,<4.0.0)", "psycopg2 (>=2.7.4,<3.0.0)", "pyarrow (<7)", "pyhdb (>=0.3.4,<1.0)", "pymongo (>=3.12.0)", "pyodbc (>=4,<5)", "python-graphql-client (>=0.4.3,<1.0)", "redshift-connector (>=2.0.907,<3.0.0)", "requests-oauthlib (==1.3.1)", "simplejson (>=3.17.6,<4.0.0)", "snowflake-connector-python (>=2.7.8,<3.0.0)", "tctc-odata (>=0.3,<1.0)", "toucan-client (>=1.0.1,<2.0.0)", "xmltodict (>=0.13.0,<1.0)", "zeep (>=4.1.0,<5.0.0)"]
 awsathena = ["awswrangler (>=2.15.1,<3.0.0)"]
 azure_mssql = ["pyodbc (>=4,<5)"]
 clickhouse = ["clickhouse-driver (>=0.2.3,<1.0)"]
@@ -1807,25 +1808,25 @@ elasticsearch = ["elasticsearch (>=7.11.0,<8)"]
 facebook = ["facebook-sdk (>=3.1.0,<4.0.0)"]
 github = ["python-graphql-client (>=0.4.3,<1.0)"]
 google_analytics = ["google-api-python-client (>=2,<3)", "oauth2client (>=4.1.3,<5.0.0)"]
-google_big_query = ["google-cloud-bigquery[bqstorage,pandas] (>=2,<3)"]
+google_big_query = ["google-cloud-bigquery[bqstorage,pandas] (>=2,<4)"]
 google_cloud_mysql = ["PyMySQL (>=1.0.2,<2.0.0)"]
 google_my_business = ["google-api-python-client (>=2,<3)"]
 google_sheets = ["google-api-python-client (>=2,<3)"]
 google_spreadsheet = ["gspread (>=5.4.0,<6.0.0)", "oauth2client (>=4.1.3,<5.0.0)"]
 hive = ["PyHive[hive] (>=0.6.5,<1.0)"]
-http_api = ["oauthlib (==3.2.0)", "requests-oauthlib (==1.3.1)", "xmltodict (>=0.13.0,<1.0)"]
+http_api = ["oauthlib (==3.2.1)", "requests-oauthlib (==1.3.1)", "xmltodict (>=0.13.0,<1.0)"]
 lightspeed = ["bearer (==3.1.0)"]
 mongo = ["pymongo (>=3.12.0)"]
 mssql = ["pyodbc (>=4,<5)"]
 mssql_TLSv1_0 = ["pyodbc (>=4,<5)"]
 mysql = ["PyMySQL (>=1.0.2,<2.0.0)"]
 net_explorer = ["openpyxl (>=3.0.9,<4.0.0)"]
-odata = ["oauthlib (==3.2.0)", "requests-oauthlib (==1.3.1)", "tctc-odata (>=0.3,<1.0)"]
+odata = ["oauthlib (==3.2.1)", "requests-oauthlib (==1.3.1)", "tctc-odata (>=0.3,<1.0)"]
 oracle_sql = ["cx-Oracle (>=8.3.0,<9.0.0)"]
 postgres = ["psycopg2 (>=2.7.4,<3.0.0)"]
 sap_hana = ["pyhdb (>=0.3.4,<1.0)"]
 snowflake = ["PyJWT (>=1.5.3,<3)", "pyarrow (<7)", "snowflake-connector-python (>=2.7.8,<3.0.0)"]
-soap = ["lxml (==4.6.5)", "zeep (>=4.1.0,<5.0.0)"]
+soap = ["lxml (==4.9.1)", "zeep (>=4.1.0,<5.0.0)"]
 toucan_toco = ["toucan-client (>=1.0.1,<2.0.0)"]
 
 [[package]]
@@ -1937,7 +1938,7 @@ playground = ["quart", "Quart-CORS", "hypercorn", "pymongo", "pandas", "snowflak
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10, <3.11"
-content-hash = "5bc9735b4728e6ca05d146062e2f449d6b3f0799b9348f18c04c05cfe6e2784b"
+content-hash = "6461cf2763cd1510dea4974db6f882a0b393da8e63cb4265eac7676bb350400a"
 
 [metadata.files]
 aenum = [
@@ -2374,8 +2375,8 @@ frozenlist = [
     {file = "frozenlist-1.3.1.tar.gz", hash = "sha256:3a735e4211a04ccfa3f4833547acdf5d2f863bfeb01cfd3edaffbc251f15cec8"},
 ]
 geopandas = [
-    {file = "geopandas-0.10.2-py2.py3-none-any.whl", hash = "sha256:1722853464441b603d9be3d35baf8bde43831424a891e82a8545eb8997b65d6c"},
-    {file = "geopandas-0.10.2.tar.gz", hash = "sha256:efbf47e70732e25c3727222019c92b39b2e0a66ebe4fe379fbe1aa43a2a871db"},
+    {file = "geopandas-0.11.1-py3-none-any.whl", hash = "sha256:f3344937f3866e52996c7e505d56dae78be117dc840cd1c23507da0b33c0af71"},
+    {file = "geopandas-0.11.1.tar.gz", hash = "sha256:f0f0c8d0423d30cf81de2056d853145c4362739350a7f8f2d72cc7409ef1eca1"},
 ]
 google-api-core = [
     {file = "google-api-core-2.8.2.tar.gz", hash = "sha256:06f7244c640322b508b125903bb5701bebabce8832f85aba9335ec00b3d02edc"},
@@ -3574,8 +3575,8 @@ toucan-client = [
     {file = "toucan_client-1.1.2.tar.gz", hash = "sha256:e604dc04140b84cf9b3ed879b19580b5b6342c6eaffbe5e49df2b8e113edb6c0"},
 ]
 toucan-connectors = [
-    {file = "toucan-connectors-3.21.0.tar.gz", hash = "sha256:cc8f877d7107b9c7f39aa7876e8b9b40cc881c7ea7fe30487b1ccef62ddbda34"},
-    {file = "toucan_connectors-3.21.0-py3-none-any.whl", hash = "sha256:92f414e156c51c551de9300bf17dba0f537f19b947bb8f7308ee6e0bba2f3896"},
+    {file = "toucan-connectors-3.21.1.tar.gz", hash = "sha256:0a48007a975dec282bce49cf317cec5b1d90c68b6c1c039bbe73b59bf51fa016"},
+    {file = "toucan_connectors-3.21.1-py3-none-any.whl", hash = "sha256:9ad80418197963d5b3931ed8669bf2d271a8afd673b43afafe6341fde2922df8"},
 ]
 toucan-data-sdk = [
     {file = "toucan_data_sdk-7.5.0-py3-none-any.whl", hash = "sha256:1035b72ab94cafd4c45a0c0724cff73fe7d62fbb310f799c1afd4ced2ade8041"},
