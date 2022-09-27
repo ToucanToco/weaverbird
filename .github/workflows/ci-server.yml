@@ -21,7 +21,8 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ['3.10']
+        # FIXME: remove the .6 minor once we're on mypy>=0.981 (JSON metadata not available on PyPI for now)
+        python-version: ['3.10.6']
 
     defaults:
       run:
