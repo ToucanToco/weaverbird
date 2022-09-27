@@ -1480,7 +1480,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "quart"
-version = "0.17.0"
+version = "0.18.0"
 description = "A Python ASGI web microframework with the same API as Flask"
 category = "main"
 optional = true
@@ -1494,10 +1494,10 @@ hypercorn = ">=0.11.2"
 itsdangerous = "*"
 jinja2 = "*"
 markupsafe = "*"
-toml = "*"
-werkzeug = ">=2.0.0"
+werkzeug = ">=2.2.0"
 
 [package.extras]
+docs = ["pydata_sphinx_theme"]
 dotenv = ["python-dotenv"]
 
 [[package]]
@@ -1953,7 +1953,7 @@ playground = ["quart", "Quart-CORS", "hypercorn", "pymongo", "pandas", "snowflak
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10, <3.11"
-content-hash = "5f66b90949272f58afc7d66fe83b18eb384a4acf5fe2a6c0ca8969845406c64f"
+content-hash = "7f39fcf47f33509742f83a6abf2f13486fc78c16fb7046a7148aba301910fe77"
 
 [metadata.files]
 aenum = [
@@ -3404,8 +3404,8 @@ pyyaml = [
     {file = "PyYAML-6.0.tar.gz", hash = "sha256:68fb519c14306fec9720a2a5b45bc9f0c8d1b9c72adf45c37baedfcd949c35a2"},
 ]
 quart = [
-    {file = "Quart-0.17.0-py3-none-any.whl", hash = "sha256:69480e7384935feff1f50293a8cb70c5d31f568af94ed792d043bb368b50bd50"},
-    {file = "Quart-0.17.0.tar.gz", hash = "sha256:2cf213d8b83fa701a83e3b3125e9102a937cefd1e97e9583f22ee2fa79139640"},
+    {file = "Quart-0.18.0-py3-none-any.whl", hash = "sha256:5bef6711d25e379ce8a1ed3f7d3ec72eae4159d116e8d480d1cab59c8bb6f44d"},
+    {file = "Quart-0.18.0.tar.gz", hash = "sha256:0c2465ef5768890431650636f51fe2cc459de6cf4cf3363870ae2a1f3dba9eb1"},
 ]
 quart-cors = [
     {file = "Quart-CORS-0.5.0.tar.gz", hash = "sha256:ea08d26aef918d59194fbf065cde9b6cae90dc5f21120dcd254d7d46190cd293"},
