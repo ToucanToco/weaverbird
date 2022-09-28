@@ -30,6 +30,10 @@ describe('Resizable directive', () => {
       shallowMount(FakeOtherComponent);
       expect(ResizableTableStub).not.toHaveBeenCalled();
     });
+    it('should not create a resizable table when columns count is higher than max handleable columns', () => {
+      shallowMount(FakeOtherComponent, { propsData: { maxHandleableColumns: 1 } });
+      expect(ResizableTableStub).not.toHaveBeenCalled();
+    });
   });
 
   describe('default', () => {
