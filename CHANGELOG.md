@@ -1,5 +1,8 @@
 # Changelog (weaverbird npm package)
 
+## [0.91.1] - 2022-09-28
+- Resizable directive: disable directive when amount of columns is not handlable
+
 ## [0.91.0] - 2022-09-27
 
 - Add cumsum step to PyPika translator
@@ -1305,6 +1308,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ## Unreleased
 
+[0.91.1]: https://github.com/ToucanToco/weaverbird/compare/v0.91.1...v0.91.0
 [0.91.0]: https://github.com/ToucanToco/weaverbird/compare/v0.91.0...v0.90.0
 [0.90.0]: https://github.com/ToucanToco/weaverbird/compare/v0.90.0...v0.89.0
 [0.89.0]: https://github.com/ToucanToco/weaverbird/compare/v0.89.0...v0.88.0
