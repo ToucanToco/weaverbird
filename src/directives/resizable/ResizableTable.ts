@@ -12,7 +12,7 @@ export const DEFAULT_OPTIONS: ResizableTableOptions = {
     handler: 'table__handler',
   },
   columns: [],
-  maxHandleableColumns: 100,
+  maxHandleableColumns: 50,
   firstDisplayCharsPerCol: 7.5,
   maxCharsPerCol: 20,
   labelTargetClass: '',
