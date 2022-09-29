@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## [0.25.2] - 2022-09-27
+
+- Fixed "matches" operator behaviour of the IfThenElse step in case the column the condition applies to contains NA values
+
+## [0.25.1] - 2022-09-27
+
+- Bumped geopandas from 0.10.0 -> 0.11.1
+
 ## [0.25.0] - 2022-09-27
 
 - PyPika translator: Added support for cumsum step
