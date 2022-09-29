@@ -24,7 +24,6 @@ def apply_condition(condition: Condition, df: DataFrame) -> Series:
         filter = apply_condition(condition, df)
         df[filter]  # The filtered DataFrame
     """
-
     if isinstance(condition, ComparisonCondition):
         return getattr(df[condition.column], condition.operator)(condition.value)
     elif isinstance(condition, InclusionCondition):
@@ -40,7 +39,9 @@ def apply_condition(condition: Condition, df: DataFrame) -> Series:
         else:
             return f
     elif isinstance(condition, MatchCondition):
-        f = df[condition.column].str.contains(condition.value)
+        # We must ensure that the column does not contain pd.NA, as we must return only boolean
+        # values
+        f = df[condition.column].notnull() & df[condition.column].str.contains(condition.value)
         if condition.operator.startswith("not"):
             return ~f
         else:

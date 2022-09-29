@@ -1,5 +1,5 @@
 import pytest
-from pandas import DataFrame
+from pandas import NA, DataFrame
 
 from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.ifthenelse import execute_ifthenelse
@@ -124,3 +124,24 @@ def test_benchmark_ifthenelse(benchmark):
         }
     )
     benchmark(execute_ifthenelse, step, big_df)
+
+
+def test_ifthenelse_match_with_na():
+    df = DataFrame({"a": ["hello", NA, "world"], "b": ["b_hello", "b_null", "b_world"]})
+    step = IfthenelseStep(
+        **{
+            "name": "ifthenelse",
+            "if": {"column": "a", "operator": "matches", "value": "hello"},
+            "then": '"hello"',
+            "else": {
+                "name": "ifthenelse",
+                "if": {"column": "a", "operator": "matches", "value": "world"},
+                "then": '"world"',
+                "else": "b",
+            },
+            "newColumn": "test",
+        }
+    )
+    result = execute_ifthenelse(step, df)
+    # Cannot use assert_dataframes_equals here, because "boolean value of NA" is ambiguous
+    assert result["test"].to_list() == ["hello", "b_null", "world"]
