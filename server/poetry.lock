@@ -1105,7 +1105,7 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "psycopg"
-version = "3.1"
+version = "3.1.2"
 description = "PostgreSQL database adapter for Python"
 category = "main"
 optional = true
@@ -1116,8 +1116,8 @@ typing-extensions = {version = ">=4.1", markers = "python_version < \"3.11\""}
 tzdata = {version = "*", markers = "sys_platform == \"win32\""}
 
 [package.extras]
-binary = ["psycopg-binary (==3.1)"]
-c = ["psycopg-c (==3.1)"]
+binary = ["psycopg-binary (==3.1.2)"]
+c = ["psycopg-c (==3.1.2)"]
 dev = ["black (>=22.3.0)", "dnspython (>=2.1)", "flake8 (>=4.0)", "mypy (>=0.940)", "types-setuptools (>=57.4)", "wheel (>=0.37)"]
 docs = ["Sphinx (>=5.0)", "furo (==2022.6.21)", "sphinx-autobuild (>=2021.3.14)", "sphinx-autodoc-typehints (>=1.12)"]
 pool = ["psycopg-pool"]
@@ -3037,8 +3037,8 @@ protobuf = [
     {file = "protobuf-4.21.6.tar.gz", hash = "sha256:6b1040a5661cd5f6e610cbca9cfaa2a17d60e2bb545309bc1b278bb05be44bdd"},
 ]
 psycopg = [
-    {file = "psycopg-3.1-py3-none-any.whl", hash = "sha256:46a13ea46d16523c0f4fbf98a573881ba483ca94a920940629e29a688925121a"},
-    {file = "psycopg-3.1.tar.gz", hash = "sha256:1dfbbf221de14eab4bf01c6a5f15496f737d6b6e0db698f9e6081a692c598dc1"},
+    {file = "psycopg-3.1.2-py3-none-any.whl", hash = "sha256:a61d8841352b2e5c83c0677b8b856bafbf57568e5687ace8872738b29acfd5c9"},
+    {file = "psycopg-3.1.2.tar.gz", hash = "sha256:57b356b1dc86a45f0a6388ca6fde77360639eb24c9aae033ee8fbbed713dce79"},
 ]
 psycopg2 = [
     {file = "psycopg2-2.9.3-cp310-cp310-win32.whl", hash = "sha256:083707a696e5e1c330af2508d8fab36f9700b26621ccbcb538abe22e15485362"},
