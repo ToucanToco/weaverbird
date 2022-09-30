@@ -806,11 +806,11 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "joblib"
-version = "0.17.0"
-description = "Lightweight pipelining: using Python functions as pipeline jobs."
+version = "1.2.0"
+description = "Lightweight pipelining with Python functions"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 
 [[package]]
 name = "jq"
@@ -1841,19 +1841,22 @@ toucan_toco = ["toucan-client (>=1.0.1,<2.0.0)"]
 
 [[package]]
 name = "toucan-data-sdk"
-version = "7.5.0"
+version = "7.4.2"
 description = "Toucan data SDK"
 category = "main"
 optional = false
-python-versions = ">=3.8,<4.0"
+python-versions = "*"
 
 [package.dependencies]
-engarde = ">=0.4.0,<0.5.0"
-joblib = "<1"
-pandas = ">=1.4.1,<2.0.0"
-python-slugify = ">=5.0.2,<6.0.0"
-tabulate = ">=0.8.9,<0.9.0"
-toucan-client = ">=1.1.0,<2.0.0"
+engarde = "*"
+joblib = ">=0.12"
+pandas = "*"
+python-slugify = "*"
+tabulate = "*"
+toucan-client = "*"
+
+[package.extras]
+test = ["black", "flake8", "flake8-quotes", "isort", "mypy", "pytest", "pytest-cov", "pytest-mock"]
 
 [[package]]
 name = "types-python-dateutil"
@@ -2619,8 +2622,8 @@ jmespath = [
     {file = "jmespath-1.0.1.tar.gz", hash = "sha256:90261b206d6defd58fdd5e85f478bf633a2901798906be2ad389150c5c60edbe"},
 ]
 joblib = [
-    {file = "joblib-0.17.0-py3-none-any.whl", hash = "sha256:698c311779f347cf6b7e6b8a39bb682277b8ee4aba8cf9507bc0cf4cd4737b72"},
-    {file = "joblib-0.17.0.tar.gz", hash = "sha256:9e284edd6be6b71883a63c9b7f124738a3c16195513ad940eae7e3438de885d5"},
+    {file = "joblib-1.2.0-py3-none-any.whl", hash = "sha256:091138ed78f800342968c523bdde947e7a305b8594b910a0fea2ab83c3c6d385"},
+    {file = "joblib-1.2.0.tar.gz", hash = "sha256:e1cee4a79e4af22881164f218d4311f60074197fb707e082e803b61f6d137018"},
 ]
 jq = [
     {file = "jq-1.2.2-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:d9175f17e13c8ed6da5e6248035ef4e298bdb4f9ffb480bd60fd3e907fad54da"},
@@ -3575,8 +3578,8 @@ toucan-connectors = [
     {file = "toucan_connectors-3.21.1-py3-none-any.whl", hash = "sha256:9ad80418197963d5b3931ed8669bf2d271a8afd673b43afafe6341fde2922df8"},
 ]
 toucan-data-sdk = [
-    {file = "toucan_data_sdk-7.5.0-py3-none-any.whl", hash = "sha256:1035b72ab94cafd4c45a0c0724cff73fe7d62fbb310f799c1afd4ced2ade8041"},
-    {file = "toucan_data_sdk-7.5.0.tar.gz", hash = "sha256:29a2d4288ed403aba328561cad1d748077e22ead64edf1c40866ccf146125714"},
+    {file = "toucan_data_sdk-7.4.2-py3-none-any.whl", hash = "sha256:70ba3af659e88e6a80919f934326a4cba98ffe624865a51d9052b99dfb55beab"},
+    {file = "toucan_data_sdk-7.4.2.tar.gz", hash = "sha256:bf6df2a97494dd74c80f99cc68e76de79a3dd41c8ac2678134c69e9bb3b8c13f"},
 ]
 types-python-dateutil = [
     {file = "types-python-dateutil-2.8.19.tar.gz", hash = "sha256:bfd3eb39c7253aea4ba23b10f69b017d30b013662bb4be4ab48b20bbd763f309"},
