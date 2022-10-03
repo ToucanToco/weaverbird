@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, TypeVar
 from pypika import Field, Table, functions
 from pypika.dialects import MySQLQuery
 from pypika.enums import Dialects
-from pypika.terms import Term
+from pypika.terms import Case, Term
 from pypika.utils import format_quotes
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
@@ -67,15 +67,30 @@ class MySQLTranslator(SQLTranslator):
         col_field: Field = Table(prev_step_name)[step.column]
         new_cols = [f"{step.column}_{i + 1}" for i in range(step.number_cols_to_keep)]
 
+        def build_columns():
+            for i in range(step.number_cols_to_keep):
+                yield (
+                    # We need a case, because by default, the nested SubstringIndex will return the
+                    # entire string: -1 (the last part of the split) will be index 0. So we first
+                    # check if the delimiter is even contained in the regex
+                    Case()
+                    .when(
+                        # This is hacky but I couldn't figure another way. This regex ensures that
+                        # the group matches at least i times (i.e., the delimiter is present at
+                        # least n times). The regex is always true for i=0 so kind of unnecessary,
+                        # but having another Case statement for i=0 would be hell
+                        col_field.regexp(f"(({step.delimiter}).*){{{i}}}"),
+                        # https://stackoverflow.com/a/32500349
+                        SubstringIndex(
+                            SubstringIndex(col_field, step.delimiter, i + 1), step.delimiter, -1
+                        ),
+                    )
+                    .else_("")
+                    .as_(new_cols[i])
+                )
+
         query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
-            *columns,
-            *(
-                # https://stackoverflow.com/a/32500349
-                SubstringIndex(
-                    SubstringIndex(col_field, step.delimiter, i + 1), step.delimiter, -1
-                ).as_(new_cols[i])
-                for i in range(step.number_cols_to_keep)
-            ),
+            *columns, *build_columns()
         )
         return StepContext(query, columns + new_cols)
 
