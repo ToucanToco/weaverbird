@@ -2,6 +2,8 @@ exclude:
 - mongo
 - pandas
 - snowflake
+# AwsWrangler seems to replace empty strings with NULLS... guess we'll have a special case for Athena
+- athena_pypika
 step:
   pipeline:
   - columns:

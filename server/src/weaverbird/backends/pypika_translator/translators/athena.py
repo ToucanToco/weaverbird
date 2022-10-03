@@ -1,6 +1,6 @@
 from pypika.dialects import Query
 from pypika.enums import Dialects
-from pypika.terms import CustomFunction, Field, Term
+from pypika.terms import Case, CustomFunction, Field, Term
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import RegexOp, ToDateOp
@@ -33,6 +33,12 @@ class AthenaTranslator(SQLTranslator):
         # quoted. PyPika's DateAdd function removes them by applying LiteralValue to the unit
         custom = CustomFunction("DATE_ADD", ["unit", "duration", "target"])
         return custom(Term.wrap_constant(unit.removesuffix("s")), duration, target_column)
+
+    @staticmethod
+    def _wrap_split_part(term: Term) -> Term:
+        # Athena is the only backend for which SPLIT_PART returns NULL fox out-of-range
+        # indexes. Also, IF_NULL is not available
+        return Case().when(term.isnull(), "").else_(term)
 
 
 SQLTranslator.register(AthenaTranslator)
