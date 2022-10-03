@@ -1,0 +1,30 @@
+exclude:
+- mongo
+- pandas
+- snowflake
+step:
+  pipeline:
+  - condition:
+      column: name
+      operator: notmatches
+      value: beer
+    name: filter
+  - columns:
+    - name
+    name: select
+expected:
+  data:
+  - name: Ninkasi Ploploplop
+  - name: Brewdog Nanny State Alcoholvrij
+  - name: Ardwen Blonde
+  - name: "Cuv\xE9e des Trolls"
+  - name: Weihenstephan Hefe Weizen Alcoholarm
+  - name: Bellfield Lawless Village IPA
+  - name: Pauwel Kwak
+  - name: Brasserie De Sutter Brin de Folie
+  - name: Brugse Zot blonde
+  schema:
+    fields:
+    - name: name
+      type: string
+    pandas_version: 1.4.0
