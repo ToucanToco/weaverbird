@@ -900,7 +900,7 @@ class SQLTranslator(ABC):
                     return column_field.notin(condition.value)
 
             case MatchCondition():
-                compliant_regex = _compliant_regex(condition.value, self.DIALECT)
+                compliant_regex = get_compliant_regex(condition.value, self.DIALECT)
 
                 if condition.operator == "matches":
                     match self.REGEXP_OP:
@@ -1567,7 +1567,7 @@ class RegexpMatching(Comparator):
     regexp = " REGEXP "
 
 
-def _compliant_regex(pattern: str, dialect: SQLDialect) -> str:
+def get_compliant_regex(pattern: str, dialect: SQLDialect) -> str:
     """
     Like LIKE, the SIMILAR TO operator succeeds only if its pattern matches the entire string;
     this is unlike common regular expression behavior wherethe pattern
@@ -1582,5 +1582,7 @@ def _compliant_regex(pattern: str, dialect: SQLDialect) -> str:
         return f"{pattern}"
     elif dialect in (SQLDialect.SNOWFLAKE, SQLDialect.MYSQL):
         return f".*{pattern}.*"
+    elif dialect == SQLDialect.POSTGRES:
+        return f"%%{pattern}%%"
 
     return f"%{pattern}%"
