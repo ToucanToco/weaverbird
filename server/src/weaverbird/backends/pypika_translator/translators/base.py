@@ -1314,6 +1314,11 @@ class SQLTranslator(ABC):
 
         return StepContext(query, columns)
 
+    @staticmethod
+    def _wrap_split_part(term: Term) -> Term:
+        """Wraps calls to SplitPart if needed"""
+        return term
+
     def split(
         self: Self,
         *,
@@ -1328,7 +1333,9 @@ class SQLTranslator(ABC):
             query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
                 *columns,
                 *(
-                    functions.SplitPart(col_field, step.delimiter, i + 1).as_(new_cols[i])
+                    self._wrap_split_part(
+                        functions.SplitPart(col_field, step.delimiter, i + 1)
+                    ).as_(new_cols[i])
                     for i in range(step.number_cols_to_keep)
                 ),
             )
