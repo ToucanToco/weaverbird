@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- PyPika: Fixed "split" step with Google Big Query backend: If provided, the delimiter is now passed wrapped in single quotes.
+  Also, empty strings are returned rather than null values, for consistency with other backends
+- PyPika: Fixed "split" step with Athena backend: empty strings are returned rather than null values, for consistency with other backends
+- PyPika: Fixed "split" step with MySQL backend, in case there are more `keep_columns` than splitted parts, fill those with empty string
+  rather than the entire string to split
+
 ## [0.25.2] - 2022-09-27
 
 - Fixed "matches" operator behaviour of the IfThenElse step in case the column the condition applies to contains NA values
