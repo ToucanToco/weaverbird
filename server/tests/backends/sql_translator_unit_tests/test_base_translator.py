@@ -5,7 +5,11 @@ from pypika import AliasedQuery, Case, Field, Order, Query, Schema, Table, analy
 from pypika.enums import JoinType
 from pypika.terms import LiteralValue, Term, ValueWrapper
 
-from weaverbird.backends.pypika_translator.translators.base import SQLTranslator
+from weaverbird.backends.pypika_translator.dialects import SQLDialect
+from weaverbird.backends.pypika_translator.translators.base import (
+    SQLTranslator,
+    get_compliant_regex,
+)
 from weaverbird.pipeline import conditions, steps
 from weaverbird.pipeline.pipeline import DomainStep
 from weaverbird.pipeline.steps.utils.combination import Reference
@@ -694,3 +698,15 @@ def test_append_simple(base_translator: BaseTranslator, default_step_kwargs: dic
         .orderby("name", "created_at", "user_id")
     )
     assert ctx.selectable.get_sql() == expected_query.get_sql()
+
+
+def test_get_compliant_regex(base_translator: BaseTranslator):
+    """
+    We need to test all surounding characters for compliant regex here
+    depending on the SQLDialect
+    """
+    assert get_compliant_regex("test", SQLDialect.ATHENA) == "test"
+    assert get_compliant_regex("test", SQLDialect.GOOGLEBIGQUERY) == "test"
+    assert get_compliant_regex("test", SQLDialect.SNOWFLAKE) == ".*test.*"
+    assert get_compliant_regex("test", SQLDialect.MYSQL) == ".*test.*"
+    assert get_compliant_regex("test", SQLDialect.POSTGRES) == "%%test%%"

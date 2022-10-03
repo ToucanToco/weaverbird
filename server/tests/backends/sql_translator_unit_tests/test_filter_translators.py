@@ -5,7 +5,11 @@ from pypika import Field, Query, functions
 from pypika.terms import BasicCriterion, ValueWrapper
 
 from weaverbird.backends.pypika_translator.operators import RegexOp
-from weaverbird.backends.pypika_translator.translators.base import RegexpMatching, SQLTranslator
+from weaverbird.backends.pypika_translator.translators.base import (
+    RegexpMatching,
+    SQLTranslator,
+    get_compliant_regex,
+)
 from weaverbird.pipeline import conditions, steps
 
 
@@ -156,7 +160,7 @@ def test_matches_regexp_filter(
     ctx = regexp_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
         Query.from_(previous_step)
-        .where(Field(column).regexp(f"%{regex}%"))
+        .where(Field(column).regexp(get_compliant_regex(regex, regexp_translator.DIALECT)))
         .select(*selected_columns)
     )
 
