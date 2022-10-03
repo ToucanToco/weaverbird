@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 from pypika import Field, Query, Table, functions
 from pypika.enums import Dialects
 from pypika.queries import QueryBuilder
-from pypika.terms import Case, Function, Interval, LiteralValue, Term
+from pypika.terms import Case, CustomFunction, Function, Interval, LiteralValue, Term
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
@@ -25,6 +25,13 @@ class GBQDateTrunc(Function):
 
     def __init__(self, date_format: str, field: Field, alias: str | None = None):
         super().__init__("DATE_TRUNC", field, LiteralValue(date_format.upper()), alias=alias)
+
+
+class GBQSplit(Function):
+    def __init__(self, field: Field, delimiter: str | None = None) -> None:
+        # Empty string is the same as None here
+        args = ("SPLIT", field, Term.wrap_constant(delimiter)) if delimiter else ("SPLIT", field)
+        super().__init__(*args)
 
 
 class GoogleBigQueryQuery(Query):
@@ -92,12 +99,29 @@ class GoogleBigQueryTranslator(SQLTranslator):
         step: "SplitStep",
     ) -> StepContext:
         col_field: Field = Table(prev_step_name)[step.column]
-        splitted_cols = [
-            LiteralValue(f'SPLIT(`{col_field.name}`, "{step.delimiter}")[SAFE_OFFSET({i})]').as_(
-                f"{step.column}_{i + 1}"
-            )
-            for i in range(step.number_cols_to_keep)
-        ]
+
+        safe_offset = CustomFunction("SAFE_OFFSET", ["index"])
+
+        # Sub-optimal, could do that in two sub_queries, one for splitting to a temp array col, and
+        # another one to select eveything needed from the array col rather than splitting N times
+        def gen_splitted_cols():
+            for i in range(step.number_cols_to_keep):
+                split_str = GBQSplit(col_field, step.delimiter).get_sql(
+                    quote_char=GoogleBigQueryQueryBuilder.QUOTE_CHAR
+                )
+                safe_offset_str = safe_offset(i).get_sql(
+                    quote_char=GoogleBigQueryQueryBuilder.QUOTE_CHAR
+                )
+                # LiteralValue is ugly, but it does not seem like pypika supports "[]" array
+                # accessing, and GBQ does not seem to provide functions to access array value.
+                #
+                # The IfNull is required because other backends use SPLIT_PART, which will return an
+                # empty string rather than NULL
+                yield functions.IfNull(LiteralValue(f"{split_str}[{safe_offset_str}]"), "").as_(
+                    f"{step.column}_{i + 1}"
+                )
+
+        splitted_cols = list(gen_splitted_cols())
         query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
             *columns, *splitted_cols
         )
