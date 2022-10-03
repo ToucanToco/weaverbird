@@ -1,0 +1,54 @@
+exclude:
+- mongo
+- pandas
+- snowflake
+step:
+  pipeline:
+  - columns:
+    - beer_kind
+    name: select
+  - column: beer_kind
+    delimiter: i
+    name: split
+    number_cols_to_keep: 2
+expected:
+  data:
+  - beer_kind: Triple
+    beer_kind_1: Tr
+    beer_kind_2: ple
+  - beer_kind: India Pale Ale
+    beer_kind_1: Ind
+    beer_kind_2: a Pale Ale
+  - beer_kind: Sans alcool
+    beer_kind_1: Sans alcool
+    beer_kind_2: ""
+  - beer_kind: Best-sellers
+    beer_kind_1: Best-sellers
+    beer_kind_2: ""
+  - beer_kind: Blonde
+    beer_kind_1: Blonde
+    beer_kind_2: ""
+  - beer_kind: Blanche & Weizen
+    beer_kind_1: Blanche & We
+    beer_kind_2: zen
+  - beer_kind: India Pale Ale
+    beer_kind_1: Ind
+    beer_kind_2: a Pale Ale
+  - beer_kind: Belge blonde forte & Golden Ale
+    beer_kind_1: Belge blonde forte & Golden Ale
+    beer_kind_2: ""
+  - beer_kind: Blonde
+    beer_kind_1: Blonde
+    beer_kind_2: ""
+  - beer_kind: Blonde
+    beer_kind_1: Blonde
+    beer_kind_2: ""
+  schema:
+    fields:
+    - name: beer_kind
+      type: string
+    - name: beer_kind_1
+      type: string
+    - name: beer_kind_2
+      type: string
+    pandas_version: 1.4.0
