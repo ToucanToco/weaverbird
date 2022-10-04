@@ -1475,7 +1475,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "quart"
-version = "0.18.1"
+version = "0.18.2"
 description = "A Python ASGI web microframework with the same API as Flask"
 category = "main"
 optional = true
@@ -3403,8 +3403,8 @@ pyyaml = [
     {file = "PyYAML-6.0.tar.gz", hash = "sha256:68fb519c14306fec9720a2a5b45bc9f0c8d1b9c72adf45c37baedfcd949c35a2"},
 ]
 quart = [
-    {file = "Quart-0.18.1-py3-none-any.whl", hash = "sha256:2069dd9822c58582441b04ef5141277308a058668368b39e386b8392f28b2421"},
-    {file = "Quart-0.18.1.tar.gz", hash = "sha256:b506b9038c4f3729aacc563a1c8c84089dccbb3e5df45e138b0b89df4d8d8be7"},
+    {file = "Quart-0.18.2-py3-none-any.whl", hash = "sha256:17503c36e78f1dde8ea9dbdd23ae8ec2d2972c2f3e2e56d0d6d3d943d1de5387"},
+    {file = "Quart-0.18.2.tar.gz", hash = "sha256:a1f4829f01d327ebe4d66c6d36bfd8d911d23bbbf2ab00a4e252554e006c400d"},
 ]
 quart-cors = [
     {file = "Quart-CORS-0.5.0.tar.gz", hash = "sha256:ea08d26aef918d59194fbf065cde9b6cae90dc5f21120dcd254d7d46190cd293"},
