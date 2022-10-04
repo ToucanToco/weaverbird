@@ -954,7 +954,7 @@ class SQLTranslator(ABC):
                 elif condition.operator == "notmatches":
                     match self.REGEXP_OP:
                         case RegexOp.REGEXP:
-                            return column_field.regexp(condition.value).negate()
+                            return column_field.regexp(compliant_regex).negate()
                         case RegexOp.SIMILAR_TO:
                             return BasicCriterion(
                                 RegexpMatching.not_similar_to,

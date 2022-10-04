@@ -177,7 +177,7 @@ def test_notmatches_regexp_filter(
     ctx = regexp_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
         Query.from_(previous_step)
-        .where(Field(column).regexp(regex).negate())
+        .where(Field(column).regexp(f"%{regex}%").negate())
         .select(*selected_columns)
     )
 
@@ -358,7 +358,7 @@ def test_notmatches_regexp__like_filter(
     ctx = regexp_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
         Query.from_(previous_step)
-        .where(Field(column).regexp(regex).negate())
+        .where(Field(column).regexp(f"%{regex}%").negate())
         .select(*selected_columns)
     )
 
@@ -417,7 +417,7 @@ def test_notmatches_regexp__contains_filter(
     ctx = regexp_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
         Query.from_(previous_step)
-        .where(Field(column).regexp(regex).negate())
+        .where(Field(column).regexp(f"%{regex}%").negate())
         .select(*selected_columns)
     )
 
