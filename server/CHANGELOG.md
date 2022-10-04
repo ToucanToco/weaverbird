@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.25.3] - 2022-10-04
+
 - PyPika: Fixed "split" step with Google Big Query backend: If provided, the delimiter is now passed wrapped in single quotes.
   Also, empty strings are returned rather than null values, for consistency with other backends
 - PyPika: Fixed "split" step with Athena backend: empty strings are returned rather than null values, for consistency with other backends
