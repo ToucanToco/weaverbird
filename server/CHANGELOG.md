@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- PyPika: Fixed "unpivot" step for mixin types by adding intermediate ConvertStep
 - PyPika: the float type for MySQL is now DOUBLE
 - PyPika: the float type for Google Big Query is now FLOAT64
 - PyPika: the float type for Athena is now DOUBLE
