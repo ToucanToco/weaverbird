@@ -1517,7 +1517,9 @@ class SQLTranslator(ABC):
         # Casting all columns to float first
         builder_ctx = self.__class__(
             tables_columns={prev_step_name: columns},
-            db_schema=self._db_schema_name,
+            # Since we're on a virtual table here (created by WITH...AS), we don't want a schema
+            # name to be prepended
+            db_schema=None,
             known_instances=self._known_instances,
         ).get_query_builder(
             steps=[
