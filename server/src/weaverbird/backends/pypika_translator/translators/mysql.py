@@ -30,7 +30,7 @@ class MySQLTranslator(SQLTranslator):
     DATA_TYPE_MAPPING = DataTypeMapping(
         boolean="SIGNED",
         date="DATE",
-        float="DECIMAL",
+        float="DOUBLE",
         integer="UNSIGNED",
         text="CHAR",
         datetime="TIMESTAMP",
