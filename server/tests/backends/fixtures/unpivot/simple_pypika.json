@@ -11,8 +11,14 @@
     "pipeline": [
       {
         "name": "unpivot",
-        "keep": ["cost"],
-        "unpivot": ["beer_kind", "name"],
+        "keep": [
+          "name",
+          "beer_kind"
+        ],
+        "unpivot": [
+          "cost",
+          "price_per_l"
+        ],
         "unpivot_column_name": "variable",
         "value_column_name": "value",
         "dropna": false
@@ -20,11 +26,11 @@
       {
         "name": "sort",
         "columns": [
-         {
-          "column": "cost",
-          "order": "asc"
-         },
-         {
+          {
+            "column": "name",
+            "order": "asc"
+          },
+          {
             "column": "variable",
             "order": "asc"
           },
@@ -44,8 +50,12 @@
     "schema": {
       "fields": [
         {
-          "name": "cost",
-          "type": "number"
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "beer_kind",
+          "type": "string"
         },
         {
           "name": "variable",
@@ -53,32 +63,132 @@
         },
         {
           "name": "value",
-          "type": "string"
+          "type": "number"
         }
       ],
       "pandas_version": "1.4.0"
     },
     "data": [
-       {"cost": 1.55, "variable": "beer_kind", "value": "Blonde"},
-       {"cost": 1.55, "variable": "name", "value": "Cuvée des Trolls"},
-       {"cost": 1.59, "variable": "beer_kind", "value": "Blanche & Weizen"},
-       {"cost": 1.59, "variable": "name", "value": "Weihenstephan Hefe Weizen Alcoholarm"},
-       {"cost": 1.69, "variable": "beer_kind", "value": "Belge blonde forte & Golden Ale"},
-       {"cost": 1.69, "variable": "name", "value": "Pauwel Kwak"},
-       {"cost": 1.79, "variable": "beer_kind", "value": "Blonde"},
-       {"cost": 1.79, "variable": "name", "value": "Brugse Zot blonde"},
-       {"cost": 2.09, "variable": "beer_kind", "value": "Best-sellers"},
-       {"cost": 2.09, "variable": "name", "value": "Ardwen Blonde"},
-       {"cost": 2.19, "variable": "beer_kind", "value": "Blonde"},
-       {"cost": 2.19, "variable": "name", "value": "Brasserie De Sutter Brin de Folie"},
-       {"cost": 2.29, "variable": "beer_kind", "value": "Sans alcool"},
-       {"cost": 2.29, "variable": "name", "value": "Brewdog Nanny State Alcoholvrij"},
-       {"cost": 2.49, "variable": "beer_kind", "value": "India Pale Ale"},
-       {"cost": 2.49, "variable": "name", "value": "Bellfield Lawless Village IPA"},
-       {"cost": 2.89, "variable": "beer_kind", "value": "India Pale Ale"},
-       {"cost": 2.89, "variable": "beer_kind", "value": "Triple"},
-       {"cost": 2.89, "variable": "name", "value": "Ninkasi Ploploplop"},
-       {"cost": 2.89, "variable": "name", "value": "Superstrong beer"}
+      {
+        "name": "Ardwen Blonde",
+        "beer_kind": "Best-sellers",
+        "variable": "cost",
+        "value": 2.09
+      },
+      {
+        "name": "Ardwen Blonde",
+        "beer_kind": "Best-sellers",
+        "variable": "price_per_l",
+        "value": 0.056
+      },
+      {
+        "name": "Bellfield Lawless Village IPA",
+        "beer_kind": "India Pale Ale",
+        "variable": "cost",
+        "value": 2.49
+      },
+      {
+        "name": "Bellfield Lawless Village IPA",
+        "beer_kind": "India Pale Ale",
+        "variable": "price_per_l",
+        "value": 0.045
+      },
+      {
+        "name": "Brasserie De Sutter Brin de Folie",
+        "beer_kind": "Blonde",
+        "variable": "cost",
+        "value": 2.19
+      },
+      {
+        "name": "Brasserie De Sutter Brin de Folie",
+        "beer_kind": "Blonde",
+        "variable": "price_per_l",
+        "value": 0.065
+      },
+      {
+        "name": "Brewdog Nanny State Alcoholvrij",
+        "beer_kind": "Sans alcool",
+        "variable": "cost",
+        "value": 2.29
+      },
+      {
+        "name": "Brewdog Nanny State Alcoholvrij",
+        "beer_kind": "Sans alcool",
+        "variable": "price_per_l",
+        "value": 0.005
+      },
+      {
+        "name": "Brugse Zot blonde",
+        "beer_kind": "Blonde",
+        "variable": "cost",
+        "value": 1.79
+      },
+      {
+        "name": "Brugse Zot blonde",
+        "beer_kind": "Blonde",
+        "variable": "price_per_l",
+        "value": 0.06
+      },
+      {
+        "name": "Cuvée des Trolls",
+        "beer_kind": "Blonde",
+        "variable": "cost",
+        "value": 1.55
+      },
+      {
+        "name": "Cuvée des Trolls",
+        "beer_kind": "Blonde",
+        "variable": "price_per_l",
+        "value": 0.07
+      },
+      {
+        "name": "Ninkasi Ploploplop",
+        "beer_kind": "India Pale Ale",
+        "variable": "cost",
+        "value": 2.89
+      },
+      {
+        "name": "Ninkasi Ploploplop",
+        "beer_kind": "India Pale Ale",
+        "variable": "price_per_l",
+        "value": 0.054
+      },
+      {
+        "name": "Pauwel Kwak",
+        "beer_kind": "Belge blonde forte & Golden Ale",
+        "variable": "cost",
+        "value": 1.69
+      },
+      {
+        "name": "Pauwel Kwak",
+        "beer_kind": "Belge blonde forte & Golden Ale",
+        "variable": "price_per_l",
+        "value": 0.084
+      },
+      {
+        "name": "Superstrong beer",
+        "beer_kind": "Triple",
+        "variable": "cost",
+        "value": 2.89
+      },
+      {
+        "name": "Superstrong beer",
+        "beer_kind": "Triple",
+        "variable": "price_per_l",
+        "value": 0.16
+      },
+      {
+        "name": "Weihenstephan Hefe Weizen Alcoholarm",
+        "beer_kind": "Blanche & Weizen",
+        "variable": "cost",
+        "value": 1.59
+      },
+      {
+        "name": "Weihenstephan Hefe Weizen Alcoholarm",
+        "beer_kind": "Blanche & Weizen",
+        "variable": "price_per_l",
+        "value": 0.005
+      }
     ]
   }
 }
