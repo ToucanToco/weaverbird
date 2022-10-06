@@ -39,6 +39,7 @@ from weaverbird.pipeline.conditions import (
 )
 from weaverbird.pipeline.dates import RelativeDate
 from weaverbird.pipeline.pipeline import Pipeline
+from weaverbird.pipeline.steps import ConvertStep, DomainStep
 from weaverbird.pipeline.steps.date_extract import DATE_INFO
 from weaverbird.pipeline.steps.utils.combination import PipelineOrDomainNameOrReference, Reference
 
@@ -55,12 +56,10 @@ if TYPE_CHECKING:
         ArgminStep,
         CompareTextStep,
         ConcatenateStep,
-        ConvertStep,
         CumSumStep,
         CustomSqlStep,
         DateExtractStep,
         DeleteStep,
-        DomainStep,
         DuplicateStep,
         EvolutionStep,
         FillnaStep,
@@ -1490,11 +1489,16 @@ class SQLTranslator(ABC):
 
     @classmethod
     def _build_unpivot_col(
-        cls, *, step: "UnpivotStep", quote_char: str | None, secondary_quote_char: str
+        cls,
+        *,
+        step: "UnpivotStep",
+        quote_char: str | None,
+        secondary_quote_char: str,
     ) -> str:
         value_col = format_quotes(step.value_column_name, quote_char)
         unpivot_col = format_quotes(step.unpivot_column_name, quote_char)
         in_cols = ", ".join(format_quotes(col, quote_char) for col in step.unpivot)
+
         if cls.SUPPORT_UNPIVOT:
             return f"UNPIVOT({value_col} FOR {unpivot_col} IN ({in_cols}))"
         in_single_quote_cols = ", ".join(
@@ -1510,14 +1514,30 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "UnpivotStep",
     ) -> StepContext:
+        # Casting all columns to float first
+        builder_ctx = self.__class__(
+            tables_columns={prev_step_name: columns},
+            db_schema=self._db_schema_name,
+            known_instances=self._known_instances,
+        ).get_query_builder(
+            steps=[
+                DomainStep(domain=prev_step_name),
+                ConvertStep(columns=step.unpivot, data_type="float"),
+            ],
+            query_builder=builder,
+        )
+
         unpivot = self._build_unpivot_col(
             step=step,
             quote_char=builder.QUOTE_CHAR,
             secondary_quote_char=builder.SECONDARY_QUOTE_CHAR,
         )
+
+        prev_step_name = builder_ctx.table_name
+
         cols = step.keep + [step.unpivot_column_name] + [step.value_column_name]
         query = LiteralValue(f"{self.QUERY_CLS.from_(prev_step_name).select(*cols)!s} {unpivot}")
-        return StepContext(query, cols)
+        return StepContext(query, cols, builder_ctx.builder)
 
     def uppercase(
         self: Self,
