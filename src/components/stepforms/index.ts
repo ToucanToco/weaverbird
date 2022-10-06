@@ -39,6 +39,7 @@ import RenameStepForm from './RenameStepForm.vue';
 import ReplaceStepForm from './ReplaceStepForm.vue';
 import RollupStepForm from './RollupStepForm.vue';
 import SelectColumnStepForm from './SelectColumnStepForm.vue';
+import SimplifyStepForm from './SimplifyStepForm.vue';
 import SortStepForm from './SortStepForm.vue';
 import SplitStepForm from './SplitStepForm.vue';
 import StatisticsStepForm from './StatisticsStepForm.vue';
@@ -90,6 +91,7 @@ const StepFormsComponents: { [K in PipelineStepName]: VueConstructor<StepForm> }
   replace: ReplaceStepForm,
   rollup: RollupStepForm,
   select: SelectColumnStepForm,
+  simplify: SimplifyStepForm,
   split: SplitStepForm,
   sort: SortStepForm,
   statistics: StatisticsStepForm,

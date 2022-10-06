@@ -306,6 +306,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Keep columns ${formatMulticol(step.columns)}`;
   }
 
+  simplify(step: Readonly<S.SimplifyStep>) {
+    return `Simplify geographical data by "${step.tolerance}"`;
+  }
+
   sort(step: Readonly<S.SortStep>) {
     const columns = step.columns.map(sortdef => sortdef.column);
     return `Sort columns ${formatMulticol(columns)}`;
