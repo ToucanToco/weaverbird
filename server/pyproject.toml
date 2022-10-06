@@ -33,7 +33,7 @@ pytest-xdist = "^2.5.0"
 
 [tool.poetry.dev-dependencies]
 pytest-cov = "^4.0.0"
-pytest-mock = "^3.9.0"
+pytest-mock = "^3.10.0"
 # required so we can use nosql_apply_parameters_to_query during tests
 toucan-connectors = { version = "^3.17.4", extras = ["awsathena"] }
 pytest-benchmark = "^3.4.1"
