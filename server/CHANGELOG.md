@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-## [0.26.0] - 2022-10-06
+## [0.25.4] - 2022-10-06
 
 - PyPika: Fixed "unpivot" step for mixed column types by adding intermediate convert step
 - PyPika: the float type for MySQL is now DOUBLE
