@@ -16,7 +16,7 @@ class AthenaTranslator(SQLTranslator):
     DATA_TYPE_MAPPING = DataTypeMapping(
         boolean="BOOLEAN",
         date="DATE",
-        float="FLOAT",
+        float="DOUBLE",
         integer="INTEGER",
         text="VARCHAR",
         datetime="TIMESTAMP",
