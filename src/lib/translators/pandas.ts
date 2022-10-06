@@ -146,6 +146,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  simplify(step: Readonly<S.SimplifyStep>) {
+    return step;
+  }
+
   sort(step: Readonly<S.SortStep>) {
     return step;
   }

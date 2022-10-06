@@ -211,6 +211,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   select(step: Readonly<S.SelectStep>) {}
 
   @unsupported
+  simplify(step: Readonly<S.SimplifyStep>) {}
+
+  @unsupported
   sort(step: Readonly<S.SortStep>) {}
 
   @unsupported
