@@ -1,0 +1,107 @@
+{
+  "exclude": [
+    "mongo",
+    "pandas",
+    "snowflake"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "convert",
+        "columns": [
+          "price_per_l",
+          "volume_ml"
+        ],
+        "data_type": "float"
+      },
+      {
+        "name": "select",
+        "columns": [
+          "name",
+          "price_per_l",
+          "volume_ml"
+        ]
+      },
+      {
+        "name": "sort",
+        "columns": [
+          {
+            "column": "name",
+            "order": "asc"
+          }
+        ]
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "price_per_l",
+          "type": "number"
+        },
+        {
+          "name": "volume_ml",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "1.4.0"
+    },
+    "data": [
+      {
+        "name": "Ardwen Blonde",
+        "price_per_l": 0.056,
+        "volume_ml": 330
+      },
+      {
+        "name": "Bellfield Lawless Village IPA",
+        "price_per_l": 0.045,
+        "volume_ml": 330
+      },
+      {
+        "name": "Brasserie De Sutter Brin de Folie",
+        "price_per_l": 0.065,
+        "volume_ml": 330
+      },
+      {
+        "name": "Brewdog Nanny State Alcoholvrij",
+        "price_per_l": 0.005,
+        "volume_ml": 330
+      },
+      {
+        "name": "Brugse Zot blonde",
+        "price_per_l": 0.06,
+        "volume_ml": 330
+      },
+      {
+        "name": "Cuvée des Trolls",
+        "price_per_l": 0.07,
+        "volume_ml": 250
+      },
+      {
+        "name": "Ninkasi Ploploplop",
+        "price_per_l": 0.054,
+        "volume_ml": 330
+      },
+      {
+        "name": "Pauwel Kwak",
+        "price_per_l": 0.084,
+        "volume_ml": 330
+      },
+      {
+        "name": "Superstrong beer",
+        "price_per_l": 0.16,
+        "volume_ml": 330
+      },
+      {
+        "name": "Weihenstephan Hefe Weizen Alcoholarm",
+        "price_per_l": 0.005,
+        "volume_ml": 500
+      }
+    ]
+  }
+}
