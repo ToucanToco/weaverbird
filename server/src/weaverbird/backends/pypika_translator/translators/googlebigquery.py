@@ -62,7 +62,7 @@ class GoogleBigQueryTranslator(SQLTranslator):
     DATA_TYPE_MAPPING = DataTypeMapping(
         boolean="BOOLEAN",
         date="DATE",
-        float="DOUBLE PRECISION",
+        float="FLOAT64",
         integer="INTEGER",
         text="STRING",
         datetime="TIMESTAMP",
