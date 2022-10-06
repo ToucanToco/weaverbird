@@ -32,6 +32,7 @@ import renameSchema from './rename';
 import replaceSchema from './replace';
 import rollupSchema from './rollup';
 import selectSchema from './select';
+import simplifySchema from './simplify';
 import sortSchema from './sort';
 import splitSchema from './split';
 import statisticsSchema from './statistics';
@@ -85,6 +86,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   replace: replaceSchema,
   rollup: rollupSchema,
   select: selectSchema,
+  simplify: simplifySchema,
   sort: sortSchema,
   split: splitSchema,
   statistics: statisticsSchema,
