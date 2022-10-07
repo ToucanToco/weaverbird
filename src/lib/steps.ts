@@ -425,6 +425,11 @@ export type SelectStep = {
   columns: string[];
 };
 
+export type SimplifyStep = {
+  name: 'simplify';
+  tolerance: number;
+};
+
 export type SortColumnType = {
   column: string;
   order: 'asc' | 'desc';
@@ -543,6 +548,7 @@ export type PipelineStep =
   | ReplaceStep
   | RollupStep
   | SelectStep
+  | SimplifyStep
   | SplitStep
   | SortStep
   | StatisticsStep

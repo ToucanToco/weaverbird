@@ -92,6 +92,7 @@ export const ACTION_CATEGORIES: ActionCategories = {
   geo: [
     { name: 'dissolve', label: 'Geographic dissolve' },
     { name: 'hierarchy', label: 'Geographic hierarchy' },
+    { name: 'simplify', label: 'Geographic simplify' },
   ],
 };
 
