@@ -1,5 +1,8 @@
+from datetime import datetime
+
 from numpy.ma import logical_and, logical_or
-from pandas import DataFrame, Series
+from pandas import DataFrame, Series, Timestamp
+from pandas import to_datetime as pd_to_datetime
 from pandas.tseries.offsets import DateOffset
 
 from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relative_date
@@ -14,6 +17,18 @@ from weaverbird.pipeline.conditions import (
     NullCondition,
 )
 from weaverbird.pipeline.dates import RelativeDate
+
+
+def _date_bound_condition_to_tz_aware_timestamp(value: str | RelativeDate | datetime) -> Timestamp:
+    if isinstance(value, RelativeDate):
+        value = evaluate_relative_date(value)
+    if isinstance(value, datetime):
+        tz = value.tzinfo or "UTC"
+        # Cannot pass a tz-aware datetime object with tz arg
+        return Timestamp(value.replace(tzinfo=None), tz=tz)
+    else:  # str
+        ts = Timestamp(value)
+        return ts if ts.tzinfo else ts.replace(tz="UTC")
 
 
 def apply_condition(condition: Condition, df: DataFrame) -> Series:
@@ -55,12 +70,11 @@ def apply_condition(condition: Condition, df: DataFrame) -> Series:
         else:
             raise NotImplementedError
 
-        value = condition.value
-        if isinstance(value, RelativeDate):
-            value = evaluate_relative_date(value)
+        value = _date_bound_condition_to_tz_aware_timestamp(condition.value)
 
-        # Remove time info from the column to filter on
-        column_without_time = df[condition.column] - DateOffset(
+        # Remove time info from the column to filter on. Using utc=True to ensure we have time-aware
+        # objects. Since we're only using this for comparison, the input column is not modified,
+        column_without_time = pd_to_datetime(df[condition.column], utc=True) - DateOffset(
             hour=0, minute=0, second=0, microsecond=0, nanosecond=0
         )
         # Do the same with the value to compare it to
