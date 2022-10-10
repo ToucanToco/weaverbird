@@ -20,7 +20,7 @@ from pypika import (
     functions,
 )
 from pypika.enums import Comparator, Dialects, JoinType
-from pypika.functions import Extract
+from pypika.functions import Extract, ToDate
 from pypika.queries import QueryBuilder, Selectable
 from pypika.terms import AnalyticFunction, BasicCriterion, Function, Interval, LiteralValue, Term
 from pypika.utils import format_quotes
@@ -1399,6 +1399,10 @@ class SQLTranslator(ABC):
                     convert_fn = functions.Timestamp
                 case ToDateOp.TO_TIMESTAMP_NTZ:
                     convert_fn = ToTimestampNTZ
+                case ToDateOp.TO_TIMESTAMP:
+                    convert_fn = ToTimestamp
+                case ToDateOp.TO_DATE:
+                    convert_fn = ToDate
                 case _:
                     raise NotImplementedError(f"[{self.DIALECT}] todate has no set operator")
             date_selection = (
@@ -1593,6 +1597,11 @@ class DateParse(functions.Function):
 class ToTimestampNTZ(functions.Function):
     def __init__(self, term: str | Field, date_format: str, alias: str | None = None) -> None:
         super().__init__("TO_TIMESTAMP_NTZ", term, date_format, alias=alias)
+
+
+class ToTimestamp(functions.Function):
+    def __init__(self, term: str | Field, date_format: str, alias: str | None = None) -> None:
+        super().__init__("TO_TIMESTAMP", term, date_format, alias=alias)
 
 
 class RegexpMatching(Comparator):
