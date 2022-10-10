@@ -1,9 +1,20 @@
+import json
+from datetime import datetime
+from os.path import dirname
+from os.path import join as path_join
+from zoneinfo import ZoneInfo
+
 import pytest
-from pandas import DataFrame
+from pandas import DataFrame, read_json
+from pandas.testing import assert_frame_equal
 
 from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.filter import execute_filter
-from weaverbird.pipeline.conditions import ComparisonCondition
+from weaverbird.pipeline.conditions import (
+    ComparisonCondition,
+    ConditionComboAnd,
+    DateBoundCondition,
+)
 from weaverbird.pipeline.steps import FilterStep
 
 
@@ -278,3 +289,97 @@ def test_benchmark_filter(benchmark):
     step = FilterStep(name="filter", condition={"column": "value", "operator": "lt", "value": 20})
     result = benchmark(execute_filter, step, big_df)
     assert len(result) == 20
+
+
+@pytest.fixture
+def date_df() -> DataFrame:
+    with open(path_join(dirname(__file__), "fixtures", "sales_df.json"), "r") as fd:
+        return read_json(fd, orient="table")
+
+
+@pytest.fixture
+def expected_date_filter_result() -> DataFrame:
+    return read_json(
+        json.dumps(
+            {
+                "schema": {
+                    "fields": [
+                        {"name": "Transaction_date", "type": "datetime", "tz": "UTC"},
+                        {"name": "Product", "type": "string"},
+                        {"name": "Price", "type": "integer"},
+                    ],
+                    "pandas_version": "1.4.0",
+                },
+                "data": [
+                    {
+                        "Transaction_date": "2009-01-02T06:17:00.000Z",
+                        "Product": "Product1",
+                        "Price": 1200,
+                    },
+                    {
+                        "Transaction_date": "2009-01-02T04:53:00.000Z",
+                        "Product": "Product1",
+                        "Price": 1200,
+                    },
+                    {
+                        "Transaction_date": "2009-01-02T13:08:00.000Z",
+                        "Product": "Product1",
+                        "Price": 1200,
+                    },
+                    {
+                        "Transaction_date": "2009-01-03T14:44:00.000Z",
+                        "Product": "Product1",
+                        "Price": 1200,
+                    },
+                    {
+                        "Transaction_date": "2009-01-02T20:09:00.000Z",
+                        "Product": "Product1",
+                        "Price": 1200,
+                    },
+                ],
+            }
+        ),
+        orient="table",
+    ).reset_index(drop=True)
+
+
+def test_date_filter(date_df: DataFrame, expected_date_filter_result: DataFrame):
+    # Datetimes
+    step = FilterStep(
+        condition=ConditionComboAnd(
+            and_=[
+                DateBoundCondition(
+                    column="Transaction_date",
+                    operator="from",
+                    value=datetime(2009, 1, 2, tzinfo=ZoneInfo("UTC")),  # tz-aware
+                ),
+                DateBoundCondition(
+                    column="Transaction_date",
+                    operator="until",
+                    value=datetime(2009, 1, 3),  # naive
+                ),
+            ]
+        )
+    )
+
+    result = execute_filter(step=step, df=date_df).reset_index(drop=True)
+    assert_frame_equal(expected_date_filter_result, result)
+
+    # trying with string dates now
+    step = FilterStep(
+        condition=ConditionComboAnd(
+            and_=[
+                DateBoundCondition(
+                    column="Transaction_date", operator="from", value="2009-01-02T00:00:00"  # naive
+                ),
+                DateBoundCondition(
+                    column="Transaction_date",
+                    operator="until",
+                    value="2009-01-03T00:00:00+00:00",  # tz-aware
+                ),
+            ]
+        )
+    )
+
+    result = execute_filter(step=step, df=date_df).reset_index(drop=True)
+    assert_frame_equal(expected_date_filter_result, result)
