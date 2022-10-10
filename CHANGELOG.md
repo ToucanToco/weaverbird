@@ -1,5 +1,17 @@
 # Changelog (weaverbird npm package)
 
+## [0.91.3] - 2022-10-10
+
+### Added
+- Add simplify step
+
+### Fixed
+- Fix convert step when converting to float
+- Fix unpivot by converting all targeted columns to float
+- Fix "notmatches" operator for backends using REGEXP
+- Fix split step quoting
+- Fix "matches" operator for IfThenElse with pandas.NA values
+
 ## [0.91.2] - 2022-09-28
 - Resizable directive: decrease handlable columns from 100 to 50
 
@@ -1311,6 +1323,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ## Unreleased
 
+[0.91.3]: https://github.com/ToucanToco/weaverbird/compare/v0.91.3...v0.91.2
 [0.91.2]: https://github.com/ToucanToco/weaverbird/compare/v0.91.2...v0.91.1
 [0.91.1]: https://github.com/ToucanToco/weaverbird/compare/v0.91.1...v0.91.0
 [0.91.0]: https://github.com/ToucanToco/weaverbird/compare/v0.91.0...v0.90.0
