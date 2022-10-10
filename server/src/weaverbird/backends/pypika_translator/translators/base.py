@@ -1393,6 +1393,8 @@ class SQLTranslator(ABC):
                     convert_fn = StrToDate
                 case ToDateOp.PARSE_DATE:
                     convert_fn = ParseDate
+                case ToDateOp.DATE_PARSE:
+                    convert_fn = DateParse
                 case ToDateOp.TIMESTAMP:
                     convert_fn = functions.Timestamp
                 case ToDateOp.TO_TIMESTAMP_NTZ:
@@ -1581,6 +1583,11 @@ class StrToDate(functions.Function):
 class ParseDate(functions.Function):
     def __init__(self, term: str | Field, date_format: str, alias: str | None = None) -> None:
         super().__init__("PARSE_DATE", term, date_format, alias=alias)
+
+
+class DateParse(functions.Function):
+    def __init__(self, term: str | Field, date_format: str, alias: str | None = None) -> None:
+        super().__init__("DATE_PARSE", term, date_format, alias=alias)
 
 
 class ToTimestampNTZ(functions.Function):

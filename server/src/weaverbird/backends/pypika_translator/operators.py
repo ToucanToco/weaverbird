@@ -19,5 +19,6 @@ class FromDateOp(Enum):
 class ToDateOp(Enum):
     STR_TO_DATE = auto()
     PARSE_DATE = auto()
+    DATE_PARSE = auto()
     TIMESTAMP = auto()
     TO_TIMESTAMP_NTZ = auto()
