@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.25.5] - 2022-10-11
+
 - PyPika: Athena translator now uses `DATE_PARSE` rather than `TIMESTAMP` for the `todate` step
 - PyPika: Postgres and Redshift translator now use `TO_TIMESTAMP` rather than `TIMESTAMP` for the `todate` step
 - PyPika: The `text` step now does an explicit cast of the input text to the adequate text type
