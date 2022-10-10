@@ -5,7 +5,7 @@ from pypika import AliasedQuery, Case, Field, Order, Query, Schema, Table, analy
 from pypika.enums import JoinType
 from pypika.terms import LiteralValue, Term, ValueWrapper
 
-from weaverbird.backends.pypika_translator.translators.base import SQLTranslator
+from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, SQLTranslator
 from weaverbird.pipeline import conditions, steps
 from weaverbird.pipeline.pipeline import DomainStep
 from weaverbird.pipeline.steps.utils.combination import Reference
@@ -15,6 +15,15 @@ class BaseTranslator(SQLTranslator):
     DIALECT = "Base"
     QUERY_CLS = Query
     QUOTE_CHAR = '"'
+    DATA_TYPE_MAPPING = DataTypeMapping(
+        boolean="BOOLEAN",
+        date="DATE",
+        float="FLOAT",
+        integer="INTEGER",
+        text="TEXT",
+        datetime="TIMESTAMP",
+        timestamp="TIMESTAMP",
+    )
 
 
 ALL_TABLES = {
@@ -571,7 +580,7 @@ def test_text(base_translator: BaseTranslator, default_step_kwargs: dict[str, An
     ctx = base_translator.text(step=step, columns=selected_columns, **default_step_kwargs)
 
     expected_query = Query.from_(previous_step).select(
-        *selected_columns, ValueWrapper(text).as_(new_column_name)
+        *selected_columns, functions.Cast(ValueWrapper(text), "TEXT").as_(new_column_name)
     )
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()

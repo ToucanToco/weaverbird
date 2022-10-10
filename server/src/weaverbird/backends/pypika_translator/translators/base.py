@@ -1373,7 +1373,13 @@ class SQLTranslator(ABC):
         from pypika.terms import ValueWrapper
 
         query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
-            *columns, ValueWrapper(step.text).as_(step.new_column)
+            *columns,
+            # Since we're using WITH...AS syntax, we add an explicit cast here to provide type
+            # context to the engine. Without that, we might encounter "failed to find conversion
+            # function from "unknown" to text" errors
+            functions.Cast(ValueWrapper(step.text), self.DATA_TYPE_MAPPING.text).as_(
+                step.new_column
+            ),
         )
         return StepContext(query, columns + [step.new_column])
 
