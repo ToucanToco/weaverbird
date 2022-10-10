@@ -1,0 +1,48 @@
+exclude:
+- mongo
+- pandas
+- snowflake
+# Following backends have a different format syntax, see simple_non_percent_formatting_pypika.yaml
+- postgres_pypika
+- redshift_pypika
+- snowflake_pypika
+step:
+  pipeline:
+  - columns:
+    - brewing_date
+    name: select
+  - name: text
+    new_column: date_col
+    text: "10/10/2022 01:02:03"
+  - column: date_col
+    format: '%d/%m/%Y %k:%i:%s'
+    name: todate
+expected:
+  data:
+  - brewing_date: '2022-01-01T00:00:00.000Z'
+    date_col: '2022-10-10T01:02:03.000Z'
+  - brewing_date: '2022-01-02T00:00:00.000Z'
+    date_col: '2022-10-10T01:02:03.000Z'
+  - brewing_date: '2022-01-03T00:00:00.000Z'
+    date_col: '2022-10-10T01:02:03.000Z'
+  - brewing_date: '2022-01-04T00:00:00.000Z'
+    date_col: '2022-10-10T01:02:03.000Z'
+  - brewing_date: '2022-01-05T00:00:00.000Z'
+    date_col: '2022-10-10T01:02:03.000Z'
+  - brewing_date: '2022-01-06T00:00:00.000Z'
+    date_col: '2022-10-10T01:02:03.000Z'
+  - brewing_date: '2022-01-07T00:00:00.000Z'
+    date_col: '2022-10-10T01:02:03.000Z'
+  - brewing_date: '2022-01-08T00:00:00.000Z'
+    date_col: '2022-10-10T01:02:03.000Z'
+  - brewing_date: '2022-01-09T00:00:00.000Z'
+    date_col: '2022-10-10T01:02:03.000Z'
+  - brewing_date: '2022-01-10T00:00:00.000Z'
+    date_col: '2022-10-10T01:02:03.000Z'
+  schema:
+    fields:
+    - name: brewing_date
+      type: datetime
+    - name: date_col
+      type: datetime
+    pandas_version: 1.4.0

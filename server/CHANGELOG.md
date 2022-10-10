@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- PyPika: Athena translator now uses `DATE_PARSE` rather than `TIMESTAMP` for the `todate` step
+
 ## [0.25.4] - 2022-10-06
 
 - PyPika: Fixed "unpivot" step for mixed column types by adding intermediate convert step
