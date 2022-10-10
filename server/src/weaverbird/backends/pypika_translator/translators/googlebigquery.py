@@ -6,7 +6,7 @@ from pypika.queries import QueryBuilder
 from pypika.terms import Case, CustomFunction, Function, Interval, LiteralValue, Term
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
-from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
+from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp
 from weaverbird.backends.pypika_translator.translators.base import (
     DataTypeMapping,
     SQLTranslator,
@@ -17,7 +17,7 @@ from weaverbird.pipeline.steps.date_extract import DATE_INFO
 Self = TypeVar("Self", bound="GoogleBigQueryTranslator")
 
 if TYPE_CHECKING:
-    from weaverbird.pipeline.steps import SplitStep
+    from weaverbird.pipeline.steps import SplitStep, ToDateStep
 
 
 class GBQDateTrunc(Function):
@@ -25,6 +25,12 @@ class GBQDateTrunc(Function):
 
     def __init__(self, date_format: str, field: Field, alias: str | None = None):
         super().__init__("DATE_TRUNC", field, LiteralValue(date_format.upper()), alias=alias)
+
+
+class GBQParseDateTime(Function):
+    def __init__(self, term: str | Field, date_format: str) -> None:
+        # Inverting date_format and term, because GBQ takes format first
+        super().__init__("PARSE_DATETIME", date_format, term)
 
 
 class GBQSplit(Function):
@@ -73,7 +79,6 @@ class GoogleBigQueryTranslator(SQLTranslator):
     SUPPORT_UNPIVOT = True
     FROM_DATE_OP = FromDateOp.TO_CHAR
     REGEXP_OP = RegexOp.REGEXP_CONTAINS
-    TO_DATE_OP = ToDateOp.TIMESTAMP
 
     @classmethod
     def _add_date(
@@ -190,6 +195,26 @@ class GoogleBigQueryTranslator(SQLTranslator):
                 target_column=cls._date_trunc("ISOWEEK", target_column), duration=-1, unit="weeks"
             )
         return super()._get_date_extract_func(date_unit=date_unit, target_column=target_column)
+
+    def todate(
+        self: Self,
+        *,
+        builder: "QueryBuilder",
+        prev_step_name: str,
+        columns: list[str],
+        step: "ToDateStep",
+    ) -> StepContext:
+        col_field = Table(prev_step_name)[step.column]
+        if step.format is not None:
+            date_selection = self._cast_to_timestamp(GBQParseDateTime(col_field, step.format))
+        else:
+            date_selection = self._cast_to_timestamp(col_field)
+
+        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
+            *(c for c in columns if c != step.column),
+            date_selection.as_(step.column),
+        )
+        return StepContext(query, columns)
 
 
 SQLTranslator.register(GoogleBigQueryTranslator)

@@ -2,8 +2,8 @@ exclude:
 - mongo
 - pandas
 - snowflake
-# Following backends have a different format syntax, see simple_non_percent_formatting_pypika.yaml
-- bigquery_pypika
+- athena_pypika
+- mysql_pypika
 - postgres_pypika
 - redshift_pypika
 - snowflake_pypika
@@ -16,7 +16,8 @@ step:
     new_column: date_col
     text: "10/10/2022 01:02:03"
   - column: date_col
-    format: '%d/%m/%Y %k:%i:%s'
+    # Of course they had to do things differently: https://cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_elements_date_time
+    format: '%d/%m/%Y %H:%M:%S'
     name: todate
 expected:
   data:
