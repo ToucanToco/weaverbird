@@ -34,7 +34,7 @@ class PostgreSQLTranslator(SQLTranslator):
     SUPPORT_SPLIT_PART = True
     FROM_DATE_OP = FromDateOp.TO_CHAR
     REGEXP_OP = RegexOp.SIMILAR_TO
-    TO_DATE_OP = ToDateOp.TIMESTAMP
+    TO_DATE_OP = ToDateOp.TO_TIMESTAMP
 
     def duration(
         self: Self,

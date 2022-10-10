@@ -5,7 +5,7 @@ from typing import Any
 import pandas as pd
 import pytest
 from snowflake.sqlalchemy import URL
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 
 from tests.utils import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
@@ -67,5 +67,5 @@ def test_snowflake_translator_pipeline(engine: Any, case_id: str, case_spec_file
         db_schema=None,
     )
     expected = pd.read_json(json.dumps(pipeline_spec["expected"]), orient="table")
-    result: pd.DataFrame = pd.read_sql(query, engine)
+    result: pd.DataFrame = pd.read_sql(text(query), engine)
     assert_dataframes_equals(expected, result)

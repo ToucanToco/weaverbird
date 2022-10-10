@@ -8,7 +8,7 @@ from pypika.queries import QueryBuilder, Table
 from pypika.terms import Term
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
-from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
+from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp
 from weaverbird.backends.pypika_translator.translators.base import (
     DataTypeMapping,
     DateAddWithoutUnderscore,
@@ -41,7 +41,6 @@ class RedshiftTranslator(PostgreSQLTranslator):
     SUPPORT_UNPIVOT = True
     FROM_DATE_OP = FromDateOp.TO_CHAR
     REGEXP_OP = RegexOp.SIMILAR_TO
-    TO_DATE_OP = ToDateOp.TIMESTAMP
 
     # Redshift's CONCAT function does not support more than 2 terms, but concats can be nested. This
     # helpers allow to nest concatenations:
