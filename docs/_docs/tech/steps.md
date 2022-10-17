@@ -2570,6 +2570,56 @@ A replace step has the following strucure:
 | Company 1 | France         |
 | Company 2 | United Kingdom |
 
+### `replacetext` step
+
+Replace a substring in a column.
+
+A replace-text step has the following structure:
+
+```javascript
+{
+   name: 'replacetext',
+   search_column: "column_1",
+   old_str: 'foo',
+   new_str: 'bar'
+}
+```
+
+**This step is supported by the following backends:*
+
+- Mongo 5.0
+- Mongo 4.2
+- Mongo 4.0
+- Mongo 3.6
+- Pandas (python)
+
+#### Example
+
+**Input dataset:**
+
+| COMPANY   | COUNTRY |
+| --------- | ------- |
+| Company 1 | Fr      |
+| Company 2 | UK      |
+
+**Step configuration:**
+
+```javascript
+{
+   name: 'replacetext',
+   search_column: "COUNTRY",
+   old_str: 'Fr',
+   new_str: 'France',
+}
+```
+
+**Output dataset:**
+
+| COMPANY   | COUNTRY        |
+| --------- | -------------- |
+| Company 1 | France         |
+| Company 2 | United Kingdom |
+
 ### `rollup` step
 
 Use this step if you need to compute aggregated data at every level of a
