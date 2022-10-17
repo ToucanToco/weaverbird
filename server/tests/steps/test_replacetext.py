@@ -11,7 +11,7 @@ from weaverbird.pipeline.steps import ReplaceTextStep
 
 @pytest.fixture()
 def sample_df() -> pd.DataFrame:
-    return pd.DataFrame({"values": ["FR", "UK"]})
+    return pd.DataFrame({"values": ["FR", "a string with FR in it", "UK"]})
 
 
 def test_simple_replace(sample_df):
@@ -19,7 +19,7 @@ def test_simple_replace(sample_df):
         name="replacetext", search_column="values", old_str="FR", new_str="France"
     )
     result = execute_replacetext(step, sample_df)
-    expected_df = pd.DataFrame({"values": ["France", "UK"]})
+    expected_df = pd.DataFrame({"values": ["France", "a string with France in it", "UK"]})
 
     assert_dataframes_equals(result, expected_df)
 

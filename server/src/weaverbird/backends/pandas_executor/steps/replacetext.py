@@ -11,5 +11,5 @@ def execute_replacetext(
     execute_pipeline: PipelineExecutor | None = None,
 ) -> DataFrame:
     return df.assign(
-        **{step.search_column: df[step.search_column].replace({step.old_str: step.new_str})}
+        **{step.search_column: df[step.search_column].str.replace(step.old_str, step.new_str)}
     )

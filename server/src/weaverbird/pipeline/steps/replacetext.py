@@ -15,4 +15,4 @@ class ReplaceTextStep(BaseStep):
 
 
 class ReplaceTextStepWithVariable(ReplaceTextStep, StepWithVariablesMixin):
-    old: TemplatedVariable
+    old_str: TemplatedVariable
