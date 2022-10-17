@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Feat: Added `replacetext` step for all backends
+
 ## [0.25.5] - 2022-10-11
 
 - PyPika: Athena translator now uses `DATE_PARSE` rather than `TIMESTAMP` for the `todate` step
