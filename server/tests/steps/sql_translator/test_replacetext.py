@@ -1,4 +1,4 @@
-from weaverbird.backends.mongo_translator.steps.replacetext import translate_replacetext
+from weaverbird.backends.sql_translator.steps.replacetext import translate_replacetext
 from weaverbird.pipeline.steps.replacetext import ReplaceTextStep
 
 
@@ -32,6 +32,7 @@ def test_translate_with_quotes_mixed_replacetext(query):
     query = translate_replacetext(
         step,
         query,
+        index=1,
     )
     expected_transformed_query = (
         "WITH SELECT_STEP_0 AS (SELECT * FROM products), REPLACE_STEP_1 AS (SELECT TOTO, FLORIZARRE, CASE WHEN "
