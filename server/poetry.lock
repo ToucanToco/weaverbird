@@ -73,7 +73,7 @@ python-versions = ">=3.5"
 dev = ["cloudpickle", "coverage[toml] (>=5.0.2)", "furo", "hypothesis", "mypy (>=0.900,!=0.940)", "pre-commit", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "sphinx", "sphinx-notfound-page", "zope.interface"]
 docs = ["furo", "sphinx", "sphinx-notfound-page", "zope.interface"]
 tests = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy (>=0.900,!=0.940)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "zope.interface"]
-tests_no_zope = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy (>=0.900,!=0.940)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins"]
+tests-no-zope = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy (>=0.900,!=0.940)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins"]
 
 [[package]]
 name = "authlib"
@@ -244,7 +244,7 @@ optional = false
 python-versions = ">=3.5.0"
 
 [package.extras]
-unicode_backport = ["unicodedata2"]
+unicode-backport = ["unicodedata2"]
 
 [[package]]
 name = "click"
@@ -512,7 +512,7 @@ six = ">=1.9.0"
 
 [package.extras]
 aiohttp = ["aiohttp (>=3.6.2,<4.0.0dev)", "requests (>=2.20.0,<3.0.0dev)"]
-enterprise_cert = ["cryptography (==36.0.2)", "pyopenssl (==22.0.0)"]
+enterprise-cert = ["cryptography (==36.0.2)", "pyopenssl (==22.0.0)"]
 pyopenssl = ["pyopenssl (>=20.0.0)"]
 reauth = ["pyu2f (>=0.1.5)"]
 
@@ -770,9 +770,9 @@ python-versions = ">=3.6.1,<4.0"
 
 [package.extras]
 colors = ["colorama (>=0.4.3,<0.5.0)"]
-pipfile_deprecated_finder = ["pipreqs", "requirementslib"]
+pipfile-deprecated-finder = ["pipreqs", "requirementslib"]
 plugins = ["setuptools"]
-requirements_deprecated_finder = ["pip-api", "pipreqs"]
+requirements-deprecated-finder = ["pip-api", "pipreqs"]
 
 [[package]]
 name = "itsdangerous"
@@ -1544,7 +1544,7 @@ urllib3 = ">=1.21.1,<1.27"
 
 [package.extras]
 socks = ["PySocks (>=1.5.6,!=1.5.7)"]
-use_chardet_on_py3 = ["chardet (>=3.0.2,<5)"]
+use-chardet-on-py3 = ["chardet (>=3.0.2,<5)"]
 
 [[package]]
 name = "requests-aws4auth"
@@ -1701,19 +1701,19 @@ aiomysql = ["aiomysql", "greenlet (!=0.4.17)"]
 aiosqlite = ["aiosqlite", "greenlet (!=0.4.17)", "typing_extensions (!=3.10.0.1)"]
 asyncio = ["greenlet (!=0.4.17)"]
 asyncmy = ["asyncmy (>=0.2.3,!=0.2.4)", "greenlet (!=0.4.17)"]
-mariadb_connector = ["mariadb (>=1.0.1,!=1.1.2)"]
+mariadb-connector = ["mariadb (>=1.0.1,!=1.1.2)"]
 mssql = ["pyodbc"]
-mssql_pymssql = ["pymssql"]
-mssql_pyodbc = ["pyodbc"]
+mssql-pymssql = ["pymssql"]
+mssql-pyodbc = ["pyodbc"]
 mypy = ["mypy (>=0.910)", "sqlalchemy2-stubs"]
 mysql = ["mysqlclient (>=1.4.0)", "mysqlclient (>=1.4.0,<2)"]
-mysql_connector = ["mysql-connector-python"]
+mysql-connector = ["mysql-connector-python"]
 oracle = ["cx_oracle (>=7)", "cx_oracle (>=7,<8)"]
 postgresql = ["psycopg2 (>=2.7)"]
-postgresql_asyncpg = ["asyncpg", "greenlet (!=0.4.17)"]
-postgresql_pg8000 = ["pg8000 (>=1.16.6,!=1.29.0)"]
-postgresql_psycopg2binary = ["psycopg2-binary"]
-postgresql_psycopg2cffi = ["psycopg2cffi"]
+postgresql-asyncpg = ["asyncpg", "greenlet (!=0.4.17)"]
+postgresql-pg8000 = ["pg8000 (>=1.16.6,!=1.29.0)"]
+postgresql-psycopg2binary = ["psycopg2-binary"]
+postgresql-psycopg2cffi = ["psycopg2cffi"]
 pymysql = ["pymysql", "pymysql (<1)"]
 sqlcipher = ["sqlcipher3_binary"]
 
@@ -1806,39 +1806,39 @@ tenacity = ">=8.0.1,<9.0.0"
 toucan-data-sdk = ">=7.4.2,<8.0.0"
 
 [package.extras]
-ROK = ["PyJWT (>=1.5.3,<3)", "requests (>=2.28.0,<3.0.0)", "simplejson (>=3.17.6,<4.0.0)"]
-Redshift = ["lxml (==4.9.1)", "redshift-connector (>=2.0.907,<3.0.0)"]
 adobe = ["adobe-analytics (>=1.2.3,<2.0.0)"]
 aircall = ["bearer (==3.1.0)"]
 all = ["PyHive[hive] (>=0.6.5,<1.0)", "PyJWT (>=1.5.3,<3)", "PyMySQL (>=1.0.2,<2.0.0)", "adobe-analytics (>=1.2.3,<2.0.0)", "awswrangler (>=2.15.1,<3.0.0)", "bearer (==3.1.0)", "clickhouse-driver (>=0.2.3,<1.0)", "cx-Oracle (>=8.3.0,<9.0.0)", "dataiku-api-client (>=9.0.1,<10.0.0)", "elasticsearch (>=7.11.0,<8)", "facebook-sdk (>=3.1.0,<4.0.0)", "google-api-python-client (>=2,<3)", "google-cloud-bigquery[bqstorage,pandas] (>=2,<4)", "googleads (>=32,<34)", "gspread (>=5.4.0,<6.0.0)", "lxml (==4.9.1)", "oauth2client (>=4.1.3,<5.0.0)", "oauthlib (==3.2.1)", "openpyxl (>=3.0.9,<4.0.0)", "psycopg2 (>=2.7.4,<3.0.0)", "pyarrow (<7)", "pyhdb (>=0.3.4,<1.0)", "pymongo (>=3.12.0)", "pyodbc (>=4,<5)", "python-graphql-client (>=0.4.3,<1.0)", "redshift-connector (>=2.0.907,<3.0.0)", "requests-oauthlib (==1.3.1)", "simplejson (>=3.17.6,<4.0.0)", "snowflake-connector-python (>=2.7.8,<3.0.0)", "tctc-odata (>=0.3,<1.0)", "toucan-client (>=1.0.1,<2.0.0)", "xmltodict (>=0.13.0,<1.0)", "zeep (>=4.1.0,<5.0.0)"]
 awsathena = ["awswrangler (>=2.15.1,<3.0.0)"]
-azure_mssql = ["pyodbc (>=4,<5)"]
+azure-mssql = ["pyodbc (>=4,<5)"]
 clickhouse = ["clickhouse-driver (>=0.2.3,<1.0)"]
 dataiku = ["dataiku-api-client (>=9.0.1,<10.0.0)"]
 elasticsearch = ["elasticsearch (>=7.11.0,<8)"]
 facebook = ["facebook-sdk (>=3.1.0,<4.0.0)"]
 github = ["python-graphql-client (>=0.4.3,<1.0)"]
-google_analytics = ["google-api-python-client (>=2,<3)", "oauth2client (>=4.1.3,<5.0.0)"]
-google_big_query = ["google-cloud-bigquery[bqstorage,pandas] (>=2,<4)"]
-google_cloud_mysql = ["PyMySQL (>=1.0.2,<2.0.0)"]
-google_my_business = ["google-api-python-client (>=2,<3)"]
-google_sheets = ["google-api-python-client (>=2,<3)"]
-google_spreadsheet = ["gspread (>=5.4.0,<6.0.0)", "oauth2client (>=4.1.3,<5.0.0)"]
+google-analytics = ["google-api-python-client (>=2,<3)", "oauth2client (>=4.1.3,<5.0.0)"]
+google-big-query = ["google-cloud-bigquery[bqstorage,pandas] (>=2,<4)"]
+google-cloud-mysql = ["PyMySQL (>=1.0.2,<2.0.0)"]
+google-my-business = ["google-api-python-client (>=2,<3)"]
+google-sheets = ["google-api-python-client (>=2,<3)"]
+google-spreadsheet = ["gspread (>=5.4.0,<6.0.0)", "oauth2client (>=4.1.3,<5.0.0)"]
 hive = ["PyHive[hive] (>=0.6.5,<1.0)"]
-http_api = ["oauthlib (==3.2.1)", "requests-oauthlib (==1.3.1)", "xmltodict (>=0.13.0,<1.0)"]
+http-api = ["oauthlib (==3.2.1)", "requests-oauthlib (==1.3.1)", "xmltodict (>=0.13.0,<1.0)"]
 lightspeed = ["bearer (==3.1.0)"]
 mongo = ["pymongo (>=3.12.0)"]
 mssql = ["pyodbc (>=4,<5)"]
-mssql_TLSv1_0 = ["pyodbc (>=4,<5)"]
+mssql-tlsv1-0 = ["pyodbc (>=4,<5)"]
 mysql = ["PyMySQL (>=1.0.2,<2.0.0)"]
-net_explorer = ["openpyxl (>=3.0.9,<4.0.0)"]
+net-explorer = ["openpyxl (>=3.0.9,<4.0.0)"]
 odata = ["oauthlib (==3.2.1)", "requests-oauthlib (==1.3.1)", "tctc-odata (>=0.3,<1.0)"]
-oracle_sql = ["cx-Oracle (>=8.3.0,<9.0.0)"]
+oracle-sql = ["cx-Oracle (>=8.3.0,<9.0.0)"]
 postgres = ["psycopg2 (>=2.7.4,<3.0.0)"]
-sap_hana = ["pyhdb (>=0.3.4,<1.0)"]
+redshift = ["lxml (==4.9.1)", "redshift-connector (>=2.0.907,<3.0.0)"]
+rok = ["PyJWT (>=1.5.3,<3)", "requests (>=2.28.0,<3.0.0)", "simplejson (>=3.17.6,<4.0.0)"]
+sap-hana = ["pyhdb (>=0.3.4,<1.0)"]
 snowflake = ["PyJWT (>=1.5.3,<3)", "pyarrow (<7)", "snowflake-connector-python (>=2.7.8,<3.0.0)"]
 soap = ["lxml (==4.9.1)", "zeep (>=4.1.0,<5.0.0)"]
-toucan_toco = ["toucan-client (>=1.0.1,<2.0.0)"]
+toucan-toco = ["toucan-client (>=1.0.1,<2.0.0)"]
 
 [[package]]
 name = "toucan-data-sdk"
@@ -1861,7 +1861,7 @@ test = ["black", "flake8", "flake8-quotes", "isort", "mypy", "pytest", "pytest-c
 
 [[package]]
 name = "types-python-dateutil"
-version = "2.8.19"
+version = "2.8.19.1"
 description = "Typing stubs for python-dateutil"
 category = "dev"
 optional = false
@@ -3581,8 +3581,8 @@ toucan-data-sdk = [
     {file = "toucan_data_sdk-7.4.2.tar.gz", hash = "sha256:bf6df2a97494dd74c80f99cc68e76de79a3dd41c8ac2678134c69e9bb3b8c13f"},
 ]
 types-python-dateutil = [
-    {file = "types-python-dateutil-2.8.19.tar.gz", hash = "sha256:bfd3eb39c7253aea4ba23b10f69b017d30b013662bb4be4ab48b20bbd763f309"},
-    {file = "types_python_dateutil-2.8.19-py3-none-any.whl", hash = "sha256:6284df1e4783d8fc6e587f0317a81333856b872a6669a282f8a325342bce7fa8"},
+    {file = "types-python-dateutil-2.8.19.1.tar.gz", hash = "sha256:d642f7af2bb99fe78f5a776fd0ca4e32932720047f400e25ad62bc2a5b18dc94"},
+    {file = "types_python_dateutil-2.8.19.1-py3-none-any.whl", hash = "sha256:a560f63b31ece652e891f9659216fb315abd6dc169f9356c077d11b4f432aa7d"},
 ]
 typing-extensions = [
     {file = "typing_extensions-4.4.0-py3-none-any.whl", hash = "sha256:16fa4864408f655d35ec496218b85f79b3437c829e93320c7c9215ccfd92489e"},
