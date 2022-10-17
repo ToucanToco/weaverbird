@@ -2597,10 +2597,10 @@ A replace-text step has the following structure:
 
 **Input dataset:**
 
-| COMPANY   | COUNTRY |
-| --------- | ------- |
-| Company 1 | Fr      |
-| Company 2 | UK      |
+| COMPANY   | COUNTRY      |
+| --------- | -------------|
+| Company 1 | Fr is boring |
+| Company 2 | UK           |
 
 **Step configuration:**
 
@@ -2615,10 +2615,10 @@ A replace-text step has the following structure:
 
 **Output dataset:**
 
-| COMPANY   | COUNTRY        |
-| --------- | -------------- |
-| Company 1 | France         |
-| Company 2 | United Kingdom |
+| COMPANY   | COUNTRY          |
+| --------- | ---------------- |
+| Company 1 | France is boring |
+| Company 2 | UK               |
 
 ### `rollup` step
 
