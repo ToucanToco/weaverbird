@@ -72,6 +72,7 @@ if TYPE_CHECKING:
         PercentageStep,
         RenameStep,
         ReplaceStep,
+        ReplaceTextStep,
         SelectStep,
         SortStep,
         SplitStep,
@@ -1262,6 +1263,25 @@ class SQLTranslator(ABC):
 
         query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(*selected_col_fields)
         return StepContext(query, [f.alias or f.name for f in selected_col_fields])
+
+    def replacetext(
+        self: Self,
+        *,
+        builder: "QueryBuilder",
+        prev_step_name: str,
+        columns: list[str],
+        step: "ReplaceTextStep",
+    ) -> StepContext:
+        col_field: Field = Table(prev_step_name)[step.search_column]
+
+        replaced_col = functions.Replace(col_field, step.old_str, step.new_str)
+
+        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
+            *(c for c in columns if c != step.search_column),
+            replaced_col.as_(step.search_column),
+        )
+
+        return StepContext(query, columns)
 
     def replace(
         self: Self,
