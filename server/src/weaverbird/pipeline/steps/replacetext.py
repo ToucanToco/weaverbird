@@ -10,7 +10,7 @@ from weaverbird.pipeline.types import ColumnName, TemplatedVariable
 class ReplaceTextStep(BaseStep):
     name: Literal["replacetext"] = "replacetext"
     search_column: ColumnName
-    old_str: str = Field()
+    old_str: str
     new_str: str = Field(default="")
 
 
