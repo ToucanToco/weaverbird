@@ -33,6 +33,7 @@ from .pivot import PivotStep, PivotStepWithVariable
 from .rank import RankStep, RankStepWithVariable
 from .rename import RenameStep, RenameStepWithVariable
 from .replace import ReplaceStep, ReplaceStepWithVariable
+from .replacetext import ReplaceTextStep, ReplaceTextStepWithVariable
 from .rollup import RollupStep, RollupStepWithVariable
 from .select import SelectStep
 from .simplify import SimplifyStep

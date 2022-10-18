@@ -58,6 +58,8 @@ from .steps import (
     RenameStepWithVariable,
     ReplaceStep,
     ReplaceStepWithVariable,
+    ReplaceTextStep,
+    ReplaceTextStepWithVariable,
     RollupStep,
     RollupStepWithVariable,
     SelectStep,
@@ -119,6 +121,7 @@ PipelineStep = Annotated[
     | RankStep
     | RenameStep
     | ReplaceStep
+    | ReplaceTextStep
     | RollupStep
     | SelectStep
     | SimplifyStep
@@ -168,6 +171,7 @@ PipelineStepWithVariables = Annotated[
     | RankStepWithVariable
     | RenameStepWithVariable
     | ReplaceStepWithVariable
+    | ReplaceTextStepWithVariable
     | RollupStepWithVariable
     | SplitStepWithVariable
     | TextStepWithVariable

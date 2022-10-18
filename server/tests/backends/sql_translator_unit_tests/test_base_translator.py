@@ -524,6 +524,23 @@ def test_replace(base_translator: BaseTranslator, default_step_kwargs: dict[str,
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
+def test_replacetext(base_translator: BaseTranslator, default_step_kwargs: dict[str, Any]):
+    selected_columns = ["name", "pseudonyme"]
+    previous_step = "previous_with"
+    column = "name"
+    old_str = "a"
+    new_str = "b"
+
+    step = steps.ReplaceTextStep(search_column=column, old_str=old_str, new_str=new_str)
+    ctx = base_translator.replacetext(step=step, columns=selected_columns, **default_step_kwargs)
+
+    expected_query = Query.from_(previous_step).select(
+        Field("pseudonyme"), functions.Replace(Field(column), old_str, new_str).as_("name")
+    )
+
+    assert ctx.selectable.get_sql() == expected_query.get_sql()
+
+
 def test_select(base_translator: BaseTranslator, default_step_kwargs: dict[str, Any]):
     selected_columns = ["name", "pseudonyme"]
     previous_step = "previous_with"

@@ -31,6 +31,7 @@ from weaverbird.backends.mongo_translator.steps.pivot import translate_pivot
 from weaverbird.backends.mongo_translator.steps.rank import translate_rank
 from weaverbird.backends.mongo_translator.steps.rename import translate_rename
 from weaverbird.backends.mongo_translator.steps.replace import translate_replace
+from weaverbird.backends.mongo_translator.steps.replacetext import translate_replacetext
 from weaverbird.backends.mongo_translator.steps.rollup import translate_rollup
 from weaverbird.backends.mongo_translator.steps.select import translate_select
 from weaverbird.backends.mongo_translator.steps.sort import translate_sort
@@ -81,6 +82,7 @@ mongo_step_translator: dict[str, Callable[[Any], list]] = {
     "rename": translate_rename,
     "rank": translate_rank,
     "replace": translate_replace,
+    "replacetext": translate_replacetext,
     "rollup": translate_rollup,
     "select": translate_select,
     "sort": translate_sort,

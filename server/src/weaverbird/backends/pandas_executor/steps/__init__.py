@@ -1,3 +1,5 @@
+from weaverbird.backends.pandas_executor.steps.replacetext import execute_replacetext
+
 from ..types import StepExecutor
 from .absolutevalue import execute_absolutevalue
 from .addmissingdates import execute_addmissingdates
@@ -79,6 +81,7 @@ steps_executors: dict[str, StepExecutor] = {
     "rank": execute_rank,
     "rename": execute_rename,
     "replace": execute_replace,
+    "replacetext": execute_replacetext,
     "rollup": execute_rollup,
     "select": execute_select,
     "simplify": execute_simplify,

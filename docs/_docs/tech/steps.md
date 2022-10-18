@@ -2570,6 +2570,59 @@ A replace step has the following strucure:
 | Company 1 | France         |
 | Company 2 | United Kingdom |
 
+### `replacetext` step
+
+Replace a substring in a column.
+
+A replace-text step has the following structure:
+
+```javascript
+{
+   name: 'replacetext',
+   search_column: "column_1",
+   old_str: 'foo',
+   new_str: 'bar'
+}
+```
+
+**This step is supported by the following backends:*
+
+- Mongo 5.0 (python)
+- Pandas (python)
+- AWS Athena
+- Google Big Query
+- MySQL
+- PostgreSQL
+- Redshift
+- Snowflake
+
+#### Example
+
+**Input dataset:**
+
+| COMPANY   | COUNTRY      |
+| --------- | -------------|
+| Company 1 | Fr is boring |
+| Company 2 | UK           |
+
+**Step configuration:**
+
+```javascript
+{
+   name: 'replacetext',
+   search_column: "COUNTRY",
+   old_str: 'Fr',
+   new_str: 'France',
+}
+```
+
+**Output dataset:**
+
+| COMPANY   | COUNTRY          |
+| --------- | ---------------- |
+| Company 1 | France is boring |
+| Company 2 | UK               |
+
 ### `rollup` step
 
 Use this step if you need to compute aggregated data at every level of a

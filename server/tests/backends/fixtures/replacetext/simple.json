@@ -11,14 +11,10 @@
   "step": {
     "pipeline": [
       {
-        "name": "replace",
+        "name": "replacetext",
         "search_column": "NAME",
-        "to_replace": [
-          [
-            "foo",
-            "oof"
-          ]
-        ]
+        "old_str": "foo",
+        "new_str": "oof"
       }
     ]
   },
@@ -42,12 +38,12 @@
     },
     "data": [
       {
-        "NAME": "foo",
+        "NAME": "foo is good",
         "AGE": 42,
         "SCORE": 100
       },
       {
-        "NAME": "Azz",
+        "NAME": "Azz is bad",
         "AGE": 21,
         "SCORE": 100
       }
@@ -73,15 +69,16 @@
     },
     "data": [
       {
-        "NAME": "oof",
+        "NAME": "oof is good",
         "AGE": 42,
         "SCORE": 100
       },
       {
-        "NAME": "Azz",
+        "NAME": "Azz is bad",
         "AGE": 21,
         "SCORE": 100
       }
+
     ]
   }
 }
