@@ -2587,11 +2587,14 @@ A replace-text step has the following structure:
 
 **This step is supported by the following backends:*
 
-- Mongo 5.0
-- Mongo 4.2
-- Mongo 4.0
-- Mongo 3.6
+- Mongo 5.0 (python)
 - Pandas (python)
+- AWS Athena
+- Google Big Query
+- MySQL
+- PostgreSQL
+- Redshift
+- Snowflake
 
 #### Example
 
