@@ -1861,7 +1861,7 @@ test = ["black", "flake8", "flake8-quotes", "isort", "mypy", "pytest", "pytest-c
 
 [[package]]
 name = "types-python-dateutil"
-version = "2.8.19.1"
+version = "2.8.19.2"
 description = "Typing stubs for python-dateutil"
 category = "dev"
 optional = false
@@ -3581,8 +3581,8 @@ toucan-data-sdk = [
     {file = "toucan_data_sdk-7.4.2.tar.gz", hash = "sha256:bf6df2a97494dd74c80f99cc68e76de79a3dd41c8ac2678134c69e9bb3b8c13f"},
 ]
 types-python-dateutil = [
-    {file = "types-python-dateutil-2.8.19.1.tar.gz", hash = "sha256:d642f7af2bb99fe78f5a776fd0ca4e32932720047f400e25ad62bc2a5b18dc94"},
-    {file = "types_python_dateutil-2.8.19.1-py3-none-any.whl", hash = "sha256:a560f63b31ece652e891f9659216fb315abd6dc169f9356c077d11b4f432aa7d"},
+    {file = "types-python-dateutil-2.8.19.2.tar.gz", hash = "sha256:e6e32ce18f37765b08c46622287bc8d8136dc0c562d9ad5b8fd158c59963d7a7"},
+    {file = "types_python_dateutil-2.8.19.2-py3-none-any.whl", hash = "sha256:3f4dbe465e7e0c6581db11fd7a4855d1355b78712b3f292bd399cd332247e9c0"},
 ]
 typing-extensions = [
     {file = "typing_extensions-4.4.0-py3-none-any.whl", hash = "sha256:16fa4864408f655d35ec496218b85f79b3437c829e93320c7c9215ccfd92489e"},
