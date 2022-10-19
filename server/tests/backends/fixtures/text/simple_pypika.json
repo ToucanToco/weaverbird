@@ -10,6 +10,26 @@
         "name": "text",
         "new_column": "best_singer_ever",
         "text": "jean-jacques-goldman"
+      },
+      {
+        "name": "text",
+        "new_column": "one",
+        "text": "{{ ONE }}"
+      },
+      {
+        "name": "text",
+        "new_column": "one_point_one",
+        "text": "{{ ONE_POINT_ONE }}"
+      },
+      {
+        "name": "text",
+        "new_column": "today",
+        "text": "{{ TODAY }}"
+      },
+      {
+        "name": "text",
+        "new_column": "true",
+        "text": "{{ TRUE }}"
       }
     ]
   },
@@ -51,6 +71,22 @@
         {
           "name": "best_singer_ever",
           "type": "string"
+        },
+        {
+          "name": "one",
+          "type": "integer"
+        },
+        {
+          "name": "one_point_one",
+          "type": "number"
+        },
+        {
+          "name": "today",
+          "type": "datetime"
+        },
+        {
+          "name": "true",
+          "type": "boolean"
         }
       ],
       "pandas_version": "1.4.0"
@@ -65,7 +101,11 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-01",
         "nullable_name": null,
-        "best_singer_ever": "jean-jacques-goldman"
+        "best_singer_ever": "jean-jacques-goldman",
+        "one": 1,
+        "one_point_one": 1.1,
+        "today": "2022-10-17 17:30:12",
+        "true": true
       },
       {
         "price_per_l": 0.0540000014,
@@ -76,7 +116,11 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-02",
         "nullable_name": "Ninkasi Ploploplop",
-        "best_singer_ever": "jean-jacques-goldman"
+        "best_singer_ever": "jean-jacques-goldman",
+        "one": 1,
+        "one_point_one": 1.1,
+        "today": "2022-10-17 17:30:12",
+        "true": true
       },
       {
         "price_per_l": 0.0049999999,
@@ -87,7 +131,11 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-03",
         "nullable_name": "Brewdog Nanny State Alcoholvrij",
-        "best_singer_ever": "jean-jacques-goldman"
+        "best_singer_ever": "jean-jacques-goldman",
+        "one": 1,
+        "one_point_one": 1.1,
+        "today": "2022-10-17 17:30:12",
+        "true": true
       },
       {
         "price_per_l": 0.0560000017,
@@ -98,7 +146,11 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-04",
         "nullable_name": "Ardwen Blonde",
-        "best_singer_ever": "jean-jacques-goldman"
+        "best_singer_ever": "jean-jacques-goldman",
+        "one": 1,
+        "one_point_one": 1.1,
+        "today": "2022-10-17 17:30:12",
+        "true": true
       },
       {
         "price_per_l": 0.0700000003,
@@ -109,7 +161,11 @@
         "volume_ml": 250.0,
         "brewing_date": "2022-01-05",
         "nullable_name": null,
-        "best_singer_ever": "jean-jacques-goldman"
+        "best_singer_ever": "jean-jacques-goldman",
+        "one": 1,
+        "one_point_one": 1.1,
+        "today": "2022-10-17 17:30:12",
+        "true": true
       },
       {
         "price_per_l": 0.0049999999,
@@ -120,7 +176,11 @@
         "volume_ml": 500.0,
         "brewing_date": "2022-01-06",
         "nullable_name": "Weihenstephan Hefe Weizen Alcoholarm",
-        "best_singer_ever": "jean-jacques-goldman"
+        "best_singer_ever": "jean-jacques-goldman",
+        "one": 1,
+        "one_point_one": 1.1,
+        "today": "2022-10-17 17:30:12",
+        "true": true
       },
       {
         "price_per_l": 0.0450000018,
@@ -131,7 +191,11 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-07",
         "nullable_name": "Bellfield Lawless Village IPA",
-        "best_singer_ever": "jean-jacques-goldman"
+        "best_singer_ever": "jean-jacques-goldman",
+        "one": 1,
+        "one_point_one": 1.1,
+        "today": "2022-10-17 17:30:12",
+        "true": true
       },
       {
         "price_per_l": 0.0839999989,
@@ -142,7 +206,11 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-08",
         "nullable_name": "Pauwel Kwak",
-        "best_singer_ever": "jean-jacques-goldman"
+        "best_singer_ever": "jean-jacques-goldman",
+        "one": 1,
+        "one_point_one": 1.1,
+        "today": "2022-10-17 17:30:12",
+        "true": true
       },
       {
         "price_per_l": 0.0649999976,
@@ -153,7 +221,11 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-09",
         "nullable_name": null,
-        "best_singer_ever": "jean-jacques-goldman"
+        "best_singer_ever": "jean-jacques-goldman",
+        "one": 1,
+        "one_point_one": 1.1,
+        "today": "2022-10-17 17:30:12",
+        "true": true
       },
       {
         "price_per_l": 0.0599999987,
@@ -164,7 +236,11 @@
         "volume_ml": 330.0,
         "brewing_date": "2022-01-10",
         "nullable_name": "Brugse Zot blonde",
-        "best_singer_ever": "jean-jacques-goldman"
+        "best_singer_ever": "jean-jacques-goldman",
+        "one": 1,
+        "one_point_one": 1.1,
+        "today": "2022-10-17 17:30:12",
+        "true": true
       }
     ]
   }

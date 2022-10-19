@@ -33,7 +33,7 @@ class MySQLTranslator(SQLTranslator):
         float="DOUBLE",
         integer="UNSIGNED",
         text="CHAR",
-        datetime="TIMESTAMP",
+        datetime="DATETIME",
         timestamp="TIMESTAMP",
     )
     # Requires MySQL>=8

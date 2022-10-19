@@ -7,6 +7,7 @@ import pandas as pd
 import psycopg2
 import pytest
 from sqlalchemy import create_engine, text
+from toucan_connectors.common import nosql_apply_parameters_to_query
 
 from tests.utils import (
     _BEERS_TABLE_COLUMNS,
@@ -69,12 +70,16 @@ def postgres_container():
 @pytest.mark.parametrize(
     "case_id, case_spec_file_path", retrieve_case("sql_translator", "postgres_pypika")
 )
-def test_sql_translator_pipeline(case_id: str, case_spec_file_path: str, engine: Any):
+def test_sql_translator_pipeline(
+    case_id: str, case_spec_file_path: str, engine: Any, available_variables: dict
+):
     spec = get_spec_from_json_fixture(case_id, case_spec_file_path)
 
     steps = spec["step"]["pipeline"]
     steps.insert(0, {"name": "domain", "domain": "beers_tiny"})
-    pipeline = PipelineWithVariables(steps=steps)
+    pipeline = PipelineWithVariables(steps=steps).render(
+        available_variables, nosql_apply_parameters_to_query
+    )
 
     # Convert Pipeline object to Postgres Query
     query = translate_pipeline(

@@ -7,10 +7,11 @@ import pandas as pd
 import pytest
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
 from pymongo import MongoClient
+from toucan_connectors.common import nosql_apply_parameters_to_query
 
 from tests.utils import assert_dataframes_content_equals, get_spec_from_json_fixture, retrieve_case
 from weaverbird.backends.mongo_translator.mongo_pipeline_translator import translate_pipeline
-from weaverbird.pipeline import Pipeline
+from weaverbird.pipeline import PipelineWithVariables
 
 exec_type = "mongo"
 test_cases = retrieve_case("mongo_translator", exec_type)
@@ -71,7 +72,9 @@ def _sanitized_df_from_pandas_table(df_spec: dict) -> pd.DataFrame:
 
 
 @pytest.mark.parametrize("case_id,case_spec_file_path", test_cases)
-def test_mongo_translator_pipeline(mongo_database, case_id, case_spec_file_path):
+def test_mongo_translator_pipeline(
+    mongo_database, case_id, case_spec_file_path, available_variables
+):
     # insert in mongoDB
     collection_uid = uuid.uuid4().hex
     spec = get_spec_from_json_fixture(case_id, case_spec_file_path)
@@ -89,7 +92,9 @@ def test_mongo_translator_pipeline(mongo_database, case_id, case_spec_file_path)
 
     # create query
     steps = spec["step"]["pipeline"]
-    pipeline = Pipeline(steps=steps)
+    pipeline = PipelineWithVariables(steps=steps).render(
+        available_variables, nosql_apply_parameters_to_query
+    )
     query = translate_pipeline(pipeline)
     # execute query
     result = list(mongo_database[collection_uid].aggregate(query))
