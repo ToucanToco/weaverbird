@@ -1,7 +1,8 @@
-from typing import TypeVar
+from typing import Any, TypeVar
 
-from pypika.dialects import SnowflakeQuery
+from pypika.dialects import SnowflakeQueryBuilder
 from pypika.enums import Dialects
+from pypika.queries import Query
 from pypika.terms import Field, Term
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
@@ -13,6 +14,16 @@ from weaverbird.backends.pypika_translator.translators.base import (
 )
 
 Self = TypeVar("Self", bound="SQLTranslator")
+
+
+class QuotedSnowflakeQueryBuilder(SnowflakeQueryBuilder):
+    QUOTE_CHAR = '"'
+
+
+class SnowflakeQuery(Query):
+    @classmethod
+    def _builder(cls, **kwargs: Any) -> "QuotedSnowflakeQueryBuilder":
+        return QuotedSnowflakeQueryBuilder(**kwargs)
 
 
 class SnowflakeTranslator(SQLTranslator):

@@ -4,9 +4,12 @@ import pytest
 from pypika.functions import Cast, Extract
 from pypika.queries import Query, Table
 
+from weaverbird.backends.pypika_translator.dialects import SQLDialect
+from weaverbird.backends.pypika_translator.translate import translate_pipeline
 from weaverbird.backends.pypika_translator.translators.base import DateAddWithoutUnderscore
 from weaverbird.backends.pypika_translator.translators.snowflake import SnowflakeTranslator
 from weaverbird.pipeline import steps
+from weaverbird.pipeline.pipeline import Pipeline
 from weaverbird.pipeline.steps import DateExtractStep, UnpivotStep
 
 
@@ -160,3 +163,21 @@ def test__build_unpivot_col(snowflake_translator: SnowflakeTranslator) -> None:
         secondary_quote_char="'",
     )
     assert unpivot == "UNPIVOT(booo FOR yaaaa IN (too, roo))"
+
+
+def test_quoted_columns_with_special_chars(
+    snowflake_translator: SnowflakeTranslator, default_step_kwargs: dict[str, Any]
+) -> None:
+    steps = [
+        {"name": "domain", "domain": "beers_tiny"},
+        {"name": "rename", "toRename": [("price_per_l", "price-per-l")]},
+    ]
+    query = translate_pipeline(
+        sql_dialect=SQLDialect.SNOWFLAKE,
+        pipeline=Pipeline(steps=steps),
+        tables_columns={"beers_tiny": ["price_per_l", "test", "another-test"]},
+    )
+    assert (
+        '''SELECT "price-per-l","test","another-test" FROM "__step_1_snowflaketranslator__"'''
+        in query
+    )
