@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Pypika: Snowflake translator now has a custom queryBuilder class to force the `QUOTE_CHAR` to `"`
 - Feat: Added `replacetext` step for all backends
 
 ### Breaking
