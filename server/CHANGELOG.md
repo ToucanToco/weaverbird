@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **BEAKING CHANGES**: Removed the support for the old sql-translator
 - Feat: Added `replacetext` step for all backends
 
 ## [0.25.5] - 2022-10-11
