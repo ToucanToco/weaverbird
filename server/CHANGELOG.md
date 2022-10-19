@@ -2,8 +2,10 @@
 
 ## Unreleased
 
-- **BEAKING CHANGES**: Removed the support for the old sql-translator
 - Feat: Added `replacetext` step for all backends
+
+### Breaking
+* Dropped support for the old snowflake  SQL translator
 
 ## [0.25.5] - 2022-10-11
 
