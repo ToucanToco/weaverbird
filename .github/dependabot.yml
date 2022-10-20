@@ -5,3 +5,16 @@ updates:
     directory: "/server"
     schedule:
       interval: "daily"
+  # yarn
+  - package-ecosystem: "npm"
+    directory: "/src"
+    schedule:
+      interval: "daily"
+    allow:
+      - dependency-type: "all"
+    assignees:
+      - "davinov"
+    commit-message:
+      prefix: "yarn prod"
+      prefix-development: "yarn dev"
+      include: "scope"
