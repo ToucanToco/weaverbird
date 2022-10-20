@@ -4,7 +4,7 @@
 
 - Pypika: Snowflake translator now has a custom queryBuilder class to force the `QUOTE_CHAR` to `"`
 - Feat: Added `replacetext` step for all backends
-- Feat: `text` step now allows to create other types of column (when used in conjunctions with variables)
+- Feat: `text` step now allows to create other types of column (when used in conjunction with variables)
 
 ### Breaking
 * Dropped support for the old snowflake  SQL translator

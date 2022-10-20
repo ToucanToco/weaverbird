@@ -1,4 +1,6 @@
 import random
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import numpy as np
 import pytest
@@ -27,6 +29,13 @@ def test_text(sample_df: DataFrame):
         }
     )
     assert_dataframes_equals(df_result, expected_result)
+
+
+def test_text_datetime_with_tz():
+    now = datetime(2022, 10, 20, 14, 18, 22).replace(tzinfo=ZoneInfo("Europe/Paris"))
+    step = TextStep(name="text", new_column="foo", text=now)
+    assert step.text.tzinfo is None  # it is now tz naive
+    assert step.text.isoformat() == "2022-10-20T12:18:22"
 
 
 def test_benchmark_text(benchmark):
