@@ -51,6 +51,9 @@ def engine():
     connection.close()
 
 
+@pytest.skip(
+    "Should be skipped, waiting the payment of creds on november...", allow_module_level=True
+)
 @pytest.mark.parametrize(
     "case_id, case_spec_file", retrieve_case("sql_translator", "snowflake_pypika")
 )
