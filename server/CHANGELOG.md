@@ -1,6 +1,6 @@
 # Changelog (weaverbird python package)
 
-## [0.26.0] - 2022-10-19
+## [0.26.0] - 2022-10-20
 
 - Pypika: Snowflake translator now has a custom queryBuilder class to force the `QUOTE_CHAR` to `"`
 - Feat: Added `replacetext` step for all backends
