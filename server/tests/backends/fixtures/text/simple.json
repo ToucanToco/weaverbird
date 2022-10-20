@@ -13,6 +13,26 @@
         "name": "text",
         "new_column": "BEST_SINGER_EVER",
         "text": "jean-jacques-goldman"
+      },
+      {
+        "name": "text",
+        "new_column": "ONE",
+        "text": "{{ ONE }}"
+      },
+      {
+        "name": "text",
+        "new_column": "ONE_POINT_ONE",
+        "text": "{{ ONE_POINT_ONE }}"
+      },
+      {
+        "name": "text",
+        "new_column": "TODAY",
+        "text": "{{ TODAY }}"
+      },
+      {
+        "name": "text",
+        "new_column": "TRUE",
+        "text": "{{ TRUE }}"
       }
     ]
   },
@@ -65,6 +85,22 @@
         {
           "name": "BEST_SINGER_EVER",
           "type": "string"
+        },
+        {
+          "name": "ONE",
+          "type": "integer"
+        },
+        {
+          "name": "ONE_POINT_ONE",
+          "type": "number"
+        },
+        {
+          "name": "TODAY",
+          "type": "datetime"
+        },
+        {
+          "name": "TRUE",
+          "type": "boolean"
         }
       ],
       "pandas_version": "0.20.0"
@@ -74,13 +110,21 @@
         "NAME": "foo",
         "AGE": 42.0,
         "SCORE": 100,
-        "BEST_SINGER_EVER": "jean-jacques-goldman"
+        "BEST_SINGER_EVER": "jean-jacques-goldman",
+        "ONE": 1,
+        "ONE_POINT_ONE": 1.1,
+        "TODAY": "2022-10-17 17:30:12",
+        "TRUE": true
       },
       {
         "NAME": "bar",
         "AGE": 43,
         "SCORE": 200,
-        "BEST_SINGER_EVER": "jean-jacques-goldman"
+        "BEST_SINGER_EVER": "jean-jacques-goldman",
+        "ONE": 1,
+        "ONE_POINT_ONE": 1.1,
+        "TODAY": "2022-10-17 17:30:12",
+        "TRUE": true
       }
     ]
   }

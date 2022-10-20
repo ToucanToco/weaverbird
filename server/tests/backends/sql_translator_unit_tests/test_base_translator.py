@@ -1,4 +1,6 @@
+from datetime import datetime
 from typing import Any
+from zoneinfo import ZoneInfo
 
 import pytest
 from pypika import AliasedQuery, Case, Field, Order, Query, Schema, Table, analytics, functions
@@ -598,6 +600,27 @@ def test_text(base_translator: BaseTranslator, default_step_kwargs: dict[str, An
 
     expected_query = Query.from_(previous_step).select(
         *selected_columns, functions.Cast(ValueWrapper(text), "TEXT").as_(new_column_name)
+    )
+
+    assert ctx.selectable.get_sql() == expected_query.get_sql()
+
+
+def test_text_with_datetime(base_translator: BaseTranslator, default_step_kwargs: dict[str, Any]):
+    selected_columns = ["name", "pseudonyme"]
+    previous_step = "previous_with"
+    new_column_name = "name"
+    text = datetime(2022, 10, 20, 14, 18, 22).replace(tzinfo=ZoneInfo("Europe/Paris"))
+
+    step = steps.TextStep(text=text, new_column=new_column_name)
+    ctx = base_translator.text(step=step, columns=selected_columns, **default_step_kwargs)
+
+    text_as_str = (
+        text.astimezone(ZoneInfo("UTC")).replace(tzinfo=None).strftime("%Y-%m-%d %H:%M:%S")
+    )
+
+    expected_query = Query.from_(previous_step).select(
+        *selected_columns,
+        functions.Cast(ValueWrapper(text_as_str), "TIMESTAMP").as_(new_column_name),
     )
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()

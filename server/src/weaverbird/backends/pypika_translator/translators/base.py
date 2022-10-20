@@ -1392,14 +1392,32 @@ class SQLTranslator(ABC):
     ) -> StepContext:
         from pypika.terms import ValueWrapper
 
+        # Since we're using WITH...AS syntax, we add an explicit cast here to provide type
+        # context to the engine. Without that, we might encounter "failed to find conversion
+        # function from "unknown" to text" errors
+        value = step.text
+
+        if isinstance(value, datetime):
+            # ValueWrapper(value) would produce an iso8601 string which
+            # is not properly handled by some backends
+            value_wrapped = ValueWrapper(value.strftime("%Y-%m-%d %H:%M:%S"))
+        else:
+            value_wrapped = ValueWrapper(value)
+
+        if isinstance(value, datetime):
+            value_wrapped = functions.Cast(value_wrapped, self.DATA_TYPE_MAPPING.datetime)
+        elif isinstance(value, int):
+            value_wrapped = functions.Cast(value_wrapped, self.DATA_TYPE_MAPPING.integer)
+        elif isinstance(value, float):
+            value_wrapped = functions.Cast(value_wrapped, self.DATA_TYPE_MAPPING.float)
+        elif isinstance(value, bool):
+            value_wrapped = functions.Cast(value_wrapped, self.DATA_TYPE_MAPPING.boolean)
+        else:
+            value_wrapped = functions.Cast(value_wrapped, self.DATA_TYPE_MAPPING.text)
+
         query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
             *columns,
-            # Since we're using WITH...AS syntax, we add an explicit cast here to provide type
-            # context to the engine. Without that, we might encounter "failed to find conversion
-            # function from "unknown" to text" errors
-            functions.Cast(ValueWrapper(step.text), self.DATA_TYPE_MAPPING.text).as_(
-                step.new_column
-            ),
+            value_wrapped.as_(step.new_column),
         )
         return StepContext(query, columns + [step.new_column])
 

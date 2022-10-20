@@ -5,11 +5,12 @@ import awswrangler as wr
 import pandas as pd
 import pytest
 from boto3 import Session
+from toucan_connectors.common import nosql_apply_parameters_to_query
 
 from tests.utils import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import translate_pipeline
-from weaverbird.pipeline import Pipeline
+from weaverbird.pipeline import PipelineWithVariables
 
 _REGION = environ["ATHENA_REGION"]
 _DB = environ["ATHENA_DATABASE"]
@@ -42,11 +43,15 @@ _BEERS_TABLE_COLUMNS = [
 @pytest.mark.parametrize(
     "case_id, case_spec_file", retrieve_case("sql_translator", "athena_pypika")
 )
-def test_athena_translator_pipeline(boto_session: Session, case_id: str, case_spec_file: str):
+def test_athena_translator_pipeline(
+    boto_session: Session, case_id: str, case_spec_file: str, available_variables: dict
+):
     pipeline_spec = get_spec_from_json_fixture(case_id, case_spec_file)
 
     steps = [{"name": "domain", "domain": "beers_tiny"}] + pipeline_spec["step"]["pipeline"]
-    pipeline = Pipeline(steps=steps)
+    pipeline = PipelineWithVariables(steps=steps).render(
+        available_variables, nosql_apply_parameters_to_query
+    )
 
     query = translate_pipeline(
         sql_dialect=SQLDialect.ATHENA,
