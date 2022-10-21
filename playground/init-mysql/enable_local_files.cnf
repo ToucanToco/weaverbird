@@ -1,0 +1,5 @@
+[mysql]
+local-infile=1
+
+[mysqld]
+local-infile=1
