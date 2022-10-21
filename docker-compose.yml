@@ -65,6 +65,11 @@ services:
 
       GOOGLE_BIG_QUERY_CREDENTIALS_FILE: "/secrets/bigquery-credentials.json"
 
+      MYSQL_HOST: mysql
+      MYSQL_PASSWORD: password
+      MYSQL_USER: dbuser
+      MYSQL_DATABASE: playground_db
+
     volumes:
       - ./server:/local_src/:Z
       - ./bigquery-credentials.json:/secrets/bigquery-credentials.json:ro
