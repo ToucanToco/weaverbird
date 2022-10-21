@@ -1,15 +1,6 @@
-import * as S from '@/lib/steps';
-
-import { BaseTranslator } from './base';
+import { PypikaTranslator } from './pypika';
 
 /* istanbul ignore next */
-export class MySqlTranslator extends BaseTranslator {
+export class MySqlTranslator extends PypikaTranslator {
   static label = 'MySqlTranslator';
-  domain(step: Readonly<S.DomainStep>) {
-    return step;
-  }
-
-  replacetext(step: Readonly<S.ReplaceTextStep>) {
-    return step;
-  }
 }
