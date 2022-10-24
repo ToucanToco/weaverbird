@@ -5,3 +5,13 @@ updates:
     directory: "/server"
     schedule:
       interval: "daily"
+  # yarn
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    allow:
+      - dependency-type: "production"
+    commit-message:
+      prefix: "yarn prod"
+      include: "scope"
