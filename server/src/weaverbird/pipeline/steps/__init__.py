@@ -11,7 +11,7 @@ from .concatenate import ConcatenateStep, ConcatenateStepWithVariable
 from .convert import ConvertStep
 from .cumsum import CumSumStep, CumSumStepWithVariable
 from .custom import CustomStep
-from .customsql import CustomSqlStep, CustomSqlStepWithVariables
+from .customsql import CustomSqlStep
 from .date_extract import DateExtractStep, DateExtractStepWithVariable
 from .delete import DeleteStep
 from .dissolve import DissolveStep

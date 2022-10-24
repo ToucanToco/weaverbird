@@ -3,7 +3,6 @@ from typing import Literal
 from pydantic import validator
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
-from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMixin
 
 
 class CustomSqlStep(BaseStep):
@@ -22,5 +21,5 @@ class CustomSqlStep(BaseStep):
         return stripped
 
 
-class CustomSqlStepWithVariables(CustomSqlStep, StepWithVariablesMixin):
-    ...
+# /!\ Do not create CustomSqlStepWithVariables
+# (variables should not be rendered using nosql_apply_parameters_to_query)
