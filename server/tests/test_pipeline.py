@@ -45,6 +45,17 @@ def test_step_with_variables(case: Case):
     assert pipeline == expected_result
 
 
+def test_custom_sql_step_with_variables():
+    steps = [{"name": "customsql", "query": "{{ __front_var_0__ }}"}]
+    variables = {"__front_var_0__": "-- DROP TABLE users;"}
+
+    pipeline_with_variables = PipelineWithVariables(steps=steps)
+    pipeline = pipeline_with_variables.render(variables, renderer=nosql_apply_parameters_to_query)
+
+    # It should not have been rendered:
+    assert pipeline.steps[0].query == "{{ __front_var_0__ }}"
+
+
 def test_to_dict():
     pipeline = Pipeline(
         steps=[
