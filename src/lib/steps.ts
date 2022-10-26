@@ -404,6 +404,13 @@ export type ReplaceStep = {
   to_replace: any[][];
 };
 
+export type ReplaceTextStep = {
+  name: 'replacetext';
+  searchColumn: string;
+  oldStr: string;
+  newStr: string;
+};
+
 export type RollupStep = {
   name: 'rollup';
   /** the list of hierarchical columns from lowest to highest level */
@@ -546,6 +553,7 @@ export type PipelineStep =
   | RankStep
   | RenameStep
   | ReplaceStep
+  | ReplaceTextStep
   | RollupStep
   | SelectStep
   | SimplifyStep

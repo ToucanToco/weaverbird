@@ -30,6 +30,7 @@ import pivotSchema from './pivot';
 import rankSchema from './rank';
 import renameSchema from './rename';
 import replaceSchema from './replace';
+import replaceTextSchema from './replaceText';
 import rollupSchema from './rollup';
 import selectSchema from './select';
 import simplifySchema from './simplify';
@@ -84,6 +85,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   rank: rankSchema,
   rename: renameSchema,
   replace: replaceSchema,
+  replacetext: replaceTextSchema,
   rollup: rollupSchema,
   select: selectSchema,
   simplify: simplifySchema,
