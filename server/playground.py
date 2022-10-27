@@ -347,110 +347,112 @@ async def handle_mongo_translated_backend_request():
 
 
 ### Snowflake back-end routes
+
 if os.getenv("SNOWFLAKE_ACCOUNT"):
-    snowflake_connexion = snowflake.connector.connect(
-        user=os.getenv("SNOWFLAKE_USER"),
-        password=os.getenv("SNOWFLAKE_PASSWORD"),
-        account=os.getenv("SNOWFLAKE_ACCOUNT"),
-        database=os.getenv("SNOWFLAKE_DATABASE"),
-        client_session_keep_alive=True,
-    )
+    try:
+        _SNOWFLAKE_CONNECTION = snowflake.connector.connect(
+            user=os.getenv("SNOWFLAKE_USER"),
+            password=os.getenv("SNOWFLAKE_PASSWORD"),
+            account=os.getenv("SNOWFLAKE_ACCOUNT"),
+            database=os.getenv("SNOWFLAKE_DATABASE"),
+            client_session_keep_alive=True,
+        )
+    except Exception:
+        _SNOWFLAKE_CONNECTION = None
 
+if _SNOWFLAKE_CONNECTION is not None:
 
-def sql_table_retriever(t):
-    return f'SELECT * FROM "{t}"'
+    def snowflake_query_describer(domain: str, query_string: str = None) -> dict[str, str] | None:
+        #  See https://docs.snowflake.com/en/user-guide/python-connector-api.html#type-codes
+        type_code_mapping = {
+            0: "float",
+            1: "real",
+            2: "text",
+            3: "date",
+            4: "timestamp",
+            5: "variant",
+            6: "timestamp_ltz",
+            7: "timestamp_tz",
+            8: "timestamp_ntz",
+            9: "object",
+            10: "array",
+            11: "binary",
+            12: "time",
+            13: "boolean",
+        }
 
+        with _SNOWFLAKE_CONNECTION.cursor() as cursor:
+            describe_res = cursor.describe(f'SELECT * FROM "{domain}"' if domain else query_string)
+            res = {r.name: type_code_mapping.get(r.type_code) for r in describe_res}
+            return res
 
-def snowflake_query_describer(domain: str, query_string: str = None) -> dict[str, str] | None:
-    #  See https://docs.snowflake.com/en/user-guide/python-connector-api.html#type-codes
-    type_code_mapping = {
-        0: "float",
-        1: "real",
-        2: "text",
-        3: "date",
-        4: "timestamp",
-        5: "variant",
-        6: "timestamp_ltz",
-        7: "timestamp_tz",
-        8: "timestamp_ntz",
-        9: "object",
-        10: "array",
-        11: "binary",
-        12: "time",
-        13: "boolean",
-    }
+    def snowflake_query_executor(domain: str, query_string: str = None) -> pd.DataFrame | None:
+        with _SNOWFLAKE_CONNECTION.cursor() as cursor:
+            res = cursor.execute(domain if domain else query_string).fetchall()
+            return res.fetch_pandas_all()
 
-    with snowflake_connexion.cursor() as cursor:
-        describe_res = cursor.describe(f'SELECT * FROM "{domain}"' if domain else query_string)
-        res = {r.name: type_code_mapping.get(r.type_code) for r in describe_res}
-        return res
+    def get_table_columns():
+        tables_info = _SNOWFLAKE_CONNECTION.cursor().execute("SHOW TABLES;").fetchall()
+        tables_columns = {}
+        for table in tables_info:
+            with suppress(Exception):
+                table_name = table[1]
+                infos = (
+                    _SNOWFLAKE_CONNECTION.cursor()
+                    .execute(f'DESCRIBE TABLE "{table_name}";')
+                    .fetchall()
+                )
+                tables_columns[table_name] = [info[0] for info in infos if info[2] == "COLUMN"]
+        return tables_columns
 
+    @app.route("/snowflake", methods=["GET", "POST"])
+    async def handle_snowflake_backend_request():
+        if request.method == "GET":
+            tables_info = get_table_columns()
+            return jsonify(list(tables_info.keys()))
 
-def snowflake_query_executor(domain: str, query_string: str = None) -> pd.DataFrame | None:
-    with snowflake_connexion.cursor() as cursor:
-        res = cursor.execute(domain if domain else query_string).fetchall()
-        return res.fetch_pandas_all()
+        elif request.method == "POST":
+            pipeline = await parse_request_json(request)
 
+            # Url parameters are only strings, these two must be understood as numbers
+            limit = int(request.args.get("limit", 50))
+            offset = int(request.args.get("offset", 0))
 
-def get_table_columns():
-    tables_info = snowflake_connexion.cursor().execute("SHOW TABLES;").fetchall()
-    tables_columns = {}
-    for table in tables_info:
-        with suppress(Exception):
-            table_name = table[1]
-            infos = (
-                snowflake_connexion.cursor().execute(f'DESCRIBE TABLE "{table_name}";').fetchall()
+            tables_columns = get_table_columns()
+
+            query = pypika_translate_pipeline(
+                sql_dialect=SQLDialect.SNOWFLAKE,
+                pipeline=Pipeline(steps=pipeline),
+                db_schema="PUBLIC",
+                tables_columns=tables_columns,
             )
-            tables_columns[table_name] = [info[0] for info in infos if info[2] == "COLUMN"]
-    return tables_columns
 
+            total_count = (
+                _SNOWFLAKE_CONNECTION.cursor()
+                .execute(f"SELECT COUNT(*) FROM ({ query })")
+                .fetchone()[0]
+            )
+            # By using snowflake's connector ability to turn results into a DataFrame,
+            # we can re-use all the methods to parse this data- interchange format in the front-end
+            df_results = (
+                _SNOWFLAKE_CONNECTION.cursor()
+                .execute(f"SELECT * FROM ({ query }) LIMIT { limit } OFFSET { offset }")
+                .fetch_pandas_all()
+            )
 
-@app.route("/snowflake", methods=["GET", "POST"])
-async def handle_snowflake_backend_request():
-    if request.method == "GET":
-        tables_info = get_table_columns()
-        return jsonify(list(tables_info.keys()))
-
-    elif request.method == "POST":
-        pipeline = await parse_request_json(request)
-
-        # Url parameters are only strings, these two must be understood as numbers
-        limit = int(request.args.get("limit", 50))
-        offset = int(request.args.get("offset", 0))
-
-        tables_columns = get_table_columns()
-
-        query = pypika_translate_pipeline(
-            sql_dialect=SQLDialect.SNOWFLAKE,
-            pipeline=Pipeline(steps=pipeline),
-            db_schema="PUBLIC",
-            tables_columns=tables_columns,
-        )
-
-        total_count = (
-            snowflake_connexion.cursor().execute(f"SELECT COUNT(*) FROM ({ query })").fetchone()[0]
-        )
-        # By using snowflake's connector ability to turn results into a DataFrame,
-        # we can re-use all the methods to parse this data- interchange format in the front-end
-        df_results = (
-            snowflake_connexion.cursor()
-            .execute(f"SELECT * FROM ({ query }) LIMIT { limit } OFFSET { offset }")
-            .fetch_pandas_all()
-        )
-
-        return Response(
-            json.dumps(
-                {
-                    "offset": offset,
-                    "limit": limit,
-                    "total": total_count,
-                    "schema": build_table_schema(df_results, index=False),
-                    "data": json.loads(df_results.to_json(orient="records")),
-                    "query": query,  # provided for inspection purposes
-                }
-            ),
-            mimetype="application/json",
-        )
+            return Response(
+                json.dumps(
+                    {
+                        "offset": offset,
+                        "limit": limit,
+                        "total": total_count,
+                        "schema": build_table_schema(df_results, index=False),
+                        "data": json.loads(df_results.to_json(orient="records")),
+                        "query": query,  # provided for inspection purposes
+                    }
+                ),
+                mimetype="application/json",
+            )
 
 
 ### Postgres back-end routes
