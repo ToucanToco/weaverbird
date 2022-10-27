@@ -146,6 +146,7 @@ describe('ActionToolbarButton active', () => {
       '!uppercase',
       'comparetext',
       'trim',
+      'replacetext',
     ]);
   });
 
