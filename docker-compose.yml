@@ -20,9 +20,9 @@ services:
       - ./playground/init-postgres/:/docker-entrypoint-initdb.d/:ro
       - ./playground/datastore/:/datasources/:ro
     environment:
-      POSTGRES_PASSWORD: password
-      POSTGRES_USER: dbuser
-      POSTGRES_DB: playground_db
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_USER: "dbuser"
+      POSTGRES_DB: "playground_db"
 
   mysql:
     image: mysql:8
@@ -35,10 +35,10 @@ services:
       # Needs rw because the entrypoint will chown this
       - ./playground/datastore-mysql/:/var/lib/mysql-files/:rw
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_PASSWORD: password
-      MYSQL_USER: dbuser
-      MYSQL_DATABASE: playground_db
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_PASSWORD: "password"
+      MYSQL_USER: "dbuser"
+      MYSQL_DATABASE: "playground_db"
 
   weaverbird:
     build:
