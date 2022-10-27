@@ -521,7 +521,7 @@ class MySqlService {
     const result = await response.json();
 
     if (response.ok) {
-      let dataset = pandasDataTableToDataset(result);
+      let dataset = pandasDataTableToDataset(result.results);
       dataset.paginationContext = {
         totalCount: result.total,
         pagesize: limit,

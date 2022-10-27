@@ -40,6 +40,7 @@ import boto3
 import geopandas as gpd
 import pandas as pd
 import psycopg
+import pymysql
 import snowflake.connector
 from google.cloud import bigquery
 from google.oauth2.service_account import Credentials
@@ -695,6 +696,73 @@ async def hangle_bigquery_post_request():
         "results": {
             "headers": result.columns.to_list(),
             "data": json.loads(result.to_json(orient="records")),
+            "schema": build_table_schema(result, index=False),
+        },
+        "query": sql_query,  # provided for inspection purposes
+    }
+
+
+def _mysql_connection() -> pymysql.Connection:
+    return pymysql.connect(
+        host=os.environ["MYSQL_HOST"],
+        user=os.environ["MYSQL_USER"],
+        password=os.environ["MYSQL_PASSWORD"],
+        database=os.environ["MYSQL_DATABASE"],
+    )
+
+
+### MySQL back-end routes
+@app.get("/mysql")
+async def handle_mysql_get_request():
+    with _mysql_connection().cursor() as cursor:
+        cursor.execute(
+            "SELECT t.table_name FROM information_schema.tables t "
+            f"WHERE t.table_type = 'BASE TABLE' AND t.table_schema = '{os.environ['MYSQL_DATABASE']}'"
+        )
+        tables = [table[0] for table in cursor.fetchall()]
+
+    return jsonify(tables)
+
+
+def _mysql_table_info() -> dict[str, list[str]]:
+    return {
+        row["table_name"]: json.loads(row["column_names"])
+        for _, row in pd.read_sql(
+            """SELECT t.table_name "table_name", JSON_ARRAYAGG(c.column_name) "column_names" """
+            "FROM information_schema.tables t "
+            "INNER JOIN information_schema.columns c ON t.table_name = c.table_name "
+            "WHERE t.table_type = 'BASE TABLE' AND t.table_schema = 'playground_db' "
+            "GROUP BY t.table_name "
+            "ORDER BY t.table_name;",
+            _mysql_connection(),
+        ).iterrows()
+    }
+
+
+@app.post("/mysql")
+async def handle_mysql_post_request():
+    pipeline = await parse_request_json(request)
+
+    # Url parameters are only strings, these two must be understood as numbers
+    limit = int(request.args.get("limit", 50))
+    offset = int(request.args.get("offset", 0))
+
+    # Find all columns for all available tables
+    table_info = _mysql_table_info()
+
+    sql_query = pypika_translate_pipeline(
+        sql_dialect=SQLDialect.MYSQL,
+        pipeline=Pipeline(steps=pipeline),
+        tables_columns=table_info,
+    )
+    result = pd.read_sql(sql_query, _mysql_connection())
+    return {
+        "offset": offset,
+        "limit": limit,
+        "total": len(result),
+        "results": {
+            "headers": result.columns.to_list(),
+            "data": json.loads(result[offset : offset + limit].to_json(orient="records")),
             "schema": build_table_schema(result, index=False),
         },
         "query": sql_query,  # provided for inspection purposes

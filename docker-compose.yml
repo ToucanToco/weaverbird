@@ -20,9 +20,25 @@ services:
       - ./playground/init-postgres/:/docker-entrypoint-initdb.d/:ro
       - ./playground/datastore/:/datasources/:ro
     environment:
-      POSTGRES_PASSWORD: password
-      POSTGRES_USER: dbuser
-      POSTGRES_DB: playground_db
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_USER: "dbuser"
+      POSTGRES_DB: "playground_db"
+
+  mysql:
+    image: mysql:8
+    ports:
+      - 3306:3306
+    volumes:
+      - ./playground/init-mysql/:/docker-entrypoint-initdb.d/:ro
+      # Needed to be allowed to read a local CSV
+      - ./playground/init-mysql/enable_local_files.cnf:/etc/mysql/conf.d/enable_local_files.cnf:ro
+      # Needs rw because the entrypoint will chown this
+      - ./playground/datastore-mysql/:/var/lib/mysql-files/:rw
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_PASSWORD: "password"
+      MYSQL_USER: "dbuser"
+      MYSQL_DATABASE: "playground_db"
 
   weaverbird:
     build:
@@ -48,6 +64,11 @@ services:
       SNOWFLAKE_PASSWORD: "${SNOWFLAKE_PASSWORD}"
 
       GOOGLE_BIG_QUERY_CREDENTIALS_FILE: "/secrets/bigquery-credentials.json"
+
+      MYSQL_HOST: mysql
+      MYSQL_PASSWORD: password
+      MYSQL_USER: dbuser
+      MYSQL_DATABASE: playground_db
 
     volumes:
       - ./server:/local_src/:Z
