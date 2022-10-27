@@ -1,5 +1,11 @@
 # Changelog (weaverbird npm package)
 
+## [0.92.1] - 2022-10-27
+
+### Added
+
+- Added support for the `replacetext` step to the mongo5 translator
+
 ## [0.92.0] - 2022-10-27
 
 ### Added
