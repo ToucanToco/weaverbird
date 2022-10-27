@@ -1,4 +1,5 @@
 import { RELATIVE_DATE_OPERATORS, RelativeDate } from '@/lib/dates';
+import { $$ } from '@/lib/helpers';
 import * as S from '@/lib/steps';
 import {
   ADVANCED_DATE_EXTRACT_MAP_MONGO_5,
@@ -6,6 +7,7 @@ import {
   truncateDateToDay,
 } from '@/lib/translators/mongo-dates';
 
+import { MongoStep } from './mongo4';
 import { Mongo42Translator } from './mongo42';
 
 export class Mongo50Translator extends Mongo42Translator {
@@ -38,6 +40,23 @@ function transformDateExtract(step: Readonly<S.DateExtractStep>): object {
   return transformDateExtractFactory(ADVANCED_DATE_EXTRACT_MAP_MONGO_5)(step);
 }
 
+/** transforms a 'replacetext' step into corresponding mongo steps. $replaceAll was only added in  */
+/** mongo 4.4 */
+function transformReplaceText(step: Readonly<S.ReplaceTextStep>): MongoStep {
+  return {
+    $set: {
+      [step.searchColumn]: {
+        $replaceAll: {
+          input: $$(step.searchColumn),
+          find: step.oldStr,
+          replacement: step.newStr,
+        },
+      },
+    },
+  };
+}
+
 Object.assign(Mongo50Translator.prototype, {
   dateextract: transformDateExtract,
+  replacetext: transformReplaceText,
 });
