@@ -1,9 +1,9 @@
 from collections.abc import Sequence
 from typing import Literal
 
-from pydantic import BaseConfig, BaseModel, Field, validator
+from pydantic import Field, validator
 
-from weaverbird.pipeline.steps.utils.base import BaseStep
+from weaverbird.pipeline.steps.utils.base import BaseModel, BaseStep
 from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMixin
 from weaverbird.pipeline.types import ColumnName, TemplatedVariable
 
@@ -11,18 +11,15 @@ from .aggregate import Aggregation, AggregationWithVariables
 
 
 class TotalDimension(BaseModel):
-    total_column: ColumnName = Field(alias="totalColumn")
-    total_rows_label: str = Field(alias="totalRowsLabel")
-
-    class Config(BaseConfig):
-        allow_population_by_field_name = True
+    total_column: ColumnName
+    total_rows_label: str
 
 
 class TotalsStep(BaseStep):
     name: Literal["totals"] = "totals"
-    total_dimensions: list[TotalDimension] = Field(alias="totalDimensions")
+    total_dimensions: list[TotalDimension]
     aggregations: Sequence[Aggregation]
-    groups: list[ColumnName] = Field(min_items=0, default=[])
+    groups: list[ColumnName] = Field(min_items=0, default_factory=list)
 
     @validator("aggregations")
     def aggregation_must_not_be_empty(cls, value):

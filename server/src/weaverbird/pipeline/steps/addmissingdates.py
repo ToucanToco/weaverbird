@@ -11,8 +11,8 @@ DatesGranularity = Literal["day", "week", "month", "year"]
 
 class AddMissingDatesStep(BaseStep):
     name: Literal["addmissingdates"] = "addmissingdates"
-    dates_column: ColumnName = Field(alias="datesColumn")
-    dates_granularity: DatesGranularity = Field(alias="datesGranularity")
+    dates_column: ColumnName
+    dates_granularity: DatesGranularity
     groups: list[ColumnName] = []
 
 
