@@ -298,6 +298,10 @@ class StepLabeller implements StepMatcher<string> {
     }
   }
 
+  replacetext(step: Readonly<S.ReplaceTextStep>) {
+    return `Replace text '${step.oldStr}' in column "${step.searchColumn}" with '${step.newStr}'`;
+  }
+
   rollup(step: Readonly<S.RollupStep>) {
     return `Roll-up hierarchy [${formatMulticol(step.hierarchy)}]`;
   }

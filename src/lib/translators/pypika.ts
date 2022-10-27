@@ -90,6 +90,10 @@ export class PypikaTranslator extends BaseTranslator {
     return step;
   }
 
+  replacetext(step: Readonly<S.ReplaceTextStep>) {
+    return step;
+  }
+
   select(step: Readonly<S.SelectStep>) {
     return step;
   }

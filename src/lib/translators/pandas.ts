@@ -134,6 +134,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  replacetext(step: Readonly<S.ReplaceTextStep>) {
+    return step;
+  }
+
   replace(step: Readonly<S.ReplaceStep>) {
     return step;
   }

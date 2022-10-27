@@ -205,6 +205,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   replace(step: Readonly<S.ReplaceStep>) {}
 
   @unsupported
+  replacetext(step: Readonly<S.ReplaceTextStep>) {}
+
+  @unsupported
   rollup(step: Readonly<S.RollupStep>) {}
 
   @unsupported

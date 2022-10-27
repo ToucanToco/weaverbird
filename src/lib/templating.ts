@@ -408,6 +408,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return { ...step, to_replace: toReplace };
   }
 
+  replacetext(step: Readonly<S.ReplaceTextStep>) {
+    return { ...step };
+  }
+
   rollup(step: Readonly<S.RollupStep>) {
     const ret: S.RollupStep = { ...step };
     const aggregations = [];

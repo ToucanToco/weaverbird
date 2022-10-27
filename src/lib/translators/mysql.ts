@@ -8,4 +8,8 @@ export class MySqlTranslator extends BaseTranslator {
   domain(step: Readonly<S.DomainStep>) {
     return step;
   }
+
+  replacetext(step: Readonly<S.ReplaceTextStep>) {
+    return step;
+  }
 }
