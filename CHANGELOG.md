@@ -1,5 +1,15 @@
 # Changelog (weaverbird npm package)
 
+## [0.92.0] - 2022-10-27
+
+### Added
+
+- Added support for the `replacetext` step
+
+### Changed
+
+- `SnowflakeTranslator` now inherits `PypikaTranslator`
+
 ## [0.91.3] - 2022-10-10
 
 ### Added
