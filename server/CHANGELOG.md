@@ -1,5 +1,9 @@
 # Changelog (weaverbird python package)
 
+## [0.26.1] - 2022-10-27
+
+- in order to prevent SQL injection, it is no longer possible to create a CustomSQL step with variables.
+
 ## [0.26.0] - 2022-10-20
 
 - Pypika: Snowflake translator now has a custom queryBuilder class to force the `QUOTE_CHAR` to `"`
