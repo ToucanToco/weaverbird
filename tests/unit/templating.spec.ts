@@ -1073,6 +1073,18 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual(pipeline);
   });
 
+  it('should leave replacetext steps untouched', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'replacetext',
+        searchColumn: 'column',
+        oldStr: 'old',
+        newStr: 'new',
+      },
+    ];
+    expect(translate(pipeline)).toEqual(pipeline);
+  });
+
   it('should interpolate replace steps if required', () => {
     const pipeline: Pipeline = [
       {

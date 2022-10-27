@@ -541,6 +541,16 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Replace values in column "column1"');
   });
 
+  it('generates precise label for replacetext steps', () => {
+    const step: S.ReplaceTextStep = {
+      name: 'replacetext',
+      searchColumn: 'column',
+      oldStr: 'old',
+      newStr: 'new',
+    };
+    expect(hrl(step)).toEqual(`Replace text 'old' in column "column" with 'new'`);
+  });
+
   it('generates label for select steps', () => {
     const step: S.SelectStep = {
       name: 'select',
