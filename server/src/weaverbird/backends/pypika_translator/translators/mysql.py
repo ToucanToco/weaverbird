@@ -21,7 +21,7 @@ Self = TypeVar("Self", bound="MySQLTranslator")
 if TYPE_CHECKING:
     from pypika.queries import QueryBuilder
 
-    from weaverbird.pipeline.steps import SplitStep
+    from weaverbird.pipeline.steps import DateExtractStep, SplitStep
 
 
 class MySQLTranslator(SQLTranslator):
@@ -108,6 +108,16 @@ class MySQLTranslator(SQLTranslator):
             unit=unit,
             dialect=dialect or Dialects.MYSQL,
         )
+
+    def dateextract(
+        self: Self,
+        *,
+        builder: "QueryBuilder",
+        prev_step_name: str,
+        columns: list[str],
+        step: "DateExtractStep",
+    ) -> StepContext:
+        raise NotImplementedError
 
 
 SQLTranslator.register(MySQLTranslator)
