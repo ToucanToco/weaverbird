@@ -348,7 +348,7 @@ async def handle_mongo_translated_backend_request():
 
 
 ### Snowflake back-end routes
-
+_SNOWFLAKE_CONNECTION = None
 if os.getenv("SNOWFLAKE_ACCOUNT"):
     try:
         _SNOWFLAKE_CONNECTION = snowflake.connector.connect(
@@ -358,8 +358,8 @@ if os.getenv("SNOWFLAKE_ACCOUNT"):
             database=os.getenv("SNOWFLAKE_DATABASE"),
             client_session_keep_alive=True,
         )
-    except Exception:
-        _SNOWFLAKE_CONNECTION = None
+    except Exception as exc:
+        print(f"[WARNING] Could not establish connection to snowflake: {exc}")
 
 if _SNOWFLAKE_CONNECTION is not None:
 
