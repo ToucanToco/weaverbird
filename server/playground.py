@@ -348,7 +348,7 @@ async def handle_mongo_translated_backend_request():
 
 
 ### Snowflake back-end routes
-
+_SNOWFLAKE_CONNECTION = None
 if os.getenv("SNOWFLAKE_ACCOUNT"):
     try:
         _SNOWFLAKE_CONNECTION = snowflake.connector.connect(
@@ -359,7 +359,7 @@ if os.getenv("SNOWFLAKE_ACCOUNT"):
             client_session_keep_alive=True,
         )
     except Exception:
-        _SNOWFLAKE_CONNECTION = None
+        pass
 
 if _SNOWFLAKE_CONNECTION is not None:
 
