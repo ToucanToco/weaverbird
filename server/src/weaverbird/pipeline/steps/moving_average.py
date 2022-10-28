@@ -9,8 +9,8 @@ from weaverbird.pipeline.types import ColumnName
 class MovingAverageStep(BaseStep):
     name: Literal["movingaverage"] = "movingaverage"
 
-    value_column: ColumnName | None = Field(None, alias="valueColumn")
-    column_to_sort: ColumnName = Field(alias="columnToSort")
-    moving_window: int = Field(alias="movingWindow")
-    groups: list[ColumnName] = []
-    new_column_name: ColumnName | None = Field(alias="newColumnName")
+    value_column: ColumnName | None = None
+    column_to_sort: ColumnName
+    moving_window: int
+    groups: list[ColumnName] = Field(default_factory=list)
+    new_column_name: ColumnName | None = None

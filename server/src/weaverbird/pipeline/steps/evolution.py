@@ -12,13 +12,13 @@ EVOLUTION_FORMAT = Literal["abs", "pct"]
 
 class EvolutionStep(BaseStep):
     name: Literal["evolution"] = "evolution"
-    date_col: str = Field(alias="dateCol")
-    value_col: str = Field(alias="valueCol")
-    evolution_type: EVOLUTION_TYPE = Field(alias="evolutionType")
-    evolution_format: EVOLUTION_FORMAT = Field(alias="evolutionFormat")
-    index_columns: list[str] = Field([], alias="indexColumns")
-    new_column: str | None = Field(alias="newColumn")
+    date_col: str
+    value_col: str
+    evolution_type: EVOLUTION_TYPE
+    evolution_format: EVOLUTION_FORMAT
+    index_columns: list[str] = Field(default_factory=list)
+    new_column: str | None
 
 
 class EvolutionStepWithVariable(EvolutionStep, StepWithVariablesMixin):
-    index_columns: TemplatedVariable | list[TemplatedVariable] = Field([], alias="indexColumns")
+    index_columns: TemplatedVariable | list[TemplatedVariable] = Field(default_factory=list)

@@ -1,8 +1,6 @@
 from collections.abc import Sequence
 from typing import Literal
 
-from pydantic import Field
-
 from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMixin
 from weaverbird.pipeline.types import ColumnName, TemplatedVariable
@@ -18,11 +16,11 @@ class RollupStep(BaseStep):
     # Groupby columns if rollup has to be performed by groups:
     groupby: list[ColumnName] | None
     # To give a custom name to the output label column:
-    label_col: ColumnName | None = Field(alias="labelCol")
+    label_col: ColumnName | None
     # To give a custom name to the output level column:
-    level_col: ColumnName | None = Field(alias="levelCol")
+    level_col: ColumnName | None
     # To give a custom name to the output parent column:
-    parent_label_col: ColumnName | None = Field(alias="parentLabelCol")
+    parent_label_col: ColumnName | None
 
 
 class RollupStepWithVariable(RollupStep, StepWithVariablesMixin):

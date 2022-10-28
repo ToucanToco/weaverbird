@@ -9,8 +9,12 @@ from weaverbird.pipeline.types import ColumnName, TemplatedVariable
 
 class CumSumStep(BaseStep):
     name: Literal["cumsum"] = "cumsum"
-    to_cumsum: list[tuple[str, str | None]] = Field(..., alias="toCumSum")
-    reference_column: ColumnName = Field(..., alias="referenceColumn")
+    to_cumsum: list[tuple[str, str | None]] = Field(
+        # NOTE: alias needs to be kept here, as to_cumsum does not translate to toCumSum in CamelCase
+        ...,
+        alias="toCumSum",
+    )
+    reference_column: ColumnName
     groupby: list[ColumnName] | None
 
     @root_validator(pre=True)
@@ -27,5 +31,7 @@ class CumSumStep(BaseStep):
 
 class CumSumStepWithVariable(CumSumStep, StepWithVariablesMixin):
     to_cumsum: TemplatedVariable | list[tuple[TemplatedVariable, TemplatedVariable]] = Field(
-        ..., alias="toCumSum"
+        # NOTE: alias needs to be kept here, as to_cumsum does not translate to toCumSum in CamelCase
+        ...,
+        alias="toCumSum",
     )

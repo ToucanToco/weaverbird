@@ -46,7 +46,7 @@ class AggregateStep(BaseStep):
     name: Literal["aggregate"] = "aggregate"
     on: list[ColumnName] = []
     aggregations: Sequence[Aggregation]
-    keep_original_granularity: bool | None = Field(default=False, alias="keepOriginalGranularity")
+    keep_original_granularity: bool | None = False
 
 
 class AggregationWithVariables(Aggregation):

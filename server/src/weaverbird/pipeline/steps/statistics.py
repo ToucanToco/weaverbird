@@ -19,7 +19,7 @@ class Quantile(BaseModel):
 class StatisticsStep(BaseStep):
     name: Literal["statistics"] = "statistics"
     column: ColumnName
-    groupby_columns: list[ColumnName] = Field([], alias="groupbyColumns")
+    groupby_columns: list[ColumnName] = Field(default_factory=list)
     statistics: list[Statistics]
     # Array of quantiles. Examples:
     # - median is 1rst quantile of order 2
