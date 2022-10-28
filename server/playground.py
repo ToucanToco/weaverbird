@@ -358,8 +358,8 @@ if os.getenv("SNOWFLAKE_ACCOUNT"):
             database=os.getenv("SNOWFLAKE_DATABASE"),
             client_session_keep_alive=True,
         )
-    except Exception:
-        pass
+    except Exception as exc:
+        print(f"[WARNING] Could not establish connection to snowflake: {exc}")
 
 if _SNOWFLAKE_CONNECTION is not None:
 
