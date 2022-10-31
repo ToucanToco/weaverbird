@@ -1,7 +1,15 @@
 /** This module contains mongo specific translation operations */
 
 import _ from 'lodash';
-import * as math from 'mathjs';
+import {
+  ConstantNode,
+  isConstantNode,
+  isOperatorNode,
+  isParenthesisNode,
+  isSymbolNode,
+  MathNode,
+  parse,
+} from 'mathjs';
 
 import { isRelativeDate, RelativeDate } from '@/lib/dates';
 import { $$, combinations, escapeForUseInRegExp } from '@/lib/helpers';
@@ -182,10 +190,10 @@ function getOperator(op: string) {
 function buildFormulaTree(
   formula: string | number,
   variableDelimiters?: VariableDelimiters,
-): math.MathNode {
+): MathNode {
   // Formulas other than strings contains only one value
   if (typeof formula !== 'string') {
-    return new math.ConstantNode(formula);
+    return new ConstantNode(formula);
   }
 
   const COLS_ESCAPE_OPEN = '[';
@@ -223,11 +231,11 @@ function buildFormulaTree(
   }
 
   // 2. Parse the formula into a MathNode
-  const mathjsTree: math.MathNode = math.parse(formulaPseudotised);
+  const mathjsTree: MathNode = parse(formulaPseudotised);
 
   // 3. Replace all pseudo into MathNode by there original name
-  return mathjsTree.transform(function(node: math.MathNode): math.MathNode {
-    if (node.type === 'SymbolNode') {
+  return mathjsTree.transform(function(node: MathNode): MathNode {
+    if (isSymbolNode(node)) {
       if (pseudoCols[node.name]) {
         node.name = pseudoCols[node.name]
           .replace(COLS_ESCAPE_OPEN, '')
@@ -235,7 +243,7 @@ function buildFormulaTree(
       }
       if (variableDelimiters && pseudoVars[node.name]) {
         // Variables should be considered as constants, and not columns, by the parser
-        return new math.ConstantNode(pseudoVars[node.name]);
+        return new ConstantNode(pseudoVars[node.name]);
       }
     }
     return node;
@@ -252,45 +260,42 @@ type MongoFormulaElement = MongoStep | string | number;
  * Returns also a list of element that must not equal 0 (denominators), otherwise the computation will fail
  */
 function buildMongoFormulaTree(
-  node: math.MathNode,
+  node: MathNode,
 ): {
   mongoFormula: MongoFormulaElement;
   denominators: MongoFormulaElement[];
 } {
-  switch (node.type) {
-    case 'OperatorNode':
-      if (node.args.length === 1) {
-        const factor = node.op === '+' ? 1 : -1;
-        const mongoFormulaAndDenominators = buildMongoFormulaTree(node.args[0]);
-        return {
-          mongoFormula: { $multiply: [factor, mongoFormulaAndDenominators.mongoFormula] },
-          denominators: mongoFormulaAndDenominators.denominators,
-        };
-      } else {
-        const subMongoFormulasAndDenominators = node.args.map(n => buildMongoFormulaTree(n));
-        const mongoFormula = {
-          [getOperator(node.op)]: subMongoFormulasAndDenominators.map(m => m.mongoFormula),
-        };
-        const denominators = subMongoFormulasAndDenominators.map(m => m.denominators).flat();
-        if (
-          node.op === '/' &&
-          typeof subMongoFormulasAndDenominators[1].mongoFormula !== 'number'
-        ) {
-          denominators.push(subMongoFormulasAndDenominators[1].mongoFormula);
-        }
-        return {
-          mongoFormula,
-          denominators,
-        };
+  if (isOperatorNode(node)) {
+    if (node.args.length === 1) {
+      const factor = node.op === '+' ? 1 : -1;
+      const mongoFormulaAndDenominators = buildMongoFormulaTree(node.args[0]);
+      return {
+        mongoFormula: { $multiply: [factor, mongoFormulaAndDenominators.mongoFormula] },
+        denominators: mongoFormulaAndDenominators.denominators,
+      };
+    } else {
+      const subMongoFormulasAndDenominators = node.args.map(n => buildMongoFormulaTree(n));
+      const mongoFormula = {
+        [getOperator(node.op)]: subMongoFormulasAndDenominators.map(m => m.mongoFormula),
+      };
+      const denominators = subMongoFormulasAndDenominators.map(m => m.denominators).flat();
+      if (node.op === '/' && typeof subMongoFormulasAndDenominators[1].mongoFormula !== 'number') {
+        denominators.push(subMongoFormulasAndDenominators[1].mongoFormula);
       }
-
-    case 'SymbolNode':
-      // For column names
-      return { mongoFormula: $$(node.name), denominators: [] };
-    case 'ConstantNode':
-      return { mongoFormula: node.value, denominators: [] };
-    case 'ParenthesisNode':
-      return buildMongoFormulaTree(node.content);
+      return {
+        mongoFormula,
+        denominators,
+      };
+    }
+  } else if (isSymbolNode(node)) {
+    // For column names
+    return { mongoFormula: $$(node.name), denominators: [] };
+  } else if (isConstantNode(node)) {
+    return { mongoFormula: node.value, denominators: [] };
+  } else if (isParenthesisNode(node)) {
+    return buildMongoFormulaTree(node.content);
+  } else {
+    throw new Error(`Unsupported node: ${node.type}`);
   }
 }
 
