@@ -24,7 +24,8 @@ export function addAjvKeywords(ajv: Ajv) {
   // - using the `not` directly would generate more obscur error messages
   // - using `macro` instead of `validate` would generate two errors, one with
   //   `columnNameAlreadyUsed` and one with `not`.
-  ajv.addKeyword('columnNameAlreadyUsed', {
+  ajv.addKeyword({
+    keyword: 'columnNameAlreadyUsed',
     type: 'string',
     validate: function(schema: { columnNames: string[] }, data: string) {
       return !schema.columnNames.includes(data);
