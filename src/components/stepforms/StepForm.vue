@@ -225,7 +225,7 @@ export default class BaseStepForm<StepType> extends Vue {
    */
   submit() {
     this.editedStepModel = schemaFactory(this.stepname, this);
-    const ajv = new Ajv({ allErrors: true });
+    const ajv = new Ajv({ allErrors: true, strictSchema: false });
     addAjvKeywords(ajv);
     const ajvValidator = ajv.compile(this.editedStepModel);
     const interpolator = new PipelineInterpolator(this.interpolateFunc, this.variables);
