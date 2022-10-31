@@ -1,4 +1,4 @@
-import { Ajv } from 'ajv';
+import Ajv from 'ajv';
 import _ from 'lodash';
 
 type JsonPropSchema = {
