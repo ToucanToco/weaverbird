@@ -15,8 +15,8 @@ describe('Rename Step Form', () => {
     {
       testlabel: 'toReplace strings are empty',
       errors: [
-        { keyword: 'minLength', dataPath: '.toRename[0][0]' },
-        { keyword: 'minLength', dataPath: '.toRename[0][1]' },
+        { keyword: 'minLength', dataPath: '.toRename.0.0' },
+        { keyword: 'minLength', dataPath: '.toRename.0.1' },
       ],
     },
   ]);

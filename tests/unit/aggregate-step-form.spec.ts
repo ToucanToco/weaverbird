@@ -136,7 +136,7 @@ describe('Aggregate Step Form', () => {
             keepOriginalGranularity: false,
           },
         },
-        errors: [{ keyword: 'minLength', dataPath: '.on[0]' }],
+        errors: [{ keyword: 'minLength', dataPath: '.on.0' }],
       },
       {
         testlabel: '"columns" and "newcolumns" parameters include empty strings',
@@ -154,8 +154,8 @@ describe('Aggregate Step Form', () => {
           },
         },
         errors: [
-          { keyword: 'minLength', dataPath: '.aggregations[0].columns[0]' },
-          { keyword: 'minLength', dataPath: '.aggregations[0].newcolumns[0]' },
+          { keyword: 'minLength', dataPath: '.aggregations.0.columns.0' },
+          { keyword: 'minLength', dataPath: '.aggregations.0.newcolumns.0' },
         ],
       },
       {
@@ -173,7 +173,7 @@ describe('Aggregate Step Form', () => {
             ],
           },
         },
-        errors: [{ keyword: 'enum', dataPath: '.aggregations[0].aggfunction' }],
+        errors: [{ keyword: 'enum', dataPath: '.aggregations.0.aggfunction' }],
       },
     ]);
 

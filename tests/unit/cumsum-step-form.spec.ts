@@ -55,7 +55,7 @@ describe('Cumsum Step Form', () => {
             groupby: [''],
           },
         },
-        errors: [{ keyword: 'minLength', dataPath: '.groupby[0]' }],
+        errors: [{ keyword: 'minLength', dataPath: '.groupby.0' }],
       },
       {
         testlabel: '"toCumSum" parameter is an empty list',

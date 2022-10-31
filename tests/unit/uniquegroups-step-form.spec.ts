@@ -52,7 +52,7 @@ describe('UniqueGroups Step Form', () => {
             on: [''],
           },
         },
-        errors: [{ keyword: 'minLength', dataPath: '.on[0]' }],
+        errors: [{ keyword: 'minLength', dataPath: '.on.0' }],
       },
     ]);
 

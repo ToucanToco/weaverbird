@@ -18,7 +18,7 @@
             :available-variables="availableVariables"
             :variable-delimiters="variableDelimiters"
             @input="updateChildValue($event, index)"
-            :data-path="`${dataPath}[${index}]`"
+            :data-path="`${dataPath}.${index}`"
             :errors="errors"
           />
         </div>
