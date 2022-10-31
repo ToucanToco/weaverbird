@@ -22,7 +22,7 @@ describe('Concatenate Step Form', () => {
         },
       }),
       errors: [
-        { dataPath: '.columns[0]', keyword: 'minLength' },
+        { dataPath: '.columns.0', keyword: 'minLength' },
         { dataPath: '.new_column_name', keyword: 'minLength' },
       ],
     },

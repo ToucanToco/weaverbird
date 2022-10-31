@@ -4,6 +4,7 @@ import Vuex, { Store } from 'vuex';
 
 import BaseStepForm from '@/components/stepforms/StepForm.vue';
 import { Pipeline } from '@/lib/steps';
+import { ValidationError } from '@/lib/translators/base';
 import { registerModule, VQBnamespace } from '@/store';
 import { emptyState, VQBState } from '@/store/state';
 
@@ -12,12 +13,6 @@ jest.mock('@/components/FAIcon.vue');
 export type RootState = {
   vqb: VQBState;
 };
-
-export interface ValidationError {
-  dataPath: string;
-  keyword: string;
-  message?: string;
-}
 
 export const localVue = createLocalVue();
 localVue.use(Vuex);

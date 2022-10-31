@@ -66,7 +66,7 @@ describe('Waterfall Step Form', () => {
             order: 'desc',
           },
         },
-        errors: [{ keyword: 'minLength', dataPath: '.groupby[0]' }],
+        errors: [{ keyword: 'minLength', dataPath: '.groupby.0' }],
       },
       {
         testlabel: '"start" parameter is an empty string',

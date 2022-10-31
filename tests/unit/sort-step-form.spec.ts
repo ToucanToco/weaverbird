@@ -18,7 +18,7 @@ describe('Sort Step Form', () => {
           columns: [{ column: '', order: 'desc' }],
         },
       },
-      errors: [{ keyword: 'minLength', dataPath: '.columns[0].column' }],
+      errors: [{ keyword: 'minLength', dataPath: '.columns.0.column' }],
     },
   ]);
 

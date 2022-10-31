@@ -1,5 +1,7 @@
-import Ajv from 'ajv';
+import Ajv, { ErrorObject } from 'ajv';
 import _ from 'lodash';
+
+import { ValidationError } from '@/lib/translators/base';
 
 type JsonPropSchema = {
   [prop: string]: any;
@@ -49,4 +51,18 @@ export function addNotInColumnNamesConstraint(
     _.set(model, `properties.${fieldname}.columnNameAlreadyUsed`, { columnNames: colnames });
   }
   return model;
+}
+
+/**
+ * Adapt AJV errors to the expected error type
+ *
+ * AJV has deprecated the dataPath attribute in favor of instancePath. The difference between the two
+ * is the separator used between fragments of the path.
+ */
+export function ajvErrorsToValidationError(ajvError: ErrorObject): ValidationError {
+  return {
+    keyword: ajvError.keyword,
+    dataPath: ajvError.instancePath?.replace(/\//g, '.'),
+    message: ajvError.message,
+  };
 }

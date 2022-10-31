@@ -38,7 +38,7 @@ describe('Add missing dates Step Form', () => {
           groups: [''],
         },
       },
-      errors: [{ keyword: 'minLength', dataPath: '.groups[0]' }],
+      errors: [{ keyword: 'minLength', dataPath: '.groups.0' }],
     },
   ]);
 

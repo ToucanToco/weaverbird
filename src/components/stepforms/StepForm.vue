@@ -1,21 +1,21 @@
 <script lang="ts">
-import Ajv, { ErrorObject, ValidateFunction } from 'ajv';
+import Ajv, { ValidateFunction } from 'ajv';
 import _ from 'lodash';
 import Vue from 'vue';
 import { Component, Prop, Watch } from 'vue-property-decorator';
 
 import schemaFactory from '@/components/stepforms/schemas';
-import { addAjvKeywords } from '@/components/stepforms/schemas/utils';
+import { addAjvKeywords, ajvErrorsToValidationError } from '@/components/stepforms/schemas/utils';
 import StepFormButtonbar from '@/components/stepforms/StepFormButtonbar.vue';
 import StepFormHeader from '@/components/stepforms/StepFormHeader.vue';
 import { Pipeline, PipelineStep } from '@/lib/steps';
 import { InterpolateFunction, PipelineInterpolator, ScopeContext } from '@/lib/templating';
+import { ValidationError } from '@/lib/translators/base';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 
 import { version } from '../../../package.json';
 
-type VqbError = Partial<ErrorObject>;
 /**
  * ValidatorProxy emulates the interpolate + ajv-validation combo.
  * It is essentially a validation function that can have an `errors`
@@ -23,7 +23,7 @@ type VqbError = Partial<ErrorObject>;
  */
 type ValidatorProxy = {
   (step: PipelineStep): boolean | PromiseLike<any>;
-  errors?: ErrorObject[] | null;
+  errors?: ValidationError[] | null;
 };
 
 /**
@@ -113,9 +113,9 @@ export default class BaseStepForm<StepType> extends Vue {
   readonly title: string = '';
   editedStep: StepType = { ...this.initialStepValue, ...this.stepFormDefaults };
   editedStepModel!: object;
-  errors?: VqbError[] | null = null;
+  errors?: ValidationError[] | null = null;
   stepname!: string; // needs to be added by each Step!
-  validator: ValidateFunction = () => false;
+  validator: ValidatorProxy = () => false;
 
   created() {
     this.initialize();
@@ -227,11 +227,11 @@ export default class BaseStepForm<StepType> extends Vue {
     this.editedStepModel = schemaFactory(this.stepname, this);
     const ajv = new Ajv({ allErrors: true, strictSchema: false });
     addAjvKeywords(ajv);
-    const ajvValidator = ajv.compile(this.editedStepModel);
+    const ajvValidator: ValidateFunction<object> = ajv.compile(this.editedStepModel);
     const interpolator = new PipelineInterpolator(this.interpolateFunc, this.variables);
     const interpolateAndValidate: ValidatorProxy = function(step: PipelineStep) {
       const ret = ajvValidator(interpolator.interpolateStep(step));
-      interpolateAndValidate.errors = ajvValidator.errors;
+      interpolateAndValidate.errors = ajvValidator.errors?.map(ajvErrorsToValidationError);
       return ret;
     };
     this.validator = interpolateAndValidate;

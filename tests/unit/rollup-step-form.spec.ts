@@ -98,7 +98,7 @@ describe('Rollup Step Form', () => {
             ],
           },
         },
-        errors: [{ keyword: 'minLength', dataPath: '.hierarchy[0]' }],
+        errors: [{ keyword: 'minLength', dataPath: '.hierarchy.0' }],
       },
       {
         testlabel: '"groupby" parameter is an empty string',
@@ -116,7 +116,7 @@ describe('Rollup Step Form', () => {
             groupby: [''],
           },
         },
-        errors: [{ keyword: 'minLength', dataPath: '.groupby[0]' }],
+        errors: [{ keyword: 'minLength', dataPath: '.groupby.0' }],
       },
       {
         testlabel: '"columns", "newcolumns" and "aggfunction" parameters include empty strings',
@@ -134,9 +134,9 @@ describe('Rollup Step Form', () => {
           },
         },
         errors: [
-          { keyword: 'enum', dataPath: '.aggregations[0].aggfunction' },
-          { keyword: 'minLength', dataPath: '.aggregations[0].columns[0]' },
-          { keyword: 'minLength', dataPath: '.aggregations[0].newcolumns[0]' },
+          { keyword: 'enum', dataPath: '.aggregations.0.aggfunction' },
+          { keyword: 'minLength', dataPath: '.aggregations.0.columns.0' },
+          { keyword: 'minLength', dataPath: '.aggregations.0.newcolumns.0' },
         ],
       },
       {
@@ -154,7 +154,7 @@ describe('Rollup Step Form', () => {
             ],
           },
         },
-        errors: [{ keyword: 'enum', dataPath: '.aggregations[0].aggfunction' }],
+        errors: [{ keyword: 'enum', dataPath: '.aggregations.0.aggfunction' }],
       },
       {
         testlabel: '"labelCol" parameter is an empty string',

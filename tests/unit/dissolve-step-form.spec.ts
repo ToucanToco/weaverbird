@@ -97,7 +97,7 @@ describe('Dissolve Step Form', () => {
             includeNulls: false,
           },
         },
-        errors: [{ keyword: 'minLength', dataPath: '.groups[0]' }],
+        errors: [{ keyword: 'minLength', dataPath: '.groups.0' }],
       },
       {
         testlabel: '"columns" and "newcolumns" parameters include empty strings',
@@ -115,8 +115,8 @@ describe('Dissolve Step Form', () => {
           },
         },
         errors: [
-          { keyword: 'minLength', dataPath: '.aggregations[0].columns[0]' },
-          { keyword: 'minLength', dataPath: '.aggregations[0].newcolumns[0]' },
+          { keyword: 'minLength', dataPath: '.aggregations.0.columns.0' },
+          { keyword: 'minLength', dataPath: '.aggregations.0.newcolumns.0' },
         ],
       },
       {
@@ -134,7 +134,7 @@ describe('Dissolve Step Form', () => {
             ],
           },
         },
-        errors: [{ keyword: 'enum', dataPath: '.aggregations[0].aggfunction' }],
+        errors: [{ keyword: 'enum', dataPath: '.aggregations.0.aggfunction' }],
       },
     ]);
 

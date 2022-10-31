@@ -164,8 +164,8 @@ describe('Add Total Rows Step Form', () => {
           },
         },
         errors: [
-          { keyword: 'minLength', dataPath: '.totalDimensions[0].totalColumn' },
-          { keyword: 'minLength', dataPath: '.totalDimensions[0].totalRowsLabel' },
+          { keyword: 'minLength', dataPath: '.totalDimensions.0.totalColumn' },
+          { keyword: 'minLength', dataPath: '.totalDimensions.0.totalRowsLabel' },
         ],
       },
       {
@@ -184,8 +184,8 @@ describe('Add Total Rows Step Form', () => {
           },
         },
         errors: [
-          { keyword: 'minLength', dataPath: '.aggregations[0].columns[0]' },
-          { keyword: 'minLength', dataPath: '.aggregations[0].newcolumns[0]' },
+          { keyword: 'minLength', dataPath: '.aggregations.0.columns.0' },
+          { keyword: 'minLength', dataPath: '.aggregations.0.newcolumns.0' },
         ],
       },
       {
@@ -203,7 +203,7 @@ describe('Add Total Rows Step Form', () => {
             ],
           },
         },
-        errors: [{ keyword: 'enum', dataPath: '.aggregations[0].aggfunction' }],
+        errors: [{ keyword: 'enum', dataPath: '.aggregations.0.aggfunction' }],
       },
       {
         testlabel: '"groups" parameter includes an empty string',
@@ -221,7 +221,7 @@ describe('Add Total Rows Step Form', () => {
             groups: [''],
           },
         },
-        errors: [{ keyword: 'minLength', dataPath: '.groups[0]' }],
+        errors: [{ keyword: 'minLength', dataPath: '.groups.0' }],
       },
     ]);
 

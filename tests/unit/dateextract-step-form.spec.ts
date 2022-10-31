@@ -30,7 +30,7 @@ describe('DateExtract Step Form', () => {
         },
         {
           keyword: 'enum',
-          dataPath: '.dateInfo[0]',
+          dataPath: '.dateInfo.0',
         },
       ],
     },
