@@ -40,7 +40,6 @@
     "@popperjs/core": "^2.10.2",
     "@storybook/addon-knobs": "^5.0.10",
     "@storybook/vue": "^5.0.10",
-    "@types/ajv": "^1.0.0",
     "@types/jest": "^24.0.15",
     "@types/lodash": "^4.14.138",
     "@types/luxon": "^2.0.4",
