@@ -35,6 +35,7 @@ export const resizable: DirectiveOptions = {
     const options: ResizableTableOptions = node.value;
     const maxColumns = options.maxHandleableColumns ?? DEFAULT_OPTIONS.maxHandleableColumns;
     const isDisabled = options.columns.length > maxColumns;
+    /* istanbul ignore next */
     if (isDisabled) {
       // eslint-disable-next-line no-console
       console.warn(
