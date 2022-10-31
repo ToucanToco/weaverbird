@@ -1,4 +1,4 @@
-/* Every icons from font-awesome should be declared here to be used as svg (check the FAIcon component to add it to template) */
+/* Every icon from font-awesome should be declared here to be used as svg (check the FAIcon component to add it to template) */
 import {
   faCalendar as faCalendarFar,
   faClock as faClockFar,
