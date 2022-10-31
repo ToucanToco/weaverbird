@@ -265,7 +265,7 @@ export default class StatisticsStepForm extends BaseStepForm<StatisticsStep> {
       );
     } else {
       // compile schema errors
-      const validator = Ajv({ schemaId: 'auto', allErrors: true }).compile({
+      const validator = new Ajv({ allErrors: true }).compile({
         type: 'object',
         required: ['nth', 'order'],
         properties: {
