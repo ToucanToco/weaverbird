@@ -135,6 +135,40 @@ export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
       label: 'Pandas',
       doc: 'https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes',
     },
+    {
+      id: 'athena',
+      label: 'AWS Athena',
+      doc: 'https://prestodb.io/docs/current/functions/datetime.html#mysql-date-functions',
+    },
+    {
+      id: 'google-big-query',
+      label: 'Google Big Query',
+      doc:
+        'https://cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_elements_date_time',
+    },
+    {
+      id: 'mysql',
+      label: 'MySQL',
+      doc:
+        'https://dev.mysql.com/doc/refman/8.0/en/date-and-time-functions.html#function_date-format',
+    },
+    {
+      id: 'postgresql',
+      label: 'PostgresSQL',
+      doc:
+        'https://www.postgresql.org/docs/8.2/functions-formatting.html#FUNCTIONS-FORMATTING-DATETIME-TABLE',
+    },
+    {
+      id: 'redshift',
+      label: 'AWS Redshift',
+      doc: 'https://docs.aws.amazon.com/redshift/latest/dg/r_FORMAT_strings.html',
+    },
+    {
+      id: 'snowflake',
+      label: 'Snowflake',
+      doc:
+        'https://docs.snowflake.com/en/sql-reference/functions-conversion.html#date-and-time-formats-in-conversion-functions',
+    },
   ];
 
   selectedFormat: FormatOption = this.formatOptions[0];
