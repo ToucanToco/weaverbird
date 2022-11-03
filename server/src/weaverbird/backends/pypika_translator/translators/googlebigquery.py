@@ -1,9 +1,10 @@
+from datetime import datetime
 from typing import TYPE_CHECKING, Any, TypeVar
 
 from pypika import Field, Query, Table, functions
 from pypika.enums import Dialects
 from pypika.queries import QueryBuilder
-from pypika.terms import Case, CustomFunction, Function, Interval, LiteralValue, Term
+from pypika.terms import Case, CustomFunction, Function, Interval, LiteralValue, Term, ValueWrapper
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp
@@ -13,6 +14,7 @@ from weaverbird.backends.pypika_translator.translators.base import (
     StepContext,
 )
 from weaverbird.pipeline.steps.date_extract import DATE_INFO
+from weaverbird.pipeline.steps.text import TextStep
 
 Self = TypeVar("Self", bound="GoogleBigQueryTranslator")
 
@@ -60,6 +62,15 @@ class GoogleBigQueryQueryBuilder(QueryBuilder):
 class GoogleBigQueryDateAdd(Function):
     def __init__(self, *, target_column: Field, interval: Interval) -> None:
         super().__init__("DATE_ADD", target_column, interval)
+
+
+class GoogleBigQueryValueWrapper(ValueWrapper):
+    @classmethod
+    def get_formatted_value(cls, value: Any, **kwargs):
+        if isinstance(value, str):
+            value = value.replace("'", r"\'")
+            return f"'{value}'"
+        return super().get_formatted_value(value, **kwargs)
 
 
 class GoogleBigQueryTranslator(SQLTranslator):
@@ -215,6 +226,43 @@ class GoogleBigQueryTranslator(SQLTranslator):
             date_selection.as_(step.column),
         )
         return StepContext(query, columns)
+
+    def text(
+        self: Self,
+        *,
+        builder: "QueryBuilder",
+        prev_step_name: str,
+        columns: list[str],
+        step: "TextStep",
+    ) -> StepContext:
+        # Since we're using WITH...AS syntax, we add an explicit cast here to provide type
+        # context to the engine. Without that, we might encounter "failed to find conversion
+        # function from "unknown" to text" errors
+        value = step.text
+
+        if isinstance(value, datetime):
+            # GoogleBigQueryValueWrapper(value) would produce an iso8601 string which
+            # is not properly handled by some backends
+            value_wrapped = GoogleBigQueryValueWrapper(value.strftime("%Y-%m-%d %H:%M:%S"))
+        else:
+            value_wrapped = GoogleBigQueryValueWrapper(value)
+
+        if isinstance(value, datetime):
+            value_wrapped = functions.Cast(value_wrapped, self.DATA_TYPE_MAPPING.datetime)
+        elif isinstance(value, int):
+            value_wrapped = functions.Cast(value_wrapped, self.DATA_TYPE_MAPPING.integer)
+        elif isinstance(value, float):
+            value_wrapped = functions.Cast(value_wrapped, self.DATA_TYPE_MAPPING.float)
+        elif isinstance(value, bool):
+            value_wrapped = functions.Cast(value_wrapped, self.DATA_TYPE_MAPPING.boolean)
+        else:
+            value_wrapped = functions.Cast(value_wrapped, self.DATA_TYPE_MAPPING.text)
+
+        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
+            *columns,
+            value_wrapped.as_(step.new_column),
+        )
+        return StepContext(query, columns + [step.new_column])
 
 
 SQLTranslator.register(GoogleBigQueryTranslator)

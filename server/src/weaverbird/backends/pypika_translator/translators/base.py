@@ -22,15 +22,7 @@ from pypika import (
 from pypika.enums import Comparator, Dialects, JoinType
 from pypika.functions import Extract, ToDate
 from pypika.queries import QueryBuilder, Selectable
-from pypika.terms import (
-    AnalyticFunction,
-    BasicCriterion,
-    Function,
-    Interval,
-    LiteralValue,
-    Term,
-    ValueWrapper,
-)
+from pypika.terms import AnalyticFunction, BasicCriterion, Function, Interval, LiteralValue, Term
 from pypika.utils import format_quotes
 
 from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relative_date
@@ -1398,6 +1390,8 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "TextStep",
     ) -> StepContext:
+        from pypika.terms import ValueWrapper
+
         # Since we're using WITH...AS syntax, we add an explicit cast here to provide type
         # context to the engine. Without that, we might encounter "failed to find conversion
         # function from "unknown" to text" errors
