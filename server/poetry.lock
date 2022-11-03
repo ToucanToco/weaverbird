@@ -366,7 +366,7 @@ wmi = ["wmi (>=1.5.1,<2.0.0)"]
 
 [[package]]
 name = "docker"
-version = "6.0.0"
+version = "6.0.1"
 description = "A Python library for the Docker Engine API."
 category = "dev"
 optional = false
@@ -1961,7 +1961,7 @@ playground = ["quart", "Quart-CORS", "hypercorn", "pymongo", "pandas", "snowflak
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10, <3.11"
-content-hash = "0ba8cc85ac24446556f3fee8a7cacdaab7da511b4e338e46330744189b8df0ad"
+content-hash = "997c3fa2ae169e4d3a47047927c68b005ba5890125606cb517d758f8b88e0302"
 
 [metadata.files]
 aenum = [
@@ -2299,8 +2299,8 @@ dnspython = [
     {file = "dnspython-2.2.1.tar.gz", hash = "sha256:0f7569a4a6ff151958b64304071d370daa3243d15941a7beedf0c9fe5105603e"},
 ]
 docker = [
-    {file = "docker-6.0.0-py3-none-any.whl", hash = "sha256:6e06ee8eca46cd88733df09b6b80c24a1a556bc5cb1e1ae54b2c239886d245cf"},
-    {file = "docker-6.0.0.tar.gz", hash = "sha256:19e330470af40167d293b0352578c1fa22d74b34d3edf5d4ff90ebc203bbb2f1"},
+    {file = "docker-6.0.1-py3-none-any.whl", hash = "sha256:dbcb3bd2fa80dca0788ed908218bf43972772009b881ed1e20dfc29a65e49782"},
+    {file = "docker-6.0.1.tar.gz", hash = "sha256:896c4282e5c7af5c45e8b683b0b0c33932974fe6e50fc6906a0a83616ab3da97"},
 ]
 engarde = [
     {file = "engarde-0.4.0-py2.py3-none-any.whl", hash = "sha256:a5aac1b991801df4484b35a53f911ecd341667dadeabe87ecde34001391b1c93"},
