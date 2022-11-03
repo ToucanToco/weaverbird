@@ -29,7 +29,7 @@ snowflake-connector-python = {version = "^2.7.8", extras = ["pandas"], optional 
 psycopg = {optional = true, version = "^3.0.15"}
 google-cloud-bigquery = {version = "^3.3.0", optional = true, extras = ["pandas", "bqstorage"]}
 toucan-connectors = {version = "^3.17.4", optional = true, extras = ["awsathena"]}
-pytest-xdist = "^2.5.0"
+pytest-xdist = ">=2.5,<4.0"
 
 [tool.poetry.dev-dependencies]
 pytest-cov = "^4.0.0"
