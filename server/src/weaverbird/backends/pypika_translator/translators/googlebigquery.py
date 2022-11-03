@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import TYPE_CHECKING, Any, TypeVar
 
 from pypika import Field, Query, Table, functions
@@ -14,7 +13,6 @@ from weaverbird.backends.pypika_translator.translators.base import (
     StepContext,
 )
 from weaverbird.pipeline.steps.date_extract import DATE_INFO
-from weaverbird.pipeline.steps.text import TextStep
 
 Self = TypeVar("Self", bound="GoogleBigQueryTranslator")
 
@@ -76,6 +74,7 @@ class GoogleBigQueryValueWrapper(ValueWrapper):
 class GoogleBigQueryTranslator(SQLTranslator):
     DIALECT = SQLDialect.GOOGLEBIGQUERY
     QUERY_CLS = GoogleBigQueryQuery
+    VALUE_WRAPPER_CLS = GoogleBigQueryValueWrapper
     DATA_TYPE_MAPPING = DataTypeMapping(
         boolean="BOOLEAN",
         date="DATE",
@@ -226,43 +225,6 @@ class GoogleBigQueryTranslator(SQLTranslator):
             date_selection.as_(step.column),
         )
         return StepContext(query, columns)
-
-    def text(
-        self: Self,
-        *,
-        builder: "QueryBuilder",
-        prev_step_name: str,
-        columns: list[str],
-        step: "TextStep",
-    ) -> StepContext:
-        # Since we're using WITH...AS syntax, we add an explicit cast here to provide type
-        # context to the engine. Without that, we might encounter "failed to find conversion
-        # function from "unknown" to text" errors
-        value = step.text
-
-        if isinstance(value, datetime):
-            # GoogleBigQueryValueWrapper(value) would produce an iso8601 string which
-            # is not properly handled by some backends
-            value_wrapped = GoogleBigQueryValueWrapper(value.strftime("%Y-%m-%d %H:%M:%S"))
-        else:
-            value_wrapped = GoogleBigQueryValueWrapper(value)
-
-        if isinstance(value, datetime):
-            value_wrapped = functions.Cast(value_wrapped, self.DATA_TYPE_MAPPING.datetime)
-        elif isinstance(value, int):
-            value_wrapped = functions.Cast(value_wrapped, self.DATA_TYPE_MAPPING.integer)
-        elif isinstance(value, float):
-            value_wrapped = functions.Cast(value_wrapped, self.DATA_TYPE_MAPPING.float)
-        elif isinstance(value, bool):
-            value_wrapped = functions.Cast(value_wrapped, self.DATA_TYPE_MAPPING.boolean)
-        else:
-            value_wrapped = functions.Cast(value_wrapped, self.DATA_TYPE_MAPPING.text)
-
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
-            *columns,
-            value_wrapped.as_(step.new_column),
-        )
-        return StepContext(query, columns + [step.new_column])
 
 
 SQLTranslator.register(GoogleBigQueryTranslator)
