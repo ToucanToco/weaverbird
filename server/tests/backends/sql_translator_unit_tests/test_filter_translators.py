@@ -2,13 +2,10 @@ from typing import Any
 
 import pytest
 from pypika import Field, Query, functions
-from pypika.terms import BasicCriterion
+from pypika.terms import BasicCriterion, ValueWrapper
 
 from weaverbird.backends.pypika_translator.operators import RegexOp
 from weaverbird.backends.pypika_translator.translators.base import RegexpMatching, SQLTranslator
-from weaverbird.backends.pypika_translator.translators.base import (
-    ValueWrapperCustom as ValueWrapper,
-)
 from weaverbird.pipeline import conditions, steps
 
 

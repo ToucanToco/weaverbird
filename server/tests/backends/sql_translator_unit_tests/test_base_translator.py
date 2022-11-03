@@ -5,12 +5,9 @@ from zoneinfo import ZoneInfo
 import pytest
 from pypika import AliasedQuery, Case, Field, Order, Query, Schema, Table, analytics, functions
 from pypika.enums import JoinType
-from pypika.terms import LiteralValue, Term
+from pypika.terms import LiteralValue, Term, ValueWrapper
 
 from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, SQLTranslator
-from weaverbird.backends.pypika_translator.translators.base import (
-    ValueWrapperCustom as ValueWrapper,
-)
 from weaverbird.pipeline import conditions, steps
 from weaverbird.pipeline.pipeline import DomainStep
 from weaverbird.pipeline.steps.utils.combination import Reference
@@ -603,24 +600,6 @@ def test_text(base_translator: BaseTranslator, default_step_kwargs: dict[str, An
 
     expected_query = Query.from_(previous_step).select(
         *selected_columns, functions.Cast(ValueWrapper(text), "TEXT").as_(new_column_name)
-    )
-
-    assert ctx.selectable.get_sql() == expected_query.get_sql()
-
-    # with quotes
-    text = "Hello World ' there ' i' am"
-
-    step = steps.TextStep(text=text, new_column=new_column_name)
-    ctx = base_translator.text(step=step, columns=selected_columns, **default_step_kwargs)
-
-    expected_query = Query.from_(previous_step).select(
-        *selected_columns, functions.Cast(ValueWrapper(text), "TEXT").as_(new_column_name)
-    )
-
-    # ' are replaced with \' and not '' anymore
-    assert (
-        expected_query.get_sql()
-        == 'SELECT "name","pseudonyme",CAST(\'Hello World \\\' there \\\' i\\\' am\' AS TEXT) "name" FROM "previous_with"'
     )
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
