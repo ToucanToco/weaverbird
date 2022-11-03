@@ -52,7 +52,6 @@ export default {
     // date-fns comes from v-calendar
     commonjs({
       namedExports: {
-        'node_modules/mathjs/index.js': ['parse'],
         'node_modules/date-fns/index.js': ['addDays'],
       },
     }),
