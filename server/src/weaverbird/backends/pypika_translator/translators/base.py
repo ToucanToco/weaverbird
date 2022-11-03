@@ -1,9 +1,11 @@
+import uuid
 from abc import ABC
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
+from enum import Enum
 from functools import cache
-from typing import TYPE_CHECKING, Any, Literal, TypeVar, cast
+from typing import TYPE_CHECKING, Any, Literal, Optional, Type, TypeVar, Union, cast
 
 from dateutil import parser as dateutil_parser
 from pypika import (
@@ -22,7 +24,20 @@ from pypika import (
 from pypika.enums import Comparator, Dialects, JoinType
 from pypika.functions import Extract, ToDate
 from pypika.queries import QueryBuilder, Selectable
-from pypika.terms import AnalyticFunction, BasicCriterion, Function, Interval, LiteralValue, Term
+from pypika.terms import (
+    JSON,
+    AnalyticFunction,
+    Array,
+    BasicCriterion,
+    Function,
+    Interval,
+    LiteralValue,
+    Node,
+    NullValue,
+    Term,
+    Tuple,
+    ValueWrapper,
+)
 from pypika.utils import format_quotes
 
 from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relative_date
@@ -137,6 +152,77 @@ class DateAddWithoutUnderscore(functions.Function):
     def __init__(self, date_part, interval, term, alias=None):
         date_part = getattr(date_part, "value", date_part)
         super().__init__("DATEADD", LiteralValue(date_part), interval, term, alias=alias)
+
+
+class ValueWrapperCustom(ValueWrapper):
+    @classmethod
+    def get_formatted_value(cls, value: Any, **kwargs):
+        quote_char = kwargs.get("secondary_quote_char") or ""
+
+        if isinstance(value, TermCustom):
+            return value.get_sql(**kwargs)
+        if isinstance(value, Enum):
+            return cls.get_formatted_value(value.value, **kwargs)
+        if isinstance(value, date):
+            return cls.get_formatted_value(value.isoformat(), **kwargs)
+        if isinstance(value, str):
+            value = value.replace(quote_char, "\\" + quote_char)
+            return format_quotes(value, quote_char)
+        if isinstance(value, bool):
+            return str.lower(str(value))
+        if isinstance(value, uuid.UUID):
+            return cls.get_formatted_value(str(value), **kwargs)
+        if value is None:
+            return "null"
+        return str(value)
+
+
+class TermCustom(Term):
+    @staticmethod
+    def wrap_constant(
+        val, wrapper_cls: Optional[Type["Term"]] = None
+    ) -> Union[ValueError, Node, "LiteralValue", "Array", "Tuple", "ValueWrapperCustom"]:
+        """
+        Used for wrapping raw inputs such as numbers in Criterions and Operator.
+
+        For example, the expression F('abc')+1 stores the integer part in a ValueWrapperCustom object.
+
+        :param val:
+            Any value.
+        :param wrapper_cls:
+            A pypika class which wraps a constant value so it can be handled as a component of the query.
+        :return:
+            Raw string, number, or decimal values will be returned in a ValueWrapperCustom.  Fields and other parts of the
+            querybuilder will be returned as inputted.
+
+        """
+
+        if isinstance(val, Node):
+            return val
+        if val is None:
+            return NullValue()
+        if isinstance(val, list):
+            return Array(*val)
+        if isinstance(val, tuple):
+            return Tuple(*val)
+
+        # Need to default here to avoid the recursion. ValueWrapperCustom extends this class.
+        wrapper_cls = wrapper_cls or ValueWrapperCustom
+        return wrapper_cls(val)
+
+    @staticmethod
+    def wrap_json(
+        val: Union["TermCustom", "QueryBuilder", "Interval", None, str, int, bool], wrapper_cls=None
+    ) -> Union["TermCustom", "QueryBuilder", "Interval", "NullValue", "ValueWrapperCustom", "JSON"]:
+        if isinstance(val, (TermCustom, QueryBuilder, Interval)):
+            return val
+        if val is None:
+            return NullValue()
+        if isinstance(val, (str, int, bool)):
+            wrapper_cls = wrapper_cls or ValueWrapperCustom
+            return wrapper_cls(val)
+
+        return JSON(val)
 
 
 class SQLTranslator(ABC):
@@ -1390,19 +1476,17 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "TextStep",
     ) -> StepContext:
-        from pypika.terms import ValueWrapper
-
         # Since we're using WITH...AS syntax, we add an explicit cast here to provide type
         # context to the engine. Without that, we might encounter "failed to find conversion
         # function from "unknown" to text" errors
         value = step.text
 
         if isinstance(value, datetime):
-            # ValueWrapper(value) would produce an iso8601 string which
+            # ValueWrapperCustom(value) would produce an iso8601 string which
             # is not properly handled by some backends
-            value_wrapped = ValueWrapper(value.strftime("%Y-%m-%d %H:%M:%S"))
+            value_wrapped = ValueWrapperCustom(value.strftime("%Y-%m-%d %H:%M:%S"))
         else:
-            value_wrapped = ValueWrapper(value)
+            value_wrapped = ValueWrapperCustom(value)
 
         if isinstance(value, datetime):
             value_wrapped = functions.Cast(value_wrapped, self.DATA_TYPE_MAPPING.datetime)
