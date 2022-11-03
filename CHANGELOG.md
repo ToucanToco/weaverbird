@@ -1,5 +1,11 @@
 # Changelog (weaverbird npm package)
 
+## [0.93.0] - 2022-11-03
+
+### Changed
+
+- Removes feature flag `BASEMAP_AS_USUAL_DATASOURCE` (general support of Geo steps)
+
 ## [0.92.0] - 2022-10-27
 
 ### Added
@@ -1333,6 +1339,8 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ## Unreleased
 
+[0.93.0]: https://github.com/ToucanToco/weaverbird/compare/v0.93.0...v0.92.0
+[0.92.0]: https://github.com/ToucanToco/weaverbird/compare/v0.92.0...v0.91.3
 [0.91.3]: https://github.com/ToucanToco/weaverbird/compare/v0.91.3...v0.91.2
 [0.91.2]: https://github.com/ToucanToco/weaverbird/compare/v0.91.2...v0.91.1
 [0.91.1]: https://github.com/ToucanToco/weaverbird/compare/v0.91.1...v0.91.0
