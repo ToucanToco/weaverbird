@@ -22,7 +22,15 @@ from pypika import (
 from pypika.enums import Comparator, Dialects, JoinType
 from pypika.functions import Extract, ToDate
 from pypika.queries import QueryBuilder, Selectable
-from pypika.terms import AnalyticFunction, BasicCriterion, Function, Interval, LiteralValue, Term
+from pypika.terms import (
+    AnalyticFunction,
+    BasicCriterion,
+    Function,
+    Interval,
+    LiteralValue,
+    Term,
+    ValueWrapper,
+)
 from pypika.utils import format_quotes
 
 from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relative_date
@@ -142,6 +150,7 @@ class DateAddWithoutUnderscore(functions.Function):
 class SQLTranslator(ABC):
     DIALECT: SQLDialect
     QUERY_CLS: Query
+    VALUE_WRAPPER_CLS = ValueWrapper
     DATA_TYPE_MAPPING: DataTypeMapping
     # supported extra functions
     SUPPORT_ROW_NUMBER: bool
@@ -1390,8 +1399,6 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "TextStep",
     ) -> StepContext:
-        from pypika.terms import ValueWrapper
-
         # Since we're using WITH...AS syntax, we add an explicit cast here to provide type
         # context to the engine. Without that, we might encounter "failed to find conversion
         # function from "unknown" to text" errors
@@ -1400,9 +1407,9 @@ class SQLTranslator(ABC):
         if isinstance(value, datetime):
             # ValueWrapper(value) would produce an iso8601 string which
             # is not properly handled by some backends
-            value_wrapped = ValueWrapper(value.strftime("%Y-%m-%d %H:%M:%S"))
+            value_wrapped = self.VALUE_WRAPPER_CLS(value.strftime("%Y-%m-%d %H:%M:%S"))
         else:
-            value_wrapped = ValueWrapper(value)
+            value_wrapped = self.VALUE_WRAPPER_CLS(value)
 
         if isinstance(value, datetime):
             value_wrapped = functions.Cast(value_wrapped, self.DATA_TYPE_MAPPING.datetime)

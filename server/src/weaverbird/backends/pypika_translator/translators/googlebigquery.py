@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Any, TypeVar
 from pypika import Field, Query, Table, functions
 from pypika.enums import Dialects
 from pypika.queries import QueryBuilder
-from pypika.terms import Case, CustomFunction, Function, Interval, LiteralValue, Term
+from pypika.terms import Case, CustomFunction, Function, Interval, LiteralValue, Term, ValueWrapper
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp
@@ -62,9 +62,19 @@ class GoogleBigQueryDateAdd(Function):
         super().__init__("DATE_ADD", target_column, interval)
 
 
+class GoogleBigQueryValueWrapper(ValueWrapper):
+    @classmethod
+    def get_formatted_value(cls, value: Any, **kwargs):
+        if isinstance(value, str):
+            value = value.replace("'", r"\'")
+            return f"'{value}'"
+        return super().get_formatted_value(value, **kwargs)
+
+
 class GoogleBigQueryTranslator(SQLTranslator):
     DIALECT = SQLDialect.GOOGLEBIGQUERY
     QUERY_CLS = GoogleBigQueryQuery
+    VALUE_WRAPPER_CLS = GoogleBigQueryValueWrapper
     DATA_TYPE_MAPPING = DataTypeMapping(
         boolean="BOOLEAN",
         date="DATE",

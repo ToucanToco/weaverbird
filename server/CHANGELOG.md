@@ -1,5 +1,10 @@
 # Changelog (weaverbird python package)
 
+## Unreleased
+
+- PyPika: Google Big Query translator now escapes single quotes in string literals with
+a backslash (`\'`) rather than two double quotes (`''`).
+
 ## [0.26.1] - 2022-10-27
 
 - in order to prevent SQL injection, it is no longer possible to create a CustomSQL step with variables.

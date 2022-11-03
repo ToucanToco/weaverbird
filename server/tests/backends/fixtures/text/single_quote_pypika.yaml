@@ -1,0 +1,29 @@
+exclude:
+- mongo
+- pandas
+- snowflake
+step:
+  pipeline:
+  - name: text
+    new_column: text
+    text: text with 'single quotes'
+  - columns:
+    - text
+    name: select
+expected:
+  schema:
+    fields:
+    - name: text
+      type: string
+    pandas_version: 1.4.0
+  data:
+  - text: text with 'single quotes'
+  - text: text with 'single quotes'
+  - text: text with 'single quotes'
+  - text: text with 'single quotes'
+  - text: text with 'single quotes'
+  - text: text with 'single quotes'
+  - text: text with 'single quotes'
+  - text: text with 'single quotes'
+  - text: text with 'single quotes'
+  - text: text with 'single quotes'
