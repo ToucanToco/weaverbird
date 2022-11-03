@@ -2,10 +2,8 @@
 
 ## Unreleased
 
-- PyPika: SQLTranslator has now an attribute for a custom `ValueWrapper`
-  defined as `VALUE_WRAPPER_CLS`.
-- PyPika: Google Big Query translator now use a custom `VALUE_WRAPPER_CLS` for
-  escaping single quote with a slash `\` rather than duplicate it.
+- PyPika: Google Big Query translator now escapes single quotes in string literals with
+a backslash (\) rather than two double quotes ('').
 
 ## [0.26.1] - 2022-10-27
 

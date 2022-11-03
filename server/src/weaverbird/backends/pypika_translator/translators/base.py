@@ -150,7 +150,7 @@ class DateAddWithoutUnderscore(functions.Function):
 class SQLTranslator(ABC):
     DIALECT: SQLDialect
     QUERY_CLS: Query
-    VALUE_WRAPPER_CLS: ValueWrapper
+    VALUE_WRAPPER_CLS = ValueWrapper
     DATA_TYPE_MAPPING: DataTypeMapping
     # supported extra functions
     SUPPORT_ROW_NUMBER: bool
