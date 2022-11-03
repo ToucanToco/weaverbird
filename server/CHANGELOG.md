@@ -3,7 +3,7 @@
 ## Unreleased
 
 - PyPika: Google Big Query translator now escapes single quotes in string literals with
-a backslash (\) rather than two double quotes ('').
+a backslash (`\'`) rather than two double quotes (`''`).
 
 ## [0.26.1] - 2022-10-27
 
