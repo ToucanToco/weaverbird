@@ -778,7 +778,6 @@ async function buildVueApp() {
 
         featureFlags: {
           RELATIVE_DATE_FILTERING: args.get('RELATIVE_DATE_FILTERING') || 'disable',
-          BASEMAP_AS_USUAL_DATASOURCE: args.get('BASEMAP_AS_USUAL_DATASOURCE') || 'disable',
         },
       };
       if (TRANSLATOR === 'pandas') {
