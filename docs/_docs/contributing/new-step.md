@@ -182,7 +182,8 @@ For our `ColumnSumStep`, we will create the following
 `src/components/stepforms/schemas/columnsum.ts` module:
 
 ```typescript
-import { addNotInColumnNamesConstraint, StepFormType } from './utils';
+import { addNotInColumnNamesConstraint } from './utils';
+import type { StepFormType } from './utils';
 
 const schema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
@@ -314,7 +315,7 @@ import { Prop } from 'vue-property-decorator';
 import Component from 'vue-class-component';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { ColumnSumStep, PipelineStepName } from '@/lib/steps';
+import type { ColumnSumStep, PipelineStepName } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -329,7 +330,7 @@ export default class ColumnSumForm extends BaseStepForm<ColumnSumStep> {
    stepname: PipelineStepName = 'columnsum';
 
   @Prop({ type: Object, default: () => ({ name: 'columnsum', column1: '', column2: '', newColumn: '' }) })
-  initialStepValue!: ColumnSumStep;
+  declare initialStepValue: ColumnSumStep;
 
   readonly title: string = 'Sum columns';
 }

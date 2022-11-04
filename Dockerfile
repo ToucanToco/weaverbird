@@ -7,14 +7,14 @@
 
 FROM node:18 AS ui-builder
 
-WORKDIR /weaverbird
+WORKDIR /weaverbird/ui
 
 # Install npm dependencies
 COPY package.json yarn.lock ./
 RUN yarn
 
 # Build UI
-COPY . ./
+COPY ui ./
 RUN yarn build
 
 

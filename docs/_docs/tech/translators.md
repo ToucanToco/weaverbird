@@ -41,7 +41,7 @@ only, your translator module might look like:
 
 ```ts
 import { BaseTranslator } from '@/lib/translators/base';
-import { RenameStep, FilterStep } from '@/lib/steps';
+import type { RenameStep, FilterStep } from '@/lib/steps';
 
 class MyTranslator extends BaseTranslator {
   rename(step: RenameStep) {

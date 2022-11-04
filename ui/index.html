@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/playground.css" />
+    <title>weaverbird</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css?family=Montserrat:500,600,700&display=swap');
+      @import url('https://fonts.googleapis.com/css?family=Roboto+Slab:400&display=swap');
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      body {
+        background: url('./pattern-blueprints.png');
+        background-color: rgb(38, 101, 163);
+      }
+
+      #app {
+        position: absolute;
+        flex: 1;
+        top: 60px;
+        left: 40px;
+        right: 40px;
+        bottom: 0;
+      }
+
+      #app .weaverbird {
+        box-shadow: 0px 0px 10px #1119;
+        border-radius: 0px;
+        padding: 10px 15px;
+        padding-bottom: 56px;
+        box-sizing: border-box;
+      }
+
+      #app .pagination-counter {
+        bottom: 56px;
+      }
+
+      pre {
+        padding: 5px;
+        background-color: #ededed;
+        min-height: 100px;
+      }
+
+      .error-message {
+        background: red;
+        color: white;
+        padding: 10px;
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
+
+      .warning-message {
+        background: orange;
+        color: white;
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 10px;
+      }
+
+      .toolbar {
+        background: #000;
+        width: 100%;
+        height: 56px;
+        z-index: 2;
+        position: fixed;
+        bottom: 0px;
+        left: 0px;
+        text-align: center;
+      }
+
+      .toolbar__title {
+        position: absolute;
+        color: #fff;
+        padding: 15px 18px;
+        text-transform: none;
+        font-family: Montserrat;
+        font-weight: 600;
+        font-size: 20px;
+        letter-spacing: 2px;
+      }
+
+      .toolbar__button {
+        cursor: pointer;
+        position: absolute;
+        font-size: 12.5px;
+        font-family: Montserrat;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #fff;
+        padding: 10px;
+        right: 10px;
+        background: #404040;
+        bottom: 10px;
+        display: block;
+      }
+      .toolbar__button:hover {
+        background: #000;
+      }
+
+      .toolbar__radio {
+        position: relative;
+        font-size: 14px;
+        font-family: Montserrat;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #404040;
+        display: inline-block;
+        margin-right: 10px;
+        margin-left: 10px;
+        top: 16px;
+      }
+      .toolbar__radio:hover {
+        color: #fff;
+      }
+
+      .toolbar__radio a {
+        cursor: pointer;
+        padding: 5px 0px;
+        text-decoration: none;
+        color: unset;
+      }
+
+      .toolbar__selected {
+        color: #fff;
+        border-bottom: solid 2px;
+      }
+
+      .debug-panel {
+        margin: 5px 5px;
+        position: inherit;
+        top: 100%;
+        width: 100%;
+        height: calc(100% - 5px);
+        box-shadow: 0 0 15px rgb(0 0 0 / 80%);
+        transition: top .5s ease-out;
+      }
+
+      .opened {
+        top: 0%;
+        transition: top .5s ease-out;
+      }
+
+      .debug-panel__code {
+        display: flex;
+        background-color: white;
+        padding: 10px;
+        height: calc(100% - 56px);
+        overflow-y: scroll;
+      }
+
+      .debug-panel__code-translated-pipeline, .debug-panel__code-pipeline {
+        width: 50%;
+        padding: 10px;
+      }
+
+      .debug-panel__code-translated-pipeline {
+        border-left: 1px solid;
+      }
+
+      .debug-panel__code-translated-pipeline > pre {
+        white-space: break-spaces;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <vqb></vqb>
+      <div class="warning-message" v-if="backendWarnings.length" v-for="warning in backendWarnings">
+        <i class="fas fa-exclamation-triangle"></i> {{ warning.message }}
+      </div>
+      <div class="error-message" v-if="backendErrors.length" v-for="error in backendErrors">
+        <i class="fas fa-exclamation-triangle"></i> {{ error.message }}
+      </div>
+      <div class="toolbar">
+        <div class="toolbar__title">
+          Weaverbird
+        </div>
+        <div class="toolbar__radio" :class="{ toolbar__selected: isSelectedTranslator('mongo50') }">
+          <a href="/">
+            MongoDB
+          </a>
+        </div>
+        <div class="toolbar__radio" :class="{ toolbar__selected:isSelectedTranslator('pandas') }">
+          <a href="?backend=pandas">
+            Pandas
+          </a>
+        </div>
+        <div class="toolbar__radio" :class="{ toolbar__selected:isSelectedTranslator('snowflake') }">
+          <a href="?backend=snowflake">
+            Snowflake
+          </a>
+        </div>
+        <div class="toolbar__radio" :class="{ toolbar__selected:isSelectedTranslator('athena') }">
+          <a href="?backend=athena">
+            Athena
+          </a>
+        </div>
+        <div class="toolbar__radio" :class="{ toolbar__selected:isSelectedTranslator('google-big-query') }">
+          <a href="?backend=google-big-query">
+            Google big query
+          </a>
+        </div>
+        <div class="toolbar__radio" :class="{ toolbar__selected:isSelectedTranslator('mysql') }">
+          <a href="?backend=mysql">
+            MySql
+          </a>
+        </div>
+        <div class="toolbar__radio" :class="{ toolbar__selected:isSelectedTranslator('postgresql') }">
+          <a href="?backend=postgresql">
+            Postgresql
+          </a>
+        </div>
+        <div class="toolbar__radio" :class="{ toolbar__selected:isSelectedTranslator('redshift') }">
+          <a href="?backend=redshift">
+            Redshift
+          </a>
+        </div>
+        <div class="toolbar__button" v-show="!isCodeOpened" @click="openCode">
+          Show code
+        </div>
+        <div class="toolbar__button" v-show="isCodeOpened" @click="hideCode">
+          Hide code
+        </div>
+      </div>
+      <div :class="{ opened: isCodeOpened }" class="debug-panel">
+        <div class="debug-panel__code">
+          <div class="debug-panel__code-pipeline">
+            <div>Pipeline</div>
+            <pre>{{ pipelineAsJSON }}</pre>
+          </div>
+          <div class="debug-panel__code-translated-pipeline">
+            <div>Translated pipeline</div>
+            <pre v-if="lastExecutedQuery">{{ lastExecutedQuery }}</pre>
+            <pre v-else>Query executed but translation not configured for this backend</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="./playground.ts"></script>
+  </body>
+</html>
