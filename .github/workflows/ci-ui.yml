@@ -69,4 +69,4 @@ jobs:
         if: ${{ always() }}
 
       - name: Check that build completes as expected
-        run: yarn build-bundle
+        run: yarn build
