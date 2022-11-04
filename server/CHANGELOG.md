@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-## [0.26.2] - 2022-11-04
+## [0.27.0] - 2022-11-04
 
 - PyPika: Google Big Query translator now escapes single quotes in string literals with
 a backslash (`\'`) rather than two double quotes (`''`).
