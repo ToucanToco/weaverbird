@@ -38,7 +38,7 @@ Last but not least, you can **play with Weaverbird on our [online playground](ht
 yarn install
 ```
 
-**Requirement: node > v11**
+> See Dockerfile for supported node version
 
 ### Compiles target library
 
