@@ -18,7 +18,7 @@ COPY . ./
 RUN yarn build
 
 
-FROM python:3.10 as server
+FROM python:3.11 as server
 
 WORKDIR /weaverbird/server
 
