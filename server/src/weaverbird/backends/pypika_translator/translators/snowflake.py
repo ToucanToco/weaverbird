@@ -22,7 +22,7 @@ class QuotedSnowflakeQueryBuilder(SnowflakeQueryBuilder):
 
     @builder
     def with_(self, selectable: Selectable, name: str) -> "QueryBuilder":
-        super().with_(selectable, format_quotes(name, self.QUOTE_CHAR))
+        return super().with_(selectable, format_quotes(name, self.QUOTE_CHAR))
 
 
 class SnowflakeQuery(Query):
