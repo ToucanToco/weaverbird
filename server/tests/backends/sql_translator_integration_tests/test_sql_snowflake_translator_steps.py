@@ -46,8 +46,6 @@ def engine():
     )
     engine = create_engine(url)
     connection = engine.connect()
-    #  to avoid issues with quoted/unquoted columns
-    connection.execute("alter session set QUOTED_IDENTIFIERS_IGNORE_CASE = true;")
     yield connection
     connection.close()
 
