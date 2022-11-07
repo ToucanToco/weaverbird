@@ -1,6 +1,6 @@
-import { beforeEach, describe, expect, it, afterEach } from 'vitest';
-import { shallowMount } from '@vue/test-utils';
 import type { Wrapper } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import { afterEach,beforeEach, describe, expect, it } from 'vitest';
 import type Vue from 'vue';
 
 import ConditionsGroup from '@/components/ConditionsEditor/ConditionsGroup.vue';

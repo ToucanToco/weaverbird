@@ -1,7 +1,7 @@
 import type { Wrapper } from '@vue/test-utils';
 import { shallowMount } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { SpyInstance } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import NewDateInput from '@/components/stepforms/widgets/DateComponents/NewDateInput.vue';
 import type { RelativeDate } from '@/lib/dates';

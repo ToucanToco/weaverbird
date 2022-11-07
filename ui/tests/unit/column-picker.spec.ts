@@ -1,12 +1,12 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import Vuex, { Store } from 'vuex';
 
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import { VQBnamespace } from '@/store';
 
-import { setupMockStore } from './utils';
 import type { RootState } from './utils';
+import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

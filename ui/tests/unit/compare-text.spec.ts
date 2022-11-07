@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+
 import CompareTextStepForm from '@/components/stepforms/CompareTextStepForm.vue';
 
 import { BasicStepFormTestRunner } from './utils';

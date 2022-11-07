@@ -1,7 +1,6 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-
-import { shallowMount } from '@vue/test-utils';
 import type { Wrapper } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import TabbedRangeCalendars from '@/components/stepforms/widgets/DateComponents/TabbedRangeCalendars.vue';
 

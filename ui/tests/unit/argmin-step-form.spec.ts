@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+
 import ArgminStepForm from '@/components/stepforms/ArgminStepForm.vue';
 
 import { BasicStepFormTestRunner } from './utils';

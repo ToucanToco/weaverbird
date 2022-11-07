@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
 import { mount, shallowMount } from '@vue/test-utils';
+import { describe, expect, it } from 'vitest';
 import Vue from 'vue';
 
 import { CodeEditor, CodeEditorConfigs, setAvailableCodeEditors } from '@/components/code-editor';

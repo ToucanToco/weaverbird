@@ -1,5 +1,5 @@
-import { describe, expect, beforeEach, it } from 'vitest';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
 import Vuex from 'vuex';
 
 import ActionMenu from '@/components/ActionMenu.vue';

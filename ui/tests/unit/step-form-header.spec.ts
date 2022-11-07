@@ -1,7 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-import { shallowMount } from '@vue/test-utils';
 import type { Wrapper } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import StepFormHeader from '@/components/stepforms/StepFormHeader.vue';
 

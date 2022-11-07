@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import ConcatenateStepForm from '@/components/stepforms/ConcatenateStepForm.vue';
 

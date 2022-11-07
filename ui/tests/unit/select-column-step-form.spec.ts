@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+
 import SelectColumnStepForm from '@/components/stepforms/SelectColumnStepForm.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 

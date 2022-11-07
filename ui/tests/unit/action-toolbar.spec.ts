@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from 'vitest';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { describe, expect, it, vi } from 'vitest';
 import Vuex from 'vuex';
 
 import ActionToolbar from '@/components/ActionToolbar.vue';

@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
 import { mount, shallowMount } from '@vue/test-utils';
+import { describe, expect, it } from 'vitest';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 

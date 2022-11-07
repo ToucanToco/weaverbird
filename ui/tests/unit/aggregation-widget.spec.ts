@@ -1,11 +1,11 @@
-import { beforeEach, describe, expect, it } from 'vitest';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
 import Vuex, { Store } from 'vuex';
 
 import AggregationWidget from '@/components/stepforms/widgets/Aggregation.vue';
 
-import { setupMockStore } from './utils';
 import type { RootState } from './utils';
+import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

@@ -1,6 +1,6 @@
 import type { Wrapper } from '@vue/test-utils';
 import { shallowMount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it, afterEach } from 'vitest';
+import { afterEach,beforeEach, describe, expect, it } from 'vitest';
 
 import CustomVariableList from '@/components/stepforms/widgets/DateComponents/CustomVariableList.vue';
 

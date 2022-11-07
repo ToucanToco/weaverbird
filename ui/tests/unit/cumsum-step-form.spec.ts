@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+
 import CumSumStepForm from '@/components/stepforms/CumSumStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';

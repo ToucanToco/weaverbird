@@ -1,4 +1,5 @@
-import {  describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
 import ArgmaxStepForm from '@/components/stepforms/ArgmaxStepForm.vue';
 
 import { BasicStepFormTestRunner } from './utils';

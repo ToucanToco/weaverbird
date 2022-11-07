@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import type { Wrapper } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 
 import RelativeDateForm from '@/components/stepforms/widgets/DateComponents/RelativeDateForm.vue';
 

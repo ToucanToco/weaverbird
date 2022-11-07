@@ -1,6 +1,6 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import type { Wrapper } from '@vue/test-utils';
+import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 

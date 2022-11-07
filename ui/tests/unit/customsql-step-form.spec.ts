@@ -1,4 +1,5 @@
 import { describe, vi } from 'vitest';
+
 import CustomSqlStepForm from '@/components/stepforms/CustomSqlStepForm.vue';
 
 import { BasicStepFormTestRunner } from './utils';
