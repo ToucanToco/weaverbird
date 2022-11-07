@@ -1,6 +1,8 @@
+import { describe, expect, it } from 'vitest';
+
 import { filterOutDomain, mongoToPipe } from '@/lib/pipeline';
 import type { Pipeline } from '@/lib/steps';
-import { MongoStep } from '@/lib/translators/mongo';
+import type { MongoStep } from '@/lib/translators/mongo';
 
 describe('Pipebuild translator', () => {
   it('generate domain step', () => {

@@ -1,8 +1,10 @@
+import { describe, expect, it, vi } from 'vitest';
+
 import DateExtractStepForm from '@/components/stepforms/DateExtractStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('DateExtract Step Form', () => {
   const runner = new BasicStepFormTestRunner(DateExtractStepForm, 'dateextract');

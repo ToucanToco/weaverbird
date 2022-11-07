@@ -1,8 +1,10 @@
+import { describe, expect, it, vi } from 'vitest';
+
 import StatisticsStepForm from '@/components/stepforms/StatisticsStepForm.vue';
 
 import { BasicStepFormTestRunner } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('statistics Step Form', () => {
   const runner = new BasicStepFormTestRunner(StatisticsStepForm, 'statistics');

@@ -1,9 +1,10 @@
+import { describe, expect, it, vi } from 'vitest';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import ConcatenateStepForm from '@/components/stepforms/ConcatenateStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Concatenate Step Form', () => {
   const runner = new BasicStepFormTestRunner(ConcatenateStepForm, 'concatenate');

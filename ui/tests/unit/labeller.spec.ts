@@ -1,10 +1,12 @@
+import { describe, expect, it } from 'vitest';
+
 import {
   humanReadableLabel as hrl,
   labelWithReadeableVariables as lwv,
   retrieveDomainName,
 } from '@/lib/labeller';
-import * as S from '@/lib/steps';
-import { VariableDelimiters } from '@/lib/variables';
+import type * as S from '@/lib/steps';
+import type { VariableDelimiters } from '@/lib/variables';
 
 describe('Labeller', () => {
   it('generates label for single aggregation', () => {

@@ -1,9 +1,11 @@
+import { describe, expect, it, vi } from 'vitest';
+
 import UniqueGroupsStepForm from '@/components/stepforms/UniqueGroupsStepForm.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 
 import { BasicStepFormTestRunner } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('UniqueGroups Step Form', () => {
   const runner = new BasicStepFormTestRunner(UniqueGroupsStepForm, 'uniquegroups');

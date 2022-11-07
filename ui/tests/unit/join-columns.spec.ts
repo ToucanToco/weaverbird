@@ -1,9 +1,11 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
 import Vuex, { Store } from 'vuex';
 
 import JoinColumns from '@/components/stepforms/widgets/JoinColumns.vue';
 
-import { RootState, setupMockStore } from './utils';
+import type { RootState } from './utils';
+import {setupMockStore} from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

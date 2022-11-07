@@ -1,4 +1,6 @@
-jest.mock('@/lib/helpers');
+import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('@/lib/helpers');
 
 import AddTotalRowsStepForm from '@/components/stepforms/AddTotalRowsStepForm.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
@@ -8,7 +10,7 @@ import { setAggregationsNewColumnsInStep } from '@/lib/helpers';
 
 import { BasicStepFormTestRunner } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Add Total Rows Step Form', () => {
   const runner = new BasicStepFormTestRunner(AddTotalRowsStepForm, 'totals');

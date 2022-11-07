@@ -1,8 +1,10 @@
+import { describe, expect, it, vi } from 'vitest';
+
 import AbsoluteValueStepForm from '@/components/stepforms/AbsoluteValueStepForm.vue';
 
 import { BasicStepFormTestRunner } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Absolute value step form', () => {
   const runner = new BasicStepFormTestRunner(AbsoluteValueStepForm, 'absolutevalue');

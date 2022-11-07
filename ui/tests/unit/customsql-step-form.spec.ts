@@ -1,8 +1,9 @@
+import { describe, vi } from 'vitest';
 import CustomSqlStepForm from '@/components/stepforms/CustomSqlStepForm.vue';
 
 import { BasicStepFormTestRunner } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Custom sql Step Form', () => {
   const runner = new BasicStepFormTestRunner(CustomSqlStepForm, 'customsql');

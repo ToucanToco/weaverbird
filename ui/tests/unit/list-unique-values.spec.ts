@@ -1,5 +1,7 @@
-import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils';
-import Vue from 'vue';
+import type { Wrapper } from '@vue/test-utils';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type Vue from 'vue';
 import Vuex from 'vuex';
 
 import ListUniqueValues from '@/components/ListUniqueValues.vue';
@@ -124,7 +126,7 @@ describe('List Unique Value', () => {
 
     it('should dispatch when click on "load all values"', async () => {
       wrapper = shallowMountWrapper(['France', 'Spain'], 'in', false);
-      const dispatchSpy = jest.spyOn(wrapper.vm.$store, 'dispatch');
+      const dispatchSpy = vi.spyOn(wrapper.vm.$store, 'dispatch');
       await wrapper.find('.list-unique-values__load-all-values-button').trigger('click');
       expect(dispatchSpy).toHaveBeenCalledTimes(1);
       expect(dispatchSpy).toHaveBeenCalledWith(VQBnamespace('loadColumnUniqueValues'), {

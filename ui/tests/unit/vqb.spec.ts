@@ -1,4 +1,5 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { describe, expect, it } from 'vitest';
 import Vuex from 'vuex';
 
 import { setupStore } from '@/store';

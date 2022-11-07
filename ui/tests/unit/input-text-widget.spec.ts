@@ -1,8 +1,9 @@
 import { mount, shallowMount } from '@vue/test-utils';
+import { describe, expect, it, vi } from 'vitest';
 
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Widget Input Text', () => {
   it('should instantiate', () => {

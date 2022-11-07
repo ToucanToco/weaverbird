@@ -1,11 +1,13 @@
-import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils';
+import type { Wrapper } from '@vue/test-utils';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { describe, expect, it, vi } from 'vitest';
 import Vuex from 'vuex';
 
 import ToDateStepForm from '@/components/stepforms/ToDateStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

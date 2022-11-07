@@ -1,9 +1,11 @@
+import { describe, expect, it, vi } from 'vitest';
+
 import DeleteColumnStepForm from '@/components/stepforms/DeleteColumnStepForm.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 
 import { BasicStepFormTestRunner } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Delete Column Step Form', () => {
   const runner = new BasicStepFormTestRunner(DeleteColumnStepForm, 'delete');

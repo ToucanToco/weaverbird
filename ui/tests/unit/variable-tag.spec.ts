@@ -1,5 +1,7 @@
-import { shallowMount, Wrapper } from '@vue/test-utils';
+import type { Wrapper } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import { VTooltip } from 'v-tooltip';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';
 

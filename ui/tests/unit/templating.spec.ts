@@ -1,5 +1,8 @@
+import { describe, expect, it } from 'vitest';
+
 import type { Pipeline } from '@/lib/steps';
-import { exampleInterpolateFunc, PipelineInterpolator, ScopeContext } from '@/lib/templating';
+import { exampleInterpolateFunc, PipelineInterpolator } from '@/lib/templating';
+import type { ScopeContext } from '@/lib/templating';
 
 describe('Pipeline interpolator', () => {
   const defaultContext: ScopeContext = {

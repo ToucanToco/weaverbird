@@ -1,24 +1,27 @@
-import { createLocalVue, mount, shallowMount, Wrapper } from '@vue/test-utils';
+import type { Wrapper } from '@vue/test-utils';
+import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import type { SpyInstance} from "vitest";
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import Vuex from 'vuex';
 
 import PipelineComponent from '@/components/Pipeline.vue';
 import Step from '@/components/Step.vue';
-import { DataSet } from '@/lib/dataset';
+import type { DataSet } from '@/lib/dataset';
 import * as labeller from '@/lib/labeller';
 import type { Pipeline } from '@/lib/steps';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('Step.vue', () => {
-  let retrieveDomainNameStub: jest.SpyInstance;
+  let retrieveDomainNameStub: SpyInstance;
 
   const createStepWrapper = ({ propsData = {} }) => {
-    retrieveDomainNameStub = jest
+    retrieveDomainNameStub = vi
       .spyOn(labeller, 'retrieveDomainName')
       .mockImplementation(v => (typeof v === 'string' ? v : ''));
     const pipeline: Pipeline = [

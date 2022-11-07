@@ -79,8 +79,13 @@ export default class SearchActions extends Vue {
     }
   }
 
+  $refs!: {
+    searchComponent: Multiselect
+  }
+
   focusSearchBar() {
-    this.$refs.searchComponent?.$el.focus();
+    console.log(this.$refs.searchComponent.$el);
+    (this.$refs.searchComponent.$el as HTMLElement).focus();
   }
 
   actionClicked(actionName: { name: PipelineStepName }) {

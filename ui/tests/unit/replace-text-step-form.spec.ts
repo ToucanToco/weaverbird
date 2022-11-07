@@ -1,8 +1,10 @@
+import { describe, expect, it, vi } from 'vitest';
+
 import ReplaceTextStepForm from '@/components/stepforms/ReplaceTextStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Replace Text Step Form', () => {
   const runner = new BasicStepFormTestRunner(ReplaceTextStepForm, 'replacetext');

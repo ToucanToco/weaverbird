@@ -1,18 +1,22 @@
-import { shallowMount, Wrapper } from '@vue/test-utils';
+import type { Wrapper } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { POPOVER_ALIGN } from '@/components/constants';
 import DateRangeInput from '@/components/stepforms/widgets/DateComponents/DateRangeInput.vue';
-import {
-  CUSTOM_DATE_RANGE_LABEL_SEPARATOR,
+import type {
   DateRange,
-  dateRangeToString,
-  isDateRange,
   RelativeDate,
 } from '@/lib/dates';
-import { LocaleIdentifier } from '@/lib/internationalization';
+import {
+  CUSTOM_DATE_RANGE_LABEL_SEPARATOR,
+  dateRangeToString,
+  isDateRange,
+} from '@/lib/dates';
+import type { LocaleIdentifier } from '@/lib/internationalization';
 
-jest.mock('@/components/FAIcon.vue');
-jest.mock('@/components/DatePicker/Calendar.vue');
+vi.mock('@/components/FAIcon.vue');
+vi.mock('@/components/DatePicker/Calendar.vue');
 
 const SAMPLE_VARIABLES = [
   {

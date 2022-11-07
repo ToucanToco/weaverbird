@@ -1,8 +1,11 @@
-import { shallowMount, Wrapper } from '@vue/test-utils';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { shallowMount } from '@vue/test-utils';
+import type { Wrapper } from '@vue/test-utils';
 
 import TabbedRangeCalendars from '@/components/stepforms/widgets/DateComponents/TabbedRangeCalendars.vue';
 
-jest.mock('@/components/DatePicker/Calendar.vue');
+vi.mock('@/components/DatePicker/Calendar.vue');
 
 describe('TabbedRangeCalendars', () => {
   let wrapper: Wrapper<TabbedRangeCalendars>;

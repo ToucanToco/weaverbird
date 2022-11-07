@@ -1,8 +1,10 @@
+import { describe, expect, it, vi } from 'vitest';
+
 import FillnaStepForm from '@/components/stepforms/FillnaStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Fillna Step Form', () => {
   const runner = new BasicStepFormTestRunner(FillnaStepForm, 'fillna');

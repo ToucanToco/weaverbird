@@ -1,8 +1,10 @@
+import { describe, vi } from 'vitest';
+
 import CustomStepForm from '@/components/stepforms/CustomStepForm.vue';
 
 import { BasicStepFormTestRunner } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Custom Step Form', () => {
   const runner = new BasicStepFormTestRunner(CustomStepForm, 'custom');

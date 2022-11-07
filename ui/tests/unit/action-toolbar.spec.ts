@@ -1,3 +1,4 @@
+import { describe, expect, it, vi } from 'vitest';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 
@@ -7,7 +8,7 @@ import { CATEGORY_BUTTONS } from '@/components/constants';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

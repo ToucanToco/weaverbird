@@ -1,11 +1,12 @@
 import _ from 'lodash';
+import { describe, expect, it, vi } from 'vitest';
 
 import TopStepForm from '@/components/stepforms/TopStepForm.vue';
-import { ScopeContext } from '@/lib/templating';
+import type { ScopeContext } from '@/lib/templating';
 
 import { BasicStepFormTestRunner } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Top Step Form', () => {
   const runner = new BasicStepFormTestRunner(TopStepForm, 'top');

@@ -1,11 +1,13 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex, { Store } from 'vuex';
 
 import ConvertStepForm from '@/components/stepforms/ConvertStepForm.vue';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
-import { RootState, setupMockStore } from './utils';
+import { setupMockStore } from './utils';
+import type { RootState } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

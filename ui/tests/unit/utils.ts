@@ -1,14 +1,16 @@
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
-import { VueConstructor } from 'vue';
+import { expect, it, test,vi } from 'vitest';
+import type { VueConstructor } from 'vue';
 import Vuex, { Store } from 'vuex';
 
-import BaseStepForm from '@/components/stepforms/StepForm.vue';
+import type BaseStepForm from '@/components/stepforms/StepForm.vue';
 import type { Pipeline } from '@/lib/steps';
-import { ValidationError } from '@/lib/translators/base';
+import type { ValidationError } from '@/lib/translators/base';
 import { registerModule, VQBnamespace } from '@/store';
-import { emptyState, VQBState } from '@/store/state';
+import type { VQBState } from '@/store/state';
+import { emptyState } from '@/store/state';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 export type RootState = {
   vqb: VQBState;
@@ -232,7 +234,7 @@ export class BasicStepFormTestRunner {
     });
 
     it('should overwrite cancelEdition function', () => {
-      const cancelEditionCustomMock = jest.fn();
+      const cancelEditionCustomMock = vi.fn();
       const methods = { cancelEdition: cancelEditionCustomMock };
       const wrapper = mount(this.componentType, {
         store,

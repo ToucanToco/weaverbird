@@ -1,10 +1,11 @@
-import { Wrapper } from '@vue/test-utils';
+import type { Wrapper } from '@vue/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import FilterStepForm from '@/components/stepforms/FilterStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Filter Step Form', () => {
   const runner = new BasicStepFormTestRunner(FilterStepForm, 'filter');

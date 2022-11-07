@@ -1,10 +1,11 @@
 import { mount } from '@vue/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import MultiSelectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import MultiVariableInput from '@/components/stepforms/widgets/MultiVariableInput.vue';
 import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Widget Multiselect', () => {
   it('should not have specific templates if the prop withExample is false', () => {

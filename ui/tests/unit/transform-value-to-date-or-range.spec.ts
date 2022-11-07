@@ -1,3 +1,5 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { DateTime } from 'luxon';
 
 import {
@@ -8,7 +10,7 @@ import {
   transformValueToDate,
   transformValueToDateRange,
 } from '@/components/DatePicker/transform-value-to-date-or-range';
-import { DateRange, RelativeDate } from '@/lib/dates';
+import type { DateRange, RelativeDate } from '@/lib/dates';
 
 describe('transformRelativeDateObjectToDate', () => {
   const date = DateTime.utc(2020, 8, 1).toJSDate(); // received date is always an UTC date
@@ -207,7 +209,7 @@ describe('transformValue', () => {
   const today = DateTime.utc(2020, 7, 3).toJSDate();
   beforeEach(() => {
     // today is now 03/07/2020
-    global.Date.now = jest.fn(() => today.getTime());
+    global.Date.now = vi.fn(() => today.getTime());
   });
   afterEach(() => {
     global.Date.now = realNow;

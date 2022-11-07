@@ -1,10 +1,12 @@
+import { describe, expect, it, vi } from 'vitest';
+
 import AggregateStepForm from '@/components/stepforms/AggregateStepForm.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 
 import { BasicStepFormTestRunner } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Aggregate Step Form', () => {
   const runner = new BasicStepFormTestRunner(AggregateStepForm, 'aggregate');

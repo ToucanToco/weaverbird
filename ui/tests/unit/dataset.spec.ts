@@ -1,13 +1,15 @@
-import { DataSet } from '@/lib/dataset';
+import { describe, expect, it } from 'vitest';
+
+import type { DataSet } from '@/lib/dataset';
 import {
   addLocalUniquesToDataset,
   iterateRecords,
   updateLocalUniquesFromDatabase,
 } from '@/lib/dataset/helpers';
+import type { MongoResults } from '@/lib/dataset/mongo';
 import {
   _guessType,
   inferTypeFromDataset,
-  MongoResults,
   mongoResultsToDataset,
 } from '@/lib/dataset/mongo';
 

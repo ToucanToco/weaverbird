@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { describe, expect, it } from 'vitest';
 import { Component, Mixins } from 'vue-property-decorator';
 
 import FormWidget from '@/components/stepforms/widgets/FormWidget.vue';

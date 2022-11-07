@@ -1,8 +1,11 @@
-import { shallowMount, Wrapper } from '@vue/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { shallowMount } from '@vue/test-utils';
+import type { Wrapper } from '@vue/test-utils';
 
 import StepFormHeader from '@/components/stepforms/StepFormHeader.vue';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('StepFormHeader', () => {
   let wrapper: Wrapper<StepFormHeader>;

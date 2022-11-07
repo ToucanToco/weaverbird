@@ -1,5 +1,7 @@
-import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils';
-import Vue from 'vue';
+import type { Wrapper } from '@vue/test-utils';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type Vue from 'vue';
 import Vuex from 'vuex';
 
 import DataViewer from '../../src/components/DataViewer.vue';
@@ -119,7 +121,7 @@ describe('Data Viewer', () => {
 
     describe('column names', () => {
       let wrapper: Wrapper<DataViewer>;
-      const vTooltipStub = jest.fn();
+      const vTooltipStub = vi.fn();
 
       beforeEach(() => {
         const store = setupMockStore(
@@ -540,7 +542,7 @@ describe('Data Viewer', () => {
 
   describe('action clicked in ActionToolbar', () => {
     let wrapper: Wrapper<Vue>;
-    const openStepFormStub = jest.fn();
+    const openStepFormStub = vi.fn();
 
     beforeEach(() => {
       const store = setupMockStore(

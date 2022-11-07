@@ -1,8 +1,9 @@
+import { describe, expect, it, vi } from 'vitest';
 import CumSumStepForm from '@/components/stepforms/CumSumStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Cumsum Step Form', () => {
   const runner = new BasicStepFormTestRunner(CumSumStepForm, 'cumsum');

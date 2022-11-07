@@ -1,11 +1,15 @@
-import { shallowMount, Wrapper } from '@vue/test-utils';
+import type { Wrapper } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { SpyInstance } from 'vitest';
 
 import NewDateInput from '@/components/stepforms/widgets/DateComponents/NewDateInput.vue';
-import { dateToString, RelativeDate } from '@/lib/dates';
+import type { RelativeDate } from '@/lib/dates';
+import { dateToString } from '@/lib/dates';
 import * as sendAnalyticsUtils from '@/lib/send-analytics';
 
-jest.mock('@/components/FAIcon.vue');
-jest.mock('@/components/DatePicker/Calendar.vue');
+vi.mock('@/components/FAIcon.vue');
+vi.mock('@/components/DatePicker/Calendar.vue');
 
 const RELATIVE_SAMPLE_VARIABLES = [
   {
@@ -53,9 +57,9 @@ const SAMPLE_VARIABLES = [
 
 describe('Date input', () => {
   let wrapper: Wrapper<NewDateInput>;
-  let sendAnalyticsSpy: jest.SpyInstance;
+  let sendAnalyticsSpy: SpyInstance;
   const createWrapper = (propsData = {}) => {
-    sendAnalyticsSpy = jest.spyOn(sendAnalyticsUtils, 'sendAnalytics');
+    sendAnalyticsSpy = vi.spyOn(sendAnalyticsUtils, 'sendAnalytics');
     wrapper = shallowMount(NewDateInput, {
       sync: false,
       propsData,

@@ -1,4 +1,7 @@
-import { PandasDataTable, pandasDataTableToDataset } from '@/lib/dataset/pandas';
+import { describe, expect, it } from 'vitest';
+
+import type { PandasDataTable } from '@/lib/dataset/pandas';
+import { pandasDataTableToDataset } from '@/lib/dataset/pandas';
 
 describe('pandasDataTableToDataset', () => {
   it('should convert a table from pandas to a DataSet', () => {

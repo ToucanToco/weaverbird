@@ -1,4 +1,6 @@
-import { mount, shallowMount, Wrapper } from '@vue/test-utils';
+import type { Wrapper } from '@vue/test-utils';
+import { mount, shallowMount} from '@vue/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import FAIcon from '@/components/FAIcon.vue';
 
@@ -45,7 +47,7 @@ describe('FAIcon', () => {
 import '@/lib/icons';
 
 describe('font-awesome icons library', () => {
-  const logErrorSpy = jest.spyOn(console, 'error');
+  const logErrorSpy = vi.spyOn(console, 'error');
 
   it('should make icons from the library available', () => {
     mount(FAIcon, {

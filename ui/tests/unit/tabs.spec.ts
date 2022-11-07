@@ -1,4 +1,7 @@
-import { shallowMount, Wrapper } from '@vue/test-utils';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+
+import { shallowMount } from '@vue/test-utils';
+import type { Wrapper } from '@vue/test-utils';
 
 import Tabs from '../../src/components/Tabs.vue';
 

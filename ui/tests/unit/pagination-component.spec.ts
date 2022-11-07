@@ -1,7 +1,8 @@
 import { mount, shallowMount } from '@vue/test-utils';
+import { describe, expect, it } from 'vitest';
 
 import Pagination from '@/components/Pagination.vue';
-import { PaginationContext } from '@/lib/dataset/pagination';
+import type { PaginationContext } from '@/lib/dataset/pagination';
 
 const samplePaginationContext: PaginationContext = {
   totalCount: 7,

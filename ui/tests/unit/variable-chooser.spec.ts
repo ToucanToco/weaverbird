@@ -1,4 +1,7 @@
-import { shallowMount, Wrapper } from '@vue/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
+
+import { shallowMount } from '@vue/test-utils';
+import type { Wrapper } from '@vue/test-utils';
 
 import VariableChooser from '@/components/stepforms/widgets/VariableInputs/VariableChooser.vue';
 

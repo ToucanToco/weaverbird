@@ -1,9 +1,11 @@
+import { describe, expect, it, vi } from 'vitest';
+
 import TrimStepForm from '@/components/stepforms/TrimStepForm.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 
 import { BasicStepFormTestRunner } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Trim Column Step Form', () => {
   const runner = new BasicStepFormTestRunner(TrimStepForm, 'trim');

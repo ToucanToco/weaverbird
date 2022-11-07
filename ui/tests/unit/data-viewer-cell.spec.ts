@@ -1,5 +1,7 @@
-import { shallowMount, Wrapper } from '@vue/test-utils';
-import Vue from 'vue';
+import type { Wrapper } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
+import type Vue from 'vue';
 
 import DataViewerCell from '@/components/DataViewerCell.vue';
 

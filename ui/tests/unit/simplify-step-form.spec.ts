@@ -1,8 +1,10 @@
+import { describe, vi } from 'vitest';
+
 import SimplifyStepForm from '@/components/stepforms/SimplifyStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Simplify Step Form', () => {
   const runner = new BasicStepFormTestRunner(SimplifyStepForm, 'simplify');

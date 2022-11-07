@@ -1,5 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue, { VNode } from 'vue';
+import { describe, expect, it } from 'vitest';
+import type { VNode } from 'vue';
+import Vue from 'vue';
 
 import { setAvailableCodeEditors } from '@/components/code-editor';
 import CodeEditorWidget from '@/components/stepforms/widgets/CodeEditorWidget.vue';

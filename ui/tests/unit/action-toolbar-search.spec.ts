@@ -1,14 +1,16 @@
-import { createLocalVue, mount, Wrapper } from '@vue/test-utils';
-import Multiselect from 'vue-multiselect';
+import type { Wrapper } from '@vue/test-utils';
+import { createLocalVue, mount } from '@vue/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { Multiselect } from 'vue-multiselect';
 import Vuex from 'vuex';
 
 import ActionToolbarSearch from '@/components/ActionToolbarSearch.vue';
-import { ActionCategories } from '@/components/constants';
+import type { ActionCategories } from '@/components/constants';
 import Popover from '@/components/Popover.vue';
 
 import { setupMockStore } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

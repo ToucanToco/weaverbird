@@ -1,8 +1,9 @@
+import { describe, expect, it, vi } from 'vitest';
 import ArgminStepForm from '@/components/stepforms/ArgminStepForm.vue';
 
 import { BasicStepFormTestRunner } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Argmin Step Form', () => {
   const runner = new BasicStepFormTestRunner(ArgminStepForm, 'argmin');

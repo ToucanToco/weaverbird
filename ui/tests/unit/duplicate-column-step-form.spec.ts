@@ -1,8 +1,10 @@
+import { describe, vi } from 'vitest';
+
 import DuplicateColumnStepForm from '@/components/stepforms/DuplicateColumnStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Duplicate Column Step Form', () => {
   const runner = new BasicStepFormTestRunner(DuplicateColumnStepForm, 'duplicate');

@@ -1,9 +1,11 @@
+import { describe, expect, it, vi } from 'vitest';
+
 import UnpivotStepForm from '@/components/stepforms/UnpivotStepForm.vue';
 import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 
 import { BasicStepFormTestRunner } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Unpivot Step Form', () => {
   const runner = new BasicStepFormTestRunner(UnpivotStepForm, 'unpivot');

@@ -1,8 +1,10 @@
+import { describe, expect, it, vi } from 'vitest';
+
 import AddMissingDatesStepForm from '@/components/stepforms/AddMissingDatesStepForm.vue';
 
 import { BasicStepFormTestRunner } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Add missing dates Step Form', () => {
   const runner = new BasicStepFormTestRunner(AddMissingDatesStepForm, 'addmissingdates');

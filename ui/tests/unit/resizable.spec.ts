@@ -1,10 +1,13 @@
-import { shallowMount, Wrapper } from '@vue/test-utils';
+import type { Wrapper } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import type {SpyInstance} from "vitest";
+import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 
-import FakeOtherComponent from '../../src/directives/resizable/__mocks__/FakeOtherComponent.vue';
-import FakeTableComponent from '../../src/directives/resizable/__mocks__/FakeTableComponent.vue';
-import { resizableTable } from '../../src/directives/resizable/resizable';
-import ResizableColHandler from '../../src/directives/resizable/ResizableColHandler';
-import ResizableTable, { DEFAULT_OPTIONS } from '../../src/directives/resizable/ResizableTable';
+import FakeOtherComponent from '@/directives/resizable/__mocks__/FakeOtherComponent.vue';
+import FakeTableComponent from '@/directives/resizable/__mocks__/FakeTableComponent.vue';
+import { resizableTable } from '@/directives/resizable/resizable';
+import ResizableColHandler from '@/directives/resizable/ResizableColHandler';
+import ResizableTable, { DEFAULT_OPTIONS } from '@/directives/resizable/ResizableTable';
 
 describe('Resizable directive', () => {
   let wrapper: Wrapper<FakeTableComponent | FakeTableComponent>;
@@ -12,15 +15,15 @@ describe('Resizable directive', () => {
     defaultHandlerClass = `.${DEFAULT_OPTIONS.classes?.handler}`;
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
     if (wrapper) wrapper.destroy();
   });
 
   describe('initalisation', () => {
-    let ResizableTableStub: jest.SpyInstance;
+    let ResizableTableStub: SpyInstance;
 
     beforeEach(() => {
-      ResizableTableStub = jest.spyOn(ResizableTable.prototype, 'getCols');
+      ResizableTableStub = vi.spyOn(ResizableTable.prototype, 'getCols');
     });
     it('should create a resizable table when a table is targetted', () => {
       shallowMount(FakeTableComponent);
@@ -37,25 +40,25 @@ describe('Resizable directive', () => {
   });
 
   describe('default', () => {
-    let ResizableColHandlerStub: { [methodName: string]: jest.SpyInstance },
-      ResizableTableStub: { [methodName: string]: jest.SpyInstance },
+    let ResizableColHandlerStub: { [methodName: string]: SpyInstance },
+      ResizableTableStub: { [methodName: string]: SpyInstance },
       handler: Wrapper<any>;
     beforeEach(() => {
       ResizableColHandlerStub = {
-        create: jest.spyOn(ResizableColHandler.prototype, 'create'),
-        startDragging: jest.spyOn(ResizableColHandler.prototype, 'startDragging'),
-        stopDragging: jest.spyOn(ResizableColHandler.prototype, 'stopDragging'),
-        resize: jest.spyOn(ResizableColHandler.prototype, 'resize'),
-        reset: jest.spyOn(ResizableColHandler.prototype, 'reset'),
-        destroy: jest.spyOn(ResizableColHandler.prototype, 'destroy'),
-        update: jest.spyOn(ResizableColHandler.prototype, 'update'),
+        create: vi.spyOn(ResizableColHandler.prototype, 'create'),
+        startDragging: vi.spyOn(ResizableColHandler.prototype, 'startDragging'),
+        stopDragging: vi.spyOn(ResizableColHandler.prototype, 'stopDragging'),
+        resize: vi.spyOn(ResizableColHandler.prototype, 'resize'),
+        reset: vi.spyOn(ResizableColHandler.prototype, 'reset'),
+        destroy: vi.spyOn(ResizableColHandler.prototype, 'destroy'),
+        update: vi.spyOn(ResizableColHandler.prototype, 'update'),
       };
       ResizableTableStub = {
-        destroy: jest.spyOn(ResizableTable.prototype, 'destroy'),
-        update: jest.spyOn(ResizableTable.prototype, 'update'),
-        updateCols: jest.spyOn(ResizableTable.prototype, 'updateCols'),
-        updateRows: jest.spyOn(ResizableTable.prototype, 'updateRows'),
-        adaptWidthToContent: jest.spyOn(ResizableTable.prototype, 'adaptWidthToContent'),
+        destroy: vi.spyOn(ResizableTable.prototype, 'destroy'),
+        update: vi.spyOn(ResizableTable.prototype, 'update'),
+        updateCols: vi.spyOn(ResizableTable.prototype, 'updateCols'),
+        updateRows: vi.spyOn(ResizableTable.prototype, 'updateRows'),
+        adaptWidthToContent: vi.spyOn(ResizableTable.prototype, 'adaptWidthToContent'),
       };
       wrapper = shallowMount(FakeTableComponent, { attachToDocument: true });
       handler = wrapper.findAll(defaultHandlerClass).at(0);
@@ -118,7 +121,7 @@ describe('Resizable directive', () => {
 
     describe('destroy', () => {
       beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         wrapper.destroy();
       });
       it('should remove all listener', () => {
@@ -135,14 +138,14 @@ describe('Resizable directive', () => {
 
     describe('update', () => {
       beforeEach(() => {
-        jest.clearAllMocks();
-        jest.useFakeTimers();
+        vi.clearAllMocks();
+        vi.useFakeTimers();
       });
 
       describe('with exact same data (other props has changed so component is still updated)', () => {
         beforeEach(() => {
           wrapper.setProps({ rows: [{ Col1: '1', Col2: '2', Col3: '3' }] });
-          jest.advanceTimersByTime(1);
+          vi.advanceTimersByTime(1);
         });
         it('should not update cols or rows', () => {
           expect(ResizableTableStub.update).toHaveBeenCalled();
@@ -162,7 +165,7 @@ describe('Resizable directive', () => {
               { Col1: '4', Col2: '5', Col3: '6' },
             ],
           });
-          jest.advanceTimersByTime(1);
+          vi.advanceTimersByTime(1);
         });
 
         it('should update rows', () => {
@@ -181,7 +184,7 @@ describe('Resizable directive', () => {
       describe('update cols', () => {
         beforeEach(() => {
           wrapper.setProps({ rows: [{ Col1: '1', Col2: '2' }] });
-          jest.advanceTimersByTime(1);
+          vi.advanceTimersByTime(1);
         });
         it('should update cols', () => {
           expect(ResizableTableStub.update).toHaveBeenCalled();
@@ -235,21 +238,21 @@ describe('Resizable directive', () => {
 
 describe('ResizableColHandler', () => {
   describe('getColPadding', () => {
-    let col: HTMLElement, computedStyleStub: jest.SpyInstance;
+    let col: HTMLElement, computedStyleStub: SpyInstance;
     const resizableColHandler: ResizableColHandler = new ResizableColHandler({
       height: 100,
       minWidth: 120,
       className: 'my_custom__hander_class',
     });
     beforeEach(() => {
-      computedStyleStub = jest.spyOn(window, 'getComputedStyle');
+      computedStyleStub = vi.spyOn(window, 'getComputedStyle');
       col = document.createElement('div');
       col.style.paddingLeft = '4px';
       col.style.paddingRight = '4px';
     });
 
     afterEach(() => {
-      jest.restoreAllMocks();
+      vi.restoreAllMocks();
     });
 
     it('should retrieve col left and right padding', () => {

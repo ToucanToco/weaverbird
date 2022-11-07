@@ -1,8 +1,9 @@
 import { mount, shallowMount } from '@vue/test-utils';
+import { describe, expect, it, vi } from 'vitest';
 
 import InputDateWidget from '@/components/stepforms/widgets/InputDate.vue';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Widget Input Text', () => {
   it('should instantiate', () => {

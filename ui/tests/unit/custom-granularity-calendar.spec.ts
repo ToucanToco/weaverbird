@@ -1,9 +1,11 @@
-import { shallowMount, Wrapper } from '@vue/test-utils';
+import type { Wrapper } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import { DateTime } from 'luxon';
+import { afterEach,beforeEach, describe, expect, it } from 'vitest';
 
 import CustomGranularityCalendar from '@/components/DatePicker/CustomGranularityCalendar.vue';
 import { DECADE_NAV, RANGE_PICKERS, WEEK_NAV } from '@/components/DatePicker/GranularityConfigs';
-import { DateRange } from '@/lib/dates';
+import type { DateRange } from '@/lib/dates';
 
 const currentYear = DateTime.now().year;
 const SAMPLE_DATE_TIME = DateTime.fromRFC2822('25 Nov 2016 13:23 Z', { locale: 'en' });

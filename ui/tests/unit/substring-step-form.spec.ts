@@ -1,8 +1,10 @@
+import { describe, expect, it, vi } from 'vitest';
+
 import SubstringStepForm from '@/components/stepforms/SubstringStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Substring Step Form', () => {
   const runner = new BasicStepFormTestRunner(SubstringStepForm, 'substring');

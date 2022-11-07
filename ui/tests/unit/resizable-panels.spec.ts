@@ -1,4 +1,6 @@
-import { shallowMount, WrapperArray } from '@vue/test-utils';
+import type { WrapperArray } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import { describe, expect, it, vi } from 'vitest';
 
 import ResizablePanels from '../../src/components/ResizablePanels.vue';
 
@@ -56,7 +58,7 @@ describe('Resizable Panels', () => {
 
   describe('when resizing', () => {
     it('should change the ratio', () => {
-      const boundingRectSpy = jest
+      const boundingRectSpy = vi
         .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
         .mockImplementation(() => ({
           x: 0,

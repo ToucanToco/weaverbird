@@ -6,7 +6,7 @@ import { Alignment, POPOVER_SHADOW_GAP } from '@/components/constants';
 import * as DOMUtil from '@/components/domutil';
 import Popover from '@/components/Popover.vue';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 type Dict<T> = { [key: string]: T };
 
@@ -213,7 +213,7 @@ describe('Popover', function() {
   };
 
   beforeEach(function() {
-    throttleSpy = jest.spyOn(_, 'throttle').mockImplementation((fn: any) => fn);
+    throttleSpy = vi.spyOn(_, 'throttle').mockImplementation((fn: any) => fn);
     boundingRectSpy = jest
       .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
       .mockImplementation(mockBoundingRect);
@@ -271,7 +271,7 @@ describe('Popover', function() {
 
     it('should call setupPositioning when visible becomes true', async function() {
       createWrapper({ props: { visible: false } });
-      const setupPositioningSpy: any = jest.spyOn(popoverWrapper.vm as any, 'setupPositioning');
+      const setupPositioningSpy: any = vi.spyOn(popoverWrapper.vm as any, 'setupPositioning');
       popoverWrapper.setProps({ visible: true });
 
       expect(setupPositioningSpy).toHaveBeenCalled();
@@ -333,7 +333,7 @@ describe('Popover', function() {
     it('should call destroyPosition when visible becomes false', async function() {
       createWrapper({ props: { visible: true } });
 
-      const destroyPositioningSpy: any = jest.spyOn(popoverWrapper.vm as any, 'destroyPositioning');
+      const destroyPositioningSpy: any = vi.spyOn(popoverWrapper.vm as any, 'destroyPositioning');
       popoverWrapper.setProps({ visible: false });
       expect(destroyPositioningSpy).toHaveBeenCalled();
     });
@@ -341,7 +341,7 @@ describe('Popover', function() {
     it('should call destroyPosition at destroy if visible', async function() {
       createWrapper({ props: { visible: true } });
 
-      const destroyPositioningSpy: any = jest.spyOn(popoverWrapper.vm as any, 'destroyPositioning');
+      const destroyPositioningSpy: any = vi.spyOn(popoverWrapper.vm as any, 'destroyPositioning');
       popoverWrapper.destroy();
       expect(destroyPositioningSpy).toHaveBeenCalled();
     });
@@ -349,7 +349,7 @@ describe('Popover', function() {
     it('should not call destroyPosition at destroy if not visible', async function() {
       createWrapper({ props: { visible: false } });
 
-      const destroyPositioningSpy: any = jest.spyOn(popoverWrapper.vm as any, 'destroyPositioning');
+      const destroyPositioningSpy: any = vi.spyOn(popoverWrapper.vm as any, 'destroyPositioning');
       popoverWrapper.destroy();
       expect(destroyPositioningSpy).not.toHaveBeenCalled();
     });
@@ -358,7 +358,7 @@ describe('Popover', function() {
   describe('forceUpdatePosition', () => {
     it('should update its position when forced to update position is true', async function() {
       createWrapper({ props: { visible: false } });
-      const updatePositionSpy: jest.SpyInstance = jest.spyOn(
+      const updatePositionSpy: jest.SpyInstance = vi.spyOn(
         popoverWrapper.vm as any,
         'updatePosition',
       );
@@ -371,8 +371,8 @@ describe('Popover', function() {
   describe('alwaysOpened', () => {
     it('should let the content in the flow, and visible prop should have no impact', async () => {
       createWrapper({ props: { visible: false, alwaysOpened: true } });
-      const setupPositioningSpy: any = jest.spyOn(popoverWrapper.vm as any, 'setupPositioning');
-      const destroyPositioningSpy: any = jest.spyOn(popoverWrapper.vm as any, 'destroyPositioning');
+      const setupPositioningSpy: any = vi.spyOn(popoverWrapper.vm as any, 'setupPositioning');
+      const destroyPositioningSpy: any = vi.spyOn(popoverWrapper.vm as any, 'destroyPositioning');
 
       await popoverWrapper.setProps({ visible: true });
       expect(setupPositioningSpy).not.toHaveBeenCalled();

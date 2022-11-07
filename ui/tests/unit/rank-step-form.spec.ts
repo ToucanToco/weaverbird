@@ -2,7 +2,7 @@ import RankStepForm from '@/components/stepforms/RankStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Cumsum Step Form', () => {
   const runner = new BasicStepFormTestRunner(RankStepForm, 'rank');

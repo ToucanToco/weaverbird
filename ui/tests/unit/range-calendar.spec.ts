@@ -1,8 +1,9 @@
-import { shallowMount, Wrapper } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import type { Wrapper } from '@vue/test-utils';
 
 import RangeCalendar from '@/components/DatePicker/RangeCalendar.vue';
 
-jest.mock('@/components/DatePicker/Calendar.vue');
+vi.mock('@/components/DatePicker/Calendar.vue');
 
 describe('RangeCalendar', () => {
   let wrapper: Wrapper<RangeCalendar>;

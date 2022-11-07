@@ -1,8 +1,10 @@
+import { describe, expect, it, vi } from 'vitest';
+
 import WaterfallStepForm from '@/components/stepforms/WaterfallStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Waterfall Step Form', () => {
   const runner = new BasicStepFormTestRunner(WaterfallStepForm, 'waterfall');

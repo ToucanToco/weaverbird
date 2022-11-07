@@ -1,8 +1,10 @@
+import { describe, expect, it, vi } from 'vitest';
+
 import FormulaStepForm from '@/components/stepforms/FormulaStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Formula Step Form', () => {
   const runner = new BasicStepFormTestRunner(FormulaStepForm, 'formula');

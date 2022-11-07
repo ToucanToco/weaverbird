@@ -1,8 +1,10 @@
+import { describe, vi } from 'vitest';
+
 import HierarchyStepForm from '@/components/stepforms/HierarchyStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Hierarchy Step Form', () => {
   const runner = new BasicStepFormTestRunner(HierarchyStepForm, 'hierarchy');

@@ -1,9 +1,11 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex, { Store } from 'vuex';
 
 import CumSumWidget from '@/components/stepforms/widgets/CumSum.vue';
 
-import { RootState, setupMockStore } from './utils';
+import { setupMockStore } from './utils';
+import type { RootState } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

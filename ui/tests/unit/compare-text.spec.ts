@@ -1,8 +1,9 @@
+import { describe, expect, it, vi } from 'vitest';
 import CompareTextStepForm from '@/components/stepforms/CompareTextStepForm.vue';
 
 import { BasicStepFormTestRunner } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Compute Text Columns Step Form', () => {
   const runner = new BasicStepFormTestRunner(CompareTextStepForm, 'comparetext');

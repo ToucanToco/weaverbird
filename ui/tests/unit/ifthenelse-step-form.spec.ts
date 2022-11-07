@@ -1,8 +1,10 @@
+import { describe, expect, it, vi } from 'vitest';
+
 import IfThenElseStepForm from '@/components/stepforms/IfThenElseStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe.only('If...Then...Else Step Form', () => {
   const runner = new BasicStepFormTestRunner(IfThenElseStepForm, 'ifthenelse');

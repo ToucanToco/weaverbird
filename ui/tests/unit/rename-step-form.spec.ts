@@ -2,7 +2,7 @@ import RenameStepForm from '@/components/stepforms/RenameStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Rename Step Form', () => {
   const runner = new BasicStepFormTestRunner(RenameStepForm, 'rename');

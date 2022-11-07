@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   addTextFlag,
   CLIPBOARD_FLAG,
@@ -9,8 +10,8 @@ import {
 const TEXT = 'TOTO';
 const TEXT_WITH_VALIDATOR = `${CLIPBOARD_FLAG}TOTO${CLIPBOARD_FLAG}`;
 
-const writeTextStub = jest.fn(),
-  readTextStub = jest.fn();
+const writeTextStub = vi.fn(),
+  readTextStub = vi.fn();
 
 Object.assign(navigator, {
   clipboard: {

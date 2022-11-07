@@ -1,8 +1,9 @@
+import { describe, expect, it, vi } from 'vitest';
 import ComputeDurationStepForm from '@/components/stepforms/ComputeDurationStepForm.vue';
 
 import { BasicStepFormTestRunner } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Compute Duration Step Form', () => {
   const runner = new BasicStepFormTestRunner(ComputeDurationStepForm, 'duration');

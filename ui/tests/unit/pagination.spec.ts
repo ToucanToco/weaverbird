@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import * as P from '@/lib/dataset/pagination';
 
 describe('pagination tests', () => {

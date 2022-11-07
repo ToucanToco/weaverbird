@@ -1,15 +1,19 @@
+import { describe, expect, it, vi } from 'vitest';
+
 import t from '@/lib/internationalization';
 
-jest.mock('@/assets/internationalization.json', () => {
+vi.mock('@/assets/internationalization.json', () => {
   return {
-    'some-key': {
-      en: 'Some key',
-      fr: 'Une clé',
+    default: {
+      'some-key': {
+        en: 'Some key',
+        fr: 'Une clé',
+      },
+      'partial-key': {
+        en: 'Partial key',
+      },
+      'invalid-key': {},
     },
-    'partial-key': {
-      en: 'Partial key',
-    },
-    'invalid-key': {},
   };
 });
 

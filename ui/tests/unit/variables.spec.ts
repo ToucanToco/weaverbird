@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { extractVariableIdentifier, retrieveVariable } from '@/lib/variables';
 
 describe('extractVariableIdentifier', () => {

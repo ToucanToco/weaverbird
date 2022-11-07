@@ -1,4 +1,6 @@
-import { createLocalVue, mount, shallowMount, Wrapper } from '@vue/test-utils';
+import type { Wrapper } from '@vue/test-utils';
+import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import Vuex from 'vuex';
 
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal.vue';
@@ -9,7 +11,7 @@ import { VQBnamespace } from '@/store';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -161,7 +163,7 @@ describe('Pipeline.vue', () => {
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
       const store = setupMockStore(buildStateWithOnePipeline(pipeline));
-      dispatchSpy = jest.spyOn(store, 'dispatch');
+      dispatchSpy = vi.spyOn(store, 'dispatch');
       wrapper = mount(PipelineComponent, { store, localVue });
       wrapper.setData({ selectedSteps });
       wrapper.find('.query-pipeline__delete-steps').trigger('click');
@@ -248,8 +250,8 @@ describe('Pipeline.vue', () => {
         { name: 'sort', columns: [{ column: 'death', order: 'desc' }] },
       ];
       const store = setupMockStore(buildStateWithOnePipeline(pipeline));
-      commitSpy = jest.spyOn(store, 'commit');
-      dispatchSpy = jest.spyOn(store, 'dispatch');
+      commitSpy = vi.spyOn(store, 'commit');
+      dispatchSpy = vi.spyOn(store, 'dispatch');
       wrapper = shallowMount(PipelineComponent, { store, localVue });
     });
 
@@ -299,7 +301,7 @@ describe('Pipeline.vue', () => {
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
       const store = setupMockStore(buildStateWithOnePipeline(pipeline));
-      copyToClipboardStub = jest.spyOn(clipboardUtils, 'copyToClipboard').mockImplementation();
+      copyToClipboardStub = vi.spyOn(clipboardUtils, 'copyToClipboard').mockImplementation();
       wrapper = shallowMount(PipelineComponent, { store, localVue });
     });
 
@@ -362,7 +364,7 @@ describe('Pipeline.vue', () => {
         { name: 'sort', columns: [{ column: 'death', order: 'desc' }] },
       ];
       const store = setupMockStore(buildStateWithOnePipeline(pipeline));
-      dispatchSpy = jest.spyOn(store, 'dispatch');
+      dispatchSpy = vi.spyOn(store, 'dispatch');
       pasteFromClipboardStub = jest
         .spyOn(clipboardUtils, 'pasteFromClipboard')
         .mockImplementation();

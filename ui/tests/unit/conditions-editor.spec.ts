@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { shallowMount } from '@vue/test-utils';
 
 import ConditionsEditor from '@/components/ConditionsEditor/ConditionsEditor.vue';

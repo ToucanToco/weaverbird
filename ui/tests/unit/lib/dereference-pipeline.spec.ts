@@ -1,8 +1,10 @@
+import { describe, expect, it } from 'vitest';
+
+import type { PipelinesScopeContext } from '@/lib/dereference-pipeline';
 import {
   dereferencePipelines,
   getPipelineNamesReferencedBy,
   getPipelineNamesReferencing,
-  PipelinesScopeContext,
 } from '@/lib/dereference-pipeline';
 import type { Pipeline } from '@/lib/steps';
 

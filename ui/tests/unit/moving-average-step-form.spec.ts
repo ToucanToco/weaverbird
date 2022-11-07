@@ -1,11 +1,12 @@
 import _ from 'lodash';
+import { describe, expect, it, vi } from 'vitest';
 
 import MovingAverageStepForm from '@/components/stepforms/MovingAverageStepForm.vue';
-import { ScopeContext } from '@/lib/templating';
+import type { ScopeContext } from '@/lib/templating';
 
 import { BasicStepFormTestRunner } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 describe('Moving Average Step Form', () => {
   const runner = new BasicStepFormTestRunner(MovingAverageStepForm, 'movingaverage');

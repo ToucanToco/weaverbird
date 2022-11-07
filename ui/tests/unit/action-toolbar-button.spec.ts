@@ -1,4 +1,5 @@
 import { createLocalVue, mount } from '@vue/test-utils';
+import { describe, expect, it, vi } from 'vitest';
 import Vuex from 'vuex';
 
 import ActionToolbarButton from '@/components/ActionToolbarButton.vue';
@@ -7,7 +8,7 @@ import { VQBnamespace } from '@/store';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
-jest.mock('@/components/FAIcon.vue');
+vi.mock('@/components/FAIcon.vue');
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
