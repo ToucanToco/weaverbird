@@ -1,9 +1,10 @@
 from typing import Any, TypeVar
 
-from pypika.dialects import SnowflakeQueryBuilder
+from pypika.dialects import QueryBuilder, SnowflakeQueryBuilder
 from pypika.enums import Dialects
-from pypika.queries import Query
+from pypika.queries import AliasedQuery, Query, Selectable
 from pypika.terms import Field, Term
+from pypika.utils import builder, format_quotes
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
@@ -18,6 +19,11 @@ Self = TypeVar("Self", bound="SQLTranslator")
 
 class QuotedSnowflakeQueryBuilder(SnowflakeQueryBuilder):
     QUOTE_CHAR = '"'
+
+    @builder
+    def with_(self, selectable: Selectable, name: str) -> "QueryBuilder":
+        t = AliasedQuery(format_quotes(name, self.QUOTE_CHAR), selectable)
+        self._with.append(t)
 
 
 class SnowflakeQuery(Query):

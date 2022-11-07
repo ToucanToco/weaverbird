@@ -1,5 +1,9 @@
 # Changelog (weaverbird python package)
 
+## [0.26.2]
+
+- Pypika: Snowflake translator custom queryBuilder add's double quote's to with statement's
+
 ## [0.26.1] - 2022-10-27
 
 - in order to prevent SQL injection, it is no longer possible to create a CustomSQL step with variables.

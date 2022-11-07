@@ -165,9 +165,20 @@ def test__build_unpivot_col(snowflake_translator: SnowflakeTranslator) -> None:
     assert unpivot == "UNPIVOT(booo FOR yaaaa IN (too, roo))"
 
 
-def test_quoted_columns_with_special_chars(
-    snowflake_translator: SnowflakeTranslator, default_step_kwargs: dict[str, Any]
-) -> None:
+def test_quoted_with_statement() -> None:
+    steps = [{"name": "domain", "domain": "beers_tiny"}]
+    query = translate_pipeline(
+        sql_dialect=SQLDialect.SNOWFLAKE,
+        pipeline=Pipeline(steps=steps),
+        tables_columns={"beers_tiny": ["price_per_l", "test", "another-test"]},
+    )
+    assert (
+        'WITH "__step_0_snowflaketranslator__" AS (SELECT "price_per_l","test","another-test" FROM "beers_tiny") '
+        'SELECT "price_per_l","test","another-test" FROM "__step_0_snowflaketranslator__"' in query
+    )
+
+
+def test_quoted_columns_with_special_chars() -> None:
     steps = [
         {"name": "domain", "domain": "beers_tiny"},
         {"name": "rename", "toRename": [("price_per_l", "price-per-l")]},
@@ -178,6 +189,7 @@ def test_quoted_columns_with_special_chars(
         tables_columns={"beers_tiny": ["price_per_l", "test", "another-test"]},
     )
     assert (
-        '''SELECT "price-per-l","test","another-test" FROM "__step_1_snowflaketranslator__"'''
-        in query
+        'WITH "__step_0_snowflaketranslator__" AS (SELECT "price_per_l","test","another-test" FROM "beers_tiny") ,'
+        '"__step_1_snowflaketranslator__" AS (SELECT "price_per_l" "price-per-l","test","another-test" FROM "__step_0_snowflaketranslator__") '
+        'SELECT "price-per-l","test","another-test" FROM "__step_1_snowflaketranslator__"' in query
     )
