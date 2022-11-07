@@ -7,7 +7,7 @@ import { setAvailableCodeEditors } from '@/components/code-editor';
 import CodeEditorWidget from '@/components/stepforms/widgets/CodeEditorWidget.vue';
 
 // Create a code editor config for a specific lang
-const codeEditorForLang = function(lang: string): any {
+const codeEditorForLang = function (lang: string): any {
   return Vue.extend({
     props: ['value', 'placeholder'],
     render(createElement): VNode {

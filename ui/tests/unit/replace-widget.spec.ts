@@ -71,10 +71,7 @@ describe('Widget ReplaceWidget', () => {
       localVue,
       sync: false,
     });
-    wrapper
-      .findAll('InputTextWidget-stub')
-      .at(0)
-      .vm.$emit('input', 'foo');
+    wrapper.findAll('InputTextWidget-stub').at(0).vm.$emit('input', 'foo');
     expect(wrapper.emitted().input[0][0]).toEqual(['foo', 'bim']);
   });
 
@@ -87,10 +84,7 @@ describe('Widget ReplaceWidget', () => {
       localVue,
       sync: false,
     });
-    wrapper
-      .findAll('InputTextWidget-stub')
-      .at(1)
-      .vm.$emit('input', 'bar');
+    wrapper.findAll('InputTextWidget-stub').at(1).vm.$emit('input', 'bar');
     expect(wrapper.emitted().input[0][0]).toEqual(['yolo', 'bar']);
   });
 });

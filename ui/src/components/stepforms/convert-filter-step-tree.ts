@@ -1,14 +1,7 @@
 import type { ColumnTypeMapping } from '@/lib/dataset';
 import { castFromString } from '@/lib/helpers';
-import type {
-  FilterComboAnd,
-  FilterComboOr,
-  FilterCondition,
-} from '@/lib/steps';
-import {
-  isFilterComboAnd,
-  isFilterComboOr,
-} from '@/lib/steps';
+import type { FilterComboAnd, FilterComboOr, FilterCondition } from '@/lib/steps';
+import { isFilterComboAnd, isFilterComboOr } from '@/lib/steps';
 
 import type { AbstractFilterTree, ConditionOperator } from '../ConditionsEditor/tree-types';
 
@@ -195,7 +188,7 @@ export function castFilterStepTreeValue(
     const type = columnTypes[filterStepTree.column];
     if (type !== undefined) {
       if (Array.isArray(filterStepTree.value)) {
-        filterStepTree.value = filterStepTree.value.map(v => castFromString(v, type));
+        filterStepTree.value = filterStepTree.value.map((v) => castFromString(v, type));
       } else {
         filterStepTree.value = castFromString(filterStepTree.value, type);
       }

@@ -2,7 +2,7 @@
   <div class="vqb-modal" v-if="isOpened">
     <div class="vqb-modal__backdrop" />
     <div class="vqb-modal__container">
-      <div class="vqb-modal__body" style="width: 500px;">
+      <div class="vqb-modal__body" style="width: 500px">
         <FAIcon class="vqb-modal__close" icon="times" @click.native="close" />
         <div class="vqb-modal__header">
           <div class="vqb-modal__title">Custom Variable</div>
@@ -16,9 +16,7 @@
           />
         </div>
         <div class="vqb-modal__footer">
-          <div class="vqb-modal__action vqb-modal__action--secondary" @click="close">
-            cancel
-          </div>
+          <div class="vqb-modal__action vqb-modal__action--secondary" @click="close">cancel</div>
           <div
             class="vqb-modal__action vqb-modal__action--primary"
             :class="{ 'vqb-modal__action--disabled': !canSave }"
@@ -37,7 +35,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
 import CodeEditorWidget from '@/components/stepforms/widgets/CodeEditorWidget.vue';
-import { extractVariableIdentifier, } from '@/lib/variables';
+import { extractVariableIdentifier } from '@/lib/variables';
 import type { VariableDelimiters } from '@/lib/variables';
 /**
  * This component allow to add an advanced variable

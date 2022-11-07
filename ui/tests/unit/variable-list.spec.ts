@@ -69,18 +69,12 @@ describe('Variable List', () => {
     it('should present all available variables organized in sections', () => {
       const sections = wrapper.findAll('.widget-variable-list__section');
       expect(sections).toHaveLength(2);
-      expect(
-        sections
-          .at(0)
-          .find('.widget-variable-list__section-title')
-          .text(),
-      ).toEqual('App variables');
-      expect(
-        sections
-          .at(1)
-          .find('.widget-variable-list__section-title')
-          .text(),
-      ).toEqual('Story variables');
+      expect(sections.at(0).find('.widget-variable-list__section-title').text()).toEqual(
+        'App variables',
+      );
+      expect(sections.at(1).find('.widget-variable-list__section-title').text()).toEqual(
+        'Story variables',
+      );
       const varsFromFirstSection = sections.at(0).findAll('VariableListOption-stub');
       expect(varsFromFirstSection).toHaveLength(4);
     });

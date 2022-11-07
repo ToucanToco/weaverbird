@@ -36,7 +36,7 @@ export const VQB_MODULE_NAME = 'vqb';
  * helper to compute the fully qualified property name.
  * e.g. `vqb/pipeline`, `vqb/selecedIndex`
  */
-export const VQBnamespace = function(prop: string) {
+export const VQBnamespace = function (prop: string) {
   return `${VQB_MODULE_NAME}/${prop}`;
 };
 

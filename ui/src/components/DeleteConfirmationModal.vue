@@ -3,7 +3,7 @@
     <div class="vqb-modal__backdrop" />
     <div class="vqb-modal__container">
       <div class="vqb-modal__body">
-        <span class="vqb-modal__close" @click="cancelDelete"><FAIcon icon="times"/></span>
+        <span class="vqb-modal__close" @click="cancelDelete"><FAIcon icon="times" /></span>
         <div class="vqb-modal__header">
           <div class="vqb-modal__title">Delete this step?</div>
         </div>

@@ -78,7 +78,7 @@ export default class VariableList extends Vue {
   get variablesByCategory(): VariablesCategory[] {
     return this.availableVariables.reduce((categories: VariablesCategory[], variable) => {
       const varCategoryLabel = variable.category;
-      const category = categories.find(c => c.label === varCategoryLabel);
+      const category = categories.find((c) => c.label === varCategoryLabel);
       if (category !== undefined) {
         category.variables.push(variable);
       } else {
@@ -98,7 +98,7 @@ export default class VariableList extends Vue {
     if (!Array.isArray(this.selectedVariables)) return variableIdentifier;
 
     if (this.selectedVariables.indexOf(variableIdentifier) !== -1) {
-      return this.selectedVariables.filter(v => v !== variableIdentifier);
+      return this.selectedVariables.filter((v) => v !== variableIdentifier);
     } else {
       return [...this.selectedVariables, variableIdentifier];
     }

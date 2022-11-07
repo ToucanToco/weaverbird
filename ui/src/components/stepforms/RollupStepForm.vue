@@ -104,7 +104,7 @@ export default class RollupStepForm extends BaseStepForm<RollupStep> {
   editedStep: RollupStep = {
     ...this.initialStepValue,
     ...this.stepFormDefaults,
-    aggregations: this.initialStepValue.aggregations.map(x => ({
+    aggregations: this.initialStepValue.aggregations.map((x) => ({
       ...x,
       columns: x.column ? [x.column] : x.columns,
       newcolumns: x.newcolumn ? [x.newcolumn] : x.newcolumns,

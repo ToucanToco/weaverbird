@@ -80,7 +80,7 @@
       <div class="custom-quantile">
         <div class="custom-quantile-widget-checkbox" @click="toogleQuantile(customQuantilesForm)" />
         <InputNumberWidget
-          style="width: 80px;"
+          style="width: 80px"
           v-model="customQuantilesForm.nth"
           type="number"
           :min="1"
@@ -90,7 +90,7 @@
           :errors="errors"
         />-th
         <InputNumberWidget
-          style="width: 80px;"
+          style="width: 80px"
           v-model="customQuantilesForm.order"
           type="number"
           :errors="errors"
@@ -215,8 +215,10 @@ export default class StatisticsStepForm extends BaseStepForm<StatisticsStep> {
   }
 
   get advancedStatisticsCheckedCount() {
-    const statisticsCount = _intersection(this.editedStep.statistics, this.advancedStatistics)
-      .length;
+    const statisticsCount = _intersection(
+      this.editedStep.statistics,
+      this.advancedStatistics,
+    ).length;
     const quantileCount = _intersection(
       this.editedStep.quantiles.map(({ label }) => label),
       this.advancedQuantiles.map(({ label }) => label),
@@ -244,7 +246,7 @@ export default class StatisticsStepForm extends BaseStepForm<StatisticsStep> {
 
   toogleStatistic(statistic: Statistics) {
     if (this.isStatisticChecked(statistic)) {
-      this.editedStep.statistics = this.editedStep.statistics.filter(s => s !== statistic);
+      this.editedStep.statistics = this.editedStep.statistics.filter((s) => s !== statistic);
     } else {
       this.editedStep.statistics.push(statistic);
     }

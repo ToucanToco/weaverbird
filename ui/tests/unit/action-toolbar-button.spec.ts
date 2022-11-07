@@ -184,7 +184,7 @@ describe('ActionToolbarButton active', () => {
       'addmissingdates',
       'duration',
     ]);
-    const wrappers = actionsWrappers.wrappers.map(w => w.text());
+    const wrappers = actionsWrappers.wrappers.map((w) => w.text());
     expect(wrappers).toEqual([
       'Convert text to date',
       'Convert date to text',

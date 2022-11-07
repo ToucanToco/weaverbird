@@ -57,10 +57,10 @@ const getters: GetterTree<VQBState, any> = {
     state.dataset.paginationContext ? state.dataset.paginationContext.pageno : 1,
   previewSourceRowsSubset: (state: VQBState) => state.dataset.previewContext?.sourceRowsSubset,
 
-  columnNames: (state: VQBState) => state.dataset.headers.map(col => col.name),
+  columnNames: (state: VQBState) => state.dataset.headers.map((col) => col.name),
   columnHeaders: (state: VQBState) => state.dataset.headers,
   columnTypes: (state: VQBState) =>
-    _.fromPairs(state.dataset.headers.map(col => [col.name, col.type])),
+    _.fromPairs(state.dataset.headers.map((col) => [col.name, col.type])),
 
   //selected columns in the dataviewer (materialized by a styled focus)
   selectedColumns: (state: VQBState) => state.selectedColumns,

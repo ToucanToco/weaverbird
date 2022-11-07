@@ -38,7 +38,7 @@ const AGGFUNCTION_LABELS = {
 const MULTIVALUE_SEP = ', ';
 
 function formatMulticol(columns: string[]) {
-  return columns.map(col => `"${col}"`).join(MULTIVALUE_SEP);
+  return columns.map((col) => `"${col}"`).join(MULTIVALUE_SEP);
 }
 
 /**
@@ -64,9 +64,9 @@ function filterExpression(
   condition: S.FilterSimpleCondition | S.FilterComboAnd | S.FilterComboOr,
 ): string {
   if (S.isFilterComboAnd(condition)) {
-    return condition.and.map(cond => filterExpression(cond)).join(' and ');
+    return condition.and.map((cond) => filterExpression(cond)).join(' and ');
   } else if (S.isFilterComboOr(condition)) {
-    return condition.or.map(cond => filterExpression(cond)).join(' or ');
+    return condition.or.map((cond) => filterExpression(cond)).join(' or ');
   } else {
     switch (condition.operator) {
       case 'eq':
@@ -191,7 +191,7 @@ class StepLabeller implements StepMatcher<string> {
     if (step.toCumSum.length === 1) {
       return `Compute cumulated sum of "${step.toCumSum[0][0]}"`;
     } else {
-      return `Compute cumulated sum of ${formatMulticol(step.toCumSum.map(a => a[0]))}`;
+      return `Compute cumulated sum of ${formatMulticol(step.toCumSum.map((a) => a[0]))}`;
     }
   }
 
@@ -287,7 +287,7 @@ class StepLabeller implements StepMatcher<string> {
     if (step.toRename.length === 1) {
       return `Rename column "${step.toRename[0][0]}" to "${step.toRename[0][1]}"`;
     } else {
-      return `Rename columns ${formatMulticol(step.toRename.map(a => a[0]))}`;
+      return `Rename columns ${formatMulticol(step.toRename.map((a) => a[0]))}`;
     }
   }
 
@@ -316,7 +316,7 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   sort(step: Readonly<S.SortStep>) {
-    const columns = step.columns.map(sortdef => sortdef.column);
+    const columns = step.columns.map((sortdef) => sortdef.column);
     return `Sort columns ${formatMulticol(columns)}`;
   }
 
@@ -345,7 +345,7 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   totals(step: Readonly<S.AddTotalRowsStep>) {
-    const columns = step.totalDimensions.map(c => c.totalColumn);
+    const columns = step.totalDimensions.map((c) => c.totalColumn);
     return `Add total rows in columns ${formatMulticol(columns)}`;
   }
 
@@ -408,7 +408,7 @@ export function retrieveDomainName(
   queries: { name: string; uid: string }[],
 ): string {
   if (S.isReferenceToExternalQuery(domain)) {
-    return queries.find(q => q.uid === domain.uid)?.name ?? domain.uid;
+    return queries.find((q) => q.uid === domain.uid)?.name ?? domain.uid;
   } else {
     return domain;
   }

@@ -31,7 +31,7 @@ export const ADVANCED_DATE_EXTRACT_MAP: Record<
   S.AdvancedDateInfo,
   (step: Readonly<S.DateExtractStep>) => object
 > = {
-  quarter: step => ({
+  quarter: (step) => ({
     $switch: {
       branches: [
         { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 1] }, then: 1 },
@@ -41,17 +41,17 @@ export const ADVANCED_DATE_EXTRACT_MAP: Record<
       default: 4,
     },
   }),
-  firstDayOfYear: step => ({
+  firstDayOfYear: (step) => ({
     $dateFromParts: { year: { $year: $$(step.column) }, month: 1, day: 1 },
   }),
-  firstDayOfMonth: step => ({
+  firstDayOfMonth: (step) => ({
     $dateFromParts: {
       year: { $year: $$(step.column) },
       month: { $month: $$(step.column) },
       day: 1,
     },
   }),
-  firstDayOfWeek: step => ({
+  firstDayOfWeek: (step) => ({
     // We subtract to the target date a number of days corresponding to (dayOfWeek - 1)
     $subtract: [
       $$(step.column),
@@ -60,7 +60,7 @@ export const ADVANCED_DATE_EXTRACT_MAP: Record<
       },
     ],
   }),
-  firstDayOfQuarter: step => ({
+  firstDayOfQuarter: (step) => ({
     $dateFromParts: {
       year: { $year: $$(step.column) },
       month: {
@@ -76,7 +76,7 @@ export const ADVANCED_DATE_EXTRACT_MAP: Record<
       day: 1,
     },
   }),
-  firstDayOfIsoWeek: step => ({
+  firstDayOfIsoWeek: (step) => ({
     // We subtract to the target date a number of days corresponding to (isoDayOfWeek - 1)
     $subtract: [
       $$(step.column),
@@ -85,18 +85,18 @@ export const ADVANCED_DATE_EXTRACT_MAP: Record<
       },
     ],
   }),
-  previousDay: step => ({
+  previousDay: (step) => ({
     // We subtract to the target date 1 day in milliseconds
     $subtract: [$$(step.column), 24 * 60 * 60 * 1000],
   }),
-  firstDayOfPreviousYear: step => ({
+  firstDayOfPreviousYear: (step) => ({
     $dateFromParts: {
       year: { $subtract: [{ $year: $$(step.column) }, 1] },
       month: 1,
       day: 1,
     },
   }),
-  firstDayOfPreviousMonth: step => ({
+  firstDayOfPreviousMonth: (step) => ({
     $dateFromParts: {
       year: {
         $cond: [
@@ -115,7 +115,7 @@ export const ADVANCED_DATE_EXTRACT_MAP: Record<
       day: 1,
     },
   }),
-  firstDayOfPreviousWeek: step => ({
+  firstDayOfPreviousWeek: (step) => ({
     // We subtract to the target date a number of days corresponding to (dayOfWeek - 1)
     $subtract: [
       { $subtract: [$$(step.column), 7 * 24 * 60 * 60 * 1000] },
@@ -124,7 +124,7 @@ export const ADVANCED_DATE_EXTRACT_MAP: Record<
       },
     ],
   }),
-  firstDayOfPreviousQuarter: step => ({
+  firstDayOfPreviousQuarter: (step) => ({
     $dateFromParts: {
       year: {
         $cond: [
@@ -146,7 +146,7 @@ export const ADVANCED_DATE_EXTRACT_MAP: Record<
       day: 1,
     },
   }),
-  firstDayOfPreviousIsoWeek: step => ({
+  firstDayOfPreviousIsoWeek: (step) => ({
     // We subtract to the target date a number of days corresponding to (isoDayOfWeek - 1)
     $subtract: [
       { $subtract: [$$(step.column), 7 * 24 * 60 * 60 * 1000] },
@@ -155,21 +155,21 @@ export const ADVANCED_DATE_EXTRACT_MAP: Record<
       },
     ],
   }),
-  previousYear: step => ({
+  previousYear: (step) => ({
     $subtract: [{ $year: $$(step.column) }, 1],
   }),
-  previousMonth: step => ({
+  previousMonth: (step) => ({
     $cond: [
       { $eq: [{ $month: $$(step.column) }, 1] },
       12,
       { $subtract: [{ $month: $$(step.column) }, 1] },
     ],
   }),
-  previousWeek: step => ({
+  previousWeek: (step) => ({
     // We subtract to the target date 7 days in milliseconds
     $week: { $subtract: [$$(step.column), 7 * 24 * 60 * 60 * 1000] },
   }),
-  previousQuarter: step => ({
+  previousQuarter: (step) => ({
     $switch: {
       branches: [
         { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 1] }, then: 4 },
@@ -179,7 +179,7 @@ export const ADVANCED_DATE_EXTRACT_MAP: Record<
       default: 3,
     },
   }),
-  previousIsoWeek: step => ({
+  previousIsoWeek: (step) => ({
     // We subtract to the target date 7 days in milliseconds
     $isoWeek: { $subtract: [$$(step.column), 7 * 24 * 60 * 60 * 1000] },
   }),
@@ -190,19 +190,19 @@ export const ADVANCED_DATE_EXTRACT_MAP_MONGO_5: Record<
   (step: Readonly<S.DateExtractStep>) => object
 > = {
   ...ADVANCED_DATE_EXTRACT_MAP,
-  firstDayOfWeek: step => {
+  firstDayOfWeek: (step) => {
     return truncateDateToDay(ADVANCED_DATE_EXTRACT_MAP['firstDayOfWeek'](step));
   },
-  firstDayOfIsoWeek: step => {
+  firstDayOfIsoWeek: (step) => {
     return truncateDateToDay(ADVANCED_DATE_EXTRACT_MAP['firstDayOfIsoWeek'](step));
   },
-  previousDay: step => {
+  previousDay: (step) => {
     return truncateDateToDay(ADVANCED_DATE_EXTRACT_MAP['previousDay'](step));
   },
-  firstDayOfPreviousWeek: step => {
+  firstDayOfPreviousWeek: (step) => {
     return truncateDateToDay(ADVANCED_DATE_EXTRACT_MAP['firstDayOfPreviousWeek'](step));
   },
-  firstDayOfPreviousIsoWeek: step => {
+  firstDayOfPreviousIsoWeek: (step) => {
     return truncateDateToDay(ADVANCED_DATE_EXTRACT_MAP['firstDayOfPreviousIsoWeek'](step));
   },
 };

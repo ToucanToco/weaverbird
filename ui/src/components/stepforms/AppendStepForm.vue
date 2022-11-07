@@ -49,7 +49,7 @@ export default class AppendStepForm extends BaseStepForm<AppendStep> {
   readonly title: string = 'Append datasets';
 
   get pipelines(): object[] {
-    return this.editedStep.pipelines.map(pipeline => ({
+    return this.editedStep.pipelines.map((pipeline) => ({
       label: pipeline,
       trackBy: pipeline,
     }));
@@ -57,11 +57,11 @@ export default class AppendStepForm extends BaseStepForm<AppendStep> {
 
   set pipelines(values: object[]) {
     /* istanbul ignore next */
-    this.editedStep.pipelines = values.map(v => v.label);
+    this.editedStep.pipelines = values.map((v) => v.label);
   }
 
   get options(): object[] {
-    return this.availableDatasetNames.map(name => {
+    return this.availableDatasetNames.map((name) => {
       const option = { label: name, trackBy: name };
       if (this.referencingPipelines.includes(name)) {
         option['$isDisabled'] = true;

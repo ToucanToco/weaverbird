@@ -104,10 +104,7 @@ describe('Widget Input Number', () => {
       },
       sync: false,
     });
-    wrapper
-      .findAll('VariableInput-stub')
-      .at(0)
-      .vm.$emit('input', 2);
+    wrapper.findAll('VariableInput-stub').at(0).vm.$emit('input', 2);
     expect(wrapper.emitted()).toEqual({ input: [[2]] });
   });
 

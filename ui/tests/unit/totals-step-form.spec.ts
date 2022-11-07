@@ -35,12 +35,9 @@ describe('Add Total Rows Step Form', () => {
         },
       });
       await wrapper.vm.$nextTick();
-      expect(
-        wrapper
-          .findAll('listwidget-stub')
-          .at(0)
-          .props().value,
-      ).toEqual([{ totalColumn: 'foo', totalRowsLabel: 'bar' }]);
+      expect(wrapper.findAll('listwidget-stub').at(0).props().value).toEqual([
+        { totalColumn: 'foo', totalRowsLabel: 'bar' },
+      ]);
     });
 
     it('should get the right data "totalDimensions" when editedStep.totals is empty', async () => {
@@ -54,12 +51,9 @@ describe('Add Total Rows Step Form', () => {
         },
       });
       await wrapper.vm.$nextTick();
-      expect(
-        wrapper
-          .findAll('listwidget-stub')
-          .at(0)
-          .props().value,
-      ).toEqual([{ totalColumn: '', totalRowsLabel: '' }]);
+      expect(wrapper.findAll('listwidget-stub').at(0).props().value).toEqual([
+        { totalColumn: '', totalRowsLabel: '' },
+      ]);
     });
 
     it('should update the edited step when one of the subcomponents emits an updated value', () => {
@@ -102,12 +96,9 @@ describe('Add Total Rows Step Form', () => {
         },
       });
       await wrapper.vm.$nextTick();
-      expect(
-        wrapper
-          .findAll('listwidget-stub')
-          .at(1)
-          .props().value,
-      ).toEqual([{ column: 'foo', newcolumn: 'bar', aggfunction: 'sum' }]);
+      expect(wrapper.findAll('listwidget-stub').at(1).props().value).toEqual([
+        { column: 'foo', newcolumn: 'bar', aggfunction: 'sum' },
+      ]);
     });
 
     it('should have expected default aggregation parameters', () => {

@@ -210,7 +210,7 @@ export default class FilterSimpleConditionWidget extends Vue {
 
   get dateAvailableVariables(): VariablesBucket | undefined {
     // keep only date variables
-    return this.availableVariables?.filter(v => v.value instanceof Date);
+    return this.availableVariables?.filter((v) => v.value instanceof Date);
   }
 
   get availableVariablesForInputWidget(): VariablesBucket | undefined {
@@ -242,7 +242,7 @@ export default class FilterSimpleConditionWidget extends Vue {
 
   get operator(): OperatorOption {
     return (
-      this.availableOperators.find(d => d.operator === this.value.operator) ??
+      this.availableOperators.find((d) => d.operator === this.value.operator) ??
       this.availableOperators[0]
     );
   }
@@ -260,7 +260,7 @@ export default class FilterSimpleConditionWidget extends Vue {
   }
 
   retrieveOperatorOption(operator: string): OperatorOption | undefined {
-    return this.availableOperators.find(o => o.operator === operator);
+    return this.availableOperators.find((o) => o.operator === operator);
   }
 
   updateInvalidDateOperator(): void {

@@ -132,9 +132,9 @@ export default class VariableInputBase extends Vue {
       `${this.variableDelimiters.start} ${variableIdentifier} ${this.variableDelimiters.end}`;
     // check if value is a variable
     const isVariable = (identifier: string): boolean =>
-      Boolean(this.availableVariables.find(v => v.identifier === identifier));
+      Boolean(this.availableVariables.find((v) => v.identifier === identifier));
     return Array.isArray(value)
-      ? value.map(v => (isVariable(v) ? addVariableDelimiters(v) : v))
+      ? value.map((v) => (isVariable(v) ? addVariableDelimiters(v) : v))
       : addVariableDelimiters(value);
   }
 

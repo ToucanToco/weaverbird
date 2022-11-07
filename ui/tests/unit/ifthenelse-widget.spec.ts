@@ -108,10 +108,7 @@ describe('IfThenElseWidget', () => {
 
     it('should emit input when the "then" condition is updated', () => {
       const wrapper = shallowMount(IfThenElseWidget);
-      wrapper
-        .findAll('inputtextwidget-stub')
-        .at(0)
-        .vm.$emit('input', 'toto');
+      wrapper.findAll('inputtextwidget-stub').at(0).vm.$emit('input', 'toto');
       expect(wrapper.emitted().input).toBeDefined();
       expect(wrapper.emitted().input[0]).toEqual([
         {
@@ -124,10 +121,7 @@ describe('IfThenElseWidget', () => {
 
     it('should emit input when the "else" condition is updated', () => {
       const wrapper = shallowMount(IfThenElseWidget);
-      wrapper
-        .findAll('inputtextwidget-stub')
-        .at(1)
-        .vm.$emit('input', '2 * Foo + Bar');
+      wrapper.findAll('inputtextwidget-stub').at(1).vm.$emit('input', '2 * Foo + Bar');
       expect(wrapper.emitted().input).toBeDefined();
       expect(wrapper.emitted().input[0]).toEqual([
         {

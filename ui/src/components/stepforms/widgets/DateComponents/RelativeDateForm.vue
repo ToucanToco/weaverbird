@@ -42,21 +42,10 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputNumberWidget from '@/components/stepforms/widgets/InputNumber.vue';
-import {
-  DEFAULT_DURATIONS,
-  RELATIVE_DATE_OPERATORS,
-} from '@/lib/dates';
-import type {
-  DurationOption,
-  RelativeDate,
-} from '@/lib/dates';
-import {
-  extractVariableIdentifier} from '@/lib/variables';
-import type{
-  AvailableVariable,
-  VariableDelimiters,
-  VariablesBucket,
-} from '@/lib/variables';
+import { DEFAULT_DURATIONS, RELATIVE_DATE_OPERATORS } from '@/lib/dates';
+import type { DurationOption, RelativeDate } from '@/lib/dates';
+import { extractVariableIdentifier } from '@/lib/variables';
+import type { AvailableVariable, VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 /**
  * This component return a relative date between a date variable and a relative date returned by RelativeDateForm
@@ -94,7 +83,7 @@ export default class RelativeDateForm extends Vue {
   }
 
   get duration(): DurationOption | undefined {
-    return this.durations.find(v => v.value === this.value.duration);
+    return this.durations.find((v) => v.value === this.value.duration);
   }
 
   set duration(duration: DurationOption | undefined) {
@@ -103,7 +92,7 @@ export default class RelativeDateForm extends Vue {
 
   get baseDate(): AvailableVariable | undefined {
     const identifier = extractVariableIdentifier(this.value.date, this.variableDelimiters);
-    return this.availableVariables.find(v => v.identifier === identifier);
+    return this.availableVariables.find((v) => v.identifier === identifier);
   }
 
   set baseDate(variable: AvailableVariable | undefined) {
@@ -122,7 +111,9 @@ export default class RelativeDateForm extends Vue {
     // is not the place for keeping track of our stuttering torward Clean Code :tm:
     const fallbackOperator =
       this.value.quantity >= 0 ? RELATIVE_DATE_OPERATORS.from : RELATIVE_DATE_OPERATORS.until;
-    return this.availableOperators.find(op => op.label === this.value.operator) ?? fallbackOperator;
+    return (
+      this.availableOperators.find((op) => op.label === this.value.operator) ?? fallbackOperator
+    );
   }
 
   set operator(operator: { label: string; sign: number }) {

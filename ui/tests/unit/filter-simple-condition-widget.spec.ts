@@ -8,8 +8,8 @@ import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSi
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import MultiInputTextWidget from '@/components/stepforms/widgets/MultiInputText.vue';
 
-import type {RootState} from './utils';
-import { setupMockStore} from './utils';
+import type { RootState } from './utils';
+import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

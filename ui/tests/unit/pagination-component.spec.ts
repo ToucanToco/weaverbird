@@ -28,7 +28,7 @@ describe('Pagination Component', () => {
     });
     const links = wrapper
       .findAll('.pagination__list li')
-      .wrappers.map(lw => ({ classes: lw.classes(), text: lw.text() }));
+      .wrappers.map((lw) => ({ classes: lw.classes(), text: lw.text() }));
     expect(links).toEqual([
       { text: 'Prev', classes: ['prevnext', 'disabled'] },
       { text: '1', classes: ['active'] },
@@ -45,10 +45,7 @@ describe('Pagination Component', () => {
         paginationContext: samplePaginationContext,
       },
     });
-    wrapper
-      .findAll('.pagination__list li a')
-      .at(3)
-      .trigger('click');
+    wrapper.findAll('.pagination__list li a').at(3).trigger('click');
     expect(wrapper.emitted('setPage')[0][0]).toStrictEqual({ pageno: 3 });
   });
 
@@ -76,7 +73,7 @@ describe('Pagination Component', () => {
   describe('Pagination navigation lifecycle', () => {
     const pagesize = 50;
     const totalCount = 400;
-    const paginationNavigationExistsOnpageIndex = function(pageno: number): boolean {
+    const paginationNavigationExistsOnpageIndex = function (pageno: number): boolean {
       const wrapper = mount(Pagination, {
         propsData: {
           paginationContext: {

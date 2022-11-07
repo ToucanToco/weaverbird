@@ -64,10 +64,7 @@ describe('Widget sort column', () => {
         value: { column: 'bar', order: 'desc' },
       },
     });
-    wrapper
-      .findAll('AutoCompleteWidget-stub')
-      .at(0)
-      .vm.$emit('input', 'year');
+    wrapper.findAll('AutoCompleteWidget-stub').at(0).vm.$emit('input', 'year');
     expect(wrapper.emitted().input).toBeDefined();
     expect(wrapper.emitted().input[0]).toEqual([{ column: 'year', order: 'desc' }]);
   });
@@ -81,10 +78,7 @@ describe('Widget sort column', () => {
         value: { column: 'bar', order: 'desc' },
       },
     });
-    wrapper
-      .findAll('AutoCompleteWidget-stub')
-      .at(1)
-      .vm.$emit('input', 'asc');
+    wrapper.findAll('AutoCompleteWidget-stub').at(1).vm.$emit('input', 'asc');
     expect(wrapper.emitted().input).toBeDefined();
     expect(wrapper.emitted().input[0]).toEqual([{ column: 'bar', order: 'asc' }]);
   });

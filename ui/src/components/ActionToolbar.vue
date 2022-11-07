@@ -64,7 +64,7 @@ export default class ActionToolbar extends Vue {
 
   // Enable to develop steps under feature flag
   get featureFlagsAllowedButtons(): ButtonDef[] {
-    return CATEGORY_BUTTONS.filter(d => {
+    return CATEGORY_BUTTONS.filter((d) => {
       if (!d.featureFlag) {
         return true;
       } else {
@@ -75,9 +75,9 @@ export default class ActionToolbar extends Vue {
 
   // Filter buttons that contains at least one supported step
   get supportedButtons(): ButtonDef[] {
-    return this.featureFlagsAllowedButtons.filter(categoryButton =>
+    return this.featureFlagsAllowedButtons.filter((categoryButton) =>
       ACTION_CATEGORIES[categoryButton.category].some(
-        action => !this.unsupportedSteps.includes(action.name),
+        (action) => !this.unsupportedSteps.includes(action.name),
       ),
     );
   }

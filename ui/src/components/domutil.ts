@@ -31,9 +31,9 @@ type PositionContext = {
   window: WindowDimensions;
 };
 
-type PartialPositionContext = Partial<
-  { [K in keyof PositionContext]: Partial<PositionContext[K]> }
->;
+type PartialPositionContext = Partial<{
+  [K in keyof PositionContext]: Partial<PositionContext[K]>;
+}>;
 
 /**
  * convert a client rect to a plain javascript object.

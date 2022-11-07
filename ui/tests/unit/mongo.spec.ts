@@ -47,7 +47,7 @@ const fullMonthReplace = {
   },
 };
 
-describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
+describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
   const translator = getTranslator(`mongo${version}`);
 
   it('can generate domain steps', () => {

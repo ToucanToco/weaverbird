@@ -133,9 +133,9 @@ export const relativeDateToString = (
 ): string => {
   const identifier = extractVariableIdentifier(relativeDate.date, variableDelimiters);
   const baseDateLabel =
-    availableVariables.find(v => v.identifier === identifier)?.label ?? identifier;
+    availableVariables.find((v) => v.identifier === identifier)?.label ?? identifier;
   const duration: string | undefined = DEFAULT_DURATIONS.find(
-    d => d.value === relativeDate.duration,
+    (d) => d.value === relativeDate.duration,
   )?.label;
   const relativeDateLabel = `${Math.abs(relativeDate.quantity)} ${duration?.toLowerCase()}`;
   return `${relativeDateLabel} ${relativeDate.operator} ${baseDateLabel}`;

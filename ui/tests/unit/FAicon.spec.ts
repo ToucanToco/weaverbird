@@ -1,5 +1,5 @@
 import type { Wrapper } from '@vue/test-utils';
-import { mount, shallowMount} from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import FAIcon from '@/components/FAIcon.vue';

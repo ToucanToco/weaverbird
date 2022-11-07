@@ -101,7 +101,7 @@ export default class ListUniqueValues extends Vue {
         operator: this.filter.operator,
         value: (this.filter.operator === 'in' ? _union : _difference)(
           this.filter.value,
-          this.searchedOptions.map(option => option.value),
+          this.searchedOptions.map((option) => option.value),
         ),
       } as FilterConditionInclusion);
     }
@@ -120,7 +120,7 @@ export default class ListUniqueValues extends Vue {
         operator: this.filter.operator,
         value: (this.filter.operator === 'in' ? _difference : _union)(
           this.filter.value,
-          this.searchedOptions.map(option => option.value),
+          this.searchedOptions.map((option) => option.value),
         ),
       } as FilterConditionInclusion);
     }
@@ -137,19 +137,15 @@ export default class ListUniqueValues extends Vue {
   }
 
   get searchedOptions(): ColumnValueStat[] {
-    return this.options.filter(option => this.searchFunction(option.value, this.search));
+    return this.options.filter((option) => this.searchFunction(option.value, this.search));
   }
 
   stringify(value: any): string {
-    return JSON.stringify(value)
-      .replace(/^"/, '')
-      .replace(/"$/, ''); // remove `"` introduce by JSON.stringify around strings;
+    return JSON.stringify(value).replace(/^"/, '').replace(/"$/, ''); // remove `"` introduce by JSON.stringify around strings;
   }
 
   searchFunction(value: any, search: string) {
-    return this.stringify(value)
-      .toLowerCase()
-      .includes(search.toLowerCase());
+    return this.stringify(value).toLowerCase().includes(search.toLowerCase());
   }
 
   loadAllValues() {

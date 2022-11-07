@@ -1,5 +1,5 @@
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
-import { expect, it, test,vi } from 'vitest';
+import { expect, it, test, vi } from 'vitest';
 import type { VueConstructor } from 'vue';
 import Vuex, { Store } from 'vuex';
 

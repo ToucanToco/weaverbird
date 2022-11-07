@@ -53,10 +53,7 @@ describe('Widget Autocomplete', () => {
       },
       sync: false,
     });
-    wrapper
-      .findAll('multiselect-stub')
-      .at(0)
-      .vm.$emit('input', 'Visa');
+    wrapper.findAll('multiselect-stub').at(0).vm.$emit('input', 'Visa');
     expect(wrapper.emitted().input[0][0]).toEqual('Visa');
   });
 
@@ -67,10 +64,7 @@ describe('Widget Autocomplete', () => {
       },
       sync: false,
     });
-    wrapper
-      .findAll('VariableInput-stub')
-      .at(0)
-      .vm.$emit('input', 'Visa');
+    wrapper.findAll('VariableInput-stub').at(0).vm.$emit('input', 'Visa');
     expect(wrapper.emitted().input[0][0]).toEqual('Visa');
   });
 

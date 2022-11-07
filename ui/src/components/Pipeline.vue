@@ -95,7 +95,7 @@ export default class PipelineComponent extends Vue {
   @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
 
   get hasSupportedSteps(): boolean {
-    return this.supportedSteps.filter(step => step !== 'domain').length > 0;
+    return this.supportedSteps.filter((step) => step !== 'domain').length > 0;
   }
 
   get arrangedSteps(): Pipeline {
@@ -192,7 +192,7 @@ export default class PipelineComponent extends Vue {
     // parse steps string
     const parsedSteps: any = JSON.parse(stepsFromClipBoard) ?? [];
     // verify is steps object are well formatted
-    if (Array.isArray(parsedSteps) && parsedSteps.every(step => isPipelineStep(step))) {
+    if (Array.isArray(parsedSteps) && parsedSteps.every((step) => isPipelineStep(step))) {
       // add new steps to pipeline
       this.addSteps({ steps: parsedSteps });
     }

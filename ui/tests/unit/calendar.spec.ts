@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import DatePicker from 'v-calendar/lib/components/date-picker.umd';
-import { afterEach,beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import Calendar from '@/components/DatePicker/Calendar.vue';
 

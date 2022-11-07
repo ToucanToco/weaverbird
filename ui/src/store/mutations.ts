@@ -215,7 +215,6 @@ const mutations: MutationTree<VQBState> = {
     state.pipelines = pipelines;
   },
 
-
   setCurrentPipelineName(state: VQBState, { name }: { name: string }) {
     state.currentPipelineName = name;
     resetPagination(state);

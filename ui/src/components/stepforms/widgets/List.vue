@@ -117,7 +117,7 @@ export default class ListWidget extends Mixins(FormWidget) {
     if (this.automaticNewField) {
       valueCopy.push(this.defaultChildValue);
     }
-    return valueCopy.map(value => ({
+    return valueCopy.map((value) => ({
       isRemovable: valueCopy.length !== 1,
       value,
     }));

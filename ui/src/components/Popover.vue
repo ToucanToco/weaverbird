@@ -60,7 +60,7 @@ export default class Popover extends Vue {
 
   @Prop({
     default: () => Alignment.Center,
-    validator: value => Object.values(Alignment).includes(value),
+    validator: (value) => Object.values(Alignment).includes(value),
   })
   align!: Alignment;
 
@@ -185,7 +185,7 @@ export default class Popover extends Vue {
   // Set the absolute position
   // Checks available space on screen for vertical positioning and alignment
   updatePosition = _.throttle(
-    function(this: Popover) {
+    function (this: Popover) {
       if (this.parent === null) {
         return;
       }

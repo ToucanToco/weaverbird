@@ -24,7 +24,7 @@ function mockBoundingRect(this: HTMLElement): DOMRect {
   };
   const elementStyle: Dict<number> = {};
   for (const prop of Object.keys(defaultRect)) {
-    const style: Dict<string> = (this.style as unknown) as Dict<string>;
+    const style: Dict<string> = this.style as unknown as Dict<string>;
     elementStyle[prop] = style[prop] ? Number(style[prop].slice(0, -2)) : 0;
   }
   return { ...defaultRect, ...elementStyle };
@@ -152,7 +152,7 @@ describe('DOM Position Tests', () => {
   });
 });
 
-describe('Popover', function() {
+describe('Popover', function () {
   let wrapper: Wrapper<Vue>;
   let popoverWrapper: Wrapper<Vue>;
   let throttleSpy: jest.SpyInstance<Function>;
@@ -212,30 +212,30 @@ describe('Popover', function() {
     popoverWrapper = wrapper.find({ ref: 'popover' });
   };
 
-  beforeEach(function() {
+  beforeEach(function () {
     throttleSpy = vi.spyOn(_, 'throttle').mockImplementation((fn: any) => fn);
     boundingRectSpy = jest
       .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
       .mockImplementation(mockBoundingRect);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     wrapper.destroy();
     throttleSpy.mockRestore();
     boundingRectSpy.mockRestore();
   });
 
-  it("should instantiate the popover in document's body", function() {
+  it("should instantiate the popover in document's body", function () {
     createWrapper({ props: { visible: true } });
     expect(document.body.contains(popoverWrapper.element)).toBeTruthy();
   });
 
-  it("should not add the popover in document's body", function() {
+  it("should not add the popover in document's body", function () {
     createWrapper({ props: { visible: false } });
     expect(document.body.contains(popoverWrapper.element)).toBeFalsy();
   });
 
-  it('should include the passed slot content', function() {
+  it('should include the passed slot content', function () {
     createWrapper({ props: { visible: true }, slotText: 'Lorem ipsum' });
     const slotContentWrapper = popoverWrapper.find('.slot-content');
 
@@ -243,7 +243,7 @@ describe('Popover', function() {
     expect(slotContentWrapper.text()).toEqual('Lorem ipsum');
   });
 
-  it('should not emit "closed" when not visible', async function() {
+  it('should not emit "closed" when not visible', async function () {
     createWrapper({ props: { visible: false }, slotText: 'Lorem ipsum' });
     const anotherelement = wrapper.find('#anotherelement');
     await anotherelement.trigger('click');
@@ -251,8 +251,8 @@ describe('Popover', function() {
     expect(popoverWrapper.emitted().closed).toBeUndefined();
   });
 
-  describe('setupPositioning', function() {
-    beforeEach(async function() {
+  describe('setupPositioning', function () {
+    beforeEach(async function () {
       createWrapper({
         props: { visible: true },
         parentStyle: {
@@ -269,7 +269,7 @@ describe('Popover', function() {
       });
     });
 
-    it('should call setupPositioning when visible becomes true', async function() {
+    it('should call setupPositioning when visible becomes true', async function () {
       createWrapper({ props: { visible: false } });
       const setupPositioningSpy: any = vi.spyOn(popoverWrapper.vm as any, 'setupPositioning');
       popoverWrapper.setProps({ visible: true });
@@ -277,18 +277,18 @@ describe('Popover', function() {
       expect(setupPositioningSpy).toHaveBeenCalled();
     });
 
-    it('should append itself to the document body', function() {
+    it('should append itself to the document body', function () {
       expect(popoverWrapper.element.parentElement).toEqual(document.body);
     });
 
-    it('should be above by default', function() {
+    it('should be above by default', function () {
       const parentBounds = wrapper.element.getBoundingClientRect();
       const popoverBounds = popoverWrapper.vm.$data.elementStyle;
       expect(popoverBounds.top).toEqual(`${parentBounds.top - POPOVER_SHADOW_GAP}px`);
       expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
     });
 
-    it('should update its position on orientation change', async function() {
+    it('should update its position on orientation change', async function () {
       wrapper.element.style.left = '100px';
       window.dispatchEvent(new Event('orientationchange'));
 
@@ -297,7 +297,7 @@ describe('Popover', function() {
       expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
     });
 
-    it('should update its position when resized', async function() {
+    it('should update its position when resized', async function () {
       wrapper.element.style.left = '100px';
       window.dispatchEvent(new Event('resize'));
 
@@ -306,7 +306,7 @@ describe('Popover', function() {
       expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
     });
 
-    it('should update its position when scrolled', async function() {
+    it('should update its position when scrolled', async function () {
       wrapper.element.style.left = '100px';
       wrapper.element.dispatchEvent(new Event('scroll'));
 
@@ -315,22 +315,22 @@ describe('Popover', function() {
       expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
     });
 
-    it('should emit "closed" on click away', async function() {
+    it('should emit "closed" on click away', async function () {
       const anotherelement = wrapper.find('#anotherelement');
       await anotherelement.trigger('click');
 
       expect(popoverWrapper.emitted().closed.length).toEqual(1);
     });
 
-    it('should not emit "closed" on click on it', async function() {
+    it('should not emit "closed" on click on it', async function () {
       await popoverWrapper.trigger('click');
 
       expect(popoverWrapper.emitted().closed).toBeUndefined();
     });
   });
 
-  describe('destroyPositioning', function() {
-    it('should call destroyPosition when visible becomes false', async function() {
+  describe('destroyPositioning', function () {
+    it('should call destroyPosition when visible becomes false', async function () {
       createWrapper({ props: { visible: true } });
 
       const destroyPositioningSpy: any = vi.spyOn(popoverWrapper.vm as any, 'destroyPositioning');
@@ -338,7 +338,7 @@ describe('Popover', function() {
       expect(destroyPositioningSpy).toHaveBeenCalled();
     });
 
-    it('should call destroyPosition at destroy if visible', async function() {
+    it('should call destroyPosition at destroy if visible', async function () {
       createWrapper({ props: { visible: true } });
 
       const destroyPositioningSpy: any = vi.spyOn(popoverWrapper.vm as any, 'destroyPositioning');
@@ -346,7 +346,7 @@ describe('Popover', function() {
       expect(destroyPositioningSpy).toHaveBeenCalled();
     });
 
-    it('should not call destroyPosition at destroy if not visible', async function() {
+    it('should not call destroyPosition at destroy if not visible', async function () {
       createWrapper({ props: { visible: false } });
 
       const destroyPositioningSpy: any = vi.spyOn(popoverWrapper.vm as any, 'destroyPositioning');
@@ -356,7 +356,7 @@ describe('Popover', function() {
   });
 
   describe('forceUpdatePosition', () => {
-    it('should update its position when forced to update position is true', async function() {
+    it('should update its position when forced to update position is true', async function () {
       createWrapper({ props: { visible: false } });
       const updatePositionSpy: jest.SpyInstance = vi.spyOn(
         popoverWrapper.vm as any,

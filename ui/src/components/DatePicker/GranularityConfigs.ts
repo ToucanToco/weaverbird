@@ -96,9 +96,7 @@ export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
         duration: 'week',
       }),
       rangeToOption: (selectedRangeStart: Date): DateTime =>
-        DateTime.fromJSDate(selectedRangeStart, { zone: 'utc' })
-          .startOf('week')
-          .setLocale('en'),
+        DateTime.fromJSDate(selectedRangeStart, { zone: 'utc' }).startOf('week').setLocale('en'),
     },
   },
   month: {

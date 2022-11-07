@@ -42,7 +42,7 @@ export class StepNotSupported extends Error {
  * @param descriptor the method descriptor
  */
 function unsupported(_target: BaseTranslator, _propertyKey: S.PipelineStepName, descriptor: any) {
-  descriptor.value = function(step: Readonly<S.PipelineStep>) {
+  descriptor.value = function (step: Readonly<S.PipelineStep>) {
     throw new StepNotSupported(step.name);
   };
   descriptor.value.__vqb_step_supported__ = false;
@@ -81,7 +81,7 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   get supportedSteps(): S.PipelineStepName[] {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     return transformerSteps()
-      .filter(stepname => this.constructor.prototype[stepname].__vqb_step_supported__ !== false)
+      .filter((stepname) => this.constructor.prototype[stepname].__vqb_step_supported__ !== false)
       .sort();
   }
 
@@ -91,7 +91,7 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   get unsupportedSteps(): S.PipelineStepName[] {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     return transformerSteps()
-      .filter(stepname => this.constructor.prototype[stepname].__vqb_step_supported__ === false)
+      .filter((stepname) => this.constructor.prototype[stepname].__vqb_step_supported__ === false)
       .sort();
   }
 

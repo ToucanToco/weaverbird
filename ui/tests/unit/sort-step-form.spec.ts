@@ -55,7 +55,7 @@ describe('Sort Step Form', () => {
 
   runner.testResetSelectedIndex();
 
-  it('should suggest the selected column as the column to be sorted', function() {
+  it('should suggest the selected column as the column to be sorted', function () {
     const wrapper = runner.shallowMount({
       selectedColumns: ['selectedColumn'],
     });
@@ -64,12 +64,12 @@ describe('Sort Step Form', () => {
     ]);
   });
 
-  it('should not suggest a column to be sorted if no column is selected', function() {
+  it('should not suggest a column to be sorted if no column is selected', function () {
     const wrapper = runner.shallowMount({});
     expect(wrapper.find('listwidget-stub').props().value).toEqual([{ column: '', order: 'asc' }]);
   });
 
-  it('should not suggest a column to be sorted if the step has already been edited', function() {
+  it('should not suggest a column to be sorted if the step has already been edited', function () {
     const wrapper = runner.shallowMount(
       { selectedColumns: ['selectedColumn'] },
       {

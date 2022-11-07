@@ -1,6 +1,6 @@
 import type { Wrapper } from '@vue/test-utils';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
-import type { SpyInstance} from "vitest";
+import type { SpyInstance } from 'vitest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import Vuex from 'vuex';
 
@@ -23,7 +23,7 @@ describe('Step.vue', () => {
   const createStepWrapper = ({ propsData = {} }) => {
     retrieveDomainNameStub = vi
       .spyOn(labeller, 'retrieveDomainName')
-      .mockImplementation(v => (typeof v === 'string' ? v : ''));
+      .mockImplementation((v) => (typeof v === 'string' ? v : ''));
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'GoT' },
       { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
@@ -191,10 +191,7 @@ describe('Step.vue', () => {
     const wrapper = mount(PipelineComponent, { store, localVue });
     const stepsArray = wrapper.findAll(Step);
     const renameStep = stepsArray.at(2);
-    renameStep
-      .findAll('.query-pipeline-step__action')
-      .at(0)
-      .trigger('click');
+    renameStep.findAll('.query-pipeline-step__action').at(0).trigger('click');
     expect(renameStep.emitted().editStep).toBeDefined();
     expect(renameStep.emitted().editStep).toEqual([
       [{ name: 'rename', toRename: [['region', 'kingdom']] }, 2],
@@ -258,10 +255,7 @@ describe('Step.vue', () => {
       );
       const wrapper = mount(PipelineComponent, { store, localVue });
       const stepsArray = wrapper.findAll(Step);
-      stepsArray
-        .at(0)
-        .find('.query-pipeline-step')
-        .trigger('click');
+      stepsArray.at(0).find('.query-pipeline-step').trigger('click');
       await localVue.nextTick();
       const replaceStep = stepsArray.at(1);
       expect(replaceStep.find('.query-pipeline-step__footer').exists()).toBe(false);

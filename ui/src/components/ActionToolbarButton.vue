@@ -103,7 +103,7 @@ export default class ActionToolbarButton extends Vue {
   // Filter out unsupported steps
   get items() {
     return ACTION_CATEGORIES[this.category].filter(
-      action => !this.unsupportedSteps.includes(action.name),
+      (action) => !this.unsupportedSteps.includes(action.name),
     );
   }
 }

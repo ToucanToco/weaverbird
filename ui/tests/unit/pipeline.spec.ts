@@ -27,7 +27,7 @@ describe('Pipeline.vue', () => {
     const wrapper = shallowMount(PipelineComponent, { store, localVue });
     const steps = wrapper.findAll('step-stub');
     expect(steps.length).toEqual(3);
-    const [step1, step2, step3] = steps.wrappers.map(stub => stub.props());
+    const [step1, step2, step3] = steps.wrappers.map((stub) => stub.props());
     expect(step1).toEqual({
       step: pipeline[0],
       isActive: true,
@@ -125,7 +125,7 @@ describe('Pipeline.vue', () => {
       });
       it('should make steps uneditable', () => {
         const steps = wrapper.findAll('step-stub');
-        steps.wrappers.map(stub => expect(stub.props().isEditable).toBe(false));
+        steps.wrappers.map((stub) => expect(stub.props().isEditable).toBe(false));
       });
     });
 

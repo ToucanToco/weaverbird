@@ -16,16 +16,16 @@ export function mongoResultsToDataset(results: MongoResults): DataSet {
   if (results.length) {
     const colnames = results
       // get list of list of key
-      .map(row => Object.keys(row))
+      .map((row) => Object.keys(row))
       // then flatten them
       .reduce((acc, val) => acc.concat(val), [])
       // and remove duplicates by keeping the _first_ occurence
       .filter((col, colidx, array) => array.indexOf(col) === colidx);
     // transform set of names to list of DataSetColumn objects
-    dataset.headers = colnames.map(name => ({ name }));
+    dataset.headers = colnames.map((name) => ({ name }));
     for (const row of results) {
       dataset.data.push(
-        dataset.headers.map(coldef =>
+        dataset.headers.map((coldef) =>
           Object.prototype.hasOwnProperty.call(row, coldef.name) ? row[coldef.name] : null,
         ),
       );

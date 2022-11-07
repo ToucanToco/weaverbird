@@ -34,10 +34,10 @@
       :value="editedStep.format"
       @input="updateCustomFormat"
       name="Custom date format:"
-      :placeholder="`Enter a ${translators.find(t => t.id === translator).label} date format`"
+      :placeholder="`Enter a ${translators.find((t) => t.id === translator).label} date format`"
       data-path=".format"
       :errors="errors"
-      :docUrl="translators.find(t => t.id === translator).doc"
+      :docUrl="translators.find((t) => t.id === translator).doc"
     />
     <StepFormButtonbar />
   </div>
@@ -98,32 +98,28 @@ export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
     { format: '%Y', label: '%Y', example: '1970' },
   ];
   readonly datePresets = this.formatOptions
-    .filter(d => d.format !== 'guess' && d.format !== 'custom')
-    .map(d => d.format);
+    .filter((d) => d.format !== 'guess' && d.format !== 'custom')
+    .map((d) => d.format);
   readonly translators = [
     {
       id: 'mongo36',
       label: 'Mongo 3.6',
-      doc:
-        'https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers',
+      doc: 'https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers',
     },
     {
       id: 'mongo40',
       label: 'Mongo 4.0',
-      doc:
-        'https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers',
+      doc: 'https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers',
     },
     {
       id: 'mongo42',
       label: 'Mongo 4.2',
-      doc:
-        'https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers',
+      doc: 'https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers',
     },
     {
       id: 'mongo50',
       label: 'Mongo 5.0',
-      doc:
-        'https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers',
+      doc: 'https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers',
     },
     {
       id: 'pandas',
@@ -143,20 +139,17 @@ export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
     {
       id: 'google-big-query',
       label: 'Google Big Query',
-      doc:
-        'https://cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_elements_date_time',
+      doc: 'https://cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_elements_date_time',
     },
     {
       id: 'mysql',
       label: 'MySQL',
-      doc:
-        'https://dev.mysql.com/doc/refman/8.0/en/date-and-time-functions.html#function_date-format',
+      doc: 'https://dev.mysql.com/doc/refman/8.0/en/date-and-time-functions.html#function_date-format',
     },
     {
       id: 'postgresql',
       label: 'PostgresSQL',
-      doc:
-        'https://www.postgresql.org/docs/8.2/functions-formatting.html#FUNCTIONS-FORMATTING-DATETIME-TABLE',
+      doc: 'https://www.postgresql.org/docs/8.2/functions-formatting.html#FUNCTIONS-FORMATTING-DATETIME-TABLE',
     },
     {
       id: 'redshift',
@@ -166,8 +159,7 @@ export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
     {
       id: 'snowflake',
       label: 'Snowflake',
-      doc:
-        'https://docs.snowflake.com/en/sql-reference/functions-conversion.html#date-and-time-formats-in-conversion-functions',
+      doc: 'https://docs.snowflake.com/en/sql-reference/functions-conversion.html#date-and-time-formats-in-conversion-functions',
     },
   ];
 
@@ -193,12 +185,12 @@ export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
 
   getSelectedFormat(): FormatOption {
     if (this.editedStep.format === undefined) {
-      return this.formatOptions.filter(d => d.format === 'guess')[0];
+      return this.formatOptions.filter((d) => d.format === 'guess')[0];
     }
     if (this.datePresets.includes(this.editedStep.format)) {
-      return this.formatOptions.filter(d => d.format === this.editedStep.format)[0];
+      return this.formatOptions.filter((d) => d.format === this.editedStep.format)[0];
     }
-    return this.formatOptions.filter(d => d.format === 'custom')[0];
+    return this.formatOptions.filter((d) => d.format === 'custom')[0];
   }
 
   updateStepFormat(newFormat: FormatOption) {

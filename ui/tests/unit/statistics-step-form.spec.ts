@@ -140,34 +140,22 @@ describe('statistics Step Form', () => {
     );
     await wrapper.vm.$nextTick();
 
-    wrapper
-      .findAll('Checkbox-stub')
-      .at(0)
-      .vm.$emit('input', true); // checking count
+    wrapper.findAll('Checkbox-stub').at(0).vm.$emit('input', true); // checking count
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.$data.editedStep.statistics).toEqual(['average', 'count']);
-    wrapper
-      .findAll('Checkbox-stub')
-      .at(1)
-      .vm.$emit('input', false); // unchecking average
+    wrapper.findAll('Checkbox-stub').at(1).vm.$emit('input', false); // unchecking average
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.$data.editedStep.statistics).toEqual(['count']);
 
     // open advanced section
     const advancedSection: any = wrapper.findAll('.statistic-section-header').at(1);
     await advancedSection.trigger('click');
-    wrapper
-      .findAll('Checkbox-stub')
-      .at(10)
-      .vm.$emit('input', true);
+    wrapper.findAll('Checkbox-stub').at(10).vm.$emit('input', true);
     expect(wrapper.vm.$data.editedStep.quantiles).toEqual([
       { label: 'median', nth: 1, order: 2 },
       { label: 'last decile', nth: 9, order: 10 },
     ]);
-    wrapper
-      .findAll('Checkbox-stub')
-      .at(4)
-      .vm.$emit('input', true);
+    wrapper.findAll('Checkbox-stub').at(4).vm.$emit('input', true);
     expect(wrapper.vm.$data.editedStep.quantiles).toEqual([
       { label: 'last decile', nth: 9, order: 10 },
     ]);
@@ -176,14 +164,8 @@ describe('statistics Step Form', () => {
 
     // open custom quantile sections
     await quantileSection.trigger('click');
-    wrapper
-      .findAll('InputNumberWidget-stub')
-      .at(0)
-      .vm.$emit('input', 2);
-    wrapper
-      .findAll('InputNumberWidget-stub')
-      .at(1)
-      .vm.$emit('input', 4);
+    wrapper.findAll('InputNumberWidget-stub').at(0).vm.$emit('input', 2);
+    wrapper.findAll('InputNumberWidget-stub').at(1).vm.$emit('input', 4);
     await wrapper.find('.custom-quantile-widget-checkbox').trigger('click');
     expect(wrapper.vm.$data.editedStep.quantiles).toEqual([
       { label: 'last decile', nth: 9, order: 10 },

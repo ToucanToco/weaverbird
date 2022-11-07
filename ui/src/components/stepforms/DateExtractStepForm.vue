@@ -116,16 +116,16 @@ export default class DateExtractStepForm extends BaseStepForm<DateExtractStep> {
   };
 
   get currentDateInfo(): DateInfoOption[] {
-    return this.dateInfo.filter(d => this.editedStep.dateInfo.includes(d.info));
+    return this.dateInfo.filter((d) => this.editedStep.dateInfo.includes(d.info));
   }
 
   updateCurrentDateInfo(options: DateInfoOption[]) {
-    this.editedStep.dateInfo = [...options.map(o => o.info)];
+    this.editedStep.dateInfo = [...options.map((o) => o.info)];
   }
 
   submit() {
     // populate the newColumns field with automatic, safe column names
-    this.editedStep.newColumns = this.editedStep.dateInfo.map(d =>
+    this.editedStep.newColumns = this.editedStep.dateInfo.map((d) =>
       generateNewColumnName(`${this.editedStep.column}_${d}`, this.columnNames),
     );
     this.$$super.submit();

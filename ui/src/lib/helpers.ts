@@ -150,7 +150,9 @@ export function combinations(arr: any[]): any[][] {
   if (arr.length == 0) return [];
   const rest = arr.slice(1);
   const comb: any[] = combinations(rest);
-  return [[arr[0]], ...comb.map(d => [arr[0], ...d]), ...comb].sort((a, b) => b.length - a.length);
+  return [[arr[0]], ...comb.map((d) => [arr[0], ...d]), ...comb].sort(
+    (a, b) => b.length - a.length,
+  );
 }
 
 /**

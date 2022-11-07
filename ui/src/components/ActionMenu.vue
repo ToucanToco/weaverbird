@@ -125,7 +125,12 @@ import { POPOVER_ALIGN } from '@/components/constants';
 import FAIcon from '@/components/FAIcon.vue';
 import ListUniqueValues from '@/components/ListUniqueValues.vue';
 import type { DataSetColumn } from '@/lib/dataset';
-import type { FilterConditionInclusion, Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
+import type {
+  FilterConditionInclusion,
+  Pipeline,
+  PipelineStep,
+  PipelineStepName,
+} from '@/lib/steps';
 import { VQBModule } from '@/store';
 import type { MutationCallbacks } from '@/store/mutations';
 
@@ -165,9 +170,9 @@ export default class ActionMenu extends Vue {
   @VQBModule.Getter unsupportedSteps!: PipelineStepName[];
 
   get currentUnique() {
-    return (this.columnHeaders.find(hdr => hdr.name === this.columnName) as
-      | DataSetColumn
-      | undefined)?.uniques;
+    return (
+      this.columnHeaders.find((hdr) => hdr.name === this.columnName) as DataSetColumn | undefined
+    )?.uniques;
   }
 
   get isStepSupported() {

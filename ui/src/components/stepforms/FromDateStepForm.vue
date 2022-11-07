@@ -32,10 +32,10 @@
       :value="editedStep.format"
       @input="updateCustomFormat"
       name="Custom date format:"
-      :placeholder="`Enter a ${translators.find(t => t.id === translator).label} date format`"
+      :placeholder="`Enter a ${translators.find((t) => t.id === translator).label} date format`"
       data-path=".format"
       :errors="errors"
-      :docUrl="translators.find(t => t.id === translator).doc"
+      :docUrl="translators.find((t) => t.id === translator).doc"
     />
     <StepFormButtonbar />
   </div>
@@ -93,31 +93,29 @@ export default class FromDateStepForm extends BaseStepForm<FromDateStep> {
     { format: '%m-%Y', label: '%m-%Y', example: '12-1970' },
     { format: '%m/%Y', label: '%m/%Y', example: '12/1970' },
   ];
-  readonly datePresets = this.formatOptions.filter(d => d.format !== 'custom').map(d => d.format);
+  readonly datePresets = this.formatOptions
+    .filter((d) => d.format !== 'custom')
+    .map((d) => d.format);
   readonly translators = [
     {
       id: 'mongo36',
       label: 'Mongo 3.6',
-      doc:
-        'https://docs.mongodb.com/manual/reference/operator/aggregation/dateToString/#format-specifiers',
+      doc: 'https://docs.mongodb.com/manual/reference/operator/aggregation/dateToString/#format-specifiers',
     },
     {
       id: 'mongo40',
       label: 'Mongo 4.0',
-      doc:
-        'https://docs.mongodb.com/manual/reference/operator/aggregation/dateToString/#format-specifiers',
+      doc: 'https://docs.mongodb.com/manual/reference/operator/aggregation/dateToString/#format-specifiers',
     },
     {
       id: 'mongo42',
       label: 'Mongo 4.2',
-      doc:
-        'https://docs.mongodb.com/manual/reference/operator/aggregation/dateToString/#format-specifiers',
+      doc: 'https://docs.mongodb.com/manual/reference/operator/aggregation/dateToString/#format-specifiers',
     },
     {
       id: 'mongo50',
       label: 'Mongo 5.0',
-      doc:
-        'https://docs.mongodb.com/manual/reference/operator/aggregation/dateToString/#format-specifiers',
+      doc: 'https://docs.mongodb.com/manual/reference/operator/aggregation/dateToString/#format-specifiers',
     },
     {
       id: 'pandas',
@@ -153,9 +151,9 @@ export default class FromDateStepForm extends BaseStepForm<FromDateStep> {
 
   getSelectedFormat(): FormatOption {
     if (this.datePresets.includes(this.editedStep.format)) {
-      return this.formatOptions.filter(d => d.format === this.editedStep.format)[0];
+      return this.formatOptions.filter((d) => d.format === this.editedStep.format)[0];
     }
-    return this.formatOptions.filter(d => d.format === 'custom')[0];
+    return this.formatOptions.filter((d) => d.format === 'custom')[0];
   }
 
   updateStepFormat(newFormat: FormatOption) {

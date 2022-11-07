@@ -31,7 +31,7 @@ describe('PipelineSelector', () => {
     expect(select.exists()).toBeTruthy();
     const options = select.findAll('option');
     expect(options).toHaveLength(3);
-    const optionsValues = options.wrappers.map(o => o.text());
+    const optionsValues = options.wrappers.map((o) => o.text());
     expect(optionsValues).toEqual(['pipeline1', 'pipeline2', 'pipeline3']);
   });
 
@@ -66,10 +66,7 @@ describe('PipelineSelector', () => {
       localVue,
     });
     const select = wrapper.find('select');
-    select
-      .findAll('option')
-      .at(2)
-      .setSelected();
+    select.findAll('option').at(2).setSelected();
     select.trigger('input');
     expect(store.state.vqb.currentPipelineName).toEqual('pipeline3');
     expect((select.findAll('option').at(2).element as HTMLOptionElement).selected).toBeTruthy();

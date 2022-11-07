@@ -114,24 +114,11 @@ import Popover from '@/components/Popover.vue';
 import AdvancedVariableModal from '@/components/stepforms/widgets/VariableInputs/AdvancedVariableModal.vue';
 import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';
 import Tabs from '@/components/Tabs.vue';
-import {
-  dateToString,
-  isRelativeDate,
-  relativeDateToString,
-} from '@/lib/dates';
-import type {
-  CustomDate,
-  DateRange,
-} from '@/lib/dates';
+import { dateToString, isRelativeDate, relativeDateToString } from '@/lib/dates';
+import type { CustomDate, DateRange } from '@/lib/dates';
 import { sendAnalytics } from '@/lib/send-analytics';
-import {
-  extractVariableIdentifier,
-} from '@/lib/variables';
-import type {
-  AvailableVariable,
-  VariableDelimiters,
-  VariablesBucket,
-} from '@/lib/variables';
+import { extractVariableIdentifier } from '@/lib/variables';
+import type { AvailableVariable, VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 import CustomVariableList from './CustomVariableList.vue';
 import RelativeDateForm from './RelativeDateForm.vue';
@@ -178,7 +165,7 @@ export default class NewDateInput extends Vue {
   }
 
   get relativeAvailableVariables(): VariablesBucket {
-    return this.availableVariables.filter(v => v.value instanceof Date);
+    return this.availableVariables.filter((v) => v.value instanceof Date);
   }
 
   // keep each tab value in memory to enable to switch between tabs without loosing content
@@ -198,7 +185,7 @@ export default class NewDateInput extends Vue {
   get variable(): AvailableVariable | undefined {
     if (typeof this.value !== 'string') return undefined;
     const identifier = extractVariableIdentifier(this.value, this.variableDelimiters);
-    return this.availableVariables.find(v => v.identifier === identifier);
+    return this.availableVariables.find((v) => v.identifier === identifier);
   }
 
   get advancedVariable(): string | undefined {

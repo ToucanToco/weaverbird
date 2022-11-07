@@ -1,13 +1,5 @@
-import type {
-  Pipeline,
-  PipelineStep,
-  Reference,
-  ReferenceToExternalQuery,
-} from '@/lib/steps';
-import {
-  isReferenceToExternalQuery,
-  isReferenceToOtherPipeline,
-} from '@/lib/steps';
+import type { Pipeline, PipelineStep, Reference, ReferenceToExternalQuery } from '@/lib/steps';
+import { isReferenceToExternalQuery, isReferenceToOtherPipeline } from '@/lib/steps';
 
 export type PipelinesScopeContext = {
   [pipelineName: string]: Pipeline;
@@ -53,7 +45,7 @@ export function dereferencePipelines(
       case 'append':
         dereferencedPipeline.push({
           ...step,
-          pipelines: (step.pipelines as string[]).map(reference =>
+          pipelines: (step.pipelines as string[]).map((reference) =>
             _getPipelineForDomain(reference, pipelines),
           ),
         });
@@ -130,7 +122,7 @@ function _getPipelineNamesReferencedBy(
     pipeline
       .map(getStepReferences)
       .forEach((stepReferences: Reference[]) =>
-        stepReferences.forEach(stepReference => allStepReferences.add(stepReference)),
+        stepReferences.forEach((stepReference) => allStepReferences.add(stepReference)),
       );
     // and we restart with theses references
     allStepReferences.forEach((reference: Reference) => {
@@ -167,7 +159,7 @@ export function getPipelineNamesReferencing(reference: string, pipelines: Pipeli
     }
   }
   // remove self from the references
-  return pipelineNames.filter(name => name !== reference);
+  return pipelineNames.filter((name) => name !== reference);
 }
 
 /**

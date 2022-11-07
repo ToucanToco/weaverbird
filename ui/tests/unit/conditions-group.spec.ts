@@ -1,6 +1,6 @@
 import type { Wrapper } from '@vue/test-utils';
 import { shallowMount } from '@vue/test-utils';
-import { afterEach,beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type Vue from 'vue';
 
 import ConditionsGroup from '@/components/ConditionsEditor/ConditionsGroup.vue';
@@ -155,18 +155,12 @@ describe('ConditionsGroup', () => {
     describe('links', () => {
       it('should be plain links for all elements but the last condition', () => {
         const conditionRowWrappers = wrapper.findAll('.condition-row');
-        expect(
-          conditionRowWrappers
-            .at(0)
-            .find('.condition-row__link')
-            .classes(),
-        ).not.toContain('condition-row__link--last');
-        expect(
-          conditionRowWrappers
-            .at(1)
-            .find('.condition-row__link')
-            .classes(),
-        ).toContain('condition-row__link--last');
+        expect(conditionRowWrappers.at(0).find('.condition-row__link').classes()).not.toContain(
+          'condition-row__link--last',
+        );
+        expect(conditionRowWrappers.at(1).find('.condition-row__link').classes()).toContain(
+          'condition-row__link--last',
+        );
       });
     });
   });
@@ -206,32 +200,20 @@ describe('ConditionsGroup', () => {
     describe('links', () => {
       it('should be plain links for all elements but the last group', () => {
         const conditionRowWrappers = wrapper.findAll('.condition-row');
-        expect(
-          conditionRowWrappers
-            .at(0)
-            .find('.condition-row__link')
-            .classes(),
-        ).not.toContain('condition-row__link--last');
-        expect(
-          conditionRowWrappers
-            .at(1)
-            .find('.condition-row__link')
-            .classes(),
-        ).not.toContain('condition-row__link--last');
+        expect(conditionRowWrappers.at(0).find('.condition-row__link').classes()).not.toContain(
+          'condition-row__link--last',
+        );
+        expect(conditionRowWrappers.at(1).find('.condition-row__link').classes()).not.toContain(
+          'condition-row__link--last',
+        );
 
         const childGroupWrappers = wrapper.findAll('.conditions-group__child-group');
-        expect(
-          childGroupWrappers
-            .at(0)
-            .find('.conditions-group__link')
-            .classes(),
-        ).not.toContain('conditions-group__link--last');
-        expect(
-          childGroupWrappers
-            .at(1)
-            .find('.conditions-group__link')
-            .classes(),
-        ).toContain('conditions-group__link--last');
+        expect(childGroupWrappers.at(0).find('.conditions-group__link').classes()).not.toContain(
+          'conditions-group__link--last',
+        );
+        expect(childGroupWrappers.at(1).find('.conditions-group__link').classes()).toContain(
+          'conditions-group__link--last',
+        );
       });
     });
 
@@ -423,10 +405,7 @@ describe('ConditionsGroup', () => {
     });
 
     it('should emit "conditionsTreeUpdated" with the new conditionTree when clicking on "delete row button"', () => {
-      wrapper
-        .findAll('.condition-row__delete')
-        .at(0)
-        .trigger('click');
+      wrapper.findAll('.condition-row__delete').at(0).trigger('click');
       expect(wrapper.emitted().conditionsTreeUpdated).toBeDefined();
       expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([
         {

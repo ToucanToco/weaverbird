@@ -37,11 +37,11 @@ function interpolateFilterCondition(
 ): ConditionType {
   if (S.isFilterComboAnd(condition)) {
     return {
-      and: condition.and.map(cond => interpolateFilterCondition(cond, interpolate, context)),
+      and: condition.and.map((cond) => interpolateFilterCondition(cond, interpolate, context)),
     };
   } else if (S.isFilterComboOr(condition)) {
     return {
-      or: condition.or.map(cond => interpolateFilterCondition(cond, interpolate, context)),
+      or: condition.or.map((cond) => interpolateFilterCondition(cond, interpolate, context)),
     };
   } else {
     switch (condition.operator) {
@@ -120,7 +120,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
 
   addmissingdates(step: Readonly<S.AddMissingDatesStep>) {
     const groups = step.groups
-      ? step.groups.map(col => _interpolate(this.interpolateFunc, col, this.context))
+      ? step.groups.map((col) => _interpolate(this.interpolateFunc, col, this.context))
       : undefined;
     return {
       ...step,
@@ -162,13 +162,13 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
       } else {
         aggregations.push({
           ...agg,
-          columns: agg.columns.map(c => _interpolate(this.interpolateFunc, c, this.context)),
+          columns: agg.columns.map((c) => _interpolate(this.interpolateFunc, c, this.context)),
         });
       }
     }
     return {
       name: step.name,
-      on: step.on.map(col => _interpolate(this.interpolateFunc, col, this.context)),
+      on: step.on.map((col) => _interpolate(this.interpolateFunc, col, this.context)),
       aggregations,
       keepOriginalGranularity: step.keepOriginalGranularity,
     };
@@ -176,7 +176,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
 
   argmax(step: Readonly<S.ArgmaxStep>) {
     const groups = step.groups
-      ? step.groups.map(col => _interpolate(this.interpolateFunc, col, this.context))
+      ? step.groups.map((col) => _interpolate(this.interpolateFunc, col, this.context))
       : undefined;
     return {
       ...step,
@@ -187,7 +187,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
 
   argmin(step: Readonly<S.ArgminStep>) {
     const groups = step.groups
-      ? step.groups.map(col => _interpolate(this.interpolateFunc, col, this.context))
+      ? step.groups.map((col) => _interpolate(this.interpolateFunc, col, this.context))
       : undefined;
     return {
       ...step,
@@ -207,7 +207,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   concatenate(step: Readonly<S.ConcatenateStep>) {
     return {
       ...step,
-      columns: step.columns.map(col => _interpolate(this.interpolateFunc, col, this.context)),
+      columns: step.columns.map((col) => _interpolate(this.interpolateFunc, col, this.context)),
     };
   }
 
@@ -219,7 +219,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     const interpolatedPartialStep = {
       ...step,
       referenceColumn: _interpolate(this.interpolateFunc, step.referenceColumn, this.context),
-      groupby: (step.groupby ?? []).map(col =>
+      groupby: (step.groupby ?? []).map((col) =>
         _interpolate(this.interpolateFunc, col, this.context),
       ),
     };
@@ -286,7 +286,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
       ...step,
       dateCol: _interpolate(this.interpolateFunc, step.dateCol, this.context),
       valueCol: _interpolate(this.interpolateFunc, step.valueCol, this.context),
-      indexColumns: step.indexColumns.map(col =>
+      indexColumns: step.indexColumns.map((col) =>
         _interpolate(this.interpolateFunc, col, this.context),
       ),
       newColumn: _interpolate(this.interpolateFunc, step.newColumn, this.context),
@@ -351,7 +351,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
 
   movingaverage(step: Readonly<S.MovingAverageStep>) {
     const groups = step.groups
-      ? step.groups.map(col => _interpolate(this.interpolateFunc, col, this.context))
+      ? step.groups.map((col) => _interpolate(this.interpolateFunc, col, this.context))
       : undefined;
     return {
       ...step,
@@ -369,7 +369,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   pivot(step: Readonly<S.PivotStep>) {
     return {
       ...step,
-      index: step.index.map(col => _interpolate(this.interpolateFunc, col, this.context)),
+      index: step.index.map((col) => _interpolate(this.interpolateFunc, col, this.context)),
       column_to_pivot: _interpolate(this.interpolateFunc, step.column_to_pivot, this.context),
       value_column: _interpolate(this.interpolateFunc, step.value_column, this.context),
     };
@@ -379,7 +379,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return {
       ...step,
       valueCol: _interpolate(this.interpolateFunc, step.valueCol, this.context),
-      groupby: (step.groupby ?? []).map(col =>
+      groupby: (step.groupby ?? []).map((col) =>
         _interpolate(this.interpolateFunc, col, this.context),
       ),
       newColumnName: _interpolate(this.interpolateFunc, step.newColumnName, this.context),
@@ -415,7 +415,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   rollup(step: Readonly<S.RollupStep>) {
     const ret: S.RollupStep = { ...step };
     const aggregations = [];
-    ret.hierarchy = step.hierarchy.map(col =>
+    ret.hierarchy = step.hierarchy.map((col) =>
       _interpolate(this.interpolateFunc, col, this.context),
     );
     for (const agg of step.aggregations) {
@@ -428,13 +428,15 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
       } else {
         aggregations.push({
           ...agg,
-          columns: agg.columns.map(c => _interpolate(this.interpolateFunc, c, this.context)),
+          columns: agg.columns.map((c) => _interpolate(this.interpolateFunc, c, this.context)),
         });
       }
     }
     ret.aggregations = aggregations;
     if (step.groupby) {
-      ret.groupby = step.groupby.map(col => _interpolate(this.interpolateFunc, col, this.context));
+      ret.groupby = step.groupby.map((col) =>
+        _interpolate(this.interpolateFunc, col, this.context),
+      );
     }
     if (step.labelCol) {
       ret.labelCol = _interpolate(this.interpolateFunc, step.labelCol, this.context);
@@ -485,7 +487,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
 
   top(step: Readonly<S.TopStep>) {
     const groups = step.groups
-      ? step.groups.map(col => _interpolate(this.interpolateFunc, col, this.context))
+      ? step.groups.map((col) => _interpolate(this.interpolateFunc, col, this.context))
       : undefined;
     return {
       ...step,
@@ -496,12 +498,12 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   totals(step: Readonly<S.AddTotalRowsStep>) {
-    const aggregations = step.aggregations.map(agg => ({
+    const aggregations = step.aggregations.map((agg) => ({
       ...agg,
-      columns: agg.columns.map(c => _interpolate(this.interpolateFunc, c, this.context)),
+      columns: agg.columns.map((c) => _interpolate(this.interpolateFunc, c, this.context)),
     }));
     const groups = step.groups
-      ? step.groups.map(col => _interpolate(this.interpolateFunc, col, this.context))
+      ? step.groups.map((col) => _interpolate(this.interpolateFunc, col, this.context))
       : undefined;
     return {
       ...step,
@@ -517,15 +519,15 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   uniquegroups(step: Readonly<S.UniqueGroupsStep>) {
     return {
       name: step.name,
-      on: step.on.map(col => _interpolate(this.interpolateFunc, col, this.context)),
+      on: step.on.map((col) => _interpolate(this.interpolateFunc, col, this.context)),
     };
   }
 
   unpivot(step: Readonly<S.UnpivotStep>) {
     return {
       ...step,
-      keep: step.keep.map(col => _interpolate(this.interpolateFunc, col, this.context)),
-      unpivot: step.unpivot.map(col => _interpolate(this.interpolateFunc, col, this.context)),
+      keep: step.keep.map((col) => _interpolate(this.interpolateFunc, col, this.context)),
+      unpivot: step.unpivot.map((col) => _interpolate(this.interpolateFunc, col, this.context)),
     };
   }
 
@@ -538,7 +540,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
       ...step,
       valueColumn: _interpolate(this.interpolateFunc, step.valueColumn, this.context),
       milestonesColumn: _interpolate(this.interpolateFunc, step.milestonesColumn, this.context),
-      groupby: (step.groupby ?? []).map(col =>
+      groupby: (step.groupby ?? []).map((col) =>
         _interpolate(this.interpolateFunc, col, this.context),
       ),
       start: _interpolate(this.interpolateFunc, step.start, this.context),
@@ -577,7 +579,7 @@ const aloneVarsRegExp = new RegExp('^' + (_.templateSettings.interpolate as RegE
  *
  * 3. Inside objects, keys and values are interpolated
  */
-export const exampleInterpolateFunc: InterpolateFunction = function(
+export const exampleInterpolateFunc: InterpolateFunction = function (
   value: any,
   context: ScopeContext,
 ) {

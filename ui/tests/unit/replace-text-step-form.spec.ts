@@ -82,11 +82,6 @@ describe('Replace Text Step Form', () => {
       },
     );
     await wrapper.vm.$nextTick();
-    expect(
-      wrapper
-        .findAll('inputtextwidget-stub')
-        .at(1)
-        .props().value,
-    ).toEqual('hello');
+    expect(wrapper.findAll('inputtextwidget-stub').at(1).props().value).toEqual('hello');
   });
 });

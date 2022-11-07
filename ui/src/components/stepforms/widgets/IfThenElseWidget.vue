@@ -12,9 +12,7 @@
         </div>
         <template v-if="collapsed">
           <div class="ifthenelse-widget__collapse-description" v-html="formulaToHumanFormat" />
-          <div class="ifthenelse-widget__collapse-text" @click="toggle">
-            EXPAND
-          </div>
+          <div class="ifthenelse-widget__collapse-text" @click="toggle">EXPAND</div>
         </template>
       </div>
       <div class="ifthenelse-widget__row">

@@ -19,7 +19,7 @@ export default class FormWidget extends Vue {
     if (this.errors === null || this.errors === undefined) {
       return undefined;
     } else {
-      return this.errors.find(d => d.dataPath == this.dataPath);
+      return this.errors.find((d) => d.dataPath == this.dataPath);
     }
   }
 

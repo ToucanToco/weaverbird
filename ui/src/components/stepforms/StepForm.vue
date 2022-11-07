@@ -34,7 +34,7 @@ type ValidatorProxy = {
  */
 function componentProxyBoundOn(self: Vue) {
   return {
-    get: function(target: any, prop: string) {
+    get: function (target: any, prop: string) {
       const value = target.options.methods[prop];
       // it should be a function (@Component will put methods in the `options`
       // property), but check it to be sure
@@ -231,7 +231,7 @@ export default class BaseStepForm<StepType> extends Vue {
     addAjvKeywords(ajv);
     const ajvValidator: ValidateFunction<object> = ajv.compile(this.editedStepModel);
     const interpolator = new PipelineInterpolator(this.interpolateFunc, this.variables);
-    const interpolateAndValidate: ValidatorProxy = function(step: PipelineStep) {
+    const interpolateAndValidate: ValidatorProxy = function (step: PipelineStep) {
       const ret = ajvValidator(interpolator.interpolateStep(step));
       interpolateAndValidate.errors = ajvValidator.errors?.map(ajvErrorsToValidationError);
       return ret;

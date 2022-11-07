@@ -1,9 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type{
-  DateRange,
-  RelativeDate,
-} from '@/lib/dates';
+import type { DateRange, RelativeDate } from '@/lib/dates';
 import {
   clampRange,
   CUSTOM_DATE_RANGE_LABEL_SEPARATOR,

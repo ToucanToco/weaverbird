@@ -142,10 +142,7 @@ describe('List Unique Value', () => {
 
   describe('click on one checkbox', () => {
     it('should emit new value', () => {
-      wrapper
-        .findAll('CheckboxWidget-stub')
-        .at(0)
-        .vm.$emit('input'); // unselecting "France" value
+      wrapper.findAll('CheckboxWidget-stub').at(0).vm.$emit('input'); // unselecting "France" value
       expect(wrapper.emitted().input[0][0]).toEqual({
         column: 'col1',
         operator: 'in',
@@ -154,10 +151,7 @@ describe('List Unique Value', () => {
     });
 
     it('should emit new value', () => {
-      wrapper
-        .findAll('CheckboxWidget-stub')
-        .at(1)
-        .vm.$emit('input'); // unselecting "Framboise" value
+      wrapper.findAll('CheckboxWidget-stub').at(1).vm.$emit('input'); // unselecting "Framboise" value
       expect(wrapper.emitted().input[0][0]).toEqual({
         column: 'col1',
         operator: 'in',

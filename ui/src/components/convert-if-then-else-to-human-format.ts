@@ -1,13 +1,5 @@
-import type {
-  FilterCondition,
-  FilterSimpleCondition,
-  Formula,
-  IfThenElseStep,
-} from '@/lib/steps';
-import {
-  isFilterComboAnd,
-  isFilterComboOr,
-} from '@/lib/steps';
+import type { FilterCondition, FilterSimpleCondition, Formula, IfThenElseStep } from '@/lib/steps';
+import { isFilterComboAnd, isFilterComboOr } from '@/lib/steps';
 
 export const EMPTY_CONDITION_SIGN = '<span class="empty">[null]</span>';
 
@@ -27,7 +19,7 @@ function _valueOrArrayToString(value: string | string[]): string {
   if (!Array.isArray(value)) {
     return _valueToHumanString(value);
   } else {
-    return value.map(v => _valueToHumanString(v)).join(', ');
+    return value.map((v) => _valueToHumanString(v)).join(', ');
   }
 }
 

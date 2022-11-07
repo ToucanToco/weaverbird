@@ -62,7 +62,7 @@ export function pandasDataTableToDataset(pandasTable: PandasDataTable): DataSet 
   }));
   for (const row of pandasTable.data) {
     dataset.data.push(
-      dataset.headers.map(column =>
+      dataset.headers.map((column) =>
         Object.prototype.hasOwnProperty.call(row, column.name) ? row[column.name] : null,
       ),
     );

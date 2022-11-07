@@ -30,7 +30,7 @@ export function addAjvKeywords(ajv: Ajv) {
   ajv.addKeyword({
     keyword: 'columnNameAlreadyUsed',
     type: 'string',
-    validate: function(schema: { columnNames: string[] }, data: string) {
+    validate: function (schema: { columnNames: string[] }, data: string) {
       return !schema.columnNames.includes(data);
     },
   });

@@ -240,7 +240,7 @@ describe('getter tests', () => {
   });
 
   describe('domain extraction tests', () => {
-    it('should not return anything if no pipeline is selected', function() {
+    it('should not return anything if no pipeline is selected', function () {
       const state = buildState({});
       expect(getters.domainStep(state, {}, {}, {})).toBeUndefined;
     });
@@ -279,7 +279,7 @@ describe('getter tests', () => {
   });
 
   describe('pipeline empty tests', () => {
-    it('should not return anything if no pipeline is selected', function() {
+    it('should not return anything if no pipeline is selected', function () {
       const state = buildState({});
       expect(getters.isPipelineEmpty(state, {}, {}, {})).toBeUndefined;
     });
@@ -325,7 +325,7 @@ describe('getter tests', () => {
   });
 
   describe('step configuration', () => {
-    it('should retrieve the configuration of a step using its index', function() {
+    it('should retrieve the configuration of a step using its index', function () {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'foo' },
         { name: 'rename', toRename: [['foo', 'bar']] },
@@ -335,26 +335,26 @@ describe('getter tests', () => {
       expect(getters.stepConfig(state, {}, {}, {})(1)).toEqual(pipeline[1]);
     });
 
-    it('should not return anything if there is no selected pipeline', function() {
+    it('should not return anything if there is no selected pipeline', function () {
       const state = buildState({});
       expect(getters.stepConfig(state, {}, {}, {})(0)).toBeUndefined();
     });
   });
 
   describe('step errors', () => {
-    it('should return the error message if step index is found in errors', function() {
+    it('should return the error message if step index is found in errors', function () {
       const state = buildState({
         backendMessages: [{ type: 'error', message: 'lalalolilol', index: 3 }],
       });
       expect(getters.stepErrors(state, {}, {}, {})(3)).toStrictEqual('lalalolilol');
     });
-    it('should return undefined if step index has no errors', function() {
+    it('should return undefined if step index has no errors', function () {
       const state = buildState({
         backendMessages: [{ type: 'error', message: 'lalalolilol', index: 3 }],
       });
       expect(getters.stepErrors(state, {}, {}, {})(0)).toBeUndefined();
     });
-    it('should return undefined if pipeline has no errors', function() {
+    it('should return undefined if pipeline has no errors', function () {
       const state = buildState({});
       expect(getters.stepErrors(state, {}, {}, {})(0)).toBeUndefined();
     });
@@ -429,7 +429,7 @@ describe('mutation tests', () => {
     spy.mockRestore();
   });
 
-  describe('deleteSteps', function() {
+  describe('deleteSteps', function () {
     it('should do nothing if no pipeline is selected', () => {
       const state = buildState({});
       mutations.deleteSteps(state, { indexes: [1] });
@@ -461,7 +461,7 @@ describe('mutation tests', () => {
     });
   });
 
-  describe('addSteps', function() {
+  describe('addSteps', function () {
     it('should do nothing if no pipeline is selected', () => {
       const state = buildState({});
       mutations.addSteps(state, {
@@ -574,14 +574,14 @@ describe('mutation tests', () => {
     expect(state.dataset.paginationContext?.pageno).toEqual(1);
   });
 
-  describe('setPipeline', function() {
-    it('should do nothing if no pipeline is selected', function() {
+  describe('setPipeline', function () {
+    it('should do nothing if no pipeline is selected', function () {
       const state = buildState({});
       mutations.setPipeline(state, { pipeline: [] });
       expect(getters.pipeline(state, {}, {}, {})).toBeUndefined();
     });
 
-    it('should replace the current pipeline', function() {
+    it('should replace the current pipeline', function () {
       const state = buildStateWithOnePipeline([], {
         dataset: {
           headers: [],
@@ -1052,7 +1052,7 @@ describe('action tests', () => {
     });
   });
 
-  describe('setAvailableVariables', function() {
+  describe('setAvailableVariables', function () {
     it('set available variables', () => {
       const state = buildState({});
       const availableVariables = [
@@ -1064,7 +1064,7 @@ describe('action tests', () => {
     });
   });
 
-  describe('setVariableDelimiters', function() {
+  describe('setVariableDelimiters', function () {
     it('set variable delimiters', () => {
       const state = buildState({});
       const variableDelimiters = { start: '{{', end: '}}' };
@@ -1073,7 +1073,7 @@ describe('action tests', () => {
     });
   });
 
-  describe('setBackendService', function() {
+  describe('setBackendService', function () {
     it('set the backend service', () => {
       const state = buildState({});
       const backendService = {

@@ -109,7 +109,7 @@ const actions: ActionTree<VQBState, any> = {
     const response = await state.backendService.executePipeline(pipeline, state.pipelines, 1, 0);
 
     if (response.data) {
-      return response.data.headers.map(col => col.name);
+      return response.data.headers.map((col) => col.name);
     }
   },
 
@@ -180,6 +180,6 @@ const actions: ActionTree<VQBState, any> = {
       context.commit('setLoading', { type: 'uniqueValues', isLoading: true });
     }
   },
-}
+};
 
 export default actions;

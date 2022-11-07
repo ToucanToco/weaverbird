@@ -322,7 +322,7 @@ function transformTrim(step: Readonly<TrimStep>): MongoStep {
   let cols: string[] = [];
   cols = [...step.columns];
 
-  const addFields = Object.fromEntries(cols.map(x => [x, { $trim: { input: $$(x) } }]));
+  const addFields = Object.fromEntries(cols.map((x) => [x, { $trim: { input: $$(x) } }]));
 
   return { $addFields: addFields };
 }

@@ -6,7 +6,7 @@ import type { DataSet } from '@/lib/dataset';
 import { enumerate } from '@/lib/helpers';
 
 function datasetColumnNames(dataset: DataSet) {
-  return dataset.headers.map(coldef => coldef.name);
+  return dataset.headers.map((coldef) => coldef.name);
 }
 
 export function isDatasetComplete(dataset: DataSet): boolean {
@@ -45,7 +45,7 @@ type ColumnStat = Record<any, ColumnValueStat>;
 function localUniqueStats(dataset: DataSet) {
   const colnames = datasetColumnNames(dataset);
   const columnValuesCount: Record<string, ColumnStat> = Object.fromEntries(
-    colnames.map(c => [c, {}]),
+    colnames.map((c) => [c, {}]),
   );
   const allRecords = enumerate(iterateRecords(dataset)) || []; // If there is no record, the enumaration will return undefined
   for (const [, record] of allRecords) {
@@ -92,7 +92,7 @@ function _statCompare(stat1: ColumnValueStat, stat2: ColumnValueStat) {
  */
 export function addLocalUniquesToDataset(dataset: DataSet) {
   const uniqueStats = localUniqueStats(dataset);
-  const newHeaders = dataset.headers.map(hdr => ({
+  const newHeaders = dataset.headers.map((hdr) => ({
     ...hdr,
     uniques: {
       values: Object.values(uniqueStats[hdr.name]).sort(_statCompare),
@@ -124,7 +124,7 @@ export function addLocalUniquesToDataset(dataset: DataSet) {
  * }]
  */
 export function _prepareColumnStats(uniqueStatsDataset: DataSet): [string, ColumnValueStat[]] {
-  const columns: string[] = uniqueStatsDataset.headers.map(e => e.name);
+  const columns: string[] = uniqueStatsDataset.headers.map((e) => e.name);
   const indexOfCount: number = columns.indexOf('__vqb_count__');
   const indexOfColumn: number = 1 - indexOfCount; // Trick to get the index of `${column}` in the `columns` array.
   // In the example above I get:

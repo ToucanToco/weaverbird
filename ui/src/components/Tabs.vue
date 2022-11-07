@@ -44,7 +44,7 @@ export default class Tabs extends Vue {
 
   created() {
     // select first available tab if necessary
-    const availableTabs = this.tabs.filter(t => this.disabledTabs.indexOf(t) === -1);
+    const availableTabs = this.tabs.filter((t) => this.disabledTabs.indexOf(t) === -1);
     const tabIsUnavailable =
       this.selectedTab == null || availableTabs.indexOf(this.selectedTab) === -1;
     if (tabIsUnavailable) this.selectTab(availableTabs[0]);

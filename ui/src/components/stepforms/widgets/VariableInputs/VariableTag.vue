@@ -76,7 +76,7 @@ export default class VariableTag extends Vue {
    * Retrieve variable in available variables by identifier.
    */
   get variable() {
-    return this.availableVariables.find(aV => aV.identifier === this.variableIdentifier);
+    return this.availableVariables.find((aV) => aV.identifier === this.variableIdentifier);
   }
 
   /*

@@ -1,7 +1,7 @@
 import type { Wrapper } from '@vue/test-utils';
 import { shallowMount } from '@vue/test-utils';
-import type {SpyInstance} from "vitest";
-import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
+import type { SpyInstance } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import FakeOtherComponent from '@/directives/resizable/__mocks__/FakeOtherComponent.vue';
 import FakeTableComponent from '@/directives/resizable/__mocks__/FakeTableComponent.vue';

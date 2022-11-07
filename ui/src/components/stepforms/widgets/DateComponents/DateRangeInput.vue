@@ -216,7 +216,7 @@ export default class DateRangeInput extends Vue {
 
   get accessibleVariables(): VariablesBucket {
     // some variables are required for date computations but should not be part of the variable list displayed to users
-    return this.availableVariables.filter(v => v.category !== 'hidden');
+    return this.availableVariables.filter((v) => v.category !== 'hidden');
   }
 
   get boundsAsDateRange(): DateRange | undefined {
@@ -250,7 +250,7 @@ export default class DateRangeInput extends Vue {
   get variable(): AvailableVariable | undefined {
     if (typeof this.value !== 'string') return undefined;
     const identifier = extractVariableIdentifier(this.value, this.variableDelimiters);
-    return this.availableVariables.find(v => v.identifier === identifier);
+    return this.availableVariables.find((v) => v.identifier === identifier);
   }
 
   get selectedVariables(): string {

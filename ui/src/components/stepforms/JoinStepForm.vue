@@ -117,7 +117,7 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
   }
 
   get options(): object[] {
-    return this.availableDatasetNames.map(name => {
+    return this.availableDatasetNames.map((name) => {
       const option = { label: name, trackBy: name };
       if (this.referencingPipelines.includes(name)) {
         Object.assign(option, {

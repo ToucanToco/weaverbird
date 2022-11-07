@@ -235,19 +235,9 @@ describe('Data Viewer', () => {
       expect(headerIconsWrapper.at(1).text()).toEqual('123');
       expect(headerIconsWrapper.at(2).text()).toEqual('123');
       expect(headerIconsWrapper.at(3).text()).toEqual('1.2');
-      expect(
-        headerIconsWrapper
-          .at(4)
-          .find('FAIcon-stub')
-          .props().icon,
-      ).toEqual('calendar-alt');
+      expect(headerIconsWrapper.at(4).find('FAIcon-stub').props().icon).toEqual('calendar-alt');
       expect(headerIconsWrapper.at(5).text()).toEqual('{ }');
-      expect(
-        headerIconsWrapper
-          .at(6)
-          .find('FAIcon-stub')
-          .props().icon,
-      ).toEqual('check');
+      expect(headerIconsWrapper.at(6).find('FAIcon-stub').props().icon).toEqual('check');
       expect(headerIconsWrapper.at(7).text()).toEqual('???');
     });
 
@@ -313,19 +303,13 @@ describe('Data Viewer', () => {
       // DataTypesMenu is not open yet:
       expect(wrapper.findAll('DataTypesMenu-stub').at(0).vm.$props.visible).toBeFalsy();
       // when click on icon:
-      await wrapper
-        .findAll('.data-viewer__header-icon--active')
-        .at(0)
-        .trigger('click');
+      await wrapper.findAll('.data-viewer__header-icon--active').at(0).trigger('click');
       // it should open the DataTypesMenu
       expect(wrapper.findAll('DataTypesMenu-stub').at(0).vm.$props.visible).toBeTruthy();
       expect(wrapper.findAll('DataTypesMenu-stub').at(1).vm.$props.visible).toBeFalsy();
       expect(wrapper.findAll('DataTypesMenu-stub').at(2).vm.$props.visible).toBeFalsy();
       // when close:
-      wrapper
-        .findAll('DataTypesMenu-stub')
-        .at(0)
-        .vm.$emit('closed');
+      wrapper.findAll('DataTypesMenu-stub').at(0).vm.$emit('closed');
       await wrapper.vm.$nextTick();
       // DataTypesMenu is not open anymore:
       expect(wrapper.findAll('DataTypesMenu-stub').at(0).vm.$props.visible).toBeFalsy();
@@ -382,10 +366,7 @@ describe('Data Viewer', () => {
 
       it('... but not when headers are not modified', async () => {
         createWrapper();
-        await wrapper
-          .findAll('.data-viewer__header-action')
-          .at(0)
-          .trigger('click');
+        await wrapper.findAll('.data-viewer__header-action').at(0).trigger('click');
         const actionMenuOpened = wrapper.findAll('ActionMenu-stub').at(0);
         expect(actionMenuOpened.vm.$props.visible).toBeTruthy();
         // load the values for columnA
@@ -530,12 +511,9 @@ describe('Data Viewer', () => {
       await localVue.nextTick();
       const rowsWrapper = wrapper.findAll('.data-viewer__row');
       dataset.data.forEach((_d, i) => {
-        expect(
-          rowsWrapper
-            .at(i)
-            .find('dataviewercell-stub')
-            .classes(),
-        ).toContain('data-viewer__cell--active');
+        expect(rowsWrapper.at(i).find('dataviewercell-stub').classes()).toContain(
+          'data-viewer__cell--active',
+        );
       });
     });
   });
@@ -610,7 +588,7 @@ describe('Data Viewer', () => {
 
     it('should add a specific class to disable data viewer header', () => {
       const dataViewerHeaderCells = wrapper.findAll('.data-viewer__header-cell');
-      dataViewerHeaderCells.wrappers.forEach(wrapper => {
+      dataViewerHeaderCells.wrappers.forEach((wrapper) => {
         expect(wrapper.classes()).toContain('data-viewer__header-cell--disabled');
       });
     });

@@ -67,9 +67,9 @@ export default class SearchActions extends Vue {
   }
 
   get actionOptions() {
-    return SEARCH_ACTION.map(e => ({
+    return SEARCH_ACTION.map((e) => ({
       ...e,
-      actions: e.actions.filter(a => !this.unsupportedSteps.includes(a.name)),
+      actions: e.actions.filter((a) => !this.unsupportedSteps.includes(a.name)),
     }));
   }
 
@@ -80,8 +80,8 @@ export default class SearchActions extends Vue {
   }
 
   $refs!: {
-    searchComponent: Multiselect
-  }
+    searchComponent: Multiselect;
+  };
 
   focusSearchBar() {
     console.log(this.$refs.searchComponent.$el);

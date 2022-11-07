@@ -131,7 +131,7 @@ export default class EvolutionStepForm extends BaseStepForm<EvolutionStep> {
 
   get evolutionFormat(): EvolutionFormat {
     return this.evolutionFormats.filter(
-      d => d.evolutionFormat === this.editedStep.evolutionFormat,
+      (d) => d.evolutionFormat === this.editedStep.evolutionFormat,
     )[0];
   }
 
@@ -140,7 +140,7 @@ export default class EvolutionStepForm extends BaseStepForm<EvolutionStep> {
   }
 
   get evolutionType(): EvolutionType {
-    return this.evolutionTypes.filter(d => d.evolutionType === this.editedStep.evolutionType)[0];
+    return this.evolutionTypes.filter((d) => d.evolutionType === this.editedStep.evolutionType)[0];
   }
 
   set evolutionType(input: EvolutionType) {

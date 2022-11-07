@@ -1,7 +1,7 @@
 import type { Wrapper } from '@vue/test-utils';
 import { shallowMount } from '@vue/test-utils';
 import { DateTime } from 'luxon';
-import { afterEach,beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import CustomGranularityCalendar from '@/components/DatePicker/CustomGranularityCalendar.vue';
 import { DECADE_NAV, RANGE_PICKERS, WEEK_NAV } from '@/components/DatePicker/GranularityConfigs';
@@ -265,7 +265,7 @@ describe('CustomGranularityCalendar', () => {
 
     it('should provide the right options', () => {
       expect(options).toHaveLength(8);
-      expect(options.map(dt => dt.weekNumber)).toStrictEqual([47, 48, 49, 50, 51, 52, 1, 2]);
+      expect(options.map((dt) => dt.weekNumber)).toStrictEqual([47, 48, 49, 50, 51, 52, 1, 2]);
     });
 
     it('should convert an option to a date range (monday to monday)', () => {
@@ -305,7 +305,7 @@ describe('CustomGranularityCalendar', () => {
 
     it('should provide the right options', () => {
       expect(options).toHaveLength(4);
-      expect(options.map(dt => dt.quarter)).toStrictEqual([1, 2, 3, 4]);
+      expect(options.map((dt) => dt.quarter)).toStrictEqual([1, 2, 3, 4]);
     });
 
     it('should convert an option to a date range', () => {
@@ -342,18 +342,8 @@ describe('CustomGranularityCalendar', () => {
 
     it('should provide the right options', () => {
       expect(options).toHaveLength(11);
-      expect(options.map(dt => dt.year)).toStrictEqual([
-        2010,
-        2011,
-        2012,
-        2013,
-        2014,
-        2015,
-        2016,
-        2017,
-        2018,
-        2019,
-        2020,
+      expect(options.map((dt) => dt.year)).toStrictEqual([
+        2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020,
       ]);
     });
 
@@ -391,11 +381,11 @@ describe('CustomGranularityCalendar', () => {
     it('should deactivate choices that have no overlap with the bounds range', async () => {
       const options = wrapper.findAll('.custom-granularity-calendar__option');
       const enabledOptionsLabels = options
-        .filter(w => !w.classes('custom-granularity-calendar__option--disabled'))
-        .wrappers.map(w => w.find('.custom-granularity-calendar__option-label').text());
+        .filter((w) => !w.classes('custom-granularity-calendar__option--disabled'))
+        .wrappers.map((w) => w.find('.custom-granularity-calendar__option-label').text());
       const disabledOptionsLabels = options
-        .filter(w => w.classes('custom-granularity-calendar__option--disabled'))
-        .wrappers.map(w => w.find('.custom-granularity-calendar__option-label').text());
+        .filter((w) => w.classes('custom-granularity-calendar__option--disabled'))
+        .wrappers.map((w) => w.find('.custom-granularity-calendar__option-label').text());
 
       expect(enabledOptionsLabels).toEqual([
         'May',
@@ -409,7 +399,7 @@ describe('CustomGranularityCalendar', () => {
       expect(disabledOptionsLabels).toEqual(['January', 'February', 'March', 'April', 'December']);
 
       // Clicking on a disabled button should have no effect
-      await options.filter(w => w.text().includes('January')).wrappers[0].trigger('click');
+      await options.filter((w) => w.text().includes('January')).wrappers[0].trigger('click');
       expect(wrapper.emitted('input')).toBeUndefined();
     });
 

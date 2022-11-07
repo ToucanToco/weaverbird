@@ -101,7 +101,7 @@ describe('Tabs', () => {
     });
     it('should display the formatted tabs', () => {
       expect(wrapper.findAll('.tabs__tab').wrappers.map((wrapper: any) => wrapper.text())).toEqual(
-        TABS.map(tab => `${tab} YOLO`),
+        TABS.map((tab) => `${tab} YOLO`),
       );
     });
   });

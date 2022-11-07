@@ -58,7 +58,7 @@ describe('ActionToolbarSearch', () => {
         wrapper
           .find(Multiselect)
           .props('options')
-          .flatMap((e: ActionCategories) => e.actions.map(e => e.name)),
+          .flatMap((e: ActionCategories) => e.actions.map((e) => e.name)),
       );
       expect(multiselectOptions.size > 0).toBeTruthy();
       expect(multiselectOptions).not.toContain('cast');

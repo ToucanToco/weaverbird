@@ -42,8 +42,11 @@ export const transformRelativeDateToDate = (
   variableDelimiters: VariableDelimiters = { start: '', end: '' },
 ): Date | undefined => {
   // retrieve relative date variable value in order to use it to calculate date
-  const value = retrieveVariable(relativeDate.date, relativeAvailableVariables, variableDelimiters)
-    ?.value;
+  const value = retrieveVariable(
+    relativeDate.date,
+    relativeAvailableVariables,
+    variableDelimiters,
+  )?.value;
   if (!(value instanceof Date)) return;
 
   const operator = RELATIVE_DATE_OPERATORS[relativeDate.operator];
@@ -70,8 +73,11 @@ export const transformRelativeDateToDateRange = (
   variableDelimiters: VariableDelimiters = { start: '', end: '' },
 ): DateRange | undefined => {
   // retrieve relative date variable value in order to use it to calculate date
-  const value = retrieveVariable(relativeDate.date, relativeAvailableVariables, variableDelimiters)
-    ?.value;
+  const value = retrieveVariable(
+    relativeDate.date,
+    relativeAvailableVariables,
+    variableDelimiters,
+  )?.value;
   if (!(value instanceof Date)) return;
 
   const operator = RELATIVE_DATE_OPERATORS[relativeDate.operator];
@@ -111,12 +117,8 @@ export const setDateRangeHours = (value: DateRange | string | undefined): DateRa
   const startHours = { hour: 0, minute: 0, second: 0, millisecond: 0 };
   const endHours = { hour: 23, minute: 59, second: 59, millisecond: 999 };
   return {
-    start: DateTime.fromJSDate(value.start, { zone: 'UTC' })
-      .set(startHours)
-      .toJSDate(),
-    end: DateTime.fromJSDate(value.end, { zone: 'UTC' })
-      .set(endHours)
-      .toJSDate(),
+    start: DateTime.fromJSDate(value.start, { zone: 'UTC' }).set(startHours).toJSDate(),
+    end: DateTime.fromJSDate(value.end, { zone: 'UTC' }).set(endHours).toJSDate(),
   };
 };
 /*

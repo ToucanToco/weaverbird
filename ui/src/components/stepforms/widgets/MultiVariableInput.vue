@@ -57,7 +57,7 @@ export default class MultiVariableInput extends Vue {
    */
   chooseAdvancedVariable(value: string) {
     // remove potential duplicated value
-    const values = [...this.value].filter(v => v !== value);
+    const values = [...this.value].filter((v) => v !== value);
 
     const index = values.indexOf(this.editedAdvancedVariable);
     if (index !== -1) {

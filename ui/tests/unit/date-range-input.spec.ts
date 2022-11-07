@@ -4,15 +4,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { POPOVER_ALIGN } from '@/components/constants';
 import DateRangeInput from '@/components/stepforms/widgets/DateComponents/DateRangeInput.vue';
-import type {
-  DateRange,
-  RelativeDate,
-} from '@/lib/dates';
-import {
-  CUSTOM_DATE_RANGE_LABEL_SEPARATOR,
-  dateRangeToString,
-  isDateRange,
-} from '@/lib/dates';
+import type { DateRange, RelativeDate } from '@/lib/dates';
+import { CUSTOM_DATE_RANGE_LABEL_SEPARATOR, dateRangeToString, isDateRange } from '@/lib/dates';
 import type { LocaleIdentifier } from '@/lib/internationalization';
 
 vi.mock('@/components/FAIcon.vue');

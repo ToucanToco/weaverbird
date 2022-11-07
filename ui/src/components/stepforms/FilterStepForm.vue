@@ -25,7 +25,12 @@ import { Prop } from 'vue-property-decorator';
 
 import FilterEditor from '@/components/FilterEditor.vue';
 import type { ColumnTypeMapping } from '@/lib/dataset';
-import type { FilterCondition, FilterSimpleCondition, FilterStep, PipelineStepName } from '@/lib/steps';
+import type {
+  FilterCondition,
+  FilterSimpleCondition,
+  FilterStep,
+  PipelineStepName,
+} from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 

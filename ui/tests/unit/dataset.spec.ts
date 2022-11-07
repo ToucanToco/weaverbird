@@ -7,11 +7,7 @@ import {
   updateLocalUniquesFromDatabase,
 } from '@/lib/dataset/helpers';
 import type { MongoResults } from '@/lib/dataset/mongo';
-import {
-  _guessType,
-  inferTypeFromDataset,
-  mongoResultsToDataset,
-} from '@/lib/dataset/mongo';
+import { _guessType, inferTypeFromDataset, mongoResultsToDataset } from '@/lib/dataset/mongo';
 
 /**
  * helper functions to sort a dataset so that we can test output in a predictible way.
@@ -23,10 +19,10 @@ function _sortDataset(dataset: DataSet): DataSet {
   const sortedColumns = Array.from(dataset.headers).sort((col1, col2) =>
     col1.name.localeCompare(col2.name),
   );
-  const reorderMap = sortedColumns.map(colname => dataset.headers.indexOf(colname));
+  const reorderMap = sortedColumns.map((colname) => dataset.headers.indexOf(colname));
   const sortedData = [];
   for (const row of dataset.data) {
-    sortedData.push(reorderMap.map(newidx => row[newidx]));
+    sortedData.push(reorderMap.map((newidx) => row[newidx]));
   }
   return {
     headers: sortedColumns,

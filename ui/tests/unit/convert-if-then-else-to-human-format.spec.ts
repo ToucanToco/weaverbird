@@ -4,8 +4,8 @@ import convertIfThenElseToHumanFormat, {
   EMPTY_CONDITION_SIGN,
 } from '@/components/convert-if-then-else-to-human-format';
 
-describe('convertIfThenElseToHumanFormat', function() {
-  it('should handle a simple condition', function() {
+describe('convertIfThenElseToHumanFormat', function () {
+  it('should handle a simple condition', function () {
     expect(
       convertIfThenElseToHumanFormat({
         if: { column: 'column', value: 'value', operator: 'eq' },
@@ -14,7 +14,7 @@ describe('convertIfThenElseToHumanFormat', function() {
       }),
     ).toEqual(`column = 'value' <strong>THEN</strong> 'then' <strong>ELSE</strong> 'else'`);
   });
-  it('should handle full empty condition', function() {
+  it('should handle full empty condition', function () {
     expect(
       convertIfThenElseToHumanFormat({
         if: { operator: 'eq', column: '', value: '' },
@@ -25,7 +25,7 @@ describe('convertIfThenElseToHumanFormat', function() {
       `${EMPTY_CONDITION_SIGN} <strong>THEN</strong> ${EMPTY_CONDITION_SIGN} <strong>ELSE</strong> ${EMPTY_CONDITION_SIGN}`,
     );
   });
-  it('should replace empty step with empty condition sign', function() {
+  it('should replace empty step with empty condition sign', function () {
     expect(
       convertIfThenElseToHumanFormat({
         if: { column: '', value: '', operator: 'eq' },
@@ -34,7 +34,7 @@ describe('convertIfThenElseToHumanFormat', function() {
       }),
     ).toContain(EMPTY_CONDITION_SIGN);
   });
-  it('should replace condition with empty column and value by empty condition sign', function() {
+  it('should replace condition with empty column and value by empty condition sign', function () {
     expect(
       convertIfThenElseToHumanFormat({
         if: { column: '', value: '', operator: 'eq' },
@@ -43,7 +43,7 @@ describe('convertIfThenElseToHumanFormat', function() {
       }),
     ).toContain(EMPTY_CONDITION_SIGN);
   });
-  it('should delete else step on else if mode', function() {
+  it('should delete else step on else if mode', function () {
     expect(
       convertIfThenElseToHumanFormat({
         if: { column: '', value: '', operator: 'eq' },
@@ -52,7 +52,7 @@ describe('convertIfThenElseToHumanFormat', function() {
       }),
     ).not.toContain('ELSE');
   });
-  it('should keep else step on else mode', function() {
+  it('should keep else step on else mode', function () {
     expect(
       convertIfThenElseToHumanFormat({
         if: { column: '', value: '', operator: 'eq' },
@@ -61,7 +61,7 @@ describe('convertIfThenElseToHumanFormat', function() {
       }),
     ).toContain('ELSE');
   });
-  it('should never display if/elseif separator', function() {
+  it('should never display if/elseif separator', function () {
     const sentence = convertIfThenElseToHumanFormat({
       if: { column: '', value: '', operator: 'eq' },
       then: '',
@@ -70,7 +70,7 @@ describe('convertIfThenElseToHumanFormat', function() {
     expect(sentence).not.toContain(`IF`);
     expect(sentence).not.toContain(`ELSE IF`);
   });
-  it('should always display then separator', function() {
+  it('should always display then separator', function () {
     expect(
       convertIfThenElseToHumanFormat({
         if: { column: '', value: '', operator: 'eq' },
@@ -79,7 +79,7 @@ describe('convertIfThenElseToHumanFormat', function() {
       }),
     ).toContain('THEN');
   });
-  it('should handle a condition with multiple column values', function() {
+  it('should handle a condition with multiple column values', function () {
     expect(
       convertIfThenElseToHumanFormat({
         if: { column: 'mycolumn', value: ['one', 'two'], operator: 'in' },
@@ -89,7 +89,7 @@ describe('convertIfThenElseToHumanFormat', function() {
     ).toEqual(`mycolumn is in ('one', 'two') <strong>THEN</strong> ${EMPTY_CONDITION_SIGN}`);
   });
 
-  it('should handle a condition with multiple columns and values', function() {
+  it('should handle a condition with multiple columns and values', function () {
     expect(
       convertIfThenElseToHumanFormat({
         if: {
@@ -106,7 +106,7 @@ describe('convertIfThenElseToHumanFormat', function() {
     );
   });
 
-  it('should handle deeply nested conditions', function() {
+  it('should handle deeply nested conditions', function () {
     expect(
       convertIfThenElseToHumanFormat({
         if: {
@@ -129,7 +129,7 @@ describe('convertIfThenElseToHumanFormat', function() {
     );
   });
 
-  it('should handle a condition with a fallback for unhandled operators', function() {
+  it('should handle a condition with a fallback for unhandled operators', function () {
     expect(
       convertIfThenElseToHumanFormat({
         if: { operator: 'matches', column: 'note', value: 'duh' },
@@ -139,7 +139,7 @@ describe('convertIfThenElseToHumanFormat', function() {
     ).toEqual(`note matches regex 'duh' <strong>THEN</strong> ${EMPTY_CONDITION_SIGN}`);
   });
 
-  it('should handle non-string values', function() {
+  it('should handle non-string values', function () {
     const firstOf2019 = new Date('2019-01-01');
     expect(
       convertIfThenElseToHumanFormat({
@@ -156,7 +156,7 @@ describe('convertIfThenElseToHumanFormat', function() {
     );
   });
 
-  it('should handle string values', function() {
+  it('should handle string values', function () {
     expect(
       convertIfThenElseToHumanFormat({
         if: { operator: 'eq', column: 'myColumn', value: '{{ user.groups }}' },
@@ -166,7 +166,7 @@ describe('convertIfThenElseToHumanFormat', function() {
     ).toEqual(`myColumn = <em>user.groups</em> <strong>THEN</strong> ${EMPTY_CONDITION_SIGN}`);
   });
 
-  it('should display interpolated values with some emphasis', function() {
+  it('should display interpolated values with some emphasis', function () {
     expect(
       convertIfThenElseToHumanFormat({
         if: { operator: 'eq', column: 'city', value: '{{ user.attributes.city }}' },

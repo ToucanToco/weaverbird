@@ -162,7 +162,7 @@ export default class DataViewer extends Vue {
   activeDataTypeMenuColumnName = '';
 
   get hasSupportedActions(): boolean {
-    return this.supportedSteps.filter(step => step !== 'domain').length > 0;
+    return this.supportedSteps.filter((step) => step !== 'domain').length > 0;
   }
 
   /**
@@ -171,7 +171,7 @@ export default class DataViewer extends Vue {
    * @return {Array<object>}
    */
   get formattedColumns() {
-    return this.columnHeaders.map(d => {
+    return this.columnHeaders.map((d) => {
       return {
         name: d.name,
         type: d.type || 'undefined',

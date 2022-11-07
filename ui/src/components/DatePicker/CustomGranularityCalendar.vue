@@ -127,7 +127,7 @@ export default class CustomGranularityCalendar extends Vue {
   }
 
   get selectableOptions(): SelectableOption[] {
-    return this.currentNavRangeRangeStarts.map(date => {
+    return this.currentNavRangeRangeStarts.map((date) => {
       const range = this.retrieveRangeFromOption(date);
       const description = this.pickerConfig.selectableRanges.description(range, this.locale);
       const label = this.pickerConfig.selectableRanges.label(date, this.locale);
@@ -140,9 +140,8 @@ export default class CustomGranularityCalendar extends Vue {
   // The previous button should be disabled if the last selectable option of the previous range should be disabled
   get prevNavRangeDisabled(): boolean {
     const previousNavRangeStart = this.pickerConfig.navRange.prev(this.currentNavRangeStart);
-    const previousNavRangeStarts = this.pickerConfig.selectableRanges.currentOptions(
-      previousNavRangeStart,
-    );
+    const previousNavRangeStarts =
+      this.pickerConfig.selectableRanges.currentOptions(previousNavRangeStart);
     const lastPreviousNavRangeStart = previousNavRangeStarts[previousNavRangeStarts.length - 1];
     return this.isOptionDisabled(lastPreviousNavRangeStart);
   }
