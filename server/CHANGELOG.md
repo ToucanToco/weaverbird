@@ -1,6 +1,9 @@
 # Changelog (weaverbird python package)
 
-- Pypika: Snowflake translator custom queryBuilder adds double quotes to `WITH` statements
+## [0.26.2] - 2022-11-07
+
+- Pypika: Snowflake translator custom queryBuilder adds double quotes to `WITH` statements in order to prevent
+  "unknown identifier" errors due to case insensitivity.
 
 ## [0.26.1] - 2022-10-27
 
