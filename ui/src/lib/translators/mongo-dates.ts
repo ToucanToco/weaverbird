@@ -1,5 +1,5 @@
 import { $$ } from '@/lib/helpers';
-import * as S from '@/lib/steps';
+import type * as S from '@/lib/steps';
 
 // Mongo 5 only
 export function truncateDateToDay(dateExpr: string | object): object {

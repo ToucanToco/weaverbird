@@ -29,7 +29,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import VariableList from '@/components/stepforms/widgets/VariableInputs/VariableList.vue';
 import VariableListOption from '@/components/stepforms/widgets/VariableInputs/VariableListOption.vue';
-import { VariablesBucket } from '@/lib/variables';
+import type { VariablesBucket } from '@/lib/variables';
 /**
  * This component list all the available variables to use as value in DateInputs
  */

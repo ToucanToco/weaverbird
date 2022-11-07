@@ -115,16 +115,20 @@ import AdvancedVariableModal from '@/components/stepforms/widgets/VariableInputs
 import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';
 import Tabs from '@/components/Tabs.vue';
 import {
-  CustomDate,
-  DateRange,
   dateToString,
   isRelativeDate,
   relativeDateToString,
 } from '@/lib/dates';
+import type {
+  CustomDate,
+  DateRange,
+} from '@/lib/dates';
 import { sendAnalytics } from '@/lib/send-analytics';
 import {
-  AvailableVariable,
   extractVariableIdentifier,
+} from '@/lib/variables';
+import type {
+  AvailableVariable,
   VariableDelimiters,
   VariablesBucket,
 } from '@/lib/variables';

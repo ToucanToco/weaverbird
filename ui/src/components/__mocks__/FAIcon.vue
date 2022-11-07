@@ -2,7 +2,7 @@
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 
-import { FAIconName } from '@/assets/FA-ICONS';
+import type { FAIconName } from '@/assets/FA-ICONS';
 
 @Component({
   name: 'FA-icon',

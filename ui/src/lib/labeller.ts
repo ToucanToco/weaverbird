@@ -11,8 +11,8 @@
  * const label = humanReadableLabel(step);
  * ```
  */
-import { dateToString, relativeDateToString } from '@/lib/dates';
 import type { CustomDate } from '@/lib/dates';
+import { dateToString, relativeDateToString } from '@/lib/dates';
 import type { StepMatcher } from '@/lib/matcher';
 import * as S from '@/lib/steps';
 

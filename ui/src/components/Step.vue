@@ -73,7 +73,7 @@ import {
   retrieveDomainName,
 } from '@/lib/labeller';
 import type { PipelineStep, ReferenceToExternalQuery } from '@/lib/steps';
-import { VariableDelimiters } from '@/lib/variables';
+import type { VariableDelimiters } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 import PreviewSourceSubset from './PreviewSourceSubset.vue';

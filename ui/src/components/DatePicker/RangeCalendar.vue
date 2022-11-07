@@ -20,7 +20,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { DateRange, DateRangeSide } from '@/lib/dates';
+import type { DateRange, DateRangeSide } from '@/lib/dates';
 
 import Calendar from './Calendar.vue';
 

@@ -1,6 +1,6 @@
 import type { DataSetColumnType } from './dataset';
-import { isRelativeDate } from './dates';
 import type { CustomDate } from './dates';
+import { isRelativeDate } from './dates';
 import type { AddTotalRowsStep, RollupStep } from './steps';
 
 type ValueType = number | boolean | string | null | object | CustomDate;

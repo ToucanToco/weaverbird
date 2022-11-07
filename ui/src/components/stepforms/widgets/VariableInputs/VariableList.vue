@@ -35,7 +35,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { VariablesBucket, VariablesCategory } from '@/lib/variables';
+import type { VariablesBucket, VariablesCategory } from '@/lib/variables';
 
 import VariableListOption from './VariableListOption.vue';
 /**

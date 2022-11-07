@@ -21,11 +21,11 @@
   </div>
 </template>
 <script lang="ts">
-import { ErrorObject } from 'ajv';
+import type { ErrorObject } from 'ajv';
 import isEqual from 'lodash/isEqual';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 import InputTextWidget from './InputText.vue';
 

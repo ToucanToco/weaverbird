@@ -77,7 +77,6 @@ module.exports = {
     ],
     'vue/return-in-computed-property': ['error', { treatUndefinedAsUnspecified: false }],
     'simple-import-sort/imports': 'error',
-    'import/first': 'error',
     'import/newline-after-import': 'error',
     'import/no-duplicates': 'error',
   },

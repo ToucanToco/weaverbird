@@ -37,7 +37,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 import FormWidget from './FormWidget.vue';
 import VariableInput from './VariableInput.vue';

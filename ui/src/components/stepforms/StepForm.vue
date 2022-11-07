@@ -1,5 +1,6 @@
 <script lang="ts">
-import Ajv, { ValidateFunction } from 'ajv';
+import Ajv from 'ajv';
+import type { ValidateFunction } from 'ajv';
 import _ from 'lodash';
 import Vue from 'vue';
 import { Component, Prop, Watch } from 'vue-property-decorator';
@@ -9,10 +10,11 @@ import { addAjvKeywords, ajvErrorsToValidationError } from '@/components/stepfor
 import StepFormButtonbar from '@/components/stepforms/StepFormButtonbar.vue';
 import StepFormHeader from '@/components/stepforms/StepFormHeader.vue';
 import type { Pipeline, PipelineStep } from '@/lib/steps';
-import { InterpolateFunction, PipelineInterpolator, ScopeContext } from '@/lib/templating';
-import { ValidationError } from '@/lib/translators/base';
+import { PipelineInterpolator } from '@/lib/templating';
+import type { InterpolateFunction, ScopeContext } from '@/lib/templating';
+import type { ValidationError } from '@/lib/translators/base';
 import { VQBModule } from '@/store';
-import { MutationCallbacks } from '@/store/mutations';
+import type { MutationCallbacks } from '@/store/mutations';
 
 import { version } from '../../../package.json';
 

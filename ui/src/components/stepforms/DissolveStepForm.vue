@@ -43,8 +43,8 @@ import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
 import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
-import type { DissolveStep, PipelineStepName } from '@/lib/steps';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import type { Aggregation, DissolveStep, PipelineStepName } from '@/lib/steps';
+import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';

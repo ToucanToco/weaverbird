@@ -33,7 +33,7 @@ import { Prop } from 'vue-property-decorator';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
 import RenameWidget from '@/components/stepforms/widgets/Rename.vue';
 import type { PipelineStepName, RenameStep } from '@/lib/steps';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';

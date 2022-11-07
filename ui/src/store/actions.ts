@@ -63,7 +63,7 @@ const actions: ActionTree<VQBState, any> = {
       const response = { error: [formatError(error)] };
       // Avoid spamming tests results with errors, but could be useful in production
       /* istanbul ignore next */
-      if (import.meta.env.DEV !== 'test') {
+      if (import.meta.env.DEV) {
         console.error(error);
       }
       /* istanbul ignore next */

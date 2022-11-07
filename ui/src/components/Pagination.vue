@@ -24,7 +24,8 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import Paginate from 'vuejs-paginate';
 
-import { numberOfPages, pageMinMax, PaginationContext } from '@/lib/dataset/pagination';
+import { numberOfPages, pageMinMax } from '@/lib/dataset/pagination';
+import type { PaginationContext } from '@/lib/dataset/pagination';
 
 @Component({
   name: 'pagination',

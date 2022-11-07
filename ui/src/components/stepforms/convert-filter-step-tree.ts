@@ -1,13 +1,13 @@
 import type { ColumnTypeMapping } from '@/lib/dataset';
 import { castFromString } from '@/lib/helpers';
-import {
-  isFilterComboAnd,
-  isFilterComboOr,
-} from '@/lib/steps';
 import type {
   FilterComboAnd,
   FilterComboOr,
   FilterCondition,
+} from '@/lib/steps';
+import {
+  isFilterComboAnd,
+  isFilterComboOr,
 } from '@/lib/steps';
 
 import type { AbstractFilterTree, ConditionOperator } from '../ConditionsEditor/tree-types';

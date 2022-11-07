@@ -42,7 +42,8 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
-import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { extractVariableIdentifier } from '@/lib/variables';
+import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 import AdvancedVariableModal from './AdvancedVariableModal.vue';
 import VariableChooser from './VariableChooser.vue';

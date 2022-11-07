@@ -48,7 +48,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import ConditionsGroup from './ConditionsGroup.vue';
-import { AbstractFilterTree } from './tree-types';
+import type { AbstractFilterTree } from './tree-types';
 
 @Component({
   name: 'ConditionsEditor',

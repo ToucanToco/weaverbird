@@ -1,11 +1,11 @@
 import _has from 'lodash/has';
 import { DateTime } from 'luxon';
 
-import t, { DEFAULT_LOCALE } from '@/lib/internationalization';
 import type { LocaleIdentifier } from '@/lib/internationalization';
+import t, { DEFAULT_LOCALE } from '@/lib/internationalization';
 
-import { extractVariableIdentifier } from './variables';
 import type { VariableDelimiters, VariablesBucket } from './variables';
+import { extractVariableIdentifier } from './variables';
 
 export type DateRange = { start?: Date; end?: Date; duration?: Duration };
 export type DateRangeSide = keyof DateRange;

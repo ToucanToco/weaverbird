@@ -1,12 +1,12 @@
-import {
-  isReferenceToExternalQuery,
-  isReferenceToOtherPipeline,
-} from '@/lib/steps';
 import type {
   Pipeline,
   PipelineStep,
   Reference,
   ReferenceToExternalQuery,
+} from '@/lib/steps';
+import {
+  isReferenceToExternalQuery,
+  isReferenceToOtherPipeline,
 } from '@/lib/steps';
 
 export type PipelinesScopeContext = {

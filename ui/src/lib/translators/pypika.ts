@@ -4,8 +4,8 @@
 
 import type * as S from '@/lib/steps';
 
-import { BaseTranslator } from './base';
 import type { ValidationError } from './base';
+import { BaseTranslator } from './base';
 
 /* istanbul ignore next */
 export class PypikaTranslator extends BaseTranslator {

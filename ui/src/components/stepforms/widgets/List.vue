@@ -39,15 +39,15 @@
 </template>
 
 <script lang="ts">
-import { ErrorObject } from 'ajv';
+import type { ErrorObject } from 'ajv';
 import _ from 'lodash';
-import { VueConstructor } from 'vue';
+import type { VueConstructor } from 'vue';
 import { Component, Mixins, Prop, Vue } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { TotalDimension } from '@/lib/steps.ts';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import type { TotalDimension } from '@/lib/steps';
+import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 import FormWidget from './FormWidget.vue';
 

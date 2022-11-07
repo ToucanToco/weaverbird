@@ -34,8 +34,9 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import Calendar from '@/components/DatePicker/Calendar.vue';
 import CustomGranularityCalendar from '@/components/DatePicker/CustomGranularityCalendar.vue';
 import Tabs from '@/components/Tabs.vue';
-import { CustomDateRange, DateRange } from '@/lib/dates';
-import t, { LocaleIdentifier } from '@/lib/internationalization';
+import type { CustomDateRange, DateRange } from '@/lib/dates';
+import t from '@/lib/internationalization';
+import type { LocaleIdentifier } from '@/lib/internationalization';
 
 @Component({
   name: 'tabbed-range-calendars',

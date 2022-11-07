@@ -22,8 +22,8 @@
 import type { ObjectDirective } from 'vue';
 import type { DirectiveBinding } from 'vue/types/options';
 
-import ResizableTable, { DEFAULT_OPTIONS } from './ResizableTable';
 import type { ResizableTableOptions } from './ResizableTable';
+import ResizableTable, { DEFAULT_OPTIONS } from './ResizableTable';
 
 // stock table to destroy referent listeners when component is destroyed
 export let resizableTable: ResizableTable | null;

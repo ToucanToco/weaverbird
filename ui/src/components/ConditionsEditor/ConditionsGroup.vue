@@ -120,7 +120,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
 
-import { AbstractCondition, AbstractFilterTree, ConditionOperator } from './tree-types';
+import type { AbstractCondition, AbstractFilterTree, ConditionOperator } from './tree-types';
 
 @Component({
   name: 'ConditionsGroup',

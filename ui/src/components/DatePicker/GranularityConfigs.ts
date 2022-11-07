@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon';
 
 import type { DateRange } from '@/lib/dates';
-import t, { DEFAULT_LOCALE } from '@/lib/internationalization';
 import type { LocaleIdentifier } from '@/lib/internationalization';
+import t, { DEFAULT_LOCALE } from '@/lib/internationalization';
 
 // Types
 

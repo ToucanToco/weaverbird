@@ -23,7 +23,8 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from '@/components/Popover.vue';
-import { VariablesBucket } from '@/lib/variables';
+import { extractVariableIdentifier } from '@/lib/variables';
+import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 import VariableList from './VariableList.vue';
 /**

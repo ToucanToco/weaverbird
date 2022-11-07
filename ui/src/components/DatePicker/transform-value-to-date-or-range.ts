@@ -2,8 +2,8 @@ import { DateTime } from 'luxon';
 
 import type { DateRange, RelativeDate } from '@/lib/dates';
 import { isDateRange, RELATIVE_DATE_OPERATORS } from '@/lib/dates';
-import { retrieveVariable } from '@/lib/variables';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { retrieveVariable } from '@/lib/variables';
 
 /*
 Based on date property generate a new `Date` by adding selected quantity of duration (day, month, year...)

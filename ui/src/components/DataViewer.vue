@@ -104,7 +104,7 @@ import { Component, Watch } from 'vue-property-decorator';
 import FAIcon from '@/components/FAIcon.vue';
 import Pagination from '@/components/Pagination.vue';
 import { resizable } from '@/directives/resizable/resizable';
-import { DataSet, DataSetColumn, DataSetColumnType } from '@/lib/dataset';
+import type { DataSet, DataSetColumn, DataSetColumnType } from '@/lib/dataset';
 import type { Pipeline, PipelineStepName } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
 import { VQBModule } from '@/store';

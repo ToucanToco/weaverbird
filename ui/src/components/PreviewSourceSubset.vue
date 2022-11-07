@@ -28,7 +28,7 @@ import { Component, Watch } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
 import { VQBModule } from '@/store';
-import { MutationCallbacks } from '@/store/mutations';
+import type { MutationCallbacks } from '@/store/mutations';
 
 @Component({
   name: 'PreviewSourceSubset',

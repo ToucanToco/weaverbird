@@ -59,7 +59,7 @@ import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue'
 import MultiInputTextWidget from '@/components/stepforms/widgets/MultiInputText.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import type { PipelineStepName, PivotStep } from '@/lib/steps';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';

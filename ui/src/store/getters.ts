@@ -8,8 +8,8 @@ import type { BackendError, BackendWarning } from '@/lib/backend';
 import { getPipelineNamesReferencing } from '@/lib/dereference-pipeline';
 import { getTranslator } from '@/lib/translators';
 
-import { activePipeline, currentPipeline, inactivePipeline } from './state';
 import type { VQBState } from './state';
+import { activePipeline, currentPipeline, inactivePipeline } from './state';
 
 const getters: GetterTree<VQBState, any> = {
   translator: (state: VQBState) => state.translator,

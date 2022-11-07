@@ -24,9 +24,9 @@ import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
 import FilterEditor from '@/components/FilterEditor.vue';
-import { ColumnTypeMapping } from '@/lib/dataset';
+import type { ColumnTypeMapping } from '@/lib/dataset';
 import type { FilterCondition, FilterSimpleCondition, FilterStep, PipelineStepName } from '@/lib/steps';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';

@@ -4,8 +4,8 @@
 
 import isEqual from 'lodash/isEqual';
 
-import ResizableColHandler from './ResizableColHandler';
 import type { ResizableColHandlerOptions } from './ResizableColHandler';
+import ResizableColHandler from './ResizableColHandler';
 
 export const DEFAULT_OPTIONS: ResizableTableOptions = {
   classes: {

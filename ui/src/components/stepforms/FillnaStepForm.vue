@@ -32,7 +32,7 @@ import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { ColumnTypeMapping } from '@/lib/dataset';
+import type { ColumnTypeMapping } from '@/lib/dataset';
 import { castFromString } from '@/lib/helpers';
 import type { FillnaStep, PipelineStepName } from '@/lib/steps';
 import { VQBModule } from '@/store';

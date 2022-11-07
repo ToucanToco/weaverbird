@@ -1,5 +1,5 @@
 <script lang="ts">
-import { ErrorObject } from 'ajv';
+import type { ErrorObject } from 'ajv';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component({

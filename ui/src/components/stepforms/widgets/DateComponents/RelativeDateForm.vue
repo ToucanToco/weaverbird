@@ -44,13 +44,16 @@ import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue'
 import InputNumberWidget from '@/components/stepforms/widgets/InputNumber.vue';
 import {
   DEFAULT_DURATIONS,
-  DurationOption,
   RELATIVE_DATE_OPERATORS,
+} from '@/lib/dates';
+import type {
+  DurationOption,
   RelativeDate,
 } from '@/lib/dates';
 import {
+  extractVariableIdentifier} from '@/lib/variables';
+import type{
   AvailableVariable,
-  extractVariableIdentifier,
   VariableDelimiters,
   VariablesBucket,
 } from '@/lib/variables';

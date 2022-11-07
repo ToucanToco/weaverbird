@@ -17,15 +17,15 @@
  * ```
  */
 import Vue from 'vue';
-import Vuex, { Store } from 'vuex';
 import type { StoreOptions } from 'vuex';
+import Vuex, { Store } from 'vuex';
 import { namespace } from 'vuex-class';
 
 import actions from './actions';
 import getters from './getters';
 import mutations from './mutations';
-import { emptyState } from './state';
 import type { VQBState } from './state';
+import { emptyState } from './state';
 
 /**
  * the default VQB namespace name

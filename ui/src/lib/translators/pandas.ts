@@ -6,7 +6,7 @@
  * steps unchanged.
  * */
 
-import * as S from '@/lib/steps';
+import type * as S from '@/lib/steps';
 
 import { BaseTranslator } from './base';
 

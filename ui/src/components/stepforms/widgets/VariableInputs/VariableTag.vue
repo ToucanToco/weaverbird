@@ -38,7 +38,8 @@ import VTooltip from 'v-tooltip';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
-import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { extractVariableIdentifier } from '@/lib/variables';
+import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 Vue.use(VTooltip);
 

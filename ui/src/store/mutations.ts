@@ -9,8 +9,8 @@ import type { BackendError, BackendWarning } from '@/lib/backend';
 import type { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
 import { setVariableDelimiters } from '@/lib/translators';
 
-import { currentPipeline } from './state';
 import type { VQBState } from './state';
+import { currentPipeline } from './state';
 
 // provide types for each possible mutations' payloads
 type BackendMessageMutation = {
@@ -117,7 +117,7 @@ function resetPagination(state: VQBState) {
   if (state.dataset.paginationContext) {
     state.dataset.paginationContext.pageno = 1;
   }
-};
+}
 
 const mutations: MutationTree<VQBState> = {
   setTranslator(state: VQBState, { translator }: Pick<VQBState, 'translator'>) {

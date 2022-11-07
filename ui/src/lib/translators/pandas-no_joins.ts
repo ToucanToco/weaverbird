@@ -3,7 +3,7 @@
  * VQB pipelines over live queries feature that does not support joins & appends yet.
  * */
 
-import * as S from '@/lib/steps';
+import type * as S from '@/lib/steps';
 
 import { BaseTranslator } from './base';
 

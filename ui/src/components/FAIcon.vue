@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 
-import { FAIconName } from '@/assets/FA-ICONS';
+import type { FAIconName } from '@/assets/FA-ICONS';
 
 /* This component enable to use a font-awesome icon in svg mode (available icons are declared in @/assets/FA-ICONS)  */
 

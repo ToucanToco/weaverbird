@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { ErrorObject } from 'ajv';
+import type { ErrorObject } from 'ajv';
 import { parse } from 'mathjs';
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
@@ -38,7 +38,7 @@ import { Prop } from 'vue-property-decorator';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { escapeForUseInRegExp } from '@/lib/helpers';
 import type { Formula, FormulaStep, PipelineStepName } from '@/lib/steps';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';

@@ -56,10 +56,11 @@ import Draggable from 'vuedraggable';
 
 import FAIcon from '@/components/FAIcon.vue';
 import { copyToClipboard, pasteFromClipboard } from '@/lib/clipboard';
-import type { DomainStep, isPipelineStep, Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
-import { VariableDelimiters } from '@/lib/variables';
+import { isPipelineStep } from '@/lib/steps';
+import type { DomainStep, Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
+import type { VariableDelimiters } from '@/lib/variables';
 import { VQBModule } from '@/store';
-import { MutationCallbacks } from '@/store/mutations';
+import type { MutationCallbacks } from '@/store/mutations';
 
 import DeleteConfirmationModal from './DeleteConfirmationModal.vue';
 import Step from './Step.vue';

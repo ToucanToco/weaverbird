@@ -48,7 +48,7 @@ import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import { generateNewColumnName } from '@/lib/helpers';
 import type { PipelineStepName, UnpivotStep } from '@/lib/steps';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';

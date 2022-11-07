@@ -14,11 +14,12 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import Vue from 'vue';
+import type  { PropType } from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 
 import resizable from '@/directives/resizable/resizable';
-import { ResizableTableOptions } from '@/directives/resizable/ResizableTable';
+import type { ResizableTableOptions } from '@/directives/resizable/ResizableTable';
 @Component({
   name: 'FakeTableComponent',
   directives: {

@@ -2,7 +2,7 @@
  * This translator is an empty translator to support only domain step
  * */
 
-import * as S from '@/lib/steps';
+import type * as S from '@/lib/steps';
 
 import { BaseTranslator } from './base';
 

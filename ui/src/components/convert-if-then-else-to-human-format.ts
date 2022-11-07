@@ -1,12 +1,12 @@
-import {
-  isFilterComboAnd,
-  isFilterComboOr,
-} from '@/lib/steps';
 import type {
   FilterCondition,
   FilterSimpleCondition,
   Formula,
   IfThenElseStep,
+} from '@/lib/steps';
+import {
+  isFilterComboAnd,
+  isFilterComboOr,
 } from '@/lib/steps';
 
 export const EMPTY_CONDITION_SIGN = '<span class="empty">[null]</span>';

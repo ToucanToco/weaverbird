@@ -57,10 +57,12 @@ import { DateTime } from 'luxon';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
-import { clampRange, DateRange } from '@/lib/dates';
-import { LocaleIdentifier } from '@/lib/internationalization';
+import { clampRange } from '@/lib/dates';
+import type { DateRange } from '@/lib/dates';
+import type { LocaleIdentifier } from '@/lib/internationalization';
 
-import { AvailableDuration, GranularityConfig, RANGE_PICKERS } from './GranularityConfigs';
+import { RANGE_PICKERS } from './GranularityConfigs';
+import type { AvailableDuration, GranularityConfig } from './GranularityConfigs';
 
 type SelectableOption = {
   label: string;

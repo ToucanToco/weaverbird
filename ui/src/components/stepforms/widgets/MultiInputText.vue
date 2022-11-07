@@ -57,7 +57,8 @@ import Multiselect from 'vue-multiselect';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';
-import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { extractVariableIdentifier } from '@/lib/variables';
+import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 import MultiVariableInput from './MultiVariableInput.vue';
 import VariableInput from './VariableInput.vue';

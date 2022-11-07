@@ -24,22 +24,22 @@
 </template>
 
 <script lang="ts">
-import { ErrorObject } from 'ajv';
+import type { ErrorObject } from 'ajv';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import ConditionsEditor from '@/components/ConditionsEditor/ConditionsEditor.vue';
-import { AbstractFilterTree } from '@/components/ConditionsEditor/tree-types';
+import type { AbstractFilterTree } from '@/components/ConditionsEditor/tree-types';
 import {
   buildConditionsEditorTree,
   buildFilterStepTree,
   castFilterStepTreeValue,
-} from '@/components/stepforms/convert-filter-step-tree.ts';
+} from '@/components/stepforms/convert-filter-step-tree';
 import FilterSimpleConditionWidget, {
   DEFAULT_FILTER,
 } from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
-import { ColumnTypeMapping } from '@/lib/dataset/index.ts';
+import type { ColumnTypeMapping } from '@/lib/dataset';
 import type { FilterCondition } from '@/lib/steps';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 @Component({
   name: 'filter-editor',

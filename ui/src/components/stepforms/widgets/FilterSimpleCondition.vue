@@ -48,15 +48,15 @@
 </template>
 
 <script lang="ts">
-import { ErrorObject } from 'ajv';
+import type { ErrorObject } from 'ajv';
 import isEqual from 'lodash/isEqual';
-import { VueConstructor } from 'vue';
+import type { VueConstructor } from 'vue';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import NewDateInput from '@/components/stepforms/widgets/DateComponents/NewDateInput.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { ColumnTypeMapping } from '@/lib/dataset/index';
+import type { ColumnTypeMapping } from '@/lib/dataset';
 import {
   keepCurrentValueIfArrayType,
   keepCurrentValueIfCompatibleDate,
@@ -64,9 +64,9 @@ import {
   keepCurrentValueIfCompatibleType,
 } from '@/lib/helpers';
 import type { FilterSimpleCondition } from '@/lib/steps';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
-import { MutationCallbacks } from '@/store/mutations';
+import type { MutationCallbacks } from '@/store/mutations';
 
 import InputDateWidget from './InputDate.vue';
 import MultiInputTextWidget from './MultiInputText.vue';
