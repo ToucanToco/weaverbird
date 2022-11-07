@@ -743,3 +743,28 @@ def test_append_simple(base_translator: BaseTranslator, default_step_kwargs: dic
         .orderby("name", "created_at", "user_id")
     )
     assert ctx.selectable.get_sql() == expected_query.get_sql()
+
+
+def test_no_extra_quotes_in_base_translator(
+    base_translator: BaseTranslator, default_step_kwargs: dict[str, Any]
+) -> None:
+    to_rename = "age"
+    rename_as = "old-est"
+    selected_columns = ["name", "age", "created_at"]
+
+    step = steps.RenameStep(toRename=[(to_rename, rename_as)])
+    ctx = base_translator.rename(step=step, columns=selected_columns, **default_step_kwargs)
+    assert (
+        '''SELECT "name","age" "old-est","created_at" FROM "previous_with"'''
+        in ctx.selectable.get_sql()
+    )
+
+
+def test_no_extra_quotes_in_base_translator_with_entire_pipeline(base_translator: BaseTranslator):
+    pipeline = [steps.DomainStep(domain="toto")]
+
+    translated = base_translator.get_query_str(steps=pipeline)
+    assert translated == (
+        'WITH __step_0_basetranslator__ AS (SELECT * FROM "test_schema"."toto") '
+        'SELECT * FROM "__step_0_basetranslator__"'
+    )
