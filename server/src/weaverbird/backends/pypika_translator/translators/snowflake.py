@@ -22,8 +22,7 @@ class QuotedSnowflakeQueryBuilder(SnowflakeQueryBuilder):
 
     @builder
     def with_(self, selectable: Selectable, name: str) -> "QueryBuilder":
-        t = AliasedQuery(format_quotes(name, self.QUOTE_CHAR), selectable)
-        self._with.append(t)
+        super().with_(selectable, format_quotes(name, self.QUOTE_CHAR))
 
 
 class SnowflakeQuery(Query):
