@@ -5,119 +5,90 @@ module.exports = {
     es6: true,
   },
   extends: [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:import/recommended",
-    "plugin:import/typescript",
-    "plugin:prettier/recommended",
-    "plugin:vue/essential",
-    "@vue/eslint-config-prettier",
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:import/recommended',
+    'plugin:import/typescript',
+    'plugin:prettier/recommended',
+    'plugin:vue/essential',
+    '@vue/eslint-config-prettier',
   ],
   settings: {
-    "import/internal-regex": "^@/",
-    "import/resolver": {
-      "typescript": {},
-      "alias": {
-        "map": [
-          [
-            "@",
-            "./src"
-          ]
-        ],
-        "extensions": [
-          ".ts",
-          ".js",
-          ".vue",
-          ".d.ts"
-        ]
+    'import/internal-regex': '^@/',
+    'import/resolver': {
+      typescript: {},
+      alias: {
+        map: [['@', './src']],
+        extensions: ['.ts', '.js', '.vue', '.d.ts'],
       },
       vite: {
-        configPath: "./vite.config.ts"
-      }
-    }
+        configPath: './vite.config.ts',
+      },
+    },
   },
   rules: {
-    "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-empty-function": [
-      "error",
+    '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-empty-function': [
+      'error',
       {
-        "allow": [
-          "arrowFunctions"
-        ]
-      }
+        allow: ['arrowFunctions'],
+      },
     ],
-    "@typescript-eslint/explicit-member-accessibility": [
-      "error", { "accessibility": "no-public" }
-    ],
-    "@typescript-eslint/camelcase": [
-      "error",
+    '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'no-public' }],
+    // "@typescript-eslint/naming-convention": [
+    //   "error",
+    //   { "selector": "objectLiteralProperty", "format": ["camelCase"] }
+    // ],
+    '@typescript-eslint/prefer-interface': 'off',
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
       {
-        "properties": "never"
-      }
+        argsIgnorePattern: '^_',
+      },
     ],
-    "@typescript-eslint/prefer-interface": "off",
-    "no-unused-vars": [
-      "error",
+    'space-before-function-paren': [
+      'error',
       {
-        "argsIgnorePattern": "^_"
-      }
+        anonymous: 'never',
+        named: 'never',
+        asyncArrow: 'always',
+      },
     ],
-    "@typescript-eslint/no-unused-vars": [
-      "error",
+    'prefer-const': ['error'],
+    'no-console': [
+      'error',
       {
-        "argsIgnorePattern": "^_"
-      }
+        allow: ['warn', 'error'],
+      },
     ],
-    "@typescript-eslint/no-unused-vars-experimental": [
-      "error",
+    'vue/html-self-closing': [
+      'error',
       {
-        "ignoredNamesRegex": "^_"
-      }
-    ],
-    "space-before-function-paren": [
-      "error",
-      {
-        "anonymous": "never",
-        "named": "never",
-        "asyncArrow": "always"
-      }
-    ],
-    "prefer-const": [
-      "error"
-    ],
-    "no-console": [
-      "error",
-      {
-        "allow": [
-          "warn",
-          "error"
-        ]
-      }
-    ],
-    "vue/html-self-closing": [
-      "error",
-      {
-        "html": {
-          "void": "always",
-          "normal": "always",
-          "component": "always"
+        html: {
+          void: 'always',
+          normal: 'always',
+          component: 'always',
         },
-        "svg": "always",
-        "math": "always"
-      }
+        svg: 'always',
+        math: 'always',
+      },
     ],
-    "vue/return-in-computed-property": ["error", { treatUndefinedAsUnspecified: false }],
-    "simple-import-sort/sort": "error",
+    'vue/return-in-computed-property': ['error', { treatUndefinedAsUnspecified: false }],
+    'simple-import-sort/imports': 'error',
+    'import/first': 'error',
+    'import/newline-after-import': 'error',
+    'import/no-duplicates': 'error',
   },
 
-  plugins: ['import', 'simple-import-sort', '@typescript-eslint', 'vue'],
-  parser: "vue-eslint-parser",
+  plugins: ['simple-import-sort', '@typescript-eslint', 'vue'],
+  parser: 'vue-eslint-parser',
   parserOptions: {
     ecmaVersion: 'latest',
-    parser: "@typescript-eslint/parser",
+    parser: '@typescript-eslint/parser',
     sourceType: 'module',
     createDefaultProgram: true,
     project: ['./tsconfig.json'],
-  }
+  },
 };
