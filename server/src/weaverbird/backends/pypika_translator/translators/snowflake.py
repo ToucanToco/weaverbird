@@ -2,7 +2,7 @@ from typing import Any, TypeVar
 
 from pypika.dialects import QueryBuilder, SnowflakeQueryBuilder
 from pypika.enums import Dialects
-from pypika.queries import AliasedQuery, Query, Selectable
+from pypika.queries import Query, Selectable
 from pypika.terms import Field, Term
 from pypika.utils import builder, format_quotes
 
