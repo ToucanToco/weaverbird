@@ -3176,6 +3176,19 @@ Split a string `column` into several columns based on a `delimiter`.
 | Label 5 | Group 2 | 10    |
 | Label 6 | Group 2 | 5     |
 
+### `simplify` step
+
+Simplifies geographical data.
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'simplify',
+  tolerance: 1.0,
+}
+```
+
 ### `substring` step
 
 Extract a substring in a string `column`. The substring begins at index
