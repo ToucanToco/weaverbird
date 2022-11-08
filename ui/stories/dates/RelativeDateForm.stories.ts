@@ -1,13 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/vue';
 
 import RelativeDateForm from '@/components/stepforms/widgets/DateComponents/RelativeDateForm.vue';
-import type {AvailableVariable, VariableDelimiters} from "@/lib/variables";
-import type {RelativeDate} from "@/lib/dates";
+import type { RelativeDate } from '@/lib/dates';
+import type { AvailableVariable } from '@/lib/variables';
 
 export default {
   component: RelativeDateForm,
 } as Meta<typeof RelativeDateForm>;
-
 
 const SAMPLE_VARIABLES: AvailableVariable[] = [
   {
@@ -24,10 +23,9 @@ const SAMPLE_VARIABLES: AvailableVariable[] = [
   },
 ];
 
-
 export const Default: StoryObj<RelativeDateForm> = {
-  render: (args, {argTypes}) => ({
-    components: {RelativeDateForm},
+  render: (args, { argTypes }) => ({
+    components: { RelativeDateForm },
     props: Object.keys(argTypes),
     data(): { value?: RelativeDate } {
       return {

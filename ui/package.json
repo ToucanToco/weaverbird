@@ -17,7 +17,7 @@
   "prepublish": "rollup -c",
   "scripts": {
     "codecov": "codecov --token=8e0bf2da-c4b9-435f-958e-446849d0d60e --file=./coverage/coverage-final.json",
-    "lint": "eslint --no-error-on-unmatched-pattern src/ tests/",
+    "lint": "eslint --no-error-on-unmatched-pattern src/ tests/ stories/",
     "lint:ci": "yarn lint --output-file lint-report.json --format json",
     "build": "yarn run build-bundle && yarn run build-types",
     "build-bundle": "vite build",
@@ -53,7 +53,6 @@
     "eslint-import-resolver-alias": "^1.1.2",
     "eslint-import-resolver-typescript": "^3.5.2",
     "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-simple-import-sort": "^8.0.0",
     "eslint-plugin-storybook": "^0.6.7",
     "eslint-plugin-vue": "^9.7.0",

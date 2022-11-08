@@ -37,7 +37,7 @@ export const Weeks: StoryObj<CustomGranularityCalendar> = {
     `,
   }),
   args: {
-    granularity: "week"
+    granularity: 'week',
   },
 };
 
@@ -45,27 +45,27 @@ export const Months: StoryObj<CustomGranularityCalendar> = {
   ...Weeks,
   args: {
     granularity: 'months',
-  }
+  },
 };
 
 export const Quarters: StoryObj<CustomGranularityCalendar> = {
   ...Weeks,
   args: {
     granularity: 'quarter',
-  }
+  },
 };
 
 export const QuartersFrom2019Q2To2020Q3: StoryObj<CustomGranularityCalendar> = {
   ...Quarters,
   args: {
     ...Quarters.args,
-    bounds: {start: new Date('2019-04-01'), end: new Date('2020-10-01')}
-  }
+    bounds: { start: new Date('2019-04-01'), end: new Date('2020-10-01') },
+  },
 };
 
 export const Years: StoryObj<CustomGranularityCalendar> = {
   ...Weeks,
   args: {
     granularity: 'year',
-  }
+  },
 };

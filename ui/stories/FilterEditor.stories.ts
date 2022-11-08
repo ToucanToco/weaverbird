@@ -1,10 +1,9 @@
 import type { Meta, StoryFn } from '@storybook/vue';
+import Vuex from 'vuex';
 
 import FilterEditor from '@/components/FilterEditor.vue';
-
-import Vuex from 'vuex';
-import type { FilterCondition } from '@/lib/steps';
 import type { ColumnTypeMapping } from '@/lib/dataset';
+import type { FilterCondition } from '@/lib/steps';
 import type { AvailableVariable, VariableDelimiters } from '@/lib/variables';
 
 export default {

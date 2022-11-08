@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue';
 
 import CustomVariableList from '@/components/stepforms/widgets/DateComponents/CustomVariableList.vue';
-import type {AvailableVariable} from "@/lib/variables";
-
+import type { AvailableVariable } from '@/lib/variables';
 
 const SAMPLE_VARIABLES: AvailableVariable[] = [
   {
@@ -44,8 +43,8 @@ export default {
 } as Meta<CustomVariableList>;
 
 export const Default: StoryObj<CustomVariableList> = {
-  render: (args, {argTypes}) => ({
-    components: {CustomVariableList},
+  render: (args, { argTypes }) => ({
+    components: { CustomVariableList },
     props: Object.keys(argTypes),
     data(): { selectedVariables: string } {
       return {
@@ -69,17 +68,17 @@ export const Default: StoryObj<CustomVariableList> = {
         v-bind="$props"
       />
       <pre>{{ selectedVariables }}</pre>
-      </div>`
+      </div>`,
   }),
   args: {
-    availableVariables: SAMPLE_VARIABLES
-  }
+    availableVariables: SAMPLE_VARIABLES,
+  },
 };
 
 export const DisableCustom: StoryObj<CustomVariableList> = {
   ...Default,
   args: {
     ...Default.args,
-     enableCustom: false,
-  }
+    enableCustom: false,
+  },
 };

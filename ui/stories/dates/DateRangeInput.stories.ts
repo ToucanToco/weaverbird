@@ -1,12 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/vue';
 
 import DateRangeInput from '@/components/stepforms/widgets/DateComponents/DateRangeInput.vue';
-import type {AvailableVariable} from "@/lib/variables";
+import type { AvailableVariable } from '@/lib/variables';
 
 export default {
   component: DateRangeInput,
 } as Meta<DateRangeInput>;
-
 
 const SAMPLE_VARIABLES: AvailableVariable[] = [
   {
@@ -59,13 +58,13 @@ const RELATIVE_SAMPLE_VARIABLES: AvailableVariable[] = [
 ];
 
 export const Default: StoryObj<DateRangeInput> = {
-  render: (args, {argTypes}) => ({
-    components: {DateRangeInput},
+  render: (args, { argTypes }) => ({
+    components: { DateRangeInput },
     props: Object.keys(argTypes),
     data() {
       return {
         value: undefined,
-        actualRangeValue: undefined
+        actualRangeValue: undefined,
       };
     },
     template: `
@@ -92,24 +91,24 @@ export const AlreadySelectedVariable: StoryObj<DateRangeInput> = {
   args: {
     ...Default.args,
     value: '{{dates.all_time}}',
-  }
-}
+  },
+};
 
 export const CustomFixedDateRange: StoryObj<DateRangeInput> = {
   ...Default,
   args: {
     ...Default.args,
     value: { start: new Date(1), end: new Date(100000000) },
-  }
-}
+  },
+};
 
 export const CustomRelativeDate: StoryObj<DateRangeInput> = {
   ...Default,
   args: {
     ...Default.args,
     value: { quantity: 1, duration: 'month', operator: 'until', date: '{{today}}' },
-  }
-}
+  },
+};
 
 export const RelativeDateDisabled: StoryObj<DateRangeInput> = {
   ...Default,
@@ -117,8 +116,8 @@ export const RelativeDateDisabled: StoryObj<DateRangeInput> = {
     ...Default.args,
     enableRelativeDate: false,
     enabledCalendars: ['quarter', 'year'],
-  }
-}
+  },
+};
 
 export const CustomSelectionDisabled: StoryObj<DateRangeInput> = {
   ...Default,
@@ -126,8 +125,8 @@ export const CustomSelectionDisabled: StoryObj<DateRangeInput> = {
     ...Default.args,
     enableRelativeDate: false,
     enableCustom: false,
-  }
-}
+  },
+};
 
 export const CustomWithBounds: StoryObj<DateRangeInput> = {
   ...Default,
@@ -135,14 +134,13 @@ export const CustomWithBounds: StoryObj<DateRangeInput> = {
     ...Default.args,
     value: { start: new Date('2021/2/1'), end: new Date('2021/2/5') },
     bounds: { start: new Date('2021/2/2'), end: new Date('2021/10/4') },
-  }
-}
+  },
+};
 
 export const WithoutAnyVariable: StoryObj<DateRangeInput> = {
   ...Default,
-  args: {
-  }
-}
+  args: {},
+};
 
 export const AlwaysOpen: StoryObj<DateRangeInput> = {
   ...Default,
@@ -150,16 +148,16 @@ export const AlwaysOpen: StoryObj<DateRangeInput> = {
     ...Default.args,
     alwaysOpened: true,
     coloredBackground: true,
-  }
-}
+  },
+};
 
 export const LocalizedFrench: StoryObj<DateRangeInput> = {
   ...Default,
   args: {
     ...Default.args,
     locale: 'fr',
-  }
-}
+  },
+};
 
 export const CustomCssVariables: StoryObj<DateRangeInput> = {
   ...AlwaysOpen,
@@ -173,13 +171,13 @@ export const CustomCssVariables: StoryObj<DateRangeInput> = {
       '--weaverbird-theme-emphasis-color': '#000',
       '--weaverbird-theme-emphasis-color-dark': '#000',
     },
-  }
-}
+  },
+};
 
 export const CompactMode: StoryObj<DateRangeInput> = {
   ...Default,
   args: {
     ...Default.args,
     compactMode: true,
-  }
-}
+  },
+};

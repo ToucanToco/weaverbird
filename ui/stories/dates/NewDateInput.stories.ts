@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue';
 
 import NewDateInput from '@/components/stepforms/widgets/DateComponents/NewDateInput.vue';
-import type {AvailableVariable} from "@/lib/variables";
+import type { AvailableVariable } from '@/lib/variables';
 
 export default {
   component: NewDateInput,
@@ -21,7 +21,6 @@ const RELATIVE_SAMPLE_VARIABLES: AvailableVariable[] = [
   {
     label: 'Last year',
     identifier: 'last_year',
-
 
     value: new Date('1/12/2020'),
   },
@@ -63,15 +62,14 @@ const SAMPLE_VARIABLES: AvailableVariable[] = [
   ...RELATIVE_SAMPLE_VARIABLES,
 ];
 
-
 export const Default: StoryObj<NewDateInput> = {
-  render: (args, {argTypes}) => ({
-    components: {NewDateInput},
+  render: (args, { argTypes }) => ({
+    components: { NewDateInput },
     props: Object.keys(argTypes),
     data() {
       return {
         value: undefined,
-        actualRangeValue: undefined
+        actualRangeValue: undefined,
       };
     },
     template: `
@@ -93,37 +91,36 @@ export const Default: StoryObj<NewDateInput> = {
   },
 };
 
-
 export const AlreadySelectedVariable: StoryObj<NewDateInput> = {
   ...Default,
   args: {
     ...Default.args,
     value: '{{dates.all_time}}',
-  }
-}
+  },
+};
 
 export const CustomFixedDate: StoryObj<NewDateInput> = {
   ...Default,
   args: {
     ...Default.args,
     value: new Date(),
-  }
-}
+  },
+};
 export const CustomRelativeDate: StoryObj<NewDateInput> = {
   ...Default,
   args: {
     ...Default.args,
     value: { quantity: -1, duration: 'month' },
-  }
-}
+  },
+};
 export const CustomDisabled: StoryObj<NewDateInput> = {
   ...Default,
   args: {
     ...Default.args,
     enableCustom: false,
-  }
-}
+  },
+};
 export const Empty: StoryObj<NewDateInput> = {
   ...Default,
   args: {},
-}
+};

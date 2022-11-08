@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue';
 
 import RangeCalendar from '@/components/DatePicker/RangeCalendar.vue';
-import type {DateRange} from "@/lib/dates";
+import type { DateRange } from '@/lib/dates';
 
 export default {
   component: RangeCalendar,
@@ -13,8 +13,8 @@ const formatValue = (value) => {
 
 export const Default: StoryObj<typeof RangeCalendar> = {
   render: () => ({
-    components: {RangeCalendar},
-    data(): {value: DateRange} {
+    components: { RangeCalendar },
+    data(): { value: DateRange } {
       return { value: { start: undefined, end: undefined } };
     },
     computed: {

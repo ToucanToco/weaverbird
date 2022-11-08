@@ -4,7 +4,7 @@ module.exports = {
     browser: true,
     es6: true
   },
-  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'plugin:import/recommended', 'plugin:import/typescript', 'plugin:prettier/recommended', 'plugin:vue/essential', '@vue/eslint-config-prettier', 'plugin:storybook/recommended'],
+  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'plugin:import/recommended', 'plugin:import/typescript', 'plugin:vue/essential', '@vue/eslint-config-prettier', 'plugin:storybook/recommended', 'prettier'],
   settings: {
     'import/internal-regex': '^@/',
     'import/resolver': {
@@ -36,18 +36,13 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': ['error', {
       argsIgnorePattern: '^_'
     }],
-    'space-before-function-paren': ['error', {
-      anonymous: 'never',
-      named: 'never',
-      asyncArrow: 'always'
-    }],
     'prefer-const': ['error'],
     'no-console': ['error', {
       allow: ['warn', 'error']
     }],
     'vue/html-self-closing': ['error', {
       html: {
-        void: 'always',
+        void: 'any',
         normal: 'always',
         component: 'always'
       },

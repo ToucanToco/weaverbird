@@ -16,10 +16,6 @@ module.exports = {
       // Use the same "resolve" configuration as your app
       // @ts-ignore
       resolve: (await import('../vite.config.js')).default.default.resolve,
-      // Add dependencies to pre-optimization
-      optimizeDeps: {
-        include: ['storybook-dark-mode'],
-      },
     });
   },
 };
