@@ -237,6 +237,8 @@ export default class DataViewer extends Vue {
         return 'check';
       case 'object':
         return '{ }';
+      case 'geometry':
+        return 'map-marked-alt';
       default:
         return '???';
     }
@@ -247,6 +249,8 @@ export default class DataViewer extends Vue {
       case 'date':
         return true;
       case 'boolean':
+        return true;
+      case 'geometry':
         return true;
       default:
         return false;
