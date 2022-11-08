@@ -1,18 +1,24 @@
-import { storiesOf } from '@storybook/vue';
-import Vuex from 'vuex';
+import type { Meta, StoryFn } from '@storybook/vue';
 import Vue from 'vue';
+import Vuex from 'vuex';
 
-import { DataViewer, registerModule, resizable } from '../dist/storybook/components';
+import DataViewer from '@/components/DataViewer.vue';
+import { resizable } from '@/directives/resizable/resizable';
+import { registerModule } from '@/store';
 
-const stories = storiesOf('DataViewer', module);
-Vue.use(Vuex)
+Vue.use(Vuex);
 
-stories.add('empty', () => ({
+export default {
+  title: 'DataViewer',
+  component: DataViewer,
+} as Meta<typeof DataViewer>;
+
+export const Empty: StoryFn<typeof DataViewer> = () => ({
   store: new Vuex.Store({}),
   created: function() {
     registerModule(this.$store, {
       dataset: {
-        headers:[],
+        headers: [],
         data: [],
         paginationContext: {
           pagesize: 50,
@@ -20,27 +26,27 @@ stories.add('empty', () => ({
           totalCount: 50,
         },
       },
-      currentPipelineName: "test",
-      pipelines: {test: []}
-    })
+      currentPipelineName: 'test',
+      pipelines: { test: [] },
+    });
   },
   components: { DataViewer },
-  directives: { resizable },
+  // directives: { resizable },
   template: `
-    <data-viewer>
-    </data-viewer>
+    <DataViewer />
   `,
-}));
+});
 
-stories.add('loading', () => ({
+export const Loading: StoryFn<typeof DataViewer> = () => ({
   store: new Vuex.Store({}),
   created: function() {
     registerModule(this.$store, {
       isLoading: {
         dataset: true,
+        uniqueValues: false,
       },
       dataset: {
-        headers:[],
+        headers: [],
         data: [],
         paginationContext: {
           pagesize: 50,
@@ -48,35 +54,33 @@ stories.add('loading', () => ({
           totalCount: 50,
         },
       },
-      currentPipelineName: "test",
-      pipelines: {test: []}
-    })
+      currentPipelineName: 'test',
+      pipelines: { test: [] },
+    });
   },
   components: { DataViewer },
   directives: { resizable },
   template: `
-    <data-viewer>
-    </data-viewer>
+    <DataViewer />
   `,
-}));
+});
 
-stories.add('simple', () => ({
+export const Simple: StoryFn<typeof DataViewer> = () => ({
   store: new Vuex.Store({}),
   created: function() {
     registerModule(this.$store, {
       dataset: {
-        headers:
-          [
-            { name: 'columnA', type: 'string' },
-            { name: 'columnB', type: 'date' },
-            { name: 'columnC', type: 'integer' },
-          ],
+        headers: [
+          {name: 'columnA', type: 'string'},
+          {name: 'columnB', type: 'date'},
+          {name: 'columnC', type: 'integer'},
+        ],
         data: [
           ['value1', 'value2', 'value3'],
           ['value4', 'value5', 'value6'],
           ['value7', 'value8', 'value9'],
           ['value10', 'value11', 'value12'],
-          ['value10', { obj: 'value14' }, null],
+          ['value10', {obj: 'value14'}, null],
         ],
         paginationContext: {
           pagesize: 50,
@@ -84,14 +88,13 @@ stories.add('simple', () => ({
           totalCount: 50,
         },
       },
-      currentPipelineName: "test",
-      pipelines: {test: []}
+      currentPipelineName: 'test',
+      pipelines: { test: [] },
     });
   },
   components: { DataViewer },
   directives: { resizable },
   template: `
-      <data-viewer>
-      </data-viewer>
-    `,
-}));
+    <DataViewer />
+  `,
+});

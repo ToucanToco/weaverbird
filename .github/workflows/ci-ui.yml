@@ -45,7 +45,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: lint-report
-          path: lint-report.json
+          path: ui/lint-report.json
         if: failure()
 
       - name: Unit tests
