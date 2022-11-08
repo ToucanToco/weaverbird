@@ -24,7 +24,6 @@ import {
   faFilter,
   faFont,
   faGripVertical,
-  faMagic,
   faMapMarkedAlt,
   faObjectGroup,
   faPlus,
@@ -34,6 +33,7 @@ import {
   faTimes,
   faTrash,
   faVial,
+  faWandMagicSparkles,
 } from '@fortawesome/free-solid-svg-icons';
 
 /* List all icons used in app */
@@ -58,7 +58,7 @@ const FA_ICONS = {
   filter: faFilter,
   font: faFont,
   'grip-vertical': faGripVertical,
-  magic: faMagic,
+  'wand-magic-sparkles': faWandMagicSparkles,
   'map-marked-alt': faMapMarkedAlt,
   'object-group': faObjectGroup,
   plus: faPlus,

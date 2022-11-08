@@ -38,7 +38,7 @@
       <div class="query-pipeline__tips">
         Interact with the widgets and table on the right to add steps
       </div>
-      <FAIcon icon="magic" />
+      <FAIcon icon="wand-magic-sparkles" />
     </div>
     <DeleteConfirmationModal
       v-if="deleteConfirmationModalIsOpened"
