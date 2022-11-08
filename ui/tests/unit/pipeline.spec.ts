@@ -1,7 +1,7 @@
 import type { Wrapper } from '@vue/test-utils';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { SpyInstance } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import Vuex from 'vuex';
 
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal.vue';

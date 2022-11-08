@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
 import { shallowMount } from '@vue/test-utils';
+import { describe, expect, it } from 'vitest';
 
 import AggregationWidget from '@/components/stepforms/widgets/Aggregation.vue';
 import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
