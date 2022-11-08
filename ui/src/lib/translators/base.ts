@@ -104,7 +104,7 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
     return !this.unsupportedSteps.includes(stepname);
   }
 
-  /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars, @typescript-eslint/no-unused-vars-experimental, @typescript-eslint/no-empty-function */
+  /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function */
   @unsupported
   absolutevalue(step: Readonly<S.AbsoluteValueStep>) {}
 
@@ -255,7 +255,7 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   @unsupported
   waterfall(step: Readonly<S.WaterfallStep>) {}
 
-  /* eslint-enable no-unused-vars, @typescript-eslint/no-unused-vars, @typescript-eslint/no-unused-vars-experimental */
+  /* eslint-enable no-unused-vars, @typescript-eslint/no-unused-vars */
 
   /**
    * translates an input pipeline into a list of steps that makes sense for the

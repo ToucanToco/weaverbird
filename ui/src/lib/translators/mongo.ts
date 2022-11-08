@@ -519,7 +519,7 @@ function transformAddMissingDates(step: Readonly<S.AddMissingDatesStep>): MongoS
 /** transform an 'aggregate' step into corresponding mongo steps */
 function transformAggregate(step: Readonly<S.AggregateStep>): MongoStep[] {
   const idblock: PropMap<string> = columnMap(step.on);
-  const group: { [id: string]: {} } = {};
+  const group: { [id: string]: any } = {};
   const project: PropMap<any> = {};
   const addFields: PropMap<any> = {};
 
@@ -1351,7 +1351,7 @@ function transformRollup(step: Readonly<S.RollupStep>): MongoStep {
 
   for (const [idx, elem] of step.hierarchy.entries()) {
     const id = columnMap([...step.hierarchy.slice(0, idx + 1), ...(step.groupby ?? [])]);
-    const aggs: { [id: string]: {} } = {};
+    const aggs: { [id: string]: any } = {};
     for (const aggfStep of step.aggregations) {
       // We support simple string sfor retrocompatibility purposes
       const cols = aggfStep.column ? [aggfStep.column] : aggfStep.columns;
@@ -1625,7 +1625,7 @@ function transformTotals(step: Readonly<S.AddTotalRowsStep>): MongoStep {
     // List of columns that that will be used to group the aggregations computation
     // i.e. we will compute total rows for dimensions not included in this group id
     const id = columnMap([...comb, ...groups]);
-    const aggs: { [id: string]: {} } = {};
+    const aggs: { [id: string]: any } = {};
     // get columns not in aggregation, i.e. columns that will hold the total rows labels
     const totalColumns: string[] = toCombine.filter((x) => !comb.includes(x));
     const countDistinctAddFields: PropMap<any> = {};

@@ -45,4 +45,4 @@ export type TransformStep = (step: Readonly<PipelineStep>) => void;
  * NOTE: also accept `void` as a valid OutputStep, mostly for the BaseTranslator
  * class.
  */
-export type OutputStep = {} | void;
+export type OutputStep = Record<string, unknown> | void;

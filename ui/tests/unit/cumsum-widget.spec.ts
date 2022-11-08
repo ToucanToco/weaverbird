@@ -1,5 +1,5 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import Vuex, { Store } from 'vuex';
 
 import CumSumWidget from '@/components/stepforms/widgets/CumSum.vue';

@@ -211,8 +211,8 @@ class StepLabeller implements StepMatcher<string> {
     return `Dissolve geographical data grouped by ${formatMulticol(step.groups)}`;
   }
 
-  domain(step: Readonly<S.DomainStep>, retrieveDomainName?: Function) {
-    return `Source: "${retrieveDomainName!(step.domain)}"`;
+  domain(step: Readonly<S.DomainStep>, retrieveDomainNameFunc?: typeof retrieveDomainName) {
+    return `Source: "${retrieveDomainNameFunc!(step.domain, [])}"`;
   }
 
   duplicate(step: Readonly<S.DuplicateColumnStep>) {
@@ -376,14 +376,18 @@ const LABELLER = new StepLabeller();
  * Compute a human-readable representation of a pipeline step.
  *
  * @param step the step we want to compute a label for
+ * @param [retrieveDomainNameFunc]
  * @return the human-readable label.
  */
-export function humanReadableLabel(step: S.PipelineStep, retrieveDomainName?: Function) {
+export function humanReadableLabel(
+  step: S.PipelineStep,
+  retrieveDomainNameFunc?: typeof retrieveDomainName,
+) {
   const transform = LABELLER[step.name] as (
     step: S.PipelineStep,
-    retrieveDomainName?: Function,
+    retrieveDomainNameFunc?: typeof retrieveDomainName,
   ) => string;
-  return transform(step, retrieveDomainName);
+  return transform(step, retrieveDomainNameFunc);
 }
 
 function _replaceAll(str: string, search: string, replace: string) {

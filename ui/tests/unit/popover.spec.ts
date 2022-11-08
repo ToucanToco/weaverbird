@@ -1,6 +1,9 @@
-import { mount, Wrapper } from '@vue/test-utils';
+import type { Wrapper } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import _ from 'lodash';
-import Vue from 'vue';
+import type { SpyInstance } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type Vue from 'vue';
 
 import { Alignment, POPOVER_SHADOW_GAP } from '@/components/constants';
 import * as DOMUtil from '@/components/domutil';
@@ -155,8 +158,8 @@ describe('DOM Position Tests', () => {
 describe('Popover', function () {
   let wrapper: Wrapper<Vue>;
   let popoverWrapper: Wrapper<Vue>;
-  let throttleSpy: jest.SpyInstance<Function>;
-  let boundingRectSpy: jest.SpyInstance<ClientRect>;
+  let throttleSpy: SpyInstance;
+  let boundingRectSpy: SpyInstance<[], ClientRect>;
 
   const createWrapper = (...args: any) => {
     const val = args[0],
@@ -214,7 +217,7 @@ describe('Popover', function () {
 
   beforeEach(function () {
     throttleSpy = vi.spyOn(_, 'throttle').mockImplementation((fn: any) => fn);
-    boundingRectSpy = jest
+    boundingRectSpy = vi
       .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
       .mockImplementation(mockBoundingRect);
   });
@@ -358,10 +361,7 @@ describe('Popover', function () {
   describe('forceUpdatePosition', () => {
     it('should update its position when forced to update position is true', async function () {
       createWrapper({ props: { visible: false } });
-      const updatePositionSpy: jest.SpyInstance = vi.spyOn(
-        popoverWrapper.vm as any,
-        'updatePosition',
-      );
+      const updatePositionSpy: SpyInstance = vi.spyOn(popoverWrapper.vm as any, 'updatePosition');
       await popoverWrapper.setProps({ forcePositionUpdate: 1 });
 
       expect(updatePositionSpy).toHaveBeenCalled();

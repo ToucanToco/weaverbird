@@ -38,6 +38,9 @@ jobs:
       - name: Install dependencies
         run: yarn --frozen-lockfile
 
+      - name: Check format
+        run: yarn format:ci
+
       - name: Lint
         run: yarn lint:ci
 

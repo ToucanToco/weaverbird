@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Store } from 'vuex';
 
@@ -760,7 +761,7 @@ describe('action tests', () => {
         [3, 4],
       ],
     };
-    let instantiateDummyService: Function;
+    let instantiateDummyService: () => BackendService;
     beforeEach(() => {
       instantiateDummyService = (): BackendService => ({
         executePipeline: vi.fn().mockResolvedValue({ data: dummyDataset, translator: 'pandas' }),
@@ -969,9 +970,9 @@ describe('action tests', () => {
         ['Paris', 200],
       ],
     };
-    let instantiateDummyService: Function;
+    let instantiateDummyService: () => BackendService;
     beforeEach(() => {
-      instantiateDummyService = (): BackendService => ({
+      instantiateDummyService = () => ({
         executePipeline: vi.fn().mockResolvedValue({ data: resultOfAggregationCountOnCity }),
       });
     });
@@ -1100,7 +1101,7 @@ describe('action tests', () => {
   });
 
   describe('getColumnNamesFromPipeline', () => {
-    let store: Store<RootState>, mockBackendServiceExecutePipeline: jest.Mock;
+    let store: Store<RootState>, mockBackendServiceExecutePipeline: Mock;
 
     beforeEach(() => {
       mockBackendServiceExecutePipeline = vi.fn();

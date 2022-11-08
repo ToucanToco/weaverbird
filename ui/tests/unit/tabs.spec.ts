@@ -8,7 +8,7 @@ const TABS = ['Tab 1', 'Tab 2'];
 
 describe('Tabs', () => {
   let wrapper: Wrapper<Tabs>;
-  const createWrapper: Function = (propsData: any = {}) => {
+  const createWrapper = (propsData: any = {}) => {
     wrapper = shallowMount(Tabs, { propsData });
   };
 

@@ -304,7 +304,10 @@ describe.skip('Widget FilterSimpleCondition', () => {
 
   describe('date column and date', () => {
     let wrapper: Wrapper<FilterSimpleConditionWidget>;
-    const createWrapper = (mountType: Function, customProps: any = {}) => {
+    const createWrapper = (
+      mountType: typeof mount | typeof shallowMount,
+      customProps: any = {},
+    ) => {
       const store = setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -422,7 +425,10 @@ describe.skip('Widget FilterSimpleCondition', () => {
 
   describe('date column and date (without relative date filtering)', () => {
     let wrapper: Wrapper<FilterSimpleConditionWidget>;
-    const createWrapper = (mountType: Function, customProps: any = {}) => {
+    const createWrapper = (
+      mountType: typeof mount | typeof shallowMount,
+      customProps: any = {},
+    ) => {
       const store = setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
