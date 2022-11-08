@@ -2,8 +2,8 @@
   "$schema": "https://json.schemastore.org/tsconfig.json",
   "extends": "@vue/tsconfig/tsconfig.node.json",
   "include": [
-    "vite.config.*"
-//    "vitest.config.*",
+    "vite.config.*",
+    ".storybook/main.*",
 //    "cypress.config.*",
 //    "playwright.config.*"
   ],

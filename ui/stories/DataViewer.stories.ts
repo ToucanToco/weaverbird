@@ -1,12 +1,9 @@
 import type { Meta, StoryFn } from '@storybook/vue';
-import Vue from 'vue';
 import Vuex from 'vuex';
 
 import DataViewer from '@/components/DataViewer.vue';
 import { resizable } from '@/directives/resizable/resizable';
 import { registerModule } from '@/store';
-
-Vue.use(Vuex);
 
 export default {
   title: 'DataViewer',
@@ -15,7 +12,7 @@ export default {
 
 export const Empty: StoryFn<typeof DataViewer> = () => ({
   store: new Vuex.Store({}),
-  created: function() {
+  created: function () {
     registerModule(this.$store, {
       dataset: {
         headers: [],
@@ -39,7 +36,7 @@ export const Empty: StoryFn<typeof DataViewer> = () => ({
 
 export const Loading: StoryFn<typeof DataViewer> = () => ({
   store: new Vuex.Store({}),
-  created: function() {
+  created: function () {
     registerModule(this.$store, {
       isLoading: {
         dataset: true,
@@ -67,20 +64,20 @@ export const Loading: StoryFn<typeof DataViewer> = () => ({
 
 export const Simple: StoryFn<typeof DataViewer> = () => ({
   store: new Vuex.Store({}),
-  created: function() {
+  created: function () {
     registerModule(this.$store, {
       dataset: {
         headers: [
-          {name: 'columnA', type: 'string'},
-          {name: 'columnB', type: 'date'},
-          {name: 'columnC', type: 'integer'},
+          { name: 'columnA', type: 'string' },
+          { name: 'columnB', type: 'date' },
+          { name: 'columnC', type: 'integer' },
         ],
         data: [
           ['value1', 'value2', 'value3'],
           ['value4', 'value5', 'value6'],
           ['value7', 'value8', 'value9'],
           ['value10', 'value11', 'value12'],
-          ['value10', {obj: 'value14'}, null],
+          ['value10', { obj: 'value14' }, null],
         ],
         paginationContext: {
           pagesize: 50,
