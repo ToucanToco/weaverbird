@@ -46,6 +46,7 @@
     "@typescript-eslint/eslint-plugin": "^5.42.0",
     "@typescript-eslint/parser": "^5.42.0",
     "@vitejs/plugin-vue2": "^2.0.0",
+    "@vitest/coverage-c8": "^0.25.0",
     "@vue/eslint-config-prettier": "^7.0.0",
     "@vue/eslint-config-typescript": "^3.2.0",
     "@vue/test-utils": "^1.0.0-beta.29",

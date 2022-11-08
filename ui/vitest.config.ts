@@ -8,6 +8,9 @@ export default mergeConfig(
   defineConfig({
     test: {
       environment: 'jsdom',
+      coverage: {
+        reporter: ['json'],
+      },
     },
   }),
 );
