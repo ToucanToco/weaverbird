@@ -1135,6 +1135,89 @@ Delete a column.
 | 10    | Company 5 - Group 2 |
 | 5     | Company 6 - Group 2 |
 
+### `dissolve` step
+
+Geographically dissolve data
+
+```javascript
+{
+    name: 'dissolve',
+    groups: ['my-column', 'some-other-column'],
+    include_nulls: true,
+}
+```
+
+**This step is supported by the following backends:*
+
+- Pandas (python)
+
+#### Example without aggregations
+
+**Input dataset:**
+
+| Country   | City   | geometry |
+|-----------|--------|----------|
+| Country 1 | City 1 | Polygon  |
+| Country 2 | City 2 | Polygon  |
+| Country 2 | City 3 | Polygon  |
+| Country 1 | City 4 | Polygon  |
+| Country 2 | City 5 | Polygon  |
+| Country 1 | City 6 | Polygon  |
+
+**Step configuration:**
+
+```javascript
+{
+    name: 'dissolve',
+    groups: ['Country'],
+    include_nulls: true,
+}
+```
+
+**Output dataset:**
+
+| Country   | geometry     |
+|-----------|--------------|
+| Country 1 | MultiPolygon |
+| Country 2 | MultiPolygon |
+
+#### Example with aggregations
+
+**Input dataset:**
+
+| Country   | City   | geometry | Population |
+|-----------|--------|----------|------------|
+| Country 1 | City 1 | Polygon  | 100_000    |
+| Country 2 | City 2 | Polygon  | 50_000     |
+| Country 2 | City 3 | Polygon  | 200_000    |
+| Country 1 | City 4 | Polygon  | 30_000     |
+| Country 2 | City 5 | Polygon  | 25_000     |
+| Country 1 | City 6 | Polygon  | 10_000     |
+
+**Step configuration:**
+
+```javascript
+{
+    name: 'dissolve',
+    groups: ['Country'],
+    include_nulls: true,
+    aggregations: [
+        {
+            aggfunction: 'sum',
+            columns: ['Population'],
+            newcolumns: ['Total population'],
+        }
+    ]
+}
+```
+
+**Output dataset:**
+
+| Country   | geometry     | Total population |
+|-----------|--------------|------------------|
+| Country 1 | MultiPolygon | 140_000          |
+| Country 2 | MultiPolygon | 275_000          |
+
 ### `domain` step
 
 This step is meant to select a specific domain (using MongoDB terminology).
