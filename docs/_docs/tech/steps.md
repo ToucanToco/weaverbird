@@ -1803,6 +1803,60 @@ The following operators are supported by the formula step (note that a value can
 | Label 2 | 1      | 13     | 7      | 3       | -4     |
 | Label 3 | 5      | 20     | 5      | 2       | 1      |
 
+### `hierarchy` step
+
+Hierarchy for geographical data.
+
+This step dissolves data for every hierarchy level, and adds a hierarchy level column containing a level
+(with 0 being the lowest granualrity, i.e. the highest level).
+
+```javascript
+{
+    name: 'hierarchy',
+    hierarchy: ['Country', 'City'],
+    include_nulls: false,
+}
+```
+
+**This step is supported by the following backends:*
+
+- Pandas (python)
+
+#### Example
+
+**Input dataset:**
+
+| Country   | City   | geometry | Population |
+|-----------|--------|----------|------------|
+| Country 1 | City 1 | Polygon  | 100_000    |
+| Country 2 | City 2 | Polygon  | 50_000     |
+| Country 2 | City 3 | Polygon  | 200_000    |
+| Country 1 | City 4 | Polygon  | 30_000     |
+| Country 2 | City 5 | Polygon  | 25_000     |
+| Country 1 | City 6 | Polygon  | 10_000     |
+
+**Step configuration:**
+
+```javascript
+    name: 'hierarchy',
+    hierarchy: ['Country', 'City'],
+    include_nulls: false,
+```
+
+**Output dataset:**
+
+| Country   | City   | geometry     | Population | hierarchy_level |
+|-----------|--------|--------------|------------|-----------------|
+| Country 1 | City 1 | Polygon      | 100_000    | 2               |
+| Country 2 | City 2 | Polygon      | 50_000     | 2               |
+| Country 2 | City 3 | Polygon      | 200_000    | 2               |
+| Country 1 | City 4 | Polygon      | 30_000     | 2               |
+| Country 2 | City 5 | Polygon      | 25_000     | 2               |
+| Country 1 | City 6 | Polygon      | 10_000     | 2               |
+| Country 1 | null   | MultiPolygon | null       | 1               |
+| Country 2 | null   | MultiPolygon | null       | 1               |
+| null      | null   | MultiPolygon | null       | 0               |
+
 ### `ifthenelse` step
 
 Creates a new column, which values will depend on a condition expressed on
