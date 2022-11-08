@@ -184,8 +184,6 @@ export default class FilterSimpleConditionWidget extends Vue {
   ];
 
   created() {
-    console.log('FSC created');
-    console.log('FSC', this.value);
     // In absence of condition, emit directly to the parent the default value
     if (isEqual(this.value, DEFAULT_FILTER)) {
       this.$emit('input', DEFAULT_FILTER);

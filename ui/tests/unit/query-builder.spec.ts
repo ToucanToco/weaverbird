@@ -1,5 +1,7 @@
-import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils';
-import Vue from 'vue';
+import type { Wrapper } from '@vue/test-utils';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { beforeEach, describe, expect, it } from 'vitest';
+import type Vue from 'vue';
 import Vuex, { Store } from 'vuex';
 
 import QueryBuilder from '@/components/QueryBuilder.vue';

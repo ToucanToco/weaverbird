@@ -177,7 +177,7 @@ const actions: ActionTree<VQBState, any> = {
         });
       }
     } finally {
-      context.commit('setLoading', { type: 'uniqueValues', isLoading: true });
+      context.commit('setLoading', { type: 'uniqueValues', isLoading: false });
     }
   },
 };

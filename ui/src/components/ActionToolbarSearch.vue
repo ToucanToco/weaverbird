@@ -10,7 +10,7 @@
       <FAIcon class="action-toolbar-search__btn-icon" icon="search" />
       <popover :visible="isActive" :align="'left'" bottom @closed="$emit('closed')">
         <div class="action-menu__body action-toolbar-search__popover">
-          <multiselect
+          <Multiselect
             ref="searchComponent"
             :options="actionOptions"
             label="label"
@@ -30,7 +30,7 @@
   </div>
 </template>
 <script lang="ts">
-import Multiselect from 'vue-multiselect';
+import { Multiselect } from 'vue-multiselect';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
@@ -84,7 +84,6 @@ export default class SearchActions extends Vue {
   };
 
   focusSearchBar() {
-    console.log(this.$refs.searchComponent.$el);
     (this.$refs.searchComponent.$el as HTMLElement).focus();
   }
 

@@ -56,8 +56,8 @@ import Draggable from 'vuedraggable';
 
 import FAIcon from '@/components/FAIcon.vue';
 import { copyToClipboard, pasteFromClipboard } from '@/lib/clipboard';
-import { isPipelineStep } from '@/lib/steps';
 import type { DomainStep, Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
+import { isPipelineStep } from '@/lib/steps';
 import type { VariableDelimiters } from '@/lib/variables';
 import { VQBModule } from '@/store';
 import type { MutationCallbacks } from '@/store/mutations';

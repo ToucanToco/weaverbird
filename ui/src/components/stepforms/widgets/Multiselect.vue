@@ -11,7 +11,7 @@
       @resetEditedAdvancedVariable="resetEditedAdvancedVariable"
       @input="updateStringValue"
     >
-      <multiselect
+      <Multiselect
         class="widget-multiselect__multiselect"
         v-model="editedValue"
         :options="options"
@@ -52,7 +52,7 @@
             />
           </span>
         </template>
-      </multiselect>
+      </Multiselect>
     </MultiVariableInput>
     <div v-if="messageError" class="field__msg-error">
       <FAIcon icon="exclamation-circle" />
@@ -62,9 +62,8 @@
 </template>
 
 <script lang="ts">
-import Multiselect from 'vue-multiselect';
+import { Multiselect } from 'vue-multiselect';
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
-import type {} from 'vue-property-decorator/node_modules/vue-class-component/lib/declarations';
 
 import FAIcon from '@/components/FAIcon.vue';
 import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';

@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import Multiselect from 'vue-multiselect';
+import { Multiselect } from 'vue-multiselect';
 import { Component, Mixins, Prop } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';

@@ -53,7 +53,7 @@
 </template>
 
 <script lang="ts">
-import Multiselect from 'vue-multiselect';
+import { Multiselect } from 'vue-multiselect';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';

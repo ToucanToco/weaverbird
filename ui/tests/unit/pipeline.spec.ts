@@ -1,6 +1,7 @@
 import type { Wrapper } from '@vue/test-utils';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { SpyInstance } from 'vitest';
 import Vuex from 'vuex';
 
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal.vue';
@@ -71,7 +72,7 @@ describe('Pipeline.vue', () => {
       'Interact with the widgets and table on the right to add steps',
     );
     const icons = wrapper.findAll('FAIcon-stub');
-    expect(icons.at(0).props().icon).toBe('magic');
+    expect(icons.at(0).props().icon).toBe('wand-magic-sparkles');
   });
 
   describe('toggle delete step', () => {
@@ -153,7 +154,7 @@ describe('Pipeline.vue', () => {
   });
 
   describe('clicking on the delete button', () => {
-    let wrapper: Wrapper<PipelineComponent>, modal: Wrapper<any>, dispatchSpy: jest.SpyInstance;
+    let wrapper: Wrapper<PipelineComponent>, modal: Wrapper<any>, dispatchSpy: SpyInstance;
     const selectedSteps = [1, 2];
 
     beforeEach(async () => {
@@ -301,12 +302,12 @@ describe('Pipeline.vue', () => {
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
       const store = setupMockStore(buildStateWithOnePipeline(pipeline));
-      copyToClipboardStub = vi.spyOn(clipboardUtils, 'copyToClipboard').mockImplementation();
+      copyToClipboardStub = vi.spyOn(clipboardUtils, 'copyToClipboard').mockImplementation(() => Promise.resolve());
       wrapper = shallowMount(PipelineComponent, { store, localVue });
     });
 
     afterEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
     });
 
     describe('with ctrl + c', () => {
@@ -347,8 +348,8 @@ describe('Pipeline.vue', () => {
   });
   describe('paste steps', () => {
     let wrapper: Wrapper<PipelineComponent>,
-      dispatchSpy: jest.SpyInstance,
-      pasteFromClipboardStub: jest.SpyInstance;
+      dispatchSpy: SpyInstance,
+      pasteFromClipboardStub: SpyInstance;
     const ctrlV = () => {
       (wrapper.vm as any).keyDownEventHandler({ key: 'v', ctrlKey: true }); // fake ctrl + v;
     };
@@ -365,9 +366,8 @@ describe('Pipeline.vue', () => {
       ];
       const store = setupMockStore(buildStateWithOnePipeline(pipeline));
       dispatchSpy = vi.spyOn(store, 'dispatch');
-      pasteFromClipboardStub = jest
-        .spyOn(clipboardUtils, 'pasteFromClipboard')
-        .mockImplementation();
+      pasteFromClipboardStub = vi
+        .spyOn(clipboardUtils, 'pasteFromClipboard');
       wrapper = shallowMount(PipelineComponent, { store, localVue });
     });
 
