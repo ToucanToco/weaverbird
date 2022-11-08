@@ -240,8 +240,8 @@ describe('Pipeline.vue', () => {
 
   describe('reorder steps', () => {
     let wrapper: Wrapper<PipelineComponent>,
-      commitSpy: jest.SpyInstance,
-      dispatchSpy: jest.SpyInstance;
+      commitSpy: SpyInstance,
+      dispatchSpy: SpyInstance;
 
     beforeEach(async () => {
       const pipeline: Pipeline = [
@@ -287,7 +287,7 @@ describe('Pipeline.vue', () => {
   });
 
   describe('copy steps', () => {
-    let wrapper: Wrapper<PipelineComponent>, copyToClipboardStub: jest.SpyInstance;
+    let wrapper: Wrapper<PipelineComponent>, copyToClipboardStub: SpyInstance;
     const ctrlC = () => {
       (wrapper.vm as any).keyDownEventHandler({ key: 'c', ctrlKey: true }); // fake ctrl + c;
     };

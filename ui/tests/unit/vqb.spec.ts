@@ -2,9 +2,8 @@ import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
 import Vuex from 'vuex';
 
+import Vqb from '@/components/Vqb.vue';
 import { setupStore } from '@/store';
-
-import Vqb from '../../src/components/Vqb.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
