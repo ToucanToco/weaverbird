@@ -42,7 +42,7 @@ jobs:
         run: yarn lint:ci
 
       - name: Archive lint report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: lint-report
           path: ui/lint-report.json
