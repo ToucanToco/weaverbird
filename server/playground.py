@@ -133,6 +133,17 @@ def get_available_domains():
     return list(DOMAINS.keys())
 
 
+def sanitize_table_schema(schema: dict) -> dict:
+    return {
+        "fields": [
+            {"name": field["name"], "type": "geometry"}
+            if field.get("extDtype") == "geometry"
+            else field
+            for field in schema["fields"]
+        ]
+    }
+
+
 def execute_pipeline(pipeline_steps, **kwargs) -> str:
     # Validation
     pipeline = Pipeline(steps=pipeline_steps)
@@ -143,11 +154,14 @@ def execute_pipeline(pipeline_steps, **kwargs) -> str:
     if "offset" in kwargs:
         kwargs["offset"] = int(kwargs["offset"])
 
-    return pandas_preview_pipeline(
-        pipeline=pipeline,
-        domain_retriever=lambda domain: DOMAINS[domain],
-        **kwargs,
+    output = json.loads(
+        pandas_preview_pipeline(
+            pipeline=pipeline,
+            domain_retriever=lambda domain: DOMAINS[domain],
+            **kwargs,
+        )
     )
+    return json.dumps({**output, "schema": sanitize_table_schema(output["schema"])})
 
 
 @app.route("/pandas", methods=["GET", "POST"])
