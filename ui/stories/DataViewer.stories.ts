@@ -6,7 +6,6 @@ import { resizable } from '@/directives/resizable/resizable';
 import { registerModule } from '@/store';
 
 export default {
-  title: 'DataViewer',
   component: DataViewer,
 } as Meta<typeof DataViewer>;
 

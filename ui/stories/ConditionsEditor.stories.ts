@@ -4,7 +4,6 @@ import ConditionsEditor from '@/components/ConditionsEditor/ConditionsEditor.vue
 import type { AbstractFilterTree } from '@/components/ConditionsEditor/tree-types';
 
 export default {
-  title: 'ConditionsEditor',
   component: ConditionsEditor,
 } as Meta<ConditionsEditor>;
 

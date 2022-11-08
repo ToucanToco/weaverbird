@@ -8,7 +8,6 @@ import type { ColumnTypeMapping } from '@/lib/dataset';
 import type { AvailableVariable, VariableDelimiters } from '@/lib/variables';
 
 export default {
-  title: 'FilterEditor',
   component: FilterEditor,
 } as Meta<typeof FilterEditor>;
 

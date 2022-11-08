@@ -1,19 +1,18 @@
-import type { Meta, StoryFn } from '@storybook/vue';
+import type { Meta, StoryObj } from '@storybook/vue';
 import Vuex from 'vuex';
 
 import Step from '@/components/Step.vue';
 import { registerModule } from '@/store';
 
 export default {
-  title: 'Step',
   component: Step,
 } as Meta<Step>;
 
-export const Default: StoryFn<Step> = {
+export const Default: StoryObj<Step> = {
   render: (args, { argTypes }) => ({
     components: { Step },
     props: Object.keys(argTypes),
-    template: '<Step v-bind="$props" v-on="$props" />',
+    template: '<Step v-bind="$props" />',
     store: new Vuex.Store({}),
     created: function () {
       registerModule(this.$store, {
@@ -27,11 +26,11 @@ export const Default: StoryFn<Step> = {
   },
 };
 
-export const WithError: StoryFn<Step> = {
+export const WithError: StoryObj<Step> = {
   render: (args, { argTypes }) => ({
     components: { Step },
     props: Object.keys(argTypes),
-    template: '<Step v-bind="$props" v-on="$props" />',
+    template: '<Step v-bind="$props" />',
     store: new Vuex.Store({}),
     created: function () {
       registerModule(this.$store, {

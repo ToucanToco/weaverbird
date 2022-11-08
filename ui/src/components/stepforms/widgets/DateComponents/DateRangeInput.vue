@@ -183,7 +183,7 @@ export default class DateRangeInput extends Vue {
   bounds!: CustomDateRange;
 
   @Prop({ type: Boolean, default: false })
-  alwaysOpened!: false;
+  alwaysOpened!: boolean;
 
   @Prop({ type: String, required: false })
   locale?: LocaleIdentifier;
