@@ -239,9 +239,7 @@ describe('Pipeline.vue', () => {
   });
 
   describe('reorder steps', () => {
-    let wrapper: Wrapper<PipelineComponent>,
-      commitSpy: SpyInstance,
-      dispatchSpy: SpyInstance;
+    let wrapper: Wrapper<PipelineComponent>, commitSpy: SpyInstance, dispatchSpy: SpyInstance;
 
     beforeEach(async () => {
       const pipeline: Pipeline = [
@@ -302,7 +300,9 @@ describe('Pipeline.vue', () => {
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
       const store = setupMockStore(buildStateWithOnePipeline(pipeline));
-      copyToClipboardStub = vi.spyOn(clipboardUtils, 'copyToClipboard').mockImplementation(() => Promise.resolve());
+      copyToClipboardStub = vi
+        .spyOn(clipboardUtils, 'copyToClipboard')
+        .mockImplementation(() => Promise.resolve());
       wrapper = shallowMount(PipelineComponent, { store, localVue });
     });
 
@@ -366,8 +366,7 @@ describe('Pipeline.vue', () => {
       ];
       const store = setupMockStore(buildStateWithOnePipeline(pipeline));
       dispatchSpy = vi.spyOn(store, 'dispatch');
-      pasteFromClipboardStub = vi
-        .spyOn(clipboardUtils, 'pasteFromClipboard');
+      pasteFromClipboardStub = vi.spyOn(clipboardUtils, 'pasteFromClipboard');
       wrapper = shallowMount(PipelineComponent, { store, localVue });
     });
 

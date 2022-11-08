@@ -252,7 +252,9 @@ describe('Date input', () => {
         expect(wrapper.find('RelativeDateForm-stub').exists()).toBe(false);
       });
       it('should have a disabled save button', () => {
-        expect(wrapper.find('.widget-date-input__editor-button--primary').attributes('disabled')).toBe('disabled');
+        expect(
+          wrapper.find('.widget-date-input__editor-button--primary').attributes('disabled'),
+        ).toBe('disabled');
       });
 
       describe('when updating Calendar value', () => {
@@ -265,7 +267,9 @@ describe('Date input', () => {
           expect((wrapper.vm as any).currentTabValue).toStrictEqual(newValue);
         });
         it('should have an enabled save button', () => {
-          expect(wrapper.find('.widget-date-input__editor-button--primary').attributes('disabled')).not.toBe('disabled');
+          expect(
+            wrapper.find('.widget-date-input__editor-button--primary').attributes('disabled'),
+          ).not.toBe('disabled');
         });
       });
     });
@@ -418,7 +422,9 @@ describe('Date input', () => {
       expect(wrapper.find('Calendar-stub').props().value).toStrictEqual(value);
     });
     it('should have an enabled save button', () => {
-      expect(wrapper.find('.widget-date-input__editor-button--primary').attributes('disabled')).not.toBe('disabled');
+      expect(
+        wrapper.find('.widget-date-input__editor-button--primary').attributes('disabled'),
+      ).not.toBe('disabled');
     });
   });
 
