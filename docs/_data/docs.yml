@@ -16,6 +16,7 @@
     - cumsum
     - custom
     - delete
+    - dissolve
     - duplicate
     - duration
     - evolution
@@ -24,6 +25,7 @@
     - fillna
     - filter
     - formula
+    - hierarchy
     - uniquegroups
     - rollup
     - ifthenelse
@@ -35,6 +37,7 @@
     - rank
     - rename
     - replace
+    - simplify
     - sort
     - split
     - statistics
