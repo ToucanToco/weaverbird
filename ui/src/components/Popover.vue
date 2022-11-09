@@ -1,5 +1,5 @@
 <template>
-  <span
+  <div
     class="weaverbird-popover"
     :class="{ 'weaverbird-popover--always-opened': alwaysOpened }"
     data-cy="weaverbird-popover"
@@ -7,7 +7,7 @@
     @click.stop
   >
     <slot />
-  </span>
+  </div>
 </template>
 <script lang="ts">
 import _ from 'lodash';
@@ -157,6 +157,7 @@ export default class Popover extends Vue {
   }
 
   setupPositioning() {
+    console.log('setup positioning')
     this.weaverbirdPopoverContainer.appendChild(this.$el);
     this.updatePosition();
     // Attach listeners
@@ -198,6 +199,8 @@ export default class Popover extends Vue {
       };
       // Set alignment
       const elementStyle: ElementPosition = DOMUtil.align(this.align, positionContext);
+      console.log('align', this.align, positionContext.parent, "OK", positionContext.element.getBoundingClientRect())
+      console.log('el', this.$el.outerHTML)
       elementStyle.top = DOMUtil.computeTop(this.bottom, positionContext);
       // make sure to use `px` unit explicitly
       this.elementStyle = _.fromPairs(Object.entries(elementStyle).map(([k, v]) => [k, `${v}px`]));

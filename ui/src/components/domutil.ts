@@ -24,9 +24,9 @@ type PositionContext = {
   /** the main element being manipulated */
   element: ElementOffset;
   /** its parent element's position */
-  parent: ClientRect;
+  parent: DOMRect;
   /** the document body's position */
-  body: ClientRect;
+  body: DOMRect;
   /** the window dimensions */
   window: WindowDimensions;
 };
@@ -38,14 +38,14 @@ type PartialPositionContext = Partial<{
 /**
  * convert a client rect to a plain javascript object.
  *
- * NOTE: Spread syntax can't be used since `ClientRect` objects have no
+ * NOTE: Spread syntax can't be used since `DOMRect` objects have no
  * enumerable properties.
  * NOTE2: a hack might to be use `rect.toJSON()` but it's unclear whether or
  * not it would be supported on "all" browsers.
  *
  * @param rect the input client rect
  */
-function _toPlainObj(rect: Partial<ClientRect>) {
+function _toPlainObj(rect: Partial<DOMRect>) {
   return {
     width: rect.width || 0,
     height: rect.height || 0,
@@ -62,7 +62,7 @@ function _toPlainObj(rect: Partial<ClientRect>) {
  *
  * @param customRect the custom rect properties to define.
  */
-function completeClientRect(customRect: Partial<ClientRect> = {}): ClientRect {
+function completeClientRect(customRect: Partial<DOMRect> = {}): DOMRect {
   const defaultRect = {
     width: 0,
     height: 0,
