@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
+import { Component, Prop, Watch } from 'vue-property-decorator';
 
 import { CodeEditor, CodeEditorConfigs } from '@/components/code-editor';
 import type { CodeEditorConfig } from '@/components/code-editor';
@@ -35,7 +35,7 @@ import FormWidget from './FormWidget.vue';
     FAIcon,
   },
 })
-export default class CodeEditorWidget extends Mixins(FormWidget) {
+export default class CodeEditorWidget extends FormWidget {
   @Prop({ type: String, default: '' })
   name!: string;
 

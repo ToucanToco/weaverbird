@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
-import { Component, Mixins } from 'vue-property-decorator';
+import { Component } from 'vue-property-decorator';
 
 import FormWidget from '@/components/stepforms/widgets/FormWidget.vue';
 
@@ -8,7 +8,7 @@ import FormWidget from '@/components/stepforms/widgets/FormWidget.vue';
 @Component({
   name: 'fake-widget',
 })
-export default class FakeWidget extends Mixins(FormWidget) {
+export default class FakeWidget extends FormWidget {
   render() {
     // empty render to manager the mixins render issue
   }

@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator';
+import { Component, Prop } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
@@ -48,7 +48,7 @@ import VariableInput from './VariableInput.vue';
   name: 'input-text-widget',
   components: { VariableInput, FAIcon },
 })
-export default class InputTextWidget extends Mixins(FormWidget) {
+export default class InputTextWidget extends FormWidget {
   @Prop({ type: String, default: '' })
   name!: string;
 

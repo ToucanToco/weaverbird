@@ -63,7 +63,7 @@
 
 <script lang="ts">
 import { Multiselect } from 'vue-multiselect';
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
+import { Component, Prop, Watch } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
 import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';
@@ -82,7 +82,7 @@ import MultiVariableInput from './MultiVariableInput.vue';
     FAIcon,
   },
 })
-export default class MultiselectWidget extends Mixins(FormWidget) {
+export default class MultiselectWidget extends FormWidget {
   editedAdvancedVariable = '';
 
   @Prop({ type: String, default: '' })
