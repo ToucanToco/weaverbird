@@ -895,20 +895,22 @@ class SQLTranslator(ABC):
     ) -> Criterion:
         column_field: Field = Table(prev_step_name)[condition.column]
 
+        # NOTE: type ignore comments below are because of 'Expected type in class pattern; found
+        # "Any"' mypy errors. Seems like mypy 0.990 does not like typing.Annotated
         match condition:
-            case ComparisonCondition():
+            case ComparisonCondition():  # type:ignore[misc]
                 import operator
 
                 op = getattr(operator, condition.operator)
                 return op(column_field, condition.value)
 
-            case InclusionCondition():
+            case InclusionCondition():  # type:ignore[misc]
                 if condition.operator == "in":
                     return column_field.isin(condition.value)
                 elif condition.operator == "nin":
                     return column_field.notin(condition.value)
 
-            case MatchCondition():
+            case MatchCondition():  # type:ignore[misc]
                 compliant_regex = _compliant_regex(condition.value, self.DIALECT)
 
                 if condition.operator == "matches":
@@ -993,13 +995,13 @@ class SQLTranslator(ABC):
                                 f"[{self.DIALECT}] doesn't have regexp operator"
                             )
 
-            case NullCondition():
+            case NullCondition():  # type:ignore[misc]
                 if condition.operator == "isnull":
                     return column_field.isnull()
                 elif condition.operator == "notnull":
                     return column_field.isnotnull()
 
-            case DateBoundCondition():
+            case DateBoundCondition():  # type:ignore[misc]
 
                 if isinstance(condition.value, (RelativeDate, datetime, str)):
                     if isinstance(condition.value, RelativeDate):
@@ -1029,13 +1031,15 @@ class SQLTranslator(ABC):
     def _get_filter_criterion(self: Self, condition: "Condition", prev_step_name: str) -> Criterion:
         from weaverbird.pipeline.conditions import ConditionComboAnd, ConditionComboOr
 
+        # NOTE: type ignore comments below are because of 'Expected type in class pattern; found
+        # "Any"' mypy errors. Seems like mypy 0.990 does not like typing.Annotated
         match condition:
-            case ConditionComboOr():
+            case ConditionComboOr():  # type:ignore[misc]
                 return Criterion.any(
                     self._get_filter_criterion(condition, prev_step_name)
                     for condition in condition.or_
                 )
-            case ConditionComboAnd():
+            case ConditionComboAnd():  # type:ignore[misc]
                 return Criterion.all(
                     self._get_filter_criterion(condition, prev_step_name)
                     for condition in condition.and_

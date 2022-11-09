@@ -86,6 +86,9 @@ def build_match_tree(condition: Condition, parent_operator="and") -> dict:
             }
         }
 
+    # mypy
+    raise NotImplementedError(f"build_match_tree not implemented for condition: {condition}")
+
 
 def translate_filter(step: FilterStep) -> list[MongoStep]:
     return [{"$match": build_match_tree(step.condition)}]
