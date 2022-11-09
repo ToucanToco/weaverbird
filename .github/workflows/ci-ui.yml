@@ -60,8 +60,8 @@ jobs:
 
       - name: Fix reports paths
         run: |
-          sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' coverage/lcov.info
-          sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' lint-report.json
+          sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace@g' coverage/lcov.info
+          sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace@g' lint-report.json
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
