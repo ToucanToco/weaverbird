@@ -14,7 +14,6 @@
   ],
   "license": "BSD-3-Clause",
   "repository": "github:ToucanToco/weaverbird",
-  "prepublish": "rollup -c",
   "scripts": {
     "codecov": "codecov --token=8e0bf2da-c4b9-435f-958e-446849d0d60e --file=./coverage/coverage-final.json",
     "lint": "eslint --no-error-on-unmatched-pattern src/ tests/ stories/",
