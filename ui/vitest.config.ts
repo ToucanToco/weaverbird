@@ -1,3 +1,4 @@
+import { resolve } from 'path';
 import { mergeConfig } from 'vite';
 import { defineConfig } from 'vitest/config';
 
@@ -8,6 +9,7 @@ export default mergeConfig(
   defineConfig({
     test: {
       environment: 'jsdom',
+      setupFiles: [resolve(__dirname, './vitest.setup.ts')],
       coverage: {
         reporter: ['lcov'],
       },
