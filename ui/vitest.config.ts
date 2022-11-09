@@ -9,7 +9,7 @@ export default mergeConfig(
     test: {
       environment: 'jsdom',
       coverage: {
-        reporter: ['json'],
+        reporter: ['lcov'],
       },
     },
   }),
