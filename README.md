@@ -46,46 +46,24 @@ yarn install
 yarn build-bundle
 ```
 
-This will generate an importable JS `VisualQueryBuilder` library in the `dist` directory.
+This will generate an importable JS `weaverbird` library in the `dist` directory.
 
 **Important note**: While we do our best to embrace [semantic versioning](https://semver.org/),
-we do not guarantee full backward compatibility until version 1.0.0 is realeased.
+we do not guarantee full backward compatibility until version 1.0.0 is released.
 
 ### Run your tests
 
 The basic command to run all tests is:
 
 ```bash
-yarn test:unit
+yarn test
 ```
-
-You can also use a watcher so that tests rerun automatically
-on a change:
-
-```bash
-yarn test:unit --watchAll
-```
-
-To run a single test file:
-
-```bash
-yarn test:unit path/to/yourfile.ts
-```
-
-Finally, you can deactivate typescript checks to run tests quicker:
-
-```bash
-yarn test:quick
-```
-
-This can be useful to accelerate your development cycle temporarily when
-developing a new feature or fixing a bug. Under the hood, this will use the
-`babel-jest` transformer on typescript files instead of `ts-jest`.
 
 ### Lints and fixes files
 
 ```bash
-yarn lint
+yarn format:fix
+yarn lint --fix
 ```
 
 ### Build the API documentation
@@ -154,10 +132,6 @@ This will run [storybook](https://storybook.js.org/), displaying the stories
 (use cases) of UI components.
 
 Stories are defined in the `stories/` directory.
-
-### Customize configuration
-
-See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ## Publication
 
@@ -229,7 +203,7 @@ This library is published on npm under the name `weaverbird` automatically each 
 <script src="weaverbird/dist/weaverbird.umd.min.js"></script>
 ```
 
-### With an ES module bundler (typically webpack or rollup)
+### With an ES module bundler (typically webpack, vite or rollup)
 
 ```js
 import { Pipeline } from 'weaverbird';
@@ -237,23 +211,6 @@ import { Pipeline } from 'weaverbird';
 
 > By default, the CommonJS module is imported. If you prefer the ES module
 > version, import `dist/weaverbird.esm.js`.
-
-### Styles
-
-If your module bundler can also import CSS (e.g. via `styles-loader`):
-
-```js
-import 'weaverbird/dist/weaverbird.css';
-```
-
-If you prefer to use Sass, you may import directly the scss:
-
-```scss
-@import '~weaverbird/src/styles/main';
-```
-
-> This example makes use of the `~` syntax from webpack's [sass-loader](https://github.com/webpack-contrib/sass-loader)
-> to resolve the imported modules.
 
 ## API
 
@@ -278,13 +235,13 @@ docker run -p 5000:5000 --rm -d weaverbird-playground
 which is basically a shortcut for the following steps:
 
 ```bash
+cd ui
 # install front-end dependencies
 yarn
 # build the front-end bundle
 yarn build-bundle
-# note: use --watch when developing
 
-cd server
+cd ../server
 # install the backend dependencies
 pip install -e ".[playground]"
 # run the server
@@ -294,6 +251,8 @@ QUART_APP=playground QUART_ENV=development quart run
 
 Once the server is started, you should be able to open the
 `http://localhost:5000` in your favorite browser and enjoy!
+
+> When developing the UI, use `yarn vite` that provides its own dev server.
 
 
 ### Mongo back-end
@@ -345,6 +304,6 @@ You can override this folder when running the container using by adding a volume
 ### Use another front-end
 
 You can point a front-end to another API by using a query parameter: `?api=http://localhost:5000`.
-This is particularly useful for front-end development, with `yarn build-bundle --watch`.
+This is particularly useful for front-end development, with `yarn vite`.
 
 > To avoid CORS issues when front-end and back-end are on different domains, whitelist your front-end domain using `ALLOW_ORIGIN=<front-end domain>` or `ALLOW_ORIGIN=*`.
