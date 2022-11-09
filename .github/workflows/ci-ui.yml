@@ -69,6 +69,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         if: ${{ always() }}
+        with:
+          projectBaseDir: ui
 
       - name: Check that build completes as expected
         run: yarn build
