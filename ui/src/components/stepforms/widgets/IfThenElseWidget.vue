@@ -50,7 +50,7 @@
         <InputTextWidget
           class="ifthenelse-widget__input"
           :value="value.then"
-          placeholder='Enter a "Text" with quotes, or a formula'
+          :placeholder="inputPlaceHolderText"
           :data-path="`${dataPath}.then`"
           :errors="errors"
           :available-variables="availableVariables"
@@ -75,7 +75,7 @@
           <InputTextWidget
             class="ifthenelse-widget__input"
             :value="value.else"
-            placeholder='Enter a "Text" with quotes, or a formula'
+            :placeholder="inputPlaceHolderText"
             :data-path="`${dataPath}.else`"
             :errors="errors"
             :available-variables="availableVariables"
@@ -171,6 +171,7 @@ export default class IfThenElseWidget extends Vue {
   columnTypes!: ColumnTypeMapping;
 
   readonly title: string = 'Add a conditional column';
+  readonly inputPlaceHolderText: string = 'Enter a "Text" with quotes, or a formula';
   collapsed = false;
 
   get formulaToHumanFormat() {
