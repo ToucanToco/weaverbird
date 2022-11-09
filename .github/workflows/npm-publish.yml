@@ -7,6 +7,11 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ui
+
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
