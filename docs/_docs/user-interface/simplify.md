@@ -5,11 +5,8 @@ permalink: /docs/simplify/
 
 ### Geographical simplification
 
-Use this step in case you want to simplify heavy geographical data.
-
-When simplifying your data, every point that is closer than a specific distance to the previous one is suppressed.
-This step can be useful if you have a very precise shape for a country (such as one-meter precision), but want to quickly
-draw a map chart. In that case, you may want to *simplify* your data.
+This step reduces the size of your data by making it less precise. The higher you set the tolerance, the smaller (and the less
+precise) your data will be. See the [technical documentation](/docs/steps/) for details.
 
 **This step is supported by the following backends:**
 
@@ -24,5 +21,4 @@ draw a map chart. In that case, you may want to *simplify* your data.
 
 <img src="../../img/docs/user-interface/simplify_step_form.jpg" width="350" />
 
-- `Tolerance`: The tolerance to use when simplifying your data. After simplification, no points will be closer than
-  `Tolerance`. The unit depends on the unit of your data's projection, but in general, it's expressed in meters.
+- `Tolerance`: The tolerance to use when simplifying your data.

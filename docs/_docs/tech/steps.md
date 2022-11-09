@@ -3180,6 +3180,14 @@ Split a string `column` into several columns based on a `delimiter`.
 
 Simplifies geographical data.
 
+When simplifying your data, every point that is closer than a specific distance to the previous one is suppressed.
+This step can be useful if you have a very precise shape for a country (such as one-meter precision), but want to quickly
+draw a map chart. In that case, you may want to *simplify* your data.
+
+After simplification, no points will be closer than `tolerance`. The unit depends on data's projection and on its unit,
+but in general, it's expressed in meters for CRS projections. For more details, see the
+[GeoPandas documentation](https://geopandas.org/en/stable/docs/reference/api/geopandas.GeoSeries.simplify.html).
+
 **Step configuration:**
 
 ```javascript
