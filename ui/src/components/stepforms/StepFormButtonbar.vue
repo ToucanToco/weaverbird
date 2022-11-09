@@ -11,8 +11,12 @@
     </div>
   </div>
 </template>
-<script>
-export default {};
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  functional: true,
+});
 </script>
 <style lang="scss" scoped>
 @import '../../styles/_variables';
