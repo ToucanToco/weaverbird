@@ -1,6 +1,7 @@
 # Editors
 .idea
-
+.vscode
+!.vscode/extensions.json
 *.swp
 
 # Secrets
