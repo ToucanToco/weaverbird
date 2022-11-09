@@ -59,7 +59,7 @@ jobs:
         if: ${{ always() }}
 
       - name: Fix code coverage paths
-        working-directory: ./coverage
+        working-directory: ui/coverage
         run: |
           sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' coverage-final.json
 
