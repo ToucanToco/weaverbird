@@ -1147,7 +1147,7 @@ Geographically dissolve data
 }
 ```
 
-**This step is supported by the following backends:*
+**This step is supported by the following backends:**
 
 - Pandas (python)
 
@@ -1808,7 +1808,7 @@ The following operators are supported by the formula step (note that a value can
 Hierarchy for geographical data.
 
 This step dissolves data for every hierarchy level, and adds a hierarchy level column containing a level
-(with 0 being the lowest granualrity, i.e. the highest level).
+(with 0 being the lowest granularity, i.e. the highest level).
 
 ```javascript
 {
