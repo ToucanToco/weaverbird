@@ -11,3 +11,5 @@ do
   fi
   sed -i -r "s#((import|export) .* from ')@/(.*)#\1$path_to_src\3#g" $file
 done
+mv dist/types/src/* dist/types
+rm -r dist/types/src
