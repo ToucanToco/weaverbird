@@ -7,59 +7,61 @@ on:
     branches:
       - master
     paths:
-      - 'src/**'
-      - 'tests/**'
-      - 'yarn.lock'
-      - '*.js'
+      - 'ui/**'
       - '.github/workflows/ci-ui.yml'
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
-      - 'src/**'
-      - 'tests/**'
-      - 'yarn.lock'
-      - '*.js'
+      - 'ui/**'
       - '.github/workflows/ci-ui.yml'
 
 jobs:
   build_lint_and_test:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: ui
+
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           # Shallow clones should be disabled for a better relevancy of analysis
           fetch-depth: 0
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'yarn'
+          cache-dependency-path: ui/yarn.lock
 
       - name: Install dependencies
         run: yarn --frozen-lockfile
+
+      - name: Check format
+        run: yarn format:ci
 
       - name: Lint
         run: yarn lint:ci
 
       - name: Archive lint report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: lint-report
-          path: lint-report.json
+          path: ui/lint-report.json
         if: failure()
 
       - name: Unit tests
-        run: yarn test:unit --runInBand
+        run: yarn coverage
 
       - name: Send report to codecov
         run: yarn codecov
         if: ${{ always() }}
 
-      - name: Fix code coverage paths
-        working-directory: ./coverage
+      - name: Fix reports paths
         run: |
-          sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' lcov.info
+          sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace@g' coverage/lcov.info
+          sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace@g' lint-report.json
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
@@ -67,6 +69,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         if: ${{ always() }}
+        with:
+          projectBaseDir: ui
 
       - name: Check that build completes as expected
-        run: yarn build-bundle
+        run: yarn build

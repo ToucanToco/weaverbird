@@ -1,24 +1,8 @@
-node_modules
-/dist
-.storybook/dist
-playground/*.map
-
+# Editors
 .idea
 .vscode
-
-# local env files
-.env.local
-.env.*.local
-
-# Log files
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Generated reports
-coverage
-lint-report.json
-test-report.xml
+!.vscode/extensions.json
+*.swp
 
 # Secrets
 bigquery-credentials.json

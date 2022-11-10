@@ -1,1 +1,0 @@
-../../dist/weaverbird.browser.js

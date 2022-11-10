@@ -13,6 +13,7 @@ Weaverbird publishes two packages:
 The npm package contains two concerns:
 - a graphical user interface,
 - some translators.
+Its code reside in the `ui/` folder.
 
 Its main language is [TypeScript](https://www.typescriptlang.org/). 
 

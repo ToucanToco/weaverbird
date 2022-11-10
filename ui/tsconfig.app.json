@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig.json",
+  "extends": "@vue/tsconfig/tsconfig.web.json",
+  "include": ["env.d.ts", "src/**/*", "tests/**/*", "stories/**/*", "./.storybook/**/*", "src/**/*.vue", "src/**/*.json", "package.json"],
+  "exclude": ["src/**/__tests__/*", ".storybook/main.*"],
+  "compilerOptions": {
+    "composite": true,
+    "experimentalDecorators": true,
+    "isolatedModules": true,
+    "baseUrl": ".",
+    "paths": { "@/*": ["./src/*"], "*": ["./src/typings/*"] },
+    "target": "ES2019",
+    "lib": ["ES2019", "DOM"],
+    "types": ["vite/client"]
+  },
+  "vueCompilerOptions": { "target": 2.7 }
+}

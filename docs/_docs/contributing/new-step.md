@@ -34,7 +34,7 @@ the unit tests but of course, any PR without tests will be dismissed :).
 
 ### Defining the step interface
 
-Step types are defined in `src/lib/steps.ts` through typescript types. Our
+Step types are defined in `ui/src/lib/steps.ts` through typescript types. Our
 `ColumnSumStep` needs the name of the two input columns and a name for the
 output one. This could be implemented as follows:
 
@@ -78,7 +78,7 @@ export type PipelineStep =
 At this point, the typescript should be invalid since *weaverbird* provides a
 few base classes that **must** provide implementation methods for each step type
 defined in the `PipelineStep` union type. For reference, the `StepMatcher` type
-in the `src/lib/matchers.ts` module is the one in charge to enforce this from a
+in the `ui/src/lib/matchers.ts` module is the one in charge to enforce this from a
 type system point of view. Since we've just added a new `ColumnSumStep` to the
 `PipelineStep` union type, all classes implementing the `StepMatcher` type
 won't be valid anymore.
@@ -89,7 +89,7 @@ methods, that is methods responsible for translating a step with the
 `mongo3.6`).
 
 Each backend translation class extends the `BaseTranslator` class in the
-`src/lib/translators/base.ts` module. This base class is a kind of abstract
+`ui/src/lib/translators/base.ts` module. This base class is a kind of abstract
 base class for all backend translator classes. The default is to declare our
 new step as "unsupported" so that only backends that actually do support the
 step will need to provide a translation implementation.
@@ -110,7 +110,7 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
 The name of the method **must** be the same as the step name.
 
 Then, we'll add an implementation for each supported backend, here mongo only.
-In `src/translators/mongo.ts`, we'll add something like:
+In `ui/src/translators/mongo.ts`, we'll add something like:
 
 ```typescript
 export class Mongo36Translator extends BaseTranslator {
@@ -129,9 +129,9 @@ export class Mongo36Translator extends BaseTranslator {
 Note: since the `Mongo40Translator` class extends the `Mongo36Translator` one,
 it will support our new step for free.
 
-### Defining a human readable label for your step
+### Defining a human-readable label for your step
 
-A labeller is the logical component that provide human readable label for a
+A labeller is the logical component that provide human-readable label for a
 given step (e.g. `{ name: "duplicate", column: "foo", new_column_name: "bar" }`
 will be labelled `Duplicate "foo" in "bar"`). The graphical representation of
 the pipeline will use it to make the transformation easier to understand.
@@ -152,7 +152,7 @@ class StepLabeller implements StepMatcher<string> {
 ### Implementing interpolation
 
 Again, this boils down to implementing a specific method, this time in the
-`PipelineInterpolator` class of the `src/lib/templating.ts` module.
+`PipelineInterpolator` class of the `ui/src/lib/templating.ts` module.
 
 ```typescript
 class PipelineInterpolator implements StepMatcher<string> {
@@ -177,12 +177,13 @@ library](https://github.com/epoberezkin/ajv) to validate the user input for the
 step.
 
 Our JSONSchema files are defined as TypeScript modules in the
-`src/components/stepforms/schemas` and export a default json schema definition.
+`ui/src/components/stepforms/schemas` and export a default json schema definition.
 For our `ColumnSumStep`, we will create the following
-`src/components/stepforms/schemas/columnsum.ts` module:
+`ui/src/components/stepforms/schemas/columnsum.ts` module:
 
 ```typescript
-import { addNotInColumnNamesConstraint, StepFormType } from './utils';
+import { addNotInColumnNamesConstraint } from './utils';
+import type { StepFormType } from './utils';
 
 const schema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
@@ -246,7 +247,7 @@ This is a check that you'll surely want to perform on any new column that your
 step will create (i.e. `newColumn` in our specific case).
 
 To register this new schema, you'll need to update the
-`src/components/stepforms/schemas/index.ts` module:
+`ui/src/components/stepforms/schemas/index.ts` module:
 
 ```typescript
 // […]
@@ -314,7 +315,7 @@ import { Prop } from 'vue-property-decorator';
 import Component from 'vue-class-component';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { ColumnSumStep, PipelineStepName } from '@/lib/steps';
+import type { ColumnSumStep, PipelineStepName } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -329,7 +330,7 @@ export default class ColumnSumForm extends BaseStepForm<ColumnSumStep> {
    stepname: PipelineStepName = 'columnsum';
 
   @Prop({ type: Object, default: () => ({ name: 'columnsum', column1: '', column2: '', newColumn: '' }) })
-  initialStepValue!: ColumnSumStep;
+  declare initialStepValue: ColumnSumStep;
 
   readonly title: string = 'Sum columns';
 }
@@ -391,7 +392,7 @@ returned by `ajv` to be associated to the corresponding input in the UI.
 
 ### Associate the form with its step name
 
-In `src/components/stepforms/index.ts`, import your component and associate it with its step name.
+In `ui/src/components/stepforms/index.ts`, import your component and associate it with its step name.
 This way, the `QueryBuilder` component will be able to display your step form when someone creates or edit such a step.
 
 ```typescript
@@ -413,7 +414,7 @@ The step should also be found in the search bar.
 
 #### In the action bar
 
-Actions are defined in `src/components/constants.ts`.
+Actions are defined in `ui/src/components/constants.ts`.
 Add to `ACTION_CATEGORIES` an object with the `name` of your new step and its
 action `label` into the adequate category.
 
@@ -421,7 +422,7 @@ action `label` into the adequate category.
 
 If your step is directly related to one column, it's a good idea to access it through
 its contextual menu. To achieve this, add your action directly in the template of
-`src/components/ActionMenu.vue`:
+`ui/src/components/ActionMenu.vue`:
 ```vue
 <template>
   <popover :active="isActive" :align="alignLeft" bottom>
@@ -438,7 +439,7 @@ its contextual menu. To achieve this, add your action directly in the template o
 
 #### In the search bar
 
-Searchable actions are defined in the `SEARCH_ACTION` constant in `src/components/constants.ts`.
+Searchable actions are defined in the `SEARCH_ACTION` constant in `ui/src/components/constants.ts`.
 All actions from `ACTION_CATEGORIES` are imported. You should add in `type: 'Others actions'`
 any action not defined in `ACTION_CATEGORIES`, such as contextual ones.
 
