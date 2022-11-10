@@ -1,5 +1,20 @@
 # Changelog (weaverbird npm package)
 
+## [0.94.0] - 2022-11-10
+
+### Added
+
+- Map icon for columns of type `geometry`
+- Remove feature flag hiding the "Geo" button in action bar
+
+### Changed
+
+- Move all front-end code to `ui/` folder
+- Build now requires node v18+
+- Use `vite` instead of `rollup` for build
+- Use `vitest` instead of `jest` for tests
+- Upgrade storybook to `v7-alpha` (with `vite` bundler)
+
 ## [0.93.0] - 2022-11-03
 
 ### Changed
@@ -1337,8 +1352,8 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
-## Unreleased
 
+[0.94.0]: https://github.com/ToucanToco/weaverbird/compare/v0.94.0...v0.93.0
 [0.93.0]: https://github.com/ToucanToco/weaverbird/compare/v0.93.0...v0.92.0
 [0.92.0]: https://github.com/ToucanToco/weaverbird/compare/v0.92.0...v0.91.3
 [0.91.3]: https://github.com/ToucanToco/weaverbird/compare/v0.91.3...v0.91.2
