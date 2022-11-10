@@ -1135,6 +1135,89 @@ Delete a column.
 | 10    | Company 5 - Group 2 |
 | 5     | Company 6 - Group 2 |
 
+### `dissolve` step
+
+Geographically dissolve data
+
+```javascript
+{
+    name: 'dissolve',
+    groups: ['my-column', 'some-other-column'],
+    include_nulls: true,
+}
+```
+
+**This step is supported by the following backends:**
+
+- Pandas (python)
+
+#### Example without aggregations
+
+**Input dataset:**
+
+| Country   | City   | geometry |
+|-----------|--------|----------|
+| Country 1 | City 1 | Polygon  |
+| Country 2 | City 2 | Polygon  |
+| Country 2 | City 3 | Polygon  |
+| Country 1 | City 4 | Polygon  |
+| Country 2 | City 5 | Polygon  |
+| Country 1 | City 6 | Polygon  |
+
+**Step configuration:**
+
+```javascript
+{
+    name: 'dissolve',
+    groups: ['Country'],
+    include_nulls: true,
+}
+```
+
+**Output dataset:**
+
+| Country   | geometry     |
+|-----------|--------------|
+| Country 1 | MultiPolygon |
+| Country 2 | MultiPolygon |
+
+#### Example with aggregations
+
+**Input dataset:**
+
+| Country   | City   | geometry | Population |
+|-----------|--------|----------|------------|
+| Country 1 | City 1 | Polygon  | 100_000    |
+| Country 2 | City 2 | Polygon  | 50_000     |
+| Country 2 | City 3 | Polygon  | 200_000    |
+| Country 1 | City 4 | Polygon  | 30_000     |
+| Country 2 | City 5 | Polygon  | 25_000     |
+| Country 1 | City 6 | Polygon  | 10_000     |
+
+**Step configuration:**
+
+```javascript
+{
+    name: 'dissolve',
+    groups: ['Country'],
+    include_nulls: true,
+    aggregations: [
+        {
+            aggfunction: 'sum',
+            columns: ['Population'],
+            newcolumns: ['Total population'],
+        }
+    ]
+}
+```
+
+**Output dataset:**
+
+| Country   | geometry     | Total population |
+|-----------|--------------|------------------|
+| Country 1 | MultiPolygon | 140_000          |
+| Country 2 | MultiPolygon | 275_000          |
+
 ### `domain` step
 
 This step is meant to select a specific domain (using MongoDB terminology).
@@ -1719,6 +1802,60 @@ The following operators are supported by the formula step (note that a value can
 | Label 1 | 10     | 2      | 3      | 1       | 2      |
 | Label 2 | 1      | 13     | 7      | 3       | -4     |
 | Label 3 | 5      | 20     | 5      | 2       | 1      |
+
+### `hierarchy` step
+
+Hierarchy for geographical data.
+
+This step dissolves data for every hierarchy level, and adds a hierarchy level column containing a level
+(with 0 being the lowest granularity, i.e. the highest level).
+
+```javascript
+{
+    name: 'hierarchy',
+    hierarchy: ['Country', 'City'],
+    include_nulls: false,
+}
+```
+
+**This step is supported by the following backends:*
+
+- Pandas (python)
+
+#### Example
+
+**Input dataset:**
+
+| Country   | City   | geometry | Population |
+|-----------|--------|----------|------------|
+| Country 1 | City 1 | Polygon  | 100_000    |
+| Country 2 | City 2 | Polygon  | 50_000     |
+| Country 2 | City 3 | Polygon  | 200_000    |
+| Country 1 | City 4 | Polygon  | 30_000     |
+| Country 2 | City 5 | Polygon  | 25_000     |
+| Country 1 | City 6 | Polygon  | 10_000     |
+
+**Step configuration:**
+
+```javascript
+    name: 'hierarchy',
+    hierarchy: ['Country', 'City'],
+    include_nulls: false,
+```
+
+**Output dataset:**
+
+| Country   | City   | geometry     | Population | hierarchy_level |
+|-----------|--------|--------------|------------|-----------------|
+| Country 1 | City 1 | Polygon      | 100_000    | 2               |
+| Country 2 | City 2 | Polygon      | 50_000     | 2               |
+| Country 2 | City 3 | Polygon      | 200_000    | 2               |
+| Country 1 | City 4 | Polygon      | 30_000     | 2               |
+| Country 2 | City 5 | Polygon      | 25_000     | 2               |
+| Country 1 | City 6 | Polygon      | 10_000     | 2               |
+| Country 1 | null   | MultiPolygon | null       | 1               |
+| Country 2 | null   | MultiPolygon | null       | 1               |
+| null      | null   | MultiPolygon | null       | 0               |
 
 ### `ifthenelse` step
 
@@ -3038,6 +3175,27 @@ Split a string `column` into several columns based on a `delimiter`.
 | Label 4 | Group 2 | 1     |
 | Label 5 | Group 2 | 10    |
 | Label 6 | Group 2 | 5     |
+
+### `simplify` step
+
+Simplifies geographical data.
+
+When simplifying your data, every point that is closer than a specific distance to the previous one is suppressed.
+This step can be useful if you have a very precise shape for a country (such as one-meter precision), but want to quickly
+draw a map chart. In that case, you may want to *simplify* your data.
+
+After simplification, no points will be closer than `tolerance`. The unit depends on data's projection and on its unit,
+but in general, it's expressed in meters for CRS projections. For more details, see the
+[GeoPandas documentation](https://geopandas.org/en/stable/docs/reference/api/geopandas.GeoSeries.simplify.html).
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'simplify',
+  tolerance: 1.0,
+}
+```
 
 ### `substring` step
 

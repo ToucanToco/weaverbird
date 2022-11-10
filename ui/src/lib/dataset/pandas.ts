@@ -13,7 +13,8 @@ type TableSchemaType =
   | 'datetime'
   | 'duration'
   | 'any'
-  | 'string';
+  | 'string'
+  | 'geometry';
 
 export interface PandasDataTable {
   schema: {
@@ -33,6 +34,7 @@ const COL_TYPE_MAPPING: Record<TableSchemaType, DataSetColumnType> = {
   duration: 'date',
   any: 'object',
   string: 'string',
+  geometry: 'geometry',
 };
 
 function tableSchemaTypeToDataSetColumnType(tableSchemaType: TableSchemaType): DataSetColumnType {

@@ -217,7 +217,8 @@ describe('Data Viewer', () => {
               { name: 'columnE', type: 'date' },
               { name: 'columnF', type: 'object' },
               { name: 'columnG', type: 'boolean' },
-              { name: 'columnH', type: undefined },
+              { name: 'columnH', type: 'geometry' },
+              { name: 'columnI', type: undefined },
             ],
             data: [['value1', 42, 3.14, date, { obj: 'value' }, true]],
             paginationContext: {
@@ -238,7 +239,8 @@ describe('Data Viewer', () => {
       expect(headerIconsWrapper.at(4).find('FAIcon-stub').props().icon).toEqual('calendar-alt');
       expect(headerIconsWrapper.at(5).text()).toEqual('{ }');
       expect(headerIconsWrapper.at(6).find('FAIcon-stub').props().icon).toEqual('check');
-      expect(headerIconsWrapper.at(7).text()).toEqual('???');
+      expect(headerIconsWrapper.at(7).find('FAIcon-stub').props().icon).toEqual('map-marked-alt');
+      expect(headerIconsWrapper.at(8).text()).toEqual('???');
     });
 
     it('should have a action menu for each column', async () => {
