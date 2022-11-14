@@ -412,7 +412,7 @@ describe('Widget FilterSimpleCondition', () => {
     it('should not pass the variables props if hideColumnVariables is true', () => {
       const customProps = {
         availableVariables: ['test'],
-        variableDelimiters: {start:'te', end: 'st'},
+        variableDelimiters: { start: 'te', end: 'st' },
         hideColumnVariables: true,
       };
       createWrapper(mount, customProps);

@@ -94,7 +94,7 @@ type OperatorOption = {
   inputWidget?: VueConstructor<Vue>;
 };
 
-export const DEFAULT_FILTER = { column: '', value: '', operator: 'eq' };
+export const DEFAULT_FILTER: FilterSimpleCondition = { column: '', value: '', operator: 'eq' };
 
 const nullOperators: Readonly<OperatorOption[]> = [
   { operator: 'isnull', label: 'is null' },
@@ -129,6 +129,10 @@ export default defineComponent({
     InputTextWidget,
     InputDateWidget,
     NewDateInput,
+  },
+
+  emits: {
+    input: (_val: FilterSimpleCondition) => true,
   },
 
   props: {
@@ -255,7 +259,7 @@ export default defineComponent({
   created() {
     // In absence of condition, emit directly to the parent the default value
     if (isEqual(this.value, DEFAULT_FILTER)) {
-      this.$emit('input', DEFAULT_FILTER);
+      this.$emit('input', { ...DEFAULT_FILTER });
     } else if (this.hasDateSelectedColumn) {
       this.updateInvalidDateOperator();
     }

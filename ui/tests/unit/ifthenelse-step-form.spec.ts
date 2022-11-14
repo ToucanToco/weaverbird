@@ -6,8 +6,7 @@ import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
-// FIXME broke when switching to vitest
-describe.skip('If...Then...Else Step Form', () => {
+describe('If...Then...Else Step Form', () => {
   const runner = new BasicStepFormTestRunner(IfThenElseStepForm, 'ifthenelse');
 
   runner.testInstantiate();

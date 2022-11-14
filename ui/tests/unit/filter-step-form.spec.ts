@@ -7,8 +7,7 @@ import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
-// FIXME since the move to vite / vitest, some tests broke
-describe.skip('Filter Step Form', () => {
+describe('Filter Step Form', () => {
   const runner = new BasicStepFormTestRunner(FilterStepForm, 'filter');
   runner.testInstantiate();
   runner.testExpectedComponents({
