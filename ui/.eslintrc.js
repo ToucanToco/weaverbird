@@ -4,7 +4,7 @@ module.exports = {
     browser: true,
     es6: true
   },
-  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'plugin:import/recommended', 'plugin:import/typescript', 'plugin:vue/essential', '@vue/eslint-config-prettier', 'plugin:storybook/recommended', 'prettier'],
+  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'plugin:import/recommended', 'plugin:import/typescript', 'plugin:vue/essential', 'plugin:storybook/recommended', 'prettier'],
   settings: {
     'import/internal-regex': '^@/',
     'import/resolver': {
