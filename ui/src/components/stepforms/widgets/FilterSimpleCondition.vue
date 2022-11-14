@@ -50,8 +50,7 @@
 <script lang="ts">
 import type { ErrorObject } from 'ajv';
 import isEqual from 'lodash/isEqual';
-import type { VueConstructor } from 'vue';
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import type { VueConstructor, PropType } from 'vue';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import NewDateInput from '@/components/stepforms/widgets/DateComponents/NewDateInput.vue';
@@ -65,11 +64,11 @@ import {
 } from '@/lib/helpers';
 import type { FilterSimpleCondition } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-import type { MutationCallbacks } from '@/store/mutations';
+import { VQB_MODULE_NAME, VQBnamespace } from '@/store';
 
 import InputDateWidget from './InputDate.vue';
 import MultiInputTextWidget from './MultiInputText.vue';
+import { defineComponent } from 'vue';
 
 type LiteralOperator =
   | 'equals'
@@ -97,91 +96,161 @@ type OperatorOption = {
 
 export const DEFAULT_FILTER = { column: '', value: '', operator: 'eq' };
 
-@Component({
+const nullOperators: Readonly<OperatorOption[]> = [
+  { operator: 'isnull', label: 'is null' },
+  { operator: 'notnull', label: 'is not null' },
+];
+
+const baseOperators: Readonly<OperatorOption[]> = [
+  { operator: 'eq', label: 'equals', inputWidget: InputTextWidget },
+  { operator: 'ne', label: "doesn't equal", inputWidget: InputTextWidget },
+  { operator: 'gt', label: 'is greater than', inputWidget: InputTextWidget },
+  { operator: 'ge', label: 'is greater than or equal to', inputWidget: InputTextWidget },
+  { operator: 'lt', label: 'is less than', inputWidget: InputTextWidget },
+  { operator: 'le', label: 'is less than or equal to', inputWidget: InputTextWidget },
+  { operator: 'in', label: 'is one of', inputWidget: MultiInputTextWidget },
+  { operator: 'nin', label: 'is not one of', inputWidget: MultiInputTextWidget },
+  { operator: 'matches', label: 'matches pattern', inputWidget: InputTextWidget },
+  { operator: 'notmatches', label: "doesn't match pattern", inputWidget: InputTextWidget },
+  ...nullOperators,
+];
+
+const dateOperators: Readonly<OperatorOption[]> = [
+  { operator: 'from', label: 'starting in/on', inputWidget: NewDateInput },
+  { operator: 'until', label: 'ending in/on', inputWidget: NewDateInput },
+  ...nullOperators,
+];
+
+export default defineComponent({
   name: 'filter-simple-condition-widget',
+
   components: {
     AutocompleteWidget,
     InputTextWidget,
     InputDateWidget,
     NewDateInput,
   },
-})
-export default class FilterSimpleConditionWidget extends Vue {
-  @Prop({
-    type: Object,
-    default: () => ({ ...DEFAULT_FILTER }),
-  })
-  value!: FilterSimpleCondition;
 
-  @Prop({
-    type: Array,
-    default: () => [],
-  })
-  columnNamesProp!: string[];
+  props: {
+    value: {
+      type: Object as PropType<FilterSimpleCondition>,
+      default: () => ({ ...DEFAULT_FILTER }),
+    },
 
-  @Prop({ type: String, default: '' })
-  dataPath!: string;
+    columnNamesProp: {
+      type: Array as PropType<string[]>,
+      default: () => [],
+    },
 
-  @Prop({ type: Array, default: () => [] })
-  errors!: ErrorObject[];
+    dataPath: {
+      type: String as PropType<string>,
+      default: () => '',
+    },
 
-  @Prop({ type: Boolean, default: true })
-  multiVariable!: boolean; // display multiInputText as multiVariableInput
+    errors: {
+      type: Array as PropType<ErrorObject[]>,
+      default: () => [],
+    },
 
-  @Prop({
-    type: Object,
-    default: () => ({}),
-  })
-  columnTypes!: ColumnTypeMapping;
+    multiVariable: {
+      type: Boolean as PropType<boolean>,
+      default: true,
+    },
 
-  @VQBModule.Getter('columnNames') columnNamesFromStore!: string[];
+    columnTypes: {
+      type: Object as PropType<ColumnTypeMapping>,
+      default: () => ({}),
+    },
 
-  @VQBModule.State('featureFlags') featureFlags!: Record<string, any>;
+    availableVariables: {
+      type: Array as PropType<VariablesBucket>,
+    },
 
-  @VQBModule.Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters>,
+    },
 
-  @Prop()
-  availableVariables?: VariablesBucket;
+    hideColumnVariables: {
+      type: Boolean as PropType<boolean>,
+    },
+  },
 
-  @Prop()
-  variableDelimiters?: VariableDelimiters;
+  computed: {
+    columnNamesFromStore(): string[] {
+      return this.$store.getters[VQBnamespace('columnNames')];
+    },
 
-  @Prop()
-  hideColumnVariables?: boolean;
+    featureFlags(): Record<string, any> {
+      return this.$store.state[VQB_MODULE_NAME].featureFlags;
+    },
 
-  @Watch('hasDateSelectedColumn')
-  verifyIfValueIsStillValid() {
-    // when column change from date to another type or inverse,
-    // we need to reapply default widget value in case current value is not valid
-    // ex: [X] '' in string column will become an 'Invalid Date' in date column
-    // ex: [X] new Date() in date column will become an object in string column
-    this.updateStepOperator(this.operator);
-  }
+    // Column names can be provided either in the store or via a prop
+    // The prop takes priority over the store
+    columnNames() {
+      if (this.columnNamesProp && this.columnNamesProp.length > 0) {
+        return this.columnNamesProp;
+      } else if (this.columnNamesFromStore && this.columnNamesFromStore.length > 0) {
+        return this.columnNamesFromStore;
+      } else {
+        return [];
+      }
+    },
 
-  readonly nullOperators: OperatorOption[] = [
-    { operator: 'isnull', label: 'is null' },
-    { operator: 'notnull', label: 'is not null' },
-  ];
+    enableRelativeDateFiltering(): boolean {
+      return this.featureFlags?.RELATIVE_DATE_FILTERING === 'enable';
+    },
 
-  readonly baseOperators: OperatorOption[] = [
-    { operator: 'eq', label: 'equals', inputWidget: InputTextWidget },
-    { operator: 'ne', label: "doesn't equal", inputWidget: InputTextWidget },
-    { operator: 'gt', label: 'is greater than', inputWidget: InputTextWidget },
-    { operator: 'ge', label: 'is greater than or equal to', inputWidget: InputTextWidget },
-    { operator: 'lt', label: 'is less than', inputWidget: InputTextWidget },
-    { operator: 'le', label: 'is less than or equal to', inputWidget: InputTextWidget },
-    { operator: 'in', label: 'is one of', inputWidget: MultiInputTextWidget },
-    { operator: 'nin', label: 'is not one of', inputWidget: MultiInputTextWidget },
-    { operator: 'matches', label: 'matches pattern', inputWidget: InputTextWidget },
-    { operator: 'notmatches', label: "doesn't match pattern", inputWidget: InputTextWidget },
-    ...this.nullOperators,
-  ];
+    dateAvailableVariables(): VariablesBucket | undefined {
+      // keep only date variables
+      return this.availableVariables?.filter((v) => v.value instanceof Date);
+    },
 
-  readonly dateOperators: OperatorOption[] = [
-    { operator: 'from', label: 'starting in/on', inputWidget: NewDateInput },
-    { operator: 'until', label: 'ending in/on', inputWidget: NewDateInput },
-    ...this.nullOperators,
-  ];
+    availableVariablesForInputWidget(): VariablesBucket | undefined {
+      switch (this.inputWidget) {
+        case NewDateInput:
+          return this.dateAvailableVariables;
+        default:
+          return this.availableVariables;
+      }
+    },
+
+    availableOperators(): Readonly<OperatorOption[]> {
+      if (this.hasDateSelectedColumn && this.enableRelativeDateFiltering) {
+        return dateOperators;
+      }
+      return baseOperators;
+    },
+
+    placeholder() {
+      if (this.value.operator === 'matches' || this.value.operator === 'notmatches') {
+        return 'Enter a regex, e.g. "[Ss]ales"';
+      }
+      return 'Enter a value';
+    },
+
+    hasDateSelectedColumn(): boolean {
+      return this.columnTypes[this.value.column] == 'date';
+    },
+
+    operator(): Readonly<OperatorOption> {
+      return (
+        this.availableOperators.find((d) => d.operator === this.value.operator) ??
+        this.availableOperators[0]
+      );
+    },
+
+    inputWidget(): VueConstructor<Vue> | undefined {
+      const widget = this.operator.inputWidget;
+      if (
+        this.hasDateSelectedColumn &&
+        widget === InputTextWidget &&
+        !this.enableRelativeDateFiltering
+      ) {
+        return InputDateWidget;
+      }
+      return widget;
+    },
+  },
 
   created() {
     // In absence of condition, emit directly to the parent the default value
@@ -190,136 +259,72 @@ export default class FilterSimpleConditionWidget extends Vue {
     } else if (this.hasDateSelectedColumn) {
       this.updateInvalidDateOperator();
     }
-  }
+  },
 
-  // Column names can be provided either in the store or via a prop
-  // The prop takes priority over the store
-  get columnNames() {
-    if (this.columnNamesProp && this.columnNamesProp.length > 0) {
-      return this.columnNamesProp;
-    } else if (this.columnNamesFromStore && this.columnNamesFromStore.length > 0) {
-      return this.columnNamesFromStore;
-    } else {
-      return [];
-    }
-  }
+  methods: {
+    retrieveOperatorOption(operator: string): OperatorOption | undefined {
+      return this.availableOperators.find((o) => o.operator === operator);
+    },
 
-  get enableRelativeDateFiltering(): boolean {
-    return this.featureFlags?.RELATIVE_DATE_FILTERING === 'enable';
-  }
+    updateInvalidDateOperator(): void {
+      // no need to update operator already exists
+      if (this.retrieveOperatorOption(this.value.operator)) return;
+      // retrieve appropriate date operator when feature flag for relative date has been switched
+      let newOperator = '';
+      switch (this.value.operator) {
+        case 'lt':
+        case 'le':
+          newOperator = 'until';
+          break;
+        case 'gt':
+        case 'ge':
+          newOperator = 'from';
+          break;
+        case 'from':
+          newOperator = 'ge';
+          break;
+        case 'until':
+          newOperator = 'le';
+          break;
+      }
+      this.updateStepOperator(this.retrieveOperatorOption(newOperator) ?? this.operator);
+    },
 
-  get dateAvailableVariables(): VariablesBucket | undefined {
-    // keep only date variables
-    return this.availableVariables?.filter((v) => v.value instanceof Date);
-  }
+    updateStepOperator(newOperator: OperatorOption) {
+      const updatedValue = { ...this.value };
+      updatedValue.operator = newOperator.operator;
+      if (updatedValue.operator === 'in' || updatedValue.operator === 'nin') {
+        updatedValue.value = keepCurrentValueIfArrayType(updatedValue.value, []);
+      } else if (updatedValue.operator === 'isnull' || updatedValue.operator === 'notnull') {
+        updatedValue.value = null;
+      } else if (this.hasDateSelectedColumn && this.enableRelativeDateFiltering) {
+        updatedValue.value = keepCurrentValueIfCompatibleRelativeDate(updatedValue.value, '');
+      } else if (this.hasDateSelectedColumn) {
+        // when using date widget, we need value to be a valid date
+        // null as date will become "01/01/1970" as default value for input
+        updatedValue.value = keepCurrentValueIfCompatibleDate(updatedValue.value, null);
+      } else {
+        updatedValue.value = keepCurrentValueIfCompatibleType(updatedValue.value, '');
+      }
+      this.$emit('input', updatedValue);
+    },
 
-  get availableVariablesForInputWidget(): VariablesBucket | undefined {
-    switch (this.inputWidget) {
-      case NewDateInput:
-        return this.dateAvailableVariables;
-      default:
-        return this.availableVariables;
-    }
-  }
+    updateStepValue(newColumn: any) {
+      const updatedValue = { ...this.value };
+      updatedValue.value = newColumn;
+      this.$emit('input', updatedValue);
+    },
 
-  get availableOperators(): OperatorOption[] {
-    if (this.hasDateSelectedColumn && this.enableRelativeDateFiltering) {
-      return this.dateOperators;
-    }
-    return this.baseOperators;
-  }
-
-  get placeholder() {
-    if (this.value.operator === 'matches' || this.value.operator === 'notmatches') {
-      return 'Enter a regex, e.g. "[Ss]ales"';
-    }
-    return 'Enter a value';
-  }
-
-  get hasDateSelectedColumn(): boolean {
-    return this.columnTypes[this.value.column] == 'date';
-  }
-
-  get operator(): OperatorOption {
-    return (
-      this.availableOperators.find((d) => d.operator === this.value.operator) ??
-      this.availableOperators[0]
-    );
-  }
-
-  get inputWidget(): VueConstructor<Vue> | undefined {
-    const widget = this.operator.inputWidget;
-    if (
-      this.hasDateSelectedColumn &&
-      widget === InputTextWidget &&
-      !this.enableRelativeDateFiltering
-    ) {
-      return InputDateWidget;
-    }
-    return widget;
-  }
-
-  retrieveOperatorOption(operator: string): OperatorOption | undefined {
-    return this.availableOperators.find((o) => o.operator === operator);
-  }
-
-  updateInvalidDateOperator(): void {
-    // no need to update operator already exists
-    if (this.retrieveOperatorOption(this.value.operator)) return;
-    // retrieve appropriate date operator when feature flag for relative date has been switched
-    let newOperator = '';
-    switch (this.value.operator) {
-      case 'lt':
-      case 'le':
-        newOperator = 'until';
-        break;
-      case 'gt':
-      case 'ge':
-        newOperator = 'from';
-        break;
-      case 'from':
-        newOperator = 'ge';
-        break;
-      case 'until':
-        newOperator = 'le';
-        break;
-    }
-    this.updateStepOperator(this.retrieveOperatorOption(newOperator) ?? this.operator);
-  }
-
-  updateStepOperator(newOperator: OperatorOption) {
-    const updatedValue = { ...this.value };
-    updatedValue.operator = newOperator.operator;
-    if (updatedValue.operator === 'in' || updatedValue.operator === 'nin') {
-      updatedValue.value = keepCurrentValueIfArrayType(updatedValue.value, []);
-    } else if (updatedValue.operator === 'isnull' || updatedValue.operator === 'notnull') {
-      updatedValue.value = null;
-    } else if (this.hasDateSelectedColumn && this.enableRelativeDateFiltering) {
-      updatedValue.value = keepCurrentValueIfCompatibleRelativeDate(updatedValue.value, '');
-    } else if (this.hasDateSelectedColumn) {
-      // when using date widget, we need value to be a valid date
-      // null as date will become "01/01/1970" as default value for input
-      updatedValue.value = keepCurrentValueIfCompatibleDate(updatedValue.value, null);
-    } else {
-      updatedValue.value = keepCurrentValueIfCompatibleType(updatedValue.value, '');
-    }
-    this.$emit('input', updatedValue);
-  }
-
-  updateStepValue(newColumn: any) {
-    const updatedValue = { ...this.value };
-    updatedValue.value = newColumn;
-    this.$emit('input', updatedValue);
-  }
-
-  updateStepColumn(newValue: string) {
-    const updatedValue = { ...this.value };
-    updatedValue.column = newValue;
-    this.setSelectedColumns({ column: updatedValue.column });
-    this.$emit('input', updatedValue);
-  }
-}
+    updateStepColumn(newValue: string) {
+      const updatedValue = { ...this.value };
+      updatedValue.column = newValue;
+      this.$store.commit(VQBnamespace('setSelectedColumns'), { column: updatedValue.column });
+      this.$emit('input', updatedValue);
+    },
+  },
+});
 </script>
+
 <style lang="scss" scoped>
 .filter-form-simple-condition__container {
   display: flex;
