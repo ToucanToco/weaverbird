@@ -233,7 +233,7 @@ export default defineComponent({
     },
 
     hasDateSelectedColumn(): boolean {
-      return this.columnTypes[this.value.column] == 'date';
+      return this.columnTypes[this.value.column] === 'date';
     },
 
     operator(): Readonly<OperatorOption> {
@@ -324,6 +324,18 @@ export default defineComponent({
       updatedValue.column = newValue;
       this.$store.commit(VQBnamespace('setSelectedColumns'), { column: updatedValue.column });
       this.$emit('input', updatedValue);
+    },
+  },
+
+  watch: {
+    hasDateSelectedColumn: {
+      handler: function verifyIfValueIsStillValid() {
+        // when column change from date to another type or inverse,
+        // we need to reapply default widget value in case current value is not valid
+        // ex: [X] '' in string column will become an 'Invalid Date' in date column
+        // ex: [X] new Date() in date column will become an object in string column
+        this.updateStepOperator(this.operator);
+      },
     },
   },
 });
