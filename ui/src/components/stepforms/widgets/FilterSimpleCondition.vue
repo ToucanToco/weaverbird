@@ -259,7 +259,7 @@ export default defineComponent({
   created() {
     // In absence of condition, emit directly to the parent the default value
     if (isEqual(this.value, DEFAULT_FILTER)) {
-      this.$emit('input', { ...DEFAULT_FILTER });
+      this.$emit('input', DEFAULT_FILTER);
     } else if (this.hasDateSelectedColumn) {
       this.updateInvalidDateOperator();
     }
