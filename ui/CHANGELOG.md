@@ -1,5 +1,11 @@
 # Changelog (weaverbird npm package)
 
+## [0.94.2] - 2022-11-14
+
+### Fixed
+
+- Some components were not setting their prop default value
+
 ## [0.94.1] - 2022-11-10
 
 ### Fixed
@@ -1359,6 +1365,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 - Initial version, showtime!
 
 
+[0.94.2]: https://github.com/ToucanToco/weaverbird/compare/v0.94.2...v0.94.1
 [0.94.1]: https://github.com/ToucanToco/weaverbird/compare/v0.94.1...v0.94.0
 [0.94.0]: https://github.com/ToucanToco/weaverbird/compare/v0.94.0...v0.93.0
 [0.93.0]: https://github.com/ToucanToco/weaverbird/compare/v0.93.0...v0.92.0

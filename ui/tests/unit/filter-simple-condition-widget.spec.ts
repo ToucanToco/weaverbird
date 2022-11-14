@@ -37,7 +37,7 @@ const AVAILABLE_VARIABLES_SAMPLE = [
   },
 ];
 
-describe.skip('Widget FilterSimpleCondition', () => {
+describe('Widget FilterSimpleCondition', () => {
   let emptyStore: Store<RootState>;
   beforeEach(() => {
     emptyStore = setupMockStore({});
@@ -412,7 +412,7 @@ describe.skip('Widget FilterSimpleCondition', () => {
     it('should not pass the variables props if hideColumnVariables is true', () => {
       const customProps = {
         availableVariables: ['test'],
-        variableDelimiters: ['test'],
+        variableDelimiters: { start: 'te', end: 'st' },
         hideColumnVariables: true,
       };
       createWrapper(mount, customProps);

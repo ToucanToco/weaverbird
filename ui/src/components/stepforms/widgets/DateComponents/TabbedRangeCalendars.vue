@@ -37,78 +37,109 @@ import Tabs from '@/components/Tabs.vue';
 import type { CustomDateRange, DateRange } from '@/lib/dates';
 import t from '@/lib/internationalization';
 import type { LocaleIdentifier } from '@/lib/internationalization';
+import { defineComponent, type PropType } from 'vue';
 
-@Component({
+export default defineComponent({
   name: 'tabbed-range-calendars',
+
   components: {
     Tabs,
     Calendar,
     CustomGranularityCalendar,
   },
-})
-export default class TabbedRangeCalendars extends Vue {
-  @Prop({ default: () => ({}) })
-  value!: CustomDateRange;
 
-  @Prop({ default: () => ({}) })
-  bounds!: DateRange;
+  props: {
+    value: {
+      type: Object as PropType<CustomDateRange>,
+      default: () => ({}),
+    },
 
-  @Prop({ default: () => ['year', 'quarter', 'month', 'week', 'day'] })
-  enabledCalendars!: string[];
+    bounds: {
+      type: Object as PropType<DateRange>,
+      default: () => ({}),
+    },
 
-  @Prop({ type: String, required: false })
-  locale?: LocaleIdentifier;
+    enabledCalendars: {
+      type: Array as PropType<string[]>,
+      default: () => ['year', 'quarter', 'month', 'week', 'day'],
+    },
 
-  @Prop({ default: false })
-  compactMode!: boolean;
+    locale: {
+      type: String as PropType<LocaleIdentifier>,
+    },
 
-  selectedTab = this.enabledCalendars[0];
+    compactMode: {
+      type: Boolean as PropType<boolean>,
+      default: false,
+    },
+  },
+
+  emits: {
+    input: (_val: CustomDateRange) => true,
+  },
+
+  data(): {
+    selectedTab: string;
+  } {
+    return {
+      selectedTab: this.enabledCalendars[0],
+    };
+  },
+
+  computed: {
+    currentValue: {
+      get(): CustomDateRange {
+        return this.value;
+      },
+      set(value: CustomDateRange) {
+        this.$emit('input', value);
+      },
+    },
+
+    calendarGranularity(): string | undefined {
+      return this.selectedTab !== 'day' ? this.selectedTab : undefined;
+    },
+  },
 
   created() {
     this.updateTabForCurrentValue();
-  }
+  },
 
-  @Watch('enabledCalendars')
-  onEnabledCalendarsChange() {
-    if (
-      !this.enabledCalendars.includes(this.selectedTab) ||
-      (this.value.duration && !this.enabledCalendars.includes(this.value.duration))
-    ) {
-      this.selectedTab = this.enabledCalendars[0];
-    }
-  }
+  methods: {
+    updateTabForCurrentValue() {
+      if (this.value.duration && this.enabledCalendars.includes(this.value.duration)) {
+        this.selectTab(this.value.duration);
+      }
+    },
 
-  @Watch('value')
-  onValueChange() {
-    this.updateTabForCurrentValue();
-  }
+    selectTab(tab: string) {
+      this.selectedTab = tab;
+    },
 
-  get currentValue(): CustomDateRange {
-    return this.value;
-  }
+    translateTab(tab: string) {
+      return t(tab.toUpperCase(), this.locale);
+    },
+  },
 
-  set currentValue(value: CustomDateRange) {
-    this.$emit('input', value);
-  }
+  watch: {
+    enabledCalendars: {
+      handler: function onEnabledCalendarsChange() {
+        if (
+          !this.enabledCalendars.includes(this.selectedTab) ||
+          (this.value.duration && !this.enabledCalendars.includes(this.value.duration))
+        ) {
+          this.selectedTab = this.enabledCalendars[0];
+        }
+      },
+    },
 
-  get calendarGranularity(): string | undefined {
-    return this.selectedTab !== 'day' ? this.selectedTab : undefined;
-  }
-
-  updateTabForCurrentValue() {
-    if (this.value.duration && this.enabledCalendars.includes(this.value.duration)) {
-      this.selectTab(this.value.duration);
-    }
-  }
-
-  selectTab(tab: string) {
-    this.selectedTab = tab;
-  }
-
-  translateTab(tab: string) {
-    return t(tab.toUpperCase(), this.locale);
-  }
-}
+    value: {
+      handler: function onValueChange() {
+        this.updateTabForCurrentValue();
+      },
+    },
+  },
+});
 </script>
 
 <style scoped lang="scss">
