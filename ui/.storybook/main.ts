@@ -15,7 +15,7 @@ module.exports = {
     return mergeConfig(config, {
       // Use the same "resolve" configuration as your app
       // @ts-ignore
-      resolve: (await import('../vite.config.js')).default.default.resolve,
+      resolve: (await import('../vite.config.ts')).default.default.resolve,
     });
   },
 };
