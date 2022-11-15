@@ -89,11 +89,16 @@
     "last 2 versions",
     "not ie <= 8"
   ],
-  "files": [
-    "dist/*"
-  ],
-  "main": "dist/weaverbird.umd.js",
-  "module": "dist/weaverbird.mjs",
+  "type": "module",
+  "files": ["dist"],
+  "main": "./dist/weaverbird.umd.cjs",
+  "module": "./dist/weaverbird.js",
+  "exports": {
+    ".": {
+      "import": "./dist/weaverbird.js",
+      "require": "./dist/weaverbird.umd.cjs"
+    }
+  },
   "peerDependencies": {
     "vue": "2.x",
     "vuex": "3.x"
