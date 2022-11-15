@@ -1,5 +1,15 @@
 # Changelog (weaverbird npm package)
 
+## [0.95.0] - 2022-11-14
+
+### Changed
+
+- Exported files have changed:
+  - `dist/weaverbird.umd.js` becomes `dist/weaverbird.umd.cjs`
+  - `dist/weaverbird.mjs` becomes `dist/weaverbird.js`
+This change should be transparent for resolvers that read `package.json` fields `main` and `module`.
+It adds the field `exports` which can be exploited to find the most adapted file.
+
 ## [0.94.2] - 2022-11-14
 
 ### Fixed
