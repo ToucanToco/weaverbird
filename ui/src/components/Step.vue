@@ -4,7 +4,7 @@
       <div :class="firstStrokeClass" />
       <div class="query-pipeline-queue__dot" data-cy="weaverbird-step-dot" @click="toggleDelete">
         <div class="query-pipeline-queue__dot-ink">
-          <FAIcon icon="check" />
+          <FAIcon class="query-pipeline-queue__dot-check" icon="check" />
         </div>
       </div>
       <div :class="lastStrokeClass" />
@@ -37,7 +37,7 @@
             data-cy="weaverbird-edit-step"
             @click.stop="editStep()"
           >
-            <FAIcon icon="cog" />
+            <FAIcon class="query-pipeline-step__action-icon" icon="cog" />
           </div>
           <div
             class="query-pipeline-step__action query-pipeline-step__action--handle"
@@ -257,7 +257,7 @@ export default class Step extends Vue {
   color: white;
   transform: width 0.2s, height 0.2s;
 
-  ::v-deep .fa-check {
+  .query-pipeline-queue__dot-check {
     visibility: hidden;
   }
 }
@@ -342,7 +342,7 @@ export default class Step extends Vue {
   cursor: move;
 }
 
-.query-pipeline-step__action ::v-deep .fa-cog {
+.query-pipeline-step__action-icon {
   transition: color 0.3s ease;
 }
 
@@ -387,7 +387,7 @@ export default class Step extends Vue {
   .query-pipeline-queue__dot-ink {
     background-color: $active-color-faded;
     border-color: $active-color-faded;
-    ::v-deep .fa-check {
+    .query-pipeline-queue__dot-check {
       visibility: visible;
     }
   }

@@ -31,7 +31,7 @@
         {{ messageError }}
       </div>
       <button v-if="!automaticNewField" class="widget-list__add-fieldset" @click="addFieldSet">
-        <FAIcon icon="plus-circle" />
+        <FAIcon class="widget-list__add-fieldset-icon" icon="plus-circle" />
         {{ addFieldName }}
       </button>
     </div>
@@ -161,7 +161,7 @@ export default class ListWidget extends FormWidget {
 </script>
 <style lang="scss" scoped>
 @import '../../../styles/_variables';
-::v-deep .fa-plus-circle {
+.widget-list__add-fieldset-icon {
   color: $active-color;
 }
 

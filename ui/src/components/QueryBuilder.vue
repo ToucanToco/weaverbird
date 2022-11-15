@@ -23,7 +23,7 @@
             class="documentation-help__content"
             :data-version="version"
           >
-            <FAIcon icon="question-circle" />
+            <FAIcon icon="question-circle" />&nbsp;
             <p>Need help?</p>
           </a>
         </div>
@@ -170,10 +170,6 @@ export default class QueryBuilder extends Vue {
 
   p {
     text-decoration: underline;
-  }
-
-  ::v-deep .fa-question-circle {
-    margin-right: 5px;
   }
 }
 </style>

@@ -3,7 +3,7 @@
     <div class="widget-input-number__container">
       <label v-if="name" @click="$refs.input.focus()">{{ name }}</label>
       <a v-if="docUrl" :href="docUrl" target="_blank" rel="noopener">
-        <FAIcon icon="question-circle" />
+        <FAIcon class="widget-input-number__doc-icon" icon="question-circle" />
       </a>
     </div>
     <VariableInput
@@ -128,7 +128,7 @@ export default class InputNumberWidget extends FormWidget {
   @extend %form-widget__label;
 }
 
-::v-deep .fa-question-circle {
+.widget-input-number__doc-icon {
   margin-left: 5px;
   color: $base-color;
   font-size: 14px;
