@@ -133,9 +133,6 @@ export default class AdvancedVariableModal extends Vue {
   position: absolute;
   top: 15px;
   right: 30px;
-}
-
-::v-deep.fa-times {
   cursor: pointer;
 }
 

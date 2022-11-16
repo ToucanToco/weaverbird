@@ -38,7 +38,7 @@
       <div class="query-pipeline__tips">
         Interact with the widgets and table on the right to add steps
       </div>
-      <FAIcon icon="wand-magic-sparkles" />
+      <FAIcon icon="wand-magic-sparkles" class="query-pipeline__tips-icon" />
     </div>
     <DeleteConfirmationModal
       v-if="deleteConfirmationModalIsOpened"
@@ -250,11 +250,7 @@ export default class PipelineComponent extends Vue {
   border-radius: 2px;
 }
 
-::v-deep .fa-code {
-  color: rgb(239, 239, 239);
-}
-
-::v-deep .fa-magic {
+.query-pipeline__tips-icon {
   color: rgb(239, 239, 239);
   font-size: 64px;
 }
