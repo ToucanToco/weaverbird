@@ -790,4 +790,8 @@ async def handle_mysql_post_request():
 @app.route("/<path:filename>", methods=["GET"])
 async def handle_static_files_request(filename=None):
     filename = filename or "index.html"
-    return await send_file("static/" + filename)
+    # Quart does not figure out the right mimetype for .cjs files, which causes browsers to block
+    # it: Loading module from “http://localhost:5000/weaverbird.umd.cjs” was blocked because of a
+    # disallowed MIME type (“application/octet-stream”).
+    mimetype = "text/javascript" if filename.endswith(".cjs") else None
+    return await send_file("static/" + filename, mimetype=mimetype)
