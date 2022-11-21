@@ -1,5 +1,11 @@
 # Changelog (weaverbird npm package)
 
+### Changed
+
+- The playground has been adapted to changes introduced in v0.95.0
+- Since steps can now be represented with all their fields in camelCase, try to access both snake_case and camelCase fields
+  when labelling them.
+
 ## [0.95.0] - 2022-11-14
 
 ### Changed

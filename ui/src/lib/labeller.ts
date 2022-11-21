@@ -117,6 +117,10 @@ function capitalize(label: string) {
   return label[0].toUpperCase() + label.slice(1).toLocaleLowerCase();
 }
 
+function extractNewColumn(obj: object): string | undefined {
+  return obj.newColumn ? obj.newColumn : obj.new_column;
+}
+
 /**
  * The `Labeller` class provides a human-readable label for each step.
  */
@@ -216,7 +220,8 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   duplicate(step: Readonly<S.DuplicateColumnStep>) {
-    return `Duplicate "${step.column}" in "${step.new_column_name}"`;
+    const newColumn = step.new_column_name ? step.new_column_name : step.newColumnName;
+    return `Duplicate "${step.column}" in "${newColumn}"`;
   }
 
   duration(step: Readonly<S.ComputeDurationStep>) {
@@ -239,7 +244,7 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   formula(step: Readonly<S.FormulaStep>) {
-    return `Compute "${step.formula}" in "${step.new_column}"`;
+    return `Compute "${step.formula}" in "${extractNewColumn(step)}"`;
   }
 
   fromdate(step: Readonly<S.FromDateStep>) {
@@ -333,7 +338,7 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   text(step: Readonly<S.AddTextColumnStep>) {
-    return `Add text column "${step.new_column}"`;
+    return `Add text column "${extractNewColumn(step)}"`;
   }
 
   todate(step: Readonly<S.ToDateStep>) {
