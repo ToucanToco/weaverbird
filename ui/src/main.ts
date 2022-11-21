@@ -47,6 +47,7 @@ export {
 export { exampleInterpolateFunc } from './lib/templating';
 export { transformValueToDateRange } from './components/DatePicker/transform-value-to-date-or-range';
 export { dateRangeToString } from './lib/dates';
+export { isFilterComboAnd, isFilterComboOr } from './lib/steps';
 
 // export directives
 export { resizable } from './directives/resizable/resizable';
