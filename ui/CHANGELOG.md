@@ -1,10 +1,16 @@
 # Changelog (weaverbird npm package)
 
+## [0.96.0] - 2022-11-21
+
 ### Changed
 
-- The playground has been adapted to changes introduced in v0.95.0
 - Since steps can now be represented with all their fields in camelCase, try to access both snake_case and camelCase fields
-  when labelling them.
+  when labelling them
+- Several dependencies have been updated
+
+- ### Fixed
+
+- Font awesome icons are now styles correctly
 
 ## [0.95.0] - 2022-11-14
 
@@ -1381,6 +1387,8 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 - Initial version, showtime!
 
 
+[0.96.0]: https://github.com/ToucanToco/weaverbird/compare/v0.96.0...v0.95.0
+[0.95.0]: https://github.com/ToucanToco/weaverbird/compare/v0.95.0...v0.94.2
 [0.94.2]: https://github.com/ToucanToco/weaverbird/compare/v0.94.2...v0.94.1
 [0.94.1]: https://github.com/ToucanToco/weaverbird/compare/v0.94.1...v0.94.0
 [0.94.0]: https://github.com/ToucanToco/weaverbird/compare/v0.94.0...v0.93.0
