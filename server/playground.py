@@ -48,6 +48,7 @@ from pandas.io.json import build_table_schema
 from pymongo import MongoClient
 from quart import Quart, Request, Response, jsonify, request, send_file
 from quart_cors import cors
+from toucan_connectors.pagination import build_pagination_info
 
 from weaverbird.backends.mongo_translator.mongo_pipeline_translator import (
     translate_pipeline as mongo_translate_pipeline,
@@ -333,11 +334,16 @@ async def handle_mongo_backend_request():
                 req_params["offset"],
             )[0]
 
+            pagination_info = build_pagination_info(
+                offset=req_params["offset"],
+                limit=req_params["limit"],
+                total_rows=results["count"],
+                retrieved_rows=len(results["data"]),
+            )
+
             return jsonify(
                 {
-                    "offset": req_params["offset"],
-                    "limit": req_params["limit"],
-                    "total": results["count"],
+                    "pagination_info": pagination_info.dict(),
                     "data": results["data"],
                     "types": results["types"],
                     "query": mongo_query,  # provided for inspection purposes
@@ -458,9 +464,12 @@ if _SNOWFLAKE_CONNECTION is not None:
             return Response(
                 json.dumps(
                     {
-                        "offset": offset,
-                        "limit": limit,
-                        "total": total_count,
+                        "pagination_info": build_pagination_info(
+                            offset=offset,
+                            limit=limit,
+                            retrieved_rows=len(df_results),
+                            total_rows=total_count,
+                        ).dict(),
                         "schema": build_table_schema(df_results, index=False),
                         "data": json.loads(df_results.to_json(orient="records")),
                         "query": query,  # provided for inspection purposes
@@ -572,9 +581,12 @@ async def handle_postgres_backend_request():
             ]
 
         return {
-            "offset": offset,
-            "limit": limit,
-            "total": query_total_count,
+            "pagination_info": build_pagination_info(
+                offset=offset,
+                limit=limit,
+                retrieved_rows=len(query_results_page),
+                total_rows=query_total_count,
+            ).dict(),
             "results": {
                 "headers": query_results_columns,
                 "data": query_results_page,
@@ -634,10 +646,9 @@ async def handle_athena_post_request():
     )
     result = wr.athena.read_sql_query(sql_query, **_aws_wrangler_kwargs())
     return {
-        "offset": offset,
-        "limit": limit,
-        # Dirty, but we don't want whole scans on athena
-        "total": offset + limit + 1 if len(result) == limit else offset + len(result),
+        "pagination_info": build_pagination_info(
+            offset=offset, limit=limit, retrieved_rows=len(result), total_rows=None
+        ).dict(),
         "results": {
             "headers": result.columns.to_list(),
             "data": json.loads(result.to_json(orient="records")),
@@ -703,10 +714,9 @@ async def hangle_bigquery_post_request():
 
     result = client.query(sql_query).result().to_dataframe()
     return {
-        "offset": offset,
-        "limit": limit,
-        # Dirty, but we don't want whole scans on BigQuery
-        "total": offset + limit + 1 if len(result) == limit else offset + len(result),
+        "pagination_info": build_pagination_info(
+            offset=offset, limit=limit, retrieved_rows=len(result), total_rows=None
+        ).dict(),
         "results": {
             "headers": result.columns.to_list(),
             "data": json.loads(result.to_json(orient="records")),
@@ -771,9 +781,9 @@ async def handle_mysql_post_request():
     )
     result = pd.read_sql(sql_query, _mysql_connection())
     return {
-        "offset": offset,
-        "limit": limit,
-        "total": len(result),
+        "pagination_info": build_pagination_info(
+            offset=offset, limit=limit, retrieved_rows=len(result), total_rows=None
+        ).dict(),
         "results": {
             "headers": result.columns.to_list(),
             "data": json.loads(result[offset : offset + limit].to_json(orient="records")),
