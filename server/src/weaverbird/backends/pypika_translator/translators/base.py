@@ -969,7 +969,7 @@ class SQLTranslator(ABC):
                     casted_field = functions.Cast(column_field, self.DATA_TYPE_MAPPING.text)
                     match self.REGEXP_OP:
                         case RegexOp.REGEXP:
-                            return column_field.regexp(compliant_regex).negate()
+                            return casted_field.regexp(compliant_regex).negate()
                         case RegexOp.SIMILAR_TO:
                             return BasicCriterion(
                                 RegexpMatching.not_similar_to,

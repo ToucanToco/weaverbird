@@ -5,7 +5,11 @@ from pypika import Field, Query, functions
 from pypika.terms import BasicCriterion, ValueWrapper
 
 from weaverbird.backends.pypika_translator.operators import RegexOp
-from weaverbird.backends.pypika_translator.translators.base import RegexpMatching, SQLTranslator
+from weaverbird.backends.pypika_translator.translators.base import (
+    DataTypeMapping,
+    RegexpMatching,
+    SQLTranslator,
+)
 from weaverbird.pipeline import conditions, steps
 
 
@@ -128,10 +132,22 @@ def test_datebound_filter(
 # MATCHES REGEXP
 
 
+_DATA_TYPE_MAPPING = DataTypeMapping(
+    boolean="BOOLEAN",
+    date="DATE",
+    float="DOUBLE",
+    integer="INTEGER",
+    text="TEXT",
+    datetime="DATETIME",
+    timestamp="TIMESTAMP",
+)
+
+
 class REGEXPTranslator(SQLTranslator):
     DIALECT = "REGEXP"
     QUERY_CLS = Query
     REGEXP_OP = RegexOp.REGEXP
+    DATA_TYPE_MAPPING = _DATA_TYPE_MAPPING
 
 
 @pytest.fixture
@@ -156,7 +172,7 @@ def test_matches_regexp_filter(
     ctx = regexp_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
         Query.from_(previous_step)
-        .where(Field(column).regexp(f"%{regex}%"))
+        .where(functions.Cast(Field(column), "TEXT").regexp(f"%{regex}%"))
         .select(*selected_columns)
     )
 
@@ -177,7 +193,7 @@ def test_notmatches_regexp_filter(
     ctx = regexp_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
         Query.from_(previous_step)
-        .where(Field(column).regexp(f"%{regex}%").negate())
+        .where(functions.Cast(Field(column), "TEXT").regexp(f"%{regex}%").negate())
         .select(*selected_columns)
     )
 
@@ -191,6 +207,7 @@ class SimilarToTranslator(SQLTranslator):
     DIALECT = "SIMILAR TO"
     QUERY_CLS = Query
     REGEXP_OP = RegexOp.SIMILAR_TO
+    DATA_TYPE_MAPPING = _DATA_TYPE_MAPPING
 
 
 @pytest.fixture
@@ -215,7 +232,13 @@ def test_matches_similar_to_filter(
     ctx = similar_to_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
         Query.from_(previous_step)
-        .where(BasicCriterion(RegexpMatching.similar_to, Field(column), ValueWrapper(f"%{regex}%")))
+        .where(
+            BasicCriterion(
+                RegexpMatching.similar_to,
+                functions.Cast(Field(column), "TEXT"),
+                ValueWrapper(f"%{regex}%"),
+            )
+        )
         .select(*selected_columns)
     )
 
@@ -237,7 +260,11 @@ def test_notmatches_similar_to_filter(
     expected_query = (
         Query.from_(previous_step)
         .where(
-            BasicCriterion(RegexpMatching.not_similar_to, Field(column), ValueWrapper(f"%{regex}%"))
+            BasicCriterion(
+                RegexpMatching.not_similar_to,
+                functions.Cast(Field(column), "TEXT"),
+                ValueWrapper(f"%{regex}%"),
+            )
         )
         .select(*selected_columns)
     )
@@ -252,6 +279,7 @@ class ContainsTranslator(SQLTranslator):
     DIALECT = "CONTAINS"
     QUERY_CLS = Query
     REGEXP_OP = RegexOp.CONTAINS
+    DATA_TYPE_MAPPING = _DATA_TYPE_MAPPING
 
 
 @pytest.fixture
@@ -276,7 +304,13 @@ def test_matches_contains_filter(
     ctx = contains_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
         Query.from_(previous_step)
-        .where(BasicCriterion(RegexpMatching.contains, Field(column), ValueWrapper(f"%{regex}%")))
+        .where(
+            BasicCriterion(
+                RegexpMatching.contains,
+                functions.Cast(Field(column), "TEXT"),
+                ValueWrapper(f"%{regex}%"),
+            )
+        )
         .select(*selected_columns)
     )
 
@@ -298,7 +332,11 @@ def test_notmatches_contains_filter(
     expected_query = (
         Query.from_(previous_step)
         .where(
-            BasicCriterion(RegexpMatching.not_contains, Field(column), ValueWrapper(f"%{regex}%"))
+            BasicCriterion(
+                RegexpMatching.not_contains,
+                functions.Cast(Field(column), "TEXT"),
+                ValueWrapper(f"%{regex}%"),
+            )
         )
         .select(*selected_columns)
     )
@@ -306,7 +344,7 @@ def test_notmatches_contains_filter(
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
-# RECEXP LIKE
+# REGEXP LIKE
 
 
 class REGEXP_LIKE_Translator(SQLTranslator):
@@ -337,7 +375,7 @@ def test_matches_regexp_like_filter(
     ctx = regexp_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
         Query.from_(previous_step)
-        .where(Field(column).regexp(f"%{regex}%"))
+        .where(functions.Cast(Field(column), "TEXT").regexp(f"%{regex}%"))
         .select(*selected_columns)
     )
 
@@ -358,7 +396,7 @@ def test_notmatches_regexp__like_filter(
     ctx = regexp_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
         Query.from_(previous_step)
-        .where(Field(column).regexp(f"%{regex}%").negate())
+        .where(functions.Cast(Field(column), "TEXT").regexp(f"%{regex}%").negate())
         .select(*selected_columns)
     )
 
@@ -396,7 +434,7 @@ def test_matches_regexp_contains_filter(
     ctx = regexp_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
         Query.from_(previous_step)
-        .where(Field(column).regexp(f"%{regex}%"))
+        .where(functions.Cast(Field(column), "TEXT").regexp(f"%{regex}%"))
         .select(*selected_columns)
     )
 
@@ -417,7 +455,7 @@ def test_notmatches_regexp__contains_filter(
     ctx = regexp_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = (
         Query.from_(previous_step)
-        .where(Field(column).regexp(f"%{regex}%").negate())
+        .where(functions.Cast(Field(column), "TEXT").regexp(f"%{regex}%").negate())
         .select(*selected_columns)
     )
 
