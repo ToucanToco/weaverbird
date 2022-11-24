@@ -1,0 +1,32 @@
+exclude:
+- mongo
+- pandas
+- snowflake
+expected:
+  data:
+  - name: Ninkasi Ploploplop
+  - name: Brewdog Nanny State Alcoholvrij
+  - name: Ardwen Blonde
+  - name: Cuvée des Trolls
+  - name: Weihenstephan Hefe Weizen Alcoholarm
+  - name: Bellfield Lawless Village IPA
+  - name: Pauwel Kwak
+  - name: Brasserie De Sutter Brin de Folie
+  - name: Brugse Zot blonde
+  schema:
+    fields:
+    - name: name
+      type: string
+    pandas_version: 1.4.0
+step:
+  pipeline:
+  - condition:
+      and:
+      - or:
+        - column: alcohol_degree
+          operator: notmatches
+          value: 13.5
+    name: filter
+  - columns:
+    - name
+    name: select
