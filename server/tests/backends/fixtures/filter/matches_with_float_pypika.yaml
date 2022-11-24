@@ -1,0 +1,24 @@
+exclude:
+- mongo
+- pandas
+- snowflake
+expected:
+  data:
+  - name: Superstrong beer
+  schema:
+    fields:
+    - name: name
+      type: string
+    pandas_version: 1.4.0
+step:
+  pipeline:
+  - condition:
+      and:
+      - or:
+        - column: alcohol_degree
+          operator: matches
+          value: 13.5
+    name: filter
+  - columns:
+    - name
+    name: select

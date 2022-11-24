@@ -914,47 +914,49 @@ class SQLTranslator(ABC):
                 compliant_regex = _compliant_regex(condition.value, self.DIALECT)
 
                 if condition.operator == "matches":
+                    # Casting the field to str first as it is the only compatible type for regex
+                    casted_field = functions.Cast(column_field, self.DATA_TYPE_MAPPING.text)
                     match self.REGEXP_OP:
                         case RegexOp.REGEXP:
                             return BasicCriterion(
                                 RegexpMatching.regexp,
-                                column_field,
+                                casted_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.SIMILAR_TO:
                             return BasicCriterion(
                                 RegexpMatching.similar_to,
-                                column_field,
+                                casted_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.CONTAINS:
                             return BasicCriterion(
                                 RegexpMatching.contains,
-                                column_field,
+                                casted_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.REGEXP_CONTAINS:
                             return functions.Function(
                                 RegexOp.REGEXP_CONTAINS,
-                                column_field,
+                                casted_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.REGEXP_LIKE:
                             return functions.Function(
                                 RegexOp.REGEXP_LIKE,
-                                column_field,
+                                casted_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.REGEXP_CONTAINS:
                             return functions.Function(
                                 RegexOp.NOT_REGEXP_CONTAINS,
-                                column_field,
+                                casted_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.REGEXP_LIKE:
                             return functions.Function(
                                 RegexOp.NOT_REGEXP_LIKE,
-                                column_field,
+                                casted_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case _:
@@ -963,31 +965,33 @@ class SQLTranslator(ABC):
                             )
 
                 elif condition.operator == "notmatches":
+                    # Casting the field to str first as it is the only compatible type for regex
+                    casted_field = functions.Cast(column_field, self.DATA_TYPE_MAPPING.text)
                     match self.REGEXP_OP:
                         case RegexOp.REGEXP:
-                            return column_field.regexp(compliant_regex).negate()
+                            return casted_field.regexp(compliant_regex).negate()
                         case RegexOp.SIMILAR_TO:
                             return BasicCriterion(
                                 RegexpMatching.not_similar_to,
-                                column_field,
+                                casted_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.CONTAINS:
                             return BasicCriterion(
                                 RegexpMatching.not_contains,
-                                column_field,
+                                casted_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.REGEXP_CONTAINS:
                             return functions.Function(
                                 RegexOp.NOT_REGEXP_CONTAINS,
-                                column_field,
+                                casted_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.REGEXP_LIKE:
                             return functions.Function(
                                 RegexOp.NOT_REGEXP_LIKE,
-                                column_field,
+                                casted_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case _:
