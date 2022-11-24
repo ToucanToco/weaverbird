@@ -12,8 +12,8 @@ describe('pagination tests', () => {
           {
             shouldPaginate: false,
             totalCount: undefined,
-            pagesize: 50,
-            pageno: 1,
+            pageSize: 50,
+            pageNumber: 1,
             isLastPage: true,
           },
           undefined,
@@ -27,8 +27,8 @@ describe('pagination tests', () => {
           {
             shouldPaginate: true,
             totalCount: undefined,
-            pagesize: 50,
-            pageno: 1,
+            pageSize: 50,
+            pageNumber: 1,
             isLastPage: false,
           },
           undefined,
@@ -42,15 +42,15 @@ describe('pagination tests', () => {
           {
             shouldPaginate: true,
             totalCount: 100,
-            pagesize: 50,
-            pageno: 2,
+            pageSize: 50,
+            pageNumber: 2,
             isLastPage: false,
           },
           {
             shouldPaginate: true,
             totalCount: 100,
-            pagesize: 50,
-            pageno: 1,
+            pageSize: 50,
+            pageNumber: 1,
             isLastPage: false,
           },
         ),
@@ -63,15 +63,15 @@ describe('pagination tests', () => {
           {
             shouldPaginate: true,
             totalCount: 100,
-            pagesize: 50,
-            pageno: 2,
+            pageSize: 50,
+            pageNumber: 2,
             isLastPage: true,
           },
           {
             shouldPaginate: true,
             totalCount: undefined,
-            pagesize: 50,
-            pageno: 1,
+            pageSize: 50,
+            pageNumber: 1,
             isLastPage: false,
           },
         ),
@@ -82,8 +82,8 @@ describe('pagination tests', () => {
   it('should compute number of pages correctly', () => {
     const context: PaginationContext = {
       shouldPaginate: true,
-      pageno: 1,
-      pagesize: 20,
+      pageNumber: 1,
+      pageSize: 20,
       totalCount: 208,
       isLastPage: false,
     };
@@ -100,8 +100,8 @@ describe('pagination tests', () => {
   it('should return last page of pagination', () => {
     const context: PaginationContext = {
       shouldPaginate: true,
-      pageno: 0,
-      pagesize: 50,
+      pageNumber: 0,
+      pageSize: 50,
       totalCount: 100,
       isLastPage: false,
     };

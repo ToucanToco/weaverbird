@@ -11,7 +11,7 @@ function datasetColumnNames(dataset: DataSet) {
 
 export function isDatasetComplete(dataset: DataSet): boolean {
   if (dataset.paginationContext) {
-    return dataset.paginationContext.totalCount <= dataset.paginationContext.pagesize;
+    return dataset.paginationContext.totalCount <= dataset.paginationContext.pageSize;
   } else {
     return true;
   }

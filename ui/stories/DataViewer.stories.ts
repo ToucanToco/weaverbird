@@ -18,8 +18,8 @@ export const Empty: StoryFn<typeof DataViewer> = () => ({
         data: [],
         paginationContext: {
           shouldPaginate: false,
-          pagesize: 50,
-          pageno: 1,
+          pageSize: 50,
+          pageNumber: 1,
           totalCount: 50,
           isLastPage: true,
         },
@@ -48,8 +48,8 @@ export const Loading: StoryFn<typeof DataViewer> = () => ({
         data: [],
         paginationContext: {
           shouldPaginate: false,
-          pagesize: 50,
-          pageno: 1,
+          pageSize: 50,
+          pageNumber: 1,
           totalCount: 50,
           isLastPage: true,
         },
@@ -84,8 +84,8 @@ export const Simple: StoryFn<typeof DataViewer> = () => ({
         ],
         paginationContext: {
           shouldPaginate: false,
-          pagesize: 50,
-          pageno: 1,
+          pageSize: 50,
+          pageNumber: 1,
           totalCount: 50,
           isLastPage: true,
         },

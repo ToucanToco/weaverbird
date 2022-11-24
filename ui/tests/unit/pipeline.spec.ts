@@ -449,8 +449,8 @@ describe('Pipeline.vue', () => {
             paginationContext: {
               shouldPaginate: false,
               totalCount: 10,
-              pagesize: 10,
-              pageno: 1,
+              pageSize: 10,
+              pageNumber: 1,
               isLastPage: true,
             },
           },

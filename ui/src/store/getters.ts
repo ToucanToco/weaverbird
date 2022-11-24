@@ -53,8 +53,8 @@ const getters: GetterTree<VQBState, any> = {
   thereIsABackendError: (state: VQBState) => state.backendMessages.length > 0,
 
   isDatasetEmpty: (state: VQBState) => state.dataset.data.length === 0,
-  pageno: (state: VQBState) =>
-    state.dataset.paginationContext ? state.dataset.paginationContext.pageno : 1,
+  pageNumber: (state: VQBState) =>
+    state.dataset.paginationContext ? state.dataset.paginationContext.pageNumber : 1,
   previewSourceRowsSubset: (state: VQBState) => state.dataset.previewContext?.sourceRowsSubset,
 
   columnNames: (state: VQBState) => state.dataset.headers.map((col) => col.name),

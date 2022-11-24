@@ -60,7 +60,7 @@ type SelectedColumnsMutation = {
 
 type SetCurrentPage = {
   type: 'setCurrentPage';
-  payload: { pageno: number };
+  payload: { pageNumber: number };
 };
 
 type SetPreviewSourceRowsSubset = {
@@ -115,7 +115,7 @@ export type MutationCallbacks = {
  */
 function resetPagination(state: VQBState) {
   if (state.dataset.paginationContext) {
-    state.dataset.paginationContext.pageno = 1;
+    state.dataset.paginationContext.pageNumber = 1;
   }
 }
 
@@ -156,15 +156,15 @@ const mutations: MutationTree<VQBState> = {
     state.dataset = dataset;
   },
 
-  setCurrentPage(state: VQBState, { pageno }: { pageno: number }) {
+  setCurrentPage(state: VQBState, { pageNumber }: { pageNumber: number }) {
     if (state.dataset.paginationContext) {
-      state.dataset.paginationContext.pageno = pageno;
+      state.dataset.paginationContext.pageNumber = pageNumber;
     } else {
       const length = state.dataset.data.length;
       state.dataset.paginationContext = {
         shouldPaginate: false,
-        pageno,
-        pagesize: length,
+        pageNumber,
+        pageSize: length,
         totalCount: length,
         isLastPage: true,
       };

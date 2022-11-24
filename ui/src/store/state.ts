@@ -76,8 +76,8 @@ export function emptyState(): VQBState {
       data: [],
       paginationContext: {
         shouldPaginate: false,
-        pagesize: 50,
-        pageno: 1,
+        pageSize: 50,
+        pageNumber: 1,
         totalCount: 0,
         isLastPage: true,
       },

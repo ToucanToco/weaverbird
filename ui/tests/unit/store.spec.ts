@@ -416,8 +416,8 @@ describe('mutation tests', () => {
         data: [],
         paginationContext: {
           shouldPaginate: false,
-          pageno: 2,
-          pagesize: 10,
+          pageNumber: 2,
+          pageSize: 10,
           totalCount: 10,
           isLastPage: true,
         },
@@ -427,7 +427,7 @@ describe('mutation tests', () => {
     mutations.selectStep(state, { index: 2 });
     expect(state.selectedStepIndex).toEqual(2);
     // make sure the pagination is reset
-    expect(state.dataset.paginationContext?.pageno).toEqual(1);
+    expect(state.dataset.paginationContext?.pageNumber).toEqual(1);
 
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
     mutations.selectStep(state, { index: 5 });
@@ -456,8 +456,8 @@ describe('mutation tests', () => {
           data: [],
           paginationContext: {
             shouldPaginate: true,
-            pageno: 2,
-            pagesize: 10,
+            pageNumber: 2,
+            pageSize: 10,
             totalCount: 10,
             isLastPage: true,
           },
@@ -470,7 +470,7 @@ describe('mutation tests', () => {
       ]);
       expect(state.selectedStepIndex).toEqual(1);
       // make sure the pagination is reset
-      expect(state.dataset.paginationContext?.pageno).toEqual(1);
+      expect(state.dataset.paginationContext?.pageNumber).toEqual(1);
     });
   });
 
@@ -500,8 +500,8 @@ describe('mutation tests', () => {
           data: [],
           paginationContext: {
             shouldPaginate: true,
-            pageno: 2,
-            pagesize: 10,
+            pageNumber: 2,
+            pageSize: 10,
             totalCount: 10,
             isLastPage: true,
           },
@@ -525,7 +525,7 @@ describe('mutation tests', () => {
       ]);
       expect(state.selectedStepIndex).toEqual(4);
       // make sure the pagination is reset
-      expect(state.dataset.paginationContext?.pageno).toEqual(1);
+      expect(state.dataset.paginationContext?.pageNumber).toEqual(1);
     });
 
     it('should never add  selected steps before domain step', () => {
@@ -542,8 +542,8 @@ describe('mutation tests', () => {
           data: [],
           paginationContext: {
             shouldPaginate: true,
-            pageno: 2,
-            pagesize: 10,
+            pageNumber: 2,
+            pageSize: 10,
             totalCount: 10,
             isLastPage: true,
           },
@@ -567,7 +567,7 @@ describe('mutation tests', () => {
       ]);
       expect(state.selectedStepIndex).toEqual(2);
       // make sure the pagination is reset
-      expect(state.dataset.paginationContext?.pageno).toEqual(1);
+      expect(state.dataset.paginationContext?.pageNumber).toEqual(1);
     });
   });
 
@@ -592,8 +592,8 @@ describe('mutation tests', () => {
         data: [],
         paginationContext: {
           shouldPaginate: true,
-          pageno: 2,
-          pagesize: 10,
+          pageNumber: 2,
+          pageSize: 10,
           totalCount: 10,
           isLastPage: true,
         },
@@ -602,7 +602,7 @@ describe('mutation tests', () => {
     mutations.setCurrentPipelineName(state, { name: 'bar' });
     expect(state.currentPipelineName).toEqual('bar');
     // make sure the pagination is reset
-    expect(state.dataset.paginationContext?.pageno).toEqual(1);
+    expect(state.dataset.paginationContext?.pageNumber).toEqual(1);
   });
 
   describe('setPipeline', function () {
@@ -619,8 +619,8 @@ describe('mutation tests', () => {
           data: [],
           paginationContext: {
             shouldPaginate: true,
-            pageno: 2,
-            pagesize: 10,
+            pageNumber: 2,
+            pageSize: 10,
             totalCount: 10,
             isLastPage: true,
           },
@@ -636,7 +636,7 @@ describe('mutation tests', () => {
       mutations.setPipeline(state, { pipeline });
       expect(getters.pipeline(state, {}, {}, {})).toEqual(pipeline);
       // make sure the pagination is reset
-      expect(state.dataset.paginationContext?.pageno).toEqual(1);
+      expect(state.dataset.paginationContext?.pageNumber).toEqual(1);
     });
   });
 
@@ -653,8 +653,8 @@ describe('mutation tests', () => {
       paginationContext: {
         shouldPaginate: false,
         totalCount: 50,
-        pagesize: 50,
-        pageno: 1,
+        pageSize: 50,
+        pageNumber: 1,
         isLastPage: true,
       },
     };

@@ -41,8 +41,8 @@ describe('_sortDataset tests', () => {
       ],
       paginationContext: {
         shouldPaginate: false,
-        pageno: 1,
-        pagesize: 50,
+        pageNumber: 1,
+        pageSize: 50,
         totalCount: 2,
         isLastPage: true,
       },
@@ -64,8 +64,8 @@ describe('_sortDataset tests', () => {
       ],
       paginationContext: {
         shouldPaginate: false,
-        pageno: 1,
-        pagesize: 50,
+        pageNumber: 1,
+        pageSize: 50,
         totalCount: 2,
         isLastPage: true,
       },
@@ -191,8 +191,8 @@ describe('inferTypeFromDataset', () => {
       ],
       paginationContext: {
         shouldPaginate: false,
-        pageno: 1,
-        pagesize: 50,
+        pageNumber: 1,
+        pageSize: 50,
         totalCount: 7,
         isLastPage: true,
       },
@@ -220,8 +220,8 @@ describe('inferTypeFromDataset', () => {
       ],
       paginationContext: {
         shouldPaginate: false,
-        pageno: 1,
-        pagesize: 50,
+        pageNumber: 1,
+        pageSize: 50,
         totalCount: 7,
         isLastPage: true,
       },
@@ -249,8 +249,8 @@ describe('inferTypeFromDataset', () => {
       ],
       paginationContext: {
         shouldPaginate: false,
-        pageno: 1,
-        pagesize: 50,
+        pageNumber: 1,
+        pageSize: 50,
         totalCount: 8,
         isLastPage: true,
       },
@@ -270,8 +270,8 @@ describe('inferTypeFromDataset', () => {
       data: [['Paris', 10000000, undefined]],
       paginationContext: {
         shouldPaginate: false,
-        pageno: 1,
-        pagesize: 50,
+        pageNumber: 1,
+        pageSize: 50,
         totalCount: 1,
         isLastPage: true,
       },
@@ -291,8 +291,8 @@ describe('inferTypeFromDataset', () => {
       data: [['Paris', 10000000, null]],
       paginationContext: {
         shouldPaginate: false,
-        pageno: 1,
-        pagesize: 50,
+        pageNumber: 1,
+        pageSize: 50,
         totalCount: 1,
         isLastPage: true,
       },
@@ -315,8 +315,8 @@ describe('inferTypeFromDataset', () => {
       ],
       paginationContext: {
         shouldPaginate: false,
-        pageno: 1,
-        pagesize: 50,
+        pageNumber: 1,
+        pageSize: 50,
         totalCount: 2,
         isLastPage: true,
       },
@@ -336,8 +336,8 @@ describe('inferTypeFromDataset', () => {
       data: [['Paris', 10000000, Symbol()]],
       paginationContext: {
         shouldPaginate: false,
-        pageno: 1,
-        pagesize: 50,
+        pageNumber: 1,
+        pageSize: 50,
         totalCount: 1,
         isLastPage: true,
       },
@@ -357,8 +357,8 @@ describe('inferTypeFromDataset', () => {
       data: [['Paris', 10000000, () => {}]],
       paginationContext: {
         shouldPaginate: false,
-        pageno: 1,
-        pagesize: 50,
+        pageNumber: 1,
+        pageSize: 50,
         totalCount: 1,
         isLastPage: true,
       },
@@ -382,8 +382,8 @@ describe('inferTypeFromDataset', () => {
       ],
       paginationContext: {
         shouldPaginate: false,
-        pageno: 1,
-        pagesize: 50,
+        pageNumber: 1,
+        pageSize: 50,
         totalCount: 1,
         isLastPage: true,
       },
@@ -445,7 +445,7 @@ describe('dataset local uniques computation', () => {
     });
   });
 
-  it('should handle datasets with pagesize > totalCount', () => {
+  it('should handle datasets with pageSize > totalCount', () => {
     const dataset: DataSet = {
       headers: [
         { name: 'city' },
@@ -461,9 +461,9 @@ describe('dataset local uniques computation', () => {
       ],
       paginationContext: {
         shouldPaginate: false,
-        pageno: 1,
+        pageNumber: 1,
         totalCount: 10,
-        pagesize: 10,
+        pageSize: 10,
         isLastPage: true,
       },
     };
@@ -483,9 +483,9 @@ describe('dataset local uniques computation', () => {
       ],
       paginationContext: {
         shouldPaginate: false,
-        pageno: 1,
+        pageNumber: 1,
         totalCount: 10,
-        pagesize: 10,
+        pageSize: 10,
         isLastPage: true,
       },
     });
@@ -544,9 +544,9 @@ describe('dataset local uniques computation', () => {
       ],
       paginationContext: {
         shouldPaginate: false,
-        pageno: 1,
+        pageNumber: 1,
         totalCount: 10,
-        pagesize: 10,
+        pageSize: 10,
         isLastPage: true,
       },
     });
@@ -570,9 +570,9 @@ describe('dataset local uniques computation', () => {
       ],
       paginationContext: {
         shouldPaginate: true,
-        pageno: 1,
+        pageNumber: 1,
         totalCount: 100,
-        pagesize: 50,
+        pageSize: 50,
         isLastPage: false,
       },
     };
@@ -594,9 +594,9 @@ describe('dataset local uniques computation', () => {
       ],
       paginationContext: {
         shouldPaginate: true,
-        pageno: 1,
+        pageNumber: 1,
         totalCount: 100,
-        pagesize: 50,
+        pageSize: 50,
         isLastPage: false,
       },
     });
@@ -661,9 +661,9 @@ describe('dataset local uniques computation', () => {
       ],
       paginationContext: {
         shouldPaginate: true,
-        pageno: 1,
+        pageNumber: 1,
         totalCount: 100,
-        pagesize: 50,
+        pageSize: 50,
         isLastPage: false,
       },
     });

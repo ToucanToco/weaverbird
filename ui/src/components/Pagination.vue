@@ -2,7 +2,7 @@
   <div class="pagination">
     <paginate
       v-if="showPager"
-      :value="pageNo"
+      :value="pageNumber"
       :page-count="pageCount"
       containerClass="pagination__list"
       prev-class="prevnext"
@@ -49,9 +49,9 @@ export default class Pagination extends Vue {
     return 1;
   }
 
-  get pageNo() {
+  get pageNumber() {
     if (this.paginationContext) {
-      return this.paginationContext.pageno;
+      return this.paginationContext.pageNumber;
     }
     return 1;
   }
@@ -72,8 +72,8 @@ export default class Pagination extends Vue {
     this.useArrowPagination = shouldUseArrowPagination(paginationContext, oldPaginationContext);
   }
 
-  pageClicked(pageno: number) {
-    this.$emit('setPage', { pageno });
+  pageClicked(pageNumber: number) {
+    this.$emit('setPage', { pageNumber });
   }
 }
 </script>

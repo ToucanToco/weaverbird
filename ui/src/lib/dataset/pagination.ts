@@ -7,8 +7,8 @@ export interface PaginationContext {
    * pagination context (i.e. number of results displayed per page and current page number)
    */
   shouldPaginate: boolean;
-  pagesize: number;
-  pageno: number;
+  pageSize: number;
+  pageNumber: number;
   totalCount?: number;
   isLastPage?: boolean;
 }
@@ -20,14 +20,14 @@ export function numberOfPages(paginationContext: PaginationContext) {
   if (!paginationContext.totalCount) {
     return;
   }
-  return Math.ceil(paginationContext.totalCount / paginationContext.pagesize);
+  return Math.ceil(paginationContext.totalCount / paginationContext.pageSize);
 }
 
 /**
  * Get page offset
  */
-export function pageOffset(pagesize: number, pageno: number) {
-  return Math.max(pageno - 1, 0) * pagesize;
+export function pageOffset(pageSize: number, pageNumber: number) {
+  return Math.max(pageNumber - 1, 0) * pageSize;
 }
 
 export function counterText({
@@ -46,7 +46,7 @@ export function counterText({
   } else if (!paginationContext.shouldPaginate) {
     return `${paginationContext.totalCount} rows`;
   } else {
-    const { pagesize: pageSize, pageno: pageNumber, totalCount } = paginationContext;
+    const { pageSize, pageNumber, totalCount } = paginationContext;
     const firstRowNumber = (pageNumber - 1) * pageSize + 1;
     const lastRowNumber = pageCount === pageNumber ? totalCount : pageNumber * pageSize;
     return `${firstRowNumber} - ${lastRowNumber} of ${totalCount} rows`;
