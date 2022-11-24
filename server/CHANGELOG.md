@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [0.27.2] - 2022-11-24
+
+- PyPika: Cast columns before applying a regex operation to them when using the `matches` or `notmatches` operator.
+
 ## [0.27.1] - 2022-11-07
 
 - Pypika: Snowflake translator custom queryBuilder adds double quotes to `WITH` statements in order to prevent
