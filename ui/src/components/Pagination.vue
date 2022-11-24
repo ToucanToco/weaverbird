@@ -9,22 +9,21 @@
       next-class="prevnext"
       :clickHandler="pageClicked"
     />
-    <div v-if="showPager" data-cy="weaverbird-pagination-counter" class="pagination-counter">
-      <span class="pagination-counter__current-min">{{ pageRows.min }}</span>
-      <span class="pagination-counter__current-max">&nbsp;- {{ pageRows.max }}</span>
-      <span class="pagination-counter__total-count">&nbsp;of {{ totalCount }} rows</span>
-    </div>
-    <div v-else data-cy="weaverbird-pagination-counter" class="pagination-counter">
-      <span class="pagination-counter__total-count">{{ totalCount }} rows</span>
+    <div
+      v-if="paginationCounterText"
+      data-testid="weaverbird-pagination-counter"
+      class="pagination-counter"
+    >
+      {{ paginationCounterText }}
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import Paginate from 'vuejs-paginate';
 
-import { numberOfPages, pageMinMax } from '@/lib/dataset/pagination';
+import { numberOfPages, counterText, shouldUseArrowPagination } from '@/lib/dataset/pagination';
 import type { PaginationContext } from '@/lib/dataset/pagination';
 
 @Component({
@@ -35,10 +34,12 @@ import type { PaginationContext } from '@/lib/dataset/pagination';
 })
 export default class Pagination extends Vue {
   @Prop()
-  paginationContext?: PaginationContext;
+  paginationContext!: PaginationContext;
+
+  useArrowPagination = false;
 
   get showPager(): boolean {
-    return this.pageCount > 1;
+    return this.paginationContext.shouldPaginate;
   }
 
   get pageCount() {
@@ -55,18 +56,20 @@ export default class Pagination extends Vue {
     return 1;
   }
 
-  get totalCount() {
-    if (this.paginationContext) {
-      return this.paginationContext.totalCount;
-    }
-    return null;
+  get paginationCounterText() {
+    return counterText({
+      useArrowPagination: false,
+      paginationContext: this.paginationContext,
+      pageCount: this.pageCount,
+    });
   }
 
-  get pageRows() {
-    if (this.paginationContext) {
-      return pageMinMax(this.paginationContext);
-    }
-    return 0;
+  @Watch('paginationContext', { immediate: true })
+  setUseArrowPagination(
+    paginationContext: PaginationContext,
+    oldPaginationContext: PaginationContext,
+  ) {
+    this.useArrowPagination = shouldUseArrowPagination(paginationContext, oldPaginationContext);
   }
 
   pageClicked(pageno: number) {

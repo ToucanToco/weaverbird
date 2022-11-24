@@ -5,9 +5,11 @@ import Pagination from '@/components/Pagination.vue';
 import type { PaginationContext } from '@/lib/dataset/pagination';
 
 const samplePaginationContext: PaginationContext = {
+  shouldPaginate: true,
   totalCount: 7,
   pageno: 1,
   pagesize: 2,
+  isLastPage: false,
 };
 
 describe('Pagination Component', () => {
@@ -77,9 +79,11 @@ describe('Pagination Component', () => {
       const wrapper = mount(Pagination, {
         propsData: {
           paginationContext: {
+            shouldPaginate: true,
             totalCount,
             pagesize,
             pageno,
+            isLastPage: false,
           },
         },
       });

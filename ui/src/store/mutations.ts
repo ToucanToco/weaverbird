@@ -161,7 +161,13 @@ const mutations: MutationTree<VQBState> = {
       state.dataset.paginationContext.pageno = pageno;
     } else {
       const length = state.dataset.data.length;
-      state.dataset.paginationContext = { pageno, pagesize: length, totalCount: length };
+      state.dataset.paginationContext = {
+        shouldPaginate: false,
+        pageno,
+        pagesize: length,
+        totalCount: length,
+        isLastPage: true,
+      };
     }
   },
 

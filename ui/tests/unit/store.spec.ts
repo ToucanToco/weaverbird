@@ -414,7 +414,13 @@ describe('mutation tests', () => {
       dataset: {
         headers: [],
         data: [],
-        paginationContext: { pageno: 2, pagesize: 10, totalCount: 10 },
+        paginationContext: {
+          shouldPaginate: false,
+          pageno: 2,
+          pagesize: 10,
+          totalCount: 10,
+          isLastPage: true,
+        },
       },
     });
     expect(state.selectedStepIndex).toEqual(-1);
@@ -448,7 +454,13 @@ describe('mutation tests', () => {
         dataset: {
           headers: [],
           data: [],
-          paginationContext: { pageno: 2, pagesize: 10, totalCount: 10 },
+          paginationContext: {
+            shouldPaginate: true,
+            pageno: 2,
+            pagesize: 10,
+            totalCount: 10,
+            isLastPage: true,
+          },
         },
       });
       mutations.deleteSteps(state, { indexes: [1, 3] });
@@ -486,7 +498,13 @@ describe('mutation tests', () => {
         dataset: {
           headers: [],
           data: [],
-          paginationContext: { pageno: 2, pagesize: 10, totalCount: 10 },
+          paginationContext: {
+            shouldPaginate: true,
+            pageno: 2,
+            pagesize: 10,
+            totalCount: 10,
+            isLastPage: true,
+          },
         },
       });
       mutations.selectStep(state, { index: 2 }); // select step 2
@@ -522,7 +540,13 @@ describe('mutation tests', () => {
         dataset: {
           headers: [],
           data: [],
-          paginationContext: { pageno: 2, pagesize: 10, totalCount: 10 },
+          paginationContext: {
+            shouldPaginate: true,
+            pageno: 2,
+            pagesize: 10,
+            totalCount: 10,
+            isLastPage: true,
+          },
         },
       });
       mutations.selectStep(state, { index: -1 }); // select step -1
@@ -566,7 +590,13 @@ describe('mutation tests', () => {
       dataset: {
         headers: [],
         data: [],
-        paginationContext: { pageno: 2, pagesize: 10, totalCount: 10 },
+        paginationContext: {
+          shouldPaginate: true,
+          pageno: 2,
+          pagesize: 10,
+          totalCount: 10,
+          isLastPage: true,
+        },
       },
     });
     mutations.setCurrentPipelineName(state, { name: 'bar' });
@@ -587,7 +617,13 @@ describe('mutation tests', () => {
         dataset: {
           headers: [],
           data: [],
-          paginationContext: { pageno: 2, pagesize: 10, totalCount: 10 },
+          paginationContext: {
+            shouldPaginate: true,
+            pageno: 2,
+            pagesize: 10,
+            totalCount: 10,
+            isLastPage: true,
+          },
         },
       });
       expect(getters.pipeline(state, {}, {}, {})).toEqual([]);
@@ -615,9 +651,11 @@ describe('mutation tests', () => {
       headers: [{ name: 'col1' }, { name: 'col2' }],
       data: [[0, 0]],
       paginationContext: {
+        shouldPaginate: false,
         totalCount: 50,
         pagesize: 50,
         pageno: 1,
+        isLastPage: true,
       },
     };
     const state = buildState({});

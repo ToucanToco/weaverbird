@@ -1,57 +1,110 @@
 import { describe, expect, it } from 'vitest';
 
-import * as P from '@/lib/dataset/pagination';
+import { shouldUseArrowPagination, numberOfPages, pageOffset } from '@/lib/dataset/pagination';
+
+import type { PaginationContext } from '@/lib/dataset/pagination';
 
 describe('pagination tests', () => {
+  describe('shouldUseArrowPagination', () => {
+    it('should return false if there is one uniq page', () => {
+      expect(
+        shouldUseArrowPagination(
+          {
+            shouldPaginate: false,
+            totalCount: undefined,
+            pagesize: 50,
+            pageno: 1,
+            isLastPage: true,
+          },
+          undefined,
+        ),
+      ).toBe(false);
+    });
+
+    it('should return true if current page has unknown total count', () => {
+      expect(
+        shouldUseArrowPagination(
+          {
+            shouldPaginate: true,
+            totalCount: undefined,
+            pagesize: 50,
+            pageno: 1,
+            isLastPage: false,
+          },
+          undefined,
+        ),
+      ).toBe(true);
+    });
+
+    it('should return false if current and previous pages has both known total count', () => {
+      expect(
+        shouldUseArrowPagination(
+          {
+            shouldPaginate: true,
+            totalCount: 100,
+            pagesize: 50,
+            pageno: 2,
+            isLastPage: false,
+          },
+          {
+            shouldPaginate: true,
+            totalCount: 100,
+            pagesize: 50,
+            pageno: 1,
+            isLastPage: false,
+          },
+        ),
+      ).toBe(false);
+    });
+
+    it('should return true if one last page and previous page had unknown total count', () => {
+      expect(
+        shouldUseArrowPagination(
+          {
+            shouldPaginate: true,
+            totalCount: 100,
+            pagesize: 50,
+            pageno: 2,
+            isLastPage: true,
+          },
+          {
+            shouldPaginate: true,
+            totalCount: undefined,
+            pagesize: 50,
+            pageno: 1,
+            isLastPage: false,
+          },
+        ),
+      ).toBe(true);
+    });
+  });
+
   it('should compute number of pages correctly', () => {
-    const context: P.PaginationContext = {
+    const context: PaginationContext = {
+      shouldPaginate: true,
       pageno: 1,
       pagesize: 20,
       totalCount: 208,
+      isLastPage: false,
     };
-    expect(P.numberOfPages(context)).toEqual(11);
+    expect(numberOfPages(context)).toEqual(11);
   });
 
   it('should compute page offset correctly', () => {
-    expect(P.pageOffset(20, -1)).toEqual(0);
-    expect(P.pageOffset(20, 0)).toEqual(0);
-    expect(P.pageOffset(20, 1)).toEqual(0);
-    expect(P.pageOffset(20, 2)).toEqual(20);
-  });
-
-  it('should return correctly the min and max row of a page offset on the first page', () => {
-    const context: P.PaginationContext = {
-      pageno: 1,
-      pagesize: 20,
-      totalCount: 208,
-    };
-    expect(P.pageMinMax(context)).toEqual({ min: 1, max: 20 });
+    expect(pageOffset(20, -1)).toEqual(0);
+    expect(pageOffset(20, 0)).toEqual(0);
+    expect(pageOffset(20, 1)).toEqual(0);
+    expect(pageOffset(20, 2)).toEqual(20);
   });
 
   it('should return last page of pagination', () => {
-    const context: P.PaginationContext = {
+    const context: PaginationContext = {
+      shouldPaginate: true,
       pageno: 0,
       pagesize: 50,
       totalCount: 100,
+      isLastPage: false,
     };
-    expect(P.numberOfPages(context)).toEqual(2);
-  });
-
-  it('should return correctly the min and max row of a page offset on the last page', () => {
-    const context: P.PaginationContext = {
-      pageno: 2,
-      pagesize: 50,
-      totalCount: 100,
-    };
-    expect(P.pageMinMax(context)).toEqual({ min: 51, max: 100 });
-  });
-
-  it('should return correctly the min and max row of a page offset on the last page with total count less than the page count', () => {
-    const context: P.PaginationContext = {
-      pageno: 11,
-      pagesize: 20,
-      totalCount: 208,
-    };
-    expect(P.pageMinMax(context)).toEqual({ min: 201, max: 208 });
+    expect(numberOfPages(context)).toEqual(2);
   });
 });

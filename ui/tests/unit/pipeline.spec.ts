@@ -447,9 +447,11 @@ describe('Pipeline.vue', () => {
             headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
             data: [['value1', 'value2', 'value3']],
             paginationContext: {
+              shouldPaginate: false,
               totalCount: 10,
               pagesize: 10,
               pageno: 1,
+              isLastPage: true,
             },
           },
         }),
