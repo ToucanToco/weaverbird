@@ -13,6 +13,66 @@ export interface PaginationContext {
   isLastPage?: boolean;
 }
 
+type OffsetLimitInfo = {
+  offset: number;
+  limit?: number;
+};
+
+type UnknownSizeDatasetPaginationInfo = {
+  type: 'unknown_size';
+  is_last_page: boolean;
+};
+
+type KnownSizeDatasetPaginationInfo = {
+  type: 'known_size';
+  is_last_page: boolean;
+  total_rows: number;
+};
+
+export type PaginationInfo = {
+  parameters: OffsetLimitInfo;
+  pagination_info: UnknownSizeDatasetPaginationInfo | KnownSizeDatasetPaginationInfo;
+  next_page?: OffsetLimitInfo;
+  previous_page?: OffsetLimitInfo;
+};
+
+/**
+ * retrieve all needed informations to make PaginatedDataTable pagination working
+ */
+export function getPaginationContext(
+  pageNumber: number,
+  paginationInfo?: PaginationInfo,
+  pageSize = 50,
+): PaginationContext {
+  return {
+    pageNumber,
+    pageSize,
+    totalCount: getPaginationTotalRowsCount(paginationInfo),
+    shouldPaginate: shouldPaginate(paginationInfo),
+    isLastPage: isLastPage(paginationInfo),
+  };
+}
+
+export function shouldPaginate(paginationInfo?: PaginationInfo): boolean {
+  if (!paginationInfo) return false;
+  return Boolean(paginationInfo.next_page) || Boolean(paginationInfo.previous_page);
+}
+
+export function getPaginationTotalRowsCount(paginationInfo?: PaginationInfo): number | undefined {
+  return paginationInfo?.pagination_info.type === 'known_size'
+    ? paginationInfo.pagination_info.total_rows
+    : undefined;
+}
+
+export function getPaginationOffset(paginationInfo?: PaginationInfo) {
+  return paginationInfo?.parameters.offset ?? 0;
+}
+
+export function isLastPage(paginationInfo?: PaginationInfo): boolean {
+  if (!paginationInfo) return true;
+  return paginationInfo.pagination_info.is_last_page;
+}
+
 /**
  * Get number of total pages
  */

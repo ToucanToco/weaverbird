@@ -1,10 +1,74 @@
 import { describe, expect, it } from 'vitest';
 
-import { shouldUseArrowPagination, numberOfPages, pageOffset } from '@/lib/dataset/pagination';
+import {
+  getPaginationTotalRowsCount,
+  shouldPaginate,
+  shouldUseArrowPagination,
+  numberOfPages,
+  pageOffset,
+} from '@/lib/dataset/pagination';
 
 import type { PaginationContext } from '@/lib/dataset/pagination';
 
 describe('pagination tests', () => {
+  describe('shouldPaginate', () => {
+    it('should return true if there is previous or next page', () => {
+      expect(
+        shouldPaginate({
+          next_page: { offset: 50, limit: 50 },
+          parameters: { offset: 50, limit: 50 },
+          pagination_info: {
+            type: 'unknown_size',
+            is_last_page: true,
+          },
+        }),
+      ).toBe(true);
+    });
+    it('should return false if there is one uniq page', () => {
+      expect(
+        shouldPaginate({
+          parameters: { offset: 50, limit: 50 },
+          pagination_info: {
+            type: 'unknown_size',
+            is_last_page: true,
+          },
+        }),
+      ).toBe(false);
+    });
+    it('should return false if pagination is not set', () => {
+      expect(shouldPaginate()).toBe(false);
+    });
+  });
+
+  describe('getPaginationTotalRowsCount', () => {
+    it('should return total rows count', () => {
+      expect(
+        getPaginationTotalRowsCount({
+          parameters: { offset: 50, limit: 50 },
+          pagination_info: {
+            type: 'known_size',
+            is_last_page: false,
+            total_rows: 300,
+          },
+        }),
+      ).toBe(300);
+    });
+    it('should return undefined if total rows count is unknown', () => {
+      expect(
+        getPaginationTotalRowsCount({
+          parameters: { offset: 50, limit: 50 },
+          pagination_info: {
+            type: 'unknown_size',
+            is_last_page: true,
+          },
+        }),
+      ).toBeUndefined();
+    });
+    it('should return undefined if pagination is not set', () => {
+      expect(getPaginationTotalRowsCount()).toBeUndefined();
+    });
+  });
+
   describe('shouldUseArrowPagination', () => {
     it('should return false if there is one uniq page', () => {
       expect(

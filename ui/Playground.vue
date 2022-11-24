@@ -95,6 +95,7 @@ import {
   VQBnamespace,
 } from './src/main';
 
+import { getPaginationContext } from '@/lib/dataset/pagination';
 
 const args = new URLSearchParams(location.search);
 
@@ -315,14 +316,13 @@ class MongoService {
     }
 
     if (isResponseOk) {
-      const { total, data: rset, types } = responseContent;
+      const { data: rset, types } = responseContent;
       updateLastExecutedQuery(query);
       let dataset = mongoResultsToDataset(rset);
-      dataset.paginationContext = {
-        totalCount: total,
-        pagesize: limit,
-        pageno: Math.floor(offset / limit) + 1,
-      };
+      const paginationInfo = rset.pagination_info;
+      const pageNumber = Math.floor(offset / limit) + 1;
+      const pageSize = limit;
+      dataset.paginationContext = getPaginationContext(pageNumber, paginationInfo, pageSize);
       if (types && types.length) {
         dataset = annotateDataset(dataset, types[0]);
         dataset = autocastDataset(dataset);
@@ -392,11 +392,10 @@ class PandasService {
     updateLastExecutedQuery(null);
     if (response.ok) {
       let dataset = pandasDataTableToDataset(result);
-      dataset.paginationContext = {
-        totalCount: result.total,
-        pagesize: limit,
-        pageno: Math.floor(offset / limit) + 1,
-      };
+      const paginationInfo = result.pagination_info;
+      const pageNumber = Math.floor(offset / limit) + 1;
+      const pageSize = limit;
+      dataset.paginationContext = getPaginationContext(pageNumber, paginationInfo, pageSize);
       dataset = autocastDataset(dataset);
       return { data: dataset, translator: 'pandas' };
     } else {
@@ -448,11 +447,10 @@ class SnowflakeService {
 
     if (response.ok) {
       let dataset = pandasDataTableToDataset(result);
-      dataset.paginationContext = {
-        totalCount: result.total,
-        pagesize: limit,
-        pageno: Math.floor(offset / limit) + 1,
-      };
+      const paginationInfo = result.pagination_info;
+      const pageNumber = Math.floor(offset / limit) + 1;
+      const pageSize = limit;
+      dataset.paginationContext = getPaginationContext(pageNumber, paginationInfo, pageSize);
       dataset = autocastDataset(dataset);
       updateLastExecutedQuery(result.query);
       return { data: dataset, translator: 'snowflake' };
@@ -500,11 +498,10 @@ class AthenaService {
 
     if (response.ok) {
       let dataset = pandasDataTableToDataset(result.results);
-      dataset.paginationContext = {
-        totalCount: result.total,
-        pagesize: limit,
-        pageno: Math.floor(offset / limit) + 1,
-      };
+      const paginationInfo = result.pagination_info;
+      const pageNumber = Math.floor(offset / limit) + 1;
+      const pageSize = limit;
+      dataset.paginationContext = getPaginationContext(pageNumber, paginationInfo, pageSize);
       dataset = autocastDataset(dataset);
       updateLastExecutedQuery(result.query);
       return { data: dataset, translator: 'athena' };
@@ -552,11 +549,10 @@ class GoogleBigQueryService {
 
     if (response.ok) {
       let dataset = pandasDataTableToDataset(result.results);
-      dataset.paginationContext = {
-        totalCount: result.total,
-        pagesize: limit,
-        pageno: Math.floor(offset / limit) + 1,
-      };
+      const paginationInfo = result.pagination_info;
+      const pageNumber = Math.floor(offset / limit) + 1;
+      const pageSize = limit;
+      dataset.paginationContext = getPaginationContext(pageNumber, paginationInfo, pageSize);
       dataset = autocastDataset(dataset);
       updateLastExecutedQuery(result.query);
       return { data: dataset, translator: 'google-big-query' };
@@ -604,11 +600,10 @@ class MySqlService {
 
     if (response.ok) {
       let dataset = pandasDataTableToDataset(result.results);
-      dataset.paginationContext = {
-        totalCount: result.total,
-        pagesize: limit,
-        pageno: Math.floor(offset / limit) + 1,
-      };
+      const paginationInfo = result.pagination_info;
+      const pageNumber = Math.floor(offset / limit) + 1;
+      const pageSize = limit;
+      dataset.paginationContext = getPaginationContext(pageNumber, paginationInfo, pageSize);
       dataset = autocastDataset(dataset);
       updateLastExecutedQuery(result.query);
       return { data: dataset, translator: 'mysql' };
@@ -656,11 +651,10 @@ class PostgresqlService {
 
     if (response.ok) {
       let dataset = result.results;
-      dataset.paginationContext = {
-        totalCount: result.total,
-        pagesize: limit,
-        pageno: Math.floor(offset / limit) + 1,
-      };
+      const paginationInfo = result.pagination_info;
+      const pageNumber = Math.floor(offset / limit) + 1;
+      const pageSize = limit;
+      dataset.paginationContext = getPaginationContext(pageNumber, paginationInfo, pageSize);
       // dataset = autocastDataset(dataset);
       updateLastExecutedQuery(result.query);
       return { data: dataset, translator: 'postgresql' };
@@ -708,11 +702,10 @@ class RedshiftService {
 
     if (response.ok) {
       let dataset = pandasDataTableToDataset(result);
-      dataset.paginationContext = {
-        totalCount: result.total,
-        pagesize: limit,
-        pageno: Math.floor(offset / limit) + 1,
-      };
+      const paginationInfo = result.pagination_info;
+      const pageNumber = Math.floor(offset / limit) + 1;
+      const pageSize = limit;
+      dataset.paginationContext = getPaginationContext(pageNumber, paginationInfo, pageSize);
       dataset = autocastDataset(dataset);
       updateLastExecutedQuery(result.query);
       return { data: dataset, translator: 'redshift' };
