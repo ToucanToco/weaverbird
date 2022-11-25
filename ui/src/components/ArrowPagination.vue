@@ -1,7 +1,10 @@
 <script lang="ts">
-import { defineComponent, type PropType } from 'vue';
+import Vue, { defineComponent } from 'vue';
 
 import FAIcon from '@/components/FAIcon.vue';
+
+import VPopover from 'v-tooltip';
+Vue.use(VPopover);
 
 export default defineComponent({
   name: 'ArrowPagination',
@@ -22,7 +25,6 @@ export default defineComponent({
 
   methods: {
     selectPage(pageNumber: number): void {
-      console.log('cocu');
       this.$emit('pageSelected', pageNumber);
     },
   },
@@ -39,20 +41,44 @@ export default defineComponent({
     >
       <FAIcon icon="arrow-left" />
     </button>
-    <button
-      :disabled="currentPage === 1"
-      class="arrow-pagination__button arrow-pagination__button--prev"
-      @click="selectPage(currentPage - 1)"
+
+    <v-popover
+      class="arrow-pagination__tooltip"
+      popoverClass="weaverbird__tooltip"
+      placement="top-start"
+      trigger="hover"
     >
-      Prev
-    </button>
-    <button
-      :disabled="isLastPage"
-      class="arrow-pagination__button arrow-pagination__button--next"
-      @click="selectPage(currentPage + 1)"
+      <button
+        :disabled="currentPage === 1"
+        class="arrow-pagination__button arrow-pagination__button--prev"
+        @click="selectPage(currentPage - 1)"
+      >
+        Prev
+      </button>
+      <template slot="popover">
+        <FAIcon icon="alert" aria-label="Unknown page number" />
+        <span>The rows and pages number is not available with this connector</span>
+      </template>
+    </v-popover>
+
+    <v-popover
+      class="arrow-pagination__tooltip"
+      popoverClass="weaverbird__tooltip"
+      placement="top-start"
+      trigger="hover"
     >
-      Next
-    </button>
+      <button
+        :disabled="isLastPage"
+        class="arrow-pagination__button arrow-pagination__button--next"
+        @click="selectPage(currentPage + 1)"
+      >
+        Next
+      </button>
+      <template slot="popover">
+        <FAIcon icon="alert" aria-label="Unknown page number" />
+        <span>The rows and pages number is not available with this connector</span>
+      </template>
+    </v-popover>
   </div>
 </template>
 
