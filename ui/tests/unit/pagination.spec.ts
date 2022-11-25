@@ -1,14 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  type PaginationContext,
   getPaginationTotalRowsCount,
-  shouldPaginate,
-  shouldUseArrowPagination,
   numberOfPages,
   pageOffset,
+  shouldPaginate,
+  shouldUseArrowPagination,
 } from '@/lib/dataset/pagination';
-
-import type { PaginationContext } from '@/lib/dataset/pagination';
 
 describe('pagination tests', () => {
   describe('shouldPaginate', () => {

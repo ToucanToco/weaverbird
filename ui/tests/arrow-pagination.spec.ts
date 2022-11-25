@@ -1,5 +1,5 @@
+import { type Wrapper, shallowMount } from '@vue/test-utils';
 import { afterEach, describe, expect, it } from 'vitest';
-import { shallowMount, type Wrapper } from '@vue/test-utils';
 
 import ArrowPagination from '@/components/ArrowPagination.vue';
 
