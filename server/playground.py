@@ -360,8 +360,22 @@ async def handle_mongo_translated_backend_request():
         req_params = await parse_request_json(request)
         results = execute_mongo_aggregation_query(
             req_params["collection"], req_params["query"], req_params["limit"], req_params["offset"]
+        )[0]
+        pagination_info = build_pagination_info(
+            offset=req_params["offset"],
+            limit=req_params["limit"],
+            total_rows=results["count"],
+            retrieved_rows=len(results["data"]),
         )
-        return jsonify(results)
+
+        return jsonify(
+            {
+                "pagination_info": pagination_info.dict(),
+                "data": results["data"],
+                "types": results["types"],
+                "query": req_params["query"],  # provided for inspection purposes
+            }
+        )
     except Exception as e:
         errmsg = f"{e.__class__.__name__}: {e}"
         return jsonify(errmsg), 400
