@@ -95,7 +95,7 @@ import {
   VQBnamespace,
 } from './src/main';
 
-import { getPaginationContext } from '@/lib/dataset/pagination';
+import { getPaginationContext } from './src/lib/dataset/pagination';
 
 const args = new URLSearchParams(location.search);
 

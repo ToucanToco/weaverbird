@@ -1,4 +1,4 @@
-import { getPaginationContext } from '@/lib/dataset/pagination';
+import { getPaginationContext } from '../../ui/src/lib/dataset/pagination';
 
 /* eslint-disable @typescript-eslint/no-var-requires */
 const {
