@@ -552,7 +552,8 @@ async def handle_postgres_backend_request():
             query_total_count_exec = await cur.execute(
                 f"WITH Q AS ({ sql_query }) SELECT COUNT(*) FROM Q"
             )
-            query_total_count = await query_total_count_exec.fetchone()
+            # fetchone() returns a tuple
+            query_total_count = (await query_total_count_exec.fetchone())[0]
 
         async with postgresql_connexion.cursor() as cur:
             query_results_page_exec = await cur.execute(
