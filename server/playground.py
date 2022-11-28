@@ -149,20 +149,30 @@ def execute_pipeline(pipeline_steps, **kwargs) -> str:
     # Validation
     pipeline = Pipeline(steps=pipeline_steps)
 
-    # Url parameters are only strings, these two must be understood as numbers
-    if "limit" in kwargs:
-        kwargs["limit"] = int(kwargs["limit"])
-    if "offset" in kwargs:
-        kwargs["offset"] = int(kwargs["offset"])
-
     output = json.loads(
         pandas_preview_pipeline(
             pipeline=pipeline,
             domain_retriever=lambda domain: DOMAINS[domain],
-            **kwargs,
+            # Converting URL params to ints
+            offset=int(kwargs.get("offset", 50)),
+            limit=int(kwargs.get("limit", 50)),
         )
     )
-    return json.dumps({**output, "schema": sanitize_table_schema(output["schema"])})
+
+    pagination_info = build_pagination_info(
+        offset=output.pop("offset"),
+        limit=output.pop("limit"),
+        total_rows=output.pop("total"),
+        retrieved_rows=len(output["data"]),
+    ).dict()
+
+    return json.dumps(
+        {
+            **output,
+            "schema": sanitize_table_schema(output["schema"]),
+            "pagination_info": pagination_info,
+        }
+    )
 
 
 @app.route("/pandas", methods=["GET", "POST"])
