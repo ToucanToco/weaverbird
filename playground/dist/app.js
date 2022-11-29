@@ -1,5 +1,3 @@
-import { getPaginationContext } from '../../ui/src/lib/dataset/pagination';
-
 /* eslint-disable @typescript-eslint/no-var-requires */
 const {
   Vqb,
@@ -14,6 +12,7 @@ const {
   setAvailableCodeEditors,
   defineSendAnalytics,
   exampleInterpolateFunc,
+  getPaginationContext,
 } = vqb;
 
 const args = new URLSearchParams(location.search);
