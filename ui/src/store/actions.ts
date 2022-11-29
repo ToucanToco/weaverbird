@@ -45,7 +45,7 @@ const actions: ActionTree<VQBState, any> = {
         getters.activePipeline,
         state.pipelines,
         state.pagesize,
-        pageOffset(state.pagesize, getters.pageno),
+        pageOffset(state.pagesize, getters.pageNumber),
         getters.previewSourceRowsSubset,
       );
       const translator = response.translator ?? 'mongo50'; // mongo50 is not send by backend
@@ -131,9 +131,9 @@ const actions: ActionTree<VQBState, any> = {
 
   setCurrentPage(
     { commit, dispatch }: ActionContext<VQBState, any>,
-    { pageno }: { pageno: number },
+    { pageNumber }: { pageNumber: number },
   ) {
-    commit('setCurrentPage', { pageno });
+    commit('setCurrentPage', { pageNumber });
     dispatch('updateDataset');
   },
 

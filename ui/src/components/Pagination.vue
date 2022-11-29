@@ -1,44 +1,55 @@
 <template>
   <div class="pagination">
-    <paginate
-      v-if="showPager"
-      :value="pageNo"
-      :page-count="pageCount"
-      containerClass="pagination__list"
-      prev-class="prevnext"
-      next-class="prevnext"
-      :clickHandler="pageClicked"
-    />
-    <div v-if="showPager" data-cy="weaverbird-pagination-counter" class="pagination-counter">
-      <span class="pagination-counter__current-min">{{ pageRows.min }}</span>
-      <span class="pagination-counter__current-max">&nbsp;- {{ pageRows.max }}</span>
-      <span class="pagination-counter__total-count">&nbsp;of {{ totalCount }} rows</span>
+    <div v-if="showPager" class="pagination__nav">
+      <ArrowPagination
+        v-if="useArrowPagination"
+        :currentPage="paginationContext.pageNumber"
+        :isLastPage="paginationContext.isLastPage"
+        @pageSelected="pageClicked"
+      />
+      <paginate
+        v-else
+        :value="pageNumber"
+        :page-count="pageCount"
+        containerClass="pagination__list"
+        prev-class="prevnext"
+        next-class="prevnext"
+        :clickHandler="pageClicked"
+      />
     </div>
-    <div v-else data-cy="weaverbird-pagination-counter" class="pagination-counter">
-      <span class="pagination-counter__total-count">{{ totalCount }} rows</span>
+    <div
+      v-if="paginationCounterText"
+      data-testid="weaverbird-pagination-counter"
+      class="pagination__counter"
+    >
+      {{ paginationCounterText }}
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import Paginate from 'vuejs-paginate';
+import ArrowPagination from '@/components/ArrowPagination.vue';
 
-import { numberOfPages, pageMinMax } from '@/lib/dataset/pagination';
+import { numberOfPages, counterText, shouldUseArrowPagination } from '@/lib/dataset/pagination';
 import type { PaginationContext } from '@/lib/dataset/pagination';
 
 @Component({
   name: 'pagination',
   components: {
+    ArrowPagination,
     Paginate,
   },
 })
 export default class Pagination extends Vue {
   @Prop()
-  paginationContext?: PaginationContext;
+  paginationContext!: PaginationContext;
+
+  useArrowPagination = false;
 
   get showPager(): boolean {
-    return this.pageCount > 1;
+    return this.paginationContext.shouldPaginate;
   }
 
   get pageCount() {
@@ -48,29 +59,31 @@ export default class Pagination extends Vue {
     return 1;
   }
 
-  get pageNo() {
+  get pageNumber() {
     if (this.paginationContext) {
-      return this.paginationContext.pageno;
+      return this.paginationContext.pageNumber;
     }
     return 1;
   }
 
-  get totalCount() {
-    if (this.paginationContext) {
-      return this.paginationContext.totalCount;
-    }
-    return null;
+  get paginationCounterText() {
+    return counterText({
+      useArrowPagination: false,
+      paginationContext: this.paginationContext,
+      pageCount: this.pageCount,
+    });
   }
 
-  get pageRows() {
-    if (this.paginationContext) {
-      return pageMinMax(this.paginationContext);
-    }
-    return 0;
+  @Watch('paginationContext', { immediate: true })
+  setUseArrowPagination(
+    paginationContext: PaginationContext,
+    oldPaginationContext: PaginationContext,
+  ) {
+    this.useArrowPagination = shouldUseArrowPagination(paginationContext, oldPaginationContext);
   }
 
-  pageClicked(pageno: number) {
-    this.$emit('setPage', { pageno });
+  pageClicked(pageNumber: number) {
+    this.$emit('setPage', { pageNumber });
   }
 }
 </script>
@@ -115,7 +128,7 @@ export default class Pagination extends Vue {
   background-color: #2665a3;
   color: #fff;
 }
-.pagination-counter {
+.pagination__counter {
   background: #999;
   bottom: 0;
   color: #fff;

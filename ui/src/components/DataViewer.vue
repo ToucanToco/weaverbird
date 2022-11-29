@@ -156,7 +156,7 @@ export default class DataViewer extends Vue {
   @VQBModule.Mutation toggleColumnSelection!: ({ column }: { column: string }) => void;
   @VQBModule.Mutation setSelectedColumns!: ({ column }: { column: string }) => void;
 
-  @VQBModule.Action setCurrentPage!: ({ pageno }: { pageno: number }) => void;
+  @VQBModule.Action setCurrentPage!: ({ pageNumber }: { pageNumber: number }) => void;
 
   activeActionMenuColumnName = '';
   activeDataTypeMenuColumnName = '';

@@ -5,9 +5,11 @@ import Pagination from '@/components/Pagination.vue';
 import type { PaginationContext } from '@/lib/dataset/pagination';
 
 const samplePaginationContext: PaginationContext = {
+  shouldPaginate: true,
   totalCount: 7,
-  pageno: 1,
-  pagesize: 2,
+  pageNumber: 1,
+  pageSize: 2,
+  isLastPage: false,
 };
 
 describe('Pagination Component', () => {
@@ -46,7 +48,7 @@ describe('Pagination Component', () => {
       },
     });
     wrapper.findAll('.pagination__list li a').at(3).trigger('click');
-    expect(wrapper.emitted('setPage')[0][0]).toStrictEqual({ pageno: 3 });
+    expect(wrapper.emitted('setPage')[0][0]).toStrictEqual({ pageNumber: 3 });
   });
 
   it('should instantiate the counter', () => {
@@ -55,31 +57,37 @@ describe('Pagination Component', () => {
         paginationContext: samplePaginationContext,
       },
     });
-    const wrapperCounter = wrapper.find('.pagination-counter');
+    const wrapperCounter = wrapper.find('.pagination__counter');
     expect(wrapperCounter.exists()).toBeTruthy();
   });
 
   it('should hide the pagination navigation if there is only one page', () => {
     const wrapper = mount(Pagination, {
       propsData: {
-        paginationContext: { ...samplePaginationContext, totalCount: 2 },
+        paginationContext: {
+          shouldPaginate: false,
+          totalCount: 2,
+          pageNumber: 1,
+          pageSize: 10,
+          isLastPage: true,
+        },
       },
     });
-    expect(wrapper.find('.pagination__list').exists()).toBeFalsy();
-    expect(wrapper.find('.pagination-counter__current-min').exists()).toBeFalsy();
-    expect(wrapper.find('.pagination-counter__current-max').exists()).toBeFalsy();
-    expect(wrapper.find('.pagination-counter__total-count').text()).toEqual('2 rows');
+    expect(wrapper.find('.pagination__nav').exists()).toBeFalsy();
+    expect(wrapper.find('.pagination__counter').text()).toEqual('2 rows');
   });
   describe('Pagination navigation lifecycle', () => {
-    const pagesize = 50;
+    const pageSize = 50;
     const totalCount = 400;
-    const paginationNavigationExistsOnpageIndex = function (pageno: number): boolean {
+    const paginationNavigationExistsOnpageIndex = function (pageNumber: number): boolean {
       const wrapper = mount(Pagination, {
         propsData: {
           paginationContext: {
+            shouldPaginate: true,
             totalCount,
-            pagesize,
-            pageno,
+            pageSize,
+            pageNumber,
+            isLastPage: false,
           },
         },
       });
@@ -90,11 +98,11 @@ describe('Pagination Component', () => {
       expect(paginationNavigationExistsOnpageIndex(pageIndex)).toBe(true);
     });
     it('should display pagination navigation on any middle page', () => {
-      const pageIndex = totalCount / pagesize - 2;
+      const pageIndex = totalCount / pageSize - 2;
       expect(paginationNavigationExistsOnpageIndex(pageIndex)).toBe(true);
     });
     it('should display pagination navigation on last page', () => {
-      const pageIndex = totalCount / pagesize;
+      const pageIndex = totalCount / pageSize;
       expect(paginationNavigationExistsOnpageIndex(pageIndex)).toBe(true);
     });
   });

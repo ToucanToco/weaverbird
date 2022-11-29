@@ -39,7 +39,13 @@ describe('_sortDataset tests', () => {
         [1, 2, 3],
         [4, 5, 6],
       ],
-      paginationContext: { pageno: 1, pagesize: 50, totalCount: 2 },
+      paginationContext: {
+        shouldPaginate: false,
+        pageNumber: 1,
+        pageSize: 50,
+        totalCount: 2,
+        isLastPage: true,
+      },
     };
     const sorted = _sortDataset(dataset);
     expect(sorted.headers).toEqual([{ name: 'col1' }, { name: 'col2' }, { name: 'col3' }]);
@@ -56,7 +62,13 @@ describe('_sortDataset tests', () => {
         [1, 2, 3, 4],
         [5, 6, 7, 8],
       ],
-      paginationContext: { pageno: 1, pagesize: 50, totalCount: 2 },
+      paginationContext: {
+        shouldPaginate: false,
+        pageNumber: 1,
+        pageSize: 50,
+        totalCount: 2,
+        isLastPage: true,
+      },
     };
     const sorted = _sortDataset(dataset);
     expect(sorted.headers).toEqual([
@@ -177,7 +189,13 @@ describe('inferTypeFromDataset', () => {
         ['New York City', 10000000, false],
         ['Rio de Janeiro', 4000000, false],
       ],
-      paginationContext: { pageno: 1, pagesize: 50, totalCount: 7 },
+      paginationContext: {
+        shouldPaginate: false,
+        pageNumber: 1,
+        pageSize: 50,
+        totalCount: 7,
+        isLastPage: true,
+      },
     };
     const datasetWithInferredType = inferTypeFromDataset(dataset);
     expect(datasetWithInferredType.headers).toEqual([
@@ -200,7 +218,13 @@ describe('inferTypeFromDataset', () => {
         ['Rio de Janeiro', 4000000, false],
         [undefined, null, 10],
       ],
-      paginationContext: { pageno: 1, pagesize: 50, totalCount: 7 },
+      paginationContext: {
+        shouldPaginate: false,
+        pageNumber: 1,
+        pageSize: 50,
+        totalCount: 7,
+        isLastPage: true,
+      },
     };
     const datasetWithInferredType = inferTypeFromDataset(dataset, 7);
     expect(datasetWithInferredType.headers).toEqual([
@@ -223,7 +247,13 @@ describe('inferTypeFromDataset', () => {
         ['Rio de Janeiro', 4000000, false],
         [undefined, false, 10],
       ],
-      paginationContext: { pageno: 1, pagesize: 50, totalCount: 8 },
+      paginationContext: {
+        shouldPaginate: false,
+        pageNumber: 1,
+        pageSize: 50,
+        totalCount: 8,
+        isLastPage: true,
+      },
     };
 
     const datasetWithInferredType = inferTypeFromDataset(dataset);
@@ -238,7 +268,13 @@ describe('inferTypeFromDataset', () => {
     const dataset: DataSet = {
       headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
       data: [['Paris', 10000000, undefined]],
-      paginationContext: { pageno: 1, pagesize: 50, totalCount: 1 },
+      paginationContext: {
+        shouldPaginate: false,
+        pageNumber: 1,
+        pageSize: 50,
+        totalCount: 1,
+        isLastPage: true,
+      },
     };
 
     const datasetWithInferredType = inferTypeFromDataset(dataset, 1);
@@ -253,7 +289,13 @@ describe('inferTypeFromDataset', () => {
     const dataset: DataSet = {
       headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
       data: [['Paris', 10000000, null]],
-      paginationContext: { pageno: 1, pagesize: 50, totalCount: 1 },
+      paginationContext: {
+        shouldPaginate: false,
+        pageNumber: 1,
+        pageSize: 50,
+        totalCount: 1,
+        isLastPage: true,
+      },
     };
 
     const datasetWithInferredType = inferTypeFromDataset(dataset, 1);
@@ -271,7 +313,13 @@ describe('inferTypeFromDataset', () => {
         ['Paris', 10000000, null],
         ['Paris', 10000000, false],
       ],
-      paginationContext: { pageno: 1, pagesize: 50, totalCount: 2 },
+      paginationContext: {
+        shouldPaginate: false,
+        pageNumber: 1,
+        pageSize: 50,
+        totalCount: 2,
+        isLastPage: true,
+      },
     };
 
     const datasetWithInferredType = inferTypeFromDataset(dataset);
@@ -286,7 +334,13 @@ describe('inferTypeFromDataset', () => {
     const dataset: DataSet = {
       headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
       data: [['Paris', 10000000, Symbol()]],
-      paginationContext: { pageno: 1, pagesize: 50, totalCount: 1 },
+      paginationContext: {
+        shouldPaginate: false,
+        pageNumber: 1,
+        pageSize: 50,
+        totalCount: 1,
+        isLastPage: true,
+      },
     };
 
     const datasetWithInferredType = inferTypeFromDataset(dataset, 1);
@@ -301,7 +355,13 @@ describe('inferTypeFromDataset', () => {
     const dataset: DataSet = {
       headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
       data: [['Paris', 10000000, () => {}]],
-      paginationContext: { pageno: 1, pagesize: 50, totalCount: 1 },
+      paginationContext: {
+        shouldPaginate: false,
+        pageNumber: 1,
+        pageSize: 50,
+        totalCount: 1,
+        isLastPage: true,
+      },
     };
 
     const datasetWithInferredType = inferTypeFromDataset(dataset, 1);
@@ -320,7 +380,13 @@ describe('inferTypeFromDataset', () => {
         ['Marseille', 40, false],
         ['Berlin', 41.5, true],
       ],
-      paginationContext: { pageno: 1, pagesize: 50, totalCount: 1 },
+      paginationContext: {
+        shouldPaginate: false,
+        pageNumber: 1,
+        pageSize: 50,
+        totalCount: 1,
+        isLastPage: true,
+      },
     };
 
     const datasetWithInferredType = inferTypeFromDataset(dataset);
@@ -379,7 +445,7 @@ describe('dataset local uniques computation', () => {
     });
   });
 
-  it('should handle datasets with pagesize > totalCount', () => {
+  it('should handle datasets with pageSize > totalCount', () => {
     const dataset: DataSet = {
       headers: [
         { name: 'city' },
@@ -394,9 +460,11 @@ describe('dataset local uniques computation', () => {
         ['Paris', 2, true, { population: 9 }],
       ],
       paginationContext: {
-        pageno: 1,
+        shouldPaginate: false,
+        pageNumber: 1,
         totalCount: 10,
-        pagesize: 10,
+        pageSize: 10,
+        isLastPage: true,
       },
     };
     const extendedDataset = addLocalUniquesToDataset(dataset);
@@ -414,9 +482,11 @@ describe('dataset local uniques computation', () => {
         ['Paris', 2, true, { population: 9 }],
       ],
       paginationContext: {
-        pageno: 1,
+        shouldPaginate: false,
+        pageNumber: 1,
         totalCount: 10,
-        pagesize: 10,
+        pageSize: 10,
+        isLastPage: true,
       },
     });
     expect(extendedDataset).toEqual({
@@ -473,9 +543,11 @@ describe('dataset local uniques computation', () => {
         ['Paris', 2, true, { population: 9 }],
       ],
       paginationContext: {
-        pageno: 1,
+        shouldPaginate: false,
+        pageNumber: 1,
         totalCount: 10,
-        pagesize: 10,
+        pageSize: 10,
+        isLastPage: true,
       },
     });
   });
@@ -497,9 +569,11 @@ describe('dataset local uniques computation', () => {
         ['paris', 10, true, { population: 9 }],
       ],
       paginationContext: {
-        pageno: 1,
+        shouldPaginate: true,
+        pageNumber: 1,
         totalCount: 100,
-        pagesize: 50,
+        pageSize: 50,
+        isLastPage: false,
       },
     };
     const extendedDataset = addLocalUniquesToDataset(dataset);
@@ -519,9 +593,11 @@ describe('dataset local uniques computation', () => {
         ['paris', 10, true, { population: 9 }],
       ],
       paginationContext: {
-        pageno: 1,
+        shouldPaginate: true,
+        pageNumber: 1,
         totalCount: 100,
-        pagesize: 50,
+        pageSize: 50,
+        isLastPage: false,
       },
     });
     expect(extendedDataset).toEqual({
@@ -584,9 +660,11 @@ describe('dataset local uniques computation', () => {
         ['paris', 10, true, { population: 9 }],
       ],
       paginationContext: {
-        pageno: 1,
+        shouldPaginate: true,
+        pageNumber: 1,
         totalCount: 100,
-        pagesize: 50,
+        pageSize: 50,
+        isLastPage: false,
       },
     });
   });

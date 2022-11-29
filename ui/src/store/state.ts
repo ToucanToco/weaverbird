@@ -75,9 +75,11 @@ export function emptyState(): VQBState {
       headers: [],
       data: [],
       paginationContext: {
-        pagesize: 50,
-        pageno: 1,
+        shouldPaginate: false,
+        pageSize: 50,
+        pageNumber: 1,
         totalCount: 0,
+        isLastPage: true,
       },
     },
     rightColumnNames: [],
