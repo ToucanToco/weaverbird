@@ -1,5 +1,13 @@
 # Changelog (weaverbird npm package)
 
+## [0.97.0] - 2022-11-29
+
+### Changed
+
+- Expected pagination info has changed to include
+  the possibility of not knowing the total number of pages
+  (display only previous and next buttons)
+
 ## [0.96.0] - 2022-11-21
 
 ### Changed
@@ -8,7 +16,7 @@
   when labelling them
 - Several dependencies have been updated
 
-- ### Fixed
+### Fixed
 
 - Font awesome icons are now styles correctly
 
@@ -1387,6 +1395,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 - Initial version, showtime!
 
 
+[0.97.0]: https://github.com/ToucanToco/weaverbird/compare/v0.97.0...v0.96.0
 [0.96.0]: https://github.com/ToucanToco/weaverbird/compare/v0.96.0...v0.95.0
 [0.95.0]: https://github.com/ToucanToco/weaverbird/compare/v0.95.0...v0.94.2
 [0.94.2]: https://github.com/ToucanToco/weaverbird/compare/v0.94.2...v0.94.1
