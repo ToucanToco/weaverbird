@@ -229,15 +229,12 @@ class MongoService {
       const queryWithVariables = mongoTranslator.translate(subpipeline);
       query = exampleInterpolateFunc(queryWithVariables, VARIABLES);
       ({ isResponseOk, responseContent } = await this.executeQuery(query, domain, limit, offset));
-      responseContent = responseContent[0];
-      responseContent.total = responseContent.count;
     }
 
     if (isResponseOk) {
-      const { data: rset, types } = responseContent;
+      const { data: rset, types, pagination_info: paginationInfo } = responseContent;
       updateLastExecutedQuery(query);
       let dataset = mongoResultsToDataset(rset);
-      const paginationInfo = rset.pagination_info;
       const pageNumber = Math.floor(offset / limit) + 1;
       const pageSize = limit;
       dataset.paginationContext = getPaginationContext(
