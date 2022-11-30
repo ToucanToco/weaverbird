@@ -730,7 +730,7 @@ async function buildVueApp() {
             {
               name: 'top',
               groups: [],
-              rank_on: 'Transaction_date',
+              rankOn: 'Transaction_date',
               sort: 'asc',
               limit: 100,
             },
@@ -810,20 +810,20 @@ async function buildVueApp() {
           },
           {
             name: 'join',
-            right_pipeline: 'departements-regions-france',
+            rightPipeline: 'departements-regions-france',
             type: 'left',
             on: [['dep', 'code_departement']],
           },
           {
             name: 'text',
-            new_column: 'whitespace',
+            newColumn: 'whitespace',
             text: ' ',
           },
           {
             name: 'concatenate',
             columns: ['nom_departement', 'whitespace'],
             separator: ',',
-            new_column_name: 'departement_nom',
+            newColumnName: 'departement_nom',
           },
           {
             name: 'select',
@@ -838,7 +838,7 @@ async function buildVueApp() {
           {
             name: 'dissolve',
             groups: ['code_region'],
-            include_nulls: false,
+            includeNulls: false,
             aggregations: [
               {
                 columns: ['departement_nom'],
@@ -880,7 +880,7 @@ async function buildVueApp() {
             },
             {
               name: 'top',
-              rank_on: 'alcohol_degree',
+              rankOn: 'alcohol_degree',
               sort: 'desc',
               limit: 20,
             },
