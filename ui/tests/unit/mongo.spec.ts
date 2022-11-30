@@ -2269,7 +2269,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
       {
         name: 'duplicate',
         column: 'foo',
-        newColumn_name: 'bar',
+        newColumnName: 'bar',
       },
     ];
     const querySteps = translator.translate(pipeline);
@@ -2312,7 +2312,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
             name: 'concatenate',
             columns: ['foo'],
             separator: ' - ',
-            newColumn_name: 'concat',
+            newColumnName: 'concat',
           },
         ];
         const querySteps = translator.translate(pipeline);
@@ -2328,7 +2328,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
             name: 'concatenate',
             columns: ['foo', 'bar', 'again'],
             separator: ' - ',
-            newColumn_name: 'concat',
+            newColumnName: 'concat',
           },
         ];
         const querySteps = translator.translate(pipeline);
@@ -2344,7 +2344,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
             name: 'concatenate',
             columns: ['foo'],
             separator: ' - ',
-            newColumn_name: 'concat',
+            newColumnName: 'concat',
           },
         ];
         const querySteps = translator.translate(pipeline);
@@ -2360,7 +2360,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
             name: 'concatenate',
             columns: ['foo', 'bar', 'again'],
             separator: ' - ',
-            newColumn_name: 'concat',
+            newColumnName: 'concat',
           },
         ];
         const querySteps = translator.translate(pipeline);
@@ -2890,7 +2890,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
     }
   });
 
-  it('converts old-fashioned dateextract steps without newColumn_name', () => {
+  it('converts old-fashioned dateextract steps without newColumnName', () => {
     // retrocompatibility test
     const pipeline: Pipeline = [
       {
@@ -2912,14 +2912,14 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
     ]);
   });
 
-  it('converts old-fashioned dateextract steps with newColumn_name', () => {
+  it('converts old-fashioned dateextract steps with newColumnName', () => {
     // retrocompatibility test
     const pipeline: Pipeline = [
       {
         name: 'dateextract',
         operation: 'year',
         column: 'foo',
-        newColumn_name: 'bar',
+        newColumnName: 'bar',
         dateInfo: [],
         newColumns: [],
       },

@@ -218,7 +218,7 @@ export const transformDateExtractFactory = (advancedDateExtractMap = ADVANCED_DA
     // For retrocompatibility
     if (step.operation) {
       dateInfo = step.operation ? [step.operation] : step.dateInfo;
-      newColumns = [`${step.newColumn_name ?? step.column + '_' + step.operation}`];
+      newColumns = [`${step.newColumnName ?? step.column + '_' + step.operation}`];
     } else {
       dateInfo = [...step.dateInfo];
       newColumns = [...step.newColumns];

@@ -19,7 +19,7 @@ const schema = {
         placeholder: 'Enter a column',
       },
     },
-    newColumn_name: {
+    newColumnName: {
       type: 'string',
       minLength: 1,
       title: 'New column name for duplicated column',
@@ -29,10 +29,10 @@ const schema = {
       },
     },
   },
-  required: ['name', 'column', 'newColumn_name'],
+  required: ['name', 'column', 'newColumnName'],
   additionalProperties: false,
 };
 
 export default function buildSchema(form: StepFormType) {
-  return addNotInColumnNamesConstraint(schema, 'newColumn_name', form.columnNames);
+  return addNotInColumnNamesConstraint(schema, 'newColumnName', form.columnNames);
 }

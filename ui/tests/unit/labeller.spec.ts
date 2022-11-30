@@ -96,7 +96,7 @@ describe('Labeller', () => {
       name: 'concatenate',
       columns: ['Foo', 'Bar'],
       separator: '',
-      newColumn_name: 'whatever',
+      newColumnName: 'whatever',
     };
     expect(hrl(step)).toEqual('Concatenate columns "Foo", "Bar"');
   });
@@ -148,7 +148,7 @@ describe('Labeller', () => {
     const step: S.DuplicateColumnStep = {
       name: 'duplicate',
       column: 'column1',
-      newColumn_name: 'column2',
+      newColumnName: 'column2',
     };
     expect(hrl(step)).toEqual('Duplicate "column1" in "column2"');
     const camelCaseStep = {

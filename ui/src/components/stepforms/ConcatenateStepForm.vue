@@ -30,10 +30,10 @@
     />
     <InputTextWidget
       class="newColumnName"
-      v-model="editedStep.newColumn_name"
+      v-model="editedStep.newColumnName"
       name="New column name:"
       placeholder="Enter a columnn name"
-      data-path=".newColumn_name"
+      data-path=".newColumnName"
       :errors="errors"
     />
     <StepFormButtonbar />
@@ -70,7 +70,7 @@ export default class ConcatenateStepForm extends BaseStepForm<ConcatenateStep> {
 
   @Prop({
     type: Object,
-    default: () => ({ name: 'concatenate', columns: [''], separator: '', newColumn_name: '' }),
+    default: () => ({ name: 'concatenate', columns: [''], separator: '', newColumnName: '' }),
   })
   declare initialStepValue: ConcatenateStep;
 
@@ -84,7 +84,7 @@ export default class ConcatenateStepForm extends BaseStepForm<ConcatenateStep> {
         name: 'concatenate' as 'concatenate',
         columns: [this.selectedColumns[0]],
         separator: '',
-        newColumn_name: '',
+        newColumnName: '',
       };
     } else {
       // Otherwise, fallback on the default initial value

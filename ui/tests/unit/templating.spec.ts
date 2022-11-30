@@ -149,7 +149,7 @@ describe('Pipeline interpolator', () => {
               name: 'concatenate',
               columns: ['<%= foo %>', '<%= egg %>'],
               separator: '<%= foo %>',
-              newColumn_name: '<%= foo %>',
+              newColumnName: '<%= foo %>',
             },
           ],
         ],
@@ -179,7 +179,7 @@ describe('Pipeline interpolator', () => {
               name: 'concatenate',
               columns: ['bar', 'spam'],
               separator: '<%= foo %>', // NB: separator and new column are not templated in concatenate
-              newColumn_name: '<%= foo %>',
+              newColumnName: '<%= foo %>',
             },
           ],
         ],
@@ -227,7 +227,7 @@ describe('Pipeline interpolator', () => {
         name: 'concatenate',
         columns: ['<%= foo %>', '<%= egg %>'],
         separator: '<%= foo %>',
-        newColumn_name: '<%= foo %>',
+        newColumnName: '<%= foo %>',
       },
     ];
     expect(translate(pipeline)).toEqual([
@@ -235,7 +235,7 @@ describe('Pipeline interpolator', () => {
         name: 'concatenate',
         columns: ['bar', 'spam'],
         separator: '<%= foo %>',
-        newColumn_name: '<%= foo %>',
+        newColumnName: '<%= foo %>',
       },
     ]);
   });
@@ -366,7 +366,7 @@ describe('Pipeline interpolator', () => {
       {
         name: 'duplicate',
         column: '<%= foo %>',
-        newColumn_name: '<%= bar %>',
+        newColumnName: '<%= bar %>',
       },
     ];
     expect(translate(pipeline)).toEqual(pipeline);
@@ -982,7 +982,7 @@ describe('Pipeline interpolator', () => {
             name: 'concatenate',
             columns: ['<%= foo %>', '<%= egg %>'],
             separator: '<%= foo %>',
-            newColumn_name: '<%= foo %>',
+            newColumnName: '<%= foo %>',
           },
         ],
         type: 'left',
@@ -1001,7 +1001,7 @@ describe('Pipeline interpolator', () => {
             name: 'concatenate',
             columns: ['bar', 'spam'],
             separator: '<%= foo %>', // NB: separator and new column are not templated in concatenate
-            newColumn_name: '<%= foo %>',
+            newColumnName: '<%= foo %>',
           },
         ],
         type: 'left',

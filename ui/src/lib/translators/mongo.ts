@@ -1896,7 +1896,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
     return { $match: { domain: step.domain } };
   },
   duplicate: (step: Readonly<S.DuplicateColumnStep>) => ({
-    $addFields: { [step.newColumn_name]: $$(step.column) },
+    $addFields: { [step.newColumnName]: $$(step.column) },
   }),
   duration: (step: Readonly<S.ComputeDurationStep>) => ({
     $addFields: {
@@ -2019,7 +2019,7 @@ export class Mongo36Translator extends BaseTranslator {
     for (const colname of step.columns.slice(1)) {
       concatArr.push(step.separator, this.convertToType($$(colname), 'string'));
     }
-    return { $addFields: { [step.newColumn_name]: { $concat: concatArr } } };
+    return { $addFields: { [step.newColumnName]: { $concat: concatArr } } };
   }
 
   formula(step: Readonly<S.FormulaStep>): MongoStep {

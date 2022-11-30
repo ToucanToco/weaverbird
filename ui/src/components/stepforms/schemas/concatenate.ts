@@ -29,7 +29,7 @@ const schema = {
         placeholder: 'Enter a string of any length',
       },
     },
-    newColumn_name: {
+    newColumnName: {
       type: 'string',
       minLength: 1,
       title: 'New column name',
@@ -39,10 +39,10 @@ const schema = {
       },
     },
   },
-  required: ['name', 'columns', 'separator', 'newColumn_name'],
+  required: ['name', 'columns', 'separator', 'newColumnName'],
   additionalProperties: false,
 };
 
 export default function buildSchema(form: StepFormType) {
-  return addNotInColumnNamesConstraint(schema, 'newColumn_name', form.columnNames);
+  return addNotInColumnNamesConstraint(schema, 'newColumnName', form.columnNames);
 }

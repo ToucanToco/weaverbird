@@ -108,11 +108,11 @@ export default class DateExtractStepForm extends BaseStepForm<DateExtractStep> {
     dateInfo: this.initialStepValue.operation
       ? [this.initialStepValue.operation]
       : this.initialStepValue.dateInfo,
-    newColumns: this.initialStepValue.newColumn_name
-      ? [this.initialStepValue.newColumn_name]
+    newColumns: this.initialStepValue.newColumnName
+      ? [this.initialStepValue.newColumnName]
       : this.initialStepValue.newColumns,
     operation: undefined,
-    newColumn_name: undefined,
+    newColumnName: undefined,
   };
 
   get currentDateInfo(): DateInfoOption[] {
