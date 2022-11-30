@@ -7,7 +7,7 @@ export default {
       type: 'string',
       enum: ['replace'],
     },
-    search_column: {
+    searchColumn: {
       type: 'string',
       items: {
         type: 'string',
@@ -19,7 +19,7 @@ export default {
         placeholder: 'Enter a column',
       },
     },
-    to_replace: {
+    toReplace: {
       type: 'array',
       items: {
         type: 'array',
@@ -35,6 +35,6 @@ export default {
       description: 'Values to replace',
     },
   },
-  required: ['name', 'search_column', 'to_replace'],
+  required: ['name', 'searchColumn', 'toReplace'],
   additionalProperties: false,
 };

@@ -25,22 +25,22 @@ describe('Replace Step Form', () => {
       },
     }),
     props: {
-      initialStepValue: { name: 'replace', search_column: 'foo', to_replace: [['hello', 'hi']] },
+      initialStepValue: { name: 'replace', searchColumn: 'foo', toReplace: [['hello', 'hi']] },
     },
   });
 
   runner.testCancel();
   runner.testResetSelectedIndex();
 
-  it('should pass down "search_column" to ColumnPicker', async () => {
+  it('should pass down "searchColumn" to ColumnPicker', async () => {
     const wrapper = runner.shallowMount(
       {},
       {
         data: {
           editedStep: {
             name: 'replace',
-            search_column: 'test',
-            to_replace: [['foo', 'bar']],
+            searchColumn: 'test',
+            toReplace: [['foo', 'bar']],
           },
         },
       },
@@ -49,15 +49,15 @@ describe('Replace Step Form', () => {
     expect(wrapper.find('columnpicker-stub').attributes().value).toEqual('test');
   });
 
-  it('should pass down "to_replace" to ListWidget', async () => {
+  it('should pass down "toReplace" to ListWidget', async () => {
     const wrapper = runner.shallowMount(
       {},
       {
         data: {
           editedStep: {
             name: 'replace',
-            search_column: 'test',
-            to_replace: [['foo', 'bar']],
+            searchColumn: 'test',
+            toReplace: [['foo', 'bar']],
           },
         },
       },
@@ -66,15 +66,15 @@ describe('Replace Step Form', () => {
     expect(wrapper.find('listwidget-stub').props().value).toEqual([['foo', 'bar']]);
   });
 
-  it('should pass down the default "to_replace" to ListWidget', () => {
+  it('should pass down the default "toReplace" to ListWidget', () => {
     const wrapper = runner.shallowMount(
       {},
       {
         data: {
           editedStep: {
             name: 'replace',
-            search_column: 'test',
-            to_replace: [],
+            searchColumn: 'test',
+            toReplace: [],
           },
         },
       },
@@ -93,15 +93,15 @@ describe('Replace Step Form', () => {
       data: {
         editedStep: {
           name: 'replace',
-          search_column: 'columnA',
-          to_replace: [['0', '42']],
+          searchColumn: 'columnA',
+          toReplace: [['0', '42']],
         },
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).toBeNull();
     expect(wrapper.emitted()).toEqual({
-      formSaved: [[{ name: 'replace', search_column: 'columnA', to_replace: [[0, 42]] }]],
+      formSaved: [[{ name: 'replace', searchColumn: 'columnA', toReplace: [[0, 42]] }]],
     });
   });
 
@@ -116,15 +116,15 @@ describe('Replace Step Form', () => {
       data: {
         editedStep: {
           name: 'replace',
-          search_column: 'columnA',
-          to_replace: [['0', '42.3']],
+          searchColumn: 'columnA',
+          toReplace: [['0', '42.3']],
         },
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).toBeNull();
     expect(wrapper.emitted()).toEqual({
-      formSaved: [[{ name: 'replace', search_column: 'columnA', to_replace: [[0, 42.3]] }]],
+      formSaved: [[{ name: 'replace', searchColumn: 'columnA', toReplace: [[0, 42.3]] }]],
     });
   });
 
@@ -139,15 +139,15 @@ describe('Replace Step Form', () => {
       data: {
         editedStep: {
           name: 'replace',
-          search_column: 'columnA',
-          to_replace: [['false', 'true']],
+          searchColumn: 'columnA',
+          toReplace: [['false', 'true']],
         },
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).toBeNull();
     expect(wrapper.emitted()).toEqual({
-      formSaved: [[{ name: 'replace', search_column: 'columnA', to_replace: [[false, true]] }]],
+      formSaved: [[{ name: 'replace', searchColumn: 'columnA', toReplace: [[false, true]] }]],
     });
   });
 });

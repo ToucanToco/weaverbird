@@ -30,8 +30,8 @@ describe('Substring Step Form', () => {
         editedStep: {
           name: 'substring',
           column: 'foo',
-          start_index: 1,
-          end_index: 3,
+          startIndex: 1,
+          endIndex: 3,
           newColumnName: 'bar',
         },
       },
@@ -45,8 +45,8 @@ describe('Substring Step Form', () => {
       initialStepValue: {
         name: 'substring',
         column: 'foo',
-        start_index: 1,
-        end_index: 3,
+        startIndex: 1,
+        endIndex: 3,
       },
     },
   });
@@ -57,7 +57,7 @@ describe('Substring Step Form', () => {
   it('should pass down the properties to the input components', async () => {
     const wrapper = runner.shallowMount(undefined, {
       data: {
-        editedStep: { name: 'Substring', column: 'foo', start_index: 1, end_index: 3 },
+        editedStep: { name: 'Substring', column: 'foo', startIndex: 1, endIndex: 3 },
       },
     });
     await wrapper.vm.$nextTick();

@@ -73,8 +73,8 @@ export default class UnpivotStepForm extends BaseStepForm<UnpivotStep> {
       name: 'unpivot',
       keep: [],
       unpivot: [],
-      unpivot_column_name: '',
-      value_column_name: '',
+      unpivotColumnName: '',
+      valueColumn_name: '',
       dropna: true,
     }),
   })
@@ -85,8 +85,8 @@ export default class UnpivotStepForm extends BaseStepForm<UnpivotStep> {
   readonly checkboxLabel: string = 'Drop null values';
 
   submit() {
-    this.editedStep.unpivot_column_name = generateNewColumnName('variable', this.columnNames);
-    this.editedStep.value_column_name = generateNewColumnName('value', this.columnNames);
+    this.editedStep.unpivotColumnName = generateNewColumnName('variable', this.columnNames);
+    this.editedStep.valueColumn_name = generateNewColumnName('value', this.columnNames);
     this.$$super.submit();
   }
 }

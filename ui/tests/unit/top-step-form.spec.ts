@@ -22,7 +22,7 @@ describe('Top Step Form', () => {
       testlabel: 'submitted data is not valid',
       errors: [
         { keyword: 'type', dataPath: '.limit' },
-        { keyword: 'minLength', dataPath: '.rank_on' },
+        { keyword: 'minLength', dataPath: '.rankOn' },
       ],
     },
   ]);
@@ -30,7 +30,7 @@ describe('Top Step Form', () => {
   runner.testValidate({
     testlabel: 'submitted data is valid',
     props: {
-      initialStepValue: { name: 'top', rank_on: 'foo', sort: 'asc', limit: 10, groups: ['test'] },
+      initialStepValue: { name: 'top', rankOn: 'foo', sort: 'asc', limit: 10, groups: ['test'] },
     },
   });
 
@@ -40,7 +40,7 @@ describe('Top Step Form', () => {
   it('should pass down default properties to the input components', async () => {
     const wrapper = runner.shallowMount(undefined, {
       data: {
-        editedStep: { name: 'top', rank_on: 'foo', limit: 3 },
+        editedStep: { name: 'top', rankOn: 'foo', limit: 3 },
       },
     });
     await wrapper.vm.$nextTick();
@@ -52,7 +52,7 @@ describe('Top Step Form', () => {
   it('should pass down the properties to the input components', async () => {
     const wrapper = runner.shallowMount(undefined, {
       data: {
-        editedStep: { name: 'top', rank_on: 'foo', sort: 'asc', limit: 10, groups: ['test'] },
+        editedStep: { name: 'top', rankOn: 'foo', sort: 'asc', limit: 10, groups: ['test'] },
       },
     });
     await wrapper.vm.$nextTick();
@@ -77,7 +77,7 @@ describe('Top Step Form', () => {
         propsData: {
           initialStepValue: {
             name: 'top',
-            rank_on: 'foo',
+            rankOn: 'foo',
             sort: 'asc',
             limit: '<%= leemeat %>',
             groups: ['test'],
@@ -90,7 +90,7 @@ describe('Top Step Form', () => {
     expect(wrapper.vm.$data.errors).toBeNull();
     expect(wrapper.emitted()).toEqual({
       formSaved: [
-        [{ name: 'top', rank_on: 'foo', sort: 'asc', limit: '<%= leemeat %>', groups: ['test'] }],
+        [{ name: 'top', rankOn: 'foo', sort: 'asc', limit: '<%= leemeat %>', groups: ['test'] }],
       ],
     });
   });

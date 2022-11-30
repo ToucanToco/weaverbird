@@ -128,7 +128,7 @@ describe('Data Types Menu', () => {
       await localVue.nextTick();
       expect(store.getters[VQBnamespace('pipeline')]).toEqual([
         { name: 'domain', domain: 'test' },
-        { name: 'convert', columns: ['columnA'], data_type: 'integer' },
+        { name: 'convert', columns: ['columnA'], dataType: 'integer' },
         { name: 'delete', columns: ['test'] },
       ]);
       expect(store.state.vqb.selectedStepIndex).toEqual(1);

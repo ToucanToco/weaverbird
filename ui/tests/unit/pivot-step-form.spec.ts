@@ -21,9 +21,9 @@ describe('Pivot Step Form', () => {
       initialStepValue: {
         name: 'pivot',
         index: ['columnA', 'columnB'],
-        column_to_pivot: 'foo',
-        value_column: 'bar',
-        agg_function: 'sum',
+        columnToPivot: 'foo',
+        valueColumn: 'bar',
+        aggFunction: 'sum',
       },
     },
   });
@@ -31,12 +31,12 @@ describe('Pivot Step Form', () => {
     {
       testlabel: 'submitted data is not valid',
       errors: [
-        { keyword: 'minLength', dataPath: '.column_to_pivot' },
-        { keyword: 'minLength', dataPath: '.value_column' },
+        { keyword: 'minLength', dataPath: '.columnToPivot' },
+        { keyword: 'minLength', dataPath: '.valueColumn' },
       ],
     },
     {
-      testlabel: 'index and column_to_pivot column names overlap',
+      testlabel: 'index and columnToPivot column names overlap',
       store: setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -47,20 +47,20 @@ describe('Pivot Step Form', () => {
         editedStep: {
           name: 'pivot',
           index: ['columnA', 'columnC'],
-          column_to_pivot: 'columnA',
-          value_column: 'columnB',
-          agg_function: 'sum',
+          columnToPivot: 'columnA',
+          valueColumn: 'columnB',
+          aggFunction: 'sum',
         },
       },
       errors: [
         {
           keyword: 'columnNameConflict',
-          dataPath: '.column_to_pivot',
+          dataPath: '.columnToPivot',
         },
       ],
     },
     {
-      testlabel: 'index and value_column column names overlap',
+      testlabel: 'index and valueColumn column names overlap',
       store: setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -71,20 +71,20 @@ describe('Pivot Step Form', () => {
         editedStep: {
           name: 'pivot',
           index: ['columnA', 'columnC'],
-          column_to_pivot: 'columnB',
-          value_column: 'columnA',
-          agg_function: 'sum',
+          columnToPivot: 'columnB',
+          valueColumn: 'columnA',
+          aggFunction: 'sum',
         },
       },
       errors: [
         {
           keyword: 'columnNameConflict',
-          dataPath: '.value_column',
+          dataPath: '.valueColumn',
         },
       ],
     },
     {
-      testlabel: 'column_to_pivot and value_column are equal',
+      testlabel: 'columnToPivot and valueColumn are equal',
       store: setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -95,15 +95,15 @@ describe('Pivot Step Form', () => {
         editedStep: {
           name: 'pivot',
           index: ['columnA', 'columnC'],
-          column_to_pivot: 'columnB',
-          value_column: 'columnB',
-          agg_function: 'sum',
+          columnToPivot: 'columnB',
+          valueColumn: 'columnB',
+          aggFunction: 'sum',
         },
       },
       errors: [
         {
           keyword: 'columnNameConflict',
-          dataPath: '.column_to_pivot',
+          dataPath: '.columnToPivot',
         },
       ],
     },
@@ -115,9 +115,9 @@ describe('Pivot Step Form', () => {
         editedStep: {
           name: 'pivot',
           index: ['label'],
-          column_to_pivot: 'country',
-          value_column: 'value',
-          agg_function: 'sum',
+          columnToPivot: 'country',
+          valueColumn: 'value',
+          aggFunction: 'sum',
         },
       },
     });
@@ -166,9 +166,9 @@ describe('Pivot Step Form', () => {
       },
     };
     const wrapper = runner.shallowMount(initialState);
-    expect(wrapper.vm.$data.editedStep.column_to_pivot).toEqual('');
+    expect(wrapper.vm.$data.editedStep.columnToPivot).toEqual('');
     wrapper.vm.$store.commit(VQBnamespace('toggleColumnSelection'), { column: 'columnB' });
     await wrapper.vm.$nextTick();
-    expect(wrapper.vm.$data.editedStep.column_to_pivot).toEqual('columnB');
+    expect(wrapper.vm.$data.editedStep.columnToPivot).toEqual('columnB');
   });
 });

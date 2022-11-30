@@ -21,7 +21,7 @@ describe('Pipeline.vue', () => {
   it('renders steps', () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'GoT' },
-      { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+      { name: 'replace', searchColumn: 'characters', toReplace: [['Snow', 'Targaryen']] },
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
     const store = setupMockStore(buildStateWithOnePipeline(pipeline));

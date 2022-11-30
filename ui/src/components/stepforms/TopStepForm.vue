@@ -17,11 +17,11 @@
     />
     <ColumnPicker
       class="rankOnInput"
-      v-model="editedStep.rank_on"
+      v-model="editedStep.rankOn"
       name="Sort column..."
       placeholder="Enter a column"
       :syncWithSelectedColumn="false"
-      data-path=".rank_on"
+      data-path=".rankOn"
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
@@ -80,20 +80,20 @@ export default class TopStepForm extends BaseStepForm<TopStep> {
 
   @VQBModule.State variableDelimiters?: VariableDelimiters;
 
-  @Prop({ type: Object, default: () => ({ name: 'top', rank_on: '', sort: 'desc' }) })
+  @Prop({ type: Object, default: () => ({ name: 'top', rankOn: '', sort: 'desc' }) })
   declare initialStepValue: TopStep;
 
   readonly title: string = 'Top N rows';
 
   get stepSelectedColumn() {
-    return this.editedStep.rank_on;
+    return this.editedStep.rankOn;
   }
 
   set stepSelectedColumn(colname: string | null) {
     if (colname === null) {
-      throw new Error('should not try to set null on top "rank_on" field');
+      throw new Error('should not try to set null on top "rankOn" field');
     }
-    this.editedStep.rank_on = colname;
+    this.editedStep.rankOn = colname;
   }
 }
 </script>

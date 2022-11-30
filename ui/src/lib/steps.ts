@@ -83,7 +83,7 @@ export function isPipelineStep(step: any): step is PipelineStep {
 export type AbsoluteValueStep = {
   name: 'absolutevalue';
   column: string;
-  new_column: string;
+  newColumn: string;
 };
 
 export type AddMissingDatesStep = {
@@ -96,7 +96,7 @@ export type AddMissingDatesStep = {
 export type AddTextColumnStep = {
   name: 'text';
   text: string;
-  new_column: string;
+  newColumn: string;
 };
 
 export type AddTotalRowsStep = {
@@ -169,13 +169,13 @@ export type ConcatenateStep = {
   name: 'concatenate';
   columns: string[];
   separator: string;
-  new_column_name: string;
+  newColumnName: string;
 };
 
 export type ConvertStep = {
   name: 'convert';
   columns: string[];
-  data_type: 'boolean' | 'date' | 'float' | 'integer' | 'text';
+  dataType: 'boolean' | 'date' | 'float' | 'integer' | 'text';
 };
 
 export type CumSumStep = {
@@ -209,7 +209,7 @@ export type DateExtractStep = {
   column: string;
   newColumns: string[];
   operation?: BasicDatePart; // Supported for retrocompatibility only
-  new_column_name?: string; // Supported for retrocompatibility only
+  newColumnName?: string; // Supported for retrocompatibility only
 };
 
 export type DeleteStep = {
@@ -252,7 +252,7 @@ export type DomainStep = {
 export type DuplicateColumnStep = {
   name: 'duplicate';
   column: string;
-  new_column_name: string;
+  newColumnName: string;
 };
 
 export type EvolutionStep = {
@@ -321,7 +321,7 @@ export type Formula = string | number;
 
 export type FormulaStep = {
   name: 'formula';
-  new_column: string;
+  newColumn: string;
   formula: Formula;
 };
 
@@ -348,7 +348,7 @@ export type IfThenElseStep = {
 
 export type JoinStep = {
   name: 'join';
-  right_pipeline: Reference;
+  rightPipeline: Reference;
   type: 'left' | 'inner' | 'left outer';
   on: string[][];
 };
@@ -372,9 +372,9 @@ export type PercentageStep = {
 export type PivotStep = {
   name: 'pivot';
   index: string[];
-  column_to_pivot: string;
-  value_column: string;
-  agg_function: 'sum' | 'avg' | 'count' | 'min' | 'max';
+  columnToPivot: string;
+  valueColumn: string;
+  aggFunction: 'sum' | 'avg' | 'count' | 'min' | 'max';
 };
 
 export type RankStep = {
@@ -400,8 +400,8 @@ export type RenameStep = {
 
 export type ReplaceStep = {
   name: 'replace';
-  search_column: string;
-  to_replace: any[][];
+  searchColumn: string;
+  toReplace: any[][];
 };
 
 export type ReplaceTextStep = {
@@ -451,14 +451,14 @@ export type SplitStep = {
   name: 'split';
   column: string;
   delimiter: string;
-  number_cols_to_keep: number;
+  numberColsToKeep: number;
 };
 
 export type SubstringStep = {
   name: 'substring';
   column: string;
-  start_index: number;
-  end_index: number;
+  startIndex: number;
+  endIndex: number;
   newColumnName?: string;
 };
 
@@ -476,7 +476,7 @@ export type ToLowerStep = {
 export type TopStep = {
   name: 'top';
   groups?: string[];
-  rank_on: string;
+  rankOn: string;
   sort: 'asc' | 'desc';
   limit: Templatable<number>;
 };
@@ -500,8 +500,8 @@ export type UnpivotStep = {
   name: 'unpivot';
   keep: string[];
   unpivot: string[];
-  unpivot_column_name: string;
-  value_column_name: string;
+  unpivotColumnName: string;
+  valueColumnName: string;
   dropna: boolean;
 };
 

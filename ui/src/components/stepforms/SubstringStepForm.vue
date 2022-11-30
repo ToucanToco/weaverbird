@@ -16,20 +16,20 @@
     />
     <InputTextWidget
       class="startIndex"
-      v-model.number="editedStep.start_index"
+      v-model.number="editedStep.startIndex"
       type="number"
       name="Substring starts at character position:"
       placeholder="Enter an integer"
-      data-path=".start_index"
+      data-path=".startIndex"
       :errors="errors"
     />
     <InputTextWidget
       class="endIndex"
-      v-model.number="editedStep.end_index"
+      v-model.number="editedStep.endIndex"
       type="number"
       name="And ends at character position:"
       placeholder="Enter an integer"
-      data-path=".end_index"
+      data-path=".endIndex"
       :errors="errors"
     />
     <InputTextWidget
@@ -66,7 +66,7 @@ export default class SubstringStepForm extends BaseStepForm<SubstringStep> {
 
   @Prop({
     type: Object,
-    default: () => ({ name: 'substring', column: '', start_index: 1, end_index: -1 }),
+    default: () => ({ name: 'substring', column: '', startIndex: 1, endIndex: -1 }),
   })
   declare initialStepValue: SubstringStep;
 

@@ -7,7 +7,7 @@ export default {
       type: 'string',
       enum: ['top'],
     },
-    rank_on: {
+    rankOn: {
       type: 'string',
       minLength: 1,
       title: 'Sort column...',
@@ -47,6 +47,6 @@ export default {
       },
     },
   },
-  required: ['rank_on', 'sort', 'limit'],
+  required: ['rankOn', 'sort', 'limit'],
   additionalProperties: false,
 };

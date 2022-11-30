@@ -25,7 +25,7 @@ describe('Concatenate Step Form', () => {
       }),
       errors: [
         { dataPath: '.columns.0', keyword: 'minLength' },
-        { dataPath: '.new_column_name', keyword: 'minLength' },
+        { dataPath: '.newColumn_name', keyword: 'minLength' },
       ],
     },
   ]);
@@ -46,7 +46,7 @@ describe('Concatenate Step Form', () => {
         name: 'concatenate',
         columns: ['foo', 'bar'],
         separator: '-',
-        new_column_name: 'new',
+        newColumn_name: 'new',
       },
     },
   });
@@ -76,7 +76,7 @@ describe('Concatenate Step Form', () => {
               name: 'concatenate',
               columns: ['foo', 'bar'],
               separator: '-',
-              new_column_name: 'new',
+              newColumn_name: 'new',
             },
           },
         },
@@ -97,7 +97,7 @@ describe('Concatenate Step Form', () => {
           name: 'concatenate',
           columns: ['foo', 'bar'],
           separator: '-',
-          new_column_name: 'baz',
+          newColumn_name: 'baz',
         },
         isStepCreation: false,
       },

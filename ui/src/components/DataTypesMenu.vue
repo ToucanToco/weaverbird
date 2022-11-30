@@ -101,7 +101,7 @@ export default class DataTypesMenu extends Vue {
     const convertStep: ConvertStep = {
       name: 'convert',
       columns: [this.columnName],
-      data_type: dataType,
+      dataType: dataType,
     };
     // If a step edition form is already open, close it so that the left panel
     // displays the pipeline with the new delete step inserted

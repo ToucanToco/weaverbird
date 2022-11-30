@@ -316,7 +316,7 @@ function absoluteValue(step: Readonly<S.AbsoluteValueStep>): MongoStep[] {
   return [
     {
       $addFields: {
-        [step.new_column]: {
+        [step.newColumn]: {
           $abs: $$(step.column),
         },
       },
@@ -1133,8 +1133,8 @@ function transformPivot(step: Readonly<S.PivotStep>): MongoStep[] {
      */
     {
       $group: {
-        _id: { ...columnMap(step.index), [step.column_to_pivot]: $$(step.column_to_pivot) },
-        [step.value_column]: { [$$(step.agg_function)]: $$(step.value_column) },
+        _id: { ...columnMap(step.index), [step.columnToPivot]: $$(step.columnToPivot) },
+        [step.valueColumn]: { [$$(step.aggFunction)]: $$(step.valueColumn) },
       },
     },
     /**
@@ -1146,14 +1146,14 @@ function transformPivot(step: Readonly<S.PivotStep>): MongoStep[] {
         _id: groupCols2,
         _vqbAppArray: {
           $addToSet: {
-            [step.column_to_pivot]: `$_id.${step.column_to_pivot}`,
-            [step.value_column]: $$(step.value_column),
+            [step.columnToPivot]: `$_id.${step.columnToPivot}`,
+            [step.valueColumn]: $$(step.valueColumn),
           },
         },
       },
     },
     /**
-     * Then we project a tmp key to get an object from the array of couples [column_to_pivot, corresponding_value]
+     * Then we project a tmp key to get an object from the array of couples [columnToPivot, corresponding_value]
      * including a column for the column to pivot and a column for the corresponding value
      */
     {
@@ -1161,10 +1161,7 @@ function transformPivot(step: Readonly<S.PivotStep>): MongoStep[] {
         _vqbAppTmpObj: {
           $arrayToObject: {
             $zip: {
-              inputs: [
-                `$_vqbAppArray.${step.column_to_pivot}`,
-                `$_vqbAppArray.${step.value_column}`,
-              ],
+              inputs: [`$_vqbAppArray.${step.columnToPivot}`, `$_vqbAppArray.${step.valueColumn}`],
             },
           },
         },
@@ -1328,14 +1325,14 @@ function transformRename(step: Readonly<S.RenameStep>): MongoStep[] {
 
 /** transform an 'replace' step into corresponding mongo steps */
 function transformReplace(step: Readonly<S.ReplaceStep>): MongoStep {
-  const branches: MongoStep[] = step.to_replace.map(([oldval, newval]) => ({
-    case: { $eq: [$$(step.search_column), oldval] },
+  const branches: MongoStep[] = step.toReplace.map(([oldval, newval]) => ({
+    case: { $eq: [$$(step.searchColumn), oldval] },
     then: newval,
   }));
   return {
     $addFields: {
-      [step.search_column]: {
-        $switch: { branches: branches, default: $$(step.search_column) },
+      [step.searchColumn]: {
+        $switch: { branches: branches, default: $$(step.searchColumn) },
       },
     },
   };
@@ -1436,7 +1433,7 @@ function transformSort(step: Readonly<S.SortStep>): MongoStep {
 /** transform a 'split' step into corresponding mongo steps */
 function transformSplit(step: Readonly<S.SplitStep>): MongoStep {
   const addFieldsStep: PropMap<object> = {};
-  for (let i = 1; i <= step.number_cols_to_keep; i++) {
+  for (let i = 1; i <= step.numberColsToKeep; i++) {
     addFieldsStep[`${step.column}_${i}`] = { $arrayElemAt: ['$_vqbTmp', i - 1] };
   }
   return [
@@ -1561,12 +1558,12 @@ function $add(...args: any[]) {
 /** transform a 'substring' step into corresponding mongo steps */
 function transformSubstring(step: Readonly<S.SubstringStep>): MongoStep {
   const posStartIndex: number | PropMap<any> =
-    step.start_index > 0
-      ? step.start_index - 1
-      : $add({ $strLenCP: $$(step.column) }, step.start_index);
+    step.startIndex > 0
+      ? step.startIndex - 1
+      : $add({ $strLenCP: $$(step.column) }, step.startIndex);
 
   const posEndIndex: number | PropMap<any> =
-    step.end_index > 0 ? step.end_index - 1 : $add({ $strLenCP: $$(step.column) }, step.end_index);
+    step.endIndex > 0 ? step.endIndex - 1 : $add({ $strLenCP: $$(step.column) }, step.endIndex);
 
   const lengthToKeep = {
     $add: [
@@ -1588,7 +1585,7 @@ function transformTop(step: Readonly<S.TopStep>): MongoStep[] {
   const groupCols = step.groups ? columnMap(step.groups) : null;
 
   return [
-    { $sort: { [step.rank_on]: sortOrder } },
+    { $sort: { [step.rankOn]: sortOrder } },
     { $group: { _id: groupCols, _vqbAppArray: { $push: '$$ROOT' } } },
     { $project: { _vqbAppTopElems: { $slice: ['$_vqbAppArray', step.limit] } } },
     { $unwind: '$_vqbAppTopElems' },
@@ -1715,14 +1712,14 @@ function transformUnpivot(step: Readonly<S.UnpivotStep>): MongoStep[] {
     {
       $project: {
         ...projectCols,
-        [step.unpivot_column_name]: '$_vqbToUnpivot.k',
-        [step.value_column_name]: '$_vqbToUnpivot.v',
+        [step.unpivotColumnName]: '$_vqbToUnpivot.k',
+        [step.valueColumn_name]: '$_vqbToUnpivot.v',
       },
     },
   ];
 
   if (step.dropna) {
-    mongoPipeline.push({ $match: { [step.value_column_name]: { $ne: null } } });
+    mongoPipeline.push({ $match: { [step.valueColumn_name]: { $ne: null } } });
   }
 
   return mongoPipeline;
@@ -1899,7 +1896,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
     return { $match: { domain: step.domain } };
   },
   duplicate: (step: Readonly<S.DuplicateColumnStep>) => ({
-    $addFields: { [step.new_column_name]: $$(step.column) },
+    $addFields: { [step.newColumn_name]: $$(step.column) },
   }),
   duration: (step: Readonly<S.ComputeDurationStep>) => ({
     $addFields: {
@@ -1933,7 +1930,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   statistics: transformStatistics,
   substring: transformSubstring,
   text: (step: Readonly<S.AddTextColumnStep>) => ({
-    $addFields: { [step.new_column]: { $literal: step.text } },
+    $addFields: { [step.newColumn]: { $literal: step.text } },
   }),
   todate: (step: Readonly<S.ToDateStep>) => ({
     $addFields: { [step.column]: { $dateFromString: { dateString: $$(step.column) } } },
@@ -2022,7 +2019,7 @@ export class Mongo36Translator extends BaseTranslator {
     for (const colname of step.columns.slice(1)) {
       concatArr.push(step.separator, this.convertToType($$(colname), 'string'));
     }
-    return { $addFields: { [step.new_column_name]: { $concat: concatArr } } };
+    return { $addFields: { [step.newColumn_name]: { $concat: concatArr } } };
   }
 
   formula(step: Readonly<S.FormulaStep>): MongoStep {
@@ -2046,7 +2043,7 @@ export class Mongo36Translator extends BaseTranslator {
 
     return {
       $addFields: {
-        [step.new_column]: newColumn,
+        [step.newColumn]: newColumn,
       },
     };
   }
@@ -2278,7 +2275,7 @@ export class Mongo36Translator extends BaseTranslator {
   join(step: Readonly<S.JoinStep>): MongoStep[] {
     const mongoPipeline: MongoStep[] = [];
 
-    const right = step.right_pipeline;
+    const right = step.rightPipeline;
     if (S.isReference(right)) {
       console.error('Unresolved reference:', right);
       throw new Error('References must be resolved before translating the pipeline');

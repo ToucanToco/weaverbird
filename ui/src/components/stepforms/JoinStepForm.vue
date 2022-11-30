@@ -13,7 +13,7 @@
       :options="options"
       @input="updateRightColumnNames(rightPipeline.label)"
       placeholder="Select a dataset"
-      data-path=".right_pipeline"
+      data-path=".rightPipeline"
       :errors="errors"
       track-by="trackBy"
       label="label"
@@ -81,7 +81,7 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
 
   @Prop({
     type: Object,
-    default: () => ({ name: 'join', right_pipeline: '', type: joinTypes[0], on: [['', '']] }),
+    default: () => ({ name: 'join', rightPipeline: '', type: joinTypes[0], on: [['', '']] }),
   })
   declare initialStepValue: JoinStep;
 
@@ -94,14 +94,14 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
 
   get rightPipeline(): DropdownOption {
     return {
-      label: this.editedStep.right_pipeline as string,
-      trackBy: this.editedStep.right_pipeline as string,
+      label: this.editedStep.rightPipeline as string,
+      trackBy: this.editedStep.rightPipeline as string,
     };
   }
 
   set rightPipeline(value: DropdownOption) {
     /* istanbul ignore next */
-    this.editedStep.right_pipeline = value.label;
+    this.editedStep.rightPipeline = value.label;
   }
 
   get on() {

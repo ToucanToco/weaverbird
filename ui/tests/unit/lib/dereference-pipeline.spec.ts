@@ -49,13 +49,13 @@ describe('dereferencePipelines', () => {
     it('should replace a domain into a pipeline', () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'tutu' },
-        { name: 'join', right_pipeline: 'jjg', type: 'left', on: [['t'], ['t']] },
+        { name: 'join', rightPipeline: 'jjg', type: 'left', on: [['t'], ['t']] },
       ];
       const dererefencedPipeline: Pipeline = [
         { name: 'domain', domain: 'tutu' },
         {
           name: 'join',
-          right_pipeline: [{ name: 'domain', domain: 'jjg' }],
+          rightPipeline: [{ name: 'domain', domain: 'jjg' }],
           type: 'left',
           on: [['t'], ['t']],
         },
@@ -67,14 +67,14 @@ describe('dereferencePipelines', () => {
       const pipelines: PipelinesScopeContext = { dataset1: [{ name: 'domain', domain: 'toto' }] };
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'tutu' },
-        { name: 'join', right_pipeline: 'dataset1', type: 'left', on: [['t'], ['t']] },
+        { name: 'join', rightPipeline: 'dataset1', type: 'left', on: [['t'], ['t']] },
       ];
 
       const dererefencedPipeline: Pipeline = [
         { name: 'domain', domain: 'tutu' },
         {
           name: 'join',
-          right_pipeline: pipelines['dataset1'],
+          rightPipeline: pipelines['dataset1'],
           type: 'left',
           on: [['t'], ['t']],
         },
@@ -172,7 +172,7 @@ describe('getPipelineNamesReferencedBy', () => {
       it("should add the referenced pipeline's name", () => {
         expect(
           getPipelineNamesReferencedBy(
-            [{ name: 'join', right_pipeline: 'dataset1', on: [['a', 'b']], type: 'left' }],
+            [{ name: 'join', rightPipeline: 'dataset1', on: [['a', 'b']], type: 'left' }],
             pipelinesScopeContext,
           ),
         ).toEqual(['dataset1', 'toto']);

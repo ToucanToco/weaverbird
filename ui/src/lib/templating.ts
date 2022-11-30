@@ -133,7 +133,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return {
       ...step,
       column: _interpolate(this.interpolateFunc, step.column, this.context),
-      new_column: _interpolate(this.interpolateFunc, step.new_column, this.context),
+      newColumn: _interpolate(this.interpolateFunc, step.newColumn, this.context),
     };
   }
 
@@ -335,13 +335,13 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
 
   join(step: Readonly<S.JoinStep>) {
     if (
-      S.isReferenceToOtherPipeline(step.right_pipeline) ||
-      S.isReferenceToExternalQuery(step.right_pipeline)
+      S.isReferenceToOtherPipeline(step.rightPipeline) ||
+      S.isReferenceToExternalQuery(step.rightPipeline)
     ) {
       // the pipeline is referenced in: `submit` function in `src/components/stepforms/StepForm.vue`
       return { ...step };
     } else {
-      return { ...step, right_pipeline: this.interpolate(step.right_pipeline) };
+      return { ...step, rightPipeline: this.interpolate(step.rightPipeline) };
     }
   }
 
@@ -370,8 +370,8 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return {
       ...step,
       index: step.index.map((col) => _interpolate(this.interpolateFunc, col, this.context)),
-      column_to_pivot: _interpolate(this.interpolateFunc, step.column_to_pivot, this.context),
-      value_column: _interpolate(this.interpolateFunc, step.value_column, this.context),
+      columnToPivot: _interpolate(this.interpolateFunc, step.columnToPivot, this.context),
+      valueColumn: _interpolate(this.interpolateFunc, step.valueColumn, this.context),
     };
   }
 
@@ -401,11 +401,11 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   replace(step: Readonly<S.ReplaceStep>) {
-    const toReplace = step.to_replace.map(([oldvalue, newvalue]) => [
+    const toReplace = step.toReplace.map(([oldvalue, newvalue]) => [
       _interpolate(this.interpolateFunc, oldvalue, this.context),
       _interpolate(this.interpolateFunc, newvalue, this.context),
     ]);
-    return { ...step, to_replace: toReplace };
+    return { ...step, toReplace: toReplace };
   }
 
   replacetext(step: Readonly<S.ReplaceTextStep>) {
@@ -477,7 +477,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return {
       ...step,
       text: _interpolate(this.interpolateFunc, step.text, this.context),
-      new_column: _interpolate(this.interpolateFunc, step.new_column, this.context),
+      newColumn: _interpolate(this.interpolateFunc, step.newColumn, this.context),
     };
   }
 
@@ -492,7 +492,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return {
       ...step,
       limit: Number(_interpolate(this.interpolateFunc, step.limit, this.context)),
-      rank_on: _interpolate(this.interpolateFunc, step.rank_on, this.context),
+      rankOn: _interpolate(this.interpolateFunc, step.rankOn, this.context),
       groups,
     };
   }

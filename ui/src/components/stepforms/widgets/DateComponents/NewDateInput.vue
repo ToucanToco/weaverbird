@@ -277,7 +277,6 @@ export default class NewDateInput extends Vue {
   }
 
   saveCustomVariable(): void {
-    console.log('SAVE CUSTOM VARIABLE');
     this.$emit('input', this.currentTabValue);
     if (isRelativeDate(this.currentTabValue)) {
       sendAnalytics({ name: 'Date input - Select relative date', value: this.currentTabValue });

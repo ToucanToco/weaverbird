@@ -17,7 +17,7 @@ describe('Formula Step Form', () => {
       testlabel: 'submitted data is not valid',
       errors: [
         { keyword: 'minLength', dataPath: '.formula' },
-        { keyword: 'minLength', dataPath: '.new_column' },
+        { keyword: 'minLength', dataPath: '.newColumn' },
       ],
     },
   ]);
@@ -26,7 +26,7 @@ describe('Formula Step Form', () => {
     {
       testlabel: 'submitted formula is not valid',
       props: {
-        initialStepValue: { name: 'formula', formula: '= 3', new_column: 'foo' },
+        initialStepValue: { name: 'formula', formula: '= 3', newColumn: 'foo' },
       },
       errors: [{ keyword: 'parsing', dataPath: '.formula' }],
     },
@@ -35,21 +35,21 @@ describe('Formula Step Form', () => {
   runner.testValidate({
     testlabel: 'submitted data is valid with string formula',
     props: {
-      initialStepValue: { name: 'formula', formula: 'ColumnA * 2', new_column: 'foo' },
+      initialStepValue: { name: 'formula', formula: 'ColumnA * 2', newColumn: 'foo' },
     },
   });
 
   runner.testValidate({
     testlabel: 'submitted data is valid with non string formula',
     props: {
-      initialStepValue: { name: 'formula', formula: 42, new_column: 'foo' },
+      initialStepValue: { name: 'formula', formula: 42, newColumn: 'foo' },
     },
   });
 
   runner.testValidate({
     testlabel: 'submitted formula contains variables',
     props: {
-      initialStepValue: { name: 'formula', formula: '<%= some_var %>', new_column: 'foo' },
+      initialStepValue: { name: 'formula', formula: '<%= some_var %>', newColumn: 'foo' },
     },
     store: setupMockStore({
       variableDelimiters: {
@@ -66,7 +66,7 @@ describe('Formula Step Form', () => {
     const wrapper = runner.shallowMount(
       {},
       {
-        data: { editedStep: { name: 'formula', formula: 'ColumnA * 2', new_column: 'foo' } },
+        data: { editedStep: { name: 'formula', formula: 'ColumnA * 2', newColumn: 'foo' } },
       },
     );
     await wrapper.vm.$nextTick();
@@ -75,7 +75,7 @@ describe('Formula Step Form', () => {
   });
 
   describe('Warning', () => {
-    it('should report a warning when new_column is an already existing column name', async () => {
+    it('should report a warning when newColumn is an already existing column name', async () => {
       const initialState = {
         dataset: {
           headers: [{ name: 'columnA' }],
@@ -83,7 +83,7 @@ describe('Formula Step Form', () => {
         },
       };
       const wrapper = runner.shallowMount(initialState, {
-        data: { editedStep: { formula: '', new_column: 'columnA' } },
+        data: { editedStep: { formula: '', newColumn: 'columnA' } },
       });
       await wrapper.vm.$nextTick();
       expect(wrapper.find('.newColumnInput').props().warning).toEqual(
@@ -91,7 +91,7 @@ describe('Formula Step Form', () => {
       );
     });
 
-    it('should not report any warning if new_column is not an already existing column name', async () => {
+    it('should not report any warning if newColumn is not an already existing column name', async () => {
       const initialState = {
         dataset: {
           headers: [{ name: 'columnA' }],
@@ -99,7 +99,7 @@ describe('Formula Step Form', () => {
         },
       };
       const wrapper = runner.shallowMount(initialState, {
-        data: { editedStep: { formula: '', new_column: 'columnB' } },
+        data: { editedStep: { formula: '', newColumn: 'columnB' } },
       });
       await wrapper.vm.$nextTick();
       expect(wrapper.find('.newColumnInput').props().warning).toBeNull();
@@ -114,7 +114,7 @@ describe('Formula Step Form', () => {
       },
     };
     const wrapper = runner.mount(initialState, {
-      data: { editedStep: { name: 'formula', formula: 'ColumnA * 2', new_column: 'foo' } },
+      data: { editedStep: { name: 'formula', formula: 'ColumnA * 2', newColumn: 'foo' } },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['foo']);

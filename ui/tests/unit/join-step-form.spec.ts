@@ -51,7 +51,7 @@ describe('join Step Form', () => {
         data: {
           editedStep: {
             name: 'join',
-            right_pipeline: 'pipeline_right',
+            rightPipeline: 'pipeline_right',
             type: 'left',
             on: [['foo', 'bar']],
           },
@@ -66,7 +66,7 @@ describe('join Step Form', () => {
         data: {
           editedStep: {
             name: 'join',
-            right_pipeline: 'pipeline_right',
+            rightPipeline: 'pipeline_right',
             type: 'left',
             on: [],
           },
@@ -81,7 +81,7 @@ describe('join Step Form', () => {
         data: {
           editedStep: {
             name: 'join',
-            right_pipeline: 'pipeline_right',
+            rightPipeline: 'pipeline_right',
             type: 'left',
             on: [],
           },
@@ -96,7 +96,7 @@ describe('join Step Form', () => {
         propsData: {
           initialStepValue: {
             name: 'join',
-            right_pipeline: 'pipeline_right',
+            rightPipeline: 'pipeline_right',
             type: 'left',
             on: ['left_col', 'right_col'],
           },

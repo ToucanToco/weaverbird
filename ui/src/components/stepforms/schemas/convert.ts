@@ -20,7 +20,7 @@ export default {
         placeholder: 'Select column(s)',
       },
     },
-    data_type: {
+    dataType: {
       type: 'string',
       enum: ['integer', 'float', 'text', 'date', 'boolean'],
       title: 'Data type',
@@ -28,6 +28,6 @@ export default {
       placeholder: 'Select a data type',
     },
   },
-  required: ['name', 'columns', 'data_type'],
+  required: ['name', 'columns', 'dataType'],
   additionalProperties: false,
 };

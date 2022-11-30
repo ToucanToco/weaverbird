@@ -90,7 +90,7 @@ export default {
         placeholder: 'Choose the property to extract',
       },
     },
-    new_column_name: {
+    newColumn_name: {
       type: 'string',
       title: 'New column name',
       description: '(LEGACY) The new column that will be created after extraction',
