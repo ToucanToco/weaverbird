@@ -59,7 +59,16 @@
     "lodash": "^4.17.11",
     "luxon": "^2.0.2",
     "mathjs": "^11.3.3",
-    "vuedraggable": "^2.24.3"
+    "v-calendar": "^2.3.4",
+    "v-tooltip": "^2.0.3",
+    "vue": "^2.7.13",
+    "vue-class-component": "^7.2.6",
+    "vue-multiselect": "^2.1.6",
+    "vue-property-decorator": "^9.1.2",
+    "vuedraggable": "^2.24.3",
+    "vuejs-paginate": "^2.1.0",
+    "vuex": "^3.6.2",
+    "vuex-class": "^0.3.2"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "^7.0.0-alpha.48",
@@ -95,19 +104,10 @@
     "typedoc": "^0.15.0",
     "typedoc-plugin-markdown": "^1.1.27",
     "typescript": "^4.9.3",
-    "v-calendar": "^2.3.4",
-    "v-tooltip": "^2.0.3",
     "vite": "^3.2.4",
     "vitest": "^0.25.3",
-    "vue": "^2.7.13",
-    "vue-class-component": "^7.2.6",
     "vue-eslint-parser": "^9.1.0",
     "vue-loader": "^15.7.0",
-    "vue-multiselect": "^2.1.6",
-    "vue-property-decorator": "^9.1.2",
-    "vue-tsc": "^1.0.9",
-    "vuejs-paginate": "^2.1.0",
-    "vuex": "^3.6.2",
-    "vuex-class": "^0.3.2"
+    "vue-tsc": "^1.0.9"
   }
 }
