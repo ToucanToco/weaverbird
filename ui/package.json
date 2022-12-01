@@ -67,7 +67,7 @@
     "tslib": "^2.4.0",
     "typedoc": "^0.15.0",
     "typedoc-plugin-markdown": "^1.1.27",
-    "typescript": "^4.2.4",
+    "typescript": "^4.9.3",
     "v-calendar": "^2.3.4",
     "v-tooltip": "^2.0.3",
     "vite": "^3.2.2",
