@@ -2186,7 +2186,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
         keep: ['MARCHE', 'CANAL'],
         unpivot: ['NB_CLIENTS_TOTAL', 'NB_ROWS'],
         unpivotColumnName: 'KPI',
-        valueColumn_name: 'VALUE',
+        valueColumnName: 'VALUE',
         dropna: true,
       },
     ];
@@ -2231,7 +2231,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
         keep: ['MARCHE', 'CANAL'],
         unpivot: ['NB_CLIENTS_TOTAL', 'NB_ROWS'],
         unpivotColumnName: 'KPI',
-        valueColumn_name: 'VALUE',
+        valueColumnName: 'VALUE',
         dropna: false,
       },
     ];

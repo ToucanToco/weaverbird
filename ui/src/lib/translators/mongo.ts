@@ -1713,13 +1713,13 @@ function transformUnpivot(step: Readonly<S.UnpivotStep>): MongoStep[] {
       $project: {
         ...projectCols,
         [step.unpivotColumnName]: '$_vqbToUnpivot.k',
-        [step.valueColumn_name]: '$_vqbToUnpivot.v',
+        [step.valueColumnName]: '$_vqbToUnpivot.v',
       },
     },
   ];
 
   if (step.dropna) {
-    mongoPipeline.push({ $match: { [step.valueColumn_name]: { $ne: null } } });
+    mongoPipeline.push({ $match: { [step.valueColumnName]: { $ne: null } } });
   }
 
   return mongoPipeline;

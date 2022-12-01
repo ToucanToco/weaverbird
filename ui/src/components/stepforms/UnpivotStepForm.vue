@@ -74,7 +74,7 @@ export default class UnpivotStepForm extends BaseStepForm<UnpivotStep> {
       keep: [],
       unpivot: [],
       unpivotColumnName: '',
-      valueColumn_name: '',
+      valueColumnName: '',
       dropna: true,
     }),
   })
@@ -86,7 +86,7 @@ export default class UnpivotStepForm extends BaseStepForm<UnpivotStep> {
 
   submit() {
     this.editedStep.unpivotColumnName = generateNewColumnName('variable', this.columnNames);
-    this.editedStep.valueColumn_name = generateNewColumnName('value', this.columnNames);
+    this.editedStep.valueColumnName = generateNewColumnName('value', this.columnNames);
     this.$$super.submit();
   }
 }

@@ -679,7 +679,7 @@ describe('Labeller', () => {
       keep: ['column1', 'column2'],
       unpivot: ['column3', 'column4'],
       unpivotColumnName: 'column5',
-      valueColumn_name: 'column6',
+      valueColumnName: 'column6',
       dropna: true,
     };
     expect(hrl(step)).toEqual('Unpivot columns "column3", "column4"');

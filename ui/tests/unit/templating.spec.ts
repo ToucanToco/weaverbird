@@ -1239,7 +1239,7 @@ describe('Pipeline interpolator', () => {
         keep: ['<%= foo %>', '<%= egg %>', 'column2'],
         unpivot: ['<%= foo %>', '<%= egg %>', 'column4'],
         unpivotColumnName: '<%= foo %>',
-        valueColumn_name: '<%= foo %>',
+        valueColumnName: '<%= foo %>',
         dropna: true,
       },
     ];
@@ -1249,7 +1249,7 @@ describe('Pipeline interpolator', () => {
         keep: ['bar', 'spam', 'column2'],
         unpivot: ['bar', 'spam', 'column4'],
         unpivotColumnName: '<%= foo %>',
-        valueColumn_name: '<%= foo %>',
+        valueColumnName: '<%= foo %>',
         dropna: true,
       },
     ]);

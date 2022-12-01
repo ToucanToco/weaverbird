@@ -42,7 +42,7 @@ export default {
         placeholder: 'Enter a new column name',
       },
     },
-    valueColumn_name: {
+    valueColumnName: {
       type: 'string',
       minLength: 1,
       title: 'Name of the new value column',
@@ -58,6 +58,6 @@ export default {
       description: 'Whether null values have to be kept or discarded',
     },
   },
-  required: ['name', 'keep', 'unpivot', 'unpivotColumnName', 'valueColumn_name', 'dropna'],
+  required: ['name', 'keep', 'unpivot', 'unpivotColumnName', 'valueColumnName', 'dropna'],
   additionalProperties: false,
 };

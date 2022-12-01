@@ -42,7 +42,7 @@ describe('Unpivot Step Form', () => {
       keep: ['columnA', 'columnB'],
       unpivot: ['columnC'],
       unpivotColumnName: 'variable',
-      valueColumn_name: 'value',
+      valueColumnName: 'value',
       dropna: true,
     },
   );
@@ -70,7 +70,7 @@ describe('Unpivot Step Form', () => {
           keep: ['foo', 'bar'],
           unpivot: ['baz'],
           unpivotColumnName: 'spam',
-          valueColumn_name: 'eggs',
+          valueColumnName: 'eggs',
           dropna: false,
         },
       },
