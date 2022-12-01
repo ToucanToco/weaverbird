@@ -1,7 +1,6 @@
 {
   "name": "weaverbird",
   "version": "0.97.0",
-  "types": "./dist/types/types.d.ts",
   "description": "A generic Visual Query Builder built in Vue.js",
   "bugs": {
     "url": "https://github.com/ToucanToco/weaverbird/issues",
@@ -14,6 +13,22 @@
   ],
   "license": "BSD-3-Clause",
   "repository": "github:ToucanToco/weaverbird",
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
+  "type": "module",
+  "files": ["dist"],
+  "main": "./dist/weaverbird.umd.cjs",
+  "module": "./dist/weaverbird.js",
+  "exports": {
+    ".": {
+      "import": "./dist/weaverbird.js",
+      "require": "./dist/weaverbird.umd.cjs"
+    }
+  },
+  "types": "./dist/types/types.d.ts",
   "scripts": {
     "codecov": "codecov --token=8e0bf2da-c4b9-435f-958e-446849d0d60e --file=./coverage/coverage-final.json",
     "lint": "eslint --no-error-on-unmatched-pattern src/ tests/ stories/",
@@ -29,6 +44,23 @@
     "storybook:build": "storybook build -o .storybook/dist",
     "test": "vitest",
     "coverage": "vitest run --coverage"
+  },
+  "peerDependencies": {
+    "vue": "2.x",
+    "vuex": "3.x"
+  },
+  "sideeffects": false,
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.2.0",
+    "@fortawesome/free-regular-svg-icons": "^6.2.0",
+    "@fortawesome/free-solid-svg-icons": "^6.2.0",
+    "@fortawesome/vue-fontawesome": "^2.0.9",
+    "ajv": "^8.11.0",
+    "identity-obj-proxy": "^3.0.0",
+    "lodash": "^4.17.11",
+    "luxon": "^2.0.2",
+    "mathjs": "^11.3.3",
+    "vuedraggable": "^2.24.3"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^6.2.0",
@@ -83,37 +115,5 @@
     "vuejs-paginate": "^2.1.0",
     "vuex": "^3.6.2",
     "vuex-class": "^0.3.2"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ],
-  "type": "module",
-  "files": ["dist"],
-  "main": "./dist/weaverbird.umd.cjs",
-  "module": "./dist/weaverbird.js",
-  "exports": {
-    ".": {
-      "import": "./dist/weaverbird.js",
-      "require": "./dist/weaverbird.umd.cjs"
-    }
-  },
-  "peerDependencies": {
-    "vue": "2.x",
-    "vuex": "3.x"
-  },
-  "sideeffects": false,
-  "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.2.0",
-    "@fortawesome/free-regular-svg-icons": "^6.2.0",
-    "@fortawesome/free-solid-svg-icons": "^6.2.0",
-    "@fortawesome/vue-fontawesome": "^2.0.9",
-    "ajv": "^8.11.0",
-    "identity-obj-proxy": "^3.0.0",
-    "lodash": "^4.17.11",
-    "luxon": "^2.0.2",
-    "mathjs": "^11.3.3",
-    "vuedraggable": "^2.24.3"
   }
 }
