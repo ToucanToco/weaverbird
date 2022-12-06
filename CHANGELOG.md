@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.92.2] - 2022-12-06
+
 ### Fixed
 
 - We make sure the `$switch` aggregation should always have a `default` key
@@ -1346,6 +1348,9 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ## Unreleased
 
+[0.92.2]: https://github.com/ToucanToco/weaverbird/compare/v0.92.2...v0.92.1
+[0.92.1]: https://github.com/ToucanToco/weaverbird/compare/v0.92.1...v0.92.0
+[0.92.0]: https://github.com/ToucanToco/weaverbird/compare/v0.92.0...v0.91.3
 [0.91.3]: https://github.com/ToucanToco/weaverbird/compare/v0.91.3...v0.91.2
 [0.91.2]: https://github.com/ToucanToco/weaverbird/compare/v0.91.2...v0.91.1
 [0.91.1]: https://github.com/ToucanToco/weaverbird/compare/v0.91.1...v0.91.0
