@@ -5,15 +5,13 @@
     <popover :visible="isActive" :align="'left'" bottom @closed="$emit('closed')">
       <div class="action-menu__body">
         <div class="action-menu__section">
-          <div
+          <action-menu-option
             v-for="(item, index) in items"
             :key="index"
-            class="action-menu__option"
-            data-cy="weaverbird-action-menu-option"
-            @click="actionClicked(item.name, item.defaults)"
-          >
-            {{ item.label }}
-          </div>
+            :label="item.label"
+            :isDisabled="isDisabled(item.name)"
+            @actionClicked="actionClicked(item.name, item.defaults)"
+          />
         </div>
       </div>
     </popover>
@@ -30,6 +28,7 @@ import type * as S from '@/lib/steps';
 import { VQBModule } from '@/store';
 import type { MutationCallbacks } from '@/store/mutations';
 
+import ActionMenuOption from './ActionMenuOption.vue';
 import Popover from './Popover.vue';
 
 /**
@@ -42,6 +41,7 @@ type NoFormStep = S.DateExtractStep | S.ToLowerStep | S.ToDateStep | S.ToUpperSt
   components: {
     Popover,
     FAIcon,
+    ActionMenuOption,
   },
   props: {
     label: String,
@@ -71,6 +71,11 @@ export default class ActionToolbarButton extends Vue {
   @VQBModule.Action selectStep!: ({ index }: { index: number }) => void;
   @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
   @VQBModule.Mutation closeStepForm!: () => void;
+  @VQBModule.Getter displayUnsupportedSteps!: boolean;
+
+  get isDisabled() {
+    return (stepName: S.PipelineStepName) => this.unsupportedSteps.includes(stepName);
+  }
 
   /**
    * @description Emit an event with a PipelineStepName in order to open its form
@@ -102,6 +107,9 @@ export default class ActionToolbarButton extends Vue {
 
   // Filter out unsupported steps
   get items() {
+    if (this.displayUnsupportedSteps) {
+      return ACTION_CATEGORIES[this.category];
+    }
     return ACTION_CATEGORIES[this.category].filter(
       (action) => !this.unsupportedSteps.includes(action.name),
     );

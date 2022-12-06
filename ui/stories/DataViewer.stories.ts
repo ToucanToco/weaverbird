@@ -100,3 +100,40 @@ export const Simple: StoryFn<typeof DataViewer> = () => ({
     <DataViewer />
   `,
 });
+
+export const Connector: StoryFn<typeof DataViewer> = () => ({
+  store: new Vuex.Store({}),
+  created: function () {
+    registerModule(this.$store, {
+      dataset: {
+        headers: [
+          { name: 'columnA', type: 'string' },
+          { name: 'columnB', type: 'date' },
+          { name: 'columnC', type: 'integer' },
+        ],
+        data: [
+          ['value1', 'value2', 'value3'],
+          ['value4', 'value5', 'value6'],
+          ['value7', 'value8', 'value9'],
+          ['value10', 'value11', 'value12'],
+          ['value10', { obj: 'value14' }, null],
+        ],
+        paginationContext: {
+          shouldPaginate: false,
+          pageSize: 50,
+          pageNumber: 1,
+          totalCount: 50,
+          isLastPage: true,
+        },
+      },
+      translator: 'athena',
+      currentPipelineName: 'test',
+      pipelines: { test: [] },
+    });
+  },
+  components: { DataViewer },
+  directives: { resizable },
+  template: `
+    <DataViewer />
+  `,
+});
