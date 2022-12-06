@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.92.2] - 2022-12-06
+
 ### Fixed
 
 - We make sure the `$switch` aggregation should always have a `default` key
