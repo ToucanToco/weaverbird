@@ -2,9 +2,12 @@
 
 ## Unreleased
 
+## [0.98.0] - 2022-12-06
+
 ### Changed
 
 - The label for the `hierarchy` step now contains information about the target column an the hierarchy.
+- All step attributes are now in camelCase
 
 ## [0.97.0] - 2022-11-29
 
@@ -1401,6 +1404,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 - Initial version, showtime!
 
 
+[0.98.0]: https://github.com/ToucanToco/weaverbird/compare/v0.98.0...v0.97.0
 [0.97.0]: https://github.com/ToucanToco/weaverbird/compare/v0.97.0...v0.96.0
 [0.96.0]: https://github.com/ToucanToco/weaverbird/compare/v0.96.0...v0.95.0
 [0.95.0]: https://github.com/ToucanToco/weaverbird/compare/v0.95.0...v0.94.2
