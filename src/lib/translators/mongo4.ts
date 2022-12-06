@@ -116,6 +116,7 @@ function transformToDate(step: Readonly<ToDateStep>): MongoStep[] {
           then: '12',
         },
       ],
+      default: null,
     },
   };
 
