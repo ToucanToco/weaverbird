@@ -1,5 +1,12 @@
 # Changelog (weaverbird npm package)
 
+## Unreleased
+
+### Fixed
+
+- We make sure the `$switch` aggregation should always have a `default` key
+  field set from the mongo query to prevent "PlanExecutor error".
+
 ## [0.92.1] - 2022-10-27
 
 ### Added
