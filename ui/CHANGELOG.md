@@ -1,5 +1,11 @@
 # Changelog (weaverbird npm package)
 
+## Unreleased
+
+### Changed
+
+- The label for the `hierarchy` step now contains information about the target column an the hierarchy.
+
 ## [0.97.0] - 2022-11-29
 
 ### Changed

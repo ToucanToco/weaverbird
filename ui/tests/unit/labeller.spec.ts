@@ -458,13 +458,22 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Convert "foo" into text');
   });
 
-  it('generates label for hierarchy steps', () => {
+  it('generates a label with a hierarchy for hierarchy steps with several levels', () => {
     const step: S.HierarchyStep = {
       name: 'hierarchy',
       hierarchy: ['foo', 'bar'],
       hierarchyLevelColumn: 'plop',
     };
-    expect(hrl(step)).toEqual('Aggregate geography');
+    expect(hrl(step)).toEqual('Set up a geographical hierarchy in "plop": foo > bar');
+  });
+
+  it('generates a label without a hierarchy for hierarchy steps on a single level', () => {
+    const step: S.HierarchyStep = {
+      name: 'hierarchy',
+      hierarchy: ['foo'],
+      hierarchyLevelColumn: 'bar',
+    };
+    expect(hrl(step)).toEqual('Set up a geographical hierarchy in "bar"');
   });
 
   it('generates label for join steps', () => {

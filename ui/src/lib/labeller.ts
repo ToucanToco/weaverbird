@@ -251,8 +251,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Convert "${step.column}" into text`;
   }
 
-  hierarchy(_step: Readonly<S.HierarchyStep>) {
-    return `Aggregate geography`;
+  hierarchy(step: Readonly<S.HierarchyStep>) {
+    const prefix = `Set up a geographical hierarchy in "${step.hierarchyLevelColumn}"`;
+    const hierarchyString = step.hierarchy.length > 1 ? ': ' + step.hierarchy.join(' > ') : '';
+    return prefix + hierarchyString;
   }
 
   ifthenelse(step: Readonly<S.IfThenElseStep>) {
