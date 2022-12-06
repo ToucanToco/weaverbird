@@ -142,7 +142,7 @@ describe('Action Menu', () => {
   it('should close on click on any operation', async () => {
     for (const elIndex of FIRST_PANEL.keys()) {
       const { wrapper } = await mountWrapper();
-      await wrapper.findAll('.action-menu__option').at(elIndex).trigger('click');
+      await wrapper.findAll('action-menu-option-stub').at(elIndex).vm.$emit('actionClicked');
       expect(wrapper.emitted().closed).toBeTruthy();
     }
   });
@@ -150,12 +150,31 @@ describe('Action Menu', () => {
   it('should emit "actionClicked" with the corresponding "stepName" when click on an operation', async () => {
     for (const [elIndex, el] of FIRST_PANEL.entries()) {
       const { wrapper } = await mountWrapper();
-      await wrapper.findAll('.action-menu__option').at(elIndex).trigger('click');
+      await wrapper.findAll('action-menu-option-stub').at(elIndex).vm.$emit('actionClicked');
       await wrapper.vm.$nextTick();
       if (el.stepName) {
         expect(wrapper.emitted().actionClicked[0]).toEqual([el.stepName]);
       }
     }
+  });
+
+  it('should disable unsupported steps', async () => {
+    const { wrapper } = await mountWrapper();
+    wrapper.vm.$store.commit(VQBnamespace('setTranslator'), {
+      translator: 'athena',
+    });
+    await wrapper.vm.$nextTick();
+    await wrapper
+      .findAll('action-menu-option-stub')
+      .wrappers.find((w) => w.props().label === 'Other operations')
+      .vm.$emit('actionClicked');
+
+    expect(
+      wrapper
+        .findAll('action-menu-option-stub')
+        .wrappers.find((w) => w.props().label === 'Compute Statistics')
+        .props().isDisabled,
+    ).toBe(true);
   });
 
   describe('when click on "Apply Filter"', () => {
@@ -186,7 +205,7 @@ describe('Action Menu', () => {
   describe('when click on the operation "delete"', () => {
     it('should add a valid delete step in the pipeline', async () => {
       const { wrapper, store } = await mountWrapper();
-      await wrapper.findAll('.action-menu__option').at(DELETE_INDEX).trigger('click');
+      await wrapper.findAll('action-menu-option-stub').at(DELETE_INDEX).vm.$emit('actionClicked');
       await wrapper.vm.$nextTick();
       expect(store.getters[VQBnamespace('pipeline')]).toEqual([
         { name: 'delete', columns: ['dreamfall'] },
@@ -195,7 +214,7 @@ describe('Action Menu', () => {
 
     it('should close any open step form to show the addition of the delete step in the pipeline', async () => {
       const { wrapper, store } = await mountWrapper(true);
-      await wrapper.findAll('.action-menu__option').at(DELETE_INDEX).trigger('click');
+      await wrapper.findAll('action-menu-option-stub').at(DELETE_INDEX).vm.$emit('actionClicked');
       await wrapper.vm.$nextTick();
       expect(store.getters[VQBnamespace('isEditingStep')]).toBeFalsy();
     });
@@ -207,7 +226,7 @@ describe('Action Menu', () => {
       // eslint-disable-next-line @typescript-eslint/no-inferrable-types
       mountWrapperAndClickOnOperation = async function (isCurrentlyEditing: boolean = false) {
         const { wrapper, store } = await mountWrapper(isCurrentlyEditing);
-        await wrapper.findAll('.action-menu__option').at(3).trigger('click');
+        await wrapper.findAll('action-menu-option-stub').at(3).vm.$emit('actionClicked');
         await wrapper.vm.$nextTick();
         return { wrapper, store };
       };
@@ -240,7 +259,7 @@ describe('Action Menu', () => {
     it('should close on click on any operation', async () => {
       for (const elIndex of SECOND_PANEL.keys()) {
         const { wrapper } = await mountWrapperAndClickOnOperation();
-        await wrapper.findAll('.action-menu__option').at(elIndex).trigger('click');
+        await wrapper.findAll('action-menu-option-stub').at(elIndex).vm.$emit('actionClicked');
         await wrapper.vm.$nextTick();
         expect(wrapper.emitted().closed).toBeTruthy();
       }
@@ -249,7 +268,7 @@ describe('Action Menu', () => {
     it('should emit "actionClicked" with the corresponding "stepName" when click on an operation', async () => {
       for (const [elIndex, el] of SECOND_PANEL.entries()) {
         const { wrapper } = await mountWrapperAndClickOnOperation();
-        await wrapper.findAll('.action-menu__option').at(elIndex).trigger('click');
+        await wrapper.findAll('action-menu-option-stub').at(elIndex).vm.$emit('actionClicked');
         await wrapper.vm.$nextTick();
         if (el.stepName) {
           expect(wrapper.emitted().actionClicked[0]).toEqual([el.stepName]);
@@ -260,7 +279,10 @@ describe('Action Menu', () => {
     describe('when click on the operation "get unique operation"', () => {
       it('should add a valid "unique" step in the pipeline', async () => {
         const { wrapper, store } = await mountWrapperAndClickOnOperation();
-        await wrapper.findAll('.action-menu__option').at(GET_UNIQUE_INDEX).trigger('click');
+        await wrapper
+          .findAll('action-menu-option-stub')
+          .at(GET_UNIQUE_INDEX)
+          .vm.$emit('actionClicked');
         await wrapper.vm.$nextTick();
         expect(store.getters[VQBnamespace('pipeline')]).toEqual([
           { name: 'uniquegroups', on: ['dreamfall'] },
@@ -269,7 +291,10 @@ describe('Action Menu', () => {
 
       it('should close any open step form to show the "get unique" step in the pipeline', async () => {
         const { wrapper, store } = await mountWrapperAndClickOnOperation(true);
-        await wrapper.findAll('.action-menu__option').at(GET_UNIQUE_INDEX).trigger('click');
+        await wrapper
+          .findAll('action-menu-option-stub')
+          .at(GET_UNIQUE_INDEX)
+          .vm.$emit('actionClicked');
         await wrapper.vm.$nextTick();
         expect(store.getters[VQBnamespace('isEditingStep')]).toBeFalsy();
       });

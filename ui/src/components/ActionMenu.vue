@@ -160,7 +160,7 @@ export default class ActionMenu extends Vue {
   }
 
   get isDisabled() {
-    return (stepName: PipelineStepName): boolean => !this.unsupportedSteps.includes(stepName);
+    return (stepName: PipelineStepName): boolean => this.unsupportedSteps.includes(stepName);
   }
 
   @VQBModule.Action selectStep!: ({ index }: { index: number }) => void;
