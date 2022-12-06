@@ -15,7 +15,7 @@
     {{ label }}
   </div>
 </template>
-  
+
 <script lang="ts">
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
@@ -63,4 +63,3 @@ export default class ActionMenuOption extends Vue {
   }
 }
 </style>
-  

@@ -97,7 +97,6 @@ describe('ActionToolbarButton active', () => {
     });
     expect(wrapper.exists()).toBeTruthy();
 
-
     const actionsWrappers = wrapper.findAll('.action-menu__option');
     const actionsLabels = actionsWrappers.wrappers.map((w) => w.props().label);
 

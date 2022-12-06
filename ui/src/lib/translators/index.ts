@@ -104,4 +104,3 @@ export type VqbTranslator =
   | 'mysql'
   | 'postgresql'
   | 'redshift';
-  
