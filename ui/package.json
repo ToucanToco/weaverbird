@@ -19,7 +19,9 @@
     "not ie <= 8"
   ],
   "type": "module",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "main": "./dist/weaverbird.umd.cjs",
   "module": "./dist/weaverbird.js",
   "exports": {
@@ -40,8 +42,8 @@
     "build-bundle": "vite build",
     "build-types": ". ./build-types.sh",
     "build-doc": "typedoc --tsconfig tsconfig.json --readme README.md --out dist/docs src/",
-    "storybook": "storybook dev  -p 9001",
-    "storybook:build": "storybook build -o .storybook/dist",
+    "storybook": "NODE_OPTIONS=--openssl-legacy-provider start-storybook --port 9001",
+    "storybook:build": "NODE_OPTIONS=--openssl-legacy-provider build-storybook -o .storybook/dist",
     "test": "vitest",
     "coverage": "vitest run --coverage"
   },
@@ -71,9 +73,9 @@
     "vuex-class": "^0.3.2"
   },
   "devDependencies": {
-    "@storybook/addon-essentials": "^7.0.0-alpha.48",
-    "@storybook/builder-vite": "^7.0.0-alpha.48",
-    "@storybook/vue-vite": "^7.0.0-alpha.48",
+    "@storybook/addon-essentials": "^6.5.14",
+    "@storybook/builder-vite": "^0.2.5",
+    "@storybook/vue": "^6.5.14",
     "@types/lodash": "^4.14.138",
     "@types/luxon": "^2.0.4",
     "@typescript-eslint/eslint-plugin": "^5.42.0",
@@ -99,7 +101,7 @@
     "prettier": "^2.7.1",
     "sass": "^1.29.0",
     "sass-loader": "^10.1.0",
-    "storybook": "^7.0.0-alpha.48",
+    "storybook": "^6.5.14",
     "tslib": "^2.4.0",
     "typedoc": "^0.15.0",
     "typedoc-plugin-markdown": "^1.1.27",

@@ -15,7 +15,7 @@ export default defineConfig({
       {
         find: '@',
         replacement: fileURLToPath(new URL('./src', import.meta.url)),
-      }
+      },
     ],
   },
   define: { 'process.env.NODE_ENV': '"' + process.env.NODE_ENV + '"' },
