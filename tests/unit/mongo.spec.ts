@@ -23,6 +23,7 @@ const smallMonthReplace = {
       { case: { $eq: ['$_vqbTempMonth', '11'] }, then: 'Nov' },
       { case: { $eq: ['$_vqbTempMonth', '12'] }, then: 'Dec' },
     ],
+    default: null,
   },
 };
 
@@ -42,6 +43,7 @@ const fullMonthReplace = {
       { case: { $eq: ['$_vqbTempMonth', '11'] }, then: 'November' },
       { case: { $eq: ['$_vqbTempMonth', '12'] }, then: 'December' },
     ],
+    default: null,
   },
 };
 
@@ -6140,6 +6142,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
               then: '12',
             },
           ],
+          default: null,
         },
       };
       it('can generate a convert step', () => {
