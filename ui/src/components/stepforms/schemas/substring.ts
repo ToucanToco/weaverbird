@@ -19,7 +19,7 @@ const schema = {
         placeholder: 'Select a column',
       },
     },
-    start_index: {
+    startIndex: {
       type: 'integer',
       title: 'Substring starts at index...',
       description: 'The index at which starts the substring (begins at 0)',
@@ -28,7 +28,7 @@ const schema = {
       },
       not: { const: 0 },
     },
-    end_index: {
+    endIndex: {
       type: 'integer',
       title: 'Number of characters to keep:',
       description: 'The index at which ends the substring (-1 = last index)',
@@ -44,7 +44,7 @@ const schema = {
       description: 'The new column name to be created for the computation result',
     },
   },
-  required: ['column', 'start_index', 'end_index'],
+  required: ['column', 'startIndex', 'endIndex'],
   additionalProperties: false,
 };
 

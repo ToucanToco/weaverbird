@@ -11,7 +11,7 @@
       v-model="editedStep.newColumnName"
       name="New column name (for the comparison result):"
       placeholder="Enter a column name"
-      data-path=".new_column_name"
+      data-path=".newColumnName"
       :errors="errors"
       :warning="duplicateColumnName"
     />

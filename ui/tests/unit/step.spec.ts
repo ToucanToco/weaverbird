@@ -26,7 +26,7 @@ describe('Step.vue', () => {
       .mockImplementation((v) => (typeof v === 'string' ? v : ''));
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'GoT' },
-      { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+      { name: 'replace', searchColumn: 'characters', toReplace: [['Snow', 'Targaryen']] },
       { name: 'rename', toRename: [['region', 'kingdom']] },
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
@@ -163,7 +163,7 @@ describe('Step.vue', () => {
   it('should toggle the edit mode when clicking on the edit icon and emit editStep', () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'GoT' },
-      { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+      { name: 'replace', searchColumn: 'characters', toReplace: [['Snow', 'Targaryen']] },
       { name: 'rename', toRename: [['region', 'kingdom']] },
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
@@ -181,7 +181,7 @@ describe('Step.vue', () => {
   it('should toggle the edit mode when clicking on button with the edit icon and emit editStep', async () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'GoT' },
-      { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+      { name: 'replace', searchColumn: 'characters', toReplace: [['Snow', 'Targaryen']] },
       { name: 'rename', toRename: [['region', 'kingdom']] },
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
@@ -202,7 +202,7 @@ describe('Step.vue', () => {
     it('should highlight the error step', async () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'GoT' },
-        { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+        { name: 'replace', searchColumn: 'characters', toReplace: [['Snow', 'Targaryen']] },
       ];
       const store = setupMockStore(
         buildStateWithOnePipeline(pipeline, {
@@ -221,7 +221,7 @@ describe('Step.vue', () => {
     it('should display the error message', async () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'GoT' },
-        { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+        { name: 'replace', searchColumn: 'characters', toReplace: [['Snow', 'Targaryen']] },
       ];
       const store = setupMockStore(
         buildStateWithOnePipeline(pipeline, {
@@ -243,7 +243,7 @@ describe('Step.vue', () => {
     it('should override with disabled style when disabled', async () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'GoT' },
-        { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+        { name: 'replace', searchColumn: 'characters', toReplace: [['Snow', 'Targaryen']] },
       ];
       const store = setupMockStore(
         buildStateWithOnePipeline(pipeline, {
@@ -298,7 +298,7 @@ describe('Step.vue', () => {
       };
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'GoT' },
-        { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+        { name: 'replace', searchColumn: 'characters', toReplace: [['Snow', 'Targaryen']] },
       ];
       const store = setupMockStore(
         buildStateWithOnePipeline(pipeline, {

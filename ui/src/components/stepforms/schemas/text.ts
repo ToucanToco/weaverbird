@@ -16,7 +16,7 @@ export default {
         placeholder: 'Enter a text',
       },
     },
-    new_column: {
+    newColumn: {
       type: 'string',
       minLength: 1,
       title: 'New column name',
@@ -26,6 +26,6 @@ export default {
       },
     },
   },
-  required: ['name', 'text', 'new_column'],
+  required: ['name', 'text', 'newColumn'],
   additionalProperties: false,
 };

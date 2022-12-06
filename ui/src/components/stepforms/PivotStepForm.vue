@@ -19,32 +19,32 @@
     />
     <ColumnPicker
       class="columnToPivotInput"
-      v-model="editedStep.column_to_pivot"
+      v-model="editedStep.columnToPivot"
       name="Pivot column..."
       placeholder="Enter a column"
-      data-path=".column_to_pivot"
+      data-path=".columnToPivot"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :errors="errors"
     />
     <AutocompleteWidget
       class="valueColumnInput"
-      v-model="editedStep.value_column"
+      v-model="editedStep.valueColumn"
       name="Use values in..."
       :options="columnNames"
       placeholder="Select a column"
-      data-path=".value_column"
+      data-path=".valueColumn"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :errors="errors"
     />
     <AutocompleteWidget
       class="aggregationFunctionInput"
-      v-model="editedStep.agg_function"
+      v-model="editedStep.aggFunction"
       name="Aggregate values using..."
       :options="aggregationFunctions"
       placeholder="Aggregation function"
-      data-path=".agg_function"
+      data-path=".aggFunction"
       :errors="errors"
     />
     <StepFormButtonbar />
@@ -85,18 +85,18 @@ export default class PivotStepForm extends BaseStepForm<PivotStep> {
     default: () => ({
       name: 'pivot',
       index: [],
-      column_to_pivot: '',
-      value_column: '',
-      agg_function: 'sum',
+      columnToPivot: '',
+      valueColumn: '',
+      aggFunction: 'sum',
     }),
   })
   declare initialStepValue: PivotStep;
 
   readonly title: string = 'Pivot column';
-  aggregationFunctions: PivotStep['agg_function'][] = ['sum', 'avg', 'count', 'min', 'max'];
+  aggregationFunctions: PivotStep['aggFunction'][] = ['sum', 'avg', 'count', 'min', 'max'];
 
   get stepSelectedColumn() {
-    return this.editedStep.column_to_pivot;
+    return this.editedStep.columnToPivot;
   }
 
   set stepSelectedColumn(colname: string | null) {
@@ -104,7 +104,7 @@ export default class PivotStepForm extends BaseStepForm<PivotStep> {
       throw new Error('should not try to set null on percentage "value column" field');
     }
     if (colname !== null) {
-      this.editedStep.column_to_pivot = colname;
+      this.editedStep.columnToPivot = colname;
     }
   }
 
@@ -114,26 +114,26 @@ export default class PivotStepForm extends BaseStepForm<PivotStep> {
       return errors;
     }
     if (
-      this.editedStep.column_to_pivot === this.editedStep.value_column ||
-      this.editedStep.index.includes(this.editedStep.column_to_pivot)
+      this.editedStep.columnToPivot === this.editedStep.valueColumn ||
+      this.editedStep.index.includes(this.editedStep.columnToPivot)
     ) {
       return [
         {
           params: [],
-          schemaPath: '.column_to_pivot',
+          schemaPath: '.columnToPivot',
           keyword: 'columnNameConflict',
-          dataPath: '.column_to_pivot',
-          message: `Column name ${this.editedStep.column_to_pivot} is used at least twice but should be unique`,
+          dataPath: '.columnToPivot',
+          message: `Column name ${this.editedStep.columnToPivot} is used at least twice but should be unique`,
         },
       ];
-    } else if (this.editedStep.index.includes(this.editedStep.value_column)) {
+    } else if (this.editedStep.index.includes(this.editedStep.valueColumn)) {
       return [
         {
           params: [],
-          schemaPath: '.value_column',
+          schemaPath: '.valueColumn',
           keyword: 'columnNameConflict',
-          dataPath: '.value_column',
-          message: `Column name ${this.editedStep.value_column} is used at least twice but should be unique`,
+          dataPath: '.valueColumn',
+          message: `Column name ${this.editedStep.valueColumn} is used at least twice but should be unique`,
         },
       ];
     }

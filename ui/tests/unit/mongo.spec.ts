@@ -1188,19 +1188,19 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
       { name: 'delete', columns: ['Random'] },
       { name: 'select', columns: ['Country', 'Region', 'Population', 'Region_bis'] },
       { name: 'delete', columns: ['Region_bis'] },
-      { name: 'formula', new_column: 'value', formula: 'value / 1000' },
+      { name: 'formula', newColumn: 'value', formula: 'value / 1000' },
       { name: 'rename', toRename: [['value', 'Revenue']] },
       {
         name: 'replace',
-        search_column: 'Country',
-        to_replace: [['France - ', 'France']],
+        searchColumn: 'Country',
+        toReplace: [['France - ', 'France']],
       },
       {
         name: 'replace',
-        search_column: 'Country',
-        to_replace: [['Spain - ', 'Spain']],
+        searchColumn: 'Country',
+        toReplace: [['Spain - ', 'Spain']],
       },
-      { name: 'formula', new_column: 'Population', formula: 'Population / 1000' },
+      { name: 'formula', newColumn: 'Population', formula: 'Population / 1000' },
       {
         name: 'custom',
         query: '{"$group": {"_id": "$Country", "Population": {"$sum": "$Population"}}}',
@@ -1439,8 +1439,8 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
     const pipeline: Pipeline = [
       {
         name: 'replace',
-        search_column: 'column_1',
-        to_replace: [
+        searchColumn: 'column_1',
+        toReplace: [
           ['foo', 'bar'],
           ['old', 'new'],
         ],
@@ -1547,7 +1547,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
       {
         name: 'top',
         groups: ['foo'],
-        rank_on: 'bar',
+        rankOn: 'bar',
         sort: 'desc',
         limit: 10,
       },
@@ -1574,7 +1574,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
     const pipeline: Pipeline = [
       {
         name: 'top',
-        rank_on: 'bar',
+        rankOn: 'bar',
         sort: 'asc',
         limit: 3,
       },
@@ -1802,27 +1802,27 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
     const pipeline: Pipeline = [
       {
         name: 'formula',
-        new_column: 'foo',
+        newColumn: 'foo',
         formula: 'bar',
       },
       {
         name: 'formula',
-        new_column: 'constant',
+        newColumn: 'constant',
         formula: '42',
       },
       {
         name: 'formula',
-        new_column: 'number_constant',
+        newColumn: 'number_constant',
         formula: 42,
       },
       {
         name: 'formula',
-        new_column: 'with_var',
+        newColumn: 'with_var',
         formula: '<%= var %>',
       },
       {
         name: 'formula',
-        new_column: 'with_parentheses',
+        newColumn: 'with_parentheses',
         formula: '(test)',
       },
     ];
@@ -1841,17 +1841,17 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
     const pipeline: Pipeline = [
       {
         name: 'formula',
-        new_column: 'foo',
+        newColumn: 'foo',
         formula: '(column_1 + column_2) / column_3 - column_4 * 100',
       },
       {
         name: 'formula',
-        new_column: 'bar',
+        newColumn: 'bar',
         formula: '1 / ((column_1 + column_2 + column_3)) * 10',
       },
       {
         name: 'formula',
-        new_column: 'test_precedence',
+        newColumn: 'test_precedence',
         formula: 'column_1 + column_2 + column_3 * 10',
       },
     ];
@@ -1954,7 +1954,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
     const pipeline: Pipeline = [
       {
         name: 'formula',
-        new_column: 'foo',
+        newColumn: 'foo',
         formula: 'column_1 / 10 + column_1 / column_2 + column_1 / (column_2 + 10)',
       },
     ];
@@ -2014,7 +2014,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
     const pipeline: Pipeline = [
       {
         name: 'formula',
-        new_column: 'test',
+        newColumn: 'test',
         formula: '-column_1 + 10',
       },
     ];
@@ -2040,7 +2040,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
     const pipeline: Pipeline = [
       {
         name: 'formula',
-        new_column: 'test',
+        newColumn: 'test',
         formula: '[column with space and + and, oh a - and_also *] + [an other ^column]',
       },
     ];
@@ -2061,7 +2061,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
     const pipeline: Pipeline = [
       {
         name: 'formula',
-        new_column: 'test',
+        newColumn: 'test',
         formula: '[column with space and + and, oh a - and_also *] + A',
       },
     ];
@@ -2083,9 +2083,9 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
       {
         name: 'pivot',
         index: [],
-        column_to_pivot: 'column_3',
-        value_column: 'column_4',
-        agg_function: 'sum',
+        columnToPivot: 'column_3',
+        valueColumn: 'column_4',
+        aggFunction: 'sum',
       },
     ];
     const querySteps = translator.translate(pipeline);
@@ -2128,9 +2128,9 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
       {
         name: 'pivot',
         index: ['column_1', 'column_2'],
-        column_to_pivot: 'column_3',
-        value_column: 'column_4',
-        agg_function: 'sum',
+        columnToPivot: 'column_3',
+        valueColumn: 'column_4',
+        aggFunction: 'sum',
       },
     ];
     const querySteps = translator.translate(pipeline);
@@ -2185,8 +2185,8 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
         name: 'unpivot',
         keep: ['MARCHE', 'CANAL'],
         unpivot: ['NB_CLIENTS_TOTAL', 'NB_ROWS'],
-        unpivot_column_name: 'KPI',
-        value_column_name: 'VALUE',
+        unpivotColumnName: 'KPI',
+        valueColumnName: 'VALUE',
         dropna: true,
       },
     ];
@@ -2230,8 +2230,8 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
         name: 'unpivot',
         keep: ['MARCHE', 'CANAL'],
         unpivot: ['NB_CLIENTS_TOTAL', 'NB_ROWS'],
-        unpivot_column_name: 'KPI',
-        value_column_name: 'VALUE',
+        unpivotColumnName: 'KPI',
+        valueColumnName: 'VALUE',
         dropna: false,
       },
     ];
@@ -2269,7 +2269,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
       {
         name: 'duplicate',
         column: 'foo',
-        new_column_name: 'bar',
+        newColumnName: 'bar',
       },
     ];
     const querySteps = translator.translate(pipeline);
@@ -2312,7 +2312,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
             name: 'concatenate',
             columns: ['foo'],
             separator: ' - ',
-            new_column_name: 'concat',
+            newColumnName: 'concat',
           },
         ];
         const querySteps = translator.translate(pipeline);
@@ -2328,7 +2328,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
             name: 'concatenate',
             columns: ['foo', 'bar', 'again'],
             separator: ' - ',
-            new_column_name: 'concat',
+            newColumnName: 'concat',
           },
         ];
         const querySteps = translator.translate(pipeline);
@@ -2344,7 +2344,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
             name: 'concatenate',
             columns: ['foo'],
             separator: ' - ',
-            new_column_name: 'concat',
+            newColumnName: 'concat',
           },
         ];
         const querySteps = translator.translate(pipeline);
@@ -2360,7 +2360,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
             name: 'concatenate',
             columns: ['foo', 'bar', 'again'],
             separator: ' - ',
-            new_column_name: 'concat',
+            newColumnName: 'concat',
           },
         ];
         const querySteps = translator.translate(pipeline);
@@ -2389,8 +2389,8 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
       {
         name: 'substring',
         column: 'foo',
-        start_index: 1,
-        end_index: 6,
+        startIndex: 1,
+        endIndex: 6,
       },
     ];
     const querySteps = translator.translate(pipeline);
@@ -2422,8 +2422,8 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
       {
         name: 'substring',
         column: 'foo',
-        start_index: -5,
-        end_index: -1,
+        startIndex: -5,
+        endIndex: -1,
         newColumnName: 'bar',
       },
     ];
@@ -2880,7 +2880,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
       {
         name: 'convert',
         columns: ['foo', 'bar'],
-        data_type: 'boolean',
+        dataType: 'boolean',
       },
     ];
     try {
@@ -2890,7 +2890,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
     }
   });
 
-  it('converts old-fashioned dateextract steps without new_column_name', () => {
+  it('converts old-fashioned dateextract steps without newColumnName', () => {
     // retrocompatibility test
     const pipeline: Pipeline = [
       {
@@ -2912,14 +2912,14 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
     ]);
   });
 
-  it('converts old-fashioned dateextract steps with new_column_name', () => {
+  it('converts old-fashioned dateextract steps with newColumnName', () => {
     // retrocompatibility test
     const pipeline: Pipeline = [
       {
         name: 'dateextract',
         operation: 'year',
         column: 'foo',
-        new_column_name: 'bar',
+        newColumnName: 'bar',
         dateInfo: [],
         newColumns: [],
       },
@@ -3238,7 +3238,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
       },
       {
         name: 'join',
-        right_pipeline: rightPipeline,
+        rightPipeline: rightPipeline,
         type: 'left',
         on: [['id', 'id']],
       },
@@ -3293,7 +3293,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
       },
       {
         name: 'join',
-        right_pipeline: rightPipeline,
+        rightPipeline: rightPipeline,
         type: 'inner',
         on: [
           ['id', 'id'],
@@ -3357,7 +3357,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
       },
       {
         name: 'join',
-        right_pipeline: rightPipeline,
+        rightPipeline: rightPipeline,
         type: 'inner',
         on: [
           ['id', 'id_right'],
@@ -3424,7 +3424,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
       },
       {
         name: 'join',
-        right_pipeline: rightPipeline,
+        rightPipeline: rightPipeline,
         type: 'inner',
         on: [
           ['some column', 'some column'],
@@ -3479,7 +3479,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
     expect(() =>
       translator.translate([
         { name: 'domain', domain: 'plop' },
-        { name: 'join', right_pipeline: { type: 'ref', uid: 'xxx-yyy-zzz' }, on: [['key', 'key']] },
+        { name: 'join', rightPipeline: { type: 'ref', uid: 'xxx-yyy-zzz' }, on: [['key', 'key']] },
       ] as Pipeline),
     ).toThrow();
 
@@ -3488,7 +3488,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
         { name: 'domain', domain: 'plop' },
         {
           name: 'join',
-          right_pipeline: [{ name: 'domain', domain: { type: 'ref', uid: 'xxx-yyy-zzz' } }],
+          rightPipeline: [{ name: 'domain', domain: { type: 'ref', uid: 'xxx-yyy-zzz' } }],
           on: [['key', 'key']],
         },
       ] as Pipeline),
@@ -5550,7 +5550,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
     const pipeline: Pipeline = [
       {
         name: 'text',
-        new_column: 'TEXT',
+        newColumn: 'TEXT',
         text: 'plop',
       },
     ];
@@ -6149,27 +6149,27 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
           {
             name: 'convert',
             columns: ['foo', 'bar'],
-            data_type: 'boolean',
+            dataType: 'boolean',
           },
           {
             name: 'convert',
             columns: ['date'],
-            data_type: 'date',
+            dataType: 'date',
           },
           {
             name: 'convert',
             columns: ['float'],
-            data_type: 'float',
+            dataType: 'float',
           },
           {
             name: 'convert',
             columns: ['int'],
-            data_type: 'integer',
+            dataType: 'integer',
           },
           {
             name: 'convert',
             columns: ['text'],
-            data_type: 'text',
+            dataType: 'text',
           },
         ];
         const querySteps = translator.translate(pipeline);

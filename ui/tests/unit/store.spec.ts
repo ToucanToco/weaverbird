@@ -826,7 +826,7 @@ describe('action tests', () => {
     it('updateDataset without error', async () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'GoT' },
-        { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+        { name: 'replace', searchColumn: 'characters', toReplace: [['Snow', 'Targaryen']] },
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
       const store = setupMockStore({
@@ -866,7 +866,7 @@ describe('action tests', () => {
     it('updateDataset with error from service', async () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'GoT' },
-        { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+        { name: 'replace', searchColumn: 'characters', toReplace: [['Snow', 'Targaryen']] },
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
       const store = setupMockStore({
@@ -909,7 +909,7 @@ describe('action tests', () => {
     it('updateDataset with uncaught error from service', async () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'GoT' },
-        { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+        { name: 'replace', searchColumn: 'characters', toReplace: [['Snow', 'Targaryen']] },
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
       const store = setupMockStore({
@@ -952,7 +952,7 @@ describe('action tests', () => {
     it('updateDataset with specific step error from service', async () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'GoT' },
-        { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+        { name: 'replace', searchColumn: 'characters', toReplace: [['Snow', 'Targaryen']] },
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
       const store = setupMockStore({
@@ -1153,7 +1153,7 @@ describe('action tests', () => {
           pipelines: {
             coco_l_asticot: [
               { name: 'domain', domain: 'plop' },
-              { name: 'text', new_column: 'yolo', text: 'asticot' },
+              { name: 'text', newColumn: 'yolo', text: 'asticot' },
             ],
             dataset1: [],
             dataset2: [],
@@ -1177,12 +1177,12 @@ describe('action tests', () => {
       expect(mockBackendServiceExecutePipeline).toHaveBeenLastCalledWith(
         [
           { name: 'domain', domain: 'plop' },
-          { name: 'text', new_column: 'yolo', text: 'asticot' },
+          { name: 'text', newColumn: 'yolo', text: 'asticot' },
         ],
         {
           coco_l_asticot: [
             { name: 'domain', domain: 'plop' },
-            { name: 'text', new_column: 'yolo', text: 'asticot' },
+            { name: 'text', newColumn: 'yolo', text: 'asticot' },
           ],
           dataset1: [],
           dataset2: [],
@@ -1210,7 +1210,7 @@ describe('action tests', () => {
         {
           coco_l_asticot: [
             { name: 'domain', domain: 'plop' },
-            { name: 'text', new_column: 'yolo', text: 'asticot' },
+            { name: 'text', newColumn: 'yolo', text: 'asticot' },
           ],
           dataset1: [],
           dataset2: [],

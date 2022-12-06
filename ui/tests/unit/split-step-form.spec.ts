@@ -27,7 +27,7 @@ describe('Split Step Form', () => {
   runner.testValidate({
     testlabel: 'submitted data is valid',
     props: {
-      initialStepValue: { name: 'split', column: 'foo', delimiter: '-', number_cols_to_keep: 3 },
+      initialStepValue: { name: 'split', column: 'foo', delimiter: '-', numberColsToKeep: 3 },
     },
   });
 
@@ -37,7 +37,7 @@ describe('Split Step Form', () => {
   it('should pass down the properties to the input components', async () => {
     const wrapper = runner.shallowMount(undefined, {
       data: {
-        editedStep: { name: 'split', column: 'foo', delimiter: '-', number_cols_to_keep: 3 },
+        editedStep: { name: 'split', column: 'foo', delimiter: '-', numberColsToKeep: 3 },
       },
     });
     await wrapper.vm.$nextTick();

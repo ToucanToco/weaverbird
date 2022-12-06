@@ -19,7 +19,7 @@ export default {
         placeholder: 'Select columns',
       },
     },
-    column_to_pivot: {
+    columnToPivot: {
       type: 'string',
       minLength: 1,
       title: 'Column to pivot',
@@ -28,7 +28,7 @@ export default {
         placeholder: 'Select a column',
       },
     },
-    value_column: {
+    valueColumn: {
       type: 'string',
       minLength: 1,
       title: 'Value colum...',
@@ -37,11 +37,11 @@ export default {
         placeholder: 'Select a column',
       },
     },
-    agg_function: {
+    aggFunction: {
       type: 'string',
       enum: ['sum', 'avg', 'count', 'min', 'max'],
     },
   },
-  required: ['name', 'index', 'column_to_pivot', 'value_column', 'agg_function'],
+  required: ['name', 'index', 'columnToPivot', 'valueColumn', 'aggFunction'],
   additionalProperties: false,
 };

@@ -26,11 +26,11 @@
     />
     <InputTextWidget
       class="numberColsToKeep"
-      v-model.number="editedStep.number_cols_to_keep"
+      v-model.number="editedStep.numberColsToKeep"
       type="number"
       name="Number of columns to keep:"
       placeholder="Enter an integer"
-      data-path=".number_cols_to_keep"
+      data-path=".numberColsToKeep"
       :errors="errors"
     />
     <StepFormButtonbar />

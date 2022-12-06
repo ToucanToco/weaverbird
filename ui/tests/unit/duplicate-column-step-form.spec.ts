@@ -17,10 +17,10 @@ describe('Duplicate Column Step Form', () => {
   runner.testValidationErrors([
     {
       testlabel: 'no submitted data',
-      props: { initialStepValue: { name: 'duplicate', column: '', new_column_name: '' } },
+      props: { initialStepValue: { name: 'duplicate', column: '', newColumnName: '' } },
       errors: [
         { keyword: 'minLength', dataPath: '.column' },
-        { keyword: 'minLength', dataPath: '.new_column_name' },
+        { keyword: 'minLength', dataPath: '.newColumnName' },
       ],
     },
     {
@@ -31,14 +31,14 @@ describe('Duplicate Column Step Form', () => {
           data: [],
         },
       }),
-      data: { editedStep: { name: 'duplicate', column: 'foo', new_column_name: 'columnA' } },
-      errors: [{ keyword: 'columnNameAlreadyUsed', dataPath: '.new_column_name' }],
+      data: { editedStep: { name: 'duplicate', column: 'foo', newColumnName: 'columnA' } },
+      errors: [{ keyword: 'columnNameAlreadyUsed', dataPath: '.newColumnName' }],
     },
   ]);
 
   runner.testValidate({
     testlabel: 'submitted data is valid',
-    props: { initialStepValue: { name: 'duplicate', column: 'foo', new_column_name: 'bar' } },
+    props: { initialStepValue: { name: 'duplicate', column: 'foo', newColumnName: 'bar' } },
   });
 
   runner.testCancel({

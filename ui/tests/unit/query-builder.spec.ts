@@ -123,7 +123,7 @@ describe('Query Builder', () => {
           buildStateWithOnePipeline([
             { name: 'domain', domain: 'foo' },
             { name: 'rename', toRename: [['baz', 'spam']] },
-            { name: 'replace', search_column: 'test', to_replace: [] },
+            { name: 'replace', searchColumn: 'test', toReplace: [] },
           ]),
         );
         wrapper = shallowMount(QueryBuilder, {

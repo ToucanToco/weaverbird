@@ -25,7 +25,7 @@ export default {
       },
       minLength: 1,
     },
-    number_cols_to_keep: {
+    numberColsToKeep: {
       type: 'integer',
       title: 'Number of columns to keep',
       description: 'The number of columns to keep after splitting',
@@ -34,6 +34,6 @@ export default {
       },
     },
   },
-  required: ['column', 'delimiter', 'number_cols_to_keep'],
+  required: ['column', 'delimiter', 'numberColsToKeep'],
   additionalProperties: false,
 };

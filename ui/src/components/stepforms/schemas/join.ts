@@ -7,7 +7,7 @@ export default {
       type: 'string',
       enum: ['join'],
     },
-    right_pipeline: {
+    rightPipeline: {
       type: 'string',
       minLength: 1,
       title: 'Right dataset',
@@ -44,6 +44,6 @@ export default {
       },
     },
   },
-  required: ['name', 'right_pipeline', 'type', 'on'],
+  required: ['name', 'rightPipeline', 'type', 'on'],
   additionalProperties: false,
 };

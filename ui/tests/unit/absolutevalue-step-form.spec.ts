@@ -16,7 +16,7 @@ describe('Absolute value step form', () => {
 
   it('should pass down properties', async () => {
     const wrapper = runner.shallowMount();
-    wrapper.setData({ editedStep: { name: 'absolutevalue', column: 'plop', new_column: 'foo' } });
+    wrapper.setData({ editedStep: { name: 'absolutevalue', column: 'plop', newColumn: 'foo' } });
     await wrapper.vm.$nextTick();
     expect(wrapper.find('.newColumnInput').props('value')).toEqual('foo');
     expect(wrapper.find('.columnInput').props('value')).toEqual('plop');

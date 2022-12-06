@@ -149,7 +149,7 @@ describe('Pipeline interpolator', () => {
               name: 'concatenate',
               columns: ['<%= foo %>', '<%= egg %>'],
               separator: '<%= foo %>',
-              new_column_name: '<%= foo %>',
+              newColumnName: '<%= foo %>',
             },
           ],
         ],
@@ -179,7 +179,7 @@ describe('Pipeline interpolator', () => {
               name: 'concatenate',
               columns: ['bar', 'spam'],
               separator: '<%= foo %>', // NB: separator and new column are not templated in concatenate
-              new_column_name: '<%= foo %>',
+              newColumnName: '<%= foo %>',
             },
           ],
         ],
@@ -227,7 +227,7 @@ describe('Pipeline interpolator', () => {
         name: 'concatenate',
         columns: ['<%= foo %>', '<%= egg %>'],
         separator: '<%= foo %>',
-        new_column_name: '<%= foo %>',
+        newColumnName: '<%= foo %>',
       },
     ];
     expect(translate(pipeline)).toEqual([
@@ -235,7 +235,7 @@ describe('Pipeline interpolator', () => {
         name: 'concatenate',
         columns: ['bar', 'spam'],
         separator: '<%= foo %>',
-        new_column_name: '<%= foo %>',
+        newColumnName: '<%= foo %>',
       },
     ]);
   });
@@ -245,7 +245,7 @@ describe('Pipeline interpolator', () => {
       {
         name: 'convert',
         columns: ['<%= foo %>', '<%= bar %>'],
-        data_type: 'date',
+        dataType: 'date',
       },
     ];
     expect(translate(pipeline)).toEqual(pipeline);
@@ -286,14 +286,14 @@ describe('Pipeline interpolator', () => {
       {
         name: 'text',
         text: '<%= foo %>',
-        new_column: '<%= foo %>',
+        newColumn: '<%= foo %>',
       },
     ];
     expect(translate(step)).toEqual([
       {
         name: 'text',
         text: 'bar',
-        new_column: 'bar',
+        newColumn: 'bar',
       },
     ]);
   });
@@ -366,7 +366,7 @@ describe('Pipeline interpolator', () => {
       {
         name: 'duplicate',
         column: '<%= foo %>',
-        new_column_name: '<%= bar %>',
+        newColumnName: '<%= bar %>',
       },
     ];
     expect(translate(pipeline)).toEqual(pipeline);
@@ -917,14 +917,14 @@ describe('Pipeline interpolator', () => {
     const pipeline: Pipeline = [
       {
         name: 'formula',
-        new_column: 'column3',
+        newColumn: 'column3',
         formula: 'column1 + <%= age %>',
       },
     ];
     expect(translate(pipeline)).toEqual([
       {
         name: 'formula',
-        new_column: 'column3',
+        newColumn: 'column3',
         formula: 'column1 + 42',
       },
     ]);
@@ -934,14 +934,14 @@ describe('Pipeline interpolator', () => {
     const pipeline: Pipeline = [
       {
         name: 'formula',
-        new_column: 'column3',
+        newColumn: 'column3',
         formula: 'column1 + column2',
       },
     ];
     expect(translate(pipeline)).toEqual([
       {
         name: 'formula',
-        new_column: 'column3',
+        newColumn: 'column3',
         formula: 'column1 + column2',
       },
     ]);
@@ -961,7 +961,7 @@ describe('Pipeline interpolator', () => {
     const pipeline: Pipeline = [
       {
         name: 'join',
-        right_pipeline: '<%= right %>',
+        rightPipeline: '<%= right %>',
         type: 'left',
         on: [['<%= col %>', '<%= col %>']],
       },
@@ -973,7 +973,7 @@ describe('Pipeline interpolator', () => {
     const pipeline: Pipeline = [
       {
         name: 'join',
-        right_pipeline: [
+        rightPipeline: [
           {
             name: 'domain',
             domain: 'dondiego',
@@ -982,7 +982,7 @@ describe('Pipeline interpolator', () => {
             name: 'concatenate',
             columns: ['<%= foo %>', '<%= egg %>'],
             separator: '<%= foo %>',
-            new_column_name: '<%= foo %>',
+            newColumnName: '<%= foo %>',
           },
         ],
         type: 'left',
@@ -992,7 +992,7 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual([
       {
         name: 'join',
-        right_pipeline: [
+        rightPipeline: [
           {
             name: 'domain',
             domain: 'dondiego',
@@ -1001,7 +1001,7 @@ describe('Pipeline interpolator', () => {
             name: 'concatenate',
             columns: ['bar', 'spam'],
             separator: '<%= foo %>', // NB: separator and new column are not templated in concatenate
-            new_column_name: '<%= foo %>',
+            newColumnName: '<%= foo %>',
           },
         ],
         type: 'left',
@@ -1025,18 +1025,18 @@ describe('Pipeline interpolator', () => {
       {
         name: 'pivot',
         index: ['<%= foo %>', 'column2'],
-        column_to_pivot: '<%= foo %>',
-        value_column: '<%= egg %>',
-        agg_function: 'sum',
+        columnToPivot: '<%= foo %>',
+        valueColumn: '<%= egg %>',
+        aggFunction: 'sum',
       },
     ];
     expect(translate(pipeline)).toEqual([
       {
         name: 'pivot',
         index: ['bar', 'column2'],
-        column_to_pivot: 'bar',
-        value_column: 'spam',
-        agg_function: 'sum',
+        columnToPivot: 'bar',
+        valueColumn: 'spam',
+        aggFunction: 'sum',
       },
     ]);
   });
@@ -1066,8 +1066,8 @@ describe('Pipeline interpolator', () => {
     const pipeline: Pipeline = [
       {
         name: 'replace',
-        search_column: '<%= age %>',
-        to_replace: [
+        searchColumn: '<%= age %>',
+        toReplace: [
           [12, 22],
           ['13', '23'],
         ],
@@ -1092,8 +1092,8 @@ describe('Pipeline interpolator', () => {
     const pipeline: Pipeline = [
       {
         name: 'replace',
-        search_column: '<%= age %>',
-        to_replace: [
+        searchColumn: '<%= age %>',
+        toReplace: [
           ['<%= age %>', 12],
           ['what?', '<%= age %>'],
         ],
@@ -1102,8 +1102,8 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual([
       {
         name: 'replace',
-        search_column: '<%= age %>',
-        to_replace: [
+        searchColumn: '<%= age %>',
+        toReplace: [
           [42, 12],
           ['what?', 42],
         ],
@@ -1115,8 +1115,8 @@ describe('Pipeline interpolator', () => {
     const pipeline: Pipeline = [
       {
         name: 'replace',
-        search_column: 'column1',
-        to_replace: [
+        searchColumn: 'column1',
+        toReplace: [
           ['<%= age %>', 12],
           [13, '<%= age %>'],
         ],
@@ -1125,8 +1125,8 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline, defaultContext)).toEqual([
       {
         name: 'replace',
-        search_column: 'column1',
-        to_replace: [
+        searchColumn: 'column1',
+        toReplace: [
           [42, 12],
           [13, 42],
         ],
@@ -1176,7 +1176,7 @@ describe('Pipeline interpolator', () => {
         name: 'split',
         column: '<%= foo %>',
         delimiter: '<%= egg %>',
-        number_cols_to_keep: 3,
+        numberColsToKeep: 3,
       },
     ];
     expect(translate(pipeline)).toEqual([
@@ -1184,7 +1184,7 @@ describe('Pipeline interpolator', () => {
         name: 'split',
         column: 'bar',
         delimiter: '<%= egg %>',
-        number_cols_to_keep: 3,
+        numberColsToKeep: 3,
       },
     ]);
   });
@@ -1194,8 +1194,8 @@ describe('Pipeline interpolator', () => {
       {
         name: 'substring',
         column: '<%= column %>',
-        start_index: 1,
-        end_index: 1,
+        startIndex: 1,
+        endIndex: 1,
       },
     ];
     expect(translate(pipeline)).toEqual(pipeline);
@@ -1205,7 +1205,7 @@ describe('Pipeline interpolator', () => {
     const pipeline: Pipeline = [
       {
         name: 'top',
-        rank_on: '<%= foo %>',
+        rankOn: '<%= foo %>',
         sort: 'asc',
         limit: '<%= age %>',
         groups: ['<%= foo %>', '<%= egg %>'],
@@ -1214,7 +1214,7 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual([
       {
         name: 'top',
-        rank_on: 'bar',
+        rankOn: 'bar',
         sort: 'asc',
         limit: 42,
         groups: ['bar', 'spam'],
@@ -1238,8 +1238,8 @@ describe('Pipeline interpolator', () => {
         name: 'unpivot',
         keep: ['<%= foo %>', '<%= egg %>', 'column2'],
         unpivot: ['<%= foo %>', '<%= egg %>', 'column4'],
-        unpivot_column_name: '<%= foo %>',
-        value_column_name: '<%= foo %>',
+        unpivotColumnName: '<%= foo %>',
+        valueColumnName: '<%= foo %>',
         dropna: true,
       },
     ];
@@ -1248,8 +1248,8 @@ describe('Pipeline interpolator', () => {
         name: 'unpivot',
         keep: ['bar', 'spam', 'column2'],
         unpivot: ['bar', 'spam', 'column4'],
-        unpivot_column_name: '<%= foo %>',
-        value_column_name: '<%= foo %>',
+        unpivotColumnName: '<%= foo %>',
+        valueColumnName: '<%= foo %>',
         dropna: true,
       },
     ]);

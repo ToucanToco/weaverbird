@@ -32,7 +32,7 @@ describe('Replace Text Step Form', () => {
   runner.testCancel();
   runner.testResetSelectedIndex();
 
-  it('should pass down "search_column" to ColumnPicker', async () => {
+  it('should pass down "searchColumn" to ColumnPicker', async () => {
     const wrapper = runner.shallowMount(
       {},
       {

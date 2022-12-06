@@ -33,7 +33,7 @@ export default {
         placeholder: 'Columns to unpivot',
       },
     },
-    unpivot_column_name: {
+    unpivotColumnName: {
       type: 'string',
       minLength: 1,
       title: 'Name of the new dimension column',
@@ -42,7 +42,7 @@ export default {
         placeholder: 'Enter a new column name',
       },
     },
-    value_column_name: {
+    valueColumnName: {
       type: 'string',
       minLength: 1,
       title: 'Name of the new value column',
@@ -58,6 +58,6 @@ export default {
       description: 'Whether null values have to be kept or discarded',
     },
   },
-  required: ['name', 'keep', 'unpivot', 'unpivot_column_name', 'value_column_name', 'dropna'],
+  required: ['name', 'keep', 'unpivot', 'unpivotColumnName', 'valueColumnName', 'dropna'],
   additionalProperties: false,
 };

@@ -117,7 +117,7 @@ describe('DateExtract Step Form', () => {
             name: 'dateextract',
             column: 'foo',
             operation: 'day',
-            new_column_name: 'bar',
+            newColumnName: 'bar',
           },
         },
       },
@@ -125,7 +125,7 @@ describe('DateExtract Step Form', () => {
     expect(wrapper.vm.$data.editedStep.dateInfo).toEqual(['day']);
     expect(wrapper.vm.$data.editedStep.newColumns).toEqual(['bar']);
     expect(wrapper.vm.$data.editedStep.operation).toBeUndefined();
-    expect(wrapper.vm.$data.editedStep.new_column_name).toBeUndefined();
+    expect(wrapper.vm.$data.editedStep.newColumnName).toBeUndefined();
   });
 
   it('should set newColumns automatically at submit', () => {

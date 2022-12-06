@@ -91,7 +91,7 @@ describe('If...Then...Else Step Form', () => {
   runner.testResetSelectedIndex();
 
   describe('Warning new column name', () => {
-    it('should report a warning when new_column is an already existing column name', async () => {
+    it('should report a warning when newColumn is an already existing column name', async () => {
       const initialState = {
         dataset: {
           headers: [{ name: 'columnA' }],
@@ -114,7 +114,7 @@ describe('If...Then...Else Step Form', () => {
       );
     });
 
-    it('should not report any warning if new_column is not an already existing column name', async () => {
+    it('should not report any warning if newColumn is not an already existing column name', async () => {
       const initialState = {
         dataset: {
           headers: [{ name: 'columnA' }],

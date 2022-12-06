@@ -92,7 +92,7 @@ describe('Widget RenameWidget', () => {
   });
 
   describe('Warning', () => {
-    it('should report a warning when new_column is an already existing column name', () => {
+    it('should report a warning when newColumn is an already existing column name', () => {
       const store = setupMockStore({ dataset: { headers: [{ name: 'columnA' }], data: [] } });
       const wrapper = shallowMount(RenameWidget, {
         propsData: { value: ['yolo', 'columnA'] },
@@ -105,7 +105,7 @@ describe('Widget RenameWidget', () => {
       );
     });
 
-    it('should not report any warning if new_column is not an already existing column name', () => {
+    it('should not report any warning if newColumn is not an already existing column name', () => {
       const store = setupMockStore({ dataset: { headers: [{ name: 'columnA' }], data: [] } });
       const wrapper = shallowMount(RenameWidget, {
         propsData: { value: ['yolo', 'columnB'] },

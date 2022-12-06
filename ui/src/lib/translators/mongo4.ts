@@ -23,7 +23,7 @@ function transformConvert(step: Readonly<ConvertStep>): MongoStep {
     integer: 'long', // better to cast into 64-bit integers. 32-bit integers ('int') cannot be casted to dates
     text: 'string',
   };
-  const mongoType = typeMap[step.data_type] ?? '';
+  const mongoType = typeMap[step.dataType] ?? '';
   for (const column of step.columns) {
     // mongo cannot cast integers into date but only long into date, so we
     // manage the cast from int to long when nedded

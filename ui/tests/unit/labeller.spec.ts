@@ -96,7 +96,7 @@ describe('Labeller', () => {
       name: 'concatenate',
       columns: ['Foo', 'Bar'],
       separator: '',
-      new_column_name: 'whatever',
+      newColumnName: 'whatever',
     };
     expect(hrl(step)).toEqual('Concatenate columns "Foo", "Bar"');
   });
@@ -105,7 +105,7 @@ describe('Labeller', () => {
     const step: S.ConvertStep = {
       name: 'convert',
       columns: ['Foo', 'Bar'],
-      data_type: 'integer',
+      dataType: 'integer',
     };
     expect(hrl(step)).toEqual('Convert columns "Foo", "Bar" into integer');
   });
@@ -148,7 +148,7 @@ describe('Labeller', () => {
     const step: S.DuplicateColumnStep = {
       name: 'duplicate',
       column: 'column1',
-      new_column_name: 'column2',
+      newColumnName: 'column2',
     };
     expect(hrl(step)).toEqual('Duplicate "column1" in "column2"');
     const camelCaseStep = {
@@ -437,7 +437,7 @@ describe('Labeller', () => {
   it('generates label for formula steps', () => {
     const step: S.FormulaStep = {
       name: 'formula',
-      new_column: 'column3',
+      newColumn: 'column3',
       formula: 'column1 + column2',
     };
     expect(hrl(step)).toEqual('Compute "column1 + column2" in "column3"');
@@ -479,7 +479,7 @@ describe('Labeller', () => {
   it('generates label for join steps', () => {
     const step: S.JoinStep = {
       name: 'join',
-      right_pipeline: 'right',
+      rightPipeline: 'right',
       type: 'left',
       on: [['col', 'col']],
     };
@@ -506,9 +506,9 @@ describe('Labeller', () => {
     const step: S.PivotStep = {
       name: 'pivot',
       index: ['column1', 'column2'],
-      column_to_pivot: 'column3',
-      value_column: 'column4',
-      agg_function: 'sum',
+      columnToPivot: 'column3',
+      valueColumn: 'column4',
+      aggFunction: 'sum',
     };
     expect(hrl(step)).toEqual('Pivot column "column3"');
   });
@@ -546,8 +546,8 @@ describe('Labeller', () => {
   it('generates precise label for simple replace steps', () => {
     const step: S.ReplaceStep = {
       name: 'replace',
-      search_column: 'column1',
-      to_replace: [[4, 2]],
+      searchColumn: 'column1',
+      toReplace: [[4, 2]],
     };
     expect(hrl(step)).toEqual('Replace 4 with 2 in column "column1"');
   });
@@ -555,8 +555,8 @@ describe('Labeller', () => {
   it('generates label for multi-replace steps', () => {
     const step: S.ReplaceStep = {
       name: 'replace',
-      search_column: 'column1',
-      to_replace: [
+      searchColumn: 'column1',
+      toReplace: [
         [4, 2],
         [5, 3],
       ],
@@ -598,7 +598,7 @@ describe('Labeller', () => {
       name: 'split',
       column: 'foo',
       delimiter: '-',
-      number_cols_to_keep: 3,
+      numberColsToKeep: 3,
     };
     expect(hrl(step)).toEqual('Split column "foo"');
   });
@@ -626,8 +626,8 @@ describe('Labeller', () => {
     const step: S.SubstringStep = {
       name: 'substring',
       column: 'foo',
-      start_index: 0,
-      end_index: -1,
+      startIndex: 0,
+      endIndex: -1,
     };
     expect(hrl(step)).toEqual('Extract substring from "foo"');
   });
@@ -636,7 +636,7 @@ describe('Labeller', () => {
     const step: S.AddTextColumnStep = {
       name: 'text',
       text: 'Hello',
-      new_column: 'test',
+      newColumn: 'test',
     };
     expect(hrl(step)).toEqual('Add text column "test"');
     const camelCasestep = {
@@ -659,7 +659,7 @@ describe('Labeller', () => {
   it('generates label for top steps', () => {
     const step: S.TopStep = {
       name: 'top',
-      rank_on: 'column1',
+      rankOn: 'column1',
       sort: 'asc',
       limit: 42,
     };
@@ -687,8 +687,8 @@ describe('Labeller', () => {
       name: 'unpivot',
       keep: ['column1', 'column2'],
       unpivot: ['column3', 'column4'],
-      unpivot_column_name: 'column5',
-      value_column_name: 'column6',
+      unpivotColumnName: 'column5',
+      valueColumnName: 'column6',
       dropna: true,
     };
     expect(hrl(step)).toEqual('Unpivot columns "column3", "column4"');

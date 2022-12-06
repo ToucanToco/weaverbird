@@ -117,10 +117,6 @@ function capitalize(label: string) {
   return label[0].toUpperCase() + label.slice(1).toLocaleLowerCase();
 }
 
-function extractNewColumn(obj: object): string | undefined {
-  return obj.newColumn ? obj.newColumn : obj.new_column;
-}
-
 /**
  * The `Labeller` class provides a human-readable label for each step.
  */
@@ -179,7 +175,7 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   convert(step: Readonly<S.ConvertStep>) {
-    return `Convert columns ${formatMulticol(step.columns)} into ${step.data_type}`;
+    return `Convert columns ${formatMulticol(step.columns)} into ${step.dataType}`;
   }
 
   customsql(_step: Readonly<S.CustomSqlStep>) {
@@ -220,8 +216,7 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   duplicate(step: Readonly<S.DuplicateColumnStep>) {
-    const newColumn = step.new_column_name ? step.new_column_name : step.newColumnName;
-    return `Duplicate "${step.column}" in "${newColumn}"`;
+    return `Duplicate "${step.column}" in "${step.newColumnName}"`;
   }
 
   duration(step: Readonly<S.ComputeDurationStep>) {
@@ -244,7 +239,7 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   formula(step: Readonly<S.FormulaStep>) {
-    return `Compute "${step.formula}" in "${extractNewColumn(step)}"`;
+    return `Compute "${step.formula}" in "${step.newColumn}"`;
   }
 
   fromdate(step: Readonly<S.FromDateStep>) {
@@ -262,7 +257,7 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   join(step: Readonly<S.JoinStep>) {
-    return `Join dataset "${step.right_pipeline}"`;
+    return `Join dataset "${step.rightPipeline}"`;
   }
 
   lowercase(step: Readonly<S.ToLowerStep>) {
@@ -278,7 +273,7 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   pivot(step: Readonly<S.PivotStep>) {
-    return `Pivot column "${step.column_to_pivot}"`;
+    return `Pivot column "${step.columnToPivot}"`;
   }
 
   rank(step: Readonly<S.RankStep>) {
@@ -299,10 +294,10 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   replace(step: Readonly<S.ReplaceStep>) {
-    if (step.to_replace.length === 1) {
-      return `Replace ${step.to_replace[0][0]} with ${step.to_replace[0][1]} in column "${step.search_column}"`;
+    if (step.toReplace.length === 1) {
+      return `Replace ${step.toReplace[0][0]} with ${step.toReplace[0][1]} in column "${step.searchColumn}"`;
     } else {
-      return `Replace values in column "${step.search_column}"`;
+      return `Replace values in column "${step.searchColumn}"`;
     }
   }
 
@@ -340,7 +335,7 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   text(step: Readonly<S.AddTextColumnStep>) {
-    return `Add text column "${extractNewColumn(step)}"`;
+    return `Add text column "${step.newColumn}"`;
   }
 
   todate(step: Readonly<S.ToDateStep>) {
@@ -348,7 +343,7 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   top(step: Readonly<S.TopStep>) {
-    return `Keep top ${step.limit} values in column "${step.rank_on}"`;
+    return `Keep top ${step.limit} values in column "${step.rankOn}"`;
   }
 
   totals(step: Readonly<S.AddTotalRowsStep>) {

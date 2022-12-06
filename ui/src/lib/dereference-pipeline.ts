@@ -53,7 +53,7 @@ export function dereferencePipelines(
       case 'join':
         dereferencedPipeline.push({
           ...step,
-          right_pipeline: _getPipelineForDomain(step.right_pipeline as string, pipelines),
+          rightPipeline: _getPipelineForDomain(step.rightPipeline as string, pipelines),
         });
         break;
 
@@ -74,7 +74,7 @@ function getStepReferences(step: PipelineStep): Reference[] {
       return step.pipelines;
 
     case 'join':
-      return [step.right_pipeline];
+      return [step.rightPipeline];
 
     default:
       return [];

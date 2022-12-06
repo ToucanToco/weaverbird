@@ -19,10 +19,10 @@
     <AutocompleteWidget
       class="typeInput"
       name="To data type:"
-      v-model="editedStep.data_type"
+      v-model="editedStep.dataType"
       :options="dataTypes"
       placeholder="Select a data type"
-      data-path=".data_type"
+      data-path=".dataType"
       :errors="errors"
     />
     <StepFormButtonbar />
@@ -49,7 +49,7 @@ import BaseStepForm from './StepForm.vue';
 export default class ConvertStepForm extends BaseStepForm<ConvertStep> {
   stepname: PipelineStepName = 'convert';
 
-  @Prop({ type: Object, default: () => ({ name: 'convert', columns: [], data_type: '' }) })
+  @Prop({ type: Object, default: () => ({ name: 'convert', columns: [], dataType: '' }) })
   declare initialStepValue: ConvertStep;
 
   readonly title: string = 'Convert Columns Data Types';

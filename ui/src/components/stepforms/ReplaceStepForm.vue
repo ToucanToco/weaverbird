@@ -8,10 +8,10 @@
     />
     <ColumnPicker
       class="searchColumnInput"
-      v-model="editedStep.search_column"
+      v-model="editedStep.searchColumn"
       name="Search in column..."
       placeholder="Enter a column"
-      data-path=".search_column"
+      data-path=".searchColumn"
       :errors="errors"
     />
     <ListWidget
@@ -22,7 +22,7 @@
       :defaultItem="[]"
       :widget="replaceWidget"
       :automatic-new-field="false"
-      data-path=".to_replace"
+      data-path=".toReplace"
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
@@ -61,7 +61,7 @@ export default class ReplaceStepForm extends BaseStepForm<ReplaceStep> {
 
   @VQBModule.State variableDelimiters?: VariableDelimiters;
 
-  @Prop({ type: Object, default: () => ({ name: 'replace', search_column: '', to_replace: [[]] }) })
+  @Prop({ type: Object, default: () => ({ name: 'replace', searchColumn: '', toReplace: [[]] }) })
   declare initialStepValue: ReplaceStep;
 
   @VQBModule.Getter columnTypes!: ColumnTypeMapping;
@@ -70,28 +70,28 @@ export default class ReplaceStepForm extends BaseStepForm<ReplaceStep> {
   replaceWidget = ReplaceWidget;
 
   get stepSelectedColumn() {
-    return this.editedStep.search_column;
+    return this.editedStep.searchColumn;
   }
 
   set stepSelectedColumn(colname: string) {
-    this.editedStep.search_column = colname;
+    this.editedStep.searchColumn = colname;
   }
 
   get toReplace() {
-    if (this.editedStep.to_replace.length) {
-      return this.editedStep.to_replace;
+    if (this.editedStep.toReplace.length) {
+      return this.editedStep.toReplace;
     } else {
       return [[]];
     }
   }
 
   set toReplace(newval) {
-    this.editedStep.to_replace = [...newval];
+    this.editedStep.toReplace = [...newval];
   }
 
   submit() {
-    const type = this.columnTypes[this.editedStep.search_column];
-    for (const tuple of this.editedStep.to_replace) {
+    const type = this.columnTypes[this.editedStep.searchColumn];
+    for (const tuple of this.editedStep.toReplace) {
       if (type !== undefined) {
         tuple[0] = castFromString(tuple[0], type);
         tuple[1] = castFromString(tuple[1], type);
