@@ -96,7 +96,18 @@ describe('ActionToolbarButton active', () => {
       store: setupMockStore(),
     });
     expect(wrapper.exists()).toBeTruthy();
-    assertMenuEmitsExpected(wrapper, ['text', 'formula', 'ifthenelse', 'custom']);
+
+
+    const actionsWrappers = wrapper.findAll('.action-menu__option');
+    const actionsLabels = actionsWrappers.wrappers.map((w) => w.props().label);
+
+    expect(actionsLabels).toEqual([
+      'Add text column',
+      'Add formula column',
+      'Add conditional column',
+      'Add custom step',
+      'Add custom sql step',
+    ]);
   });
 
   it('should instantiate a Filter button with the right list of actions', () => {
@@ -151,7 +162,7 @@ describe('ActionToolbarButton active', () => {
     ]);
   });
 
-  it('should not display unsupported steps', () => {
+  it('should display unsupported steps as disabled', () => {
     // the pandas translator doesn't support custom steps
     const store = setupMockStore(
       buildStateWithOnePipeline([], { selectedColumns: ['foo'], translator: 'pandas' }),
@@ -162,12 +173,10 @@ describe('ActionToolbarButton active', () => {
       store,
     });
     expect(wrapper.exists()).toBeTruthy();
-    assertMenuEmitsExpected(wrapper, [
-      'text',
-      'formula',
-      'ifthenelse',
-      // not 'custom'
-    ]);
+
+    const actionsWrappers = wrapper.findAll('.action-menu__option');
+    const actionsIsDisabled = actionsWrappers.wrappers.map((w) => w.props().isDisabled);
+    expect(actionsIsDisabled).toEqual([false, false, false, true, true]);
   });
 
   it('should instantiate a Date button with the right list of actions', () => {
