@@ -1,4 +1,17 @@
+const { resolve } = require('path');
 const { mergeConfig } = require('vite');
+
+// We can't use ES imports until storybook 7.
+// In the meantime, just keep here a copy of part of the vite config (instead of an import)
+const originalViteConfigResolve = {
+  extensions: ['.mjs', '.js', '.ts', '.json', '.node', '.vue'],
+  alias: [
+    {
+      find: '@',
+      replacement: resolve(__dirname, '../src'),
+    },
+  ],
+};
 
 module.exports = {
   stories: ['../stories/**/*.stories.@(js|jsx|ts|tsx)'],
@@ -17,9 +30,7 @@ module.exports = {
   async viteFinal(config) {
     // Merge custom configuration into the default config
     return mergeConfig(config, {
-      // Use the same "resolve" configuration as your app
-      // @ts-ignore
-      resolve: (await require('../vite.config.ts')).resolve,
+      resolve: originalViteConfigResolve,
     });
   },
 };
