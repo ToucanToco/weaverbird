@@ -253,8 +253,7 @@ class StepLabeller implements StepMatcher<string> {
 
   hierarchy(step: Readonly<S.HierarchyStep>) {
     const prefix = `Set up a geographical hierarchy in "${step.hierarchyLevelColumn}"`;
-    const hierarchyString =
-      step.hierarchy.length > 1 ? ': ' + step.hierarchy.reduce((a, b) => `${a} > ${b}`) : '';
+    const hierarchyString = step.hierarchy.length > 1 ? ': ' + step.hierarchy.join(' > ') : '';
     return prefix + hierarchyString;
   }
 
