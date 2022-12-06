@@ -6,7 +6,7 @@ import type { GetterTree } from 'vuex';
 
 import type { BackendError, BackendWarning } from '@/lib/backend';
 import { getPipelineNamesReferencing } from '@/lib/dereference-pipeline';
-import { type VqbTranslator,DISPLAY_UNSUPPORTED_STEPS_TRANSLATORS, getTranslator } from '@/lib/translators';
+import { getTranslator } from '@/lib/translators';
 
 import type { VQBState } from './state';
 import { activePipeline, currentPipeline, inactivePipeline } from './state';
@@ -15,7 +15,6 @@ const getters: GetterTree<VQBState, any> = {
   translator: (state: VQBState) => state.translator,
   unsupportedSteps: (state: VQBState) => getTranslator(state.translator).unsupportedSteps,
   supportedSteps: (state: VQBState) => getTranslator(state.translator).supportedSteps,
-  displayUnsupportedSteps: (state: VQBState) => DISPLAY_UNSUPPORTED_STEPS_TRANSLATORS.includes(state.translator as VqbTranslator),
 
   pipelines: (state: VQBState) => state.pipelines,
   pipelinesNames: (state: VQBState) => Object.keys(state.pipelines),

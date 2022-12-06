@@ -104,5 +104,4 @@ export type VqbTranslator =
   | 'mysql'
   | 'postgresql'
   | 'redshift';
-
-export const DISPLAY_UNSUPPORTED_STEPS_TRANSLATORS: VqbTranslator[] = ['athena', 'google-big-query', 'mysql', 'postgresql', 'redshift', 'snowflake'];
+  

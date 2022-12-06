@@ -71,7 +71,6 @@ export default class ActionToolbarButton extends Vue {
   @VQBModule.Action selectStep!: ({ index }: { index: number }) => void;
   @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
   @VQBModule.Mutation closeStepForm!: () => void;
-  @VQBModule.Getter displayUnsupportedSteps!: boolean;
 
   get isDisabled() {
     return (stepName: S.PipelineStepName) => this.unsupportedSteps.includes(stepName);
@@ -107,12 +106,7 @@ export default class ActionToolbarButton extends Vue {
 
   // Filter out unsupported steps
   get items() {
-    if (this.displayUnsupportedSteps) {
-      return ACTION_CATEGORIES[this.category];
-    }
-    return ACTION_CATEGORIES[this.category].filter(
-      (action) => !this.unsupportedSteps.includes(action.name),
-    );
+    return ACTION_CATEGORIES[this.category];
   }
 }
 </script>

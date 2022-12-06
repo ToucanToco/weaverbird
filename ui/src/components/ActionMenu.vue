@@ -5,19 +5,16 @@
         <div v-if="visiblePanel == 1">
           <div class="action-menu__panel">
             <action-menu-option
-              v-if="isStepSupported('rename')"
               label="Rename column"
               :isDisabled="isDisabled('rename')"
               @actionClicked="openStep('rename')"
             />
             <action-menu-option
-              v-if="isStepSupported('duplicate')"
               label="Duplicate column"
               :isDisabled="isDisabled('duplicate')"
               @actionClicked="openStep('duplicate')"
             />
             <action-menu-option
-              v-if="isStepSupported('delete')"
               :isDisabled="isDisabled('delete')"
               label="Delete column"
               @actionClicked="createDeleteColumnStep"
@@ -29,7 +26,7 @@
             />
             <div
               class="action-menu__option--top-bordered"
-              v-if="isStepSupported('filter') && isStepSupported('uniquegroups')"
+              v-if="!isDisabled('filter') && !isDisabled('uniquegroups')"
             >
               <ListUniqueValues
                 v-if="currentUnique"
@@ -57,49 +54,41 @@
             </div>
             <action-menu-option
               class="action-menu__option--top-bordered"
-              v-if="isStepSupported('filter')"
               :isDisabled="isDisabled('filter')"
               label="Filter values"
               @actionClicked="openStep('filter')"
             />
             <action-menu-option
-              v-if="isStepSupported('top')"
               :isDisabled="isDisabled('top')"
               label="Top N values"
               @actionClicked="openStep('top')"
             />
             <action-menu-option
-              v-if="isStepSupported('fillna')"
               :isDisabled="isDisabled('fillna')"
               label="Fill null values"
               @actionClicked="openStep('fillna')"
             />
             <action-menu-option
-              v-if="isStepSupported('replace')"
               :isDisabled="isDisabled('replace')"
               label="Replace values"
               @actionClicked="openStep('replace')"
             />
             <action-menu-option
-              v-if="isStepSupported('sort')"
               :isDisabled="isDisabled('sort')"
               label="Sort values"
               @actionClicked="openStep('sort')"
             />
             <action-menu-option
-              v-if="isStepSupported('trim')"
               :isDisabled="isDisabled('trim')"
               label="Trim spaces"
               @actionClicked="openStep('trim')"
             />
             <action-menu-option
-              v-if="isStepSupported('uniquegroups')"
               :isDisabled="isDisabled('uniquegroups')"
               label="Get unique values"
               @actionClicked="createUniqueGroupsStep"
             />
             <action-menu-option
-              v-if="isStepSupported('statistics')"
               :isDisabled="isDisabled('statistics')"
               label="Compute Statistics"
               @actionClicked="openStep('statistics')"
@@ -163,18 +152,11 @@ export default class ActionMenu extends Vue {
   @VQBModule.Getter pipeline!: Pipeline;
   @VQBModule.Getter columnHeaders!: Pipeline;
   @VQBModule.Getter unsupportedSteps!: PipelineStepName[];
-  @VQBModule.Getter displayUnsupportedSteps!: boolean;
 
   get currentUnique() {
     return (
       this.columnHeaders.find((hdr) => hdr.name === this.columnName) as DataSetColumn | undefined
     )?.uniques;
-  }
-
-  get isStepSupported() {
-    return (stepName: PipelineStepName): boolean => {
-      return this.displayUnsupportedSteps ? true : this.isDisabled(stepName);
-    };
   }
 
   get isDisabled() {
