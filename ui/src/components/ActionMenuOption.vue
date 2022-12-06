@@ -5,6 +5,12 @@
     :class="{ 'action-menu__option--disabled': isDisabled }"
     data-cy="weaverbird-action-menu-option"
     @click="onActionClicked"
+    v-tooltip="{
+      targetClasses: 'has-weaverbird__tooltip',
+      classes: 'weaverbird__tooltip',
+      content: !isDisabled ? '' : 'This step is not available for this connector',
+      placement: 'bottom-center',
+    }"
   >
     {{ label }}
   </div>
@@ -25,7 +31,7 @@ export default class ActionMenuOption extends Vue {
   isDisabled!: boolean;
 
   onActionClicked() {
-    if (this.isDisabled) return; // TODO
+    if (this.isDisabled) return;
     this.$emit('actionClicked');
   }
 }
