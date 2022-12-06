@@ -812,6 +812,7 @@ function transformFromDate(step: Readonly<S.FromDateStep>): MongoStep {
         { case: { $eq: ['$_vqbTempMonth', '11'] }, then: 'Nov' },
         { case: { $eq: ['$_vqbTempMonth', '12'] }, then: 'Dec' },
       ],
+      default: null,
     },
   };
 
@@ -831,6 +832,7 @@ function transformFromDate(step: Readonly<S.FromDateStep>): MongoStep {
         { case: { $eq: ['$_vqbTempMonth', '11'] }, then: 'November' },
         { case: { $eq: ['$_vqbTempMonth', '12'] }, then: 'December' },
       ],
+      default: null,
     },
   };
 
