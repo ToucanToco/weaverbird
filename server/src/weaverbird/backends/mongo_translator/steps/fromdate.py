@@ -21,6 +21,7 @@ _SMALL_MONTH_REPLACE = {
             {"case": {"$eq": ["$_vqbTempMonth", "11"]}, "then": "Nov"},
             {"case": {"$eq": ["$_vqbTempMonth", "12"]}, "then": "Dec"},
         ],
+        "default": None,
     },
 }
 
@@ -40,6 +41,7 @@ _FULL_MONTH_REPLACE = {
             {"case": {"$eq": ["$_vqbTempMonth", "11"]}, "then": "November"},
             {"case": {"$eq": ["$_vqbTempMonth", "12"]}, "then": "December"},
         ],
+        "default": None,
     },
 }
 

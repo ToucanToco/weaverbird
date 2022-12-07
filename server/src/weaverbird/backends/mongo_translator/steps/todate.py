@@ -193,7 +193,8 @@ MONTH_REPLACEMENT_STEP: MongoStep = {
                     "then": month_number,
                 }
                 for month_number, month_names in MONTH_NUMBER_TO_NAMES.items()
-            ]
+            ],
+            "default": None,
         }
     }
 }

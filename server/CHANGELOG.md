@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+- MongoTranslator : We make sure the `$switch` aggregation should always have a `default` key
+  field set from the mongo query to prevent "PlanExecutor error".
+
 ## [0.27.2] - 2022-11-24
 
 - PyPika: Cast columns before applying a regex operation to them when using the `matches` or `notmatches` operator.
