@@ -1,5 +1,12 @@
 # Changelog (weaverbird python package)
 
+## Unreleased
+
+### Fixed
+
+- MongoTranslator : We make sure the `$switch` aggregation should always have a `default` key
+  field set from the mongo query to prevent "PlanExecutor error".
+
 ## [0.26.2] - 2022-11-07
 
 - Pypika: Snowflake translator custom queryBuilder adds double quotes to `WITH` statements in order to prevent
