@@ -4,36 +4,29 @@
       <transition name="slide-left" mode="out-in">
         <div v-if="visiblePanel == 1">
           <div class="action-menu__panel">
-            <div
-              class="action-menu__option"
-              v-if="isStepSupported('rename')"
-              @click="openStep('rename')"
-            >
-              Rename column
-            </div>
-            <div
-              class="action-menu__option"
-              v-if="isStepSupported('duplicate')"
-              @click="openStep('duplicate')"
-            >
-              Duplicate column
-            </div>
-            <div
-              class="action-menu__option"
-              v-if="isStepSupported('delete')"
-              @click="createDeleteColumnStep"
-            >
-              Delete column
-            </div>
-            <div
-              class="action-menu__option action-menu__option--top-bordered"
-              @click="visiblePanel = 2"
-            >
-              Other operations
-            </div>
+            <action-menu-option
+              label="Rename column"
+              :isDisabled="isDisabled('rename')"
+              @actionClicked="openStep('rename')"
+            />
+            <action-menu-option
+              label="Duplicate column"
+              :isDisabled="isDisabled('duplicate')"
+              @actionClicked="openStep('duplicate')"
+            />
+            <action-menu-option
+              :isDisabled="isDisabled('delete')"
+              label="Delete column"
+              @actionClicked="createDeleteColumnStep"
+            />
+            <action-menu-option
+              class="action-menu__option--top-bordered"
+              label="Other operations"
+              @actionClicked="visiblePanel = 2"
+            />
             <div
               class="action-menu__option--top-bordered"
-              v-if="isStepSupported('filter') && isStepSupported('uniquegroups')"
+              v-if="!isDisabled('filter') && !isDisabled('uniquegroups')"
             >
               <ListUniqueValues
                 v-if="currentUnique"
@@ -59,58 +52,47 @@
             <div class="action-menu__option--back" @click="visiblePanel = 1">
               <FAIcon class="action-menu__option__back-icon" icon="angle-left" /> BACK
             </div>
-            <div
-              class="action-menu__option action-menu__option--top-bordered"
-              v-if="isStepSupported('filter')"
-              @click="openStep('filter')"
-            >
-              Filter values
-            </div>
-            <div class="action-menu__option" v-if="isStepSupported('top')" @click="openStep('top')">
-              Top N values
-            </div>
-            <div
-              class="action-menu__option"
-              v-if="isStepSupported('fillna')"
-              @click="openStep('fillna')"
-            >
-              Fill null values
-            </div>
-            <div
-              class="action-menu__option"
-              v-if="isStepSupported('replace')"
-              @click="openStep('replace')"
-            >
-              Replace values
-            </div>
-            <div
-              class="action-menu__option"
-              v-if="isStepSupported('sort')"
-              @click="openStep('sort')"
-            >
-              Sort values
-            </div>
-            <div
-              class="action-menu__option"
-              v-if="isStepSupported('trim')"
-              @click="openStep('trim')"
-            >
-              Trim spaces
-            </div>
-            <div
-              class="action-menu__option"
-              v-if="isStepSupported('uniquegroups')"
-              @click="createUniqueGroupsStep"
-            >
-              Get unique values
-            </div>
-            <div
-              class="action-menu__option"
-              v-if="isStepSupported('statistics')"
-              @click="openStep('statistics')"
-            >
-              Compute Statistics
-            </div>
+            <action-menu-option
+              class="action-menu__option--top-bordered"
+              :isDisabled="isDisabled('filter')"
+              label="Filter values"
+              @actionClicked="openStep('filter')"
+            />
+            <action-menu-option
+              :isDisabled="isDisabled('top')"
+              label="Top N values"
+              @actionClicked="openStep('top')"
+            />
+            <action-menu-option
+              :isDisabled="isDisabled('fillna')"
+              label="Fill null values"
+              @actionClicked="openStep('fillna')"
+            />
+            <action-menu-option
+              :isDisabled="isDisabled('replace')"
+              label="Replace values"
+              @actionClicked="openStep('replace')"
+            />
+            <action-menu-option
+              :isDisabled="isDisabled('sort')"
+              label="Sort values"
+              @actionClicked="openStep('sort')"
+            />
+            <action-menu-option
+              :isDisabled="isDisabled('trim')"
+              label="Trim spaces"
+              @actionClicked="openStep('trim')"
+            />
+            <action-menu-option
+              :isDisabled="isDisabled('uniquegroups')"
+              label="Get unique values"
+              @actionClicked="createUniqueGroupsStep"
+            />
+            <action-menu-option
+              :isDisabled="isDisabled('statistics')"
+              label="Compute Statistics"
+              @actionClicked="openStep('statistics')"
+            />
           </div>
         </div>
       </transition>
@@ -134,6 +116,7 @@ import type {
 import { VQBModule } from '@/store';
 import type { MutationCallbacks } from '@/store/mutations';
 
+import ActionMenuOption from './ActionMenuOption.vue';
 import Popover from './Popover.vue';
 
 enum VisiblePanel {
@@ -147,6 +130,7 @@ enum VisiblePanel {
     Popover,
     ListUniqueValues,
     FAIcon,
+    ActionMenuOption,
   },
 })
 export default class ActionMenu extends Vue {
@@ -175,8 +159,8 @@ export default class ActionMenu extends Vue {
     )?.uniques;
   }
 
-  get isStepSupported() {
-    return (stepName: PipelineStepName): boolean => !this.unsupportedSteps.includes(stepName);
+  get isDisabled() {
+    return (stepName: PipelineStepName): boolean => this.unsupportedSteps.includes(stepName);
   }
 
   @VQBModule.Action selectStep!: ({ index }: { index: number }) => void;
@@ -256,25 +240,6 @@ export default class ActionMenu extends Vue {
   }
 }
 
-.action-menu__option {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  font-size: 13px;
-  padding: 10px 12px;
-  line-height: 20px;
-  justify-content: space-between;
-  position: relative;
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.03);
-    color: $active-color;
-  }
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
 .action-menu__option--top-bordered {
   border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
