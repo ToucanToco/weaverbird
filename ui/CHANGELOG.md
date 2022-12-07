@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [0.98.1] - 2022-12-07
+
+### Changed
+
+- Revert dependencies change from 0.97.0, where some dependencies were moved from dev to prod
+
 ## [0.98.0] - 2022-12-06
 
 ### Changed
@@ -1404,6 +1410,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 - Initial version, showtime!
 
 
+[0.98.1]: https://github.com/ToucanToco/weaverbird/compare/v0.98.1...v0.98.0
 [0.98.0]: https://github.com/ToucanToco/weaverbird/compare/v0.98.0...v0.97.0
 [0.97.0]: https://github.com/ToucanToco/weaverbird/compare/v0.97.0...v0.96.0
 [0.96.0]: https://github.com/ToucanToco/weaverbird/compare/v0.96.0...v0.95.0
