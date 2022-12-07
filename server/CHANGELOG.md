@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.26.3] - 2022-12-07
+
 ### Fixed
 
 - MongoTranslator : We make sure the `$switch` aggregation should always have a `default` key
