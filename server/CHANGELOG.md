@@ -4,7 +4,7 @@
 
 ### Fixed
 
-## [0.26.3] - 2022-11-07
+## [0.26.3] - 2022-12-07
 
 - Pandas: Ensure the `addmissingdates` step always inserts Timestamp objects rather than integers
 
