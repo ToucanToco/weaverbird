@@ -4,6 +4,8 @@
 
 ### Fixed
 
+## [0.26.3] - 2022-11-07
+
 - Pandas: Ensure the `addmissingdates` step always inserts Timestamp objects rather than integers
 
 - MongoTranslator : We make sure the `$switch` aggregation should always have a `default` key
