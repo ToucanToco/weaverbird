@@ -171,3 +171,38 @@ def test_benchmark_addmissingdate(benchmark, today):
 
     result = benchmark(execute_addmissingdates, step, df)
     assert len(result) == 2000
+
+
+def test_add_missing_dates_with_tz_aware_timestamps():
+    df = pd.DataFrame(
+        {
+            "date": [
+                # These both forms should result in objects with exactly the same shape,
+                # i.e. Timestamp('2022-12-0{7,9} 00:00:00+0000', tz='UTC'), but who knows which kind
+                # of changes will happen with the Timestamp class
+                pd.Timestamp("2022-12-07T00:00:00+00:00"),
+                pd.Timestamp("2022-12-09T00:00:00", tz="UTC"),
+            ],
+            "value": [1.2, 2.3],
+        }
+    )
+
+    expected_result = pd.DataFrame(
+        {
+            "date": [
+                pd.Timestamp("2022-12-07T00:00:00", tz="UTC"),
+                pd.Timestamp("2022-12-08T00:00:00", tz="UTC"),
+                pd.Timestamp("2022-12-09T00:00:00", tz="UTC"),
+            ],
+            "value": [1.2, None, 2.3],
+        }
+    )
+
+    step = AddMissingDatesStep(
+        name="addmissingdates", dates_column="date", dates_granularity="day", groups=[]
+    )
+    result = execute_addmissingdates(step, df)
+
+    assert_dataframes_equals(result, expected_result)
+    assert isinstance(result["date"][1], pd.Timestamp)
+    assert result["date"].dtype.name.startswith("datetime64")
