@@ -1,0 +1,53 @@
+exclude:
+- athena_pypika
+- bigquery_pypika
+- mysql_pypika
+- postgres_pypika
+- redshift_pypika
+- snowflake_pypika
+input:
+  data:
+  - AGE: 42
+    # Equivalent to '2022-12-09T00:00:00+00:00'. This format is used so that pandas loads this as a timezone-aware
+    # timestamp object
+    DATE: 1670371200000000000
+    SCORE: 12.34
+  - AGE: 21
+    # '2022-12-09T00:00:00+00:00'
+    DATE: 1670544000000000000
+    SCORE: 43.32
+  schema:
+    fields:
+    - name: DATE
+      type: datetime
+    - name: AGE
+      type: integer
+    - name: SCORE
+      type: number
+    pandas_version: 0.20.0
+expected:
+  data:
+  - AGE: 42
+    DATE: '2022-12-07T00:00:00+00:00'
+    SCORE: 12.34
+  - AGE: nan
+    DATE: '2022-12-08T00:00:00+00:00'
+    SCORE: nan
+  - AGE: 21
+    DATE: '2022-12-09T00:00:00+00:00'
+    SCORE: 43.32
+  schema:
+    fields:
+    - name: DATE
+      type: datetime
+    - name: AGE
+      type: number
+    - name: SCORE
+      type: number
+    pandas_version: 0.20.0
+step:
+  pipeline:
+  - dates_column: DATE
+    dates_granularity: day
+    groups: []
+    name: addmissingdates

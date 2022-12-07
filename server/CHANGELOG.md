@@ -4,6 +4,8 @@
 
 ### Fixed
 
+- Pandas: Ensure the `addmissingdates` step always inserts Timestamp objects rather than integers
+
 - MongoTranslator : We make sure the `$switch` aggregation should always have a `default` key
   field set from the mongo query to prevent "PlanExecutor error".
 
