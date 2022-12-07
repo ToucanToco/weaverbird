@@ -10,7 +10,12 @@ _FREQUENCIES = {"day": "D", "week": "W", "month": "M", "year": "Y"}
 
 
 def at_begin_period(timestamps: Series, dates_granularity: str):
-    return timestamps.dt.to_period(_FREQUENCIES[dates_granularity]).dt.start_time
+    # Returns the timezone of the Series, or None in case all objects is naive. In case of mixed
+    # objects or non-datetime series, raises an exception
+    tz = timestamps.dt.tz
+    naive_start_times = timestamps.dt.to_period(_FREQUENCIES[dates_granularity]).dt.start_time
+    # Setting the right TZ for all objects
+    return naive_start_times.dt.tz_localize(tz)
 
 
 def execute_addmissingdates(

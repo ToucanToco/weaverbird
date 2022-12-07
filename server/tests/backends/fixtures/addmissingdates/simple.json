@@ -1,0 +1,87 @@
+{
+    "exclude": [
+        "athena_pypika",
+        "bigquery_pypika",
+        "mysql_pypika",
+        "postgres_pypika",
+        "redshift_pypika",
+        "snowflake_pypika"
+    ],
+    "step": {
+        "pipeline": [
+            {
+                "name": "addmissingdates",
+                "dates_column": "DATE",
+                "dates_granularity": "day",
+                "groups": []
+            }
+        ]
+    },
+    "input": {
+        "schema": {
+            "fields": [
+                {
+                    "name": "DATE",
+                    "type": "datetime"
+                },
+                {
+                    "name": "AGE",
+                    "type": "integer"
+                },
+                {
+                    "name": "SCORE",
+                    "type": "number"
+                }
+            ],
+            "pandas_version": "0.20.0"
+        },
+        "data": [
+            {
+                "DATE": "2022-12-07T00:00:00",
+                "AGE": 42,
+                "SCORE": 12.34
+            },
+            {
+                "DATE": "2022-12-09T00:00:00",
+                "AGE": 21,
+                "SCORE": 43.32
+            }
+        ]
+    },
+    "expected": {
+        "schema": {
+            "fields": [
+                {
+                    "name": "DATE",
+                    "type": "datetime"
+                },
+                {
+                    "name": "AGE",
+                    "type": "number"
+                },
+                {
+                    "name": "SCORE",
+                    "type": "number"
+                }
+            ],
+            "pandas_version": "0.20.0"
+        },
+        "data": [
+            {
+                "DATE": "2022-12-07T00:00:00",
+                "AGE": 42,
+                "SCORE": 12.34
+            },
+            {
+                "DATE": "2022-12-08T00:00:00",
+                "AGE": "nan",
+                "SCORE": "nan"
+            },
+            {
+                "DATE": "2022-12-09T00:00:00",
+                "AGE": 21,
+                "SCORE": 43.32
+            }
+        ]
+    }
+}
