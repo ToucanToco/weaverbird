@@ -13,7 +13,7 @@
       {
         "name": "fromdate",
         "column": "CREATED_DATE",
-        "format": "%Y-%m-%d"
+        "format": "%d %b %Y"
       }
     ]
   },
@@ -36,6 +36,11 @@
       "pandas_version": "0.20.0"
     },
     "data": [
+      {
+        "NAME": "foo",
+        "AGE": 30,
+        "CREATED_DATE": null
+      },
       {
         "NAME": "foo",
         "AGE": 42,
@@ -64,8 +69,13 @@
     "data": [
       {
         "NAME": "foo",
+        "AGE": 30,
+        "CREATED_DATE": null
+      },
+      {
+        "NAME": "foo",
         "AGE": 42,
-        "CREATED_DATE": "2020-03-09"
+        "CREATED_DATE": "09 Mar 2020"
       }
     ]
   }
