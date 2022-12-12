@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [0.92.3] - 2022-12-12
+
+### Fixed
+
+- Allow to remove any aggregation in rollup step form
+
 ## [0.92.2] - 2022-12-06
 
 ### Fixed
@@ -1348,6 +1354,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ## Unreleased
 
+[0.92.3]: https://github.com/ToucanToco/weaverbird/compare/v0.92.3...v0.92.2
 [0.92.2]: https://github.com/ToucanToco/weaverbird/compare/v0.92.2...v0.92.1
 [0.92.1]: https://github.com/ToucanToco/weaverbird/compare/v0.92.1...v0.92.0
 [0.92.0]: https://github.com/ToucanToco/weaverbird/compare/v0.92.0...v0.91.3
