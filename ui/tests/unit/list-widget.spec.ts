@@ -147,7 +147,7 @@ describe('Widget List', () => {
           automaticNewField: false,
           name: 'Aggregation',
           value: [{ column: 'foo', aggfunction: 'sum', newcolumn: 'bar' }],
-        }
+        },
       });
       expect(wrapper.findAll('.widget-list__icon').length).toEqual(1);
       await wrapper.find('.widget-list__icon').trigger('click');
