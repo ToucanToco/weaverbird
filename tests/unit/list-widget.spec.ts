@@ -71,7 +71,7 @@ describe('Widget List', () => {
       expect(wrapper.findAll('.widget-list__icon').length).toEqual(2);
     });
 
-    it('should remove first input when clickng on trash', async () => {
+    it('should remove first input when clicking on trash', async () => {
       const wrapper = shallowMount(ListWidget, {
         propsData: {
           value: [{ column: 'foo', aggfunction: 'sum', newcolumn: 'bar' }],
@@ -138,6 +138,19 @@ describe('Widget List', () => {
         value: '',
         operator: 'eq',
       });
+    });
+
+    it('should allow to remove first item', async () => {
+      const wrapper = shallowMount(ListWidget, {
+        propsData: {
+          automaticNewField: false,
+          name: 'Aggregation',
+          value: [{ column: 'foo', aggfunction: 'sum', newcolumn: 'bar' }],
+        }
+      });
+      expect(wrapper.findAll('.widget-list__icon').length).toEqual(1);
+      await wrapper.find('.widget-list__icon').trigger('click');
+      expect(wrapper.emitted()['input'][0][0]).toEqual([]);
     });
   });
 });
