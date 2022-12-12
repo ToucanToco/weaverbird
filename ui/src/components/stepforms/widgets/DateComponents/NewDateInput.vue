@@ -33,6 +33,7 @@
       :visible="isEditorOpened"
       :align="alignLeft"
       @closed="closeEditor"
+      :shouldCalculateHeight="true"
       bottom
     >
       <div class="widget-date-input__editor-container">
@@ -402,7 +403,6 @@ export default class NewDateInput extends Vue {
 }
 .widget-date-input__editor-body {
   flex: 1;
-  height: 280px;
   min-height: 280px;
   width: 280px;
   .vc-container {
@@ -447,5 +447,16 @@ export default class NewDateInput extends Vue {
   opacity: 0.5;
   pointer-events: none;
   cursor: not-allowed;
+}
+
+// specifics styles when Popover has the prop shouldCalculateHeight
+.weaverbird-popover--calculated-height {
+  .widget-date-input__editor-content {
+    overflow: hidden;
+  }
+  .widget-date-input__editor-body {
+    min-height: 0;
+    overflow: auto;
+  }
 }
 </style>

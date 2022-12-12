@@ -1,7 +1,10 @@
 <template>
   <div
     class="weaverbird-popover"
-    :class="{ 'weaverbird-popover--always-opened': alwaysOpened }"
+    :class="{
+      'weaverbird-popover--always-opened': alwaysOpened,
+      'weaverbird-popover--calculated-height': shouldCalculateHeight,
+    }"
     data-cy="weaverbird-popover"
     :style="elementStyle"
     @click.stop
@@ -223,5 +226,8 @@ export default class Popover extends Vue {
   position: absolute;
   visibility: visible;
   z-index: 2;
+}
+.weaverbird-popover--calculated-height {
+  // Don't remove me, i'm used as wrapper in child components
 }
 </style>
