@@ -1665,7 +1665,7 @@ secure-local-storage = ["keyring (!=16.1.0,<24.0.0)"]
 
 [[package]]
 name = "snowflake-sqlalchemy"
-version = "1.4.4"
+version = "1.4.5"
 description = "Snowflake SQLAlchemy Dialect"
 category = "dev"
 optional = false
@@ -1961,7 +1961,7 @@ playground = ["quart", "Quart-CORS", "hypercorn", "pymongo", "pandas", "psycopg"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10, <3.11"
-content-hash = "00a8e15760bbb5c5ad2f32f8c0cc8a085cc109f9738906c6e4fde8530a8d4960"
+content-hash = "c0bc4422b67b3da4cdb1382d128e4e6389a12acaa0854e7dc57a5ad9e6032183"
 
 [metadata.files]
 aenum = [
@@ -3531,8 +3531,8 @@ snowflake-connector-python = [
     {file = "snowflake_connector_python-2.8.2-cp39-cp39-win_amd64.whl", hash = "sha256:84b0b1f514fa9c33ea640ca4a648bd47a8ce46da65a9861e0e82ed87f8ca2eca"},
 ]
 snowflake-sqlalchemy = [
-    {file = "snowflake-sqlalchemy-1.4.4.tar.gz", hash = "sha256:a75af2003feb56fa865d5d807aff9ef00e49be5b608b183cd4b29c8db4300227"},
-    {file = "snowflake_sqlalchemy-1.4.4-py2.py3-none-any.whl", hash = "sha256:f22302a93ddfa99bd57d1268e720ecb2f47e57e2d272b917696e7d9d56a76e1a"},
+    {file = "snowflake-sqlalchemy-1.4.5.tar.gz", hash = "sha256:725503125675ef1c5bac9f8ed28a65cd50312f569f583c1d93f8396687c484eb"},
+    {file = "snowflake_sqlalchemy-1.4.5-py2.py3-none-any.whl", hash = "sha256:abf32cc985930f2d58b12630c4dc3327c35aa2bbee20f5cec203f9d8b5b213b8"},
 ]
 soupsieve = [
     {file = "soupsieve-2.3.2.post1-py3-none-any.whl", hash = "sha256:3b2503d3c7084a42b1ebd08116e5f81aadfaea95863628c80a3b774a11b7c759"},

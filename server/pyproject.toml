@@ -35,7 +35,7 @@ pytest-mock = "^3.10.0"
 # required so we can use nosql_apply_parameters_to_query during tests
 toucan-connectors = { version = "^4.0.0", extras = ["awsathena", "google_big_query", "mongo", "Redshift", "snowflake"] }
 pytest-benchmark = "^4.0.0"
-snowflake-sqlalchemy = "^1.4.4"
+snowflake-sqlalchemy = "^1.4.5"
 types-python-dateutil = "^2.8.19"
 pytest = "^7.2.0"
 black = "^22.10.0"
