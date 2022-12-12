@@ -113,21 +113,16 @@ export default class RollupStepForm extends BaseStepForm<RollupStep> {
     })),
   };
 
-  get defaultAggregation() {
-    const agg: Aggregation = {
+  get defaultAggregation(): Aggregation {
+    return {
       columns: [],
       newcolumns: [],
       aggfunction: 'sum',
     };
-    return agg;
   }
 
   get aggregations() {
-    if (this.editedStep.aggregations.length) {
-      return this.editedStep.aggregations;
-    } else {
-      return [this.defaultAggregation];
-    }
+    return this.editedStep.aggregations;
   }
 
   set aggregations(newval) {
