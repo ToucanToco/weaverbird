@@ -118,7 +118,7 @@ export default class ListWidget extends FormWidget {
       valueCopy.push(this.defaultChildValue);
     }
     return valueCopy.map((value) => ({
-      isRemovable: valueCopy.length !== 1,
+      isRemovable: !this.automaticNewField || valueCopy.length !== 1,
       value,
     }));
   }
