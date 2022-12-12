@@ -50,7 +50,7 @@ describe('Rollup Step Form', () => {
   });
 
   describe('ListWidget', () => {
-    it('should have exactly on ListWidget component', () => {
+    it('should have exactly one ListWidget component', () => {
       const wrapper = runner.shallowMount();
       const widgetWrappers = wrapper.findAll('listwidget-stub');
       expect(widgetWrappers.length).toEqual(1);
@@ -72,12 +72,23 @@ describe('Rollup Step Form', () => {
       ]);
     });
 
-    it('should have expected default aggregation parameters', () => {
+    it('should have no default aggregation', () => {
       const wrapper = runner.mount();
-      const autocompleteWrapper = wrapper.find(AutocompleteWidget);
-      const multiselectWrappers = wrapper.findAll(MultiselectWidget);
-      expect(autocompleteWrapper.props().value).toEqual('sum');
-      expect(multiselectWrappers.at(1).props().value).toEqual([]);
+      const autocompleteWrappers = wrapper.find('.aggregationsInput').findAll(AutocompleteWidget);
+      const multiselectWrappers = wrapper.find('.aggregationsInput').findAll(MultiselectWidget);
+      expect(autocompleteWrappers.length).toEqual(0);
+      expect(multiselectWrappers.length).toEqual(0);
+    });
+
+    it('should have expected default aggregation parameters', async () => {
+      const wrapper = runner.mount();
+      await wrapper.find('.widget-list__add-fieldset').trigger('click');
+      const autocompleteWrappers = wrapper.find('.aggregationsInput').findAll(AutocompleteWidget);
+      const multiselectWrappers = wrapper.find('.aggregationsInput').findAll(MultiselectWidget);
+      expect(autocompleteWrappers.length).toEqual(1);
+      expect(multiselectWrappers.length).toEqual(1);
+      expect(autocompleteWrappers.at(0).props().value).toEqual('sum');
+      expect(multiselectWrappers.at(0).props().value).toEqual([]);
     });
   });
 
