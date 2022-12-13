@@ -227,7 +227,4 @@ export default class Popover extends Vue {
   visibility: visible;
   z-index: 2;
 }
-.weaverbird-popover--calculated-height {
-  // Don't remove me, i'm used as wrapper in child components
-}
 </style>
