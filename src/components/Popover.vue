@@ -26,6 +26,7 @@ interface ElementPosition {
   bottom?: string | number;
   left?: string | number;
   right?: string | number;
+  height?: string | number;
 }
 
 /**
@@ -81,6 +82,12 @@ export default class Popover extends Vue {
     default: false,
   })
   alwaysOpened!: boolean;
+
+  @Prop({
+    type: Boolean,
+    default: false,
+  })
+  shouldCalculateHeight!: boolean;
 
   // Inject any element as `weaverbirdPopoverContainer` in any parent component
   @Inject({ default: document.body }) weaverbirdPopoverContainer!: Element;
@@ -199,6 +206,9 @@ export default class Popover extends Vue {
       // Set alignment
       const elementStyle: ElementPosition = DOMUtil.align(this.align, positionContext);
       elementStyle.top = DOMUtil.computeTop(this.bottom, positionContext);
+      if (this.shouldCalculateHeight) {
+        elementStyle.height = DOMUtil.computeHeight(this.bottom, positionContext);
+      }
       // make sure to use `px` unit explicitly
       this.elementStyle = _.fromPairs(Object.entries(elementStyle).map(([k, v]) => [k, `${v}px`]));
     },

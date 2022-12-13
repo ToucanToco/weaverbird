@@ -258,3 +258,30 @@ export function computeTop(fromBottom = false, ctx: PartialPositionContext) {
 
   return top;
 }
+
+/**
+ * Compute the "height" property for `ctx.element`.
+ *
+ * @param fromBottom whether or not the element should be "bottom" or "top" aligned
+ * @param ctx the position context used to make positioning computations
+ */
+ export function computeHeight(fromBottom = false, ctx: PartialPositionContext) {
+  let height;
+  const top = computeTop(fromBottom, ctx);
+  const { body } = completePositionContext(ctx);
+  const bodyHeight = body.height;
+
+  /**
+   * Restrict the height when necessary
+   * We assume that if the top of the element is above the middle of the page,
+   * we will have enough space to let it grow.
+   */
+  if (top < bodyHeight / 2) {
+    // leave the default height
+    height = undefined;
+  } else {
+    // avoid the element to overflow the body
+    height = bodyHeight - top;
+  }
+  return height;
+}
