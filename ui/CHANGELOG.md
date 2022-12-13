@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## [0.98.2] - 2022-12-13
+
+### Fixed
+
+- Avoid date picker popover to overflow the window
+- Allow to remove any aggregation in rollup step form
+
 ## [0.98.1] - 2022-12-07
 
 ### Changed
@@ -1409,7 +1416,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
-
+[0.98.2]: https://github.com/ToucanToco/weaverbird/compare/v0.98.2...v0.98.1
 [0.98.1]: https://github.com/ToucanToco/weaverbird/compare/v0.98.1...v0.98.0
 [0.98.0]: https://github.com/ToucanToco/weaverbird/compare/v0.98.0...v0.97.0
 [0.97.0]: https://github.com/ToucanToco/weaverbird/compare/v0.97.0...v0.96.0
