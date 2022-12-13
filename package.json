@@ -1,6 +1,6 @@
 {
   "name": "weaverbird",
-  "version": "0.92.3",
+  "version": "0.92.4",
   "types": "./dist/types/types.d.ts",
   "description": "A generic Visual Query Builder built in Vue.js",
   "bugs": {
