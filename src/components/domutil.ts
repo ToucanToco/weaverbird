@@ -265,7 +265,7 @@ export function computeTop(fromBottom = false, ctx: PartialPositionContext) {
  * @param fromBottom whether or not the element should be "bottom" or "top" aligned
  * @param ctx the position context used to make positioning computations
  */
- export function computeHeight(fromBottom = false, ctx: PartialPositionContext) {
+export function computeHeight(fromBottom = false, ctx: PartialPositionContext) {
   let height;
   const top = computeTop(fromBottom, ctx);
   const { body } = completePositionContext(ctx);
