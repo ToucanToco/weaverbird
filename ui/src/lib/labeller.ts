@@ -146,8 +146,9 @@ class StepLabeller implements StepMatcher<string> {
     }
     if (columns.length === 1) {
       const [aggstep] = step.aggregations;
-      return `${capitalize(AGGFUNCTION_LABELS[aggstep.aggfunction])} of "${columns[0]
-        }" grouped by ${dimensions}`;
+      return `${capitalize(AGGFUNCTION_LABELS[aggstep.aggfunction])} of "${
+        columns[0]
+      }" grouped by ${dimensions}`;
     } else {
       return `Aggregate ${formatMulticol(columns)} grouped by ${dimensions}`;
     }
