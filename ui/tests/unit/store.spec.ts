@@ -581,7 +581,7 @@ describe('mutation tests', () => {
   it('sets availableDomains list', () => {
     const state = buildState({});
     expect(state.availableDomains).toEqual([]);
-    mutations.setavailableDomains(state, { availableDomains: [{ uid: '1', name: 'Query 1' }] });
+    mutations.setAvailableDomains(state, { availableDomains: [{ uid: '1', name: 'Query 1' }] });
     expect(state.availableDomains).toEqual([{ uid: '1', name: 'Query 1' }]);
   });
 
