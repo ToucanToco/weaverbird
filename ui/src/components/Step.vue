@@ -86,7 +86,7 @@ import PreviewSourceSubset from './PreviewSourceSubset.vue';
   },
 })
 export default class Step extends Vue {
-  @VQBModule.State queries!: { name: string; uid: string }[];
+  @VQBModule.State availableDomains!: { name: string; uid: string }[];
 
   @Prop(Boolean)
   readonly isFirst!: boolean;
@@ -132,7 +132,7 @@ export default class Step extends Vue {
   get stepName(): string {
     // enable to retrieve the related name of a query referenced behind an uid
     return humanReadableLabel(this.step, (domain: string | ReferenceToExternalQuery) =>
-      retrieveDomainName(domain, this.queries),
+      retrieveDomainName(domain, this.availableDomains),
     );
   }
 

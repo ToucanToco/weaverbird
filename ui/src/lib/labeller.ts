@@ -146,9 +146,8 @@ class StepLabeller implements StepMatcher<string> {
     }
     if (columns.length === 1) {
       const [aggstep] = step.aggregations;
-      return `${capitalize(AGGFUNCTION_LABELS[aggstep.aggfunction])} of "${
-        columns[0]
-      }" grouped by ${dimensions}`;
+      return `${capitalize(AGGFUNCTION_LABELS[aggstep.aggfunction])} of "${columns[0]
+        }" grouped by ${dimensions}`;
     } else {
       return `Aggregate ${formatMulticol(columns)} grouped by ${dimensions}`;
     }
@@ -411,11 +410,8 @@ export function labelWithReadeableVariables(
 // enable to retrieve the related name of a query referenced behind an uid
 export function retrieveDomainName(
   domain: string | S.ReferenceToExternalQuery,
-  queries: { name: string; uid: string }[],
+  availableDomains: { name: string; uid: string }[],
 ): string {
-  if (S.isReferenceToExternalQuery(domain)) {
-    return queries.find((q) => q.uid === domain.uid)?.name ?? domain.uid;
-  } else {
-    return domain;
-  }
+  const domainOrUid = S.isReferenceToExternalQuery(domain) ? domain.uid : domain;
+  return availableDomains.find((q) => q.uid === domainOrUid)?.name ?? domainOrUid;
 }

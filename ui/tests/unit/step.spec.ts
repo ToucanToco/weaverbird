@@ -31,7 +31,7 @@ describe('Step.vue', () => {
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
     const store = setupMockStore(
-      buildStateWithOnePipeline(pipeline, { queries: [{ uid: '1', name: 'Query 1' }] }),
+      buildStateWithOnePipeline(pipeline, { availableDomains: [{ uid: '1', name: 'Query 1' }] }),
     );
     return shallowMount(Step, {
       propsData,
