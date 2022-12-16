@@ -411,11 +411,8 @@ export function labelWithReadeableVariables(
 // enable to retrieve the related name of a query referenced behind an uid
 export function retrieveDomainName(
   domain: string | S.ReferenceToExternalQuery,
-  queries: { name: string; uid: string }[],
+  availableDomains: { name: string; uid: string }[],
 ): string {
-  if (S.isReferenceToExternalQuery(domain)) {
-    return queries.find((q) => q.uid === domain.uid)?.name ?? domain.uid;
-  } else {
-    return domain;
-  }
+  const domainOrUid = S.isReferenceToExternalQuery(domain) ? domain.uid : domain;
+  return availableDomains.find((q) => q.uid === domainOrUid)?.name ?? domainOrUid;
 }

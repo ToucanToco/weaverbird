@@ -33,9 +33,9 @@ type DomainsMutation = {
   payload: Pick<VQBState, 'domains'>;
 };
 
-type QueriesMutation = {
-  type: 'setQueries';
-  payload: Pick<VQBState, 'queries'>;
+type AvailableDomainsMutation = {
+  type: 'setAvailableDomains';
+  payload: Pick<VQBState, 'availableDomains'>;
 };
 
 type PipelineMutation = {
@@ -103,7 +103,7 @@ export type StateMutation =
   | ToggleColumnSelectionMutation
   | ToggleRequestOnGoing
   | VariableDelimitersMutation
-  | QueriesMutation;
+  | AvailableDomainsMutation;
 
 type MutationByType<M, MT> = M extends { type: MT } ? M : never;
 export type MutationCallbacks = {
@@ -205,8 +205,8 @@ const mutations: MutationTree<VQBState> = {
     state.domains = domains;
   },
 
-  setQueries(state: VQBState, { queries }: Pick<VQBState, 'queries'>) {
-    state.queries = queries;
+  setAvailableDomains(state: VQBState, { availableDomains }: Pick<VQBState, 'availableDomains'>) {
+    state.availableDomains = availableDomains;
   },
 
   setPipeline(state: VQBState, { pipeline }: { pipeline: Pipeline }) {
