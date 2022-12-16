@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [0.99.0] - 2022-12-16
+
+### Changed
+
+- Display domain name when domain is an uid string in DomainStep label
+
 ## [0.98.2] - 2022-12-13
 
 ### Fixed
@@ -1416,6 +1422,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
+[0.99.0]: https://github.com/ToucanToco/weaverbird/compare/v0.99.0...v0.98.2
 [0.98.2]: https://github.com/ToucanToco/weaverbird/compare/v0.98.2...v0.98.1
 [0.98.1]: https://github.com/ToucanToco/weaverbird/compare/v0.98.1...v0.98.0
 [0.98.0]: https://github.com/ToucanToco/weaverbird/compare/v0.98.0...v0.97.0
