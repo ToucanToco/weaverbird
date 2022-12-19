@@ -1128,23 +1128,23 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "psycopg"
-version = "3.1.4"
+version = "3.1.6"
 description = "PostgreSQL database adapter for Python"
 category = "main"
 optional = true
 python-versions = ">=3.7"
 
 [package.dependencies]
-typing-extensions = {version = ">=4.1", markers = "python_version < \"3.11\""}
+typing-extensions = ">=4.1"
 tzdata = {version = "*", markers = "sys_platform == \"win32\""}
 
 [package.extras]
-binary = ["psycopg-binary (==3.1.4)"]
-c = ["psycopg-c (==3.1.4)"]
-dev = ["black (>=22.3.0)", "dnspython (>=2.1)", "flake8 (>=4.0)", "mypy (>=0.981)", "types-setuptools (>=57.4)", "wheel (>=0.37)"]
+binary = ["psycopg-binary (==3.1.6)"]
+c = ["psycopg-c (==3.1.6)"]
+dev = ["black (>=22.3.0)", "dnspython (>=2.1)", "flake8 (>=4.0)", "mypy (>=0.990)", "types-setuptools (>=57.4)", "wheel (>=0.37)"]
 docs = ["Sphinx (>=5.0)", "furo (==2022.6.21)", "sphinx-autobuild (>=2021.3.14)", "sphinx-autodoc-typehints (>=1.12)"]
 pool = ["psycopg-pool"]
-test = ["mypy (>=0.981)", "pproxy (>=2.7)", "pytest (>=6.2.5)", "pytest-asyncio (>=0.17)", "pytest-cov (>=3.0)", "pytest-randomly (>=3.10)"]
+test = ["mypy (>=0.990)", "pproxy (>=2.7)", "pytest (>=6.2.5)", "pytest-asyncio (>=0.17)", "pytest-cov (>=3.0)", "pytest-randomly (>=3.10)"]
 
 [[package]]
 name = "psycopg2"
@@ -3071,8 +3071,8 @@ protobuf = [
     {file = "protobuf-4.21.6.tar.gz", hash = "sha256:6b1040a5661cd5f6e610cbca9cfaa2a17d60e2bb545309bc1b278bb05be44bdd"},
 ]
 psycopg = [
-    {file = "psycopg-3.1.4-py3-none-any.whl", hash = "sha256:aba61f12b11936cb25ec7bdf2d222d1ec36e4541ddc41f774ca763e0c50dd06f"},
-    {file = "psycopg-3.1.4.tar.gz", hash = "sha256:6874dbaba583cc6663437604bf45f7c244b5fd702f88af6211cd5a74e8ee3a8a"},
+    {file = "psycopg-3.1.6-py3-none-any.whl", hash = "sha256:aff1561afa079992f653e5bc34ff3d5b29023e26f9e691db6ac953033f390890"},
+    {file = "psycopg-3.1.6.tar.gz", hash = "sha256:812100b4215747f18d0c0f14cb568c3f39d9676053fd3e326bd0c718cfc37f33"},
 ]
 psycopg2 = [
     {file = "psycopg2-2.9.5-cp310-cp310-win32.whl", hash = "sha256:d3ef67e630b0de0779c42912fe2cbae3805ebaba30cda27fea2a3de650a9414f"},
