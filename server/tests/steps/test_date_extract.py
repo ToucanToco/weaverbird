@@ -248,7 +248,7 @@ def test_date_extract_no_uint32(sample_df: DataFrame):
 
 
 def test_benchmark_dateextract(benchmark):
-    dates = [datetime.today() + timedelta(days=nb_day) for nb_day in list(range(1, 2001))]
+    dates = [datetime.today() + timedelta(days=nb_day) for nb_day in range(1, 2001)]
     df = DataFrame(
         {
             "date": dates,
