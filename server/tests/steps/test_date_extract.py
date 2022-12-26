@@ -1,4 +1,4 @@
-import datetime
+from datetime import date, datetime, timedelta
 
 import pytest
 from pandas import DataFrame, to_datetime
@@ -13,17 +13,15 @@ from weaverbird.pipeline.steps import DateExtractStep
 def sample_df():
     return DataFrame(
         {
-            "date": to_datetime(
-                [
-                    "2021-03-29T00:00:00.000Z",
-                    "2020-12-13T00:00:00.000Z",
-                    "2020-07-29T00:00:00.000Z",
-                    "2019-04-09T01:02:03.004Z",
-                    "2017-01-02T00:00:00.000Z",
-                    "2016-01-01T00:00:00.000Z",
-                    None,
-                ]
-            )
+            "date": [
+                date(2021, 3, 29),
+                "2020-12-13T00:00:00.000Z",
+                to_datetime("2020-07-29T00:00:00.000Z"),
+                to_datetime("2019-04-09T01:02:03.004Z"),
+                date(2017, 1, 2),
+                date(2016, 1, 1),
+                None,
+            ]
         }
     )
 
@@ -100,17 +98,7 @@ def test_date_extract_no_uint32(sample_df: DataFrame):
     df_result = execute_date_extract(step, sample_df)
     expected_result = DataFrame(
         {
-            "date": to_datetime(
-                [
-                    "2021-03-29T00:00:00.000Z",
-                    "2020-12-13T00:00:00.000Z",
-                    "2020-07-29T00:00:00.000Z",
-                    "2019-04-09T01:02:03.004Z",
-                    "2017-01-02T00:00:00.000Z",
-                    "2016-01-01T00:00:00.000Z",
-                    None,
-                ]
-            ),
+            "date": sample_df["date"],
             "date_year": [2021, 2020, 2020, 2019, 2017, 2016, None],
             "date_month": [3, 12, 7, 4, 1, 1, None],
             "date_day": [29, 13, 29, 9, 2, 1, None],
@@ -260,10 +248,7 @@ def test_date_extract_no_uint32(sample_df: DataFrame):
 
 
 def test_benchmark_dateextract(benchmark):
-    dates = [
-        datetime.datetime.today() + datetime.timedelta(days=nb_day)
-        for nb_day in list(range(1, 2001))
-    ]
+    dates = [datetime.today() + timedelta(days=nb_day) for nb_day in range(1, 2001)]
     df = DataFrame(
         {
             "date": dates,

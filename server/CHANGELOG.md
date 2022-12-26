@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-### Fixed
+- Pandas: The `dateextract` step now works with columns containing `datetime.date` instances.
 
 ## [0.26.3] - 2022-12-07
 

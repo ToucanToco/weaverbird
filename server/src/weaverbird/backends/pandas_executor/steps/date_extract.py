@@ -30,70 +30,75 @@ def execute_date_extract(
         new_columns = step.new_columns
 
     for dt_info, new_col in zip(date_info, new_columns):
-        serie_dt = df[step.column].dt
+        series_dt = to_datetime(df[step.column], utc=True)
+        series_dt_accessor = series_dt.dt
         if dt_info == "week":
             # cast in float and not in int to manage NaN properly
-            result = serie_dt.strftime("%U").astype(float)
+            result = series_dt_accessor.strftime("%U").astype(float)
         elif dt_info == "dayOfWeek":
             # result should be between 1 (sunday) and 7 (saturday)
-            result = (serie_dt.dayofweek + 2) % 7
+            result = (series_dt_accessor.dayofweek + 2) % 7
             result = result.replace({0: 7})
         elif dt_info == "isoYear":
-            result = serie_dt.isocalendar().year
+            result = series_dt_accessor.isocalendar().year
         elif dt_info == "isoWeek":
-            result = serie_dt.isocalendar().week
+            result = series_dt_accessor.isocalendar().week
         elif dt_info == "isoDayOfWeek":
-            result = serie_dt.isocalendar().day
+            result = series_dt_accessor.isocalendar().day
         elif dt_info == "firstDayOfYear":
-            result = to_datetime(DataFrame({"year": serie_dt.year, "month": 1, "day": 1}))
+            result = to_datetime(DataFrame({"year": series_dt_accessor.year, "month": 1, "day": 1}))
         elif dt_info == "firstDayOfMonth":
             result = to_datetime(
-                DataFrame({"year": serie_dt.year, "month": serie_dt.month, "day": 1})
+                DataFrame(
+                    {"year": series_dt_accessor.year, "month": series_dt_accessor.month, "day": 1}
+                )
             )
         elif dt_info == "firstDayOfWeek":
             # dayofweek should be between 1 (sunday) and 7 (saturday)
-            dayofweek = (serie_dt.dayofweek + 2) % 7
+            dayofweek = (series_dt_accessor.dayofweek + 2) % 7
             dayofweek = dayofweek.replace({0: 7})
             # we subtract a number of days corresponding to(dayOfWeek - 1)
-            result = df[step.column] - to_timedelta(dayofweek - 1, unit="d")
+            result = series_dt - to_timedelta(dayofweek - 1, unit="d")
             # the result should be returned with 0-ed time information
             result = to_datetime(result.dt.date)
         elif dt_info == "firstDayOfQuarter":
             result = to_datetime(
                 DataFrame(
                     {
-                        "year": serie_dt.year,
-                        "month": 3 * ((serie_dt.month - 1) // 3) + 1,
+                        "year": series_dt_accessor.year,
+                        "month": 3 * ((series_dt_accessor.month - 1) // 3) + 1,
                         "day": 1,
                     }
                 )
             )
         elif dt_info == "firstDayOfIsoWeek":
-            dayofweek = serie_dt.isocalendar().day
+            dayofweek = series_dt_accessor.isocalendar().day
             # we subtract a number of days corresponding to(dayOfWeek - 1)
-            result = df[step.column] - to_timedelta(dayofweek - 1, unit="d")
+            result = series_dt - to_timedelta(dayofweek - 1, unit="d")
             # the result should be returned with 0-ed time information
             result = to_datetime(result.dt.date)
         elif dt_info == "previousDay":
-            result = df[step.column] - to_timedelta(1, unit="d")
+            result = series_dt - to_timedelta(1, unit="d")
             # the result should be returned with 0-ed time information
             result = to_datetime(result.dt.date)
         elif dt_info == "firstDayOfPreviousYear":
-            result = to_datetime(DataFrame({"year": serie_dt.year - 1, "month": 1, "day": 1}))
+            result = to_datetime(
+                DataFrame({"year": series_dt_accessor.year - 1, "month": 1, "day": 1})
+            )
         elif dt_info == "firstDayOfPreviousMonth":
-            prev_month = serie_dt.month - 1
+            prev_month = series_dt_accessor.month - 1
             prev_month = prev_month.replace({0: 12})
             result = to_datetime(
                 DataFrame(
                     {
-                        "year": serie_dt.year - (prev_month == 12),
+                        "year": series_dt_accessor.year - (prev_month == 12),
                         "month": prev_month,
                         "day": 1,
                     }
                 )
             )
         elif dt_info == "firstDayOfPreviousWeek":
-            prev_week_date = df[step.column] - to_timedelta(7, unit="d")
+            prev_week_date = series_dt - to_timedelta(7, unit="d")
             # dayofweek should be between 1 (sunday) and 7 (saturday)
             dayofweek = (prev_week_date.dt.dayofweek + 2) % 7
             dayofweek = dayofweek.replace({0: 7})
@@ -102,45 +107,45 @@ def execute_date_extract(
             # the result should be returned with 0-ed time information
             result = to_datetime(result.dt.date)
         elif dt_info == "firstDayOfPreviousQuarter":
-            first_month_of_quarter = 3 * ((serie_dt.month - 1) // 3) + 1
+            first_month_of_quarter = 3 * ((series_dt_accessor.month - 1) // 3) + 1
             first_month_of_prev_q = first_month_of_quarter - 3
             first_month_of_prev_q = first_month_of_prev_q.replace({-2: 10})
             result = to_datetime(
                 DataFrame(
                     {
-                        "year": serie_dt.year - (first_month_of_prev_q == 10),
+                        "year": series_dt_accessor.year - (first_month_of_prev_q == 10),
                         "month": first_month_of_prev_q,
                         "day": 1,
                     }
                 )
             )
         elif dt_info == "firstDayOfPreviousIsoWeek":
-            prev_week_date = df[step.column] - to_timedelta(7, unit="d")
+            prev_week_date = series_dt - to_timedelta(7, unit="d")
             dayofweek = prev_week_date.dt.isocalendar().day
             # we subtract a number of days corresponding to(dayOfWeek - 1)
             result = prev_week_date - to_timedelta(dayofweek - 1, unit="d")
             # the result should be returned with 0-ed time information
             result = to_datetime(result.dt.date)
         elif dt_info == "previousYear":
-            result = serie_dt.year - 1
+            result = series_dt_accessor.year - 1
         elif dt_info == "previousMonth":
-            month = serie_dt.month
+            month = series_dt_accessor.month
             result = month - 1
             result = result.replace({0: 12})
         elif dt_info == "previousWeek":
-            prev_week_date = df[step.column] - to_timedelta(7, unit="d")
+            prev_week_date = series_dt - to_timedelta(7, unit="d")
             result = prev_week_date.dt.strftime("%U").astype(float)
         elif dt_info == "previousQuarter":
-            result = serie_dt.quarter - 1
+            result = series_dt_accessor.quarter - 1
             result = result.replace({0: 4})
         elif dt_info == "previousIsoWeek":
-            prev_week_date = df[step.column] - to_timedelta(7, unit="d")
+            prev_week_date = series_dt - to_timedelta(7, unit="d")
             result = prev_week_date.dt.isocalendar().week
         elif dt_info == "milliseconds":
-            result = serie_dt.microsecond / 1000
+            result = series_dt_accessor.microsecond / 1000
         else:
             operation = OPERATIONS_MAPPING.get(dt_info, dt_info)
-            result = getattr(serie_dt, operation)
+            result = getattr(series_dt_accessor, operation)
 
         # Handle unsigned integers:
         with suppress(AttributeError):
