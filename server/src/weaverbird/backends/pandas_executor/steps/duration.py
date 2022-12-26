@@ -1,4 +1,4 @@
-from pandas import DataFrame
+from pandas import DataFrame, to_datetime
 
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps import DurationStep
@@ -17,8 +17,8 @@ def execute_duration(
     domain_retriever: DomainRetriever = None,
     execute_pipeline: PipelineExecutor = None,
 ) -> DataFrame:
-    duration_serie_in_seconds = (df[step.end_date_column] - df[step.start_date_column]).astype(
-        "timedelta64[s]"
-    )
+    start_date_series = to_datetime(df[step.start_date_column])
+    end_date_series = to_datetime(df[step.end_date_column])
+    duration_serie_in_seconds = (end_date_series - start_date_series).astype("timedelta64[s]")
     duration_serie_in_given_unit = duration_serie_in_seconds / DURATIONS_IN_SECOND[step.duration_in]
     return df.assign(**{step.new_column_name: duration_serie_in_given_unit})
