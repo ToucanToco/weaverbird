@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- Pandas: The `evolution` step now works with columns containing `datetime.date` instances.
 - Pandas: The `dateextract` step now works with columns containing `datetime.date` instances.
 
 ## [0.27.3] - 2022-12-07
