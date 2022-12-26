@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 import numpy as np
 import pytest
@@ -21,6 +21,17 @@ def sample_df():
     )
 
 
+@pytest.fixture
+def sample_dates_df():
+    return DataFrame(
+        {
+            "DATE": [date(2019, month, 1) for month in (6, 7, 8, 9, 11, 12)],
+            "VALUE": [79, 81, 77, 75, 78, 88],
+        },
+        index=[1, 3, 2, 5, 6, 4],  # make sure the evolution handles mixed indexes
+    )
+
+
 def test_evolution_absolute(sample_df: DataFrame):
     step = EvolutionStep(
         name="evolution",
@@ -32,6 +43,20 @@ def test_evolution_absolute(sample_df: DataFrame):
     df_result = execute_evolution(step, sample_df)
 
     expected_result = sample_df.assign(VALUE_EVOL_ABS=[None, 2, -4, -2, None, 10])
+    assert_dataframes_equals(df_result, expected_result)
+
+
+def test_evolution_absolute_with_dates(sample_dates_df: DataFrame):
+    step = EvolutionStep(
+        name="evolution",
+        dateCol="DATE",
+        valueCol="VALUE",
+        evolutionType="vsLastMonth",
+        evolutionFormat="abs",
+    )
+    df_result = execute_evolution(step, sample_dates_df)
+
+    expected_result = sample_dates_df.assign(VALUE_EVOL_ABS=[None, 2, -4, -2, None, 10])
     assert_dataframes_equals(df_result, expected_result)
 
 
