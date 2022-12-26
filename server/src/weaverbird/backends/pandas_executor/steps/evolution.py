@@ -1,4 +1,4 @@
-from pandas import DataFrame, DateOffset
+from pandas import DataFrame, DateOffset, to_datetime
 
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.exceptions import DuplicateError
@@ -20,6 +20,9 @@ def execute_evolution(
 ) -> DataFrame:
     new_column = step.new_column or f"{step.value_col}_EVOL_{step.evolution_format.upper()}"
     df = df.reset_index(drop=True)
+    # Ensure we do have a datetime series rather than object (that would be the case for
+    # datetime.date instances)
+    df[step.date_col] = to_datetime(df[step.date_col])
 
     id_cols = [step.date_col] + step.index_columns
     if df.set_index(id_cols).index.duplicated().any():
