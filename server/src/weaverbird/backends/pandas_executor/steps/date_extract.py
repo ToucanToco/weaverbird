@@ -105,10 +105,13 @@ def execute_date_extract(
             first_month_of_quarter = 3 * ((serie_dt.month - 1) // 3) + 1
             first_month_of_prev_q = first_month_of_quarter - 3
             first_month_of_prev_q = first_month_of_prev_q.replace({-2: 10})
+            # If the previous quarter starts in October, we need to decrement the year by one, as
+            # we're refering to the last quarter of last year. Otherwise, leave the year untouched
+            year_decrement = first_month_of_prev_q.apply(lambda month: 1 if month == 10 else 0)
             result = to_datetime(
                 DataFrame(
                     {
-                        "year": serie_dt.year - (first_month_of_prev_q == 10),
+                        "year": serie_dt.year - year_decrement,
                         "month": first_month_of_prev_q,
                         "day": 1,
                     }
