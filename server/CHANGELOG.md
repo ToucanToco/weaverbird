@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.27.4] - 2022-12-27
+
 ### Fixed
 
 - Pandas: The `duration` step now works with columns containing datetime.date instances
