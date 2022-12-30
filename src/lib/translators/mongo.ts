@@ -511,19 +511,25 @@ function transformAddMissingDates(step: Readonly<S.AddMissingDatesStep>): MongoS
   ];
 }
 
+const _ID_COLUMN = '_id';
+const _NEW_ID_COLUMN = '_id';
+
 /** transform an 'aggregate' step into corresponding mongo steps */
 function transformAggregate(step: Readonly<S.AggregateStep>): MongoStep[] {
   const idblock: PropMap<string> = columnMap(step.on);
-  const group: { [id: string]: {} } = {};
+  const group: { [_id: string]: {} } = {};
   const project: PropMap<any> = {};
   const addFields: PropMap<any> = {};
 
-  group._id = idblock;
+  group[_ID_COLUMN] = idblock;
 
   for (const aggfStep of step.aggregations) {
     // We support simple string sfor retrocompatibility purposes
     const cols = aggfStep.column ? [aggfStep.column] : aggfStep.columns;
-    const newcols = aggfStep.newcolumn ? [aggfStep.newcolumn] : aggfStep.newcolumns;
+    const newcols = (aggfStep.newcolumn
+      ? [aggfStep.newcolumn]
+      : aggfStep.newcolumns
+    ).map((col: string) => (col === _ID_COLUMN ? _NEW_ID_COLUMN : col));
 
     if (aggfStep.aggfunction === 'count') {
       // There is no `$count` operator in Mongo, we have to `$sum` 1s to get
@@ -559,18 +565,24 @@ function transformAggregate(step: Readonly<S.AggregateStep>): MongoStep[] {
       { $unwind: '$_vqbDocsArray' },
       { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbDocsArray', '$$ROOT'] } } },
       { $project: { _vqbDocsArray: 0 } },
+      { $sort: { [_ID_COLUMN]: 1 } },
     ];
   } else {
     for (const groupKey of Object.keys(group)) {
-      if (groupKey === '_id') {
+      if (groupKey === _ID_COLUMN) {
         for (const idkey of Object.keys(group[groupKey])) {
-          project[idkey] = `$_id.${idkey}`;
+          project[idkey] = `$${_ID_COLUMN}.${idkey}`;
         }
       } else {
         project[groupKey] = 1;
       }
     }
-    return [{ $group: group }, ...addFieldsToAddToPipeline, { $project: project }];
+    return [
+      { $group: group },
+      ...addFieldsToAddToPipeline,
+      { $project: project },
+      { $sort: { [_ID_COLUMN]: 1 } },
+    ];
   }
 }
 
