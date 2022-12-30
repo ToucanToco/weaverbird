@@ -1057,6 +1057,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
           number_rows: 1,
         },
       },
+      { $sort: { _id: 1 } },
       { $project: { _id: 0 } },
     ]);
   });
@@ -1107,6 +1108,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
           nunique: 1,
         },
       },
+      { $sort: { _id: 1 } },
       { $project: { _id: 0 } },
     ]);
   });
@@ -1139,7 +1141,9 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
       },
       { $unwind: '$_vqbDocsArray' },
       { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbDocsArray', '$$ROOT'] } } },
-      { $project: { _vqbDocsArray: 0, _id: 0 } },
+      { $project: { _vqbDocsArray: 0 } },
+      { $sort: { _id: 1 } },
+      { $project: { _id: 0 } },
     ]);
   });
 
@@ -1176,7 +1180,9 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
       },
       { $unwind: '$_vqbDocsArray' },
       { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbDocsArray', '$$ROOT'] } } },
-      { $project: { _vqbDocsArray: 0, _id: 0 } },
+      { $project: { _vqbDocsArray: 0 } },
+      { $sort: { _id: 1 } },
+      { $project: { _id: 0 } },
     ]);
   });
 
