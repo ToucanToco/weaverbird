@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## [0.92.5] - 2022-12-30
+
+### Fixed
+
+- Mongo: In case the `_id` column is an expected output column for an `aggregation` step, rename it to `__id`
+  to prevent an error.
+
 ## [0.92.4] - 2022-12-13
 
 ### Fixed
