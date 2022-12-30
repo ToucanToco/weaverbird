@@ -1,0 +1,120 @@
+{
+  "exclude": [
+    "athena_pypika",
+    "bigquery_pypika",
+    "mysql_pypika",
+    "pandas",
+    "postgres_pypika",
+    "redshift_pypika",
+    "snowflake",
+    "snowflake_pypika"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "aggregate",
+        "on": [
+          "DOUM"
+        ],
+        "aggregations": [
+          {
+            "newcolumns": [
+              "_id"
+            ],
+            "aggfunction": "first",
+            "columns": [
+              "_id"
+            ]
+          }
+        ],
+        "keepOriginalGranularity": false
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "_id",
+          "type": "string"
+        },
+        {
+          "name": "DOUM",
+          "type": "string"
+        },
+        {
+          "name": "VALUE1",
+          "type": "integer"
+        },
+        {
+          "name": "VALUE2",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "_id": "Label 1",
+        "DOUM": "Group 1",
+        "VALUE1": 13,
+        "VALUE2": 10
+      },
+      {
+        "_id": "Label 2",
+        "DOUM": "Group 1",
+        "VALUE1": 7,
+        "VALUE2": 21
+      },
+      {
+        "_id": "Label 3",
+        "DOUM": "Group 1",
+        "VALUE1": 20,
+        "VALUE2": 4
+      },
+      {
+        "_id": "Label 4",
+        "DOUM": "Group 2",
+        "VALUE1": 1,
+        "VALUE2": 17
+      },
+      {
+        "_id": "Label 5",
+        "DOUM": "Group 2",
+        "VALUE1": 10,
+        "VALUE2": 12
+      },
+      {
+        "_id": "Label 6",
+        "DOUM": "Group 2",
+        "VALUE1": 5,
+        "VALUE2": 2
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "DOUM",
+          "type": "string"
+        },
+        {
+          "name": "__id",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "DOUM": "Group 1",
+        "__id": "Label 1"
+      },
+      {
+        "DOUM": "Group 2",
+        "__id": "Label 4"
+      }
+    ]
+  }
+}
