@@ -10,6 +10,15 @@
   "step": {
     "pipeline": [
       {
+        "name": "sort",
+        "columns": [
+          {
+            "column": "NAME",
+            "order": "asc"
+          }
+        ]
+      },
+      {
         "name": "uniquegroups",
         "on": [
           "NAME"
@@ -29,7 +38,7 @@
           "type": "integer"
         }
       ],
-      "pandas_version": "0.20.0"
+      "pandas_version": "1.4.0"
     },
     "data": [
       {
@@ -70,29 +79,29 @@
           "type": "string"
         }
       ],
-      "pandas_version": "0.20.0"
+      "pandas_version": "1.4.0"
     },
     "data": [
       {
-        "NAME": "Mickaël"
-      },
-      {
         "NAME": "Anna"
-      },
-      {
-        "NAME": "Bertrand"
-      },
-      {
-        "NAME": "Germaine"
       },
       {
         "NAME": "Anthony"
       },
       {
-        "NAME": "Xavière"
+        "NAME": "Bertrand"
       },
       {
         "NAME": "Camille"
+      },
+      {
+        "NAME": "Germaine"
+      },
+      {
+        "NAME": "Mickaël"
+      },
+      {
+        "NAME": "Xavière"
       }
     ]
   }

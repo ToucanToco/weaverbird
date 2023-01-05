@@ -40,7 +40,7 @@
           "type": "integer"
         }
       ],
-      "pandas_version": "0.20.0"
+      "pandas_version": "1.4.0"
     },
     "data": [
       {
@@ -71,7 +71,7 @@
           "type": "integer"
         }
       ],
-      "pandas_version": "0.20.0"
+      "pandas_version": "1.4.0"
     },
     "data": [
       {
