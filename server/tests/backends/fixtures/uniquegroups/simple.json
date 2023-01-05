@@ -12,7 +12,7 @@
       {
         "name": "uniquegroups",
         "on": [
-          "TOTO"
+          "NAME"
         ]
       }
     ]
@@ -21,67 +21,52 @@
     "schema": {
       "fields": [
         {
-          "name": "RAICHU",
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "INDEX",
           "type": "integer"
-        },
-        {
-          "name": "TOTO",
-          "type": "string"
-        },
-        {
-          "name": "FLORIZARRE",
-          "type": "string"
         }
       ],
       "pandas_version": "0.20.0"
     },
     "data": [
       {
-        "TOTO": "dindin",
-        "RAICHU": 42,
-        "FLORIZARRE": "patate"
+        "NAME": "Mickaël",
+        "INDEX": 1
       },
       {
-        "TOTO": "zigolom",
-        "RAICHU": 3,
-        "FLORIZARRE": "patate"
+        "NAME": "Anna",
+        "INDEX": 2
+      },
+      {
+        "NAME": "Bertrand",
+        "INDEX": 3
+      },
+      {
+        "NAME": "Germaine",
+        "INDEX": 4
+      },
+      {
+        "NAME": "Anthony",
+        "INDEX": 5
+      },
+      {
+        "NAME": "Xavière",
+        "INDEX": 6
+      },
+      {
+        "NAME": "Camille",
+        "INDEX": 7
       }
     ]
-  },
-  "other_inputs": {
-    "buzz": {
-      "schema": {
-        "fields": [
-          {
-            "name": "RAICHU",
-            "type": "number"
-          },
-          {
-            "name": "TOTO",
-            "type": "string"
-          }
-        ],
-        "pandas_version": "0.20.0"
-      },
-      "data": [
-        {
-          "TOTO": "zigolom",
-          "RAICHU": 3,
-          "FLORIZARRE": "patate"
-        },
-        {
-          "TOTO": "dindin",
-          "RAICHU": 42,
-          "FLORIZARRE": "patate"
-        }
-      ]
-    }
   },
   "expected": {
     "schema": {
       "fields": [
         {
-          "name": "TOTO",
+          "name": "NAME",
           "type": "string"
         }
       ],
@@ -89,10 +74,25 @@
     },
     "data": [
       {
-        "TOTO": "dindin"
+        "NAME": "Mickaël"
       },
       {
-        "TOTO": "zigolom"
+        "NAME": "Anna"
+      },
+      {
+        "NAME": "Bertrand"
+      },
+      {
+        "NAME": "Germaine"
+      },
+      {
+        "NAME": "Anthony"
+      },
+      {
+        "NAME": "Xavière"
+      },
+      {
+        "NAME": "Camille"
       }
     ]
   }
