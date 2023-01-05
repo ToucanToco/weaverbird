@@ -22,15 +22,16 @@
         openDirection="bottom"
         @input="updateValue"
       >
-        <!-- If you want to use those templates you should provide a 'label' and
-      'example' key in the options-->
-        <template v-if="withExample" slot="singleLabel" slot-scope="props">
+        <!-- If you want to use those templates, you should provide a 'label' key in the options -->
+        <template v-if="withTitleAttribute" slot="singleLabel" slot-scope="props">
           <span class="option__title">{{ props.option.label }}</span>
         </template>
-        <template v-if="withExample" slot="option" slot-scope="props">
+        <template v-if="withTitleAttribute" slot="option" slot-scope="props">
           <div class="option__container" :title="props.option.tooltip">
-            <div class="option__title">{{ props.option.label }}</div>
-            <div class="option__example">{{ props.option.example }}</div>
+            <div class="option__title" :title="props.option.label">{{ props.option.label }}</div>
+            <!-- To display an example - e.g. "Wed Jan 04 2023" for "Today" label -
+                you should provide a 'example' key in the options -->
+            <div v-if="withExample" class="option__example">{{ props.option.example }}</div>
           </div>
         </template>
       </multiselect>
@@ -81,6 +82,9 @@ export default class AutocompleteWidget extends FormWidget {
 
   @Prop({ type: Boolean, default: false })
   withExample!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  withTitleAttribute!: boolean;
 
   @Prop()
   availableVariables?: VariablesBucket;
