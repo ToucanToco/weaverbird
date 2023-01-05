@@ -85,7 +85,6 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
   })
   declare initialStepValue: JoinStep;
 
-  @VQBModule.Getter referencingPipelines!: string[];
   @VQBModule.Getter availableDatasetNames!: string[];
 
   readonly title: string = 'Join datasets';
@@ -117,16 +116,7 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
   }
 
   get options(): object[] {
-    return this.availableDatasetNames.map((name) => {
-      const option = { label: name, trackBy: name };
-      if (this.referencingPipelines.includes(name)) {
-        Object.assign(option, {
-          $isDisabled: true,
-          tooltip: `Circular reference: you cannot combine ${name} because it references the current dataset.`,
-        });
-      }
-      return option;
-    });
+    return this.availableDatasetNames.map((name) => ({ label: name, trackBy: name }));
   }
 
   rightColumnNames: string[] | null | undefined = null;

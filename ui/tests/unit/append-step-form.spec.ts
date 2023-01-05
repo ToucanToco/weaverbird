@@ -51,13 +51,7 @@ describe('Append Step Form', () => {
     const wrapper = runner.shallowMount(initialState);
     const widgetMultiselect = wrapper.find('multiselectwidget-stub');
     expect(widgetMultiselect.props('options')).toEqual([
-      {
-        $isDisabled: true,
-        trackBy: 'dataset1',
-        tooltip:
-          'Circular reference: you cannot combine dataset1 because it references the current dataset.',
-        label: 'dataset1',
-      },
+      { trackBy: 'dataset1', label: 'dataset1' },
       { trackBy: 'dataset2', label: 'dataset2' },
     ]);
     expect(widgetMultiselect.props('trackBy')).toEqual('trackBy');
