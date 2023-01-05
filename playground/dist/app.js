@@ -19,17 +19,7 @@ const args = new URLSearchParams(location.search);
 
 const TRANSLATOR = args.get('backend') || 'mongo50';
 
-const USE_MONGO_BACKEND_TRANSLATOR = args.get('mongo-python') === 'enable';
 const API_BASEROUTE = args.get('api') || window.location.origin;
-
-const mongoTranslator = getTranslator('mongo50');
-const pandasTranslator = getTranslator('pandas');
-const snowflakeTranslator = getTranslator('snowflake');
-const athenaTranslator = getTranslator('athena');
-const googleBigQueryTranslator = getTranslator('google-big-query');
-const mysqlTranslator = getTranslator('mysql');
-const postgresqlTranslator = getTranslator('postgresql');
-const redshiftTranslator = getTranslator('redshift');
 
 const VARIABLES = {
   view: 'Product 123',
@@ -198,7 +188,6 @@ class MongoService {
 
     let isResponseOk, responseContent, query;
 
-    if (USE_MONGO_BACKEND_TRANSLATOR) {
       const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(
         dereferencedPipeline,
         VARIABLES,
@@ -224,12 +213,6 @@ class MongoService {
       isResponseOk = response.ok;
       responseContent = await response.json();
       query = responseContent.query;
-    } else {
-      const { domain, pipeline: subpipeline } = filterOutDomain(dereferencedPipeline);
-      const queryWithVariables = mongoTranslator.translate(subpipeline);
-      query = exampleInterpolateFunc(queryWithVariables, VARIABLES);
-      ({ isResponseOk, responseContent } = await this.executeQuery(query, domain, limit, offset));
-    }
 
     if (isResponseOk) {
       const { data: rset, types, pagination_info: paginationInfo } = responseContent;
@@ -253,25 +236,6 @@ class MongoService {
       };
     }
   }
-
-  async executeQuery(query, collection, limit, offset) {
-    const response = await fetch(API_BASEROUTE + '/mongo-translated', {
-      method: 'POST',
-      body: JSON.stringify({
-        query,
-        collection,
-        limit,
-        offset,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    return {
-      isResponseOk: response.ok,
-      responseContent: await response.json(),
-    };
-  }
 }
 
 class PandasService {
@@ -282,9 +246,6 @@ class PandasService {
 
   async executePipeline(pipeline, pipelines, limit, offset = 0) {
     const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
-
-    // This does not modify the pipeline, but checks if all steps are supported
-    pandasTranslator.translate(dereferencedPipeline);
 
     const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(
       dereferencedPipeline,
@@ -344,8 +305,6 @@ class SnowflakeService {
   async executePipeline(pipeline, pipelines, limit, offset = 0) {
     const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
 
-    // This does not modify the pipeline, but checks if all steps are supported
-    snowflakeTranslator.translate(dereferencedPipeline);
     const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(
       dereferencedPipeline,
       VARIABLES,
@@ -399,8 +358,6 @@ class AthenaService {
   async executePipeline(pipeline, pipelines, limit, offset = 0) {
     const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
 
-    // This does not modify the pipeline, but checks if all steps are supported
-    athenaTranslator.translate(dereferencedPipeline);
     const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(
       dereferencedPipeline,
       VARIABLES,
@@ -454,8 +411,6 @@ class GoogleBigQueryService {
   async executePipeline(pipeline, pipelines, limit, offset = 0) {
     const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
 
-    // This does not modify the pipeline, but checks if all steps are supported
-    googleBigQueryTranslator.translate(dereferencedPipeline);
     const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(
       dereferencedPipeline,
       VARIABLES,
@@ -509,8 +464,6 @@ class MySqlService {
   async executePipeline(pipeline, pipelines, limit, offset = 0) {
     const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
 
-    // This does not modify the pipeline, but checks if all steps are supported
-    mysqlTranslator.translate(dereferencedPipeline);
     const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(
       dereferencedPipeline,
       VARIABLES,
@@ -564,8 +517,6 @@ class PostgresqlService {
   async executePipeline(pipeline, pipelines, limit, offset = 0) {
     const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
 
-    // This does not modify the pipeline, but checks if all steps are supported
-    postgresqlTranslator.translate(dereferencedPipeline);
     const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(
       dereferencedPipeline,
       VARIABLES,
@@ -619,8 +570,6 @@ class RedshiftService {
   async executePipeline(pipeline, pipelines, limit, offset = 0) {
     const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
 
-    // This does not modify the pipeline, but checks if all steps are supported
-    redshiftTranslator.translate(dereferencedPipeline);
     const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(
       dereferencedPipeline,
       VARIABLES,
