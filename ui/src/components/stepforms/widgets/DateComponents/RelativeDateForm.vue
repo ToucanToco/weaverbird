@@ -162,6 +162,16 @@ export default class RelativeDateForm extends Vue {
     padding: 8px 12px;
   }
 
+  ::v-deep .multiselect__content {
+    max-width: 100%;
+  }
+
+  ::v-deep .option__title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   ::v-deep .multiselect__option {
     border: none;
     margin: 5px;
