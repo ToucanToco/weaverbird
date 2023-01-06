@@ -47,11 +47,3 @@ export const Default: StoryObj<RelativeDateForm> = {
     variableDelimiters: { start: '{{', end: '}}' },
   },
 };
-
-export const WithTitleAttribute: StoryObj<RelativeDateForm> = {
-  ...Default,
-  args: {
-    ...Default.args,
-    withTitleAttribute: true,
-  },
-};

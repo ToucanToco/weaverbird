@@ -19,17 +19,17 @@ describe('Widget Autocomplete', () => {
     expect(wrapper.find('VariableInput-stub').exists()).toBeTruthy();
   });
 
-  it('should not have specific templates if the prop withTitleAttribute is false', () => {
+  it('should not have specific templates by default', () => {
     const wrapper = mount(AutocompleteWidget, {
-      propsData: { withTitleAttribute: false, options: [{ label: 'foo', example: 'bar' }] },
+      propsData: { options: ['foo', 'bar'] },
     });
     expect(wrapper.find('.option__title').exists()).toBeFalsy();
     expect(wrapper.find('.option__container').exists()).toBeFalsy();
   });
 
-  it('should have specific templates if the prop withTitleAttribute is true', () => {
+  it('should have specific templates a label is provided in options', () => {
     const wrapper = mount(AutocompleteWidget, {
-      propsData: { withTitleAttribute: true, options: [{ label: 'foo', example: 'bar' }] },
+      propsData: { options: [{ label: 'foo', example: 'bar' }] },
     });
     expect(wrapper.find('.option__title').exists()).toBeTruthy();
     expect(wrapper.find('.option__container').exists()).toBeTruthy();
@@ -71,7 +71,6 @@ describe('Widget Autocomplete', () => {
   it('should add a tooltip to the option', () => {
     const wrapper = mount(AutocompleteWidget, {
       propsData: {
-        withTitleAttribute: true,
         options: [{ label: 'foo', example: 'bar', tooltip: 'ukulélé' }],
       },
     });
@@ -82,7 +81,6 @@ describe('Widget Autocomplete', () => {
   it('should add a title attribute to the title', () => {
     const wrapper = mount(AutocompleteWidget, {
       propsData: {
-        withTitleAttribute: true,
         options: [{ label: 'foo', example: 'bar' }],
       },
     });

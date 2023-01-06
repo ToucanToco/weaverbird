@@ -32,7 +32,6 @@
         placeholder="Select a date"
         trackBy="identifier"
         label="label"
-        :withTitleAttribute="true"
       />
     </div>
   </div>
