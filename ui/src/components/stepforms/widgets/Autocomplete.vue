@@ -23,10 +23,10 @@
         @input="updateValue"
       >
         <!-- If you want to use those templates, you should provide a 'label' key in the options -->
-        <template v-if="options[0].label" slot="singleLabel" slot-scope="props">
+        <template v-if="options[0] && options[0].label" slot="singleLabel" slot-scope="props">
           <span class="option__title">{{ props.option.label }}</span>
         </template>
-        <template v-if="options[0].label" slot="option" slot-scope="props">
+        <template v-if="options[0] && options[0].label" slot="option" slot-scope="props">
           <div class="option__container" :title="props.option.tooltip">
             <div class="option__title" :title="props.option.label">{{ props.option.label }}</div>
             <!-- To display an example - e.g. "Wed Jan 04 2023" for "Today" label -
