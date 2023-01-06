@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [0.92.6] - 2023-01-06
+
+### Fixed
+
+- Allow to access all options for relative date dropdown
+
 ## [0.92.5] - 2022-12-30
 
 ### Fixed
