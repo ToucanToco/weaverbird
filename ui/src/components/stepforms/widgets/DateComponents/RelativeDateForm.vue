@@ -132,12 +132,13 @@ export default class RelativeDateForm extends Vue {
 .widget-relative-date-range-form__container {
   display: flex;
   justify-content: center;
-  margin-bottom: 15px;
+  margin: 5px;
 }
 
 .widget-relative-date-range-form__quantity {
-  flex: 1 25%;
-  margin: 0 !important;
+  flex: 0 0 75px;
+  margin: 0;
+  margin-right: 5px;
   background: white;
 
   ::v-deep .widget-input-number__container {
@@ -149,12 +150,25 @@ export default class RelativeDateForm extends Vue {
   }
 }
 .widget-relative-date-range-form__duration {
-  flex: 1 75%;
-  margin: 0 0 0 15px;
+  flex: 1;
+  margin: 0;
   background: white;
+  // Default min-width for flex items is auto.
+  // Override this value to prevent the element overflowing the container.
+  min-width: 0;
 
   ::v-deep .multiselect__tags {
     padding: 8px 12px;
+  }
+
+  ::v-deep .multiselect__content {
+    max-width: 100%;
+  }
+
+  ::v-deep .option__title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   ::v-deep .multiselect__option {
@@ -179,12 +193,15 @@ export default class RelativeDateForm extends Vue {
 }
 
 .widget-relative-date-range-form__input {
-  flex: 1 100%;
+  flex: 1;
+  // Default min-width for flex items is auto.
+  // Override this value to prevent the element overflowing the container.
+  min-width: 0;
 }
 
 .widget-relative-date-range-form__input--operator {
-  flex: 1 0 25%;
-  margin-right: 15px;
+  flex: 0 0 75px;
+  margin-right: 5px;
 }
 
 .widget-relative-date-range-form__input--base-date {
@@ -193,6 +210,12 @@ export default class RelativeDateForm extends Vue {
 
   ::v-deep .multiselect__tags {
     padding: 8px 12px;
+  }
+
+  ::v-deep .multiselect__placeholder {
+    display: block;
+    line-height: 24px;
+    padding: 0;
   }
 
   ::v-deep .multiselect__option {

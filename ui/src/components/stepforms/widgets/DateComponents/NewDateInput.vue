@@ -61,7 +61,10 @@
             :selectedTab="selectedTab"
             @tabSelected="selectTab"
           />
-          <div class="widget-date-input__editor-body">
+          <div
+            class="widget-date-input__editor-body"
+            :class="{ 'widget-date-input__editor-body--scrollable': isFixedTabSelected }"
+          >
             <Calendar
               v-if="isFixedTabSelected"
               v-model="currentTabValue"
@@ -456,6 +459,9 @@ export default class NewDateInput extends Vue {
   }
   .widget-date-input__editor-body {
     min-height: 0;
+  }
+  // allow to scroll in the "fixed" section (with calendar)
+  .widget-date-input__editor-body--scrollable {
     overflow: auto;
   }
 }
