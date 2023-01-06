@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## [0.99.1] - 2023-01-06
+
+### Changed
+
+- Rename \_id to \_\_id in case it's part of an aggregation's new columns
+
+### Fixed
+
+- Allow to access all options for relative date dropdown
+
 ## [0.99.0] - 2022-12-16
 
 ### Changed
