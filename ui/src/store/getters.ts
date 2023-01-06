@@ -5,7 +5,6 @@ import _ from 'lodash';
 import type { GetterTree } from 'vuex';
 
 import type { BackendError, BackendWarning } from '@/lib/backend';
-import { getPipelineNamesReferencing } from '@/lib/dereference-pipeline';
 import { getTranslator } from '@/lib/translators';
 
 import type { VQBState } from './state';
@@ -29,13 +28,6 @@ const getters: GetterTree<VQBState, any> = {
 
     return [...pipelineNames, ...domainNames];
   },
-
-  // Return the pipelines referencing the current pipeline
-  referencingPipelines: (state: VQBState) =>
-    state.currentPipelineName
-      ? getPipelineNamesReferencing(state.currentPipelineName, state.pipelines)
-      : [],
-
   pipeline: (state: VQBState) => currentPipeline(state),
   activePipeline, // the part of the pipeline that is currently selected.
   inactivePipeline, // the part of the pipeline that is currently disabled.

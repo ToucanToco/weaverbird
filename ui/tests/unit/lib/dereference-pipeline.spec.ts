@@ -1,3 +1,4 @@
+// TODO: delete me if Playground doesn't use dereferencePipelines anymore
 import { describe, expect, it } from 'vitest';
 
 import type { PipelinesScopeContext } from '@/lib/dereference-pipeline';

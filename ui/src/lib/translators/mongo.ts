@@ -14,7 +14,7 @@ import {
 import type { RelativeDate } from '@/lib/dates';
 import { isRelativeDate } from '@/lib/dates';
 import { $$, combinations, escapeForUseInRegExp } from '@/lib/helpers';
-import type { OutputStep, StepMatcher } from '@/lib/matcher';
+import type { StepMatcher } from '@/lib/matcher';
 import * as S from '@/lib/steps';
 import type { ValidationError } from '@/lib/translators/base';
 import { BaseTranslator } from '@/lib/translators/base';
@@ -103,70 +103,6 @@ export function _simplifyAndCondition(filterAndCond: FilterComboAndMongo): Mongo
   }
 
   return simplifiedBlock;
-}
-
-/**
- * Simplify a list of mongo steps (i.e. merge them whenever possible)
- *
- * - if multiple `$match` steps are chained, merge them,
- * - if multiple `$project` steps are chained, merge them.
- *
- * @param mongoSteps the input pipeline
- *
- * @returns the list of simplified mongo steps
- */
-export function _simplifyMongoPipeline(mongoSteps: MongoStep[]): MongoStep[] {
-  if (!mongoSteps.length) {
-    return [];
-  }
-  let merge = true;
-  const outputSteps: MongoStep[] = [];
-  let lastStep: MongoStep = mongoSteps[0];
-  outputSteps.push(lastStep);
-
-  for (const step of mongoSteps.slice(1)) {
-    const [stepOperator] = Object.keys(step);
-    const isMergeable = stepOperator === '$project' || stepOperator === '$match';
-    if (isMergeable && lastStep[stepOperator] !== undefined) {
-      for (const key in step[stepOperator]) {
-        /**
-         * In Mongo, exclusions cannot be combined with any inclusion, so if we
-         * have an exclusion in a $project step, and that the previous one
-         * includes any inclusion, we do not want to merge those steps.
-         */
-        if (stepOperator === '$project') {
-          const included = Boolean(step.$project[key]);
-          merge = Object.values(lastStep.$project).every((value) => Boolean(value) === included);
-        }
-        if (Object.prototype.hasOwnProperty.call(lastStep[stepOperator], key)) {
-          // We do not want to merge two $project with common keys
-          merge = false;
-          break;
-        }
-        if (stepOperator !== '$match') {
-          // We do not want to merge two $project or $addFields with a `step`
-          // key referencing as value a`lastStep` key
-          const valueString: string = JSON.stringify(step[stepOperator][key]);
-          for (const lastKey in lastStep[stepOperator]) {
-            const regex = new RegExp(`.*['"]\\$${lastKey}(\\..+)?['"].*`);
-            if (regex.test(valueString)) {
-              merge = false;
-              break;
-            }
-          }
-        }
-      }
-      if (merge) {
-        // merge $project steps together
-        lastStep[stepOperator] = { ...lastStep[stepOperator], ...step[stepOperator] };
-        continue;
-      }
-    }
-    lastStep = step;
-    outputSteps.push(lastStep);
-    merge = true;
-  }
-  return outputSteps;
 }
 
 function getOperator(op: string) {
@@ -1960,16 +1896,6 @@ export class Mongo36Translator extends BaseTranslator {
     this.domainToCollection = domainToCollectionFunc;
   }
 
-  translate(pipeline: S.Pipeline) {
-    const mongoSteps = super
-      .translate(pipeline)
-      .reduce((acc: OutputStep[], val) => acc.concat(val), []) as MongoStep[];
-    if (mongoSteps.length) {
-      return _simplifyMongoPipeline([...mongoSteps, { $project: { _id: 0 } }]);
-    }
-    return _simplifyMongoPipeline(mongoSteps);
-  }
-
   /** transform an 'append' step into corresponding mongo steps */
   append(step: Readonly<S.AppendStep>): MongoStep[] {
     const pipelines = step.pipelines;
@@ -1994,7 +1920,7 @@ export class Mongo36Translator extends BaseTranslator {
       lookups.push({
         $lookup: {
           from: this.domainToCollection(domainStep.domain),
-          pipeline: this.translate(pipelineWithoutDomain),
+          pipeline: pipelineWithoutDomain,
           as: `_vqbPipelineToAppend_${i}`,
         },
       });
@@ -2301,10 +2227,7 @@ export class Mongo36Translator extends BaseTranslator {
       $lookup: {
         from: this.domainToCollection(rightDomain.domain),
         let: mongoLet,
-        pipeline: [
-          ...this.translate(rightWithoutDomain),
-          { $match: { $expr: { $and: mongoExprAnd } } },
-        ],
+        pipeline: [rightWithoutDomain, { $match: { $expr: { $and: mongoExprAnd } } }],
         as: '_vqbJoinKey',
       },
     });

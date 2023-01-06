@@ -134,30 +134,6 @@ describe('getter tests', () => {
     });
   });
 
-  describe('referencingPipelines', () => {
-    it('should return the referencing pipeline(s)', () => {
-      const state = buildState({
-        currentPipelineName: 'coco_l_asticot',
-        pipelines: {
-          coco_l_asticot: [{ name: 'domain', domain: 'dataset1' }],
-          dataset1: [],
-          dataset2: [{ name: 'domain', domain: 'coco_l_asticot' }],
-        },
-      });
-      expect(getters.referencingPipelines(state, {}, {}, {})).toEqual(['dataset2']);
-    });
-    it('should return nothing if the currentPipelineName is not defined', () => {
-      const state = buildState({
-        currentPipelineName: undefined,
-        pipelines: {
-          dataset1: [],
-          dataset2: [],
-        },
-      });
-      expect(getters.referencingPipelines(state, {}, {}, {})).toEqual([]);
-    });
-  });
-
   describe('active step index tests', () => {
     it('should not return anything if no pipeline is selected', () => {
       const state = buildState({});

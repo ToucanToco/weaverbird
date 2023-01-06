@@ -43,7 +43,6 @@ export default class AppendStepForm extends BaseStepForm<AppendStep> {
   @Prop({ type: Object, default: () => ({ name: 'append', pipelines: [] }) })
   declare initialStepValue: AppendStep;
 
-  @VQBModule.Getter referencingPipelines!: string[];
   @VQBModule.Getter availableDatasetNames!: string[];
 
   readonly title: string = 'Append datasets';
@@ -61,16 +60,7 @@ export default class AppendStepForm extends BaseStepForm<AppendStep> {
   }
 
   get options(): object[] {
-    return this.availableDatasetNames.map((name) => {
-      const option = { label: name, trackBy: name };
-      if (this.referencingPipelines.includes(name)) {
-        option['$isDisabled'] = true;
-        option[
-          'tooltip'
-        ] = `Circular reference: you cannot combine ${name} because it references the current dataset.`;
-      }
-      return option;
-    });
+    return this.availableDatasetNames.map((name) => ({ label: name, trackBy: name }));
   }
 }
 </script>

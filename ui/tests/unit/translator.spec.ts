@@ -38,36 +38,6 @@ describe('base translator class', () => {
     expect(dummytrs.supports('rename')).toBeTruthy();
     expect(dummytrs.supports('aggregate')).toBeFalsy();
   });
-
-  it('should raise a NotSupported error', () => {
-    const notrs = new NoSupportTranslator();
-    expect(() => notrs.translate([{ name: 'domain', domain: 'my-domain' }])).toThrow(
-      'Unsupported step <domain>',
-    );
-  });
-
-  it('should raise a NotSupported error', () => {
-    const dummytrs = new DummyStringTranslator();
-    expect(() =>
-      dummytrs.translate([
-        { name: 'domain', domain: 'my-domain' },
-        { name: 'rename', toRename: [['old', 'new']] },
-        { name: 'delete', columns: ['col1'] },
-        { name: 'rename', toRename: [['old2', 'new2']] },
-      ]),
-    ).toThrow('Unsupported step <delete>');
-  });
-
-  it('should be possible to call translate on a translator', () => {
-    const dummytrs = new DummyStringTranslator();
-    expect(
-      dummytrs.translate([
-        { name: 'domain', domain: 'my-domain' },
-        { name: 'rename', toRename: [['old', 'new']] },
-        { name: 'rename', toRename: [['old2', 'new2']] },
-      ]),
-    ).toEqual(['domain', 'rename', 'rename']);
-  });
 });
 
 describe('translator registration', () => {

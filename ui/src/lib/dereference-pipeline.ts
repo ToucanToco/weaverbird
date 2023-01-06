@@ -1,3 +1,4 @@
+// TODO: delete me if Playground doesn't use dereferencePipelines anymore
 import type { Pipeline, PipelineStep, Reference, ReferenceToExternalQuery } from '@/lib/steps';
 import { isReferenceToExternalQuery, isReferenceToOtherPipeline } from '@/lib/steps';
 

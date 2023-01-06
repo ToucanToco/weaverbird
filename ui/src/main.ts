@@ -7,7 +7,7 @@ export { setAvailableCodeEditors } from './components/code-editor';
 export { defineSendAnalytics } from './lib/send-analytics';
 
 // export store entrypoints
-export { dereferencePipelines, getPipelineNamesReferencing } from './lib/dereference-pipeline';
+export { dereferencePipelines } from './lib/dereference-pipeline';
 export {
   setupStore,
   registerModule,
