@@ -360,7 +360,7 @@ def test_domain_with_source_rows_subset(base_translator: BaseTranslator, mocker)
 def test_domain_with_wrong_domain_name(base_translator: BaseTranslator):
     domain = "people"
     step = steps.DomainStep(domain=domain)
-    with pytest.raises(UnknownTableColumns):
+    with pytest.raises(UnknownTableColumns, match="Table 'people' not in table_columns"):
         base_translator._domain(step=step)
 
 
