@@ -634,7 +634,6 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "CustomSqlStep",
     ) -> StepContext:
-        """Create a custom sql step"""
         raise ForbiddenSQLStep("CustomSQL steps are only allowed at the start of the pipeline")
 
     @classmethod
