@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Pandas: The `top` step now supports non-numeric columns
+
 ## [0.26.5] - 2022-12-30
 
 - Mongo: In case the `_id` column is an expected output column for an `aggregation` step, rename it to `__id`
