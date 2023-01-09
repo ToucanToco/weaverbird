@@ -1,5 +1,5 @@
 class SQLTranslationException(Exception):
-    """Base exception for SQl translator errors"""
+    """Base exception for SQL translator errors"""
 
 
 class UnknownTableColumns(SQLTranslationException):
