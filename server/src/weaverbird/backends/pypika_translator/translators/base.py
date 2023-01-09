@@ -51,6 +51,8 @@ from weaverbird.pipeline.steps import ConvertStep, DomainStep
 from weaverbird.pipeline.steps.date_extract import DATE_INFO
 from weaverbird.pipeline.steps.utils.combination import PipelineOrDomainNameOrReference, Reference
 
+from .exceptions import ForbiddenSQLStep, UnknownTableColumns
+
 Self = TypeVar("Self", bound="SQLTranslator")
 
 if TYPE_CHECKING:
@@ -206,11 +208,14 @@ class SQLTranslator(ABC):
         return name
 
     def _step_context_from_first_step(self, step: "DomainStep | CustomSqlStep") -> StepContext:
-        return (
-            self._domain(step=step)
-            if step.name == "domain"
-            else StepContext(self._custom_query(step=step), ["*"])
-        )
+        if step.name == "domain":
+            return self._domain(step=step)
+        else:  # CustomSql step
+            # In case there are several provided tables, we cannot figure out which columns to use
+            if len(self._tables_columns) != 1:
+                raise UnknownTableColumns("Expected columns to be specified for exactly one table")
+            column_names = list(self._tables_columns.values())[0]
+            return StepContext(self._custom_query(step=step), list(column_names))
 
     def get_query_builder(
         self: Self,
@@ -629,9 +634,8 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "CustomSqlStep",
     ) -> StepContext:
-        """create a custom sql step based on the current table named ##PREVIOUS_STEP## in the query"""
-        # we have no way to know which columns remain without actually executing the query
-        return StepContext(self._custom_query(step=step), ["*"])
+        """Create a custom sql step"""
+        raise ForbiddenSQLStep("CustomSQL steps are only allowed at the start of the pipeline")
 
     @classmethod
     def _day_of_week(cls, target_column: Field) -> Term:
@@ -797,8 +801,8 @@ class SQLTranslator(ABC):
                 raise NotImplementedError(f"[{self.DIALECT}] Cannot resolve a reference to a query")
             else:
                 selected_cols = list(self._tables_columns[step.domain])
-        except KeyError:
-            selected_cols = ["*"]
+        except KeyError as exc:
+            raise UnknownTableColumns(f"Table {exc} not in table_columns") from exc
 
         query: "QueryBuilder" = self.QUERY_CLS.from_(
             Table(step.domain, schema=self._db_schema)
