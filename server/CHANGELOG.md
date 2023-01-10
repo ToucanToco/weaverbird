@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.26.6] - 2023-01-10
+
 - Pandas: The `top` step now supports non-numeric columns
 
 ## [0.26.5] - 2022-12-30
