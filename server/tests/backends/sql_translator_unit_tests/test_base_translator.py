@@ -8,6 +8,10 @@ from pypika.enums import JoinType
 from pypika.terms import LiteralValue, Term, ValueWrapper
 
 from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, SQLTranslator
+from weaverbird.backends.pypika_translator.translators.exceptions import (
+    ForbiddenSQLStep,
+    UnknownTableColumns,
+)
 from weaverbird.pipeline import conditions, steps
 from weaverbird.pipeline.pipeline import DomainStep
 from weaverbird.pipeline.steps.utils.combination import Reference
@@ -78,10 +82,12 @@ def test_get_query_builder_with_custom_query(base_translator: BaseTranslator):
     step_1_query = Query.select(1)
     expected = (
         Query.with_(step_1_query, "__step_0_basetranslator__")
-        .from_(AliasedQuery('"__step_0_basetranslator__"'))
-        .select("*")
+        .from_("__step_0_basetranslator__")
+        .select(*ALL_TABLES["users"])
     )
 
+    # Ensuring we have columns for exactly one table
+    base_translator._tables_columns = {"users": ALL_TABLES["users"]}
     ctx = base_translator.get_query_builder(steps=pipeline_steps)
     assert ctx.materialize().get_sql() == expected.get_sql()
 
@@ -302,12 +308,11 @@ def test_cumsum(base_translator: BaseTranslator, default_step_kwargs: dict[str, 
 
 def test_customsql(base_translator: BaseTranslator, default_step_kwargs: dict[str, Any]):
     selected_columns = ["*"]
-    custom_query = "Select * from users"
+    custom_query = "SELECT * from users"
 
     step = steps.CustomSqlStep(query=custom_query)
-    ctx = base_translator.customsql(step=step, columns=selected_columns, **default_step_kwargs)
-
-    assert ctx.selectable.get_sql() == custom_query
+    with pytest.raises(ForbiddenSQLStep):
+        base_translator.customsql(step=step, columns=selected_columns, **default_step_kwargs)
 
 
 def test_delete(base_translator: BaseTranslator, default_step_kwargs: dict[str, Any]):
@@ -352,17 +357,11 @@ def test_domain_with_source_rows_subset(base_translator: BaseTranslator, mocker)
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
-# this seems wrong for me...
 def test_domain_with_wrong_domain_name(base_translator: BaseTranslator):
     domain = "people"
     step = steps.DomainStep(domain=domain)
-    ctx = base_translator._domain(step=step)
-
-    schema = Schema(DB_SCHEMA)
-    people = Table(domain, schema)
-    expected_query = Query.from_(people).select("*")
-
-    assert ctx.selectable.get_sql() == expected_query.get_sql()
+    with pytest.raises(UnknownTableColumns, match="Table 'people' not in table_columns"):
+        base_translator._domain(step=step)
 
 
 def test_domain_with_reference(base_translator: BaseTranslator):
@@ -761,10 +760,10 @@ def test_no_extra_quotes_in_base_translator(
 
 
 def test_no_extra_quotes_in_base_translator_with_entire_pipeline(base_translator: BaseTranslator):
-    pipeline = [steps.DomainStep(domain="toto")]
+    pipeline = [steps.DomainStep(domain="users")]
 
     translated = base_translator.get_query_str(steps=pipeline)
     assert translated == (
-        'WITH __step_0_basetranslator__ AS (SELECT * FROM "test_schema"."toto") '
-        'SELECT * FROM "__step_0_basetranslator__"'
+        'WITH __step_0_basetranslator__ AS (SELECT "name","pseudonyme","age","id","project_id" FROM "test_schema"."users") '
+        'SELECT "name","pseudonyme","age","id","project_id" FROM "__step_0_basetranslator__"'
     )

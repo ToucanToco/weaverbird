@@ -44,7 +44,7 @@ def translator() -> SQLTranslator:
 _CASES: list[tuple[list[dict | PipelineStep], str]] = [
     (
         [steps.CustomSqlStep(query="SELECT * FROM beers_tiny")],
-        'WITH __step_0_dummy__ AS (SELECT * FROM beers_tiny) SELECT * FROM "__step_0_dummy__"',
+        'WITH __step_0_dummy__ AS (SELECT * FROM beers_tiny) SELECT "price_per_l","alcohol_degree","name","cost","beer_kind","volume_ml","brewing_date","nullable_name" FROM "__step_0_dummy__"',
     ),
     (
         [
