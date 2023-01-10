@@ -210,7 +210,7 @@ export default class ActionMenu extends Vue {
   }
 
   createFilterStep() {
-    this.createStep({ name: 'filter', condition: this.condition });
+    this.createStep({ name: 'filter', condition: { ...this.condition, column: this.columnName } });
   }
 }
 </script>
