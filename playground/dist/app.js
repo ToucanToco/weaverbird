@@ -253,8 +253,12 @@ class PandasService {
     );
 
     const url = new URL(API_BASEROUTE + '/pandas');
-    url.searchParams.set('limit', limit);
-    url.searchParams.set('offset', offset);
+    if (limit != null) {
+      url.searchParams.set('limit', limit);
+    }
+    if (offset != null) {
+      url.searchParams.set('offset', offset);
+    }
 
     const response = await fetch(url.toString(), {
       method: 'POST',
@@ -311,8 +315,12 @@ class SnowflakeService {
     );
 
     const url = new URL(API_BASEROUTE + '/snowflake');
-    url.searchParams.set('limit', limit);
-    url.searchParams.set('offset', offset);
+    if (limit != null) {
+      url.searchParams.set('limit', limit);
+    }
+    if (offset != null) {
+      url.searchParams.set('offset', offset);
+    }
 
     const response = await fetch(url.toString(), {
       method: 'POST',
@@ -364,8 +372,12 @@ class AthenaService {
     );
 
     const url = new URL(API_BASEROUTE + '/athena');
-    url.searchParams.set('limit', limit);
-    url.searchParams.set('offset', offset);
+    if (limit != null) {
+      url.searchParams.set('limit', limit);
+    }
+    if (offset != null) {
+      url.searchParams.set('offset', offset);
+    }
 
     const response = await fetch(url.toString(), {
       method: 'POST',
@@ -417,8 +429,12 @@ class GoogleBigQueryService {
     );
 
     const url = new URL(window.location.origin + '/google-big-query');
-    url.searchParams.set('limit', limit);
-    url.searchParams.set('offset', offset);
+    if (limit != null) {
+      url.searchParams.set('limit', limit);
+    }
+    if (offset != null) {
+      url.searchParams.set('offset', offset);
+    }
 
     const response = await fetch(url.toString(), {
       method: 'POST',
@@ -470,8 +486,12 @@ class MySqlService {
     );
 
     const url = new URL(API_BASEROUTE + '/mysql');
-    url.searchParams.set('limit', limit);
-    url.searchParams.set('offset', offset);
+    if (limit != null) {
+      url.searchParams.set('limit', limit);
+    }
+    if (offset != null) {
+      url.searchParams.set('offset', offset);
+    }
 
     const response = await fetch(url.toString(), {
       method: 'POST',
@@ -523,8 +543,12 @@ class PostgresqlService {
     );
 
     const url = new URL(API_BASEROUTE + '/postgresql');
-    url.searchParams.set('limit', limit);
-    url.searchParams.set('offset', offset);
+    if (limit != null) {
+      url.searchParams.set('limit', limit);
+    }
+    if (offset != null) {
+      url.searchParams.set('offset', offset);
+    }
 
     const response = await fetch(url.toString(), {
       method: 'POST',
@@ -576,8 +600,12 @@ class RedshiftService {
     );
 
     const url = new URL(API_BASEROUTE + '/redshift');
-    url.searchParams.set('limit', limit);
-    url.searchParams.set('offset', offset);
+    if (limit != null) {
+      url.searchParams.set('limit', limit);
+    }
+    if (offset != null) {
+      url.searchParams.set('offset', offset);
+    }
 
     const response = await fetch(url.toString(), {
       method: 'POST',
