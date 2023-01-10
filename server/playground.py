@@ -317,6 +317,7 @@ def facetize_mongo_aggregation(query, limit, offset):
 def execute_mongo_aggregation_query(collection, query, limit, offset):
     facetized_query = facetize_mongo_aggregation(query, limit, offset)
     results = list(mongo_db[collection].aggregate(facetized_query))
+
     # ObjectID are not JSON serializable, so remove them
     for row in results:
         if "_id" in row:
@@ -325,6 +326,7 @@ def execute_mongo_aggregation_query(collection, query, limit, offset):
     # Aggregation does not return correct fields if there is no results
     if len(results) == 0:
         results = [{"count": 0, "data": [], "types": []}]
+
     return results
 
 
@@ -337,16 +339,20 @@ async def handle_mongo_backend_request():
             req_params = await parse_request_json(request)
             pipeline = Pipeline(steps=req_params["pipeline"])  # Validation
             mongo_query = mongo_translate_pipeline(pipeline)
+
+            offset = req_params.get("offset", 0)
+            limit = req_params.get("limit", 1e9)  # Setting a very large limit
+
             results = execute_mongo_aggregation_query(
                 req_params["collection"],
                 mongo_query,
-                req_params["limit"],
-                req_params["offset"],
+                limit,
+                offset,
             )[0]
 
             pagination_info = build_pagination_info(
-                offset=req_params["offset"],
-                limit=req_params["limit"],
+                offset=offset,
+                limit=limit,
                 total_rows=results["count"],
                 retrieved_rows=len(results["data"]),
             )
@@ -474,14 +480,14 @@ if _SNOWFLAKE_CONNECTION is not None:
 
             total_count = (
                 _SNOWFLAKE_CONNECTION.cursor()
-                .execute(f"SELECT COUNT(*) FROM ({ query })")
+                .execute(f"SELECT COUNT(*) FROM ({query})")
                 .fetchone()[0]
             )
             # By using snowflake's connector ability to turn results into a DataFrame,
             # we can re-use all the methods to parse this data- interchange format in the front-end
             df_results = (
                 _SNOWFLAKE_CONNECTION.cursor()
-                .execute(f"SELECT * FROM ({ query }) LIMIT { limit } OFFSET { offset }")
+                .execute(f"SELECT * FROM ({query}) LIMIT {limit} OFFSET {offset}")
                 .fetch_pandas_all()
             )
 
@@ -574,14 +580,14 @@ async def handle_postgres_backend_request():
 
         async with postgresql_connexion.cursor() as cur:
             query_total_count_exec = await cur.execute(
-                f"WITH Q AS ({ sql_query }) SELECT COUNT(*) FROM Q"
+                f"WITH Q AS ({sql_query}) SELECT COUNT(*) FROM Q"
             )
             # fetchone() returns a tuple
             query_total_count = (await query_total_count_exec.fetchone())[0]
 
         async with postgresql_connexion.cursor() as cur:
             query_results_page_exec = await cur.execute(
-                f"WITH Q AS ({ sql_query }) SELECT * FROM Q LIMIT { limit } OFFSET { offset }",
+                f"WITH Q AS ({sql_query}) SELECT * FROM Q LIMIT {limit} OFFSET {offset}",
             )
             query_results_page = await query_results_page_exec.fetchall()
             query_results_desc = query_results_page_exec.description
@@ -811,7 +817,7 @@ async def handle_mysql_post_request():
         ).dict(),
         "results": {
             "headers": result.columns.to_list(),
-            "data": json.loads(result[offset : offset + limit].to_json(orient="records")),
+            "data": json.loads(result[offset: offset + limit].to_json(orient="records")),
             "schema": build_table_schema(result, index=False),
         },
         "query": sql_query,  # provided for inspection purposes
