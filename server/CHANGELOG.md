@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## [0.28.0] - 2023-01-10
+
+- Pandas: The `top` step now supports non-numeric columns
+- PyPika: Manipulating tables whose columns are unknown now throws an exception.
+
 ## [0.27.5] - 2022-12-30
 
 - Mongo: In case the `_id` column is an expected output column for an `aggregation` step, rename it to `__id`
