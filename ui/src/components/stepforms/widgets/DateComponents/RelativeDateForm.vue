@@ -32,6 +32,7 @@
         placeholder="Select a date"
         trackBy="identifier"
         label="label"
+        :maxHeight="240"
       />
     </div>
   </div>
