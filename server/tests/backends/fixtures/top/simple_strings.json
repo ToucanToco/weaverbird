@@ -1,0 +1,99 @@
+{
+  "exclude": [
+    "athena_pypika",
+    "bigquery_pypika",
+    "mysql_pypika",
+    "postgres_pypika",
+    "redshift_pypika",
+    "snowflake",
+    "snowflake_pypika"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "top",
+        "limit": 3,
+        "rank_on": "VALUE",
+        "sort": "asc"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "VALUE",
+          "type": "string"
+        },
+        {
+          "name": "GROUP_COLUMN",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "VALUE": "42",
+        "GROUP_COLUMN": "group1"
+      },
+      {
+        "VALUE": "3",
+        "GROUP_COLUMN": "group2"
+      },
+      {
+        "VALUE": "10",
+        "GROUP_COLUMN": "group3"
+      },
+      {
+        "VALUE": "27",
+        "GROUP_COLUMN": "group4"
+      },
+      {
+        "VALUE": "22",
+        "GROUP_COLUMN": "group1"
+      },
+      {
+        "VALUE": "13",
+        "GROUP_COLUMN": "group1"
+      },
+      {
+        "VALUE": "4",
+        "GROUP_COLUMN": "group2"
+      },
+      {
+        "VALUE": "3",
+        "GROUP_COLUMN": "group3"
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "VALUE",
+          "type": "string"
+        },
+        {
+          "name": "GROUP_COLUMN",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "VALUE": "10",
+        "GROUP_COLUMN": "group3"
+      },
+      {
+        "VALUE": "13",
+        "GROUP_COLUMN": "group1"
+      },
+      {
+        "VALUE": "22",
+        "GROUP_COLUMN": "group1"
+      }
+    ]
+  }
+}
