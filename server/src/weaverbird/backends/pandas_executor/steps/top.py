@@ -10,12 +10,12 @@ def execute_top(
     domain_retriever: DomainRetriever = None,
     execute_pipeline: PipelineExecutor = None,
 ) -> DataFrame:
-    pandas_method = "nlargest" if step.sort == "desc" else "nsmallest"
+    ascending = step.sort == "asc"
     if step.groups:
         return (
             df.groupby(step.groups)
-            .apply(lambda df: getattr(df, pandas_method)(step.limit, step.rank_on))
+            .apply(lambda df: df.sort_values(step.rank_on, ascending=ascending).head(step.limit))
             .reset_index(drop=True)
         )
     else:
-        return getattr(df, pandas_method)(step.limit, step.rank_on)
+        return df.sort_values(step.rank_on, ascending=ascending).head(step.limit)
