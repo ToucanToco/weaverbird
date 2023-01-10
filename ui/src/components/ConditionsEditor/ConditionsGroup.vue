@@ -488,15 +488,15 @@ $condition-row-border-width: 1px;
 }
 
 .conditions-group__link {
-  $link-width: $conditions-group-top-margin / 2 + 2 * $conditions-group-border-width +
-    $conditions-group-left-padding / 2;
+  $link-width: calc($conditions-group-top-margin / 2) + 2 * $conditions-group-border-width +
+    calc($conditions-group-left-padding / 2);
 
   display: flex;
   flex-direction: column;
   top: -$conditions-group-top-margin;
 
   height: calc(100% + #{$conditions-group-top-margin + 2 * $conditions-group-border-width});
-  left: -$conditions-group-top-margin / 2 - $conditions-group-border-width;
+  left: -1 * calc($conditions-group-top-margin / 2) - $conditions-group-border-width;
   position: absolute;
   width: $link-width;
 
