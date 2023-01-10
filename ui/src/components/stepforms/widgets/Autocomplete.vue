@@ -19,6 +19,7 @@
         :allow-empty="false"
         :track-by="trackBy"
         :label="label"
+        :maxHeight="maxHeight"
         openDirection="bottom"
         @input="updateValue"
       >
@@ -88,6 +89,9 @@ export default class AutocompleteWidget extends FormWidget {
 
   @Prop()
   variableDelimiters?: VariableDelimiters;
+
+  @Prop({ type: Number, default: undefined })
+  maxHeight!: number;
 
   updateValue(newValue?: string | object) {
     this.$emit('input', newValue);
