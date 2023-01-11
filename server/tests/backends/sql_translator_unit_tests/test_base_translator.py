@@ -767,3 +767,16 @@ def test_no_extra_quotes_in_base_translator_with_entire_pipeline(base_translator
         'WITH __step_0_basetranslator__ AS (SELECT "name","pseudonyme","age","id","project_id" FROM "test_schema"."users") '
         'SELECT "name","pseudonyme","age","id","project_id" FROM "__step_0_basetranslator__"'
     )
+
+
+def test_materialize_customsql_query_with_no_columns(base_translator: BaseTranslator):
+    pipeline = [steps.CustomSqlStep(query="SELECT titi, tata FROM toto")]
+
+    # For CustomSQL, we must have exactly one table
+    base_translator._tables_columns = {"toto": []}
+
+    translated = base_translator.get_query_str(steps=pipeline)
+    assert translated == (
+        "WITH __step_0_basetranslator__ AS (SELECT titi, tata FROM toto) "
+        'SELECT * FROM "__step_0_basetranslator__"'
+    )

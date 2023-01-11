@@ -128,7 +128,15 @@ class QueryBuilderContext:
     table_name: str
 
     def materialize(self) -> QueryBuilder:
-        return self.builder.from_(self.table_name).select(*self.columns)
+        # In case we have no columns, select everything by default.
+        # NOTE: This is the only place where a wildcard should ever be used: Since we're
+        # materializing the query, the columns won't be used by downstream consumers, so no other
+        # step will actually use the wildcard as a column name.
+        #
+        # Note that this will only work for queries consisting of a single CustomSQL step, as all
+        # other steps require a valid column list to work properly
+        columns = self.columns or ["*"]
+        return self.builder.from_(self.table_name).select(*columns)
 
 
 class CustomQuery(AliasedQuery):
