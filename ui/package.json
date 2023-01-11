@@ -112,5 +112,8 @@
     "vuejs-paginate": "^2.1.0",
     "vuex": "^3.6.2",
     "vuex-class": "^0.3.2"
+  },
+  "engines": {
+    "node": ">=18 <19"
   }
 }
