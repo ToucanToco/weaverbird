@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+## [0.99.2] - 2023-01-11
+
+### Changed
+
+- Prevent the usage of wildcards in column lists
+- Add support for non-numeric columns to "top" step
+- Resolve warning of deprecation for dart sass 2
+
+### Fixed
+
+- Allow to access all options for relative date dropdown (second fix)
+* Prevent column name to be undefined when filtering
+
 ## [0.99.1] - 2023-01-06
 
 ### Changed
