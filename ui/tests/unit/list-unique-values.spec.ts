@@ -45,8 +45,8 @@ describe('List Unique Value', () => {
       }),
       localVue,
       propsData: {
+        columnName: 'col1',
         filter: {
-          column: 'col1',
           operator,
           value: filterValue,
         },

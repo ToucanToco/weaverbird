@@ -24,7 +24,7 @@
       <div v-if="!loaded && !isLoading.uniqueValues" class="list-unique-values__load-all-values">
         <div>List maybe incomplete</div>
         <div
-          @click="loadColumnUniqueValues({ column: filter.column })"
+          @click="loadColumnUniqueValues({ column: columnName })"
           class="list-unique-values__load-all-values-button"
         >
           Load all values
@@ -58,6 +58,12 @@ import CheckboxWidget from './stepforms/widgets/Checkbox.vue';
 })
 export default class ListUniqueValues extends Vue {
   @Prop({
+    type: String,
+    required: true,
+  })
+  columnName!: string;
+
+  @Prop({
     type: Array,
     required: true,
   })
@@ -67,7 +73,7 @@ export default class ListUniqueValues extends Vue {
     type: Object,
     required: true,
   })
-  filter!: FilterConditionInclusion;
+  filter!: Omit<FilterConditionInclusion, 'column'>;
 
   @Prop({
     type: Boolean,
@@ -91,13 +97,13 @@ export default class ListUniqueValues extends Vue {
   selectAll() {
     if (this.search === '') {
       this.$emit('input', {
-        column: this.filter.column,
+        column: this.columnName,
         operator: 'nin',
         value: [],
       } as FilterConditionInclusion);
     } else {
       this.$emit('input', {
-        column: this.filter.column,
+        column: this.columnName,
         operator: this.filter.operator,
         value: (this.filter.operator === 'in' ? _union : _difference)(
           this.filter.value,
@@ -110,13 +116,13 @@ export default class ListUniqueValues extends Vue {
   clearAll() {
     if (this.search === '') {
       this.$emit('input', {
-        column: this.filter.column,
+        column: this.columnName,
         operator: 'in',
         value: [],
       } as FilterConditionInclusion);
     } else {
       this.$emit('input', {
-        column: this.filter.column,
+        column: this.columnName,
         operator: this.filter.operator,
         value: (this.filter.operator === 'in' ? _difference : _union)(
           this.filter.value,
@@ -127,7 +133,7 @@ export default class ListUniqueValues extends Vue {
   }
 
   toggleCheck(option: ColumnValueStat) {
-    const newFilter = { ...this.filter };
+    const newFilter = { ...this.filter, column: this.columnName };
     if (newFilter.value.includes(option.value)) {
       newFilter.value.splice(newFilter.value.indexOf(option.value), 1);
     } else {

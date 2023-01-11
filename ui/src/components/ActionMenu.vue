@@ -30,6 +30,7 @@
             >
               <ListUniqueValues
                 v-if="currentUnique"
+                :columnName="columnName"
                 :options="currentUnique.values"
                 :filter="condition"
                 :loaded="currentUnique.loaded"
