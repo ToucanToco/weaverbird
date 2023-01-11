@@ -817,7 +817,7 @@ async def handle_mysql_post_request():
         ).dict(),
         "results": {
             "headers": result.columns.to_list(),
-            "data": json.loads(result[offset: offset + limit].to_json(orient="records")),
+            "data": json.loads(result[offset : offset + limit].to_json(orient="records")),
             "schema": build_table_schema(result, index=False),
         },
         "query": sql_query,  # provided for inspection purposes
