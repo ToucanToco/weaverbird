@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [0.28.1] - 2023-01-12
+
+- PyPika: Fixed a bug where pipelines consisting of a single CustomSQL step could not be materialized when their column list was empty.
+
 ## [0.28.0] - 2023-01-10
 
 - Pandas: The `top` step now supports non-numeric columns
