@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## Changed
+
+- Documentation and playground are now under the domain toucantoco.dev
+
 ## [0.99.2] - 2023-01-11
 
 ### Changed
