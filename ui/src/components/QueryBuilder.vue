@@ -17,7 +17,7 @@
       <div>
         <div class="documentation-help">
           <a
-            href="https://weaverbird.toucantoco.com/docs/general-principles/"
+            href="https://weaverbird.toucantoco.dev/docs/general-principles/"
             target="_blank"
             rel="noopener"
             class="documentation-help__content"

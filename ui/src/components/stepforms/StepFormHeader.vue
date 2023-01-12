@@ -9,7 +9,7 @@
         <h1>{{ title }}</h1>
         <a
           class="step-edit-form__link"
-          :href="`https://weaverbird.toucantoco.com/docs/${stepName}`"
+          :href="`https://weaverbird.toucantoco.dev/docs/${stepName}`"
           target="_blank"
           rel="noopener"
           :data-version="version"

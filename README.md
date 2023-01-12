@@ -12,7 +12,7 @@ Weaverbird is [Toucan Toco](https://toucantoco.com)'s data pipelines toolkit, it
   - the Pandas Executor that compute the result using Pandas dataframes, written in Python
   - the Snowflake SQL translator, written in Python
 
-For in depth user & technical documentation, have a look at weaverbird.toucantoco.com
+For in depth user & technical documentation, have a look at [weaverbird.toucantoco.dev](https://weaverbird.toucantoco.dev)
 or at the documentation's source files in the `docs` directory.
 
 Last but not least, you can **play with Weaverbird on our [online playground](https://weaverbird-playground.toucantoco.dev/)**!
