@@ -19,18 +19,20 @@
         :allow-empty="false"
         :track-by="trackBy"
         :label="label"
+        :maxHeight="maxHeight"
         openDirection="bottom"
         @input="updateValue"
       >
-        <!-- If you want to use those templates you should provide a 'label' and 
-      'example' key in the options-->
-        <template v-if="withExample" slot="singleLabel" slot-scope="props">
+        <!-- If you want to use those templates, you should provide a 'label' key in the options -->
+        <template v-if="options[0] && options[0].label" slot="singleLabel" slot-scope="props">
           <span class="option__title">{{ props.option.label }}</span>
         </template>
-        <template v-if="withExample" slot="option" slot-scope="props">
+        <template v-if="options[0] && options[0].label" slot="option" slot-scope="props">
           <div class="option__container" :title="props.option.tooltip">
-            <div class="option__title">{{ props.option.label }}</div>
-            <div class="option__example">{{ props.option.example }}</div>
+            <div class="option__title" :title="props.option.label">{{ props.option.label }}</div>
+            <!-- To display an example - e.g. "Wed Jan 04 2023" for "Today" label -
+                you should provide a 'example' key in the options -->
+            <div v-if="withExample" class="option__example">{{ props.option.example }}</div>
           </div>
         </template>
       </multiselect>
@@ -71,7 +73,7 @@ export default class AutocompleteWidget extends Mixins(FormWidget) {
   value!: string | object;
 
   @Prop({ type: Array, default: () => [] })
-  options!: string[];
+  options!: string[] | object[];
 
   @Prop({ type: String, default: undefined })
   trackBy!: string;
@@ -87,6 +89,9 @@ export default class AutocompleteWidget extends Mixins(FormWidget) {
 
   @Prop()
   variableDelimiters?: VariableDelimiters;
+
+  @Prop({ type: Number, default: undefined })
+  maxHeight!: number;
 
   updateValue(newValue?: string | object) {
     this.$emit('input', newValue);
