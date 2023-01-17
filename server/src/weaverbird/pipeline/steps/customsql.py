@@ -15,10 +15,10 @@ class CustomSqlStep(BaseStep):
 
     @validator("query")
     def _validate_query(cls, query: str) -> str:
-        assert ";" not in (
-            stripped := cls._strip_query(query)
-        ), "Custom SQL queries must not contain semicolumns"
-        return stripped
+        assert (
+            len(query) > 3
+        ), "CustomSql step query string should at least have more than 3 characters"
+        return cls._strip_query(query)
 
 
 # /!\ Do not create CustomSqlStepWithVariables
