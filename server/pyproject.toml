@@ -19,6 +19,7 @@ numexpr = "^2.8.1"
 typing_extensions = "^4.2"
 geopandas = ">=0.11.1,<0.13.0"
 PyPika = "^0.48.9"
+sql-metadata = "^2.6.0"
 
 # Dependencies for extras
 quart = {version = ">=0.17,<0.19", optional = true}
@@ -28,6 +29,7 @@ pymongo = {version = ">=4.2.0", optional = true, extras = ["srv", "tls"]}
 psycopg = {optional = true, version = "^3.0.15"}
 toucan-connectors = {version = "^4.0.0", optional = true, extras = ["awsathena", "google_big_query", "mongo", "Redshift", "snowflake"]}
 pytest-xdist = ">=2.5,<4.0"
+sly = "^0.5"
 
 [tool.poetry.dev-dependencies]
 pytest-cov = "^4.0.0"
