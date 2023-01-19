@@ -229,10 +229,25 @@ class SQLTranslator(ABC):
     ) -> QueryBuilderContext:
         if len(steps) < 0:
             ValueError("No steps provided")
-        assert steps[0].name == "domain" or steps[0].name == "customsql"
+        from weaverbird.pipeline.steps import CustomSqlStep
+
+        assert isinstance(steps[0], (DomainStep, CustomSqlStep))
         self._step_count = 0
 
-        ctx = self._step_context_from_first_step(steps[0])
+        if isinstance(steps[0], CustomSqlStep):
+            # we need to check all statements from that customsql query
+            # and split those into independant customSqlStep
+            customqueries = []
+            for s in steps[0].query.split(";"):
+                # note the difference between _customsql and customsql in the
+                # step name
+                customqueries.append(CustomSqlStep(name="_customsql", query=s))
+
+            ctx = self._step_context_from_first_step(customqueries[0])
+            steps = customqueries[1:] + steps  # type: ignore
+        else:
+            ctx = self._step_context_from_first_step(steps[0])
+
         table_name = self._next_step_name()
         builder = (query_builder if query_builder is not None else self.QUERY_CLS).with_(
             ctx.selectable, table_name
@@ -653,9 +668,9 @@ class SQLTranslator(ABC):
         self: Self,
         *,
         step: "CustomSqlStep",
-        builder: "QueryBuilder" | None = None,
-        prev_step_name: str | None = None,
-        columns: list[str] | None = None,
+        builder: "QueryBuilder" = None,  # type: ignore
+        prev_step_name: str = None,  # type: ignore
+        columns: list[str] = None,  # type: ignore
     ) -> StepContext:
 
         if prev_step_name is not None and columns is not None:
