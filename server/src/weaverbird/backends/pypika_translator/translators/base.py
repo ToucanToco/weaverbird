@@ -3,7 +3,7 @@ from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from functools import cache
-from typing import TYPE_CHECKING, Any, Literal, TypeVar, cast
+from typing import TYPE_CHECKING, Any, Literal, TypeVar, cast, overload
 
 from dateutil import parser as dateutil_parser
 from pypika import (
@@ -219,11 +219,7 @@ class SQLTranslator(ABC):
         if step.name == "domain":
             return self._domain(step=step)
         else:  # CustomSql step
-            # In case there are several provided tables, we cannot figure out which columns to use
-            if len(self._tables_columns) != 1:
-                raise UnknownTableColumns("Expected columns to be specified for exactly one table")
-            column_names = list(self._tables_columns.values())[0]
-            return StepContext(self._custom_query(step=step), list(column_names))
+            return self._customsql(step=step)
 
     def get_query_builder(
         self: Self,
@@ -633,6 +629,44 @@ class SQLTranslator(ABC):
             name=f"custom_from_{table_name}",
             query=step.query.replace("##PREVIOUS_STEP##", table_name),
         )
+
+    @overload
+    def _customsql(
+        self: Self,
+        *,
+        step: "CustomSqlStep",
+    ) -> StepContext:
+        ...
+
+    @overload
+    def _customsql(
+        self: Self,
+        *,
+        step: "CustomSqlStep",
+        builder: "QueryBuilder",
+        prev_step_name: str,
+        columns: list[str],
+    ) -> StepContext:
+        ...
+
+    def _customsql(
+        self: Self,
+        *,
+        step: "CustomSqlStep",
+        builder: "QueryBuilder" | None = None,
+        prev_step_name: str | None = None,
+        columns: list[str] | None = None,
+    ) -> StepContext:
+
+        if prev_step_name is not None and columns is not None:
+            query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(*columns)
+            return StepContext(query, columns)  # type: ignore
+
+        # In case there are several provided tables, we cannot figure out which columns to use
+        if len(self._tables_columns) != 1:
+            raise UnknownTableColumns("Expected columns to be specified for exactly one table")
+        column_names = columns or list(self._tables_columns.values())[0]
+        return StepContext(self._custom_query(step=step), list(column_names))
 
     def customsql(
         self: Self,

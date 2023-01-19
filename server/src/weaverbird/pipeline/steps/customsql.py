@@ -6,7 +6,7 @@ from weaverbird.pipeline.steps.utils.base import BaseStep
 
 
 class CustomSqlStep(BaseStep):
-    name: Literal["customsql"] = "customsql"
+    name: Literal["_customsql", "customsql"] = "customsql"
     query: str
 
     @staticmethod
