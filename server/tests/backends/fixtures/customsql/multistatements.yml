@@ -3,9 +3,6 @@ exclude:
 - mongo
 - pandas
 - snowflake
-- redshift_pypika
-- athena_pypika
-- bigquery_pypika
 input:
   data:
   - name: Brewdog Nanny State Alcoholvrij
@@ -39,6 +36,6 @@ step:
   pipeline:
   - name: _customsql
     query: |
-      /* Are we going to support SET or not ? */
+      SET TIME ZONE 'Europe/Paris'
       SELECT set_config('client_min_messages', 'log', TRUE);
       SELECT "name" FROM "beers_tiny";
