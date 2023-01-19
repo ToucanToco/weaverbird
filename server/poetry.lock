@@ -3166,18 +3166,6 @@ files = [
 ]
 
 [[package]]
-name = "sly"
-version = "0.5"
-description = "\"SLY - Sly Lex Yacc\""
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "sly-0.5-py3-none-any.whl", hash = "sha256:20485483259eec7f6ba85ff4d2e96a4e50c6621902667fc2695cc8bc2a3e5133"},
-    {file = "sly-0.5.tar.gz", hash = "sha256:251d42015e8507158aec2164f06035df4a82b0314ce6450f457d7125e7649024"},
-]
-
-[[package]]
 name = "snowflake-connector-python"
 version = "2.9.0"
 description = "Snowflake Connector for Python"
@@ -3263,21 +3251,6 @@ files = [
 ]
 
 [[package]]
-name = "sql-metadata"
-version = "2.6.0"
-description = "Uses tokenized query returned by python-sqlparse and generates query metadata"
-category = "main"
-optional = false
-python-versions = ">=3.6.2,<4.0.0"
-files = [
-    {file = "sql_metadata-2.6.0-py3-none-any.whl", hash = "sha256:8b2175a7cc530e3cab876efef3d02c4c96f5a3cb8233d54c6be0152091baf094"},
-    {file = "sql_metadata-2.6.0.tar.gz", hash = "sha256:2242603497bbcdb6e565c883df7b48eb85e19439acab54026a0e2b1cae6b5fe6"},
-]
-
-[package.dependencies]
-sqlparse = ">=0.4.1,<0.5.0"
-
-[[package]]
 name = "sqlalchemy"
 version = "1.4.46"
 description = "Database Abstraction Library"
@@ -3333,7 +3306,7 @@ greenlet = {version = "!=0.4.17", markers = "python_version >= \"3\" and (platfo
 
 [package.extras]
 aiomysql = ["aiomysql", "greenlet (!=0.4.17)"]
-aiosqlite = ["aiosqlite", "greenlet (!=0.4.17)", "typing_extensions (!=3.10.0.1)"]
+aiosqlite = ["aiosqlite", "greenlet (!=0.4.17)", "typing-extensions (!=3.10.0.1)"]
 asyncio = ["greenlet (!=0.4.17)"]
 asyncmy = ["asyncmy (>=0.2.3,!=0.2.4)", "greenlet (!=0.4.17)"]
 mariadb-connector = ["mariadb (>=1.0.1,!=1.1.2)"]
@@ -3343,14 +3316,14 @@ mssql-pyodbc = ["pyodbc"]
 mypy = ["mypy (>=0.910)", "sqlalchemy2-stubs"]
 mysql = ["mysqlclient (>=1.4.0)", "mysqlclient (>=1.4.0,<2)"]
 mysql-connector = ["mysql-connector-python"]
-oracle = ["cx_oracle (>=7)", "cx_oracle (>=7,<8)"]
+oracle = ["cx-oracle (>=7)", "cx-oracle (>=7,<8)"]
 postgresql = ["psycopg2 (>=2.7)"]
 postgresql-asyncpg = ["asyncpg", "greenlet (!=0.4.17)"]
 postgresql-pg8000 = ["pg8000 (>=1.16.6,!=1.29.0)"]
 postgresql-psycopg2binary = ["psycopg2-binary"]
 postgresql-psycopg2cffi = ["psycopg2cffi"]
 pymysql = ["pymysql", "pymysql (<1)"]
-sqlcipher = ["sqlcipher3_binary"]
+sqlcipher = ["sqlcipher3-binary"]
 
 [[package]]
 name = "sqlalchemy-redshift"
@@ -3367,18 +3340,6 @@ files = [
 [package.dependencies]
 packaging = "*"
 SQLAlchemy = ">=0.9.2,<2.0.0"
-
-[[package]]
-name = "sqlparse"
-version = "0.4.3"
-description = "A non-validating SQL parser."
-category = "main"
-optional = false
-python-versions = ">=3.5"
-files = [
-    {file = "sqlparse-0.4.3-py3-none-any.whl", hash = "sha256:0323c0ec29cd52bceabc1b4d9d579e311f3e4961b98d174201d5622a23b85e34"},
-    {file = "sqlparse-0.4.3.tar.gz", hash = "sha256:69ca804846bb114d2ec380e4360a8a340db83f0ccf3afceeb1404df028f57268"},
-]
 
 [[package]]
 name = "tabulate"
@@ -3731,4 +3692,4 @@ playground = ["quart", "Quart-CORS", "hypercorn", "pymongo", "pandas", "psycopg"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.11"
-content-hash = "72557bcda19103fee924eba9456b17adf123008821697762fcf7b284a94fe296"
+content-hash = "775bd8c6ede8c589a29272e0dd705a94074232c19c10c63a0d6868360bd2a9c6"
