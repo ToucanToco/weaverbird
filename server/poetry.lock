@@ -2960,18 +2960,18 @@ dotenv = ["python-dotenv"]
 
 [[package]]
 name = "quart-cors"
-version = "0.5.0"
-description = "A Quart extension to provide Cross Origin Resource Sharing, access control, support."
+version = "0.6.0"
+description = "A Quart extension to provide Cross Origin Resource Sharing, access control, support"
 category = "main"
 optional = true
-python-versions = ">=3.7.0"
+python-versions = ">=3.7"
 files = [
-    {file = "Quart-CORS-0.5.0.tar.gz", hash = "sha256:ea08d26aef918d59194fbf065cde9b6cae90dc5f21120dcd254d7d46190cd293"},
-    {file = "Quart_CORS-0.5.0-py3-none-any.whl", hash = "sha256:c2be932f20413a56b176527090229afe8f725a3ee029d45ea08a174cdc319823"},
+    {file = "quart_cors-0.6.0-py3-none-any.whl", hash = "sha256:a12cb8f82506be9794c7d0fba62be04f07ca719e47e0691bf7a63d5ce661b70e"},
+    {file = "quart_cors-0.6.0.tar.gz", hash = "sha256:e7c3f176624cfaa934ea96eddbcaea0b6c225d8eee543f97bce3bdc22e1e00ef"},
 ]
 
 [package.dependencies]
-Quart = ">=0.15"
+quart = ">=0.15"
 
 [[package]]
 name = "redshift-connector"
@@ -3692,4 +3692,4 @@ playground = ["quart", "Quart-CORS", "hypercorn", "pymongo", "pandas", "psycopg"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.11"
-content-hash = "775bd8c6ede8c589a29272e0dd705a94074232c19c10c63a0d6868360bd2a9c6"
+content-hash = "eed437c05d5b15bf89255a6f3605f7702480113e23ab32a094c8723365bc8838"
