@@ -1,6 +1,9 @@
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import RollupStep
 
+_ID_COLUMN = "_id"
+_NEW_ID_COLUMN = "__id"
+
 
 def column_map(s: list[str]) -> dict[str, str]:
     return {e: f"${e}" for e in s}
@@ -18,7 +21,11 @@ def translate_rollup(step: RollupStep) -> list[MongoStep]:
         aggs: dict[str, dict] = {}
         for agg_step in step.aggregations:
             cols = agg_step.columns
-            new_cols = agg_step.new_columns
+            # _id is a name reserved by mongo. If for some reason, a user wants to aggregate the _id
+            # column, the aggregation result will be stored in a new __id column
+            new_cols = [
+                col if col != _ID_COLUMN else _NEW_ID_COLUMN for col in agg_step.new_columns
+            ]
 
             if agg_step.agg_function == "count":
                 for i in range(len(cols)):
@@ -37,22 +44,22 @@ def translate_rollup(step: RollupStep) -> list[MongoStep]:
                     aggs[new_cols[i]] = {f"${agg_step.agg_function}": f"${cols[i]}"}
 
         project: dict = {
-            "_id": 0,
-            **{k: f"$_id.{k}" for k in id.keys()},
+            _ID_COLUMN: 0,
+            **{k: f"${_ID_COLUMN}.{k}" for k in id.keys()},
             **{k: 1 for k in aggs.keys()},
-            label_col: f"$_id.{elem}",
+            label_col: f"${_ID_COLUMN}.{elem}",
             level_col: elem,
         }
 
         if idx > 0:
-            project[parent_label_col] = f"$_id.{step.hierarchy[idx - 1]}"
+            project[parent_label_col] = f"${_ID_COLUMN}.{step.hierarchy[idx - 1]}"
 
         addFieldsToAddToPipeline = [{"$addFields": add_fields}] if add_fields else []
 
         facet[f"level_{idx}"] = [
             {
                 "$group": {
-                    "_id": id,
+                    _ID_COLUMN: id,
                     **aggs,
                 },
             },
