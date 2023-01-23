@@ -2,9 +2,15 @@
 
 ## Unreleased
 
+## [0.100.0] - 2023-01-23
+
 ## Changed
 
-- Documentation and playground are now under the domain toucantoco.dev
+- Documentation and playground are now under the domain toucantoco.de
+
+### Fixed
+
+- Load unique values never tries to be applied on an undefined column
 
 ## [0.99.2] - 2023-01-11
 
@@ -1449,6 +1455,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
+[0.100.0]: https://github.com/ToucanToco/weaverbird/compare/v0.99.0...v0.100.0
 [0.99.0]: https://github.com/ToucanToco/weaverbird/compare/v0.99.0...v0.98.2
 [0.98.2]: https://github.com/ToucanToco/weaverbird/compare/v0.98.2...v0.98.1
 [0.98.1]: https://github.com/ToucanToco/weaverbird/compare/v0.98.1...v0.98.0
