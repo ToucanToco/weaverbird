@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## [0.28.2] - 2023-01-23
+
+- Mongo: In case the `_id` column is an expected output column for a `rollup` step, rename it to `__id`
+  to prevent an error.
+
 ## [0.28.1] - 2023-01-12
 
 - PyPika: Fixed a bug where pipelines consisting of a single CustomSQL step could not be materialized when their column list was empty.
