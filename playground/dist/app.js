@@ -1,3 +1,5 @@
+const { PiniaVuePlugin, createPinia } = require("pinia");
+
 /* eslint-disable @typescript-eslint/no-var-requires */
 const {
   Vqb,
@@ -670,15 +672,14 @@ switch (TRANSLATOR) {
 
 let updateLastExecutedQuery = function() {};
 async function buildVueApp() {
-  Vue.use(Vuex);
-  const store = new Vuex.Store({});
+  Vue.use(PiniaVuePlugin);
 
   const vm = new Vue({
     el: '#app',
     components: {
       Vqb,
     },
-    store,
+    pinia: createPinia(),
     data: function() {
       return {
         isCodeOpened: false,
