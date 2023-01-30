@@ -1,28 +1,31 @@
 import type { Meta, StoryObj } from '@storybook/vue';
-import Vuex from 'vuex';
+import { createPinia, PiniaVuePlugin } from 'pinia';
+import Vue from 'vue';
 
 import Step from '@/components/Step.vue';
-import { registerModule } from '@/store';
+import { setupVQBStore } from '@/store';
 
 export default {
   component: Step,
 } as Meta<Step>;
+
+Vue.use(PiniaVuePlugin);
 
 export const Default: StoryObj<Step> = {
   render: (args, { argTypes }) => ({
     components: { Step },
     props: Object.keys(argTypes),
     template: '<Step v-bind="$props" />',
-    store: new Vuex.Store({}),
+    pinia: createPinia(),
     created: function () {
-      registerModule(this.$store, {
+      setupVQBStore({
         backendMessages: [],
         dataset: { headers: [], data: [] },
       });
     },
   }),
   args: {
-    step: { name: 'text', new_column: 'col', text: 'plop' },
+    step: { name: 'text', newColumn: 'col', text: 'plop' },
   },
 };
 
@@ -31,16 +34,16 @@ export const WithError: StoryObj<Step> = {
     components: { Step },
     props: Object.keys(argTypes),
     template: '<Step v-bind="$props" />',
-    store: new Vuex.Store({}),
+    pinia: createPinia(),
     created: function () {
-      registerModule(this.$store, {
+      setupVQBStore({
         backendMessages: [{ index: 2, message: 'I am an error', type: 'error' }],
         dataset: { headers: [], data: [] },
       });
     },
   }),
   args: {
-    step: { name: 'text', new_column: 'col', text: 'plop' },
+    step: { name: 'text', newColumn: 'col', text: 'plop' },
     indexInPipeline: 2,
   },
 };
