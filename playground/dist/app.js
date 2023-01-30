@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const {
   Vqb,
-  VQBnamespace,
-  VQB_MODULE_NAME,
+  setupVQBStore,
+  useVQBStore,
   filterOutDomain,
   getTranslator,
   mongoResultsToDataset,
   pandasDataTableToDataset,
   dereferencePipelines,
-  registerModule,
   setAvailableCodeEditors,
   defineSendAnalytics,
   exampleInterpolateFunc,
@@ -864,25 +863,28 @@ async function buildVueApp() {
           ],
         };
       }
-      registerModule(this.$store, registrationOpts);
+      setupVQBStore(registrationOpts);
       // Add variables
-      store.commit(VQBnamespace('setAvailableVariables'), {
+      this.store.setAvailableVariables({
         availableVariables: AVAILABLE_VARIABLES,
       });
-      store.commit(VQBnamespace('setVariableDelimiters'), {
+      this.store.commit.setVariableDelimiters({
         variableDelimiters: { start: '<%=', end: '%>' },
       });
       const collections = await backendService.listCollections();
-      store.commit(VQBnamespace('setDomains'), { domains: collections });
-      store.dispatch(VQBnamespace('updateDataset'));
+      this.store.setDomains({ domains: collections });
+      this.store.updateDataset();
     },
     computed: {
+      store: function() {
+        return useVQBStore();
+      },
       activePipeline: function() {
-        let activePipeline = this.$store.getters[VQBnamespace('activePipeline')];
+        let activePipeline = this.store.activePipeline;
         if (!activePipeline) {
           return undefined;
         }
-        const pipelines = this.$store.getters[VQBnamespace('pipelines')];
+        const pipelines = this.store.pipelines;
         if (pipelines) {
           return dereferencePipelines(activePipeline, pipelines);
         } else {
@@ -893,10 +895,10 @@ async function buildVueApp() {
         return JSON.stringify(this.activePipeline, null, 2);
       },
       thereIsABackendError: function() {
-        return this.$store.getters[VQBnamespace('thereIsABackendError')];
+        return this.store.thereIsABackendError;
       },
       backendMessages: function() {
-        return this.$store.state[VQB_MODULE_NAME].backendMessages;
+        return this.store.backendMessages;
       },
       backendErrors: function() {
         return this.backendMessages.filter(({ type, index }) => type === 'error' && index == null);
