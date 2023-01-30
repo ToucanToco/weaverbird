@@ -1,11 +1,83 @@
-import type { ActionContext, ActionTree } from 'vuex';
-
-import type { BackendError } from '@/lib/backend';
+import Vue from 'vue';
+import type { BackendError, BackendService, BackendWarning } from '@/lib/backend';
 import { addLocalUniquesToDataset, updateLocalUniquesFromDatabase } from '@/lib/dataset/helpers';
 import { pageOffset } from '@/lib/dataset/pagination';
-import type { Pipeline, PipelineStep } from '@/lib/steps';
+import type { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
 
-import type { VQBState } from './state';
+import { currentPipeline } from './state';
+import type { PiniaActionAdaptor, VQBStore } from './types';
+import { setVariableDelimiters } from '@/lib/translators';
+import type { DataSet, VariableDelimiters, VariablesBucket } from '@/types';
+
+export type VQBActions = {
+  setLoading: ({
+    type,
+    isLoading,
+  }: {
+    type: 'dataset' | 'uniqueValues';
+    isLoading: boolean;
+  }) => void;
+  setTranslator: ({ translator }: { translator: string }) => void;
+  setBackendService: ({ backendService }: { backendService: BackendService }) => void;
+  logBackendMessages: ({
+    backendMessages,
+  }: {
+    backendMessages: BackendError[] | BackendWarning[];
+  }) => void;
+  setPreviewSourceRowsSubset: ({
+    previewSourceRowsSubset,
+  }: {
+    previewSourceRowsSubset?: number | 'unlimited';
+  }) => void;
+  toggleRequestOnGoing: ({ isRequestOnGoing }: { isRequestOnGoing: boolean }) => void;
+  setAvailableVariables: ({
+    availableVariables,
+  }: {
+    availableVariables: VariablesBucket | undefined;
+  }) => void;
+  setVariableDelimiters: ({
+    variableDelimiters,
+  }: {
+    variableDelimiters: VariableDelimiters | undefined;
+  }) => void;
+  setDomains: ({ domains }: { domains: string[] }) => void;
+  setAvailableDomains: ({
+    availableDomains,
+  }: {
+    availableDomains: { name: string; uid: string }[];
+  }) => void;
+  setCurrentPipelineName: ({ name }: { name: string }) => void;
+  setPipeline: ({ pipeline }: { pipeline: Pipeline }) => void;
+  setPipelines: ({ pipelines }: { pipelines: Record<string, Pipeline> }) => void;
+  selectPipeline: ({ name }: { name: string }) => void;
+  closeStepForm: () => void;
+  createStepForm: ({
+    stepName,
+    stepFormDefaults,
+  }: {
+    stepName: PipelineStepName;
+    stepFormDefaults?: object;
+  }) => void;
+  openStepForm: ({
+    stepName,
+    initialValue,
+  }: {
+    stepName: PipelineStepName;
+    initialValue: object;
+  }) => void;
+  resetStepFormInitialValue: () => void;
+  addSteps: ({ steps }: { steps: PipelineStep[] }) => void;
+  deleteSteps: ({ indexes }: { indexes: number[] }) => void;
+  selectStep: ({ index }: { index: number }) => void;
+  updateDataset: () => void;
+  setDataset: ({ dataset }: { dataset: DataSet }) => void;
+  setSelectedColumns: ({ column }: { column: string | undefined }) => void;
+  toggleColumnSelection: ({ column }: { column: string }) => void;
+  getColumnNamesFromPipeline: (pipelineNameOrDomain: string) => Promise<string[] | undefined>;
+  loadColumnUniqueValues: ({ column }: { column: string }) => void;
+  setCurrentPage: ({ pageNumber }: { pageNumber: number }) => void;
+  resetPagination: () => void;
+};
 
 // format error to fit BackendError interface props
 export function formatError(error: any): BackendError {
@@ -14,26 +86,145 @@ export function formatError(error: any): BackendError {
     : { type: 'error', ...error };
 }
 
-const actions: ActionTree<VQBState, any> = {
-  selectPipeline(context: ActionContext<VQBState, any>, { name }: { name: string }) {
-    context.commit('setCurrentPipelineName', { name: name });
-
-    // Reset selected step to last one
-    context.commit('selectStep', { index: -1 });
-
-    // Update the preview
-    context.dispatch('updateDataset');
+const actions: PiniaActionAdaptor<VQBActions, VQBStore> = {
+  setLoading({ type, isLoading }) {
+    this.isLoading[type] = isLoading;
   },
+  setTranslator({ translator }) {
+    this.translator = translator;
+  },
+  setBackendService({ backendService }) {
+    this.backendService = backendService;
+  },
+  logBackendMessages({ backendMessages }) {
+    this.backendMessages = backendMessages;
+  },
+  setPreviewSourceRowsSubset({ previewSourceRowsSubset }) {
+    if (this.dataset.previewContext) {
+      this.dataset.previewContext.sourceRowsSubset = previewSourceRowsSubset;
+    }
+  },
+  /**
+   * toggle the `isRequestOnGoing` state property
+   * meant to be used by `backendify` plugin function.
+   */
+  toggleRequestOnGoing({ isRequestOnGoing }) {
+    this.isRequestOnGoing = isRequestOnGoing;
+  },
+  // VARIABLES
+  setAvailableVariables({ availableVariables }) {
+    this.availableVariables = availableVariables;
+  },
+  setVariableDelimiters({ variableDelimiters }) {
+    this.variableDelimiters = variableDelimiters;
+    // Forward them to translators
+    setVariableDelimiters(variableDelimiters);
+  },
+  // DOMAINS & PIPELINES
+  setDomains({ domains }) {
+    this.domains = domains;
+  },
+  setAvailableDomains({ availableDomains }) {
+    this.availableDomains = availableDomains;
+  },
+  setCurrentPipelineName({ name }) {
+    this.currentPipelineName = name;
+    this.resetPagination();
+  },
+  setPipeline({ pipeline }) {
+    if (this.currentPipelineName === undefined) {
+      return;
+    }
+    Vue.set(this.pipelines, this.currentPipelineName, pipeline);
+    this.resetPagination();
+  },
+  setPipelines({ pipelines }) {
+    this.pipelines = pipelines;
+  },
+  async selectPipeline({ name }) {
+    this.setCurrentPipelineName({ name });
+    // // Reset selected step to last one
+    this.selectStep({ index: -1 });
 
-  async updateDataset({ commit, getters, state }: ActionContext<VQBState, any>) {
-    commit('logBackendMessages', { backendMessages: [] }); // clear backendMessages
+    // // Update the preview
+    this.updateDataset();
+  },
+  // STEPS
+  /**
+   * open step form when creating a step
+   */
+  createStepForm({ stepName, stepFormDefaults }) {
+    this.currentStepFormName = stepName;
+    this.stepFormInitialValue = undefined;
+    this.stepFormDefaults = stepFormDefaults;
+  },
+  /**
+   * open step form when editing a step
+   */
+  openStepForm({ stepName, initialValue }) {
+    this.stepFormInitialValue = { ...initialValue };
+    this.currentStepFormName = stepName;
+    this.stepFormDefaults = undefined;
+  },
+  closeStepForm() {
+    this.currentStepFormName = undefined;
+  },
+  resetStepFormInitialValue() {
+    this.stepFormInitialValue = undefined;
+  },
+  addSteps({ steps }) {
+    const pipeline = currentPipeline(this);
+    if (this.currentPipelineName === undefined || pipeline === undefined) {
+      return;
+    }
+    const newPipeline = Array.from(pipeline);
+    // add steps just after selected steps
+    // but always after domain
+    const addIndex = this.selectedStepIndex >= 0 ? this.selectedStepIndex + 1 : 1;
+    newPipeline.splice(addIndex, 0, ...steps);
+    this.pipelines[this.currentPipelineName] = newPipeline;
+    const lastAddedStepIndex = addIndex + steps.length - 1;
+    // select last added step
+    this.selectedStepIndex = lastAddedStepIndex;
+    this.resetPagination();
+    this.updateDataset();
+  },
+  deleteSteps({ indexes }: { indexes: number[] }) {
+    const pipeline = currentPipeline(this);
+    if (this.currentPipelineName === undefined || pipeline === undefined) {
+      return;
+    }
+    const pipelineWithDeletedSteps = pipeline.filter(
+      (_: PipelineStep, index: number) => indexes.indexOf(index) === -1,
+    );
+    this.pipelines[this.currentPipelineName] = pipelineWithDeletedSteps;
+    this.selectedStepIndex = pipelineWithDeletedSteps.length - 1;
+    this.resetPagination();
+    this.updateDataset();
+  },
+  selectStep({ index }) {
+    const pipeline = currentPipeline(this);
+    if (pipeline && index > pipeline.length) {
+      console.error('In selectStep: index out of bounds. Falling back to last selectable index.');
+      this.selectedStepIndex = -1;
+    } else {
+      this.selectedStepIndex = index;
+    }
+    this.resetPagination();
+  },
+  // DATASET
+  setDataset({ dataset }) {
+    this.dataset = dataset;
+  },
+  async updateDataset() {
+    this.logBackendMessages({ backendMessages: [] });
     try {
-      commit('setLoading', { type: 'dataset', isLoading: true });
-      commit('toggleRequestOnGoing', { isRequestOnGoing: true });
+      this.setLoading({ type: 'dataset', isLoading: true });
+      this.toggleRequestOnGoing({ isRequestOnGoing: true });
       // No pipeline or an empty pipeline
-      if (!getters.activePipeline?.length) {
+      if (!this.activePipeline?.length) {
         // Reset preview to an empty state
-        commit('setDataset', {
+        this.setDataset({
           dataset: {
             headers: [],
             data: [],
@@ -41,19 +232,19 @@ const actions: ActionTree<VQBState, any> = {
         });
         return;
       }
-      const response = await state.backendService.executePipeline(
-        getters.activePipeline,
-        state.pipelines,
-        state.pagesize,
-        pageOffset(state.pagesize, getters.pageNumber),
-        getters.previewSourceRowsSubset,
+      const response = await this.backendService.executePipeline(
+        this.activePipeline,
+        this.pipelines,
+        this.pagesize,
+        pageOffset(this.pagesize, this.pageNumber),
+        this.previewSourceRowsSubset,
       );
       const translator = response.translator ?? 'mongo50'; // mongo50 is not send by backend
-      commit('setTranslator', { translator });
+      this.setTranslator({ translator });
       const backendMessages = response.error || response.warning || [];
-      commit('logBackendMessages', { backendMessages });
+      this.logBackendMessages({ backendMessages });
       if (response.data) {
-        commit('setDataset', {
+        this.setDataset({
           dataset: addLocalUniquesToDataset(response.data),
         });
       }
@@ -67,36 +258,39 @@ const actions: ActionTree<VQBState, any> = {
         console.error(error);
       }
       /* istanbul ignore next */
-      commit('logBackendMessages', {
+      this.logBackendMessages({
         backendMessages: response.error,
       });
       /* istanbul ignore next */
       throw error;
     } finally {
-      commit('toggleRequestOnGoing', { isRequestOnGoing: false });
-      commit('setLoading', { type: 'dataset', isLoading: false });
+      this.toggleRequestOnGoing({ isRequestOnGoing: false });
+      this.setLoading({ type: 'dataset', isLoading: false });
     }
   },
-
-  // Following actions are the one that have an impact on the preview, and therefore must update the dataset each time their are called
-  selectStep({ commit, dispatch }: ActionContext<VQBState, any>, { index }: { index: number }) {
-    commit('selectStep', { index });
-    dispatch('updateDataset');
+  // COLUMNS
+  setSelectedColumns({ column }) {
+    if (column !== undefined) {
+      this.selectedColumns = [column];
+    }
   },
-
+  toggleColumnSelection({ column }) {
+    if (this.selectedColumns.includes(column)) {
+      this.selectedColumns = [];
+    } else {
+      this.selectedColumns = [column];
+    }
+  },
   // Retrieve the first row from a pipeline, so we can infer its columns names
-  async getColumnNamesFromPipeline(
-    { state }: ActionContext<VQBState, any>,
-    pipelineNameOrDomain: string,
-  ): Promise<string[] | undefined> {
+  async getColumnNamesFromPipeline(pipelineNameOrDomain) {
     if (!pipelineNameOrDomain) {
       return;
     }
 
     let pipeline: Pipeline = [];
 
-    if (pipelineNameOrDomain in state.pipelines) {
-      pipeline = state.pipelines[pipelineNameOrDomain];
+    if (pipelineNameOrDomain in this.pipelines) {
+      pipeline = this.pipelines[pipelineNameOrDomain];
     } else {
       pipeline = [
         {
@@ -106,54 +300,25 @@ const actions: ActionTree<VQBState, any> = {
       ];
     }
 
-    const response = await state.backendService.executePipeline(pipeline, state.pipelines, 1, 0);
+    const response = await this.backendService.executePipeline(pipeline, this.pipelines, 1, 0);
 
     if (response.data) {
       return response.data.headers.map((col) => col.name);
     }
   },
-
-  deleteSteps(
-    { commit, dispatch }: ActionContext<VQBState, any>,
-    { indexes }: { indexes: number[] },
-  ) {
-    commit('deleteSteps', { indexes });
-    dispatch('updateDataset');
-  },
-
-  addSteps(
-    { commit, dispatch }: ActionContext<VQBState, any>,
-    { steps }: { steps: PipelineStep[] },
-  ) {
-    commit('addSteps', { steps });
-    dispatch('updateDataset');
-  },
-
-  setCurrentPage(
-    { commit, dispatch }: ActionContext<VQBState, any>,
-    { pageNumber }: { pageNumber: number },
-  ) {
-    commit('setCurrentPage', { pageNumber });
-    dispatch('updateDataset');
-  },
-
   /**
    * Call backend with a special pipeline to retrieve unique values of the requested column.
    * The current pipeline is completed with a "count aggregation" on the requested column.
    * The result is loaded in store.
    */
-  async loadColumnUniqueValues(
-    context: ActionContext<VQBState, any>,
-    { column }: { column: string },
-  ) {
-    context.commit('setLoading', { type: 'uniqueValues', isLoading: true });
+  async loadColumnUniqueValues({ column }) {
+    this.setLoading({ type: 'uniqueValues', isLoading: true });
     try {
-      const activePipeline = context.getters.activePipeline;
-      if (!activePipeline || !activePipeline.length) {
+      if (!this.activePipeline || !this.activePipeline.length) {
         return;
       }
       const loadUniqueValuesPipeline: Pipeline = [
-        ...activePipeline,
+        ...this.activePipeline,
         {
           name: 'aggregate',
           aggregations: [
@@ -167,17 +332,38 @@ const actions: ActionTree<VQBState, any> = {
         },
       ];
 
-      const response = await context.state.backendService.executePipeline(
+      const response = await this.backendService.executePipeline(
         loadUniqueValuesPipeline,
-        context.state.pipelines,
+        this.pipelines,
       );
       if (!response.error) {
-        context.commit('setDataset', {
-          dataset: updateLocalUniquesFromDatabase(context.state.dataset, response.data),
+        this.setDataset({
+          dataset: updateLocalUniquesFromDatabase(this.dataset, response.data),
         });
       }
     } finally {
-      context.commit('setLoading', { type: 'uniqueValues', isLoading: false });
+      this.setLoading({ type: 'uniqueValues', isLoading: false });
+    }
+  },
+  // PAGINATION
+  setCurrentPage({ pageNumber }) {
+    if (this.dataset.paginationContext) {
+      this.dataset.paginationContext.pageNumber = pageNumber;
+    } else {
+      const length = this.dataset.data.length;
+      this.dataset.paginationContext = {
+        shouldPaginate: false,
+        pageNumber,
+        pageSize: length,
+        totalCount: length,
+        isLastPage: true,
+      };
+    }
+    this.updateDataset();
+  },
+  resetPagination() {
+    if (this.dataset.paginationContext) {
+      this.dataset.paginationContext.pageNumber = 1;
     }
   },
 };
