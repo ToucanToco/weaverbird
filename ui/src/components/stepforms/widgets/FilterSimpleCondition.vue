@@ -64,7 +64,7 @@ import {
 } from '@/lib/helpers';
 import type { FilterSimpleCondition } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQB_MODULE_NAME, VQBnamespace } from '@/store';
+import { useVQBStore } from '@/store';
 
 import InputDateWidget from './InputDate.vue';
 import MultiInputTextWidget from './MultiInputText.vue';
@@ -180,12 +180,15 @@ export default defineComponent({
   },
 
   computed: {
+    store() {
+      return useVQBStore();
+    },
     columnNamesFromStore(): string[] {
-      return this.$store.getters[VQBnamespace('columnNames')];
+      return this.store.columnNames;
     },
 
     featureFlags(): Record<string, any> {
-      return this.$store.state[VQB_MODULE_NAME].featureFlags;
+      return this.store.featureFlags ?? {};
     },
 
     // Column names can be provided either in the store or via a prop
@@ -322,7 +325,7 @@ export default defineComponent({
     updateStepColumn(newValue: string) {
       const updatedValue = { ...this.value };
       updatedValue.column = newValue;
-      this.$store.commit(VQBnamespace('setSelectedColumns'), { column: updatedValue.column });
+      this.store.setSelectedColumns({ column: updatedValue.column });
       this.$emit('input', updatedValue);
     },
   },
