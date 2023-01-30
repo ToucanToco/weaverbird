@@ -11,24 +11,37 @@ For use in your own application, Weaverbird exports a bunch of Vue components:
 
 The `Vqb` component contains the full UI of Weaverbird.
 
-To run correctly, it assumes the Vqb Vuex store module is present. The helper `registerModule` take care of this part: provide it its initial state, the translator and the BackendService you wish to use. 
+To run correctly, it assumes the Vqb Pinia store is present. The helpers `setupVQBStore` and `useVQBStore` take care of this part: provide it its initial state, the translator and the BackendService you wish to use.
 
 ```js
-import { registerModule, Vqb } from 'weaverbird';
+import { setupVQBStore, useVQBStore, Vqb } from 'weaverbird';
+import { createPinia, PiniaVuePlugin } from 'pinia';
+
+const pinia = createPinia()
+Vue.use(PiniaVuePlugin);
 
 new Vue({
   el: '#app',
   components: {
     Vqb,
   },
+  pinia,
+  computed: {
+    VQBStore() {
+      return useVQBStore();
+    },
+    VQBStoreIsEditingStep() {
+      return VQBStore.isEditing;
+    }
+  },
   created: function() {
-    registerModule(this.$store, {
-      currentPipelineName: 'pipeline',
-      pipelines: {
-        pipeline: [ ...]
-      },
-      translator: 'mongo40',
-      backendService: YourBackendService,
+    setupVQBStore({
+        currentPipelineName: 'pipeline',
+        pipelines: {
+          pipeline: [ ...]
+        },
+        translator: 'mongo40',
+        backendService: YourBackendService,
     });
   }
 });
