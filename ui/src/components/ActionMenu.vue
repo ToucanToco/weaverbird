@@ -114,8 +114,8 @@ import type {
   PipelineStep,
   PipelineStepName,
 } from '@/lib/steps';
-import { VQBModule } from '@/store';
-import type { MutationCallbacks } from '@/store/mutations';
+import { Action, Getter } from 'pinia-class';
+import { VQBModule, type VQBActions } from '@/store';
 
 import ActionMenuOption from './ActionMenuOption.vue';
 import Popover from './Popover.vue';
@@ -148,11 +148,11 @@ export default class ActionMenu extends Vue {
   })
   visible!: boolean;
 
-  @VQBModule.Getter computedActiveStepIndex!: number;
-  @VQBModule.Getter isEditingStep!: boolean;
-  @VQBModule.Getter pipeline!: Pipeline;
-  @VQBModule.Getter columnHeaders!: Pipeline;
-  @VQBModule.Getter unsupportedSteps!: PipelineStepName[];
+  @Getter(VQBModule) computedActiveStepIndex!: number;
+  @Getter(VQBModule) isEditingStep!: boolean;
+  @Getter(VQBModule) pipeline!: Pipeline;
+  @Getter(VQBModule) columnHeaders!: Pipeline;
+  @Getter(VQBModule) unsupportedSteps!: PipelineStepName[];
 
   get currentUnique() {
     return (
@@ -164,9 +164,9 @@ export default class ActionMenu extends Vue {
     return (stepName: PipelineStepName): boolean => this.unsupportedSteps.includes(stepName);
   }
 
-  @VQBModule.Action selectStep!: ({ index }: { index: number }) => void;
-  @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
-  @VQBModule.Mutation closeStepForm!: () => void;
+  @Action(VQBModule) selectStep!: VQBActions['selectStep'];
+  @Action(VQBModule) setPipeline!: VQBActions['setPipeline'];
+  @Action(VQBModule) closeStepForm!: VQBActions['closeStepForm'];
 
   alignLeft: string = POPOVER_ALIGN.LEFT;
 

@@ -44,8 +44,8 @@ import { POPOVER_ALIGN } from '@/components/constants';
 import FAIcon from '@/components/FAIcon.vue';
 import type { DataSetColumnType } from '@/lib/dataset';
 import type { ConvertStep, Pipeline } from '@/lib/steps';
-import { VQBModule } from '@/store';
-import type { MutationCallbacks } from '@/store/mutations';
+import { Action, Getter } from 'pinia-class';
+import { VQBModule, type VQBActions } from '@/store';
 
 import Popover from './Popover.vue';
 
@@ -72,14 +72,14 @@ export default class DataTypesMenu extends Vue {
   })
   visible!: boolean;
 
-  @VQBModule.Getter columnTypes!: PropMap<DataSetColumnType>;
-  @VQBModule.Getter computedActiveStepIndex!: number;
-  @VQBModule.Getter isEditingStep!: boolean;
-  @VQBModule.Getter pipeline?: Pipeline;
+  @Getter(VQBModule) columnTypes!: PropMap<DataSetColumnType>;
+  @Getter(VQBModule) computedActiveStepIndex!: number;
+  @Getter(VQBModule) isEditingStep!: boolean;
+  @Getter(VQBModule) pipeline?: Pipeline;
 
-  @VQBModule.Action selectStep!: ({ index }: { index: number }) => void;
-  @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
-  @VQBModule.Mutation closeStepForm!: () => void;
+  @Action(VQBModule) selectStep!: VQBActions['selectStep'];
+  @Action(VQBModule) setPipeline!: VQBActions['setPipeline'];
+  @Action(VQBModule) closeStepForm!: VQBActions['closeStepForm'];
 
   alignLeft: string = POPOVER_ALIGN.LEFT;
 

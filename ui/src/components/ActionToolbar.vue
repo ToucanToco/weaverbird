@@ -29,6 +29,7 @@ import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 
 import type { PipelineStepName } from '@/lib/steps';
+import { Getter, State } from 'pinia-class';
 import { VQBModule } from '@/store';
 
 import ActionToolbarButton from './ActionToolbarButton.vue';
@@ -44,9 +45,9 @@ import { CATEGORY_BUTTONS } from './constants';
   },
 })
 export default class ActionToolbar extends Vue {
-  @VQBModule.State selectedColumns!: string[];
-  @VQBModule.State('featureFlags') featureFlags!: Record<string, any>;
-  @VQBModule.Getter unsupportedSteps!: PipelineStepName[];
+  @State(VQBModule) selectedColumns!: string[];
+  @State(VQBModule) featureFlags!: Record<string, any>;
+  @Getter(VQBModule) unsupportedSteps!: PipelineStepName[];
 
   isActiveActionToolbarButton = -1;
 

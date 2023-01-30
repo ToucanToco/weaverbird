@@ -46,6 +46,7 @@ import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 import type { Aggregation, DissolveStep, PipelineStepName } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
+import { State } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 import { suffixAggregationsColumns } from './utils';
@@ -64,9 +65,9 @@ import MultiselectWidget from './widgets/Multiselect.vue';
 export default class DissolveStepForm extends BaseStepForm<DissolveStep> {
   stepname: PipelineStepName = 'dissolve';
 
-  @VQBModule.State availableVariables?: VariablesBucket;
+  @State(VQBModule) availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) variableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,

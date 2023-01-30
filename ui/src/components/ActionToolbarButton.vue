@@ -25,8 +25,8 @@ import { Component, Prop } from 'vue-property-decorator';
 import { ACTION_CATEGORIES, POPOVER_ALIGN } from '@/components/constants';
 import FAIcon from '@/components/FAIcon.vue';
 import type * as S from '@/lib/steps';
-import { VQBModule } from '@/store';
-import type { MutationCallbacks } from '@/store/mutations';
+import { Action, Getter } from 'pinia-class';
+import { VQBModule, type VQBActions } from '@/store';
 
 import ActionMenuOption from './ActionMenuOption.vue';
 import Popover from './Popover.vue';
@@ -62,15 +62,15 @@ export default class ActionToolbarButton extends Vue {
   })
   category!: string;
 
-  @VQBModule.Getter computedActiveStepIndex!: number;
-  @VQBModule.Getter isEditingStep!: boolean;
-  @VQBModule.Getter pipeline!: S.Pipeline;
-  @VQBModule.Getter selectedColumns!: string[];
-  @VQBModule.Getter unsupportedSteps!: S.PipelineStepName[];
+  @Getter(VQBModule) computedActiveStepIndex!: number;
+  @Getter(VQBModule) isEditingStep!: boolean;
+  @Getter(VQBModule) pipeline!: S.Pipeline;
+  @Getter(VQBModule) selectedColumns!: string[];
+  @Getter(VQBModule) unsupportedSteps!: S.PipelineStepName[];
 
-  @VQBModule.Action selectStep!: ({ index }: { index: number }) => void;
-  @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
-  @VQBModule.Mutation closeStepForm!: () => void;
+  @Action(VQBModule) selectStep!: VQBActions['selectStep'];
+  @Action(VQBModule) setPipeline!: VQBActions['setPipeline'];
+  @Action(VQBModule) closeStepForm!: VQBActions['closeStepForm'];
 
   get isDisabled() {
     return (stepName: S.PipelineStepName) => this.unsupportedSteps.includes(stepName);

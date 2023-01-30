@@ -59,8 +59,8 @@ import { copyToClipboard, pasteFromClipboard } from '@/lib/clipboard';
 import type { DomainStep, Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
 import { isPipelineStep } from '@/lib/steps';
 import type { VariableDelimiters } from '@/lib/variables';
-import { VQBModule } from '@/store';
-import type { MutationCallbacks } from '@/store/mutations';
+import { Action, Getter, State } from 'pinia-class';
+import { VQBModule, type VQBActions } from '@/store';
 
 import DeleteConfirmationModal from './DeleteConfirmationModal.vue';
 import Step from './Step.vue';
@@ -79,20 +79,20 @@ export default class PipelineComponent extends Vue {
   selectedSteps: number[] = [];
   deleteConfirmationModalIsOpened = false;
 
-  @VQBModule.State domains!: string[];
-  @VQBModule.State variableDelimiters!: VariableDelimiters;
+  @State(VQBModule) domains!: string[];
+  @State(VQBModule) variableDelimiters!: VariableDelimiters;
 
-  @VQBModule.Getter('computedActiveStepIndex') activeStepIndex!: number;
-  @VQBModule.Getter domainStep!: DomainStep;
-  @VQBModule.Getter('pipeline') steps!: Pipeline;
-  @VQBModule.Getter('isPipelineEmpty') onlyDomainStepIsPresent!: boolean;
-  @VQBModule.Getter('isStepDisabled') isDisabled!: (index: number) => boolean;
-  @VQBModule.Getter supportedSteps!: PipelineStepName[];
+  @Getter(VQBModule, 'computedActiveStepIndex') activeStepIndex!: number;
+  @Getter(VQBModule) domainStep!: DomainStep;
+  @Getter(VQBModule, 'pipeline') steps!: Pipeline;
+  @Getter(VQBModule, 'isPipelineEmpty') onlyDomainStepIsPresent!: boolean;
+  @Getter(VQBModule, 'isStepDisabled') isDisabled!: (index: number) => boolean;
+  @Getter(VQBModule) supportedSteps!: PipelineStepName[];
 
-  @VQBModule.Action selectStep!: ({ index }: { index: number }) => void;
-  @VQBModule.Action deleteSteps!: (payload: { indexes: number[] }) => void;
-  @VQBModule.Action addSteps!: (payload: { steps: PipelineStep[] }) => void;
-  @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
+  @Action(VQBModule) selectStep!: VQBActions['selectStep'];
+  @Action(VQBModule) deleteSteps!: VQBActions['deleteSteps'];
+  @Action(VQBModule) addSteps!: VQBActions['addSteps'];
+  @Action(VQBModule) setPipeline!: VQBActions['setPipeline'];
 
   get hasSupportedSteps(): boolean {
     return this.supportedSteps.filter((step) => step !== 'domain').length > 0;

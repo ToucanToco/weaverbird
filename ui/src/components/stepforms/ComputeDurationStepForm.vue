@@ -59,6 +59,7 @@ import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import type { ComputeDurationStep, PipelineStepName } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
+import { State } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -76,9 +77,9 @@ type DurationUnit = 'days' | 'hours' | 'minutes' | 'seconds';
 export default class ComputeDurationStepForm extends BaseStepForm<ComputeDurationStep> {
   stepname: PipelineStepName = 'duration';
 
-  @VQBModule.State availableVariables?: VariablesBucket;
+  @State(VQBModule) availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) variableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,

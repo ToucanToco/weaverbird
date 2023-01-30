@@ -38,6 +38,7 @@ import { Prop } from 'vue-property-decorator';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import type { AddTextColumnStep, PipelineStepName } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { State } from 'pinia-class';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
@@ -51,9 +52,9 @@ import BaseStepForm from './StepForm.vue';
 export default class AddTextColumnStepForm extends BaseStepForm<AddTextColumnStep> {
   stepname: PipelineStepName = 'text';
 
-  @VQBModule.State availableVariables?: VariablesBucket;
+  @State(VQBModule) availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) variableDelimiters?: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'text', newColumn: '', text: '' }) })
   declare initialStepValue: AddTextColumnStep;

@@ -30,6 +30,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import type { Aggregation } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
+import { Getter } from 'pinia-class';
 
 import AutocompleteWidget from './Autocomplete.vue';
 import MultiselectWidget from './Multiselect.vue';
@@ -57,7 +58,7 @@ export default class AggregationWidget extends Vue {
   @Prop()
   variableDelimiters?: VariableDelimiters;
 
-  @VQBModule.Getter columnNames!: string[];
+  @Getter(VQBModule) columnNames!: string[];
 
   get aggregationColumns() {
     return this.value.columns;

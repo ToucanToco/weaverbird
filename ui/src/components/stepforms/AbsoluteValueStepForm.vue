@@ -36,6 +36,7 @@ import { Prop } from 'vue-property-decorator';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import type { AbsoluteValueStep, PipelineStepName } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { State } from 'pinia-class';
 import { VQBModule } from '@/store';
 
 import ColumnPicker from './ColumnPicker.vue';
@@ -51,9 +52,9 @@ import BaseStepForm from './StepForm.vue';
 export default class AbsoluteValueStepForm extends BaseStepForm<AbsoluteValueStep> {
   stepname: PipelineStepName = 'absolutevalue';
 
-  @VQBModule.State availableVariables?: VariablesBucket;
+  @State(VQBModule) availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) variableDelimiters?: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'absolutevalue', column: '', newColumn: '' }) })
   declare initialStepValue: AbsoluteValueStep;

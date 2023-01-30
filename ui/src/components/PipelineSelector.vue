@@ -13,16 +13,17 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 
-import { VQBModule } from '@/store';
+import { Action, Getter, State } from 'pinia-class';
+import { VQBModule, type VQBActions } from '@/store';
 
 @Component({
   name: 'PipelineSelector',
 })
 export default class Vqb extends Vue {
-  @VQBModule.State currentPipelineName?: string;
-  @VQBModule.Getter pipelinesNames!: string[];
+  @State(VQBModule) currentPipelineName?: string;
+  @Getter(VQBModule) pipelinesNames!: string[];
 
-  @VQBModule.Action selectPipeline!: (payload: { name: string }) => void;
+  @Action(VQBModule) selectPipeline!: VQBActions['selectPipeline'];
 
   selectPipelineByName(pipelineName: string) {
     this.selectPipeline({ name: pipelineName });

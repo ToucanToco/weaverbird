@@ -107,7 +107,8 @@ import { resizable } from '@/directives/resizable/resizable';
 import type { DataSet, DataSetColumn, DataSetColumnType } from '@/lib/dataset';
 import type { Pipeline, PipelineStepName } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
-import { VQBModule } from '@/store';
+import { Action, Getter, State } from 'pinia-class';
+import { VQBModule, type VQBActions } from '@/store';
 
 import ActionMenu from './ActionMenu.vue';
 import ActionToolbar from './ActionToolbar.vue';
@@ -134,29 +135,22 @@ Vue.use(VTooltip);
   directives: { resizable },
 })
 export default class DataViewer extends Vue {
-  @VQBModule.State dataset!: DataSet;
-  @VQBModule.State isLoading!: boolean;
-  @VQBModule.State pagesize!: number;
-  @VQBModule.State selectedColumns!: string[];
+  @State(VQBModule) dataset!: DataSet;
+  @State(VQBModule) isLoading!: boolean;
+  @State(VQBModule) pagesize!: number;
+  @State(VQBModule) selectedColumns!: string[];
 
-  @VQBModule.Getter('isDatasetEmpty') isEmpty!: boolean;
-  @VQBModule.Getter isDatasetComplete!: boolean;
-  @VQBModule.Getter columnHeaders!: DataSetColumn[];
-  @VQBModule.Getter translator!: string;
-  @VQBModule.Getter pipeline?: Pipeline;
-  @VQBModule.Getter supportedSteps!: PipelineStepName[];
+  @Getter(VQBModule, 'isDatasetEmpty') isEmpty!: boolean;
+  @Getter(VQBModule) isDatasetComplete!: boolean;
+  @Getter(VQBModule) columnHeaders!: DataSetColumn[];
+  @Getter(VQBModule) translator!: string;
+  @Getter(VQBModule) pipeline?: Pipeline;
+  @Getter(VQBModule) supportedSteps!: PipelineStepName[];
 
-  @VQBModule.Mutation createStepForm!: ({
-    stepName,
-    stepFormDefaults,
-  }: {
-    stepName: PipelineStepName;
-    stepFormDefaults?: object;
-  }) => void;
-  @VQBModule.Mutation toggleColumnSelection!: ({ column }: { column: string }) => void;
-  @VQBModule.Mutation setSelectedColumns!: ({ column }: { column: string }) => void;
-
-  @VQBModule.Action setCurrentPage!: ({ pageNumber }: { pageNumber: number }) => void;
+  @Action(VQBModule) createStepForm!: VQBActions['createStepForm']
+  @Action(VQBModule) toggleColumnSelection!: VQBActions['toggleColumnSelection'];
+  @Action(VQBModule) setSelectedColumns!: VQBActions['setSelectedColumns'];
+  @Action(VQBModule) setCurrentPage!: VQBActions['setCurrentPage'];
 
   activeActionMenuColumnName = '';
   activeDataTypeMenuColumnName = '';

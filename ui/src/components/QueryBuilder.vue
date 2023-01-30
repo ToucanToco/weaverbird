@@ -40,7 +40,8 @@ import { Component } from 'vue-property-decorator';
 import FAIcon from '@/components/FAIcon.vue';
 import PipelineComponent from '@/components/Pipeline.vue';
 import type { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
-import { VQBModule } from '@/store';
+import { Action, Getter, State } from 'pinia-class';
+import { VQBModule, type VQBActions } from '@/store';
 
 import { version } from '../../package.json';
 import StepFormsComponents from './stepforms';
@@ -56,23 +57,20 @@ export default class QueryBuilder extends Vue {
   version = version; // display the current version of the package
   editedStepBackendError: string | undefined = undefined;
 
-  @VQBModule.State currentStepFormName!: PipelineStepName;
-  @VQBModule.State stepFormInitialValue!: object;
-  @VQBModule.State stepFormDefaults!: object;
+  @State(VQBModule)currentStepFormName!: PipelineStepName;
+  @State(VQBModule)stepFormInitialValue!: object;
+  @State(VQBModule)stepFormDefaults!: object;
 
-  @VQBModule.Getter computedActiveStepIndex!: number;
-  @VQBModule.Getter isEditingStep!: boolean;
-  @VQBModule.Getter pipeline!: Pipeline;
+  @Getter(VQBModule) computedActiveStepIndex!: number;
+  @Getter(VQBModule) isEditingStep!: boolean;
+  @Getter(VQBModule) pipeline!: Pipeline;
 
-  @VQBModule.Mutation closeStepForm!: () => void;
-  @VQBModule.Mutation openStepForm!: (payload: {
-    stepName: PipelineStepName;
-    initialValue: object;
-  }) => void;
-  @VQBModule.Mutation resetStepFormInitialValue!: () => void;
-  @VQBModule.Action selectStep!: (payload: { index: number }) => void;
-  @VQBModule.Mutation setPipeline!: (payload: { pipeline: Pipeline }) => void;
-  @VQBModule.Getter stepErrors!: (index: number) => string | undefined;
+  @Action(VQBModule) closeStepForm!: VQBActions|['closeStepForm'];
+  @Action(VQBModule) openStepForm!: VQBActions['openStepForm'];
+  @Action(VQBModule) resetStepFormInitialValue!: VQBActions['resetStepFormInitialValue'];
+  @Action(VQBModule) selectStep!: VQBActions['selectStep'];
+  @Action(VQBModule) setPipeline!: VQBActions['setPipeline'];
+  @Getter(VQBModule) stepErrors!: (index: number) => string | undefined;
 
   get isStepCreation() {
     return this.stepFormInitialValue === undefined;

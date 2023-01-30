@@ -46,6 +46,7 @@ import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import type { PipelineStepName, SplitStep } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
+import { State } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -59,9 +60,9 @@ import BaseStepForm from './StepForm.vue';
 export default class SplitStepForm extends BaseStepForm<SplitStep> {
   stepname: PipelineStepName = 'split';
 
-  @VQBModule.State availableVariables?: VariablesBucket;
+  @State(VQBModule) availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) variableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,

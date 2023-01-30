@@ -74,6 +74,7 @@ import {
 } from '@/lib/labeller';
 import type { PipelineStep, ReferenceToExternalQuery } from '@/lib/steps';
 import type { VariableDelimiters } from '@/lib/variables';
+import { State, Getter } from 'pinia-class';
 import { VQBModule } from '@/store';
 
 import PreviewSourceSubset from './PreviewSourceSubset.vue';
@@ -86,7 +87,7 @@ import PreviewSourceSubset from './PreviewSourceSubset.vue';
   },
 })
 export default class Step extends Vue {
-  @VQBModule.State availableDomains!: { name: string; uid: string }[];
+  @State(VQBModule) availableDomains!: { name: string; uid: string }[];
 
   @Prop(Boolean)
   readonly isFirst!: boolean;
@@ -120,11 +121,11 @@ export default class Step extends Vue {
 
   isEditingPreviewSourceSubset = false;
 
-  @VQBModule.Getter stepConfig!: (index: number) => PipelineStep;
+  @Getter(VQBModule) stepConfig!: (index: number) => PipelineStep;
 
-  @VQBModule.Getter stepErrors!: (index: number) => string | undefined;
+  @Getter(VQBModule) stepErrors!: (index: number) => string | undefined;
 
-  @VQBModule.Getter('previewSourceRowsSubset') previewSourceRowsSubset?:
+  @Getter(VQBModule, 'previewSourceRowsSubset') previewSourceRowsSubset?:
     | number
     | 'unlimited'
     | undefined;

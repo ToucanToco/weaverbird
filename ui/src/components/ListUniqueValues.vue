@@ -40,7 +40,8 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import type { ColumnValueStat } from '@/lib/dataset/helpers';
 import type { FilterConditionInclusion } from '@/lib/steps';
-import { VQBModule } from '@/store';
+import { Action, State } from 'pinia-class';
+import { VQBModule, type VQBActions } from '@/store';
 
 import CheckboxWidget from './stepforms/widgets/Checkbox.vue';
 
@@ -81,8 +82,8 @@ export default class ListUniqueValues extends Vue {
   })
   loaded!: boolean;
 
-  @VQBModule.State isLoading!: boolean;
-  @VQBModule.Action loadColumnUniqueValues!: (payload: { column: string }) => void;
+  @State(VQBModule) isLoading!: boolean;
+  @Action(VQBModule) loadColumnUniqueValues!: VQBActions['loadColumnUniqueValues'];
 
   search = '';
 

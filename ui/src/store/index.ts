@@ -1,9 +1,11 @@
 import { defineStore } from 'pinia';
 
-import actions from './actions';
-import getters from './getters';
+import actions, { type VQBActions } from './actions';
+import getters, { type VQBGetters } from './getters';
 import type { VQBState } from './state';
 import { emptyState } from './state';
+
+export type { VQBActions, VQBGetters };
 
 
 /**

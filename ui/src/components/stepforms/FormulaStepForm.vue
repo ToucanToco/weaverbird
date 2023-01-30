@@ -40,6 +40,7 @@ import { escapeForUseInRegExp } from '@/lib/helpers';
 import type { Formula, FormulaStep, PipelineStepName } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
+import { State } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -52,9 +53,9 @@ import BaseStepForm from './StepForm.vue';
 export default class FormulaStepForm extends BaseStepForm<FormulaStep> {
   stepname: PipelineStepName = 'formula';
 
-  @VQBModule.State availableVariables?: VariablesBucket;
+  @State(VQBModule) availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) variableDelimiters?: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'formula', newColumn: '', formula: '' }) })
   declare initialStepValue: FormulaStep;
