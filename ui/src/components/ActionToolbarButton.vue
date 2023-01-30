@@ -25,7 +25,7 @@ import { Component, Prop } from 'vue-property-decorator';
 import { ACTION_CATEGORIES, POPOVER_ALIGN } from '@/components/constants';
 import FAIcon from '@/components/FAIcon.vue';
 import type * as S from '@/lib/steps';
-import { Action, Getter } from 'pinia-class';
+import { Action, Getter, State } from 'pinia-class';
 import { VQBModule, type VQBActions } from '@/store';
 
 import ActionMenuOption from './ActionMenuOption.vue';
@@ -65,7 +65,7 @@ export default class ActionToolbarButton extends Vue {
   @Getter(VQBModule) computedActiveStepIndex!: number;
   @Getter(VQBModule) isEditingStep!: boolean;
   @Getter(VQBModule) pipeline!: S.Pipeline;
-  @Getter(VQBModule) selectedColumns!: string[];
+  @State(VQBModule) selectedColumns!: string[];
   @Getter(VQBModule) unsupportedSteps!: S.PipelineStepName[];
 
   @Action(VQBModule) selectStep!: VQBActions['selectStep'];

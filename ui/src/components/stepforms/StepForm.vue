@@ -109,7 +109,7 @@ export default class BaseStepForm<StepType> extends Vue {
   @Getter(VQBModule) columnNames!: string[];
   @Getter(VQBModule) computedActiveStepIndex!: number;
   @Getter(VQBModule) pipeline!: Pipeline;
-  @Getter(VQBModule) selectedColumns!: string[];
+  @State(VQBModule) selectedColumns!: string[];
 
   readonly selectedColumnAttrName: string | null = null;
   readonly title: string = '';

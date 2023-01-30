@@ -143,7 +143,7 @@ export default class DataViewer extends Vue {
   @Getter(VQBModule, 'isDatasetEmpty') isEmpty!: boolean;
   @Getter(VQBModule) isDatasetComplete!: boolean;
   @Getter(VQBModule) columnHeaders!: DataSetColumn[];
-  @Getter(VQBModule) translator!: string;
+  @State(VQBModule) translator!: string;
   @Getter(VQBModule) pipeline?: Pipeline;
   @Getter(VQBModule) supportedSteps!: PipelineStepName[];
 

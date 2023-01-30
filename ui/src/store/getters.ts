@@ -15,17 +15,14 @@ import type { PiniaGetterAdaptor, VQBStore } from './types';
 type PropMap<T> = { [prop: string]: T };
 
 export type VQBGetters = {
-  translator: string;
   unsupportedSteps: PipelineStepName[];
   supportedSteps: PipelineStepName[];
-  pipelines: Record<string, Pipeline>;
   pipelinesNames: string[];
   availableDatasetNames: string[];
   pipeline: Pipeline | undefined;
   activePipeline: PipelineStep[] | undefined;
   inactivePipeline: PipelineStep[] | undefined;
   isPipelineEmpty: boolean | undefined;
-  backendMessages: BackendError[] | BackendWarning[];
   thereIsABackendError: boolean;
   isDatasetEmpty: boolean;
   pageNumber: number;
@@ -33,7 +30,6 @@ export type VQBGetters = {
   columnNames: string[];
   columnHeaders: DataSetColumn[];
   columnTypes: PropMap<DataSetColumnType | undefined>;
-  selectedColumns: string[];
   computedActiveStepIndex: number | undefined;
   domainStep: PipelineStep | undefined;
   isEditingStep: boolean;
@@ -43,10 +39,8 @@ export type VQBGetters = {
 };
 
 const getters: PiniaGetterAdaptor<VQBGetters, VQBStore> = {
-  translator: (state: VQBState) => state.translator,
   unsupportedSteps: (state: VQBState) => getTranslator(state.translator).unsupportedSteps,
   supportedSteps: (state: VQBState) => getTranslator(state.translator).supportedSteps,
-  pipelines: (state: VQBState) => state.pipelines,
   pipelinesNames: (state: VQBState) => Object.keys(state.pipelines),
   // Return all available dataset (including pipelines but excluding currentPipelineName)
   availableDatasetNames: (state: VQBState) => {
@@ -64,7 +58,6 @@ const getters: PiniaGetterAdaptor<VQBGetters, VQBStore> = {
     const pipeline = currentPipeline(state);
     return !pipeline ? undefined : pipeline.length <= 1;
   },
-  backendMessages: (state: VQBState) => state.backendMessages,
   thereIsABackendError: (state: VQBState) => state.backendMessages.length > 0,
   isDatasetEmpty: (state: VQBState) => state.dataset.data.length === 0,
   pageNumber: (state: VQBState) =>
@@ -74,8 +67,6 @@ const getters: PiniaGetterAdaptor<VQBGetters, VQBStore> = {
   columnHeaders: (state: VQBState) => state.dataset.headers,
   columnTypes: (state: VQBState) =>
     fromPairs(state.dataset.headers.map((col) => [col.name, col.type])),
-  //selected columns in the dataviewer (materialized by a styled focus)
-  selectedColumns: (state: VQBState) => state.selectedColumns,
   // a direct "usable" index (i.e. convert "-1" to a positive one) of last active step.
   computedActiveStepIndex(state: VQBState) {
     const pipeline = currentPipeline(state);

@@ -36,7 +36,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import FAIcon from '@/components/FAIcon.vue';
 import type { PipelineStepName } from '@/lib/steps';
 
-import { Getter } from 'pinia-class';
+import { State, Getter } from 'pinia-class';
 import { VQBModule } from '@/store';
 import { SEARCH_ACTION } from './constants';
 import Popover from './Popover.vue';
@@ -50,7 +50,7 @@ import Popover from './Popover.vue';
   },
 })
 export default class SearchActions extends Vue {
-  @Getter(VQBModule) translator!: string;
+  @State(VQBModule) translator!: string;
   @Getter(VQBModule) unsupportedSteps!: PipelineStepName[];
 
   @Prop({
