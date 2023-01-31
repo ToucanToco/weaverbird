@@ -1,5 +1,3 @@
-const { PiniaVuePlugin, createPinia } = require("pinia");
-
 /* eslint-disable @typescript-eslint/no-var-requires */
 const {
   Vqb,
