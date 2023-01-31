@@ -1,11 +1,11 @@
+import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
 import { describe, expect, it, vi } from 'vitest';
 
 import DataTypesMenu from '@/components/DataTypesMenu.vue';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
-import { createTestingPinia } from '@pinia/testing';
-import { PiniaVuePlugin } from 'pinia';
 
 vi.mock('@/components/FAIcon.vue');
 
@@ -15,7 +15,7 @@ const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 describe('Data Types Menu', () => {
   it('should instantiate with the popover', () => {
-    const store = setupMockStore({
+    setupMockStore({
       dataset: {
         headers: [{ name: 'columnA', type: 'text' }],
       },
@@ -26,7 +26,7 @@ describe('Data Types Menu', () => {
   });
 
   it('should contain the right set of data types', () => {
-    const store = setupMockStore({
+    setupMockStore({
       dataset: {
         headers: [{ name: 'columnA', type: 'string' }],
       },

@@ -1,10 +1,11 @@
+import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
 import { describe, expect, it, vi } from 'vitest';
 
 import CumSumWidget from '@/components/stepforms/widgets/CumSum.vue';
+
 import { setupMockStore } from './utils';
-import { createTestingPinia } from '@pinia/testing';
-import { PiniaVuePlugin } from 'pinia';
 
 const localVue = createLocalVue();
 localVue.use(PiniaVuePlugin);

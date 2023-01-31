@@ -4,12 +4,12 @@
 import fromPairs from 'lodash/fromPairs';
 
 import type { BackendError, BackendWarning } from '@/lib/backend';
+import type { PipelineStepName } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
+import type { DataSetColumn, DataSetColumnType, Pipeline, PipelineStep } from '@/types';
 
 import type { VQBState } from './state';
 import { activePipeline, currentPipeline, inactivePipeline } from './state';
-import type { DataSetColumn, DataSetColumnType, Pipeline, PipelineStep } from '@/types';
-import type { PipelineStepName } from '@/lib/steps';
 import type { PiniaGetterAdaptor, VQBStore } from './types';
 
 type PropMap<T> = { [prop: string]: T };

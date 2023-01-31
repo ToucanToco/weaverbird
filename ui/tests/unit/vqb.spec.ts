@@ -1,7 +1,7 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { describe, expect, it, vi } from 'vitest';
 import { createTestingPinia } from '@pinia/testing';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { PiniaVuePlugin } from 'pinia';
+import { describe, expect, it, vi } from 'vitest';
 
 import Vqb from '@/components/Vqb.vue';
 import { useVQBStore } from '@/store';

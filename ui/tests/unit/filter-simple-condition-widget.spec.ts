@@ -1,5 +1,7 @@
+import { createTestingPinia } from '@pinia/testing';
 import type { Wrapper } from '@vue/test-utils';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
 import { describe, expect, it, vi } from 'vitest';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
@@ -8,8 +10,6 @@ import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import MultiInputTextWidget from '@/components/stepforms/widgets/MultiInputText.vue';
 
 import { setupMockStore } from './utils';
-import { PiniaVuePlugin } from 'pinia';
-import { createTestingPinia } from '@pinia/testing';
 
 const localVue = createLocalVue();
 localVue.use(PiniaVuePlugin);

@@ -1,9 +1,9 @@
+import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
 import { describe, expect, it, vi } from 'vitest';
 
 import ConvertStepForm from '@/components/stepforms/ConvertStepForm.vue';
-import { PiniaVuePlugin } from 'pinia';
-import { createTestingPinia } from '@pinia/testing';
 
 vi.mock('@/components/FAIcon.vue');
 

@@ -1,5 +1,5 @@
+import { type Store,createPinia, setActivePinia } from 'pinia';
 import type { Mock } from 'vitest';
-import { setActivePinia, createPinia, type Store } from 'pinia';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { BackendService } from '@/lib/backend';
@@ -9,7 +9,6 @@ import { formatError } from '@/store/actions';
 import { currentPipeline, emptyState } from '@/store/state';
 
 import { buildState, buildStateWithOnePipeline, setupMockStore } from './utils';
-import type { VQBStore } from '@/store/types';
 
 describe('getter tests', () => {
   beforeEach(() => {
@@ -1144,7 +1143,7 @@ describe('action tests', () => {
   });
 
   describe('getColumnNamesFromPipeline', () => {
-    let store: VQBStore, mockBackendServiceExecutePipeline: Mock;
+    let store: Store<'vqb', any>, mockBackendServiceExecutePipeline: Mock;
 
     beforeEach(() => {
       mockBackendServiceExecutePipeline = vi.fn();

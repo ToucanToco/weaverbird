@@ -12,8 +12,8 @@ import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
-import { PiniaVuePlugin, type Store } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
+import { type Store,PiniaVuePlugin } from 'pinia';
 
 const localVue = createLocalVue();
 localVue.use(PiniaVuePlugin);

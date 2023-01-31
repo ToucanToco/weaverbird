@@ -1,11 +1,11 @@
+import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
 import { describe, expect, it, vi } from 'vitest';
 
 import AggregationWidget from '@/components/stepforms/widgets/Aggregation.vue';
 
 import { setupMockStore } from './utils';
-import { createTestingPinia } from '@pinia/testing';
-import { PiniaVuePlugin } from 'pinia';
 
 const localVue = createLocalVue();
 localVue.use(PiniaVuePlugin);
@@ -26,7 +26,7 @@ describe('Widget AggregationWidget', () => {
   });
 
   it('should instantiate a MultiselectWidget widget with proper options from the store', () => {
-    const store = setupMockStore({
+    setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],

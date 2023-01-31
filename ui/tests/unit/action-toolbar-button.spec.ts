@@ -1,12 +1,12 @@
+import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, mount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
 import { describe, expect, it, vi } from 'vitest';
 
 import ActionToolbarButton from '@/components/ActionToolbarButton.vue';
 import Popover from '@/components/Popover.vue';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
-import { PiniaVuePlugin } from 'pinia';
-import { createTestingPinia } from '@pinia/testing';
 
 vi.mock('@/components/FAIcon.vue');
 
@@ -142,7 +142,7 @@ describe('ActionToolbarButton active', () => {
   it('should instantiate a Text button with the right list of actions', () => {
     // instantiate a store with at least one column selected so that steps
     // such as 'lowercase' can be triggered without creating a form.
-    const store = setupMockStore(buildStateWithOnePipeline([], { selectedColumns: ['foo'] }));
+    setupMockStore(buildStateWithOnePipeline([], { selectedColumns: ['foo'] }));
     const wrapper = mount(ActionToolbarButton, {
       propsData: { isActive: true, category: 'text' },
       localVue,
@@ -164,7 +164,7 @@ describe('ActionToolbarButton active', () => {
 
   it('should display unsupported steps as disabled', () => {
     // the pandas translator doesn't support custom steps
-    const store = setupMockStore(
+    setupMockStore(
       buildStateWithOnePipeline([], { selectedColumns: ['foo'], translator: 'pandas' }),
     );
     const wrapper = mount(ActionToolbarButton, {
@@ -271,7 +271,7 @@ describe('ActionToolbarButton active', () => {
     });
 
     it('should emit a close event', async () => {
-      const store = setupMockStore(
+      setupMockStore(
         buildStateWithOnePipeline([{ name: 'domain', domain: 'myDomain' }], {
           selectedColumns: ['foo'],
         }),
@@ -325,7 +325,7 @@ describe('ActionToolbarButton active', () => {
     });
 
     it('should emit a close event', async () => {
-      const store = setupMockStore(
+      setupMockStore(
         buildStateWithOnePipeline([{ name: 'domain', domain: 'myDomain' }], {
           selectedColumns: ['foo'],
         }),
@@ -359,7 +359,7 @@ describe('ActionToolbarButton active', () => {
     });
 
     it('should emit a close event', async () => {
-      const store = setupMockStore(
+      setupMockStore(
         buildStateWithOnePipeline([{ name: 'domain', domain: 'myDomain' }], {
           selectedColumns: ['foo'],
         }),

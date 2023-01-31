@@ -1,11 +1,11 @@
+import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import ActionMenu from '@/components/ActionMenu.vue';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
-import { PiniaVuePlugin } from 'pinia';
-import { createTestingPinia } from '@pinia/testing';
 
 const localVue = createLocalVue();
 localVue.use(PiniaVuePlugin);

@@ -1,4 +1,6 @@
+import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
 import { describe, expect, it, vi } from 'vitest';
 
 import ActionToolbar from '@/components/ActionToolbar.vue';
@@ -6,8 +8,6 @@ import ActionToolbarButton from '@/components/ActionToolbarButton.vue';
 import { CATEGORY_BUTTONS } from '@/components/constants';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
-import { PiniaVuePlugin } from 'pinia';
-import { createTestingPinia } from '@pinia/testing';
 
 vi.mock('@/components/FAIcon.vue');
 

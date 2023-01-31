@@ -1,10 +1,11 @@
+import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
 import { describe, expect, it, vi } from 'vitest';
 
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
+
 import { setupMockStore } from './utils';
-import { PiniaVuePlugin, type Store } from 'pinia';
-import { createTestingPinia } from '@pinia/testing';
 
 const localVue = createLocalVue();
 localVue.use(PiniaVuePlugin);
@@ -22,7 +23,7 @@ describe('Column Picker', () => {
   });
 
   it('should instantiate an autocomplete widget with proper options from the store', () => {
-    const store = setupMockStore({
+    setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -34,7 +35,7 @@ describe('Column Picker', () => {
   });
 
   it('should set column when initial column value is set', () => {
-    const store = setupMockStore({
+    setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],

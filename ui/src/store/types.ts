@@ -1,4 +1,5 @@
 import type { Store } from 'pinia';
+
 import type { VQBActions } from './actions';
 import type { VQBGetters } from './getters';
 import type { VQBState } from './state';

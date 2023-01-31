@@ -1,5 +1,7 @@
+import { createTestingPinia } from '@pinia/testing';
 import type { Wrapper } from '@vue/test-utils';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
 import type { SpyInstance } from 'vitest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -10,8 +12,6 @@ import * as labeller from '@/lib/labeller';
 import type { Pipeline } from '@/lib/steps';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
-import { PiniaVuePlugin } from 'pinia';
-import { createTestingPinia } from '@pinia/testing';
 
 vi.mock('@/components/FAIcon.vue');
 

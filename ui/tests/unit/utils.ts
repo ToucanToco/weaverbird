@@ -1,4 +1,6 @@
+import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { type Pinia, type Store,PiniaVuePlugin } from 'pinia';
 import { expect, it, test, vi } from 'vitest';
 import type { VueConstructor } from 'vue';
 
@@ -8,8 +10,6 @@ import type { ValidationError } from '@/lib/translators/base';
 import { setupVQBStore, useVQBStore } from '@/store';
 import type { VQBState } from '@/store/state';
 import { emptyState } from '@/store/state';
-import { createTestingPinia } from '@pinia/testing';
-import { PiniaVuePlugin, type Pinia, type Store } from 'pinia';
 
 vi.mock('@/components/FAIcon.vue');
 
@@ -142,7 +142,6 @@ export class BasicStepFormTestRunner {
     if (data) {
       wrapper.setData(data);
     }
-    console.log(JSON.stringify(this.store.dataset), expectedErrors);
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     await this.vue.nextTick();
     const wrapperErrors = wrapper.vm.$data.errors ?? [];

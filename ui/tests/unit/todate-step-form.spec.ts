@@ -1,12 +1,12 @@
+import { createTestingPinia } from '@pinia/testing';
 import type { Wrapper } from '@vue/test-utils';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
 import { describe, expect, it, vi } from 'vitest';
 
 import ToDateStepForm from '@/components/stepforms/ToDateStepForm.vue';
 
 import { BasicStepFormTestRunner } from './utils';
-import { PiniaVuePlugin } from 'pinia';
-import { createTestingPinia } from '@pinia/testing';
 
 vi.mock('@/components/FAIcon.vue');
 

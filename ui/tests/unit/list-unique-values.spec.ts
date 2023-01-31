@@ -1,14 +1,13 @@
+import { createTestingPinia } from '@pinia/testing';
 import type { Wrapper } from '@vue/test-utils';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { type Store,PiniaVuePlugin } from 'pinia';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type Vue from 'vue';
 
 import ListUniqueValues from '@/components/ListUniqueValues.vue';
 
 import { setupMockStore } from './utils';
-
-import { PiniaVuePlugin, type Store } from 'pinia';
-import { createTestingPinia } from '@pinia/testing';
 
 const localVue = createLocalVue();
 localVue.use(PiniaVuePlugin);

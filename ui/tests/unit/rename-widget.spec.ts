@@ -1,12 +1,11 @@
+import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
 import { describe, expect, it, vi } from 'vitest';
 
 import RenameWidget from '@/components/stepforms/widgets/Rename.vue';
 
 import { setupMockStore } from './utils';
-
-import { PiniaVuePlugin } from 'pinia';
-import { createTestingPinia } from '@pinia/testing';
 
 const localVue = createLocalVue();
 localVue.use(PiniaVuePlugin);

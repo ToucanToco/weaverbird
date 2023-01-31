@@ -1,5 +1,6 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import MultiInputTextWidget from '@/components/stepforms/widgets/MultiInputText.vue';
 import MultiVariableInput from '@/components/stepforms/widgets/MultiVariableInput.vue';
 import VariableInput from '@/components/stepforms/widgets/VariableInput.vue';
