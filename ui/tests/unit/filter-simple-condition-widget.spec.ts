@@ -93,6 +93,7 @@ describe('Widget FilterSimpleCondition', () => {
   });
 
   it('should instantiate a widgetAutocomplete widget with column names from the prop', () => {
+    setupMockStore({});
     const wrapper = shallowMount(FilterSimpleConditionWidget, {
       pinia,
       localVue,
@@ -105,6 +106,7 @@ describe('Widget FilterSimpleCondition', () => {
   });
 
   it('should instantiate a widgetAutocomplete widget with nothing', () => {
+    setupMockStore({});
     const wrapper = shallowMount(FilterSimpleConditionWidget, {
       pinia,
       localVue,
