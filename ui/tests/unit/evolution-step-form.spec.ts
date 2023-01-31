@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import EvolutionStepForm from '@/components/stepforms/EvolutionStepForm.vue';
 
-import { BasicStepFormTestRunner, setupMockStore } from './utils';
+import { BasicStepFormTestRunner } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
