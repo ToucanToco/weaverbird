@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import PercentageStepForm from '@/components/stepforms/PercentageStepForm.vue';
-import { VQBnamespace } from '@/store';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
@@ -61,8 +60,9 @@ describe('Percentage Step Form', () => {
       },
     };
     const wrapper = runner.shallowMount(initialState);
+    const store = runner.getStore();
     expect(wrapper.vm.$data.editedStep.column).toEqual('');
-    wrapper.vm.$store.commit(VQBnamespace('toggleColumnSelection'), { column: 'columnB' });
+    store.toggleColumnSelection({ column: 'columnB' });
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.$data.editedStep.column).toEqual('columnB');
   });

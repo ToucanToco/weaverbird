@@ -1,18 +1,19 @@
 import type { Wrapper } from '@vue/test-utils';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it } from 'vitest';
-import Vuex, { Store } from 'vuex';
+import { describe, expect, it, vi } from 'vitest';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import MultiInputTextWidget from '@/components/stepforms/widgets/MultiInputText.vue';
 
-import type { RootState } from './utils';
 import { setupMockStore } from './utils';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 
 const localVue = createLocalVue();
-localVue.use(Vuex);
+localVue.use(PiniaVuePlugin);
+const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 const AVAILABLE_VARIABLES_SAMPLE = [
   {
@@ -38,18 +39,13 @@ const AVAILABLE_VARIABLES_SAMPLE = [
 ];
 
 describe('Widget FilterSimpleCondition', () => {
-  let emptyStore: Store<RootState>;
-  beforeEach(() => {
-    emptyStore = setupMockStore({});
-  });
-
   it('should instantiate', () => {
-    const wrapper = shallowMount(FilterSimpleConditionWidget, { store: emptyStore, localVue });
+    const wrapper = shallowMount(FilterSimpleConditionWidget, { pinia, localVue });
     expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should have exactly 3 input components', () => {
-    const wrapper = shallowMount(FilterSimpleConditionWidget, { store: emptyStore, localVue });
+    const wrapper = shallowMount(FilterSimpleConditionWidget, { pinia, localVue });
     const autocompleteWrappers = wrapper.findAll('autocompletewidget-stub');
     expect(autocompleteWrappers.length).toEqual(2);
     const inputtextWrappers = wrapper.findAll('inputtextwidget-stub');
@@ -58,7 +54,7 @@ describe('Widget FilterSimpleCondition', () => {
 
   it('should have exactly have a MultiInputTextWidget if operator is "in" or "nin"', async () => {
     const wrapper = shallowMount(FilterSimpleConditionWidget, {
-      store: emptyStore,
+      pinia,
       localVue,
       propsData: {
         value: { column: 'foo', value: [], operator: 'in' },
@@ -71,7 +67,7 @@ describe('Widget FilterSimpleCondition', () => {
 
   it('should not have any input component if operator is "isnull" or "not null"', async () => {
     const wrapper = shallowMount(FilterSimpleConditionWidget, {
-      store: emptyStore,
+      pinia,
       localVue,
       propsData: {
         value: { column: 'foo', value: [], operator: 'isnull' },
@@ -85,20 +81,20 @@ describe('Widget FilterSimpleCondition', () => {
   });
 
   it('should instantiate a widgetAutocomplete widget with column names from the store', () => {
-    const store = setupMockStore({
+    setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
       },
     });
-    const wrapper = shallowMount(FilterSimpleConditionWidget, { store, localVue });
+    const wrapper = shallowMount(FilterSimpleConditionWidget, { pinia, localVue });
     const widgetWrappers = wrapper.findAll('autocompletewidget-stub');
     expect(widgetWrappers.at(0).attributes('options')).toEqual('columnA,columnB,columnC');
   });
 
   it('should instantiate a widgetAutocomplete widget with column names from the prop', () => {
     const wrapper = shallowMount(FilterSimpleConditionWidget, {
-      store: emptyStore,
+      pinia,
       localVue,
       propsData: {
         columnNamesProp: ['columnA', 'columnB', 'columnC'],
@@ -110,7 +106,7 @@ describe('Widget FilterSimpleCondition', () => {
 
   it('should instantiate a widgetAutocomplete widget with nothing', () => {
     const wrapper = shallowMount(FilterSimpleConditionWidget, {
-      store: emptyStore,
+      pinia,
       localVue,
     });
     const widgetWrappers = wrapper.findAll('autocompletewidget-stub');
@@ -119,7 +115,7 @@ describe('Widget FilterSimpleCondition', () => {
 
   it('should pass down the "column" prop to the first AutocompleteWidget value prop', async () => {
     const wrapper = shallowMount(FilterSimpleConditionWidget, {
-      store: emptyStore,
+      pinia,
       localVue,
       propsData: {
         value: { column: 'foo', value: '', operator: 'eq' },
@@ -132,7 +128,7 @@ describe('Widget FilterSimpleCondition', () => {
 
   it('should pass down the "operator" prop to the second AutocompleteWidget value prop', async () => {
     const wrapper = shallowMount(FilterSimpleConditionWidget, {
-      store: emptyStore,
+      pinia,
       localVue,
       propsData: {
         value: { column: 'foo', value: [], operator: 'nin' },
@@ -149,7 +145,7 @@ describe('Widget FilterSimpleCondition', () => {
 
   it('should emit a new condition with the correct type of value when changing the operator', () => {
     const wrapper = shallowMount(FilterSimpleConditionWidget, {
-      store: emptyStore,
+      pinia,
       localVue,
       propsData: { dataPath: '.condition' },
       sync: false,
@@ -173,7 +169,7 @@ describe('Widget FilterSimpleCondition', () => {
 
   it('should the widget accordingly when changing the operator', async () => {
     const wrapper = shallowMount(FilterSimpleConditionWidget, {
-      store: emptyStore,
+      pinia,
       localVue,
       propsData: { dataPath: '.condition' },
       sync: false,
@@ -209,7 +205,7 @@ describe('Widget FilterSimpleCondition', () => {
 
   it('should emit input when changing the column', async () => {
     const wrapper = shallowMount(FilterSimpleConditionWidget, {
-      store: emptyStore,
+      pinia,
       localVue,
       propsData: { dataPath: '.condition' },
       sync: false,
@@ -224,7 +220,7 @@ describe('Widget FilterSimpleCondition', () => {
 
   it('should emit input when changing the value', async () => {
     const wrapper = shallowMount(FilterSimpleConditionWidget, {
-      store: emptyStore,
+      pinia,
       localVue,
       propsData: { dataPath: '.condition' },
       sync: false,
@@ -249,17 +245,17 @@ describe('Widget FilterSimpleCondition', () => {
       propsData: {
         value: { column: 'columnA', value: 'bar', operator: 'eq' },
       },
-      store,
+      pinia,
       localVue,
       sync: false,
     });
     wrapper.find(AutocompleteWidget).vm.$emit('input', 'columnB');
     await wrapper.vm.$nextTick();
-    expect(store.state.vqb.selectedColumns).toEqual(['columnB']);
+    expect(store.selectedColumns).toEqual(['columnB']);
   });
 
   it('should keep value when operator is changed and types match', async () => {
-    const store = setupMockStore({
+    setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -270,7 +266,7 @@ describe('Widget FilterSimpleCondition', () => {
       propsData: {
         value: { column: 'columnA', value: 'bar', operator: 'eq' },
       },
-      store,
+      pinia,
       localVue,
       sync: false,
     });
@@ -282,7 +278,7 @@ describe('Widget FilterSimpleCondition', () => {
   });
 
   it("should replace value with default when operator is changed and types don't match", async () => {
-    const store = setupMockStore({
+    setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -293,7 +289,7 @@ describe('Widget FilterSimpleCondition', () => {
       propsData: {
         value: { column: 'columnA', value: 'bar', operator: 'eq' },
       },
-      store,
+      pinia,
       localVue,
       sync: false,
     });
@@ -308,7 +304,7 @@ describe('Widget FilterSimpleCondition', () => {
       mountType: typeof mount | typeof shallowMount,
       customProps: any = {},
     ) => {
-      const store = setupMockStore({
+      setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [],
@@ -325,7 +321,7 @@ describe('Widget FilterSimpleCondition', () => {
           availableVariables: AVAILABLE_VARIABLES_SAMPLE,
           ...customProps,
         },
-        store,
+        pinia,
         localVue,
         sync: false,
       });
@@ -429,7 +425,7 @@ describe('Widget FilterSimpleCondition', () => {
       mountType: typeof mount | typeof shallowMount,
       customProps: any = {},
     ) => {
-      const store = setupMockStore({
+      setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [],
@@ -443,7 +439,7 @@ describe('Widget FilterSimpleCondition', () => {
           availableVariables: AVAILABLE_VARIABLES_SAMPLE,
           ...customProps,
         },
-        store,
+        pinia,
         localVue,
         sync: false,
       });
@@ -519,7 +515,7 @@ describe('Widget FilterSimpleCondition', () => {
   describe('date column and date (using an invalid operator)', () => {
     let wrapper: Wrapper<FilterSimpleConditionWidget>;
     const createWrapper = (operator: string, isRelativeDateEnabled = false) => {
-      const store = setupMockStore({
+      setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [],
@@ -535,7 +531,7 @@ describe('Widget FilterSimpleCondition', () => {
           columnTypes: { columnA: 'date' },
           availableVariables: AVAILABLE_VARIABLES_SAMPLE,
         },
-        store,
+        pinia,
         localVue,
         sync: false,
       });

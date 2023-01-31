@@ -136,7 +136,7 @@ Vue.use(VTooltip);
 })
 export default class DataViewer extends Vue {
   @State(VQBModule) dataset!: DataSet;
-  @State(VQBModule) isLoading!: boolean;
+  @State(VQBModule) isLoading!: { dataset: boolean; uniqueValues: boolean };
   @State(VQBModule) pagesize!: number;
   @State(VQBModule) selectedColumns!: string[];
 

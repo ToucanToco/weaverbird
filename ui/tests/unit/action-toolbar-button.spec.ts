@@ -1,5 +1,5 @@
 import { createLocalVue, mount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import ActionToolbarButton from '@/components/ActionToolbarButton.vue';
 import Popover from '@/components/Popover.vue';
@@ -7,14 +7,12 @@ import Popover from '@/components/Popover.vue';
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 import { PiniaVuePlugin } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
-import vueCompositionApi from '@vue/composition-api';
 
 vi.mock('@/components/FAIcon.vue');
 
 const localVue = createLocalVue();
 localVue.use(PiniaVuePlugin);
-localVue.use(vueCompositionApi);
-const pinia = createTestingPinia({ createSpy: vi.fn() });
+const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 type VueMountedType = ReturnType<typeof mount>;
 type emitParameters = string | [string, object] | undefined;
@@ -172,7 +170,7 @@ describe('ActionToolbarButton active', () => {
     const wrapper = mount(ActionToolbarButton, {
       propsData: { isActive: true, category: 'add' },
       localVue,
-      pinia
+      pinia,
     });
     expect(wrapper.exists()).toBeTruthy();
 
@@ -209,7 +207,7 @@ describe('ActionToolbarButton active', () => {
     const wrapper = mount(ActionToolbarButton, {
       propsData: { isActive: true, category: 'aggregate' },
       localVue,
-      pinia
+      pinia,
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, ['aggregate', 'totals', 'rollup', 'uniquegroups']);
@@ -219,7 +217,7 @@ describe('ActionToolbarButton active', () => {
     const wrapper = mount(ActionToolbarButton, {
       propsData: { isActive: true, category: 'reshape' },
       localVue,
-      pinia
+      pinia,
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, ['pivot', 'unpivot', 'waterfall']);
@@ -229,7 +227,7 @@ describe('ActionToolbarButton active', () => {
     const wrapper = mount(ActionToolbarButton, {
       propsData: { isActive: true, category: 'combine' },
       localVue,
-      pinia
+      pinia,
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, ['append', 'join']);
@@ -252,7 +250,7 @@ describe('ActionToolbarButton active', () => {
       expect(store.currentStepFormName).toEqual(undefined);
     });
 
-    it.only('should insert a lowercase step in pipeline', async () => {
+    it('should insert a lowercase step in pipeline', async () => {
       const wrapper = mount(ActionToolbarButton, {
         propsData: { isActive: true, category: 'text' },
         pinia,

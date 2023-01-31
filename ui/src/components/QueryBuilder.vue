@@ -65,7 +65,7 @@ export default class QueryBuilder extends Vue {
   @Getter(VQBModule) isEditingStep!: boolean;
   @Getter(VQBModule) pipeline!: Pipeline;
 
-  @Action(VQBModule) closeStepForm!: VQBActions|['closeStepForm'];
+  @Action(VQBModule) closeStepForm!: VQBActions['closeStepForm'];
   @Action(VQBModule) openStepForm!: VQBActions['openStepForm'];
   @Action(VQBModule) resetStepFormInitialValue!: VQBActions['resetStepFormInitialValue'];
   @Action(VQBModule) selectStep!: VQBActions['selectStep'];

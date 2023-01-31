@@ -1,21 +1,23 @@
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
-import Vuex from 'vuex';
 
 import ActionToolbar from '@/components/ActionToolbar.vue';
 import ActionToolbarButton from '@/components/ActionToolbarButton.vue';
 import { CATEGORY_BUTTONS } from '@/components/constants';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 
 vi.mock('@/components/FAIcon.vue');
 
 const localVue = createLocalVue();
-localVue.use(Vuex);
+localVue.use(PiniaVuePlugin);
+const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 describe('ActionToolbar', () => {
   it('should instantiate action toolbar buttons', () => {
-    const store = setupMockStore(
+    setupMockStore(
       buildStateWithOnePipeline([], {
         // Required for button to be available
         translator: 'pandas',
@@ -26,7 +28,7 @@ describe('ActionToolbar', () => {
         buttons: CATEGORY_BUTTONS,
       },
       localVue,
-      store,
+      pinia,
     });
     const actionButtons = wrapper.findAll(ActionToolbarButton);
     expect(actionButtons.length).toEqual(9);
@@ -62,7 +64,7 @@ describe('ActionToolbar', () => {
         ],
       },
       localVue,
-      store: setupMockStore(),
+      pinia,
     });
     const actionButtons = wrapper.findAll('action-toolbar-button-stub');
     const button = actionButtons.at(0);
@@ -81,7 +83,7 @@ describe('ActionToolbar', () => {
         ],
       },
       localVue,
-      store: setupMockStore(),
+      pinia,
     });
     const actionButtons = wrapper.findAll('action-toolbar-button-stub');
     const button = actionButtons.at(0);
@@ -108,7 +110,7 @@ describe('ActionToolbar', () => {
         ],
       },
       localVue,
-      store: setupMockStore(),
+      pinia,
     });
     const actionButtons = wrapper.findAll('action-toolbar-button-stub');
     const button1 = actionButtons.at(0);
@@ -133,7 +135,7 @@ describe('ActionToolbar', () => {
         ],
       },
       localVue,
-      store: setupMockStore(),
+      pinia,
     });
     const searchButton = wrapper.find('action-toolbar-search-stub');
     expect(searchButton.exists()).toBeTruthy();

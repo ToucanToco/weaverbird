@@ -146,8 +146,9 @@ describe('Rename Step Form', () => {
         },
       },
     });
+    const store = runner.getStore();
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['bar']);
+    expect(store.selectedColumns).toEqual(['bar']);
   });
 
   it('should not change the column focus if validation fails', () => {
@@ -169,7 +170,8 @@ describe('Rename Step Form', () => {
         },
       },
     });
+    const store = runner.getStore();
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['toto']);
+    expect(store.selectedColumns).toEqual(['toto']);
   });
 });

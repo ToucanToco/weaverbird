@@ -1,28 +1,24 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it } from 'vitest';
-import Vuex, { Store } from 'vuex';
+import { describe, expect, it, vi } from 'vitest';
 
 import AggregationWidget from '@/components/stepforms/widgets/Aggregation.vue';
 
-import type { RootState } from './utils';
 import { setupMockStore } from './utils';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 
 const localVue = createLocalVue();
-localVue.use(Vuex);
+localVue.use(PiniaVuePlugin);
+const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 describe('Widget AggregationWidget', () => {
-  let emptyStore: Store<RootState>;
-  beforeEach(() => {
-    emptyStore = setupMockStore({});
-  });
-
   it('should instantiate', () => {
-    const wrapper = shallowMount(AggregationWidget, { store: emptyStore, localVue });
+    const wrapper = shallowMount(AggregationWidget, { pinia, localVue });
     expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should have exactly two AutocompleteWidget components', () => {
-    const wrapper = shallowMount(AggregationWidget, { store: emptyStore, localVue });
+    const wrapper = shallowMount(AggregationWidget, { pinia, localVue });
     const autocompletetWrappers = wrapper.findAll('autocompletewidget-stub');
     const multiselectWrappers = wrapper.findAll('multiselectwidget-stub');
     expect(autocompletetWrappers.length).toEqual(1);
@@ -36,14 +32,14 @@ describe('Widget AggregationWidget', () => {
         data: [],
       },
     });
-    const wrapper = shallowMount(AggregationWidget, { store, localVue });
+    const wrapper = shallowMount(AggregationWidget, { pinia, localVue });
     const widgetMultiselect = wrapper.find('multiselectwidget-stub');
     expect(widgetMultiselect.attributes('options')).toEqual('columnA,columnB,columnC');
   });
 
   it('should pass down the props to the MultiselectWidget value prop', async () => {
     const wrapper = shallowMount(AggregationWidget, {
-      store: emptyStore,
+      pinia,
       localVue,
       propsData: { value: { columns: ['foo', 'bar'], newcolumns: [''], aggfunction: 'sum' } },
     });
@@ -53,7 +49,7 @@ describe('Widget AggregationWidget', () => {
 
   it('should pass down the "aggfunction" prop to the second AutocompleteWidget value prop', () => {
     const wrapper = shallowMount(AggregationWidget, {
-      store: emptyStore,
+      pinia,
       localVue,
       propsData: { value: { column: 'foo', newcolumn: '', aggfunction: 'avg' } },
     });
@@ -63,7 +59,7 @@ describe('Widget AggregationWidget', () => {
 
   it('should emit "input" event on aggregation column update', async () => {
     const wrapper = shallowMount(AggregationWidget, {
-      store: emptyStore,
+      pinia,
       localVue,
       propsData: { value: { columns: ['foo'], newcolumns: [''], aggfunction: 'sum' } },
     });
@@ -76,7 +72,7 @@ describe('Widget AggregationWidget', () => {
 
   it('should emit "input" event on aggregation function update', async () => {
     const wrapper = shallowMount(AggregationWidget, {
-      store: emptyStore,
+      pinia,
       localVue,
       propsData: { value: { columns: ['foo'], newcolumns: [''], aggfunction: 'sum' } },
     });

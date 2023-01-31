@@ -102,8 +102,9 @@ describe('Concatenate Step Form', () => {
         isStepCreation: false,
       },
     });
+    const store = runner.getStore();
     await wrapper.vm.$nextTick();
-    expect(wrapper.vm.$store.state.vqb.selectedStepIndex).toEqual(1);
+    expect(store.selectedStepIndex).toEqual(1);
     const columnPickers = wrapper.findAll(ColumnPicker);
     expect(columnPickers.length).toEqual(2);
     const [picker1, picker2] = columnPickers.wrappers;

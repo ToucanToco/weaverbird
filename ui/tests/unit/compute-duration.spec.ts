@@ -68,6 +68,7 @@ describe('Compute Duration Step Form', () => {
       },
     };
     const wrapper = runner.mount(initialState);
+    const store = runner.getStore();
     wrapper.setData({
       editedStep: {
         name: 'duration',
@@ -78,7 +79,7 @@ describe('Compute Duration Step Form', () => {
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['test']);
+    expect(store.selectedColumns).toEqual(['test']);
   });
 
   it('should not change the column focus if validation fails', () => {
@@ -100,8 +101,9 @@ describe('Compute Duration Step Form', () => {
         },
       },
     });
+    const store = runner.getStore();
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['start']);
+    expect(store.selectedColumns).toEqual(['start']);
   });
 
   describe('Warning', () => {

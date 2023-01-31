@@ -29,9 +29,10 @@ describe('Add Text Column Step Form', () => {
       },
     };
     const wrapper = runner.mount(initialState);
+    const store = runner.getStore();
     wrapper.setData({ editedStep: { name: 'text', text: 'some text', newColumn: 'foo' } });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['foo']);
+    expect(store.selectedColumns).toEqual(['foo']);
   });
 
   it('should not change the column focus if validation fails', () => {
@@ -47,8 +48,9 @@ describe('Add Text Column Step Form', () => {
         editedStep: { name: 'text', text: '', newColumn: 'columnB' },
       },
     });
+    const store = runner.getStore();
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['columnA']);
+    expect(store.selectedColumns).toEqual(['columnA']);
   });
 
   describe('Warning', () => {

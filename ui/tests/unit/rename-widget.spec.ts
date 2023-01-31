@@ -1,28 +1,25 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it } from 'vitest';
-import Vuex, { Store } from 'vuex';
+import { describe, expect, it, vi } from 'vitest';
 
 import RenameWidget from '@/components/stepforms/widgets/Rename.vue';
 
-import type { RootState } from './utils';
 import { setupMockStore } from './utils';
 
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
+
 const localVue = createLocalVue();
-localVue.use(Vuex);
+localVue.use(PiniaVuePlugin);
+const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 describe('Widget RenameWidget', () => {
-  let emptyStore: Store<RootState>;
-  beforeEach(() => {
-    emptyStore = setupMockStore({});
-  });
-
   it('should instantiate', () => {
-    const wrapper = shallowMount(RenameWidget, { store: emptyStore, localVue, sync: false });
+    const wrapper = shallowMount(RenameWidget, { pinia, localVue, sync: false });
     expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should have exactly 1 ColumnPicker and 1 InputTextWidget components', () => {
-    const wrapper = shallowMount(RenameWidget, { store: emptyStore, localVue, sync: false });
+    const wrapper = shallowMount(RenameWidget, { pinia, localVue, sync: false });
     const columnPickerWrappers = wrapper.findAll('ColumnPicker-stub');
     const inputTextWidgetWrappers = wrapper.findAll('InputTextWidget-stub');
     expect(columnPickerWrappers.length).toEqual(1);
@@ -31,7 +28,7 @@ describe('Widget RenameWidget', () => {
 
   it('should pass down the properties to the input components', () => {
     const wrapper = shallowMount(RenameWidget, {
-      store: emptyStore,
+      pinia,
       localVue,
       sync: false,
       propsData: {
@@ -46,7 +43,7 @@ describe('Widget RenameWidget', () => {
 
   it('should emit value on created if values are empty', () => {
     const wrapper = shallowMount(RenameWidget, {
-      store: emptyStore,
+      pinia,
       localVue,
       sync: false,
     });
@@ -58,7 +55,7 @@ describe('Widget RenameWidget', () => {
       propsData: {
         value: ['lolilol', 'yolo'],
       },
-      store: emptyStore,
+      pinia,
       localVue,
       sync: false,
     });
@@ -70,7 +67,7 @@ describe('Widget RenameWidget', () => {
       propsData: {
         value: ['yolo', 'bim'],
       },
-      store: emptyStore,
+      pinia,
       localVue,
       sync: false,
     });
@@ -83,7 +80,7 @@ describe('Widget RenameWidget', () => {
       propsData: {
         value: ['yolo', 'bim'],
       },
-      store: emptyStore,
+      pinia,
       localVue,
       sync: false,
     });
@@ -93,10 +90,10 @@ describe('Widget RenameWidget', () => {
 
   describe('Warning', () => {
     it('should report a warning when newColumn is an already existing column name', () => {
-      const store = setupMockStore({ dataset: { headers: [{ name: 'columnA' }], data: [] } });
+      setupMockStore({ dataset: { headers: [{ name: 'columnA' }], data: [] } });
       const wrapper = shallowMount(RenameWidget, {
         propsData: { value: ['yolo', 'columnA'] },
-        store,
+        pinia,
         localVue,
         sync: false,
       });
@@ -106,10 +103,10 @@ describe('Widget RenameWidget', () => {
     });
 
     it('should not report any warning if newColumn is not an already existing column name', () => {
-      const store = setupMockStore({ dataset: { headers: [{ name: 'columnA' }], data: [] } });
+      setupMockStore({ dataset: { headers: [{ name: 'columnA' }], data: [] } });
       const wrapper = shallowMount(RenameWidget, {
         propsData: { value: ['yolo', 'columnB'] },
-        store,
+        pinia,
         localVue,
         sync: false,
       });

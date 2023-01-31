@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import PivotStepForm from '@/components/stepforms/PivotStepForm.vue';
-import { VQBnamespace } from '@/store';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
@@ -166,8 +165,9 @@ describe('Pivot Step Form', () => {
       },
     };
     const wrapper = runner.shallowMount(initialState);
+    const store = runner.getStore();
     expect(wrapper.vm.$data.editedStep.columnToPivot).toEqual('');
-    wrapper.vm.$store.commit(VQBnamespace('toggleColumnSelection'), { column: 'columnB' });
+    store.toggleColumnSelection({ column: 'columnB' });
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.$data.editedStep.columnToPivot).toEqual('columnB');
   });

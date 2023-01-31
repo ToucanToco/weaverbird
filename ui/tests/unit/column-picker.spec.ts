@@ -1,29 +1,23 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it } from 'vitest';
-import Vuex, { Store } from 'vuex';
+import { describe, expect, it, vi } from 'vitest';
 
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import { VQBnamespace } from '@/store';
-
-import type { RootState } from './utils';
 import { setupMockStore } from './utils';
+import { PiniaVuePlugin, type Store } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 
 const localVue = createLocalVue();
-localVue.use(Vuex);
+localVue.use(PiniaVuePlugin);
+const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 describe('Column Picker', () => {
-  let emptyStore: Store<RootState>;
-  beforeEach(() => {
-    emptyStore = setupMockStore({});
-  });
-
   it('should instantiate', () => {
-    const wrapper = shallowMount(ColumnPicker, { store: emptyStore, localVue });
+    const wrapper = shallowMount(ColumnPicker, { pinia, localVue });
     expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should have a widget autocomplete', () => {
-    const wrapper = shallowMount(ColumnPicker, { store: emptyStore, localVue });
+    const wrapper = shallowMount(ColumnPicker, { pinia, localVue });
     expect(wrapper.find('autocompletewidget-stub').exists()).toBeTruthy();
   });
 
@@ -34,7 +28,7 @@ describe('Column Picker', () => {
         data: [],
       },
     });
-    const wrapper = shallowMount(ColumnPicker, { store, localVue });
+    const wrapper = shallowMount(ColumnPicker, { pinia, localVue });
     const selectWrapper = wrapper.find('autocompletewidget-stub');
     expect(selectWrapper.attributes('options')).toEqual('columnA,columnB,columnC');
   });
@@ -47,7 +41,7 @@ describe('Column Picker', () => {
       },
     });
     const wrapper = shallowMount(ColumnPicker, {
-      store,
+      pinia,
       localVue,
       propsData: {
         value: 'columnA',
@@ -65,7 +59,7 @@ describe('Column Picker', () => {
       selectedColumns: ['columnA'],
     });
     const wrapper = shallowMount(ColumnPicker, {
-      store,
+      pinia,
       localVue,
     });
 
@@ -73,8 +67,8 @@ describe('Column Picker', () => {
     expect(wrapper.emitted('input')[0][0]).toEqual('columnA');
 
     // When selecting another column, the form should update
-    store.commit(VQBnamespace('setSelectedColumns'), { column: 'columnB' });
-    expect(store.state.vqb.selectedColumns).toEqual(['columnB']);
+    store.setSelectedColumns({ column: 'columnB' });
+    expect(store.selectedColumns).toEqual(['columnB']);
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted('input')[1][0]).toEqual('columnB');
 
@@ -82,7 +76,7 @@ describe('Column Picker', () => {
     // Note: we can't directly call wrapper.find('AutocompleteWidget-stub') because vue-test-utils would return the same vm as it's parent, because it's an only child, and therefore ties to the same HTML element
     wrapper.vm.$children[0].$emit('input', 'columnC');
     expect(wrapper.emitted('input')[2][0]).toEqual('columnC');
-    expect(store.state.vqb.selectedColumns).toEqual(['columnC']);
+    expect(store.selectedColumns).toEqual(['columnC']);
   });
 
   it('should update the column when a column is selected in the data table when `syncWithSelectedColumn` is disabled', async () => {
@@ -94,7 +88,7 @@ describe('Column Picker', () => {
       selectedColumns: ['columnA'],
     });
     const wrapper = shallowMount(ColumnPicker, {
-      store,
+      pinia,
       localVue,
       propsData: {
         syncWithSelectedColumn: false,
@@ -106,13 +100,13 @@ describe('Column Picker', () => {
     expect(wrapper.emitted('input')).toBeUndefined();
     // Nor on subsequent selections in the data table
 
-    store.commit(VQBnamespace('setSelectedColumns'), { column: 'columnB' });
-    expect(store.state.vqb.selectedColumns).toEqual(['columnB']);
+    store.setSelectedColumns({ column: 'columnB' });
+    expect(store.selectedColumns).toEqual(['columnB']);
     expect(wrapper.emitted('input')).toBeUndefined();
 
     // When the form updates, the selection in the table should not change
     wrapper.vm.$children[0].$emit('input', 'columnC');
     expect(wrapper.emitted('input')[0][0]).toEqual('columnC');
-    expect(store.state.vqb.selectedColumns).toEqual(['columnB']);
+    expect(store.selectedColumns).toEqual(['columnB']);
   });
 });

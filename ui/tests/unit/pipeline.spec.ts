@@ -2,20 +2,22 @@ import type { Wrapper } from '@vue/test-utils';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import type { SpyInstance } from 'vitest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import Vuex from 'vuex';
 
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal.vue';
 import PipelineComponent from '@/components/Pipeline.vue';
 import * as clipboardUtils from '@/lib/clipboard';
 import type { Pipeline } from '@/lib/steps';
-import { VQBnamespace } from '@/store';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
+import { PiniaVuePlugin, type Store } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
+
 const localVue = createLocalVue();
-localVue.use(Vuex);
+localVue.use(PiniaVuePlugin);
+const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 describe('Pipeline.vue', () => {
   it('renders steps', () => {
@@ -24,8 +26,8 @@ describe('Pipeline.vue', () => {
       { name: 'replace', searchColumn: 'characters', toReplace: [['Snow', 'Targaryen']] },
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
-    const store = setupMockStore(buildStateWithOnePipeline(pipeline));
-    const wrapper = shallowMount(PipelineComponent, { store, localVue });
+    setupMockStore(buildStateWithOnePipeline(pipeline));
+    const wrapper = shallowMount(PipelineComponent, { pinia, localVue });
     const steps = wrapper.findAll('step-stub');
     expect(steps.length).toEqual(3);
     const [step1, step2, step3] = steps.wrappers.map((stub) => stub.props());
@@ -66,8 +68,8 @@ describe('Pipeline.vue', () => {
 
   it('should render a container with tips', () => {
     const pipeline: Pipeline = [{ name: 'domain', domain: 'GoT' }];
-    const store = setupMockStore({ pipeline });
-    const wrapper = shallowMount(PipelineComponent, { store, localVue });
+    setupMockStore({ pipeline });
+    const wrapper = shallowMount(PipelineComponent, { pinia, localVue });
     expect(wrapper.find('.query-pipeline__tips').text()).toEqual(
       'Interact with the widgets and table on the right to add steps',
     );
@@ -83,8 +85,8 @@ describe('Pipeline.vue', () => {
         { name: 'rename', toRename: [['foo', 'bar']] },
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
-      const store = setupMockStore(buildStateWithOnePipeline(pipeline));
-      wrapper = shallowMount(PipelineComponent, { store, localVue });
+      setupMockStore(buildStateWithOnePipeline(pipeline));
+      wrapper = shallowMount(PipelineComponent, { pinia, localVue });
       const steps = wrapper.findAll('step-stub');
       stepToDelete = steps.at(1);
       stepToDelete.vm.$emit('toggleDelete');
@@ -147,14 +149,14 @@ describe('Pipeline.vue', () => {
       { name: 'rename', toRename: [['foo', 'bar']] },
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
-    const store = setupMockStore(buildStateWithOnePipeline(pipeline));
-    const wrapper = shallowMount(PipelineComponent, { store, localVue });
+    setupMockStore(buildStateWithOnePipeline(pipeline));
+    const wrapper = shallowMount(PipelineComponent, { pinia, localVue });
     const modal = wrapper.find('deleteconfirmationmodal-stub');
     expect(modal.exists()).toBe(false);
   });
 
   describe('clicking on the delete button', () => {
-    let wrapper: Wrapper<PipelineComponent>, modal: Wrapper<any>, dispatchSpy: SpyInstance;
+    let wrapper: Wrapper<PipelineComponent>, modal: Wrapper<any>, store: Store<'vqb', any>;
     const selectedSteps = [1, 2];
 
     beforeEach(async () => {
@@ -163,9 +165,8 @@ describe('Pipeline.vue', () => {
         { name: 'rename', toRename: [['foo', 'bar']] },
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
-      const store = setupMockStore(buildStateWithOnePipeline(pipeline));
-      dispatchSpy = vi.spyOn(store, 'dispatch');
-      wrapper = mount(PipelineComponent, { store, localVue });
+      store = setupMockStore(buildStateWithOnePipeline(pipeline));
+      wrapper = mount(PipelineComponent, { pinia, localVue });
       wrapper.setData({ selectedSteps });
       wrapper.find('.query-pipeline__delete-steps').trigger('click');
       await wrapper.vm.$nextTick();
@@ -187,7 +188,7 @@ describe('Pipeline.vue', () => {
         expect(modal.exists()).toBe(false);
       });
       it('should not delete the selected steps', () => {
-        expect(dispatchSpy).not.toHaveBeenCalled();
+        expect(store.deleteSteps).not.toHaveBeenCalled();
       });
       it('should keep the selected steps unchanged', () => {
         expect((wrapper.vm as any).selectedSteps).toStrictEqual(selectedSteps);
@@ -205,7 +206,7 @@ describe('Pipeline.vue', () => {
         expect(modal.exists()).toBe(false);
       });
       it('should delete the selected steps', () => {
-        expect(dispatchSpy).toHaveBeenCalledWith(VQBnamespace('deleteSteps'), {
+        expect(store.deleteSteps).toHaveBeenCalledWith({
           indexes: selectedSteps,
         });
       });
@@ -225,8 +226,8 @@ describe('Pipeline.vue', () => {
         { name: 'rename', toRename: [['foo', 'bar']] },
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
-      const store = setupMockStore(buildStateWithOnePipeline(pipeline));
-      wrapper = mount(PipelineComponent, { store, localVue });
+      setupMockStore(buildStateWithOnePipeline(pipeline));
+      wrapper = mount(PipelineComponent, { pinia, localVue });
       wrapper.setData({ selectedSteps });
       (wrapper.vm as any).keyDownEventHandler({ key: 'Backspace' });
       await wrapper.vm.$nextTick();
@@ -239,7 +240,7 @@ describe('Pipeline.vue', () => {
   });
 
   describe('reorder steps', () => {
-    let wrapper: Wrapper<PipelineComponent>, commitSpy: SpyInstance, dispatchSpy: SpyInstance;
+    let wrapper: Wrapper<PipelineComponent>, store: Store<'vqb', any>;
 
     beforeEach(async () => {
       const pipeline: Pipeline = [
@@ -248,10 +249,8 @@ describe('Pipeline.vue', () => {
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
         { name: 'sort', columns: [{ column: 'death', order: 'desc' }] },
       ];
-      const store = setupMockStore(buildStateWithOnePipeline(pipeline));
-      commitSpy = vi.spyOn(store, 'commit');
-      dispatchSpy = vi.spyOn(store, 'dispatch');
-      wrapper = shallowMount(PipelineComponent, { store, localVue });
+      store = setupMockStore(buildStateWithOnePipeline(pipeline));
+      wrapper = shallowMount(PipelineComponent, { pinia, localVue });
     });
 
     it('should have a draggable steps list as pipeline', () => {
@@ -271,15 +270,11 @@ describe('Pipeline.vue', () => {
       });
 
       it('should rerender pipeline', () => {
-        expect(commitSpy).toHaveBeenCalledWith(
-          VQBnamespace('setPipeline'),
-          { pipeline: reorderedPipeline },
-          undefined,
-        );
+        expect(store.setPipeline).toHaveBeenCalledWith({ pipeline: reorderedPipeline });
       });
 
       it('should update active step index', () => {
-        expect(dispatchSpy).toHaveBeenCalledWith(VQBnamespace('selectStep'), { index: 2 });
+        expect(store.selectStep).toHaveBeenCalledWith({ index: 2 });
       });
     });
   });
@@ -299,11 +294,11 @@ describe('Pipeline.vue', () => {
         { name: 'rename', toRename: [['foo', 'bar']] },
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
-      const store = setupMockStore(buildStateWithOnePipeline(pipeline));
+      setupMockStore(buildStateWithOnePipeline(pipeline));
       copyToClipboardStub = vi
         .spyOn(clipboardUtils, 'copyToClipboard')
         .mockImplementation(() => Promise.resolve());
-      wrapper = shallowMount(PipelineComponent, { store, localVue });
+      wrapper = shallowMount(PipelineComponent, { pinia, localVue });
     });
 
     afterEach(() => {
@@ -348,7 +343,7 @@ describe('Pipeline.vue', () => {
   });
   describe('paste steps', () => {
     let wrapper: Wrapper<PipelineComponent>,
-      dispatchSpy: SpyInstance,
+      store: Store<'vqb', any>,
       pasteFromClipboardStub: SpyInstance;
     const ctrlV = () => {
       (wrapper.vm as any).keyDownEventHandler({ key: 'v', ctrlKey: true }); // fake ctrl + v;
@@ -364,10 +359,9 @@ describe('Pipeline.vue', () => {
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
         { name: 'sort', columns: [{ column: 'death', order: 'desc' }] },
       ];
-      const store = setupMockStore(buildStateWithOnePipeline(pipeline));
-      dispatchSpy = vi.spyOn(store, 'dispatch');
+      store = setupMockStore(buildStateWithOnePipeline(pipeline));
       pasteFromClipboardStub = vi.spyOn(clipboardUtils, 'pasteFromClipboard');
-      wrapper = shallowMount(PipelineComponent, { store, localVue });
+      wrapper = shallowMount(PipelineComponent, { pinia, localVue });
     });
 
     describe('with valid steps', () => {
@@ -383,7 +377,7 @@ describe('Pipeline.vue', () => {
         expect(pasteFromClipboardStub).toHaveBeenCalled();
       });
       it('should add steps to pipeline', () => {
-        expect(dispatchSpy).toHaveBeenCalledWith(VQBnamespace('addSteps'), {
+        expect(store.addSteps).toHaveBeenCalledWith({
           steps: stepsFromClipboard,
         });
       });
@@ -402,7 +396,7 @@ describe('Pipeline.vue', () => {
         expect(pasteFromClipboardStub).toHaveBeenCalled();
       });
       it('should add steps to pipeline', () => {
-        expect(dispatchSpy).toHaveBeenCalledWith(VQBnamespace('addSteps'), {
+        expect(store.addSteps).toHaveBeenCalledWith({
           steps: stepsFromClipboard,
         });
       });
@@ -418,7 +412,7 @@ describe('Pipeline.vue', () => {
         ctrlV();
       });
       it('should not add steps to pipeline', () => {
-        expect(dispatchSpy).not.toHaveBeenCalledWith(VQBnamespace('addSteps'), {
+        expect(store.addSteps).not.toHaveBeenCalledWith({
           steps: stepsFromClipboard,
         });
       });
@@ -431,7 +425,7 @@ describe('Pipeline.vue', () => {
         ctrlV();
       });
       it('should not add steps to pipeline', () => {
-        expect(dispatchSpy).not.toHaveBeenCalledWith(VQBnamespace('addSteps'), {
+        expect(store.addSteps).not.toHaveBeenCalledWith({
           steps: stepsFromClipboard,
         });
       });
@@ -440,7 +434,7 @@ describe('Pipeline.vue', () => {
   describe('without supported steps', () => {
     let wrapper: Wrapper<PipelineComponent>;
     beforeEach(() => {
-      const store = setupMockStore(
+      setupMockStore(
         buildStateWithOnePipeline([], {
           translator: 'empty', // there is no supported actions in empty translator
           dataset: {
@@ -456,7 +450,7 @@ describe('Pipeline.vue', () => {
           },
         }),
       );
-      wrapper = shallowMount(PipelineComponent, { store, localVue });
+      wrapper = shallowMount(PipelineComponent, { pinia, localVue });
     });
 
     it('should hide the pipeline tips', () => {

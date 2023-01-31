@@ -116,7 +116,8 @@ describe('Formula Step Form', () => {
     const wrapper = runner.mount(initialState, {
       data: { editedStep: { name: 'formula', formula: 'ColumnA * 2', newColumn: 'foo' } },
     });
+    const store = runner.getStore();
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['foo']);
+    expect(store.selectedColumns).toEqual(['foo']);
   });
 });

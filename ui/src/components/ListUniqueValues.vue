@@ -82,7 +82,7 @@ export default class ListUniqueValues extends Vue {
   })
   loaded!: boolean;
 
-  @State(VQBModule) isLoading!: boolean;
+  @State(VQBModule) isLoading!: { dataset: boolean; uniqueValues: boolean };
   @Action(VQBModule) loadColumnUniqueValues!: VQBActions['loadColumnUniqueValues'];
 
   search = '';
