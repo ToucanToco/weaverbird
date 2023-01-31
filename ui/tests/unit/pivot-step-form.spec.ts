@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import PivotStepForm from '@/components/stepforms/PivotStepForm.vue';
 
-import { BasicStepFormTestRunner, setupMockStore } from './utils';
+import { BasicStepFormTestRunner } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
@@ -36,12 +36,12 @@ describe('Pivot Step Form', () => {
     },
     {
       testlabel: 'index and columnToPivot column names overlap',
-      store: setupMockStore({
+      store: {
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [],
         },
-      }),
+      },
       data: {
         editedStep: {
           name: 'pivot',
@@ -60,12 +60,12 @@ describe('Pivot Step Form', () => {
     },
     {
       testlabel: 'index and valueColumn column names overlap',
-      store: setupMockStore({
+      store: {
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [],
         },
-      }),
+      },
       data: {
         editedStep: {
           name: 'pivot',
@@ -84,12 +84,12 @@ describe('Pivot Step Form', () => {
     },
     {
       testlabel: 'columnToPivot and valueColumn are equal',
-      store: setupMockStore({
+      store: {
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [],
         },
-      }),
+      },
       data: {
         editedStep: {
           name: 'pivot',

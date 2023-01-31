@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import IfThenElseStepForm from '@/components/stepforms/IfThenElseStepForm.vue';
 
-import { BasicStepFormTestRunner, setupMockStore } from './utils';
+import { BasicStepFormTestRunner } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
@@ -17,12 +17,12 @@ describe('If...Then...Else Step Form', () => {
   runner.testValidationErrors([
     {
       testlabel: 'submitted data is not valid',
-      store: setupMockStore({
+      store: {
         dataset: {
           headers: [{ name: 'foo', type: 'string' }],
           data: [[null]],
         },
-      }),
+      },
       data: {
         editedStep: {
           name: 'ifthenelse',
@@ -70,12 +70,12 @@ describe('If...Then...Else Step Form', () => {
   ]);
 
   runner.testValidate({
-    store: setupMockStore({
+    store: {
       dataset: {
         headers: [{ name: 'foo', type: 'string' }],
         data: [[null]],
       },
-    }),
+    },
     props: {
       initialStepValue: {
         name: 'ifthenelse',

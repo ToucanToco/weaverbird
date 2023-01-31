@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import WaterfallStepForm from '@/components/stepforms/WaterfallStepForm.vue';
 
-import { BasicStepFormTestRunner, setupMockStore } from './utils';
+import { BasicStepFormTestRunner } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
@@ -106,12 +106,12 @@ describe('Waterfall Step Form', () => {
 
     runner.testValidate({
       testlabel: 'submitted data is valid',
-      store: setupMockStore({
+      store: {
         dataset: {
           headers: [{ name: 'columnA' }],
           data: [],
         },
-      }),
+      },
       props: {
         initialStepValue: {
           name: 'waterfall',

@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import FilterStepForm from '@/components/stepforms/FilterStepForm.vue';
 
-import { BasicStepFormTestRunner, setupMockStore } from './utils';
+import { BasicStepFormTestRunner } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
@@ -16,12 +16,12 @@ describe('Filter Step Form', () => {
   runner.testValidationErrors([
     {
       testlabel: 'submitted data is not valid',
-      store: setupMockStore({
+      store: {
         dataset: {
           headers: [{ name: 'foo', type: 'string' }],
           data: [[null]],
         },
-      }),
+      },
       data: {
         editedStep: {
           name: 'filter',
@@ -36,12 +36,12 @@ describe('Filter Step Form', () => {
   ]);
 
   runner.testValidate({
-    store: setupMockStore({
+    store: {
       dataset: {
         headers: [{ name: 'foo', type: 'string' }],
         data: [[null]],
       },
-    }),
+    },
     props: {
       initialStepValue: {
         name: 'filter',

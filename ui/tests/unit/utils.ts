@@ -74,9 +74,7 @@ export class BasicStepFormTestRunner {
   }
 
   _mount(shallow: boolean, initialState: object = {}, optional: MountOptions = {}) {
-    if (initialState) {
-      this.store = setupMockStore(initialState);
-    }
+    setupMockStore(initialState);
     const mountfunc = shallow ? shallowMount : mount;
     const { propsData, data } = optional;
     const wrapper = mountfunc(this.componentType, {
@@ -129,16 +127,14 @@ export class BasicStepFormTestRunner {
     propsData: any,
     data: any,
     expectedErrors: any,
-    store?: Store<'vqb', any>,
+    initialState: Partial<VQBState> = buildStateWithOnePipeline([]),
   ) {
+    setupMockStore(initialState);
     const wrapper = mount(this.componentType, {
       propsData,
       localVue: this.vue,
       pinia: this.pinia,
     });
-    if (store) {
-      this.store = store;
-    }
     if (data) {
       wrapper.setData(data);
     }
@@ -160,7 +156,7 @@ export class BasicStepFormTestRunner {
       props ?? {},
       data,
       errors,
-      { ...store },
+      store,
     ]);
     test.each(cases)(
       'should generate validation error if %s (#%#)',
@@ -170,10 +166,10 @@ export class BasicStepFormTestRunner {
 
   testValidate(testConfiguration: TestCaseConfiguration, expectedEmit?: object) {
     const { testlabel, store, props, data } = testConfiguration;
+    setupMockStore(store ?? buildStateWithOnePipeline([]));
     // assume by default that the expected output is the initial input
     expectedEmit = expectedEmit ?? props?.initialStepValue;
     it(`should validate and emit "formSaved" when ${testlabel} -- click version`, async () => {
-      this.store = store ?? setupMockStore();
       const wrapper = mount(this.componentType, {
         localVue: this.vue,
         propsData: props ?? {},
@@ -191,7 +187,6 @@ export class BasicStepFormTestRunner {
     });
 
     it(`should validate and emit "formSaved" when ${testlabel} -- shortcut ctrl+enter version`, async () => {
-      this.store = store ?? setupMockStore();
       const wrapper = mount(this.componentType, {
         localVue: this.vue,
         propsData: props ?? {},
@@ -209,7 +204,6 @@ export class BasicStepFormTestRunner {
     });
 
     it(`should validate and emit "formSaved" when ${testlabel} -- shortcut command+enter version`, async () => {
-      this.store = store ?? setupMockStore();
       const wrapper = mount(this.componentType, {
         pinia: this.pinia,
         localVue: this.vue,
@@ -230,7 +224,7 @@ export class BasicStepFormTestRunner {
 
   testCancel(initialState: Partial<VQBState> = buildStateWithOnePipeline([])) {
     it('should emit "back" event when back button is clicked', () => {
-      this.store = setupMockStore(initialState);
+      setupMockStore(initialState);
       const initialPipeline = [...(this.store.pipeline ?? [])];
       const initialStepIndex = this.store.selectedStepIndex;
       const wrapper = mount(this.componentType, {
@@ -258,22 +252,21 @@ export class BasicStepFormTestRunner {
     });
   }
 
-  testResetSelectedIndex(initialState?: Partial<VQBState>) {
+  testResetSelectedIndex(
+    initialState: Partial<VQBState> = buildStateWithOnePipeline(
+      [
+        { name: 'domain', domain: 'foo' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'rename', toRename: [['baz', 'spam']] },
+        { name: 'rename', toRename: [['tic', 'tac']] },
+      ],
+      {
+        selectedStepIndex: 2,
+      },
+    ),
+  ) {
     it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {
-      this.store = setupMockStore(
-        initialState ??
-          buildStateWithOnePipeline(
-            [
-              { name: 'domain', domain: 'foo' },
-              { name: 'rename', toRename: [['foo', 'bar']] },
-              { name: 'rename', toRename: [['baz', 'spam']] },
-              { name: 'rename', toRename: [['tic', 'tac']] },
-            ],
-            {
-              selectedStepIndex: 2,
-            },
-          ),
-      );
+      setupMockStore(initialState);
       const initialStepIndex = this.store.selectedStepIndex;
       const wrapper = mount(this.componentType, {
         pinia: this.pinia,

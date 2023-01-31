@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import ConcatenateStepForm from '@/components/stepforms/ConcatenateStepForm.vue';
 
-import { BasicStepFormTestRunner, setupMockStore } from './utils';
+import { BasicStepFormTestRunner } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
@@ -17,12 +17,12 @@ describe('Concatenate Step Form', () => {
   runner.testValidationErrors([
     {
       testlabel: 'submitted data is not valid',
-      store: setupMockStore({
+      store: {
         dataset: {
           headers: [{ name: 'foo', type: 'string' }],
           data: [[null]],
         },
-      }),
+      },
       errors: [
         { dataPath: '.columns.0', keyword: 'minLength' },
         { dataPath: '.newColumnName', keyword: 'minLength' },
@@ -32,7 +32,7 @@ describe('Concatenate Step Form', () => {
 
   runner.testValidate({
     testlabel: 'submitted data is valid',
-    store: setupMockStore({
+    store: {
       dataset: {
         headers: [
           { name: 'foo', type: 'string' },
@@ -40,7 +40,7 @@ describe('Concatenate Step Form', () => {
         ],
         data: [[null], [null]],
       },
-    }),
+    },
     props: {
       initialStepValue: {
         name: 'concatenate',

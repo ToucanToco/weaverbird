@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import PercentageStepForm from '@/components/stepforms/PercentageStepForm.vue';
 
-import { BasicStepFormTestRunner, setupMockStore } from './utils';
+import { BasicStepFormTestRunner } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
@@ -21,12 +21,12 @@ describe('Percentage Step Form', () => {
     },
     {
       testlabel: 'existing column name',
-      store: setupMockStore({
+      store: {
         dataset: {
           headers: [{ name: 'bar' }],
           data: [],
         },
-      }),
+      },
       data: { editedStep: { name: 'percentage', column: 'foo', newColumnName: 'bar' } },
       errors: [{ keyword: 'columnNameAlreadyUsed', dataPath: '.newColumnName' }],
     },

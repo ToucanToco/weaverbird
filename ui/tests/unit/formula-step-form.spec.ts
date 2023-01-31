@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import FormulaStepForm from '@/components/stepforms/FormulaStepForm.vue';
 
-import { BasicStepFormTestRunner, setupMockStore } from './utils';
+import { BasicStepFormTestRunner } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
@@ -51,12 +51,12 @@ describe('Formula Step Form', () => {
     props: {
       initialStepValue: { name: 'formula', formula: '<%= some_var %>', newColumn: 'foo' },
     },
-    store: setupMockStore({
+    store: {
       variableDelimiters: {
         start: '<%=',
         end: '%>',
       },
-    }),
+    },
   });
 
   runner.testCancel();

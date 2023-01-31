@@ -38,12 +38,12 @@ describe('Evolution Step Form', () => {
     },
     {
       testlabel: 'existing column name',
-      store: setupMockStore({
+      store: {
         dataset: {
           headers: [{ name: 'foo' }],
           data: [],
         },
-      }),
+      },
       data: {
         editedStep: {
           name: 'evolution',
