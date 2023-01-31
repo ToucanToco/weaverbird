@@ -174,7 +174,7 @@ const actions: PiniaActionAdaptor<VQBActions, VQBStore> = {
     this.stepFormInitialValue = undefined;
   },
   addSteps({ steps }) {
-    const pipeline = currentPipeline(this);
+    const pipeline = currentPipeline(this.$state);
     if (this.currentPipelineName === undefined || pipeline === undefined) {
       return;
     }
@@ -191,7 +191,7 @@ const actions: PiniaActionAdaptor<VQBActions, VQBStore> = {
     this.updateDataset();
   },
   deleteSteps({ indexes }: { indexes: number[] }) {
-    const pipeline = currentPipeline(this);
+    const pipeline = currentPipeline(this.$state);
     if (this.currentPipelineName === undefined || pipeline === undefined) {
       return;
     }
@@ -204,7 +204,7 @@ const actions: PiniaActionAdaptor<VQBActions, VQBStore> = {
     this.updateDataset();
   },
   selectStep({ index }) {
-    const pipeline = currentPipeline(this);
+    const pipeline = currentPipeline(this.$state);
     if (pipeline && index > pipeline.length) {
       console.error('In selectStep: index out of bounds. Falling back to last selectable index.');
       this.selectedStepIndex = -1;
