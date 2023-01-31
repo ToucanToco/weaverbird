@@ -146,9 +146,6 @@ const actions: PiniaActionAdaptor<VQBActions, VQBStore> = {
     this.setCurrentPipelineName({ name });
     // // Reset selected step to last one
     this.selectStep({ index: -1 });
-
-    // // Update the preview
-    this.updateDataset();
   },
   // STEPS
   /**
@@ -212,6 +209,7 @@ const actions: PiniaActionAdaptor<VQBActions, VQBStore> = {
       this.selectedStepIndex = index;
     }
     this.resetPagination();
+    this.updateDataset();
   },
   // DATASET
   setDataset({ dataset }) {
