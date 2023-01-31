@@ -19,10 +19,12 @@ export const VQBModule = defineStore(VQB_MODULE_NAME, {
 });
 
 export function setupVQBStore(initialState: Partial<VQBState> = {}) {
+  console.log('BEFORE', JSON.stringify({...VQBModule().$state }))
   VQBModule().$state = {
     ...emptyState(),
     ...initialState,
   };
+  console.log('AFTER', JSON.stringify({...VQBModule().$state }))
 }
 
 export function useVQBStore() {

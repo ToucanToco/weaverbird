@@ -10,7 +10,6 @@ import type { VQBState } from '@/store/state';
 import { emptyState } from '@/store/state';
 import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin, type Pinia, type Store } from 'pinia';
-import VueCompositionApi from '@vue/composition-api';
 
 vi.mock('@/components/FAIcon.vue');
 
@@ -20,7 +19,6 @@ export type RootState = {
 
 export const localVue = createLocalVue();
 localVue.use(PiniaVuePlugin);
-localVue.use(VueCompositionApi)
 
 export function buildState(customState: Partial<VQBState>) {
   return {

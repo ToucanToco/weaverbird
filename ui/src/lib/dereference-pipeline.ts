@@ -27,7 +27,7 @@ function _getPipelineForDomain(
  * pipelines
  *
  * @param pipeline the pipeline to translate and execute on the backend
- * @param pipelines the pipelines stored in the Vuex store of the app, as an
+ * @param pipelines the pipelines stored in the Pinia store of the app, as an
  * object with the pipeline name as key and the correspondinng pipeline as value
  *
  * @return the dereferenced pipeline
