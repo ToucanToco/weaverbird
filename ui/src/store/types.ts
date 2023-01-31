@@ -12,7 +12,7 @@ export type PiniaActionAdaptor<
 };
 
 export type PiniaGetterAdaptor<GettersType, StoreType extends Store> = {
-    [Key in keyof GettersType]: (this: StoreType, state: StoreType['$state']) => GettersType[Key];
+  [Key in keyof GettersType]: (this: StoreType, state: StoreType['$state']) => GettersType[Key];
 };
 
 export type VQBStore = Store<'vqb', VQBState, VQBGetters, VQBActions>;

@@ -1,6 +1,6 @@
 import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
-import { type Pinia, type Store,PiniaVuePlugin } from 'pinia';
+import { type Pinia, type Store, PiniaVuePlugin } from 'pinia';
 import { expect, it, test, vi } from 'vitest';
 import type { VueConstructor } from 'vue';
 
@@ -160,7 +160,7 @@ export class BasicStepFormTestRunner {
       props ?? {},
       data,
       errors,
-      {...store},
+      { ...store },
     ]);
     test.each(cases)(
       'should generate validation error if %s (#%#)',

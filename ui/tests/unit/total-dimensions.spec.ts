@@ -12,7 +12,6 @@ localVue.use(PiniaVuePlugin);
 const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 describe('Widget AggregationWidget', () => {
-
   it('should instantiate', () => {
     const wrapper = shallowMount(TotalDimensions, { pinia, localVue });
     expect(wrapper.exists()).toBeTruthy();

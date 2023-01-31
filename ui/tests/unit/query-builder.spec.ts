@@ -1,7 +1,7 @@
 import { createTestingPinia } from '@pinia/testing';
 import type { Wrapper } from '@vue/test-utils';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { type Store,PiniaVuePlugin } from 'pinia';
+import { type Store, PiniaVuePlugin } from 'pinia';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type Vue from 'vue';
 

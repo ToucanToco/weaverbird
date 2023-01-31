@@ -20,7 +20,7 @@ describe('Data Viewer', () => {
   });
 
   it('should display an empty state is no pipeline is selected', () => {
-    setupMockStore({})
+    setupMockStore({});
     const wrapper = shallowMount(DataViewer, { pinia, localVue });
     expect(wrapper.find('.data-viewer--no-pipeline').exists()).toBeTruthy();
     expect(wrapper.find('ActionToolbar-stub').exists()).toBeFalsy();

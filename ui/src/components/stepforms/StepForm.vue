@@ -99,9 +99,9 @@ export default class BaseStepForm<StepType> extends Vue {
   @Prop({ type: String, default: undefined })
   backendError?: string;
 
-  @State(VQBModule)interpolateFunc!: InterpolateFunction;
-  @State(VQBModule)selectedStepIndex!: number;
-  @State(VQBModule)variables!: ScopeContext;
+  @State(VQBModule) interpolateFunc!: InterpolateFunction;
+  @State(VQBModule) selectedStepIndex!: number;
+  @State(VQBModule) variables!: ScopeContext;
 
   @Action(VQBModule) selectStep!: VQBActions['selectStep'];
   @Action(VQBModule) setSelectedColumns!: VQBActions['setSelectedColumns'];

@@ -53,8 +53,8 @@ import BaseStepForm from './StepForm.vue';
 export default class IfThenElseStepForm extends BaseStepForm<IfThenElseStep> {
   stepname: PipelineStepName = 'ifthenelse';
 
-  @State(VQBModule)availableVariables?: VariablesBucket;
-  @State(VQBModule)variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) availableVariables?: VariablesBucket;
+  @State(VQBModule) variableDelimiters?: VariableDelimiters;
 
   @Getter(VQBModule) columnTypes!: ColumnTypeMapping;
 

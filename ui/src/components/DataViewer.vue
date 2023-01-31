@@ -147,7 +147,7 @@ export default class DataViewer extends Vue {
   @Getter(VQBModule) pipeline?: Pipeline;
   @Getter(VQBModule) supportedSteps!: PipelineStepName[];
 
-  @Action(VQBModule) createStepForm!: VQBActions['createStepForm']
+  @Action(VQBModule) createStepForm!: VQBActions['createStepForm'];
   @Action(VQBModule) toggleColumnSelection!: VQBActions['toggleColumnSelection'];
   @Action(VQBModule) setSelectedColumns!: VQBActions['setSelectedColumns'];
   @Action(VQBModule) setCurrentPage!: VQBActions['setCurrentPage'];

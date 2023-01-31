@@ -57,9 +57,9 @@ export default class QueryBuilder extends Vue {
   version = version; // display the current version of the package
   editedStepBackendError: string | undefined = undefined;
 
-  @State(VQBModule)currentStepFormName!: PipelineStepName;
-  @State(VQBModule)stepFormInitialValue!: object;
-  @State(VQBModule)stepFormDefaults!: object;
+  @State(VQBModule) currentStepFormName!: PipelineStepName;
+  @State(VQBModule) stepFormInitialValue!: object;
+  @State(VQBModule) stepFormDefaults!: object;
 
   @Getter(VQBModule) computedActiveStepIndex!: number;
   @Getter(VQBModule) isEditingStep!: boolean;

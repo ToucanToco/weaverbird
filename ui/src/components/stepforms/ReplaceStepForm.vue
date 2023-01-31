@@ -58,9 +58,9 @@ import BaseStepForm from './StepForm.vue';
 export default class ReplaceStepForm extends BaseStepForm<ReplaceStep> {
   stepname: PipelineStepName = 'replace';
 
-  @State(VQBModule)availableVariables?: VariablesBucket;
+  @State(VQBModule) availableVariables?: VariablesBucket;
 
-  @State(VQBModule)variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) variableDelimiters?: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'replace', searchColumn: '', toReplace: [[]] }) })
   declare initialStepValue: ReplaceStep;

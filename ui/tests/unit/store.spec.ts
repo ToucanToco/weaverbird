@@ -1,4 +1,4 @@
-import { type Store,createPinia, setActivePinia } from 'pinia';
+import { type Store, createPinia, setActivePinia } from 'pinia';
 import type { Mock } from 'vitest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -1198,10 +1198,7 @@ describe('action tests', () => {
       mockBackendServiceExecutePipeline.mockResolvedValue({
         data: { headers: [{ name: 'meow' }, { name: 'ouaf' }] },
       });
-      expect(await store.getColumnNamesFromPipeline('other')).toEqual([
-        'meow',
-        'ouaf',
-      ]);
+      expect(await store.getColumnNamesFromPipeline('other')).toEqual(['meow', 'ouaf']);
       expect(mockBackendServiceExecutePipeline).toHaveBeenLastCalledWith(
         [
           {

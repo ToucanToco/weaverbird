@@ -64,9 +64,9 @@ import BaseStepForm from './StepForm.vue';
 export default class UnpivotStepForm extends BaseStepForm<UnpivotStep> {
   stepname: PipelineStepName = 'unpivot';
 
-  @State(VQBModule)availableVariables?: VariablesBucket;
+  @State(VQBModule) availableVariables?: VariablesBucket;
 
-  @State(VQBModule)variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) variableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,
