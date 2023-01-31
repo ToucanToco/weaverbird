@@ -46,7 +46,7 @@ describe('Convert String to Date Step Form', () => {
     expect(inputtextwidget.length).toEqual(1);
   });
 
-  it.only('should update editedStep with the selected column at creation', () => {
+  it('should update editedStep with the selected column at creation', () => {
     const initialState = {
       dataset: {
         headers: [{ name: 'foo', type: 'string' }],
