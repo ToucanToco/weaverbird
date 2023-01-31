@@ -670,14 +670,14 @@ switch (TRANSLATOR) {
 
 let updateLastExecutedQuery = function() {};
 async function buildVueApp() {
-  Vue.use(PiniaVuePlugin);
+  Vue.use(Pinia.PiniaVuePlugin);
 
   const vm = new Vue({
     el: '#app',
     components: {
       Vqb,
     },
-    pinia: createPinia(),
+    pinia: Pinia.createPinia(),
     data: function() {
       return {
         isCodeOpened: false,
