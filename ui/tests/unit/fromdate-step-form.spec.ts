@@ -6,7 +6,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import FromDateStepForm from '@/components/stepforms/FromDateStepForm.vue';
 
-import { BasicStepFormTestRunner } from './utils';
+import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
@@ -24,6 +24,7 @@ describe('Convert Date to String Step Form', () => {
   });
 
   it('should have 1 inputtext when custom format is selected', () => {
+    setupMockStore({});
     const wrapper = shallowMount(FromDateStepForm, {
       pinia,
       localVue,
@@ -36,6 +37,7 @@ describe('Convert Date to String Step Form', () => {
   });
 
   it('should update editedStep with the selected column at creation', () => {
+    setupMockStore({});
     const initialState = {
       dataset: {
         headers: [{ name: 'foo', type: 'string' }],
@@ -48,6 +50,7 @@ describe('Convert Date to String Step Form', () => {
   });
 
   it('should update editedStep.format properly when a new format is selected', () => {
+    setupMockStore({});
     const wrapper = shallowMount(FromDateStepForm, {
       pinia,
       localVue,
@@ -62,6 +65,7 @@ describe('Convert Date to String Step Form', () => {
     expect(wrapper.vm.$data.editedStep.format).toEqual('%Y-%m');
   });
   it('should toggle custom format input correctly when switching selected format', () => {
+    setupMockStore({});
     const wrapper = shallowMount(FromDateStepForm, {
       pinia,
       localVue,
@@ -81,6 +85,7 @@ describe('Convert Date to String Step Form', () => {
   });
 
   describe('when user delete content of custom format input', () => {
+    setupMockStore({});
     it('should return empty string as format', () => {
       const wrapper = shallowMount(FromDateStepForm, {
         pinia,
@@ -99,6 +104,7 @@ describe('Convert Date to String Step Form', () => {
     let wrapper: Wrapper<FromDateStepForm>;
     const createWrapper = (format: string) => {
       if (wrapper) wrapper.destroy();
+      setupMockStore({});
       wrapper = shallowMount(FromDateStepForm, {
         pinia,
         localVue,

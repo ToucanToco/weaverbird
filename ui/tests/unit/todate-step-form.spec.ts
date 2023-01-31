@@ -6,7 +6,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import ToDateStepForm from '@/components/stepforms/ToDateStepForm.vue';
 
-import { BasicStepFormTestRunner } from './utils';
+import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
@@ -35,6 +35,7 @@ describe('Convert String to Date Step Form', () => {
   );
 
   it('should have 1 inputtext when custom format is selected', () => {
+    setupMockStore({});
     const wrapper = shallowMount(ToDateStepForm, {
       pinia,
       localVue,
@@ -47,6 +48,7 @@ describe('Convert String to Date Step Form', () => {
   });
 
   it('should update editedStep with the selected column at creation', () => {
+    setupMockStore({});
     const initialState = {
       dataset: {
         headers: [{ name: 'foo', type: 'string' }],
@@ -59,6 +61,7 @@ describe('Convert String to Date Step Form', () => {
   });
 
   it('should update editedStep.format properly when a new format is selected', () => {
+    setupMockStore({});
     const wrapper = shallowMount(ToDateStepForm, { pinia, localVue });
     wrapper
       .find('autocompletewidget-stub')
@@ -75,6 +78,7 @@ describe('Convert String to Date Step Form', () => {
   });
 
   it('should toggle custom format input correctly when switching selected format', () => {
+    setupMockStore({});
     const wrapper = shallowMount(ToDateStepForm, { pinia, localVue });
     wrapper
       .find('autocompletewidget-stub')
@@ -92,6 +96,7 @@ describe('Convert String to Date Step Form', () => {
 
   describe('when user delete content of custom format input', () => {
     it('should return empty string as format', () => {
+      setupMockStore({});
       const wrapper = shallowMount(ToDateStepForm, {
         pinia,
         localVue,
@@ -108,6 +113,7 @@ describe('Convert String to Date Step Form', () => {
   describe('on init', () => {
     let wrapper: Wrapper<ToDateStepForm>;
     const createWrapper = (format?: string) => {
+      setupMockStore({});
       if (wrapper) wrapper.destroy();
       wrapper = shallowMount(ToDateStepForm, {
         pinia,
