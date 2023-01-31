@@ -867,7 +867,7 @@ async function buildVueApp() {
       this.store.setAvailableVariables({
         availableVariables: AVAILABLE_VARIABLES,
       });
-      this.store.commit.setVariableDelimiters({
+      this.store.setVariableDelimiters({
         variableDelimiters: { start: '<%=', end: '%>' },
       });
       const collections = await backendService.listCollections();
