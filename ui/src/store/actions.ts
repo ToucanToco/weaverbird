@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import type { BackendError, BackendService, BackendWarning } from '@/lib/backend';
+import type { BackendError, BackendResponse, BackendService, BackendWarning } from '@/lib/backend';
 import { addLocalUniquesToDataset, updateLocalUniquesFromDatabase } from '@/lib/dataset/helpers';
 import { pageOffset } from '@/lib/dataset/pagination';
 import type { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
@@ -69,7 +69,7 @@ export type VQBActions = {
   addSteps: ({ steps }: { steps: PipelineStep[] }) => void;
   deleteSteps: ({ indexes }: { indexes: number[] }) => void;
   selectStep: ({ index }: { index: number }) => void;
-  updateDataset: () => void;
+  updateDataset: () =>  Promise<BackendResponse<DataSet> | undefined>;
   setDataset: ({ dataset }: { dataset: DataSet }) => void;
   setSelectedColumns: ({ column }: { column: string | undefined }) => void;
   toggleColumnSelection: ({ column }: { column: string }) => void;
@@ -216,7 +216,7 @@ const actions: PiniaActionAdaptor<VQBActions, VQBStore> = {
   setDataset({ dataset }) {
     this.dataset = dataset;
   },
-  async updateDataset() {
+  async updateDataset(): Promise<BackendResponse<DataSet> | undefined> {
     this.logBackendMessages({ backendMessages: [] });
     try {
       this.setLoading({ type: 'dataset', isLoading: true });

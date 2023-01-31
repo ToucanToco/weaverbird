@@ -7,7 +7,6 @@ import { emptyState } from './state';
 
 export type { VQBActions, VQBGetters };
 
-
 /**
  * the default VQB namespace name
  */
@@ -20,10 +19,10 @@ export const VQBModule = defineStore(VQB_MODULE_NAME, {
 });
 
 export function setupVQBStore(initialState: Partial<VQBState> = {}) {
-  VQBModule().$patch({
+  VQBModule().$state = {
     ...emptyState(),
     ...initialState,
-  });
+  };
 }
 
 export function useVQBStore() {

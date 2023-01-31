@@ -1,14 +1,16 @@
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import { expect, it, test, vi } from 'vitest';
 import type { VueConstructor } from 'vue';
-import Vuex, { Store } from 'vuex';
 
 import type BaseStepForm from '@/components/stepforms/StepForm.vue';
 import type { Pipeline } from '@/lib/steps';
 import type { ValidationError } from '@/lib/translators/base';
-import { registerModule, VQBnamespace } from '@/store';
+import { setupVQBStore, useVQBStore } from '@/store';
 import type { VQBState } from '@/store/state';
 import { emptyState } from '@/store/state';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin, type Pinia, type Store } from 'pinia';
+import VueCompositionApi from '@vue/composition-api';
 
 vi.mock('@/components/FAIcon.vue');
 
@@ -17,7 +19,8 @@ export type RootState = {
 };
 
 export const localVue = createLocalVue();
-localVue.use(Vuex);
+localVue.use(PiniaVuePlugin);
+localVue.use(VueCompositionApi)
 
 export function buildState(customState: Partial<VQBState>) {
   return {
@@ -37,9 +40,8 @@ export function buildStateWithOnePipeline(pipeline: Pipeline, customState?: Part
 }
 
 export function setupMockStore(initialState: object = buildStateWithOnePipeline([])) {
-  const store: Store<RootState> = new Vuex.Store({});
-  registerModule(store, initialState);
-
+  const store = useVQBStore();
+  setupVQBStore(initialState);
   return store;
 }
 
@@ -47,7 +49,7 @@ type ComponentType = typeof BaseStepForm;
 
 type TestCaseConfiguration = {
   testlabel?: string;
-  store?: Store<RootState>;
+  store?: Store<'vqb', RootState>;
   props?: { initialStepValue?: object; [prop: string]: any };
   data?: object;
 };
@@ -65,19 +67,26 @@ export class BasicStepFormTestRunner {
   componentType: ComponentType;
   stepname: string;
   vue: VueConstructor;
+  pinia: Pinia;
 
   constructor(componentType: ComponentType, stepname: string, vue?: VueConstructor) {
     this.componentType = componentType;
     this.stepname = stepname;
     this.vue = vue ?? localVue;
+    this.pinia = createTestingPinia({
+      createSpy: vi.fn(),
+    });
   }
 
   _mount(shallow: boolean, initialState: object = {}, optional: MountOptions = {}) {
+    if (initialState) {
+      setupMockStore(initialState);
+    }
     const mountfunc = shallow ? shallowMount : mount;
     const { propsData, data } = optional;
     const wrapper = mountfunc(this.componentType, {
-      store: initialState ? setupMockStore(initialState) : undefined,
       propsData,
+      pinia: this.pinia,
       localVue: this.vue,
       sync: false,
     });
@@ -116,17 +125,11 @@ export class BasicStepFormTestRunner {
     });
   }
 
-  async checkValidationError(
-    _testlabel: any,
-    store: any,
-    propsData: any,
-    data: any,
-    expectedErrors: any,
-  ) {
+  async checkValidationError(_testlabel: any, propsData: any, data: any, expectedErrors: any) {
     const wrapper = mount(this.componentType, {
-      store,
       propsData,
       localVue: this.vue,
+      pinia: this.pinia,
       sync: false,
     });
     if (data) {
@@ -144,9 +147,8 @@ export class BasicStepFormTestRunner {
   }
 
   testValidationErrors(configurations: ValidationErrorConfiguration[]) {
-    const cases = configurations.map(({ testlabel, store, props, data, errors }) => [
+    const cases = configurations.map(({ testlabel, props, data, errors }) => [
       testlabel,
-      store ?? setupMockStore(),
       props ?? {},
       data,
       errors,
@@ -162,8 +164,8 @@ export class BasicStepFormTestRunner {
     // assume by default that the expected output is the initial input
     expectedEmit = expectedEmit ?? props?.initialStepValue;
     it(`should validate and emit "formSaved" when ${testlabel} -- click version`, async () => {
+      setupMockStore();
       const wrapper = mount(this.componentType, {
-        store: store ?? setupMockStore(),
         localVue: this.vue,
         propsData: props ?? {},
         sync: false,
@@ -180,8 +182,8 @@ export class BasicStepFormTestRunner {
     });
 
     it(`should validate and emit "formSaved" when ${testlabel} -- shortcut ctrl+enter version`, async () => {
+      setupMockStore();
       const wrapper = mount(this.componentType, {
-        store: store ?? setupMockStore(),
         localVue: this.vue,
         propsData: props ?? {},
         sync: false,
@@ -198,8 +200,9 @@ export class BasicStepFormTestRunner {
     });
 
     it(`should validate and emit "formSaved" when ${testlabel} -- shortcut command+enter version`, async () => {
+      setupMockStore();
       const wrapper = mount(this.componentType, {
-        store: store ?? setupMockStore(),
+        pinia: this.pinia,
         localVue: this.vue,
         propsData: props ?? {},
         sync: false,
@@ -218,26 +221,26 @@ export class BasicStepFormTestRunner {
 
   testCancel(initialState: Partial<VQBState> = buildStateWithOnePipeline([])) {
     const store = setupMockStore(initialState);
-    const initialPipeline = [...store.getters[VQBnamespace('pipeline')]];
-    const initialStepIndex = store.state.vqb.selectedStepIndex;
+    const initialPipeline = [...(store.pipeline ?? [])];
+    const initialStepIndex = store.selectedStepIndex;
 
     it('should emit "back" event when back button is clicked', () => {
       const wrapper = mount(this.componentType, {
-        store,
+        pinia: this.pinia,
         localVue: this.vue,
         sync: false,
       });
       wrapper.find('.step-edit-form__back-button').trigger('click');
       expect(wrapper.emitted()).toEqual({ back: [[]] });
-      expect(store.state.vqb.selectedStepIndex).toEqual(initialStepIndex);
-      expect(store.getters[VQBnamespace('pipeline')]).toEqual(initialPipeline);
+      expect(store.selectedStepIndex).toEqual(initialStepIndex);
+      expect(store.pipeline).toEqual(initialPipeline);
     });
 
     it('should overwrite cancelEdition function', () => {
       const cancelEditionCustomMock = vi.fn();
       const methods = { cancelEdition: cancelEditionCustomMock };
       const wrapper = mount(this.componentType, {
-        store,
+        pinia: this.pinia,
         localVue: this.vue,
         sync: false,
         methods,
@@ -262,20 +265,20 @@ export class BasicStepFormTestRunner {
           },
         ),
     );
-    const initialStepIndex = store.state.vqb.selectedStepIndex;
+    const initialStepIndex = store.selectedStepIndex;
 
     it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {
       const wrapper = mount(this.componentType, {
-        store,
+        pinia: this.pinia,
         localVue: this.vue,
         sync: false,
       });
       wrapper.find('.step-edit-form__back-button').trigger('click');
-      expect(store.state.vqb.selectedStepIndex).toEqual(initialStepIndex);
+      expect(store.selectedStepIndex).toEqual(initialStepIndex);
 
       wrapper.setProps({ isStepCreation: false });
       wrapper.find('.step-edit-form__back-button').trigger('click');
-      expect(store.state.vqb.selectedStepIndex).toEqual(initialStepIndex + 1);
+      expect(store.selectedStepIndex).toEqual(initialStepIndex + 1);
     });
   }
 }
