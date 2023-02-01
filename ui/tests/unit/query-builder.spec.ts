@@ -1,11 +1,11 @@
 import { createTestingPinia } from '@pinia/testing';
 import type { Wrapper } from '@vue/test-utils';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { type Store, PiniaVuePlugin } from 'pinia';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type Vue from 'vue';
+import { PiniaVuePlugin } from 'pinia';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import QueryBuilder from '@/components/QueryBuilder.vue';
+import { useVQBStore } from '@/store';
 
 import { version } from '../../package.json';
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
@@ -15,29 +15,37 @@ localVue.use(PiniaVuePlugin);
 const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 describe('Query Builder', () => {
+  let wrapper: Wrapper<QueryBuilder>;
+  let store: ReturnType<typeof setupMockStore>;
+
+  afterEach(() => {
+    useVQBStore().$dispose();
+    wrapper.destroy();
+  });
+
   it('should instantiate', () => {
-    const store = setupMockStore();
-    const wrapper = shallowMount(QueryBuilder, { pinia, localVue });
+    store = setupMockStore();
+    wrapper = shallowMount(QueryBuilder, { pinia, localVue });
     expect(wrapper.exists()).toBeTruthy();
     expect(store.isEditingStep).toBeFalsy();
   });
 
   it('should display the current version of the package', () => {
     setupMockStore();
-    const wrapper = shallowMount(QueryBuilder, { pinia, localVue });
+    wrapper = shallowMount(QueryBuilder, { pinia, localVue });
     expect(wrapper.find('.documentation-help__content').attributes('data-version')).toBe(version);
   });
 
   it('should display an empty state if no pipeline is selected', () => {
     setupMockStore({});
-    const wrapper = shallowMount(QueryBuilder, { pinia, localVue });
+    wrapper = shallowMount(QueryBuilder, { pinia, localVue });
     expect(wrapper.find('.query-builder--no-pipeline').exists()).toBeTruthy();
     expect(wrapper.find('Pipeline-stub').exists()).toBeFalsy();
   });
 
   it('should instantiate a AggregateStepForm component', () => {
     setupMockStore(buildStateWithOnePipeline([], { currentStepFormName: 'aggregate' }));
-    const wrapper = shallowMount(QueryBuilder, {
+    wrapper = shallowMount(QueryBuilder, {
       pinia,
       localVue,
     });
@@ -47,7 +55,7 @@ describe('Query Builder', () => {
 
   it('should instantiate a FormRenameStep component', () => {
     setupMockStore(buildStateWithOnePipeline([], { currentStepFormName: 'rename' }));
-    const wrapper = shallowMount(QueryBuilder, {
+    wrapper = shallowMount(QueryBuilder, {
       pinia,
       localVue,
     });
@@ -57,7 +65,7 @@ describe('Query Builder', () => {
 
   it('should instantiate a DeleteColumnStep component', () => {
     setupMockStore(buildStateWithOnePipeline([], { currentStepFormName: 'delete' }));
-    const wrapper = shallowMount(QueryBuilder, {
+    wrapper = shallowMount(QueryBuilder, {
       pinia,
       localVue,
     });
@@ -67,7 +75,7 @@ describe('Query Builder', () => {
 
   it('should instantiate a FillnaStep component', () => {
     setupMockStore(buildStateWithOnePipeline([], { currentStepFormName: 'fillna' }));
-    const wrapper = shallowMount(QueryBuilder, {
+    wrapper = shallowMount(QueryBuilder, {
       pinia,
       localVue,
     });
@@ -77,7 +85,7 @@ describe('Query Builder', () => {
 
   it('should instantiate a DomainStep component', () => {
     setupMockStore(buildStateWithOnePipeline([], { currentStepFormName: 'domain' }));
-    const wrapper = shallowMount(QueryBuilder, {
+    wrapper = shallowMount(QueryBuilder, {
       pinia,
       localVue,
     });
@@ -86,9 +94,6 @@ describe('Query Builder', () => {
   });
 
   describe('save step', () => {
-    let store: Store<'vqb', any>;
-    let wrapper: Wrapper<Vue>;
-
     describe('when editing domain step', () => {
       beforeEach(async () => {
         store = setupMockStore(
@@ -190,7 +195,7 @@ describe('Query Builder', () => {
   });
 
   it('should cancel edition', async () => {
-    const store: Store<'vqb', any> = setupMockStore(
+    store = setupMockStore(
       buildStateWithOnePipeline([{ name: 'domain', domain: 'foo' }], {
         currentStepFormName: 'rename',
       }),
