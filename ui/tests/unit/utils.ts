@@ -1,7 +1,7 @@
 import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import { type Pinia, type Store, PiniaVuePlugin } from 'pinia';
-import { expect, it, test, vi } from 'vitest';
+import { beforeEach, describe, expect, it, test, vi } from 'vitest';
 import type { VueConstructor } from 'vue';
 
 import type BaseStepForm from '@/components/stepforms/StepForm.vue';
@@ -166,58 +166,64 @@ export class BasicStepFormTestRunner {
 
   testValidate(testConfiguration: TestCaseConfiguration, expectedEmit?: object) {
     const { testlabel, store, props, data } = testConfiguration;
-    setupMockStore(store ?? buildStateWithOnePipeline([]));
     // assume by default that the expected output is the initial input
     expectedEmit = expectedEmit ?? props?.initialStepValue;
-    it(`should validate and emit "formSaved" when ${testlabel} -- click version`, async () => {
-      const wrapper = mount(this.componentType, {
-        localVue: this.vue,
-        propsData: props ?? {},
-        sync: false,
-      });
-      if (data) {
-        wrapper.setData(data);
-      }
-      wrapper.find('.widget-form-action__button--validate').trigger('click');
-      await this.vue.nextTick();
-      expect(wrapper.vm.$data.errors).toBeNull();
-      expect(wrapper.emitted()).toEqual({
-        formSaved: [[expectedEmit]],
-      });
-    });
 
-    it(`should validate and emit "formSaved" when ${testlabel} -- shortcut ctrl+enter version`, async () => {
-      const wrapper = mount(this.componentType, {
-        localVue: this.vue,
-        propsData: props ?? {},
-        sync: false,
+    describe(`should validate and emit "formSaved" when ${testlabel}`, () => {
+      beforeEach(() => {
+        setupMockStore(store ?? buildStateWithOnePipeline([]));
       });
-      if (data) {
-        wrapper.setData(data);
-      }
-      wrapper.vm.$el.dispatchEvent(new KeyboardEvent('keydown', { ctrlKey: true, code: 'Enter' }));
-      await this.vue.nextTick();
-      expect(wrapper.vm.$data.errors).toBeNull();
-      expect(wrapper.emitted()).toEqual({
-        formSaved: [[expectedEmit]],
-      });
-    });
 
-    it(`should validate and emit "formSaved" when ${testlabel} -- shortcut command+enter version`, async () => {
-      const wrapper = mount(this.componentType, {
-        pinia: this.pinia,
-        localVue: this.vue,
-        propsData: props ?? {},
-        sync: false,
+      it(`click version`, async () => {
+        const wrapper = mount(this.componentType, {
+          localVue: this.vue,
+          propsData: props ?? {},
+          sync: false,
+        });
+        if (data) {
+          wrapper.setData(data);
+        }
+        wrapper.find('.widget-form-action__button--validate').trigger('click');
+        await this.vue.nextTick();
+        expect(wrapper.vm.$data.errors).toBeNull();
+        expect(wrapper.emitted()).toEqual({
+          formSaved: [[expectedEmit]],
+        });
       });
-      if (data) {
-        wrapper.setData(data);
-      }
-      wrapper.vm.$el.dispatchEvent(new KeyboardEvent('keydown', { metaKey: true, code: 'Enter' }));
-      await this.vue.nextTick();
-      expect(wrapper.vm.$data.errors).toBeNull();
-      expect(wrapper.emitted()).toEqual({
-        formSaved: [[expectedEmit]],
+
+      it(`shortcut ctrl+enter version`, async () => {
+        const wrapper = mount(this.componentType, {
+          localVue: this.vue,
+          propsData: props ?? {},
+          sync: false,
+        });
+        if (data) {
+          wrapper.setData(data);
+        }
+        wrapper.vm.$el.dispatchEvent(new KeyboardEvent('keydown', { ctrlKey: true, code: 'Enter' }));
+        await this.vue.nextTick();
+        expect(wrapper.vm.$data.errors).toBeNull();
+        expect(wrapper.emitted()).toEqual({
+          formSaved: [[expectedEmit]],
+        });
+      });
+
+      it(`shortcut command+enter version`, async () => {
+        const wrapper = mount(this.componentType, {
+          pinia: this.pinia,
+          localVue: this.vue,
+          propsData: props ?? {},
+          sync: false,
+        });
+        if (data) {
+          wrapper.setData(data);
+        }
+        wrapper.vm.$el.dispatchEvent(new KeyboardEvent('keydown', { metaKey: true, code: 'Enter' }));
+        await this.vue.nextTick();
+        expect(wrapper.vm.$data.errors).toBeNull();
+        expect(wrapper.emitted()).toEqual({
+          formSaved: [[expectedEmit]],
+        });
       });
     });
   }
