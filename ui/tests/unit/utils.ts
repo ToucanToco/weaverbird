@@ -200,7 +200,9 @@ export class BasicStepFormTestRunner {
         if (data) {
           wrapper.setData(data);
         }
-        wrapper.vm.$el.dispatchEvent(new KeyboardEvent('keydown', { ctrlKey: true, code: 'Enter' }));
+        wrapper.vm.$el.dispatchEvent(
+          new KeyboardEvent('keydown', { ctrlKey: true, code: 'Enter' }),
+        );
         await this.vue.nextTick();
         expect(wrapper.vm.$data.errors).toBeNull();
         expect(wrapper.emitted()).toEqual({
@@ -218,7 +220,9 @@ export class BasicStepFormTestRunner {
         if (data) {
           wrapper.setData(data);
         }
-        wrapper.vm.$el.dispatchEvent(new KeyboardEvent('keydown', { metaKey: true, code: 'Enter' }));
+        wrapper.vm.$el.dispatchEvent(
+          new KeyboardEvent('keydown', { metaKey: true, code: 'Enter' }),
+        );
         await this.vue.nextTick();
         expect(wrapper.vm.$data.errors).toBeNull();
         expect(wrapper.emitted()).toEqual({
