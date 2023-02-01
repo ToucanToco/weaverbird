@@ -97,6 +97,7 @@ export function emptyState(): VQBState {
     isLoading: { dataset: false, uniqueValues: false },
     isRequestOnGoing: false,
     variables: {},
+    variableDelimiters: undefined,
     translator: 'mongo50',
     backendService: UnsetBackendService,
     interpolateFunc: (x: string | any[], _context: ScopeContext) => x,
