@@ -2,9 +2,15 @@
 
 ## Unreleased
 
+## [0.101.0] - 2023-02-02
+
+### Changed
+
+- **BREAKING** | Store is now using Pinia rather than Vuex
+
 ## [0.100.0] - 2023-01-23
 
-## Changed
+### Changed
 
 - Documentation and playground are now under the domain toucantoco.de
 
@@ -1455,6 +1461,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
+[0.101.0]: https://github.com/ToucanToco/weaverbird/compare/v0.100.0...v0.101.0
 [0.100.0]: https://github.com/ToucanToco/weaverbird/compare/v0.99.0...v0.100.0
 [0.99.0]: https://github.com/ToucanToco/weaverbird/compare/v0.99.0...v0.98.2
 [0.98.2]: https://github.com/ToucanToco/weaverbird/compare/v0.98.2...v0.98.1
