@@ -64,6 +64,7 @@ describe('Compute Text Columns Step Form', () => {
       },
     };
     const wrapper = runner.mount(initialState);
+    const store = runner.getStore();
     wrapper.setData({
       editedStep: {
         name: 'comparetext',
@@ -73,7 +74,7 @@ describe('Compute Text Columns Step Form', () => {
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['NEW']);
+    expect(store.selectedColumns).toEqual(['NEW']);
   });
 
   it('should not change the column focus if validation fails', () => {
@@ -94,8 +95,9 @@ describe('Compute Text Columns Step Form', () => {
         },
       },
     });
+    const store = runner.getStore();
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['C1']);
+    expect(store.selectedColumns).toEqual(['C1']);
   });
 
   describe('Warning', () => {

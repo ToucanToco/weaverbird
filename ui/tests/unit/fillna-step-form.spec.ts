@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import FillnaStepForm from '@/components/stepforms/FillnaStepForm.vue';
 
-import { BasicStepFormTestRunner, setupMockStore } from './utils';
+import { BasicStepFormTestRunner } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
@@ -17,12 +17,12 @@ describe('Fillna Step Form', () => {
   runner.testValidationErrors([
     {
       testlabel: 'submitted data is not valid',
-      store: setupMockStore({
+      store: {
         dataset: {
           headers: [{ name: 'columnA' }],
           data: [[null]],
         },
-      }),
+      },
       data: {
         editedStep: { name: 'fillna', columns: ['columnA'], value: { foo: 'bar' } },
       },
@@ -33,12 +33,12 @@ describe('Fillna Step Form', () => {
   runner.testValidationErrors([
     {
       testlabel: 'should NOT have fewer than 1 items',
-      store: setupMockStore({
+      store: {
         dataset: {
           headers: [{ name: 'columnA' }],
           data: [[null]],
         },
-      }),
+      },
       data: {
         editedStep: { name: 'fillna', columns: [], value: 'bar' },
       },
@@ -47,12 +47,12 @@ describe('Fillna Step Form', () => {
   ]);
 
   runner.testValidate({
-    store: setupMockStore({
+    store: {
       dataset: {
         headers: [{ name: 'foo' }],
         data: [[null]],
       },
-    }),
+    },
     props: {
       initialStepValue: { name: 'fillna', columns: ['foo', 'toto'], value: 'bar' },
     },

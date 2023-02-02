@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import EvolutionStepForm from '@/components/stepforms/EvolutionStepForm.vue';
 
-import { BasicStepFormTestRunner, setupMockStore } from './utils';
+import { BasicStepFormTestRunner } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
@@ -38,12 +38,12 @@ describe('Evolution Step Form', () => {
     },
     {
       testlabel: 'existing column name',
-      store: setupMockStore({
+      store: {
         dataset: {
           headers: [{ name: 'foo' }],
           data: [],
         },
-      }),
+      },
       data: {
         editedStep: {
           name: 'evolution',

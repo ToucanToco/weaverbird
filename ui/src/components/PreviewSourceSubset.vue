@@ -27,8 +27,8 @@ import Vue from 'vue';
 import { Component, Watch } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
-import { VQBModule } from '@/store';
-import type { MutationCallbacks } from '@/store/mutations';
+import { Action, Getter } from 'pinia-class';
+import { VQBModule, type VQBActions } from '@/store';
 
 @Component({
   name: 'PreviewSourceSubset',
@@ -39,13 +39,13 @@ import type { MutationCallbacks } from '@/store/mutations';
 export default class PreviewSourceSubset extends Vue {
   rowsSubsetInput: number | string | undefined = this.lastSuccessfulPreviewRowsSubset;
 
-  @VQBModule.Getter('previewSourceRowsSubset') previewSourceRowsSubset?:
+  @Getter(VQBModule, 'previewSourceRowsSubset') previewSourceRowsSubset?:
     | number
     | 'unlimited'
     | undefined;
 
-  @VQBModule.Action updateDataset!: () => void;
-  @VQBModule.Mutation setPreviewSourceRowsSubset!: MutationCallbacks['setPreviewSourceRowsSubset'];
+  @Action(VQBModule) updateDataset!: VQBActions['updateDataset'];
+  @Action(VQBModule) setPreviewSourceRowsSubset!: VQBActions['setPreviewSourceRowsSubset'];
 
   get lastSuccessfulPreviewRowsSubset() {
     return this.previewSourceRowsSubset == 'unlimited'

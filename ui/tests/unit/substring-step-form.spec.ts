@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import SubstringStepForm from '@/components/stepforms/SubstringStepForm.vue';
 
-import { BasicStepFormTestRunner, setupMockStore } from './utils';
+import { BasicStepFormTestRunner } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
@@ -20,12 +20,12 @@ describe('Substring Step Form', () => {
     },
     {
       testlabel: 'existing column name',
-      store: setupMockStore({
+      store: {
         dataset: {
           headers: [{ name: 'bar' }],
           data: [],
         },
-      }),
+      },
       data: {
         editedStep: {
           name: 'substring',

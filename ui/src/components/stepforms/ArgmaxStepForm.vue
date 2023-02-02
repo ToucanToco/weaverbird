@@ -39,6 +39,7 @@ import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import type { ArgmaxStep, PipelineStepName } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
+import { State } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
@@ -53,9 +54,9 @@ import MultiselectWidget from './widgets/Multiselect.vue';
 export default class ArgmaxStepForm extends BaseStepForm<ArgmaxStep> {
   stepname: PipelineStepName = 'argmax';
 
-  @VQBModule.State availableVariables?: VariablesBucket;
+  @State(VQBModule) availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) variableDelimiters?: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'argmax', column: '' }) })
   declare initialStepValue: ArgmaxStep;

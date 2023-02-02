@@ -1,19 +1,21 @@
+import { createTestingPinia } from '@pinia/testing';
 import type { Wrapper } from '@vue/test-utils';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { type Store, PiniaVuePlugin } from 'pinia';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type Vue from 'vue';
-import Vuex from 'vuex';
 
 import ListUniqueValues from '@/components/ListUniqueValues.vue';
-import { VQBnamespace } from '@/store/';
 
 import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();
-localVue.use(Vuex);
+localVue.use(PiniaVuePlugin);
+const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 describe('List Unique Value', () => {
   let wrapper: Wrapper<Vue>;
+  let store: Store<'vqb', any>;
   /**
   `shallowMountWrapper` is utility function for the `ListUniqueValues` component
   It shallow mount the component with several options:
@@ -32,17 +34,18 @@ describe('List Unique Value', () => {
     loaded = true,
     isUniqueValuesLoading = false,
   ): Wrapper<Vue> => {
+    store = setupMockStore({
+      dataset: {
+        headers: [{ name: 'col1' }],
+        data: [],
+      },
+      isLoading: {
+        dataset: false,
+        uniqueValues: isUniqueValuesLoading,
+      },
+    });
     return shallowMount(ListUniqueValues, {
-      store: setupMockStore({
-        dataset: {
-          headers: [{ name: 'col1' }],
-          data: [],
-        },
-        isLoading: {
-          dataset: false,
-          uniqueValues: isUniqueValuesLoading,
-        },
-      }),
+      pinia,
       localVue,
       propsData: {
         columnName: 'col1',
@@ -124,12 +127,10 @@ describe('List Unique Value', () => {
       expect(wrapper.find('.list-unique-values__load-all-values').exists()).toBeFalsy();
     });
 
-    it('should dispatch when click on "load all values"', async () => {
+    it('should load unique values when click on "load all values"', async () => {
       wrapper = shallowMountWrapper(['France', 'Spain'], 'in', false);
-      const dispatchSpy = vi.spyOn(wrapper.vm.$store, 'dispatch');
       await wrapper.find('.list-unique-values__load-all-values-button').trigger('click');
-      expect(dispatchSpy).toHaveBeenCalledTimes(1);
-      expect(dispatchSpy).toHaveBeenCalledWith(VQBnamespace('loadColumnUniqueValues'), {
+      expect(store.loadColumnUniqueValues).toHaveBeenCalledWith({
         column: 'col1',
       });
     });
@@ -260,13 +261,14 @@ describe('List Unique Value', () => {
 
     describe('with with object value', () => {
       it('should filter the unique value when search on the searchbox', async () => {
+        setupMockStore({
+          dataset: {
+            headers: [{ name: 'col1' }],
+            data: [],
+          },
+        });
         wrapper = shallowMount(ListUniqueValues, {
-          store: setupMockStore({
-            dataset: {
-              headers: [{ name: 'col1' }],
-              data: [],
-            },
-          }),
+          pinia,
           localVue,
           propsData: {
             filter: {

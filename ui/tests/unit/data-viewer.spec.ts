@@ -1,41 +1,46 @@
+import { createTestingPinia } from '@pinia/testing';
 import type { Wrapper } from '@vue/test-utils';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type Vue from 'vue';
-import Vuex from 'vuex';
 
 import DataViewer from '../../src/components/DataViewer.vue';
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
 const localVue = createLocalVue();
-localVue.use(Vuex);
+localVue.use(PiniaVuePlugin);
+const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 describe('Data Viewer', () => {
   it('should instantiate', () => {
-    const wrapper = shallowMount(DataViewer, { store: setupMockStore(), localVue });
+    const wrapper = shallowMount(DataViewer, { pinia, localVue });
 
     expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should display an empty state is no pipeline is selected', () => {
-    const wrapper = shallowMount(DataViewer, { store: setupMockStore({}), localVue });
+    setupMockStore({});
+    const wrapper = shallowMount(DataViewer, { pinia, localVue });
     expect(wrapper.find('.data-viewer--no-pipeline').exists()).toBeTruthy();
     expect(wrapper.find('ActionToolbar-stub').exists()).toBeFalsy();
   });
 
-  it('should display a message when no data', () => {
-    const wrapper = shallowMount(DataViewer, { store: setupMockStore(), localVue });
-
+  it('should display a message when no data', async () => {
+    setupMockStore();
+    const wrapper = shallowMount(DataViewer, { pinia, localVue });
+    await wrapper.vm.$nextTick();
     expect(wrapper.text()).toEqual('No data available');
   });
 
   it('should display a loader spinner when data is loading and hide data viewer container', () => {
+    setupMockStore(
+      buildStateWithOnePipeline([], {
+        isLoading: { dataset: true, uniqueValues: false },
+      }),
+    );
     const wrapper = shallowMount(DataViewer, {
-      store: setupMockStore(
-        buildStateWithOnePipeline([], {
-          isLoading: { dataset: true, uniqueValues: false },
-        }),
-      ),
+      pinia,
       localVue,
     });
     const wrapperLoaderSpinner = wrapper.find('.data-viewer__loading-spinner');
@@ -46,7 +51,7 @@ describe('Data Viewer', () => {
 
   describe('pagination', () => {
     it('should display pagination if Dataset is not complete', () => {
-      const store = setupMockStore(
+      setupMockStore(
         buildStateWithOnePipeline([], {
           dataset: {
             // I let headers and data empty because I only want to test the pagination
@@ -63,14 +68,14 @@ describe('Data Viewer', () => {
           },
         }),
       );
-      const wrapper = shallowMount(DataViewer, { store, localVue });
+      const wrapper = shallowMount(DataViewer, { pinia, localVue });
       expect(wrapper.find('Pagination-stub').exists()).toBeTruthy();
     });
   });
 
   describe('header', () => {
     it('should have one row', () => {
-      const store = setupMockStore(
+      setupMockStore(
         buildStateWithOnePipeline([], {
           dataset: {
             headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -91,14 +96,14 @@ describe('Data Viewer', () => {
           },
         }),
       );
-      const wrapper = shallowMount(DataViewer, { store, localVue });
+      const wrapper = shallowMount(DataViewer, { pinia, localVue });
 
       const headerWrapper = wrapper.find('.data-viewer__header');
       expect(headerWrapper.findAll('tr').length).toEqual(1);
     });
 
     it('should have three cells', () => {
-      const store = setupMockStore(
+      setupMockStore(
         buildStateWithOnePipeline([], {
           dataset: {
             headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -119,7 +124,7 @@ describe('Data Viewer', () => {
           },
         }),
       );
-      const wrapper = shallowMount(DataViewer, { store, localVue });
+      const wrapper = shallowMount(DataViewer, { pinia, localVue });
 
       const headerCellsWrapper = wrapper.findAll('.data-viewer__header-cell');
       expect(headerCellsWrapper.length).toEqual(3);
@@ -130,7 +135,7 @@ describe('Data Viewer', () => {
       const vTooltipStub = vi.fn();
 
       beforeEach(() => {
-        const store = setupMockStore(
+        setupMockStore(
           buildStateWithOnePipeline([], {
             dataset: {
               headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -152,7 +157,7 @@ describe('Data Viewer', () => {
           }),
         );
         wrapper = shallowMount(DataViewer, {
-          store,
+          pinia,
           localVue,
           directives: {
             tooltip: {
@@ -179,7 +184,7 @@ describe('Data Viewer', () => {
     });
 
     it("should contains column's names even if not on every rows", () => {
-      const store = setupMockStore(
+      setupMockStore(
         buildStateWithOnePipeline([], {
           dataset: {
             headers: [
@@ -205,7 +210,7 @@ describe('Data Viewer', () => {
           },
         }),
       );
-      const wrapper = shallowMount(DataViewer, { store, localVue });
+      const wrapper = shallowMount(DataViewer, { pinia, localVue });
 
       const headerCellsWrapper = wrapper.findAll('.data-viewer__header-cell');
       expect(headerCellsWrapper.at(0).text()).toContain('columnA');
@@ -216,7 +221,7 @@ describe('Data Viewer', () => {
 
     it('should display the right icon and component for each types', () => {
       const date = new Date();
-      const store = setupMockStore(
+      setupMockStore(
         buildStateWithOnePipeline([], {
           dataset: {
             headers: [
@@ -241,7 +246,7 @@ describe('Data Viewer', () => {
           },
         }),
       );
-      const wrapper = shallowMount(DataViewer, { store, localVue });
+      const wrapper = shallowMount(DataViewer, { pinia, localVue });
 
       const headerIconsWrapper = wrapper.findAll('.data-viewer__header-icon');
       expect(headerIconsWrapper.at(0).text()).toEqual('ABC');
@@ -256,7 +261,7 @@ describe('Data Viewer', () => {
     });
 
     it('should have a action menu for each column', async () => {
-      const store = setupMockStore(
+      setupMockStore(
         buildStateWithOnePipeline([], {
           dataset: {
             headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -277,7 +282,7 @@ describe('Data Viewer', () => {
           },
         }),
       );
-      const wrapper = shallowMount(DataViewer, { store, localVue });
+      const wrapper = shallowMount(DataViewer, { pinia, localVue });
 
       const actionMenuWrapperArray = wrapper.findAll('.data-viewer__header-action');
       expect(actionMenuWrapperArray.length).toEqual(3);
@@ -299,7 +304,7 @@ describe('Data Viewer', () => {
     });
 
     it('should have a data type menu for supported backends', async () => {
-      const store = setupMockStore(
+      setupMockStore(
         buildStateWithOnePipeline([], {
           translator: 'mongo40',
           dataset: {
@@ -315,7 +320,7 @@ describe('Data Viewer', () => {
           },
         }),
       );
-      const wrapper = shallowMount(DataViewer, { store, localVue });
+      const wrapper = shallowMount(DataViewer, { pinia, localVue });
       // Icons are here:
       expect(wrapper.findAll('.data-viewer__header-icon--active').length).toEqual(3);
       // DataTypesMenu is not open yet:
@@ -357,7 +362,7 @@ describe('Data Viewer', () => {
             },
           }),
         );
-        wrapper = shallowMount(DataViewer, { store, localVue });
+        wrapper = shallowMount(DataViewer, { pinia, localVue });
       };
 
       it('should close the menu when the dataset is changed ...', async () => {
@@ -374,7 +379,7 @@ describe('Data Viewer', () => {
         const actionMenuOpened = wrapper.findAll('ActionMenu-stub').at(0);
         expect(actionMenuOpened.vm.$props.visible).toBeTruthy();
         // change the dataset
-        store.commit('vqb/setDataset', {
+        store.setDataset({
           dataset: {
             headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
             data: [['value1', 'value2', 'value3']],
@@ -390,7 +395,7 @@ describe('Data Viewer', () => {
         const actionMenuOpened = wrapper.findAll('ActionMenu-stub').at(0);
         expect(actionMenuOpened.vm.$props.visible).toBeTruthy();
         // load the values for columnA
-        store.commit('vqb/setDataset', {
+        store.setDataset({
           dataset: {
             headers: [{ name: 'columnA', loaded: true }, { name: 'columnB' }, { name: 'columnC' }],
             data: [['value1', 'value2', 'value3']],
@@ -402,7 +407,7 @@ describe('Data Viewer', () => {
     });
 
     it('should not have an icon "data type menu" for not supported backends', () => {
-      const store = setupMockStore(
+      setupMockStore(
         buildStateWithOnePipeline([], {
           translator: 'mongo36',
           dataset: {
@@ -418,13 +423,13 @@ describe('Data Viewer', () => {
           },
         }),
       );
-      const wrapper = shallowMount(DataViewer, { store, localVue });
+      const wrapper = shallowMount(DataViewer, { pinia, localVue });
       expect(wrapper.find('.data-viewer__header-icon--active').exists()).toBeFalsy();
     });
 
     describe('selection', () => {
       it('should add an active class on the cell', async () => {
-        const store = setupMockStore(
+        setupMockStore(
           buildStateWithOnePipeline([], {
             dataset: {
               headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -445,7 +450,7 @@ describe('Data Viewer', () => {
             },
           }),
         );
-        const wrapper = shallowMount(DataViewer, { store, localVue });
+        const wrapper = shallowMount(DataViewer, { pinia, localVue });
 
         const firstHeaderCellWrapper = wrapper.find('.data-viewer__header-cell');
         firstHeaderCellWrapper.trigger('click');
@@ -457,7 +462,7 @@ describe('Data Viewer', () => {
 
   describe('body', () => {
     it('should have 5 rows', () => {
-      const store = setupMockStore(
+      setupMockStore(
         buildStateWithOnePipeline([], {
           dataset: {
             headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -478,14 +483,14 @@ describe('Data Viewer', () => {
           },
         }),
       );
-      const wrapper = shallowMount(DataViewer, { store, localVue });
+      const wrapper = shallowMount(DataViewer, { pinia, localVue });
 
       const rowsWrapper = wrapper.findAll('.data-viewer__row');
       expect(rowsWrapper.length).toEqual(5);
     });
 
     it('should pass down the right value to DataViewerCell', () => {
-      const store = setupMockStore(
+      setupMockStore(
         buildStateWithOnePipeline([], {
           dataset: {
             headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -506,7 +511,7 @@ describe('Data Viewer', () => {
           },
         }),
       );
-      const wrapper = shallowMount(DataViewer, { store, localVue });
+      const wrapper = shallowMount(DataViewer, { pinia, localVue });
 
       const firstRowWrapper = wrapper.find('.data-viewer__row');
       const firstCellWrapper = firstRowWrapper.find('dataviewercell-stub');
@@ -534,8 +539,8 @@ describe('Data Viewer', () => {
           isLastPage: false,
         },
       };
-      const store = setupMockStore(buildStateWithOnePipeline([], { dataset }));
-      const wrapper = shallowMount(DataViewer, { store, localVue });
+      setupMockStore(buildStateWithOnePipeline([], { dataset }));
+      const wrapper = shallowMount(DataViewer, { pinia, localVue });
       const firstHeadCellWrapper = wrapper.find('.data-viewer__header-cell');
       firstHeadCellWrapper.trigger('click');
       await localVue.nextTick();
@@ -553,7 +558,7 @@ describe('Data Viewer', () => {
     const openStepFormStub = vi.fn();
 
     beforeEach(() => {
-      const store = setupMockStore(
+      setupMockStore(
         buildStateWithOnePipeline([], {
           dataset: {
             headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -574,7 +579,7 @@ describe('Data Viewer', () => {
           },
         }),
       );
-      wrapper = shallowMount(DataViewer, { store, localVue });
+      wrapper = shallowMount(DataViewer, { pinia, localVue });
       wrapper.setMethods({ openStepForm: openStepFormStub });
     });
 
@@ -593,7 +598,7 @@ describe('Data Viewer', () => {
   describe('without supported actions (empty supported steps)', () => {
     let wrapper: Wrapper<DataViewer>;
     beforeEach(() => {
-      const store = setupMockStore(
+      setupMockStore(
         buildStateWithOnePipeline([], {
           translator: 'empty', // there is no supported actions in empty translator
           dataset: {
@@ -609,7 +614,7 @@ describe('Data Viewer', () => {
           },
         }),
       );
-      wrapper = shallowMount(DataViewer, { store, localVue });
+      wrapper = shallowMount(DataViewer, { pinia, localVue });
     });
 
     afterEach(() => {

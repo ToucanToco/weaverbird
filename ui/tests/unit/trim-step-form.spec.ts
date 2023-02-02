@@ -69,8 +69,9 @@ describe('Trim Column Step Form', () => {
       },
       data: { editedStep: { columns: ['columnB'] } },
     });
+    const store = runner.getStore();
     wrapper.find(MultiselectWidget).trigger('input');
     await wrapper.vm.$nextTick();
-    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['columnB']);
+    expect(store.selectedColumns).toEqual(['columnB']);
   });
 });

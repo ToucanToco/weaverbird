@@ -54,7 +54,8 @@ import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue'
 import JoinColumns from '@/components/stepforms/widgets/JoinColumns.vue';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
 import type { JoinStep, PipelineStepName } from '@/lib/steps';
-import { VQBModule } from '@/store';
+import { Action, Getter } from 'pinia-class';
+import { VQBModule, type VQBActions } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 import Multiselect from './widgets/Multiselect.vue';
@@ -85,7 +86,7 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
   })
   declare initialStepValue: JoinStep;
 
-  @VQBModule.Getter availableDatasetNames!: string[];
+  @Getter(VQBModule) availableDatasetNames!: string[];
 
   readonly title: string = 'Join datasets';
   joinColumns = JoinColumns;
@@ -121,9 +122,7 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
 
   rightColumnNames: string[] | null | undefined = null;
 
-  @VQBModule.Action getColumnNamesFromPipeline!: (
-    pipelineNameOrDomain: string,
-  ) => Promise<string[] | undefined>;
+  @Action(VQBModule) getColumnNamesFromPipeline!: VQBActions['getColumnNamesFromPipeline'];
 
   async updateRightColumnNames(pipelineNameOrDomain: string) {
     this.rightColumnNames = await this.getColumnNamesFromPipeline(pipelineNameOrDomain);

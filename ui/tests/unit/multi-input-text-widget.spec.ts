@@ -1,6 +1,5 @@
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import Vuex from 'vuex';
 
 import MultiInputTextWidget from '@/components/stepforms/widgets/MultiInputText.vue';
 import MultiVariableInput from '@/components/stepforms/widgets/MultiVariableInput.vue';
@@ -8,9 +7,6 @@ import VariableInput from '@/components/stepforms/widgets/VariableInput.vue';
 import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';
 
 vi.mock('@/components/FAIcon.vue');
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
 
 describe('Widget MultiInputText', () => {
   it('should instantiate', () => {

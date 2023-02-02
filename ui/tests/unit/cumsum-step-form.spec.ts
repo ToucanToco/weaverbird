@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import CumSumStepForm from '@/components/stepforms/CumSumStepForm.vue';
 
-import { BasicStepFormTestRunner, setupMockStore } from './utils';
+import { BasicStepFormTestRunner } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
@@ -74,12 +74,12 @@ describe('Cumsum Step Form', () => {
 
     runner.testValidate({
       testlabel: 'submitted data is valid',
-      store: setupMockStore({
+      store: {
         dataset: {
           headers: [{ name: 'columnA' }],
           data: [],
         },
-      }),
+      },
       props: {
         initialStepValue: {
           name: 'cumsum',

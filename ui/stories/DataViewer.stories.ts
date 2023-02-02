@@ -1,18 +1,20 @@
 import type { Meta, StoryFn } from '@storybook/vue';
-import Vuex from 'vuex';
+import { createPinia, PiniaVuePlugin } from 'pinia';
+import Vue from 'vue';
 
 import DataViewer from '@/components/DataViewer.vue';
 import { resizable } from '@/directives/resizable/resizable';
-import { registerModule } from '@/store';
+import { setupVQBStore } from '@/store';
 
 export default {
   component: DataViewer,
 } as Meta<typeof DataViewer>;
 
+Vue.use(PiniaVuePlugin);
+
 export const Empty: StoryFn<typeof DataViewer> = () => ({
-  store: new Vuex.Store({}),
   created: function () {
-    registerModule(this.$store, {
+    setupVQBStore({
       dataset: {
         headers: [],
         data: [],
@@ -28,6 +30,7 @@ export const Empty: StoryFn<typeof DataViewer> = () => ({
       pipelines: { test: [] },
     });
   },
+  pinia: createPinia(),
   components: { DataViewer },
   // directives: { resizable },
   template: `
@@ -36,9 +39,8 @@ export const Empty: StoryFn<typeof DataViewer> = () => ({
 });
 
 export const Loading: StoryFn<typeof DataViewer> = () => ({
-  store: new Vuex.Store({}),
   created: function () {
-    registerModule(this.$store, {
+    setupVQBStore({
       isLoading: {
         dataset: true,
         uniqueValues: false,
@@ -58,6 +60,7 @@ export const Loading: StoryFn<typeof DataViewer> = () => ({
       pipelines: { test: [] },
     });
   },
+  pinia: createPinia(),
   components: { DataViewer },
   directives: { resizable },
   template: `
@@ -66,9 +69,8 @@ export const Loading: StoryFn<typeof DataViewer> = () => ({
 });
 
 export const Simple: StoryFn<typeof DataViewer> = () => ({
-  store: new Vuex.Store({}),
   created: function () {
-    registerModule(this.$store, {
+    setupVQBStore({
       dataset: {
         headers: [
           { name: 'columnA', type: 'string' },
@@ -94,6 +96,7 @@ export const Simple: StoryFn<typeof DataViewer> = () => ({
       pipelines: { test: [] },
     });
   },
+  pinia: createPinia(),
   components: { DataViewer },
   directives: { resizable },
   template: `
@@ -102,9 +105,8 @@ export const Simple: StoryFn<typeof DataViewer> = () => ({
 });
 
 export const Connector: StoryFn<typeof DataViewer> = () => ({
-  store: new Vuex.Store({}),
   created: function () {
-    registerModule(this.$store, {
+    setupVQBStore({
       dataset: {
         headers: [
           { name: 'columnA', type: 'string' },
@@ -131,6 +133,7 @@ export const Connector: StoryFn<typeof DataViewer> = () => ({
       pipelines: { test: [] },
     });
   },
+  pinia: createPinia(),
   components: { DataViewer },
   directives: { resizable },
   template: `

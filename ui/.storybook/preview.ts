@@ -1,4 +1,4 @@
 import Vue from 'vue';
-import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);

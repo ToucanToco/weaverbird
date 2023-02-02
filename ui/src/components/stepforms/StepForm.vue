@@ -13,8 +13,8 @@ import type { Pipeline, PipelineStep } from '@/lib/steps';
 import { PipelineInterpolator } from '@/lib/templating';
 import type { InterpolateFunction, ScopeContext } from '@/lib/templating';
 import type { ValidationError } from '@/lib/translators/base';
-import { VQBModule } from '@/store';
-import type { MutationCallbacks } from '@/store/mutations';
+import { Action, Getter, State } from 'pinia-class';
+import { VQBModule, type VQBActions } from '@/store';
 
 import { version } from '../../../package.json';
 
@@ -50,12 +50,12 @@ function componentProxyBoundOn(self: Vue) {
 /**
  * Simple abstract base class for all step forms. `BaseStepForm` implements some
  * default basic 'submit' / 'back' event callbacks and map some of the props /
- * getters / state and mutations from the store that you'll most of the time
+ * getters / state and actions from the store that you'll most of the time
  * need in your concrete step form implementation:
- * - `@VQBModule.State selectedStepIndex`
- * - `@VQBModule.Getter pipeline`
- * - `@VQBModule.Action selectStep`
- * - `@VQBModule.Mutation setSelectedColumns`.
+ * - `@State(VQBModule) selectedStepIndex`
+ * - `@Getter(VQBModule) pipeline`
+ * - `@Action(VQBModule) selectStep`
+ * - `@Action(VQBModule) setSelectedColumns`.
  *
  * This class provides a default `mounted()` hook that is used to bind the `Ajv`
  * validator that will be used on submit. It provides 2 default callbacks:
@@ -99,17 +99,17 @@ export default class BaseStepForm<StepType> extends Vue {
   @Prop({ type: String, default: undefined })
   backendError?: string;
 
-  @VQBModule.State interpolateFunc!: InterpolateFunction;
-  @VQBModule.State selectedStepIndex!: number;
-  @VQBModule.State variables!: ScopeContext;
+  @State(VQBModule) interpolateFunc!: InterpolateFunction;
+  @State(VQBModule) selectedStepIndex!: number;
+  @State(VQBModule) variables!: ScopeContext;
 
-  @VQBModule.Action selectStep!: (payload: { index: number }) => void;
-  @VQBModule.Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
+  @Action(VQBModule) selectStep!: VQBActions['selectStep'];
+  @Action(VQBModule) setSelectedColumns!: VQBActions['setSelectedColumns'];
 
-  @VQBModule.Getter columnNames!: string[];
-  @VQBModule.Getter computedActiveStepIndex!: number;
-  @VQBModule.Getter pipeline!: Pipeline;
-  @VQBModule.Getter selectedColumns!: string[];
+  @Getter(VQBModule) columnNames!: string[];
+  @Getter(VQBModule) computedActiveStepIndex!: number;
+  @Getter(VQBModule) pipeline!: Pipeline;
+  @State(VQBModule) selectedColumns!: string[];
 
   readonly selectedColumnAttrName: string | null = null;
   readonly title: string = '';

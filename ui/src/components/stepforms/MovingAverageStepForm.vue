@@ -71,6 +71,7 @@ import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import type { MovingAverageStep, PipelineStepName } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
+import { State } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
@@ -86,9 +87,9 @@ import MultiselectWidget from './widgets/Multiselect.vue';
 export default class MovingAverageStepForm extends BaseStepForm<MovingAverageStep> {
   stepname: PipelineStepName = 'movingaverage';
 
-  @VQBModule.State availableVariables?: VariablesBucket;
+  @State(VQBModule) availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) variableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,

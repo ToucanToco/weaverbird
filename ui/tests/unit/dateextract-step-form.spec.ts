@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import DateExtractStepForm from '@/components/stepforms/DateExtractStepForm.vue';
 
-import { BasicStepFormTestRunner, setupMockStore } from './utils';
+import { BasicStepFormTestRunner } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
@@ -40,7 +40,7 @@ describe('DateExtract Step Form', () => {
 
   runner.testValidate({
     testlabel: 'submitted data is valid',
-    store: setupMockStore({
+    store: {
       dataset: {
         headers: [
           { name: 'foo', type: 'date' },
@@ -48,7 +48,7 @@ describe('DateExtract Step Form', () => {
         ],
         data: [[null], [null]],
       },
-    }),
+    },
     props: {
       initialStepValue: {
         name: 'dateextract',

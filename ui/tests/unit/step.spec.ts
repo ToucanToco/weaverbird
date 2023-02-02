@@ -1,8 +1,9 @@
+import { createTestingPinia } from '@pinia/testing';
 import type { Wrapper } from '@vue/test-utils';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
 import type { SpyInstance } from 'vitest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import Vuex from 'vuex';
 
 import PipelineComponent from '@/components/Pipeline.vue';
 import Step from '@/components/Step.vue';
@@ -15,7 +16,8 @@ import { buildStateWithOnePipeline, setupMockStore } from './utils';
 vi.mock('@/components/FAIcon.vue');
 
 const localVue = createLocalVue();
-localVue.use(Vuex);
+localVue.use(PiniaVuePlugin);
+const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 describe('Step.vue', () => {
   let retrieveDomainNameStub: SpyInstance;
@@ -30,12 +32,12 @@ describe('Step.vue', () => {
       { name: 'rename', toRename: [['region', 'kingdom']] },
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
-    const store = setupMockStore(
+    setupMockStore(
       buildStateWithOnePipeline(pipeline, { availableDomains: [{ uid: '1', name: 'Query 1' }] }),
     );
     return shallowMount(Step, {
       propsData,
-      store,
+      pinia,
       localVue,
     });
   };
@@ -167,8 +169,8 @@ describe('Step.vue', () => {
       { name: 'rename', toRename: [['region', 'kingdom']] },
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
-    const store = setupMockStore(buildStateWithOnePipeline(pipeline));
-    const wrapper = mount(PipelineComponent, { store, localVue });
+    setupMockStore(buildStateWithOnePipeline(pipeline));
+    const wrapper = mount(PipelineComponent, { pinia, localVue });
     const stepsArray = wrapper.findAll(Step);
     const renameStep = stepsArray.at(2);
     renameStep.find('.query-pipeline-step__action').trigger('click');
@@ -185,10 +187,8 @@ describe('Step.vue', () => {
       { name: 'rename', toRename: [['region', 'kingdom']] },
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
-    const store = setupMockStore(
-      buildStateWithOnePipeline(pipeline, { currentStepFormName: 'rename' }),
-    );
-    const wrapper = mount(PipelineComponent, { store, localVue });
+    setupMockStore(buildStateWithOnePipeline(pipeline, { currentStepFormName: 'rename' }));
+    const wrapper = mount(PipelineComponent, { pinia, localVue });
     const stepsArray = wrapper.findAll(Step);
     const renameStep = stepsArray.at(2);
     renameStep.findAll('.query-pipeline-step__action').at(0).trigger('click');
@@ -204,7 +204,7 @@ describe('Step.vue', () => {
         { name: 'domain', domain: 'GoT' },
         { name: 'replace', searchColumn: 'characters', toReplace: [['Snow', 'Targaryen']] },
       ];
-      const store = setupMockStore(
+      setupMockStore(
         buildStateWithOnePipeline(pipeline, {
           currentStepFormName: 'replace',
           backendMessages: [
@@ -212,7 +212,7 @@ describe('Step.vue', () => {
           ],
         }),
       );
-      const wrapper = mount(PipelineComponent, { store, localVue });
+      const wrapper = mount(PipelineComponent, { pinia, localVue });
       const stepsArray = wrapper.findAll(Step);
       const replaceStep = stepsArray.at(1);
       expect(replaceStep.classes()).toContain('query-pipeline-step__container--errors');
@@ -223,7 +223,7 @@ describe('Step.vue', () => {
         { name: 'domain', domain: 'GoT' },
         { name: 'replace', searchColumn: 'characters', toReplace: [['Snow', 'Targaryen']] },
       ];
-      const store = setupMockStore(
+      setupMockStore(
         buildStateWithOnePipeline(pipeline, {
           currentStepFormName: 'replace',
           backendMessages: [
@@ -231,7 +231,7 @@ describe('Step.vue', () => {
           ],
         }),
       );
-      const wrapper = mount(PipelineComponent, { store, localVue });
+      const wrapper = mount(PipelineComponent, { pinia, localVue });
       const stepsArray = wrapper.findAll(Step);
       const replaceStep = stepsArray.at(1);
       expect(replaceStep.find('.query-pipeline-step__footer').exists()).toBe(true);
@@ -245,7 +245,7 @@ describe('Step.vue', () => {
         { name: 'domain', domain: 'GoT' },
         { name: 'replace', searchColumn: 'characters', toReplace: [['Snow', 'Targaryen']] },
       ];
-      const store = setupMockStore(
+      setupMockStore(
         buildStateWithOnePipeline(pipeline, {
           currentStepFormName: 'domain',
           backendMessages: [
@@ -253,7 +253,7 @@ describe('Step.vue', () => {
           ],
         }),
       );
-      const wrapper = mount(PipelineComponent, { store, localVue });
+      const wrapper = mount(PipelineComponent, { pinia, localVue });
       const stepsArray = wrapper.findAll(Step);
       stepsArray.at(0).find('.query-pipeline-step').trigger('click');
       await localVue.nextTick();
@@ -300,14 +300,14 @@ describe('Step.vue', () => {
         { name: 'domain', domain: 'GoT' },
         { name: 'replace', searchColumn: 'characters', toReplace: [['Snow', 'Targaryen']] },
       ];
-      const store = setupMockStore(
+      setupMockStore(
         buildStateWithOnePipeline(pipeline, {
           currentStepFormName: 'domain',
           dataset: dummyDataset,
         }),
       );
       wrapper = mount(PipelineComponent, {
-        store,
+        pinia,
         localVue,
         stubs: {
           PreviewSourceSubset: '<div class="preview-source-subset" />',

@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import RenameStepForm from '@/components/stepforms/RenameStepForm.vue';
 
-import { BasicStepFormTestRunner, setupMockStore } from './utils';
+import { BasicStepFormTestRunner } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
@@ -25,7 +25,7 @@ describe('Rename Step Form', () => {
 
   runner.testValidate({
     testlabel: 'submitted data is valid',
-    store: setupMockStore({
+    store: {
       dataset: {
         headers: [
           { name: 'foo', type: 'string' },
@@ -33,7 +33,7 @@ describe('Rename Step Form', () => {
         ],
         data: [],
       },
-    }),
+    },
     props: {
       initialStepValue: { name: 'rename', toRename: [['foo', 'bar']] },
     },
@@ -146,8 +146,9 @@ describe('Rename Step Form', () => {
         },
       },
     });
+    const store = runner.getStore();
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['bar']);
+    expect(store.selectedColumns).toEqual(['bar']);
   });
 
   it('should not change the column focus if validation fails', () => {
@@ -169,7 +170,8 @@ describe('Rename Step Form', () => {
         },
       },
     });
+    const store = runner.getStore();
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['toto']);
+    expect(store.selectedColumns).toEqual(['toto']);
   });
 });

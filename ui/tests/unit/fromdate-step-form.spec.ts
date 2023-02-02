@@ -1,7 +1,8 @@
+import { createTestingPinia } from '@pinia/testing';
 import type { Wrapper } from '@vue/test-utils';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
 import { describe, expect, it, vi } from 'vitest';
-import Vuex from 'vuex';
 
 import FromDateStepForm from '@/components/stepforms/FromDateStepForm.vue';
 
@@ -10,7 +11,8 @@ import { BasicStepFormTestRunner, setupMockStore } from './utils';
 vi.mock('@/components/FAIcon.vue');
 
 const localVue = createLocalVue();
-localVue.use(Vuex);
+localVue.use(PiniaVuePlugin);
+const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 describe('Convert Date to String Step Form', () => {
   const runner = new BasicStepFormTestRunner(FromDateStepForm, 'fromdate');
@@ -22,8 +24,9 @@ describe('Convert Date to String Step Form', () => {
   });
 
   it('should have 1 inputtext when custom format is selected', () => {
+    setupMockStore({});
     const wrapper = shallowMount(FromDateStepForm, {
-      store: setupMockStore({}),
+      pinia,
       localVue,
       propsData: {
         initialStepValue: { name: 'fromdate', column: '', format: '' },
@@ -34,6 +37,7 @@ describe('Convert Date to String Step Form', () => {
   });
 
   it('should update editedStep with the selected column at creation', () => {
+    setupMockStore({});
     const initialState = {
       dataset: {
         headers: [{ name: 'foo', type: 'string' }],
@@ -46,8 +50,9 @@ describe('Convert Date to String Step Form', () => {
   });
 
   it('should update editedStep.format properly when a new format is selected', () => {
+    setupMockStore({});
     const wrapper = shallowMount(FromDateStepForm, {
-      store: setupMockStore({}),
+      pinia,
       localVue,
     });
     wrapper
@@ -60,8 +65,9 @@ describe('Convert Date to String Step Form', () => {
     expect(wrapper.vm.$data.editedStep.format).toEqual('%Y-%m');
   });
   it('should toggle custom format input correctly when switching selected format', () => {
+    setupMockStore({});
     const wrapper = shallowMount(FromDateStepForm, {
-      store: setupMockStore({}),
+      pinia,
       localVue,
     });
     wrapper
@@ -79,9 +85,10 @@ describe('Convert Date to String Step Form', () => {
   });
 
   describe('when user delete content of custom format input', () => {
+    setupMockStore({});
     it('should return empty string as format', () => {
       const wrapper = shallowMount(FromDateStepForm, {
-        store: setupMockStore({}),
+        pinia,
         localVue,
         propsData: {
           initialStepValue: { name: 'todate', format: '%Y %m %d %d', column: 'wdc' },
@@ -97,8 +104,9 @@ describe('Convert Date to String Step Form', () => {
     let wrapper: Wrapper<FromDateStepForm>;
     const createWrapper = (format: string) => {
       if (wrapper) wrapper.destroy();
+      setupMockStore({});
       wrapper = shallowMount(FromDateStepForm, {
-        store: setupMockStore({}),
+        pinia,
         localVue,
         propsData: {
           initialStepValue: { name: 'fromdate', column: '', format },

@@ -35,6 +35,7 @@ import RenameWidget from '@/components/stepforms/widgets/Rename.vue';
 import type { PipelineStepName, RenameStep } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
+import { State } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -47,9 +48,9 @@ import BaseStepForm from './StepForm.vue';
 export default class RenameStepForm extends BaseStepForm<RenameStep> {
   stepname: PipelineStepName = 'rename';
 
-  @VQBModule.State availableVariables?: VariablesBucket;
+  @State(VQBModule) availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) variableDelimiters?: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'rename', toRename: [['', '']] }) })
   declare initialStepValue: RenameStep;

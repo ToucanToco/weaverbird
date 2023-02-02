@@ -1,30 +1,24 @@
+import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import Vuex, { Store } from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
+import { describe, expect, it, vi } from 'vitest';
 
 import ConvertStepForm from '@/components/stepforms/ConvertStepForm.vue';
 
 vi.mock('@/components/FAIcon.vue');
 
-import type { RootState } from './utils';
-import { setupMockStore } from './utils';
-
 const localVue = createLocalVue();
-localVue.use(Vuex);
+localVue.use(PiniaVuePlugin);
+const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 describe('Convert Data Type Step Form', () => {
-  let emptyStore: Store<RootState>;
-  beforeEach(() => {
-    emptyStore = setupMockStore({});
-  });
-
   it('should instantiate', () => {
-    const wrapper = shallowMount(ConvertStepForm, { store: emptyStore, localVue });
+    const wrapper = shallowMount(ConvertStepForm, { pinia, localVue });
     expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should have exactly 2 input components', () => {
-    const wrapper = shallowMount(ConvertStepForm, { store: emptyStore, localVue });
+    const wrapper = shallowMount(ConvertStepForm, { pinia, localVue });
     expect(wrapper.findAll('multiselectwidget-stub').length).toEqual(1);
     expect(wrapper.findAll('autocompletewidget-stub').length).toEqual(1);
   });

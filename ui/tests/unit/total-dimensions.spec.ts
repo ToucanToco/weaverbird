@@ -1,28 +1,24 @@
+import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it } from 'vitest';
-import Vuex, { Store } from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
+import { describe, expect, it, vi } from 'vitest';
 
 import TotalDimensions from '@/components/stepforms/widgets/TotalDimensions.vue';
 
-import type { RootState } from './utils';
 import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();
-localVue.use(Vuex);
+localVue.use(PiniaVuePlugin);
+const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 describe('Widget AggregationWidget', () => {
-  let emptyStore: Store<RootState>;
-  beforeEach(() => {
-    emptyStore = setupMockStore({});
-  });
-
   it('should instantiate', () => {
-    const wrapper = shallowMount(TotalDimensions, { store: emptyStore, localVue });
+    const wrapper = shallowMount(TotalDimensions, { pinia, localVue });
     expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should have exactly 2 input components', () => {
-    const wrapper = shallowMount(TotalDimensions, { store: emptyStore, localVue });
+    const wrapper = shallowMount(TotalDimensions, { pinia, localVue });
     const autocompleteWrappers = wrapper.findAll('autocompletewidget-stub');
     expect(autocompleteWrappers.length).toEqual(1);
     const inputtextWrappers = wrapper.findAll('inputtextwidget-stub');
@@ -30,13 +26,13 @@ describe('Widget AggregationWidget', () => {
   });
 
   it('should instantiate a widgetAutocomplete widget with proper options from the store', () => {
-    const store = setupMockStore({
+    setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
       },
     });
-    const wrapper = shallowMount(TotalDimensions, { store, localVue });
+    const wrapper = shallowMount(TotalDimensions, { pinia, localVue });
     const autocompleteWrapper = wrapper.find('autocompletewidget-stub');
     expect(autocompleteWrapper.attributes('options')).toEqual('columnA,columnB,columnC');
   });
@@ -46,7 +42,7 @@ describe('Widget AggregationWidget', () => {
       propsData: {
         value: { totalColumn: 'toto', totalRowsLabel: 'tata' },
       },
-      store: emptyStore,
+      pinia,
       localVue,
       sync: false,
     });
@@ -59,7 +55,7 @@ describe('Widget AggregationWidget', () => {
       propsData: {
         value: { totalColumn: 'toto', totalRowsLabel: 'tata' },
       },
-      store: emptyStore,
+      pinia,
       localVue,
       sync: false,
     });
@@ -72,7 +68,7 @@ describe('Widget AggregationWidget', () => {
       propsData: {
         value: { totalColumn: 'toto', totalRowsLabel: 'tata' },
       },
-      store: emptyStore,
+      pinia,
       localVue,
       sync: false,
     });
@@ -89,7 +85,7 @@ describe('Widget AggregationWidget', () => {
       propsData: {
         value: { totalColumn: 'toto', totalRowsLabel: 'tata' },
       },
-      store: emptyStore,
+      pinia,
       localVue,
       sync: false,
     });

@@ -1,20 +1,19 @@
+import { PiniaVuePlugin, createPinia } from "pinia";
 import Vue from "vue";
-import Vuex from "vuex";
 
 import Playground from './Playground.vue';
 
-Vue.use(Vuex);
-const store = new Vuex.Store({});
+const pinia = createPinia();
+Vue.use(PiniaVuePlugin);
 
 async function buildVueApp() {
-  const store = new Vuex.Store({});
-
   new Vue({
     el: '#app',
     components: {
       Playground,
     },
-    store,
+    // @ts-ignore
+    pinia,
     render: (h) => h(Playground, { attrs: { id: 'app' } }),
   });
 }

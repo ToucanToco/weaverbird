@@ -47,6 +47,7 @@ import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue'
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import type { AddMissingDatesStep, PipelineStepName } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { State } from 'pinia-class';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
@@ -64,9 +65,9 @@ type DateGranularity = 'day' | 'month' | 'year';
 export default class AddMissingDatesStepForm extends BaseStepForm<AddMissingDatesStep> {
   stepname: PipelineStepName = 'addmissingdates';
 
-  @VQBModule.State availableVariables?: VariablesBucket;
+  @State(VQBModule) availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) variableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,

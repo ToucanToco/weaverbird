@@ -1,8 +1,9 @@
+import { createTestingPinia } from '@pinia/testing';
 import type { Wrapper } from '@vue/test-utils';
 import { createLocalVue, mount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Multiselect } from 'vue-multiselect';
-import Vuex from 'vuex';
 
 import ActionToolbarSearch from '@/components/ActionToolbarSearch.vue';
 import type { ActionCategories } from '@/components/constants';
@@ -13,7 +14,8 @@ import { setupMockStore } from './utils';
 vi.mock('@/components/FAIcon.vue');
 
 const localVue = createLocalVue();
-localVue.use(Vuex);
+localVue.use(PiniaVuePlugin);
+const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 describe('ActionToolbarSearch', () => {
   let wrapper: Wrapper<ActionToolbarSearch>;
@@ -22,7 +24,7 @@ describe('ActionToolbarSearch', () => {
     beforeEach(() => {
       wrapper = mount(ActionToolbarSearch, {
         localVue,
-        store: setupMockStore(),
+        pinia,
       });
     });
 
@@ -37,10 +39,11 @@ describe('ActionToolbarSearch', () => {
 
   describe('active', () => {
     beforeEach(() => {
+      setupMockStore({ translator: 'mongo36' });
       wrapper = mount(ActionToolbarSearch, {
         propsData: { isActive: true },
         localVue,
-        store: setupMockStore({ translator: 'mongo36' }),
+        pinia,
       });
     });
 
@@ -77,7 +80,7 @@ describe('ActionToolbarSearch', () => {
       wrapper = mount(ActionToolbarSearch, {
         propsData: { isActive: false },
         localVue,
-        store: setupMockStore(),
+        pinia,
       });
       await wrapper.vm.$nextTick();
       wrapper.setProps({ isActive: true });

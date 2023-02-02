@@ -1,35 +1,40 @@
+import { type Store, createPinia, setActivePinia } from 'pinia';
 import type { Mock } from 'vitest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Store } from 'vuex';
 
 import type { BackendService } from '@/lib/backend';
 import type { DataSet } from '@/lib/dataset';
 import type { Pipeline } from '@/lib/steps';
-import { VQBnamespace } from '@/store';
 import { formatError } from '@/store/actions';
-import getters from '@/store/getters';
-import mutations from '@/store/mutations';
 import { currentPipeline, emptyState } from '@/store/state';
 
-import type { RootState } from './utils';
 import { buildState, buildStateWithOnePipeline, setupMockStore } from './utils';
 
 describe('getter tests', () => {
+  beforeEach(() => {
+    // creates a fresh pinia and make it active so it's automatically picked
+    // up by any useStore() call without having to pass it to it:
+    // `useStore(pinia)`
+    setActivePinia(createPinia());
+  });
+
   describe('pipelines', () => {
     it('should return the pipelines', () => {
       const pipelines = { foo: [], bar: [] };
-      const state = buildState({
-        pipelines,
-      });
-      expect(getters.pipelines(state, {}, {}, {})).toEqual(pipelines);
+      const store = setupMockStore(
+        buildState({
+          pipelines,
+        }),
+      );
+      expect(store.pipelines).toEqual(pipelines);
     });
   });
 
   describe('(in)active pipeline steps', () => {
     it('should not return anything without any selected pipeline', () => {
-      const state = buildState({});
-      expect(getters.activePipeline(state, {}, {}, {})).toBeUndefined();
-      expect(getters.inactivePipeline(state, {}, {}, {})).toBeUndefined();
+      const store = setupMockStore(buildState({}));
+      expect(store.activePipeline).toBeUndefined();
+      expect(store.inactivePipeline).toBeUndefined();
     });
 
     it('should return the whole pipeline if selectedIndex is -1', () => {
@@ -39,14 +44,8 @@ describe('getter tests', () => {
         { name: 'rename', toRename: [['baz', 'spam']] },
       ];
       const state = buildStateWithOnePipeline(pipeline);
-      expect(getters.activePipeline(state, {}, {}, {})).toEqual(pipeline);
-    });
-
-    it('should return backendMessages', () => {
-      const state = buildState({ backendMessages: [{ type: 'error', message: 'lalalolilol' }] });
-      expect(getters.backendMessages(state, {}, {}, {})).toEqual([
-        { type: 'error', message: 'lalalolilol' },
-      ]);
+      const store = setupMockStore(state);
+      expect(store.activePipeline).toEqual(pipeline);
     });
 
     it('should return a partial pipeline if selectedIndex is specified', () => {
@@ -56,7 +55,8 @@ describe('getter tests', () => {
         { name: 'rename', toRename: [['baz', 'spam']] },
       ];
       const state = buildStateWithOnePipeline(pipeline, { selectedStepIndex: 1 });
-      expect(getters.activePipeline(state, {}, {}, {})).toEqual(pipeline.slice(0, 2));
+      const store = setupMockStore(state);
+      expect(store.activePipeline).toEqual(pipeline.slice(0, 2));
     });
 
     it('should return an empty pipeline if selectedIndex is -1', () => {
@@ -66,7 +66,8 @@ describe('getter tests', () => {
         { name: 'rename', toRename: [['baz', 'spam']] },
       ];
       const state = buildStateWithOnePipeline(pipeline);
-      expect(getters.inactivePipeline(state, {}, {}, {})).toEqual([]);
+      const store = setupMockStore(state);
+      expect(store.inactivePipeline).toEqual([]);
     });
 
     it('should return the rest of the pipeline if selectedIndex is specified', () => {
@@ -76,7 +77,8 @@ describe('getter tests', () => {
         { name: 'rename', toRename: [['baz', 'spam']] },
       ];
       const state = buildStateWithOnePipeline(pipeline, { selectedStepIndex: 1 });
-      expect(getters.inactivePipeline(state, {}, {}, {})).toEqual(pipeline.slice(2));
+      const store = setupMockStore(state);
+      expect(store.inactivePipeline).toEqual(pipeline.slice(2));
     });
   });
 
@@ -90,7 +92,8 @@ describe('getter tests', () => {
           dataset2: [],
         },
       });
-      expect(getters.availableDatasetNames(state, {}, {}, {})).toEqual(['dataset1', 'dataset2']);
+      const store = setupMockStore(state);
+      expect(store.availableDatasetNames).toEqual(['dataset1', 'dataset2']);
     });
     it('should return everything if the currentPipelineName is not defined', () => {
       const state = buildState({
@@ -100,7 +103,8 @@ describe('getter tests', () => {
           dataset2: [],
         },
       });
-      expect(getters.availableDatasetNames(state, {}, {}, {})).toEqual(['dataset1', 'dataset2']);
+      const store = setupMockStore(state);
+      expect(store.availableDatasetNames).toEqual(['dataset1', 'dataset2']);
     });
     it('should return the pipeline names and the domains', () => {
       const state = buildState({
@@ -110,12 +114,8 @@ describe('getter tests', () => {
         },
         domains: ['domain1', 'domain2'],
       });
-      expect(getters.availableDatasetNames(state, {}, {}, {})).toEqual([
-        'dataset1',
-        'dataset2',
-        'domain1',
-        'domain2',
-      ]);
+      const store = setupMockStore(state);
+      expect(store.availableDatasetNames).toEqual(['dataset1', 'dataset2', 'domain1', 'domain2']);
     });
     it('should sort the result: first pipelines ordered alphabetically, then domains ordered alphabetically', () => {
       const state = buildState({
@@ -125,19 +125,16 @@ describe('getter tests', () => {
         },
         domains: ['mno', 'dataset1'],
       });
-      expect(getters.availableDatasetNames(state, {}, {}, {})).toEqual([
-        'abc',
-        'xyz',
-        'dataset1',
-        'mno',
-      ]);
+      const store = setupMockStore(state);
+      expect(store.availableDatasetNames).toEqual(['abc', 'xyz', 'dataset1', 'mno']);
     });
   });
 
   describe('active step index tests', () => {
     it('should not return anything if no pipeline is selected', () => {
       const state = buildState({});
-      expect(getters.computedActiveStepIndex(state, {}, {}, {})).toBeUndefined();
+      const store = setupMockStore(state);
+      expect(store.computedActiveStepIndex).toBeUndefined();
     });
 
     it('should compute active step index if selectedIndex is -1', () => {
@@ -147,7 +144,8 @@ describe('getter tests', () => {
         { name: 'rename', toRename: [['baz', 'spam']] },
       ];
       const state = buildStateWithOnePipeline(pipeline);
-      expect(getters.computedActiveStepIndex(state, {}, {}, {})).toEqual(2);
+      const store = setupMockStore(state);
+      expect(store.computedActiveStepIndex).toEqual(2);
     });
 
     it('should bound active step index if selectedIndex is out of bound', () => {
@@ -159,7 +157,8 @@ describe('getter tests', () => {
         { name: 'rename', toRename: [['baz', 'spam']] },
       ];
       const state = buildStateWithOnePipeline(pipeline, { selectedStepIndex: 8396 });
-      expect(getters.computedActiveStepIndex(state, {}, {}, {})).toEqual(2);
+      const store = setupMockStore(state);
+      expect(store.computedActiveStepIndex).toEqual(2);
     });
 
     it('should compute active step index if selectedIndex is specified', () => {
@@ -169,7 +168,8 @@ describe('getter tests', () => {
         { name: 'rename', toRename: [['baz', 'spam']] },
       ];
       const state = buildStateWithOnePipeline(pipeline, { selectedStepIndex: 1 });
-      expect(getters.computedActiveStepIndex(state, {}, {}, {})).toEqual(1);
+      const store = setupMockStore(state);
+      expect(store.computedActiveStepIndex).toEqual(1);
     });
   });
 
@@ -181,7 +181,8 @@ describe('getter tests', () => {
           data: [],
         },
       });
-      expect(getters.columnNames(state, {}, {}, {})).toEqual(['col1', 'col2']);
+      const store = setupMockStore(state);
+      expect(store.columnNames).toEqual(['col1', 'col2']);
     });
 
     it('should be able to handle empty headers', () => {
@@ -191,7 +192,8 @@ describe('getter tests', () => {
           data: [],
         },
       });
-      expect(getters.columnNames(state, {}, {}, {})).toEqual([]);
+      const store = setupMockStore(state);
+      expect(store.columnNames).toEqual([]);
     });
   });
 
@@ -207,7 +209,8 @@ describe('getter tests', () => {
           data: [],
         },
       });
-      const columnTypes = getters.columnTypes(state, {}, {}, {});
+      const store = setupMockStore(state);
+      const columnTypes = store.columnTypes;
       expect(columnTypes).toEqual({
         col1: 'integer',
         col2: 'boolean',
@@ -219,7 +222,8 @@ describe('getter tests', () => {
   describe('domain extraction tests', () => {
     it('should not return anything if no pipeline is selected', function () {
       const state = buildState({});
-      expect(getters.domainStep(state, {}, {}, {})).toBeUndefined;
+      const store = setupMockStore(state);
+      expect(store.domainStep).toBeUndefined;
     });
 
     it('should return the domain step', () => {
@@ -229,7 +233,8 @@ describe('getter tests', () => {
         { name: 'rename', toRename: [['baz', 'spam']] },
       ];
       const state = buildStateWithOnePipeline(pipeline);
-      expect(getters.domainStep(state, {}, {}, {})).toEqual(pipeline[0]);
+      const store = setupMockStore(state);
+      expect(store.domainStep).toEqual(pipeline[0]);
     });
   });
 
@@ -241,7 +246,8 @@ describe('getter tests', () => {
           data: [],
         },
       });
-      expect(getters.isDatasetEmpty(state, {}, {}, {})).toBeTruthy();
+      const store = setupMockStore(state);
+      expect(store.isDatasetEmpty).toBeTruthy();
     });
 
     it('should return false if dataset is not empty', () => {
@@ -251,20 +257,23 @@ describe('getter tests', () => {
           data: [[0, 0]],
         },
       });
-      expect(getters.isDatasetEmpty(state, {}, {}, {})).toBeFalsy();
+      const store = setupMockStore(state);
+      expect(store.isDatasetEmpty).toBeFalsy();
     });
   });
 
   describe('pipeline empty tests', () => {
     it('should not return anything if no pipeline is selected', function () {
       const state = buildState({});
-      expect(getters.isPipelineEmpty(state, {}, {}, {})).toBeUndefined;
+      const store = setupMockStore(state);
+      expect(store.isPipelineEmpty).toBeUndefined;
     });
 
     it('should return true if pipeline is empty', () => {
       const pipeline: Pipeline = [];
       const state = buildStateWithOnePipeline(pipeline);
-      expect(getters.isPipelineEmpty(state, {}, {}, {})).toBeTruthy();
+      const store = setupMockStore(state);
+      expect(store.isPipelineEmpty).toBeTruthy();
     });
 
     it('should return false if pipeline is not empty', () => {
@@ -274,30 +283,34 @@ describe('getter tests', () => {
         { name: 'rename', toRename: [['baz', 'spam']] },
       ];
       const state = buildStateWithOnePipeline(pipeline);
-      expect(getters.isPipelineEmpty(state, {}, {}, {})).toBeFalsy();
+      const store = setupMockStore(state);
+      expect(store.isPipelineEmpty).toBeFalsy();
     });
   });
 
   describe('step disabled tests', () => {
     it('should return false if selected step is not specified or -1', () => {
       let state = buildState({});
-      expect(getters.isStepDisabled(state, {}, {}, {})(0)).toBeFalsy();
-      expect(getters.isStepDisabled(state, {}, {}, {})(1)).toBeFalsy();
+      const store = setupMockStore(state);
+      expect(store.isStepDisabled(0)).toBeFalsy();
+      expect(store.isStepDisabled(1)).toBeFalsy();
       state = buildState({ selectedStepIndex: -1 });
-      expect(getters.isStepDisabled(state, {}, {}, {})(0)).toBeFalsy();
-      expect(getters.isStepDisabled(state, {}, {}, {})(1)).toBeFalsy();
+      expect(store.isStepDisabled(0)).toBeFalsy();
+      expect(store.isStepDisabled(1)).toBeFalsy();
     });
 
     it('should return false if selected step index is greater than index', () => {
       const state = buildState({ selectedStepIndex: 1 });
-      expect(getters.isStepDisabled(state, {}, {}, {})(0)).toBeFalsy();
-      expect(getters.isStepDisabled(state, {}, {}, {})(1)).toBeFalsy();
+      const store = setupMockStore(state);
+      expect(store.isStepDisabled(0)).toBeFalsy();
+      expect(store.isStepDisabled(1)).toBeFalsy();
     });
 
     it('should return true if selected step index is lower than index', () => {
       const state = buildState({ selectedStepIndex: 1 });
-      expect(getters.isStepDisabled(state, {}, {}, {})(2)).toBeTruthy();
-      expect(getters.isStepDisabled(state, {}, {}, {})(3)).toBeTruthy();
+      const store = setupMockStore(state);
+      expect(store.isStepDisabled(2)).toBeTruthy();
+      expect(store.isStepDisabled(3)).toBeTruthy();
     });
   });
 
@@ -309,12 +322,14 @@ describe('getter tests', () => {
         { name: 'rename', toRename: [['baz', 'spam']] },
       ];
       const state = buildStateWithOnePipeline(pipeline);
-      expect(getters.stepConfig(state, {}, {}, {})(1)).toEqual(pipeline[1]);
+      const store = setupMockStore(state);
+      expect(store.stepConfig(1)).toEqual(pipeline[1]);
     });
 
     it('should not return anything if there is no selected pipeline', function () {
       const state = buildState({});
-      expect(getters.stepConfig(state, {}, {}, {})(0)).toBeUndefined();
+      const store = setupMockStore(state);
+      expect(store.stepConfig(0)).toBeUndefined();
     });
   });
 
@@ -323,43 +338,50 @@ describe('getter tests', () => {
       const state = buildState({
         backendMessages: [{ type: 'error', message: 'lalalolilol', index: 3 }],
       });
-      expect(getters.stepErrors(state, {}, {}, {})(3)).toStrictEqual('lalalolilol');
+      const store = setupMockStore(state);
+      expect(store.stepErrors(3)).toStrictEqual('lalalolilol');
     });
     it('should return undefined if step index has no errors', function () {
       const state = buildState({
         backendMessages: [{ type: 'error', message: 'lalalolilol', index: 3 }],
       });
-      expect(getters.stepErrors(state, {}, {}, {})(0)).toBeUndefined();
+      const store = setupMockStore(state);
+      expect(store.stepErrors(0)).toBeUndefined();
     });
     it('should return undefined if pipeline has no errors', function () {
       const state = buildState({});
-      expect(getters.stepErrors(state, {}, {}, {})(0)).toBeUndefined();
+      const store = setupMockStore(state);
+      expect(store.stepErrors(0)).toBeUndefined();
     });
   });
 
   describe('message error related test', () => {
     it('should return false if backendError is undefined', () => {
       const state = buildState({ backendMessages: [] });
-      expect(getters.thereIsABackendError(state, {}, {}, {})).toBeFalsy();
+      const store = setupMockStore(state);
+      expect(store.thereIsABackendError).toBeFalsy();
     });
 
     it('should return true if backendError is not undefined', () => {
       const state = buildState({ backendMessages: [{ type: 'error', message: 'error msg' }] });
-      expect(getters.thereIsABackendError(state, {}, {}, {})).toBeTruthy();
+      const store = setupMockStore(state);
+      expect(store.thereIsABackendError).toBeTruthy();
     });
   });
 
   describe('translator', () => {
     it('should return the app translator', () => {
       const state = buildState({ translator: 'mongo40' });
-      expect(getters.translator(state, {}, {}, {})).toEqual('mongo40');
+      const store = setupMockStore(state);
+      expect(store.translator).toEqual('mongo40');
     });
   });
 
   describe('unsupportedSteps', () => {
     it('should return the list of steps not supported by the translator', () => {
       const state = buildState({ translator: 'mongo36' });
-      expect(getters.unsupportedSteps(state, {}, {}, {})).toEqual([
+      const store = setupMockStore(state);
+      expect(store.unsupportedSteps).toEqual([
         'convert',
         'customsql',
         'dissolve',
@@ -374,12 +396,19 @@ describe('getter tests', () => {
   describe('supportedSteps', () => {
     it('should return the list of steps supported by the translator', () => {
       const state = buildState({ translator: 'empty' });
-      expect(getters.supportedSteps(state, {}, {}, {})).toEqual(['domain']);
+      const store = setupMockStore(state);
+      expect(store.supportedSteps).toEqual(['domain']);
     });
   });
 });
 
 describe('mutation tests', () => {
+  beforeEach(() => {
+    // creates a fresh pinia and make it active so it's automatically picked
+    // up by any useStore() call without having to pass it to it:
+    // `useStore(pinia)`
+    setActivePinia(createPinia());
+  });
   it('selects step', () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'foo' },
@@ -399,23 +428,25 @@ describe('mutation tests', () => {
         },
       },
     });
-    expect(state.selectedStepIndex).toEqual(-1);
-    mutations.selectStep(state, { index: 2 });
-    expect(state.selectedStepIndex).toEqual(2);
+    const store = setupMockStore(state);
+    expect(store.selectedStepIndex).toEqual(-1);
+    store.selectStep({ index: 2 });
+    expect(store.selectedStepIndex).toEqual(2);
     // make sure the pagination is reset
-    expect(state.dataset.paginationContext?.pageNumber).toEqual(1);
+    expect(store.dataset.paginationContext?.pageNumber).toEqual(1);
 
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    mutations.selectStep(state, { index: 5 });
+    store.selectStep({ index: 5 });
     expect(spy).toHaveBeenCalled();
-    expect(state.selectedStepIndex).toEqual(-1);
+    expect(store.selectedStepIndex).toEqual(-1);
     spy.mockRestore();
   });
 
   describe('deleteSteps', function () {
     it('should do nothing if no pipeline is selected', () => {
       const state = buildState({});
-      mutations.deleteSteps(state, { indexes: [1] });
+      const store = setupMockStore(state);
+      store.deleteSteps({ indexes: [1] });
       expect(currentPipeline(state)).toBeUndefined();
     });
 
@@ -439,21 +470,23 @@ describe('mutation tests', () => {
           },
         },
       });
-      mutations.deleteSteps(state, { indexes: [1, 3] });
-      expect(currentPipeline(state)).toEqual([
+      const store = setupMockStore(state);
+      store.deleteSteps({ indexes: [1, 3] });
+      expect(currentPipeline(store)).toEqual([
         { name: 'domain', domain: 'foo' },
         { name: 'rename', toRename: [['baz', 'spam']] },
       ]);
-      expect(state.selectedStepIndex).toEqual(1);
+      expect(store.selectedStepIndex).toEqual(1);
       // make sure the pagination is reset
-      expect(state.dataset.paginationContext?.pageNumber).toEqual(1);
+      expect(store.dataset.paginationContext?.pageNumber).toEqual(1);
     });
   });
 
   describe('addSteps', function () {
     it('should do nothing if no pipeline is selected', () => {
       const state = buildState({});
-      mutations.addSteps(state, {
+      const store = setupMockStore(state);
+      store.addSteps({
         steps: [
           { name: 'rename', toRename: [['foo', 'bar']] },
           { name: 'rename', toRename: [['baz', 'spam']] },
@@ -483,8 +516,9 @@ describe('mutation tests', () => {
           },
         },
       });
-      mutations.selectStep(state, { index: 2 }); // select step 2
-      mutations.addSteps(state, {
+      const store = setupMockStore(state);
+      store.selectStep({ index: 2 }); // select step 2
+      store.addSteps({
         steps: [
           { name: 'rename', toRename: [['lalalolilol', 'lol']] },
           { name: 'rename', toRename: [['trololol', 'lala']] },
@@ -499,9 +533,9 @@ describe('mutation tests', () => {
         { name: 'rename', toRename: [['bobo', 'babar']] },
         { name: 'rename', toRename: [['bibi', 'bubu']] },
       ]);
-      expect(state.selectedStepIndex).toEqual(4);
+      expect(store.selectedStepIndex).toEqual(4);
       // make sure the pagination is reset
-      expect(state.dataset.paginationContext?.pageNumber).toEqual(1);
+      expect(store.dataset.paginationContext?.pageNumber).toEqual(1);
     });
 
     it('should never add  selected steps before domain step', () => {
@@ -525,8 +559,9 @@ describe('mutation tests', () => {
           },
         },
       });
-      mutations.selectStep(state, { index: -1 }); // select step -1
-      mutations.addSteps(state, {
+      const store = setupMockStore(state);
+      store.selectStep({ index: -1 }); // select step -1
+      store.addSteps({
         steps: [
           { name: 'rename', toRename: [['lalalolilol', 'lol']] },
           { name: 'rename', toRename: [['trololol', 'lala']] },
@@ -541,24 +576,26 @@ describe('mutation tests', () => {
         { name: 'rename', toRename: [['bobo', 'babar']] },
         { name: 'rename', toRename: [['bibi', 'bubu']] },
       ]);
-      expect(state.selectedStepIndex).toEqual(2);
+      expect(store.selectedStepIndex).toEqual(2);
       // make sure the pagination is reset
-      expect(state.dataset.paginationContext?.pageNumber).toEqual(1);
+      expect(store.dataset.paginationContext?.pageNumber).toEqual(1);
     });
   });
 
   it('sets domain list', () => {
     const state = buildState({});
-    expect(state.domains).toEqual([]);
-    mutations.setDomains(state, { domains: ['foo', 'bar'] });
-    expect(state.domains).toEqual(['foo', 'bar']);
+    const store = setupMockStore(state);
+    expect(store.domains).toEqual([]);
+    store.setDomains({ domains: ['foo', 'bar'] });
+    expect(store.domains).toEqual(['foo', 'bar']);
   });
 
   it('sets availableDomains list', () => {
     const state = buildState({});
-    expect(state.availableDomains).toEqual([]);
-    mutations.setAvailableDomains(state, { availableDomains: [{ uid: '1', name: 'Query 1' }] });
-    expect(state.availableDomains).toEqual([{ uid: '1', name: 'Query 1' }]);
+    const store = setupMockStore(state);
+    expect(store.availableDomains).toEqual([]);
+    store.setAvailableDomains({ availableDomains: [{ uid: '1', name: 'Query 1' }] });
+    expect(store.availableDomains).toEqual([{ uid: '1', name: 'Query 1' }]);
   });
 
   it('sets currentPipelineName', () => {
@@ -575,17 +612,19 @@ describe('mutation tests', () => {
         },
       },
     });
-    mutations.setCurrentPipelineName(state, { name: 'bar' });
-    expect(state.currentPipelineName).toEqual('bar');
+    const store = setupMockStore(state);
+    store.setCurrentPipelineName({ name: 'bar' });
+    expect(store.currentPipelineName).toEqual('bar');
     // make sure the pagination is reset
-    expect(state.dataset.paginationContext?.pageNumber).toEqual(1);
+    expect(store.dataset.paginationContext?.pageNumber).toEqual(1);
   });
 
   describe('setPipeline', function () {
     it('should do nothing if no pipeline is selected', function () {
       const state = buildState({});
-      mutations.setPipeline(state, { pipeline: [] });
-      expect(getters.pipeline(state, {}, {}, {})).toBeUndefined();
+      const store = setupMockStore(state);
+      store.setPipeline({ pipeline: [] });
+      expect(store.pipeline).toBeUndefined();
     });
 
     it('should replace the current pipeline', function () {
@@ -602,24 +641,26 @@ describe('mutation tests', () => {
           },
         },
       });
-      expect(getters.pipeline(state, {}, {}, {})).toEqual([]);
+      const store = setupMockStore(state);
+      expect(store.pipeline).toEqual([]);
 
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'foo' },
         { name: 'rename', toRename: [['foo', 'bar']] },
         { name: 'rename', toRename: [['baz', 'spam']] },
       ];
-      mutations.setPipeline(state, { pipeline });
-      expect(getters.pipeline(state, {}, {}, {})).toEqual(pipeline);
+      store.setPipeline({ pipeline });
+      expect(store.pipeline).toEqual(pipeline);
       // make sure the pagination is reset
-      expect(state.dataset.paginationContext?.pageNumber).toEqual(1);
+      expect(store.dataset.paginationContext?.pageNumber).toEqual(1);
     });
   });
 
   it('sets pipelines', () => {
     const state = buildState({});
-    mutations.setPipelines(state, { pipelines: { pipeline1: [], pipeline2: [] } });
-    expect(state.pipelines).toEqual({ pipeline1: [], pipeline2: [] });
+    const store = setupMockStore(state);
+    store.setPipelines({ pipelines: { pipeline1: [], pipeline2: [] } });
+    expect(store.pipelines).toEqual({ pipeline1: [], pipeline2: [] });
   });
 
   it('sets dataset', () => {
@@ -635,108 +676,121 @@ describe('mutation tests', () => {
       },
     };
     const state = buildState({});
-    expect(state.dataset).toEqual({
+    const store = setupMockStore(state);
+    expect(store.dataset).toEqual({
       headers: [],
       data: [],
       paginationContext: emptyState().dataset.paginationContext,
     });
-    mutations.setDataset(state, { dataset });
-    expect(state.dataset).toEqual(dataset);
+    store.setDataset({ dataset });
+    expect(store.dataset).toEqual(dataset);
   });
 
   it('should create a step form', () => {
     const state = buildState({});
-    mutations.createStepForm(state, { stepName: 'filter' });
-    expect(getters.isEditingStep(state, {}, {}, {})).toBeTruthy();
-    expect(state.currentStepFormName).toEqual('filter');
-    expect(state.stepFormInitialValue).toBeUndefined();
+    const store = setupMockStore(state);
+    store.createStepForm({ stepName: 'filter' });
+    expect(store.isEditingStep).toBeTruthy();
+    expect(store.currentStepFormName).toEqual('filter');
+    expect(store.stepFormInitialValue).toBeUndefined();
   });
 
   it('should open a form for an existing step', () => {
     const state = buildState({});
-    mutations.openStepForm(state, {
+    const store = setupMockStore(state);
+    store.openStepForm({
       stepName: 'rename',
       initialValue: { oldname: 'oldcolumn', newname: 'newcolumn' },
     });
-    expect(getters.isEditingStep(state, {}, {}, {})).toBeTruthy();
-    expect(state.currentStepFormName).toEqual('rename');
-    expect(state.stepFormInitialValue).toEqual({ oldname: 'oldcolumn', newname: 'newcolumn' });
+    expect(store.isEditingStep).toBeTruthy();
+    expect(store.currentStepFormName).toEqual('rename');
+    expect(store.stepFormInitialValue).toEqual({ oldname: 'oldcolumn', newname: 'newcolumn' });
   });
 
   it('should close an opened form', () => {
     const state = buildState({ currentStepFormName: 'rename' });
-    mutations.closeStepForm(state);
-    expect(getters.isEditingStep(state, {}, {}, {})).toBeFalsy();
-    expect(state.currentStepFormName).toBeUndefined();
+    const store = setupMockStore(state);
+    store.closeStepForm(state);
+    expect(store.isEditingStep).toBeFalsy();
+    expect(store.currentStepFormName).toBeUndefined();
   });
 
   it('should reset step form initial value', () => {
     const state = buildState({
       stepFormInitialValue: { oldname: 'oldcolumn', newname: 'newcolumn' },
     });
-    mutations.resetStepFormInitialValue(state);
-    expect(state.stepFormInitialValue).toBeUndefined();
+    const store = setupMockStore(state);
+    store.resetStepFormInitialValue(state);
+    expect(store.stepFormInitialValue).toBeUndefined();
   });
 
   it('sets selected columns', () => {
     const state = buildState({});
-    mutations.setSelectedColumns(state, { column: 'foo' });
-    expect(state.selectedColumns).toEqual(['foo']);
+    const store = setupMockStore(state);
+    store.setSelectedColumns({ column: 'foo' });
+    expect(store.selectedColumns).toEqual(['foo']);
   });
 
   it('does not set selected columns if payload is undefined', () => {
     const state = buildState({});
-    mutations.setSelectedColumns(state, { column: undefined });
-    expect(state.selectedColumns).toEqual([]);
+    const store = setupMockStore(state);
+    store.setSelectedColumns({ column: undefined });
+    expect(store.selectedColumns).toEqual([]);
   });
 
   it('logs backend errors', () => {
     const state = buildState({});
-    mutations.logBackendMessages(state, {
+    const store = setupMockStore(state);
+    store.logBackendMessages({
       backendMessages: [{ type: 'error', message: 'error msg' }],
     });
-    expect(state.backendMessages).toEqual([{ type: 'error', message: 'error msg' }]);
-    mutations.logBackendMessages(state, {
+    expect(store.backendMessages).toEqual([{ type: 'error', message: 'error msg' }]);
+    store.logBackendMessages({
       backendMessages: [{ type: 'error', message: 'error msg 2' }],
     });
-    expect(state.backendMessages).toEqual([{ type: 'error', message: 'error msg 2' }]);
+    expect(store.backendMessages).toEqual([{ type: 'error', message: 'error msg 2' }]);
   });
 
   it('set loading to true', () => {
     const state = buildState({});
+    const store = setupMockStore(state);
     const type = 'dataset';
-    mutations.setLoading(state, {
+    store.setLoading({
       type,
       isLoading: true,
     });
-    expect(state.isLoading[type]).toEqual(true);
+    expect(store.isLoading[type]).toEqual(true);
   });
 
   it('sets translator to true', () => {
     const state = buildState({ translator: 'mongo36' });
-    mutations.setTranslator(state, {
+    const store = setupMockStore(state);
+    store.setTranslator({
       translator: 'mongo40',
     });
-    expect(state.translator).toEqual('mongo40');
+    expect(store.translator).toEqual('mongo40');
   });
 });
 
 describe('action tests', () => {
+  beforeEach(() => {
+    // creates a fresh pinia and make it active so it's automatically picked
+    // up by any useStore() call without having to pass it to it:
+    // `useStore(pinia)`
+    setActivePinia(createPinia());
+  });
   it('selectPipeline', () => {
     const store = setupMockStore();
-    const commitSpy = vi.spyOn(store, 'commit');
-    const dispatchSpy = vi.spyOn(store, 'dispatch');
-    store.dispatch(VQBnamespace('selectPipeline'), { name: 'chapopointu' });
+    const selectPipelineNameSpy = vi.spyOn(store, 'setCurrentPipelineName');
+    const selectStepSpy = vi.spyOn(store, 'selectStep');
+    const updateDatasetSpy = vi.spyOn(store, 'updateDataset');
+    store.selectPipeline({ name: 'chapopointu' });
     // It should update the current selected pipeline
-    expect(commitSpy).toHaveBeenCalledWith(
-      VQBnamespace('setCurrentPipelineName'),
-      { name: 'chapopointu' },
-      undefined,
-    );
+    expect(selectPipelineNameSpy).toHaveBeenCalledWith({ name: 'chapopointu' });
     // It should select the last step of that pipeline
-    expect(commitSpy).toHaveBeenCalledWith(VQBnamespace('selectStep'), { index: -1 }, undefined);
+    expect(selectStepSpy).toHaveBeenCalledWith({ index: -1 });
     // It should update the preview of the dataset
-    expect(dispatchSpy).toHaveBeenLastCalledWith(VQBnamespace('updateDataset'), undefined);
+    expect(updateDatasetSpy).toHaveBeenLastCalledWith();
   });
 
   describe('updateDataset', () => {
@@ -786,18 +840,14 @@ describe('action tests', () => {
         ...buildStateWithOnePipeline([] as Pipeline),
         backendService: instantiateDummyService(),
       });
-      const commitSpy = vi.spyOn(store, 'commit');
-      await store.dispatch(VQBnamespace('updateDataset'));
-      expect(commitSpy).toHaveBeenCalledWith(
-        VQBnamespace('setDataset'),
-        {
-          dataset: {
-            headers: [],
-            data: [],
-          },
+      const setDatasetSpy = vi.spyOn(store, 'setDataset');
+      await store.updateDataset();
+      expect(setDatasetSpy).toHaveBeenCalledWith({
+        dataset: {
+          headers: [],
+          data: [],
         },
-        undefined,
-      );
+      });
     });
     it('updateDataset without error', async () => {
       const pipeline: Pipeline = [
@@ -809,34 +859,29 @@ describe('action tests', () => {
         ...buildStateWithOnePipeline(pipeline),
         backendService: instantiateDummyService(),
       });
-      const commitSpy = vi.spyOn(store, 'commit');
+      const logBackendMessagesSpy = vi.spyOn(store, 'logBackendMessages');
+      const setLoadingSpy = vi.spyOn(store, 'setLoading');
+      const toggleRequestOnGoingSpy = vi.spyOn(store, 'toggleRequestOnGoing');
+      const setTranslatorSpy = vi.spyOn(store, 'setTranslator');
+      const setDatasetSpy = vi.spyOn(store, 'setDataset');
 
-      await store.dispatch(VQBnamespace('updateDataset'));
-      expect(commitSpy).toHaveBeenCalledTimes(8);
+      await store.updateDataset();
       // call 1 (clear backend messages) :
-      expect(commitSpy.mock.calls[0][0]).toEqual(VQBnamespace('logBackendMessages'));
-      expect(commitSpy.mock.calls[0][1]).toEqual({ backendMessages: [] });
+      expect(logBackendMessagesSpy).toHaveBeenCalledWith({ backendMessages: [] });
       // call 2 :
-      expect(commitSpy.mock.calls[1][0]).toEqual(VQBnamespace('setLoading'));
-      expect(commitSpy.mock.calls[1][1]).toEqual({ type: 'dataset', isLoading: true });
+      expect(setLoadingSpy).toHaveBeenCalledWith({ type: 'dataset', isLoading: true });
       // call 3 :
-      expect(commitSpy.mock.calls[2][0]).toEqual(VQBnamespace('toggleRequestOnGoing'));
-      expect(commitSpy.mock.calls[2][1]).toEqual({ isRequestOnGoing: true });
+      expect(toggleRequestOnGoingSpy).toHaveBeenCalledWith({ isRequestOnGoing: true });
       // call 4 (set the translator provided by backend meta) :
-      expect(commitSpy.mock.calls[3][0]).toEqual(VQBnamespace('setTranslator'));
-      expect(commitSpy.mock.calls[3][1]).toEqual({ translator: 'pandas' });
+      expect(setTranslatorSpy).toHaveBeenCalledWith({ translator: 'pandas' });
       // call 5 :
-      expect(commitSpy.mock.calls[4][0]).toEqual(VQBnamespace('logBackendMessages'));
-      expect(commitSpy.mock.calls[4][1]).toEqual({ backendMessages: [] });
+      expect(logBackendMessagesSpy).toHaveBeenCalledWith({ backendMessages: [] });
       // call 6 :
-      expect(commitSpy.mock.calls[5][0]).toEqual(VQBnamespace('setDataset'));
-      expect(commitSpy.mock.calls[5][1]).toEqual({ dataset: dummyDatasetWithUniqueComputed });
+      expect(setDatasetSpy).toHaveBeenCalledWith({ dataset: dummyDatasetWithUniqueComputed });
       // call 7 :
-      expect(commitSpy.mock.calls[6][0]).toEqual(VQBnamespace('toggleRequestOnGoing'));
-      expect(commitSpy.mock.calls[6][1]).toEqual({ isRequestOnGoing: false });
+      expect(toggleRequestOnGoingSpy).toHaveBeenCalledWith({ isRequestOnGoing: false });
       // call 8 :
-      expect(commitSpy.mock.calls[7][0]).toEqual(VQBnamespace('setLoading'));
-      expect(commitSpy.mock.calls[7][1]).toEqual({ type: 'dataset', isLoading: false });
+      expect(setLoadingSpy).toHaveBeenCalledWith({ type: 'dataset', isLoading: false });
     });
 
     it('updateDataset with error from service', async () => {
@@ -853,33 +898,28 @@ describe('action tests', () => {
           }),
         },
       });
-      const commitSpy = vi.spyOn(store, 'commit');
+      const logBackendMessagesSpy = vi.spyOn(store, 'logBackendMessages');
+      const setLoadingSpy = vi.spyOn(store, 'setLoading');
+      const toggleRequestOnGoingSpy = vi.spyOn(store, 'toggleRequestOnGoing');
+      const setTranslatorSpy = vi.spyOn(store, 'setTranslator');
 
-      await store.dispatch(VQBnamespace('updateDataset'));
-      expect(commitSpy).toHaveBeenCalledTimes(7);
+      await store.updateDataset();
       // call 1 (clear backend messages) :
-      expect(commitSpy.mock.calls[0][0]).toEqual(VQBnamespace('logBackendMessages'));
-      expect(commitSpy.mock.calls[0][1]).toEqual({ backendMessages: [] });
+      expect(logBackendMessagesSpy).toHaveBeenCalledWith({ backendMessages: [] });
       // call 2 :
-      expect(commitSpy.mock.calls[1][0]).toEqual(VQBnamespace('setLoading'));
-      expect(commitSpy.mock.calls[1][1]).toEqual({ type: 'dataset', isLoading: true });
+      expect(setLoadingSpy).toHaveBeenCalledWith({ type: 'dataset', isLoading: true });
       // call 3 :
-      expect(commitSpy.mock.calls[2][0]).toEqual(VQBnamespace('toggleRequestOnGoing'));
-      expect(commitSpy.mock.calls[2][1]).toEqual({ isRequestOnGoing: true });
+      expect(toggleRequestOnGoingSpy).toHaveBeenCalledWith({ isRequestOnGoing: true });
       // call 4 (set the translator provided by backend meta) :
-      expect(commitSpy.mock.calls[3][0]).toEqual(VQBnamespace('setTranslator'));
-      expect(commitSpy.mock.calls[3][1]).toEqual({ translator: 'mongo50' });
+      expect(setTranslatorSpy).toHaveBeenCalledWith({ translator: 'mongo50' });
       // call 5 :
-      expect(commitSpy.mock.calls[4][0]).toEqual(VQBnamespace('logBackendMessages'));
-      expect(commitSpy.mock.calls[4][1]).toEqual({
+      expect(logBackendMessagesSpy).toHaveBeenCalledWith({
         backendMessages: [{ message: 'OMG an error happens', type: 'error' }],
       });
       // call 6 :
-      expect(commitSpy.mock.calls[5][0]).toEqual(VQBnamespace('toggleRequestOnGoing'));
-      expect(commitSpy.mock.calls[5][1]).toEqual({ isRequestOnGoing: false });
+      expect(toggleRequestOnGoingSpy).toHaveBeenCalledWith({ isRequestOnGoing: false });
       // call 7 :
-      expect(commitSpy.mock.calls[6][0]).toEqual(VQBnamespace('setLoading'));
-      expect(commitSpy.mock.calls[6][1]).toEqual({ type: 'dataset', isLoading: false });
+      expect(setLoadingSpy).toHaveBeenCalledWith({ type: 'dataset', isLoading: false });
     });
 
     it('updateDataset with uncaught error from service', async () => {
@@ -894,35 +934,30 @@ describe('action tests', () => {
           executePipeline: vi.fn().mockRejectedValue('Katastrophe!'),
         },
       });
-      const commitSpy = vi.spyOn(store, 'commit');
+      const logBackendMessagesSpy = vi.spyOn(store, 'logBackendMessages');
+      const setLoadingSpy = vi.spyOn(store, 'setLoading');
+      const toggleRequestOnGoingSpy = vi.spyOn(store, 'toggleRequestOnGoing');
 
       try {
-        await store.dispatch(VQBnamespace('updateDataset'));
+        await store.updateDataset();
       } catch (e) {
         expect(e).toEqual('Katastrophe!');
       }
 
-      expect(commitSpy).toHaveBeenCalledTimes(6);
       // call 1 (clear backend messages) :
-      expect(commitSpy.mock.calls[0][0]).toEqual(VQBnamespace('logBackendMessages'));
-      expect(commitSpy.mock.calls[0][1]).toEqual({ backendMessages: [] });
+      expect(logBackendMessagesSpy).toHaveBeenCalledWith({ backendMessages: [] });
       // call 2 :
-      expect(commitSpy.mock.calls[1][0]).toEqual(VQBnamespace('setLoading'));
-      expect(commitSpy.mock.calls[1][1]).toEqual({ type: 'dataset', isLoading: true });
+      expect(setLoadingSpy).toHaveBeenCalledWith({ type: 'dataset', isLoading: true });
       // call 3 :
-      expect(commitSpy.mock.calls[2][0]).toEqual(VQBnamespace('toggleRequestOnGoing'));
-      expect(commitSpy.mock.calls[2][1]).toEqual({ isRequestOnGoing: true });
+      expect(toggleRequestOnGoingSpy).toHaveBeenCalledWith({ isRequestOnGoing: true });
       // call 4 :
-      expect(commitSpy.mock.calls[3][0]).toEqual(VQBnamespace('logBackendMessages'));
-      expect(commitSpy.mock.calls[3][1]).toEqual({
+      expect(logBackendMessagesSpy).toHaveBeenCalledWith({
         backendMessages: [{ message: 'Katastrophe!', type: 'error' }],
       });
       // call 5 :
-      expect(commitSpy.mock.calls[4][0]).toEqual(VQBnamespace('toggleRequestOnGoing'));
-      expect(commitSpy.mock.calls[4][1]).toEqual({ isRequestOnGoing: false });
+      expect(toggleRequestOnGoingSpy).toHaveBeenCalledWith({ isRequestOnGoing: false });
       // call 6 :
-      expect(commitSpy.mock.calls[5][0]).toEqual(VQBnamespace('setLoading'));
-      expect(commitSpy.mock.calls[5][1]).toEqual({ type: 'dataset', isLoading: false });
+      expect(setLoadingSpy).toHaveBeenCalledWith({ type: 'dataset', isLoading: false });
     });
 
     it('updateDataset with specific step error from service', async () => {
@@ -939,33 +974,28 @@ describe('action tests', () => {
           }),
         },
       });
-      const commitSpy = vi.spyOn(store, 'commit');
+      const logBackendMessagesSpy = vi.spyOn(store, 'logBackendMessages');
+      const setLoadingSpy = vi.spyOn(store, 'setLoading');
+      const toggleRequestOnGoingSpy = vi.spyOn(store, 'toggleRequestOnGoing');
+      const setTranslatorSpy = vi.spyOn(store, 'setTranslator');
 
-      await store.dispatch(VQBnamespace('updateDataset'));
-      expect(commitSpy).toHaveBeenCalledTimes(7);
+      await store.updateDataset();
       // call 1 (clear backend messages) :
-      expect(commitSpy.mock.calls[0][0]).toEqual(VQBnamespace('logBackendMessages'));
-      expect(commitSpy.mock.calls[0][1]).toEqual({ backendMessages: [] });
+      expect(logBackendMessagesSpy).toHaveBeenCalledWith({ backendMessages: [] });
       // call 2 :
-      expect(commitSpy.mock.calls[1][0]).toEqual(VQBnamespace('setLoading'));
-      expect(commitSpy.mock.calls[1][1]).toEqual({ type: 'dataset', isLoading: true });
+      expect(setLoadingSpy).toHaveBeenCalledWith({ type: 'dataset', isLoading: true });
       // call 3 :
-      expect(commitSpy.mock.calls[2][0]).toEqual(VQBnamespace('toggleRequestOnGoing'));
-      expect(commitSpy.mock.calls[2][1]).toEqual({ isRequestOnGoing: true });
+      expect(toggleRequestOnGoingSpy).toHaveBeenCalledWith({ isRequestOnGoing: true });
       // call 4 (set the translator provided by backend meta) :
-      expect(commitSpy.mock.calls[3][0]).toEqual(VQBnamespace('setTranslator'));
-      expect(commitSpy.mock.calls[3][1]).toEqual({ translator: 'mongo50' });
+      expect(setTranslatorSpy).toHaveBeenCalledWith({ translator: 'mongo50' });
       // call 5 :
-      expect(commitSpy.mock.calls[4][0]).toEqual(VQBnamespace('logBackendMessages'));
-      expect(commitSpy.mock.calls[4][1]).toEqual({
+      expect(logBackendMessagesSpy).toHaveBeenCalledWith({
         backendMessages: [{ type: 'error', index: 1, message: 'Specific error for step' }],
       });
       // call 6 :
-      expect(commitSpy.mock.calls[5][0]).toEqual(VQBnamespace('toggleRequestOnGoing'));
-      expect(commitSpy.mock.calls[5][1]).toEqual({ isRequestOnGoing: false });
+      expect(toggleRequestOnGoingSpy).toHaveBeenCalledWith({ isRequestOnGoing: false });
       // call 7 :
-      expect(commitSpy.mock.calls[6][0]).toEqual(VQBnamespace('setLoading'));
-      expect(commitSpy.mock.calls[6][1]).toEqual({ type: 'dataset', isLoading: false });
+      expect(setLoadingSpy).toHaveBeenCalledWith({ type: 'dataset', isLoading: false });
     });
   });
 
@@ -997,15 +1027,13 @@ describe('action tests', () => {
         ...buildStateWithOnePipeline([], { dataset: dummyDataset }),
         backendService: dummyService,
       });
-      const commitSpy = vi.spyOn(store, 'commit');
-      await store.dispatch(VQBnamespace('loadColumnUniqueValues'), { column: 'city' });
-      expect(commitSpy).toHaveBeenCalledTimes(2);
+      const setLoadingSpy = vi.spyOn(store, 'setLoading');
+      await store.loadColumnUniqueValues({ column: 'city' });
+      expect(setLoadingSpy).toHaveBeenCalledTimes(2);
       // call 1:
-      expect(commitSpy.mock.calls[0][0]).toEqual(VQBnamespace('setLoading'));
-      expect(commitSpy.mock.calls[0][1]).toEqual({ type: 'uniqueValues', isLoading: true });
+      expect(setLoadingSpy.mock.calls[0][0]).toEqual({ type: 'uniqueValues', isLoading: true });
       // call 2:
-      expect(commitSpy.mock.calls[1][0]).toEqual(VQBnamespace('setLoading'));
-      expect(commitSpy.mock.calls[1][1]).toEqual({ type: 'uniqueValues', isLoading: false });
+      expect(setLoadingSpy.mock.calls[1][0]).toEqual({ type: 'uniqueValues', isLoading: false });
       // backend Service is not called:
       expect(dummyService.executePipeline).toHaveBeenCalledTimes(0);
     });
@@ -1031,19 +1059,17 @@ describe('action tests', () => {
           on: ['city'],
         },
       ];
-      const commitSpy = vi.spyOn(store, 'commit');
-      await store.dispatch(VQBnamespace('loadColumnUniqueValues'), { column: 'city' });
+      const setLoadingSpy = vi.spyOn(store, 'setLoading');
+      const setDatasetSpy = vi.spyOn(store, 'setDataset');
+      await store.loadColumnUniqueValues({ column: 'city' });
       expect(dummyService.executePipeline).toHaveBeenCalledWith(
         expectedPipeline,
         expect.objectContaining({ default_pipeline: pipeline }),
       );
-      expect(commitSpy).toHaveBeenCalledTimes(3);
       // call 1:
-      expect(commitSpy.mock.calls[0][0]).toEqual(VQBnamespace('setLoading'));
-      expect(commitSpy.mock.calls[0][1]).toEqual({ type: 'uniqueValues', isLoading: true });
+      expect(setLoadingSpy.mock.calls[0][0]).toEqual({ type: 'uniqueValues', isLoading: true });
       // call 2:
-      expect(commitSpy.mock.calls[1][0]).toEqual(VQBnamespace('setDataset'));
-      expect(commitSpy.mock.calls[1][1]).toEqual({
+      expect(setDatasetSpy.mock.calls[0][0]).toEqual({
         dataset: {
           headers: [
             {
@@ -1062,8 +1088,7 @@ describe('action tests', () => {
         },
       });
       // call 3:
-      expect(commitSpy.mock.calls[2][0]).toEqual(VQBnamespace('setLoading'));
-      expect(commitSpy.mock.calls[2][1]).toEqual({ type: 'uniqueValues', isLoading: false });
+      expect(setLoadingSpy.mock.calls[1][0]).toEqual({ type: 'uniqueValues', isLoading: false });
     });
   });
 
@@ -1074,8 +1099,9 @@ describe('action tests', () => {
         { identifier: 'var1', value: 1, label: 'First variable' },
         { identifier: 'var2', value: 2, label: 'Second variable' },
       ];
-      mutations.setAvailableVariables(state, { availableVariables });
-      expect(state.availableVariables).toEqual(availableVariables);
+      const store = setupMockStore(state);
+      store.setAvailableVariables({ availableVariables });
+      expect(store.availableVariables).toEqual(availableVariables);
     });
   });
 
@@ -1083,19 +1109,21 @@ describe('action tests', () => {
     it('set variable delimiters', () => {
       const state = buildState({});
       const variableDelimiters = { start: '{{', end: '}}' };
-      mutations.setVariableDelimiters(state, { variableDelimiters });
-      expect(state.variableDelimiters).toEqual(variableDelimiters);
+      const store = setupMockStore(state);
+      store.setVariableDelimiters({ variableDelimiters });
+      expect(store.variableDelimiters).toEqual(variableDelimiters);
     });
   });
 
   describe('setBackendService', function () {
     it('set the backend service', () => {
       const state = buildState({});
+      const store = setupMockStore(state);
       const backendService = {
         executePipeline: vi.fn(),
       } as BackendService;
-      mutations.setBackendService(state, { backendService });
-      expect(state.backendService).toEqual(backendService);
+      store.setBackendService({ backendService });
+      expect(store.backendService).toEqual(backendService);
     });
   });
 
@@ -1115,7 +1143,7 @@ describe('action tests', () => {
   });
 
   describe('getColumnNamesFromPipeline', () => {
-    let store: Store<RootState>, mockBackendServiceExecutePipeline: Mock;
+    let store: Store<'vqb', any>, mockBackendServiceExecutePipeline: Mock;
 
     beforeEach(() => {
       mockBackendServiceExecutePipeline = vi.fn();
@@ -1139,7 +1167,7 @@ describe('action tests', () => {
     });
 
     it('should not return anything if no pipeline name or domain is provided', async () => {
-      expect(await store.dispatch(VQBnamespace('getColumnNamesFromPipeline'))).toBeUndefined();
+      expect(await store.getColumnNamesFromPipeline('')).toBeUndefined();
       expect(mockBackendServiceExecutePipeline).not.toHaveBeenCalled();
     });
 
@@ -1147,9 +1175,7 @@ describe('action tests', () => {
       mockBackendServiceExecutePipeline.mockResolvedValue({
         data: { headers: [{ name: 'A' }, { name: 'B' }, { name: 'C' }] },
       });
-      expect(
-        await store.dispatch(VQBnamespace('getColumnNamesFromPipeline'), 'coco_l_asticot'),
-      ).toEqual(['A', 'B', 'C']);
+      expect(await store.getColumnNamesFromPipeline('coco_l_asticot')).toEqual(['A', 'B', 'C']);
       expect(mockBackendServiceExecutePipeline).toHaveBeenLastCalledWith(
         [
           { name: 'domain', domain: 'plop' },
@@ -1172,10 +1198,7 @@ describe('action tests', () => {
       mockBackendServiceExecutePipeline.mockResolvedValue({
         data: { headers: [{ name: 'meow' }, { name: 'ouaf' }] },
       });
-      expect(await store.dispatch(VQBnamespace('getColumnNamesFromPipeline'), 'other')).toEqual([
-        'meow',
-        'ouaf',
-      ]);
+      expect(await store.getColumnNamesFromPipeline('other')).toEqual(['meow', 'ouaf']);
       expect(mockBackendServiceExecutePipeline).toHaveBeenLastCalledWith(
         [
           {

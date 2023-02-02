@@ -47,6 +47,8 @@ import { Prop } from 'vue-property-decorator';
 import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 import type { AggregateStep, Aggregation, PipelineStepName } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+
+import { State } from 'pinia-class';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
@@ -66,9 +68,9 @@ import MultiselectWidget from './widgets/Multiselect.vue';
 export default class AggregateStepForm extends BaseStepForm<AggregateStep> {
   stepname: PipelineStepName = 'aggregate';
 
-  @VQBModule.State availableVariables?: VariablesBucket;
+  @State(VQBModule) availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) variableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,

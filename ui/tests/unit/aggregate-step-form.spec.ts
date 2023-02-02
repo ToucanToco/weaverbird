@@ -82,8 +82,9 @@ describe('Aggregate Step Form', () => {
           },
         },
       });
+      const store = runner.getStore();
       await wrapper.vm.$nextTick();
-      expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['foo']);
+      expect(store.selectedColumns).toEqual(['foo']);
     });
   });
 
@@ -267,9 +268,10 @@ describe('Aggregate Step Form', () => {
     const wrapper = runner.mount(initialState, {
       data: { editedStep: { name: 'aggregate', on: ['foo'], aggregations: [] } },
     });
+    const store = runner.getStore();
     wrapper.find(MultiselectWidget).trigger('input');
     await wrapper.vm.$nextTick();
-    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['foo']);
+    expect(store.selectedColumns).toEqual(['foo']);
   });
 
   it('should convert editedStep from old configurations to new configuration', async () => {

@@ -1,17 +1,18 @@
+import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, mount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
 import { describe, expect, it, vi } from 'vitest';
-import Vuex from 'vuex';
 
 import ActionToolbarButton from '@/components/ActionToolbarButton.vue';
 import Popover from '@/components/Popover.vue';
-import { VQBnamespace } from '@/store';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
 const localVue = createLocalVue();
-localVue.use(Vuex);
+localVue.use(PiniaVuePlugin);
+const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 type VueMountedType = ReturnType<typeof mount>;
 type emitParameters = string | [string, object] | undefined;
@@ -72,7 +73,7 @@ describe('ActionToolbarButton not active', () => {
     const wrapper = mount(ActionToolbarButton, {
       propsData: { category: 'add', label: 'toto', icon: 'plop' },
       localVue,
-      store: setupMockStore(),
+      pinia,
     });
     expect(wrapper.find('.action-toolbar__btn-txt').text()).toEqual('toto');
     expect(wrapper.find('.fa-icon').attributes().icon).toBe('plop');
@@ -82,7 +83,7 @@ describe('ActionToolbarButton not active', () => {
     const wrapper = mount(ActionToolbarButton, {
       propsData: { category: 'add' },
       localVue,
-      store: setupMockStore(),
+      pinia,
     });
     expect(wrapper.find(Popover).vm.$props.visible).toBeFalsy();
   });
@@ -93,7 +94,7 @@ describe('ActionToolbarButton active', () => {
     const wrapper = mount(ActionToolbarButton, {
       propsData: { isActive: true, category: 'add' },
       localVue,
-      store: setupMockStore(),
+      pinia,
     });
     expect(wrapper.exists()).toBeTruthy();
 
@@ -113,7 +114,7 @@ describe('ActionToolbarButton active', () => {
     const wrapper = mount(ActionToolbarButton, {
       propsData: { isActive: true, category: 'filter' },
       localVue,
-      store: setupMockStore(),
+      pinia,
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, ['delete', 'select', 'filter', 'top', 'argmax', 'argmin']);
@@ -123,7 +124,7 @@ describe('ActionToolbarButton active', () => {
     const wrapper = mount(ActionToolbarButton, {
       propsData: { isActive: true, category: 'compute' },
       localVue,
-      store: setupMockStore(),
+      pinia,
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, [
@@ -141,11 +142,11 @@ describe('ActionToolbarButton active', () => {
   it('should instantiate a Text button with the right list of actions', () => {
     // instantiate a store with at least one column selected so that steps
     // such as 'lowercase' can be triggered without creating a form.
-    const store = setupMockStore(buildStateWithOnePipeline([], { selectedColumns: ['foo'] }));
+    setupMockStore(buildStateWithOnePipeline([], { selectedColumns: ['foo'] }));
     const wrapper = mount(ActionToolbarButton, {
       propsData: { isActive: true, category: 'text' },
       localVue,
-      store,
+      pinia,
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, [
@@ -163,13 +164,13 @@ describe('ActionToolbarButton active', () => {
 
   it('should display unsupported steps as disabled', () => {
     // the pandas translator doesn't support custom steps
-    const store = setupMockStore(
+    setupMockStore(
       buildStateWithOnePipeline([], { selectedColumns: ['foo'], translator: 'pandas' }),
     );
     const wrapper = mount(ActionToolbarButton, {
       propsData: { isActive: true, category: 'add' },
       localVue,
-      store,
+      pinia,
     });
     expect(wrapper.exists()).toBeTruthy();
 
@@ -181,7 +182,7 @@ describe('ActionToolbarButton active', () => {
   it('should instantiate a Date button with the right list of actions', () => {
     const wrapper = mount(ActionToolbarButton, {
       propsData: { isActive: true, category: 'date' },
-      store: setupMockStore(),
+      pinia,
       localVue,
     });
     expect(wrapper.exists()).toBeTruthy();
@@ -206,7 +207,7 @@ describe('ActionToolbarButton active', () => {
     const wrapper = mount(ActionToolbarButton, {
       propsData: { isActive: true, category: 'aggregate' },
       localVue,
-      store: setupMockStore(),
+      pinia,
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, ['aggregate', 'totals', 'rollup', 'uniquegroups']);
@@ -216,7 +217,7 @@ describe('ActionToolbarButton active', () => {
     const wrapper = mount(ActionToolbarButton, {
       propsData: { isActive: true, category: 'reshape' },
       localVue,
-      store: setupMockStore(),
+      pinia,
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, ['pivot', 'unpivot', 'waterfall']);
@@ -226,7 +227,7 @@ describe('ActionToolbarButton active', () => {
     const wrapper = mount(ActionToolbarButton, {
       propsData: { isActive: true, category: 'combine' },
       localVue,
-      store: setupMockStore(),
+      pinia,
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, ['append', 'join']);
@@ -241,43 +242,43 @@ describe('ActionToolbarButton active', () => {
       );
       const wrapper = mount(ActionToolbarButton, {
         propsData: { isActive: true, category: 'text' },
-        store,
+        pinia,
         localVue,
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
       await actionsWrappers.at(4).trigger('click');
-      expect(store.state.vqb.currentStepFormName).toEqual(undefined);
+      expect(store.currentStepFormName).toEqual(undefined);
     });
 
     it('should insert a lowercase step in pipeline', async () => {
+      const wrapper = mount(ActionToolbarButton, {
+        propsData: { isActive: true, category: 'text' },
+        pinia,
+        localVue,
+      });
       const store = setupMockStore(
         buildStateWithOnePipeline([{ name: 'domain', domain: 'myDomain' }], {
           selectedColumns: ['foo'],
         }),
       );
-      const wrapper = mount(ActionToolbarButton, {
-        propsData: { isActive: true, category: 'text' },
-        store,
-        localVue,
-      });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
       await actionsWrappers.at(4).trigger('click');
-      expect(store.getters[VQBnamespace('pipeline')]).toEqual([
+      expect(store.pipeline).toEqual([
         { name: 'domain', domain: 'myDomain' },
         { name: 'lowercase', column: 'foo' },
       ]);
-      expect(store.state.vqb.selectedStepIndex).toEqual(1);
+      expect(store.selectedStepIndex).toEqual(1);
     });
 
     it('should emit a close event', async () => {
-      const store = setupMockStore(
+      setupMockStore(
         buildStateWithOnePipeline([{ name: 'domain', domain: 'myDomain' }], {
           selectedColumns: ['foo'],
         }),
       );
       const wrapper = mount(ActionToolbarButton, {
         propsData: { isActive: true, category: 'text' },
-        store,
+        pinia,
         localVue,
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
@@ -295,12 +296,12 @@ describe('ActionToolbarButton active', () => {
       );
       const wrapper = mount(ActionToolbarButton, {
         propsData: { isActive: true, category: 'text' },
-        store,
+        pinia,
         localVue,
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
       await actionsWrappers.at(5).trigger('click');
-      expect(store.state.vqb.currentStepFormName).toEqual(undefined);
+      expect(store.currentStepFormName).toEqual(undefined);
     });
 
     it('should insert a lowercase step in pipeline', async () => {
@@ -311,27 +312,27 @@ describe('ActionToolbarButton active', () => {
       );
       const wrapper = mount(ActionToolbarButton, {
         propsData: { isActive: true, category: 'text' },
-        store,
+        pinia,
         localVue,
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
       await actionsWrappers.at(5).trigger('click');
-      expect(store.getters[VQBnamespace('pipeline')]).toEqual([
+      expect(store.pipeline).toEqual([
         { name: 'domain', domain: 'myDomain' },
         { name: 'uppercase', column: 'foo' },
       ]);
-      expect(store.state.vqb.selectedStepIndex).toEqual(1);
+      expect(store.selectedStepIndex).toEqual(1);
     });
 
     it('should emit a close event', async () => {
-      const store = setupMockStore(
+      setupMockStore(
         buildStateWithOnePipeline([{ name: 'domain', domain: 'myDomain' }], {
           selectedColumns: ['foo'],
         }),
       );
       const wrapper = mount(ActionToolbarButton, {
         propsData: { isActive: true, category: 'text' },
-        store,
+        pinia,
         localVue,
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
@@ -349,23 +350,23 @@ describe('ActionToolbarButton active', () => {
       );
       const wrapper = mount(ActionToolbarButton, {
         propsData: { isActive: true, category: 'date' },
-        store,
+        pinia,
         localVue,
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
       await actionsWrappers.at(0).trigger('click');
-      expect(store.state.vqb.currentStepFormName).toEqual(undefined);
+      expect(store.currentStepFormName).toEqual(undefined);
     });
 
     it('should emit a close event', async () => {
-      const store = setupMockStore(
+      setupMockStore(
         buildStateWithOnePipeline([{ name: 'domain', domain: 'myDomain' }], {
           selectedColumns: ['foo'],
         }),
       );
       const wrapper = mount(ActionToolbarButton, {
         propsData: { isActive: true, category: 'date' },
-        store,
+        pinia,
         localVue,
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');

@@ -39,8 +39,9 @@ describe('UniqueGroups Step Form', () => {
       const wrapper = runner.mount(undefined, {
         data: { editedStep: { name: 'uniquegroups', on: ['foo'] } },
       });
+      const store = runner.getStore();
       await wrapper.vm.$nextTick();
-      expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['foo']);
+      expect(store.selectedColumns).toEqual(['foo']);
     });
   });
 
@@ -77,8 +78,9 @@ describe('UniqueGroups Step Form', () => {
     const wrapper = runner.mount(initialState, {
       data: { editedStep: { name: 'uniquegroups', on: ['foo'] } },
     });
+    const store = runner.getStore();
     wrapper.find(MultiselectWidget).trigger('input');
     await wrapper.vm.$nextTick();
-    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['foo']);
+    expect(store.selectedColumns).toEqual(['foo']);
   });
 });

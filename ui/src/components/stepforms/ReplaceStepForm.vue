@@ -44,6 +44,7 @@ import { castFromString } from '@/lib/helpers';
 import type { PipelineStepName, ReplaceStep } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
+import { State, Getter } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -57,14 +58,14 @@ import BaseStepForm from './StepForm.vue';
 export default class ReplaceStepForm extends BaseStepForm<ReplaceStep> {
   stepname: PipelineStepName = 'replace';
 
-  @VQBModule.State availableVariables?: VariablesBucket;
+  @State(VQBModule) availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) variableDelimiters?: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'replace', searchColumn: '', toReplace: [[]] }) })
   declare initialStepValue: ReplaceStep;
 
-  @VQBModule.Getter columnTypes!: ColumnTypeMapping;
+  @Getter(VQBModule) columnTypes!: ColumnTypeMapping;
 
   readonly title: string = 'Replace values';
   replaceWidget = ReplaceWidget;

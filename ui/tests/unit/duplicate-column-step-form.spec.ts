@@ -2,7 +2,7 @@ import { describe, vi } from 'vitest';
 
 import DuplicateColumnStepForm from '@/components/stepforms/DuplicateColumnStepForm.vue';
 
-import { BasicStepFormTestRunner, setupMockStore } from './utils';
+import { BasicStepFormTestRunner } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
@@ -25,12 +25,12 @@ describe('Duplicate Column Step Form', () => {
     },
     {
       testlabel: 'existing column name',
-      store: setupMockStore({
+      store: {
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [],
         },
-      }),
+      },
       data: { editedStep: { name: 'duplicate', column: 'foo', newColumnName: 'columnA' } },
       errors: [{ keyword: 'columnNameAlreadyUsed', dataPath: '.newColumnName' }],
     },

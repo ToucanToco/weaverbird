@@ -39,6 +39,7 @@ import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import type { ColumnTypeMapping } from '@/lib/dataset';
 import type { PipelineStepName, ReplaceTextStep } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { State, Getter } from 'pinia-class';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
@@ -53,9 +54,9 @@ import BaseStepForm from './StepForm.vue';
 export default class ReplaceTextStepForm extends BaseStepForm<ReplaceTextStep> {
   stepname: PipelineStepName = 'replacetext';
 
-  @VQBModule.State availableVariables?: VariablesBucket;
+  @State(VQBModule) availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) variableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,
@@ -63,7 +64,7 @@ export default class ReplaceTextStepForm extends BaseStepForm<ReplaceTextStep> {
   })
   declare initialStepValue: ReplaceTextStep;
 
-  @VQBModule.Getter columnTypes!: ColumnTypeMapping;
+  @Getter(VQBModule) columnTypes!: ColumnTypeMapping;
 
   readonly title: string = 'Replace text';
 

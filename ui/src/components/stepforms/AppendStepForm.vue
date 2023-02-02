@@ -26,6 +26,7 @@ import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
 import type { AppendStep, PipelineStepName } from '@/lib/steps';
+import { Getter } from 'pinia-class';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
@@ -43,7 +44,7 @@ export default class AppendStepForm extends BaseStepForm<AppendStep> {
   @Prop({ type: Object, default: () => ({ name: 'append', pipelines: [] }) })
   declare initialStepValue: AppendStep;
 
-  @VQBModule.Getter availableDatasetNames!: string[];
+  @Getter(VQBModule) availableDatasetNames!: string[];
 
   readonly title: string = 'Append datasets';
 

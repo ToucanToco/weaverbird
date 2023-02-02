@@ -31,6 +31,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
+import { Getter } from 'pinia-class';
 
 import InputTextWidget from './InputText.vue';
 
@@ -60,7 +61,7 @@ export default class CumSumWidget extends Vue {
   @Prop()
   variableDelimiters?: VariableDelimiters;
 
-  @VQBModule.Getter columnNames!: string[];
+  @Getter(VQBModule) columnNames!: string[];
 
   created() {
     if (isEqual(this.value, ['', ''])) {

@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import ReplaceTextStepForm from '@/components/stepforms/ReplaceTextStepForm.vue';
 
-import { BasicStepFormTestRunner, setupMockStore } from './utils';
+import { BasicStepFormTestRunner } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
@@ -15,7 +15,7 @@ describe('Replace Text Step Form', () => {
   });
   runner.testValidate({
     testlabel: 'submitted data is valid',
-    store: setupMockStore({
+    store: {
       dataset: {
         headers: [
           { name: 'foo', type: 'string' },
@@ -23,7 +23,7 @@ describe('Replace Text Step Form', () => {
         ],
         data: [],
       },
-    }),
+    },
     props: {
       initialStepValue: { name: 'replacetext', searchColumn: 'foo', oldStr: 'old', newStr: 'new' },
     },

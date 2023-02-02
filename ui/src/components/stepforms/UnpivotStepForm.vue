@@ -50,6 +50,7 @@ import { generateNewColumnName } from '@/lib/helpers';
 import type { PipelineStepName, UnpivotStep } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
+import { State } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -63,9 +64,9 @@ import BaseStepForm from './StepForm.vue';
 export default class UnpivotStepForm extends BaseStepForm<UnpivotStep> {
   stepname: PipelineStepName = 'unpivot';
 
-  @VQBModule.State availableVariables?: VariablesBucket;
+  @State(VQBModule) availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) variableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,
@@ -79,7 +80,7 @@ export default class UnpivotStepForm extends BaseStepForm<UnpivotStep> {
     }),
   })
   declare initialStepValue: UnpivotStep;
-  @VQBModule.Getter translator!: string;
+  @State(VQBModule) translator!: string;
 
   readonly title: string = 'Unpivot columns';
   readonly checkboxLabel: string = 'Drop null values';

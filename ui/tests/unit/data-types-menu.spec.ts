@@ -1,37 +1,38 @@
+import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
 import { describe, expect, it, vi } from 'vitest';
-import Vuex from 'vuex';
 
 import DataTypesMenu from '@/components/DataTypesMenu.vue';
-import { VQBnamespace } from '@/store';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
 const localVue = createLocalVue();
-localVue.use(Vuex);
+localVue.use(PiniaVuePlugin);
+const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 describe('Data Types Menu', () => {
   it('should instantiate with the popover', () => {
-    const store = setupMockStore({
+    setupMockStore({
       dataset: {
         headers: [{ name: 'columnA', type: 'text' }],
       },
     });
-    const wrapper = mount(DataTypesMenu, { store, localVue });
+    const wrapper = mount(DataTypesMenu, { pinia, localVue });
     expect(wrapper.exists()).toBeTruthy();
     expect(wrapper.classes()).toContain('weaverbird-popover');
   });
 
   it('should contain the right set of data types', () => {
-    const store = setupMockStore({
+    setupMockStore({
       dataset: {
         headers: [{ name: 'columnA', type: 'string' }],
       },
     });
     const wrapper = shallowMount(DataTypesMenu, {
-      store,
+      pinia,
       localVue,
       propsData: {
         columnName: 'columnA',
@@ -46,13 +47,13 @@ describe('Data Types Menu', () => {
   });
 
   it('should deactivate the date option when the column is not a string or an integer', () => {
-    const store = setupMockStore({
+    setupMockStore({
       dataset: {
         headers: [{ name: 'columnA', type: 'float' }],
       },
     });
     const wrapper = shallowMount(DataTypesMenu, {
-      store,
+      pinia,
       localVue,
       propsData: {
         columnName: 'columnA',
@@ -66,13 +67,13 @@ describe('Data Types Menu', () => {
   });
 
   it('should have the date option when the column is an integer', () => {
-    const store = setupMockStore({
+    setupMockStore({
       dataset: {
         headers: [{ name: 'columnA', type: 'integer' }],
       },
     });
     const wrapper = shallowMount(DataTypesMenu, {
-      store,
+      pinia,
       localVue,
       propsData: {
         columnName: 'columnA',
@@ -85,13 +86,13 @@ describe('Data Types Menu', () => {
   });
 
   it('should have the date option when the column is a date', () => {
-    const store = setupMockStore({
+    setupMockStore({
       dataset: {
         headers: [{ name: 'columnA', type: 'date' }],
       },
     });
     const wrapper = shallowMount(DataTypesMenu, {
-      store,
+      pinia,
       localVue,
       propsData: {
         columnName: 'columnA',
@@ -117,7 +118,7 @@ describe('Data Types Menu', () => {
         ),
       );
       const wrapper = shallowMount(DataTypesMenu, {
-        store,
+        pinia,
         localVue,
         propsData: {
           columnName: 'columnA',
@@ -126,12 +127,12 @@ describe('Data Types Menu', () => {
       const actionsWrapper = wrapper.findAll('.data-types-menu__option--active');
       actionsWrapper.at(0).trigger('click');
       await localVue.nextTick();
-      expect(store.getters[VQBnamespace('pipeline')]).toEqual([
+      expect(store.pipeline).toEqual([
         { name: 'domain', domain: 'test' },
         { name: 'convert', columns: ['columnA'], dataType: 'integer' },
         { name: 'delete', columns: ['test'] },
       ]);
-      expect(store.state.vqb.selectedStepIndex).toEqual(1);
+      expect(store.selectedStepIndex).toEqual(1);
     });
 
     it('should close any existing open form if another step was being edited', async () => {
@@ -140,16 +141,16 @@ describe('Data Types Menu', () => {
           currentStepFormName: 'formula',
         }),
       });
-      const wrapper = shallowMount(DataTypesMenu, { store, localVue });
+      const wrapper = shallowMount(DataTypesMenu, { pinia, localVue });
       const actionsWrapper = wrapper.find('.data-types-menu__option--active');
       actionsWrapper.trigger('click');
       await localVue.nextTick();
-      expect(wrapper.vm.$store.state.currentStepFormName).toBeUndefined();
+      expect(store.currentStepFormName).toBeUndefined();
     });
 
     it('should emit a close event', async () => {
-      const store = setupMockStore();
-      const wrapper = shallowMount(DataTypesMenu, { store, localVue });
+      setupMockStore();
+      const wrapper = shallowMount(DataTypesMenu, { pinia, localVue });
       const actionsWrapper = wrapper.findAll('.data-types-menu__option--active');
       actionsWrapper.at(0).trigger('click');
       await localVue.nextTick();
@@ -157,13 +158,13 @@ describe('Data Types Menu', () => {
     });
 
     it('should not emit a close event if clicking on a deactivated option', async () => {
-      const store = setupMockStore({
+      setupMockStore({
         dataset: {
           headers: [{ name: 'columnA', type: 'float' }],
         },
       });
       const wrapper = shallowMount(DataTypesMenu, {
-        store,
+        pinia,
         localVue,
         propsData: {
           columnName: 'columnA',
@@ -177,13 +178,13 @@ describe('Data Types Menu', () => {
 
   it('should emit "closed" and actionClicked" with "todate" as payload when clicking \
   on "date" on a string column', () => {
-    const store = setupMockStore({
+    setupMockStore({
       dataset: {
         headers: [{ name: 'columnA', type: 'string' }],
       },
     });
     const wrapper = shallowMount(DataTypesMenu, {
-      store,
+      pinia,
       localVue,
       propsData: {
         columnName: 'columnA',
@@ -198,13 +199,13 @@ describe('Data Types Menu', () => {
 
   it('should call createConvertStep when clicking on "date" on a date column', async () => {
     const createConvertStepStub = vi.fn();
-    const store = setupMockStore({
+    setupMockStore({
       dataset: {
         headers: [{ name: 'columnA', type: 'date' }],
       },
     });
     const wrapper = shallowMount(DataTypesMenu, {
-      store,
+      pinia,
       localVue,
       propsData: { columnName: 'columnA' },
     });
@@ -217,13 +218,13 @@ describe('Data Types Menu', () => {
 
   it('should emit "closed" and actionClicked" with "todate" as payload when clicking \
   on "date" on an integer column', () => {
-    const store = setupMockStore({
+    setupMockStore({
       dataset: {
         headers: [{ name: 'columnA', type: 'integer' }],
       },
     });
     const wrapper = shallowMount(DataTypesMenu, {
-      store,
+      pinia,
       localVue,
       propsData: { columnName: 'columnA' },
     });
@@ -236,13 +237,13 @@ describe('Data Types Menu', () => {
 
   it('should not call createConvertStep when clicking on "date" on a float column', async () => {
     const createConvertStepStub = vi.fn();
-    const store = setupMockStore({
+    setupMockStore({
       dataset: {
         headers: [{ name: 'columnA', type: 'float' }],
       },
     });
     const wrapper = shallowMount(DataTypesMenu, {
-      store,
+      pinia,
       localVue,
       propsData: { columnName: 'columnA' },
     });

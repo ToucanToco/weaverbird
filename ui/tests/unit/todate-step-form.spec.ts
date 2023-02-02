@@ -1,7 +1,8 @@
+import { createTestingPinia } from '@pinia/testing';
 import type { Wrapper } from '@vue/test-utils';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
 import { describe, expect, it, vi } from 'vitest';
-import Vuex from 'vuex';
 
 import ToDateStepForm from '@/components/stepforms/ToDateStepForm.vue';
 
@@ -10,7 +11,8 @@ import { BasicStepFormTestRunner, setupMockStore } from './utils';
 vi.mock('@/components/FAIcon.vue');
 
 const localVue = createLocalVue();
-localVue.use(Vuex);
+localVue.use(PiniaVuePlugin);
+const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 describe('Convert String to Date Step Form', () => {
   const runner = new BasicStepFormTestRunner(ToDateStepForm, 'todate');
@@ -33,8 +35,9 @@ describe('Convert String to Date Step Form', () => {
   );
 
   it('should have 1 inputtext when custom format is selected', () => {
+    setupMockStore({});
     const wrapper = shallowMount(ToDateStepForm, {
-      store: setupMockStore({}),
+      pinia,
       localVue,
       propsData: {
         initialStepValue: { name: 'todate', column: '', format: '' },
@@ -45,6 +48,7 @@ describe('Convert String to Date Step Form', () => {
   });
 
   it('should update editedStep with the selected column at creation', () => {
+    setupMockStore({});
     const initialState = {
       dataset: {
         headers: [{ name: 'foo', type: 'string' }],
@@ -57,10 +61,8 @@ describe('Convert String to Date Step Form', () => {
   });
 
   it('should update editedStep.format properly when a new format is selected', () => {
-    const wrapper = shallowMount(ToDateStepForm, {
-      store: setupMockStore({}),
-      localVue,
-    });
+    setupMockStore({});
+    const wrapper = shallowMount(ToDateStepForm, { pinia, localVue });
     wrapper
       .find('autocompletewidget-stub')
       .vm.$emit('input', { format: 'guess', label: '%Y-%m', example: '' });
@@ -76,10 +78,8 @@ describe('Convert String to Date Step Form', () => {
   });
 
   it('should toggle custom format input correctly when switching selected format', () => {
-    const wrapper = shallowMount(ToDateStepForm, {
-      store: setupMockStore({}),
-      localVue,
-    });
+    setupMockStore({});
+    const wrapper = shallowMount(ToDateStepForm, { pinia, localVue });
     wrapper
       .find('autocompletewidget-stub')
       .vm.$emit('input', { format: 'guess', label: '%Y-%m', example: '' });
@@ -96,8 +96,9 @@ describe('Convert String to Date Step Form', () => {
 
   describe('when user delete content of custom format input', () => {
     it('should return empty string as format', () => {
+      setupMockStore({});
       const wrapper = shallowMount(ToDateStepForm, {
-        store: setupMockStore({}),
+        pinia,
         localVue,
         propsData: {
           initialStepValue: { name: 'todate', format: '%Y %m %d %d', column: 'wdc' },
@@ -112,9 +113,10 @@ describe('Convert String to Date Step Form', () => {
   describe('on init', () => {
     let wrapper: Wrapper<ToDateStepForm>;
     const createWrapper = (format?: string) => {
+      setupMockStore({});
       if (wrapper) wrapper.destroy();
       wrapper = shallowMount(ToDateStepForm, {
-        store: setupMockStore({}),
+        pinia,
         localVue,
         propsData: {
           initialStepValue: { name: 'todate', column: '', format },

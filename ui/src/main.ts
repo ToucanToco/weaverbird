@@ -8,14 +8,7 @@ export { defineSendAnalytics } from './lib/send-analytics';
 
 // export store entrypoints
 export { dereferencePipelines } from './lib/dereference-pipeline';
-export {
-  setupStore,
-  registerModule,
-  unregisterModule,
-  VQBModule,
-  VQBnamespace,
-  VQB_MODULE_NAME,
-} from './store';
+export { setupVQBStore, useVQBStore, VQBModule, VQB_MODULE_NAME } from './store';
 
 import './lib/icons';
 

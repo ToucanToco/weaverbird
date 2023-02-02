@@ -1,9 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import PivotStepForm from '@/components/stepforms/PivotStepForm.vue';
-import { VQBnamespace } from '@/store';
 
-import { BasicStepFormTestRunner, setupMockStore } from './utils';
+import { BasicStepFormTestRunner } from './utils';
 
 vi.mock('@/components/FAIcon.vue');
 
@@ -37,12 +36,12 @@ describe('Pivot Step Form', () => {
     },
     {
       testlabel: 'index and columnToPivot column names overlap',
-      store: setupMockStore({
+      store: {
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [],
         },
-      }),
+      },
       data: {
         editedStep: {
           name: 'pivot',
@@ -61,12 +60,12 @@ describe('Pivot Step Form', () => {
     },
     {
       testlabel: 'index and valueColumn column names overlap',
-      store: setupMockStore({
+      store: {
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [],
         },
-      }),
+      },
       data: {
         editedStep: {
           name: 'pivot',
@@ -85,12 +84,12 @@ describe('Pivot Step Form', () => {
     },
     {
       testlabel: 'columnToPivot and valueColumn are equal',
-      store: setupMockStore({
+      store: {
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [],
         },
-      }),
+      },
       data: {
         editedStep: {
           name: 'pivot',
@@ -166,8 +165,9 @@ describe('Pivot Step Form', () => {
       },
     };
     const wrapper = runner.shallowMount(initialState);
+    const store = runner.getStore();
     expect(wrapper.vm.$data.editedStep.columnToPivot).toEqual('');
-    wrapper.vm.$store.commit(VQBnamespace('toggleColumnSelection'), { column: 'columnB' });
+    store.toggleColumnSelection({ column: 'columnB' });
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.$data.editedStep.columnToPivot).toEqual('columnB');
   });

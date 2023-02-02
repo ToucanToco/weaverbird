@@ -26,8 +26,8 @@ import type { ErrorObject } from 'ajv';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import type { SortColumnType } from '@/lib/steps';
-import { VQBModule } from '@/store';
-import type { MutationCallbacks } from '@/store/mutations';
+import { Action, Getter } from 'pinia-class';
+import { VQBModule, type VQBActions } from '@/store';
 
 import AutocompleteWidget from './Autocomplete.vue';
 
@@ -53,8 +53,8 @@ export default class SortColumnWidget extends Vue {
   @Prop({ type: Array, default: () => [] })
   errors!: ErrorObject[];
 
-  @VQBModule.Getter columnNames!: string[];
-  @VQBModule.Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
+  @Getter(VQBModule) columnNames!: string[];
+  @Action(VQBModule) setSelectedColumns!: VQBActions['setSelectedColumns'];
 
   get sortColumn() {
     return this.value.column;

@@ -1,14 +1,15 @@
+import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it } from 'vitest';
-import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import ActionMenu from '@/components/ActionMenu.vue';
-import { VQBnamespace } from '@/store';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
 const localVue = createLocalVue();
-localVue.use(Vuex);
+localVue.use(PiniaVuePlugin);
+const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 type PanelElement = {
   label: string;
@@ -76,6 +77,12 @@ describe('Action Menu', () => {
   beforeEach(() => {
     // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     mountWrapper = async function (isCurrentlyEditing = false, isMounted = false) {
+      const wrapper = (isMounted ? mount : shallowMount)(ActionMenu, {
+        pinia,
+        localVue,
+        propsData: { visible: true, columnName: 'dreamfall' },
+        attachToDocument: true,
+      });
       const store = setupMockStore(
         buildStateWithOnePipeline([], {
           currentStepFormName: isCurrentlyEditing ? 'fillna' : undefined,
@@ -96,12 +103,6 @@ describe('Action Menu', () => {
           },
         }),
       );
-      const wrapper = (isMounted ? mount : shallowMount)(ActionMenu, {
-        store,
-        localVue,
-        propsData: { visible: true, columnName: 'dreamfall' },
-        attachToDocument: true,
-      });
       return { wrapper, store };
     };
   });
@@ -159,11 +160,8 @@ describe('Action Menu', () => {
   });
 
   it('should disable unsupported steps', async () => {
-    const { wrapper } = await mountWrapper();
-    wrapper.vm.$store.commit(VQBnamespace('setTranslator'), {
-      translator: 'athena',
-    });
-    await wrapper.vm.$nextTick();
+    const { wrapper, store } = await mountWrapper();
+    store.setTranslator({ translator: 'athena' });
     await wrapper
       .findAll('action-menu-option-stub')
       .wrappers.find((w) => w.props().label === 'Other operations')
@@ -196,7 +194,7 @@ describe('Action Menu', () => {
       const { wrapper, store } = await mountWrapperWithEditedCondition();
       await wrapper.find('.action-menu__apply-filter').trigger('click');
       await wrapper.vm.$nextTick();
-      expect(store.getters[VQBnamespace('pipeline')]).toEqual([
+      expect(store.pipeline).toEqual([
         { name: 'filter', condition: { column: 'dreamfall', value: ['mika'], operator: 'nin' } },
       ]);
     });
@@ -207,16 +205,14 @@ describe('Action Menu', () => {
       const { wrapper, store } = await mountWrapper();
       await wrapper.findAll('action-menu-option-stub').at(DELETE_INDEX).vm.$emit('actionClicked');
       await wrapper.vm.$nextTick();
-      expect(store.getters[VQBnamespace('pipeline')]).toEqual([
-        { name: 'delete', columns: ['dreamfall'] },
-      ]);
+      expect(store.pipeline).toEqual([{ name: 'delete', columns: ['dreamfall'] }]);
     });
 
     it('should close any open step form to show the addition of the delete step in the pipeline', async () => {
       const { wrapper, store } = await mountWrapper(true);
       await wrapper.findAll('action-menu-option-stub').at(DELETE_INDEX).vm.$emit('actionClicked');
       await wrapper.vm.$nextTick();
-      expect(store.getters[VQBnamespace('isEditingStep')]).toBeFalsy();
+      expect(store.isEditingStep).toBeFalsy();
     });
   });
 
@@ -284,9 +280,7 @@ describe('Action Menu', () => {
           .at(GET_UNIQUE_INDEX)
           .vm.$emit('actionClicked');
         await wrapper.vm.$nextTick();
-        expect(store.getters[VQBnamespace('pipeline')]).toEqual([
-          { name: 'uniquegroups', on: ['dreamfall'] },
-        ]);
+        expect(store.pipeline).toEqual([{ name: 'uniquegroups', on: ['dreamfall'] }]);
       });
 
       it('should close any open step form to show the "get unique" step in the pipeline', async () => {
@@ -296,7 +290,7 @@ describe('Action Menu', () => {
           .at(GET_UNIQUE_INDEX)
           .vm.$emit('actionClicked');
         await wrapper.vm.$nextTick();
-        expect(store.getters[VQBnamespace('isEditingStep')]).toBeFalsy();
+        expect(store.isEditingStep).toBeFalsy();
       });
     });
 

@@ -58,9 +58,10 @@ describe('Select Column Step Form', () => {
         },
       },
     });
+    const store = runner.getStore();
     wrapper.setData({ editedStep: { columns: ['columnB'] } });
     wrapper.find(MultiselectWidget).trigger('input');
     await wrapper.vm.$nextTick();
-    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['columnB']);
+    expect(store.selectedColumns).toEqual(['columnB']);
   });
 });

@@ -60,6 +60,7 @@ import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import type { PipelineStepName, TopStep } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
+import { State } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
@@ -76,9 +77,9 @@ import MultiselectWidget from './widgets/Multiselect.vue';
 export default class TopStepForm extends BaseStepForm<TopStep> {
   stepname: PipelineStepName = 'top';
 
-  @VQBModule.State availableVariables?: VariablesBucket;
+  @State(VQBModule) availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) variableDelimiters?: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'top', rankOn: '', sort: 'desc' }) })
   declare initialStepValue: TopStep;

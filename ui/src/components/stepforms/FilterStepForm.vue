@@ -33,6 +33,7 @@ import type {
 } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
+import { State, Getter } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -54,10 +55,10 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
   })
   declare initialStepValue: FilterStep;
 
-  @VQBModule.State availableVariables?: VariablesBucket;
-  @VQBModule.State variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) availableVariables?: VariablesBucket;
+  @State(VQBModule) variableDelimiters?: VariableDelimiters;
 
-  @VQBModule.Getter columnTypes!: ColumnTypeMapping;
+  @Getter(VQBModule) columnTypes!: ColumnTypeMapping;
 
   readonly title: string = 'Filter';
 
