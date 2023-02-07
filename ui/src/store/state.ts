@@ -96,6 +96,7 @@ export function emptyState(): VQBState {
     backendMessages: [],
     isLoading: { dataset: false, uniqueValues: false },
     isRequestOnGoing: false,
+    availableVariables: [],
     variables: {},
     variableDelimiters: undefined,
     translator: 'mongo50',
