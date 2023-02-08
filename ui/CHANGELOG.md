@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## [0.101.1] - 2023-02-07
+
+### Fixed
+- Store: set default value for available variables
+
 ## [0.101.0] - 2023-02-02
 
 ### Changed
@@ -1461,6 +1466,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
+[0.101.1]: https://github.com/ToucanToco/weaverbird/compare/v0.101.0...v0.101.1
 [0.101.0]: https://github.com/ToucanToco/weaverbird/compare/v0.100.0...v0.101.0
 [0.100.0]: https://github.com/ToucanToco/weaverbird/compare/v0.99.0...v0.100.0
 [0.99.0]: https://github.com/ToucanToco/weaverbird/compare/v0.99.0...v0.98.2
