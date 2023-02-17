@@ -3216,23 +3216,23 @@ secure-local-storage = ["keyring (!=16.1.0,<24.0.0)"]
 
 [[package]]
 name = "snowflake-sqlalchemy"
-version = "1.4.4"
+version = "1.4.6"
 description = "Snowflake SQLAlchemy Dialect"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "snowflake-sqlalchemy-1.4.4.tar.gz", hash = "sha256:a75af2003feb56fa865d5d807aff9ef00e49be5b608b183cd4b29c8db4300227"},
-    {file = "snowflake_sqlalchemy-1.4.4-py2.py3-none-any.whl", hash = "sha256:f22302a93ddfa99bd57d1268e720ecb2f47e57e2d272b917696e7d9d56a76e1a"},
+    {file = "snowflake-sqlalchemy-1.4.6.tar.gz", hash = "sha256:c64c7c42569b382a1daa3e2d458c69967d33f871d5c1876a95791a8adce62b1f"},
+    {file = "snowflake_sqlalchemy-1.4.6-py2.py3-none-any.whl", hash = "sha256:2aba194bdaa163ed927e6b731d1db5e2f836afb7d2ca88ca65b6d7f76ee68c11"},
 ]
 
 [package.dependencies]
-snowflake-connector-python = "<3.0.0"
+snowflake-connector-python = "<4.0.0"
 sqlalchemy = ">=1.4.0,<2.0.0"
 
 [package.extras]
 development = ["mock", "numpy", "pytest", "pytest-cov", "pytest-rerunfailures", "pytest-timeout", "pytz"]
-pandas = ["snowflake-connector-python[pandas] (<3.0.0)"]
+pandas = ["snowflake-connector-python[pandas] (<4.0.0)"]
 
 [[package]]
 name = "soupsieve"
@@ -3581,7 +3581,7 @@ name = "werkzeug"
 version = "2.2.3"
 description = "The comprehensive WSGI web application library."
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "Werkzeug-2.2.3-py3-none-any.whl", hash = "sha256:56433961bc1f12533306c624f3be5e744389ac61d722175d543e1751285da612"},
@@ -3688,4 +3688,4 @@ playground = ["quart", "Quart-CORS", "hypercorn", "pymongo", "pandas", "psycopg"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.11"
-content-hash = "1a811bc89d7498b159d9147f0d391a762eb0e575740f5816de4f330baf2d09c3"
+content-hash = "5f20d9756421786aa0139181627546badad52ae9f7fe6143dbe7591982473282"
