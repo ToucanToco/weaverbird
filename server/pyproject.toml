@@ -27,8 +27,7 @@ Quart-CORS = {version = ">=0.5,<0.7", optional = true}
 hypercorn = {version = ">=0.13,<0.15", optional = true}
 pymongo = {version = ">=4.2.0", optional = true, extras = ["srv", "tls"]}
 psycopg = {optional = true, version = "^3.0.15"}
-# toucan-connectors = {version = "^4.0.0", optional = true, extras = ["awsathena", "google_big_query", "mongo", "Redshift", "snowflake"]}
-toucan-connectors = {git = "https://github.com/ToucanToco/toucan-connectors", branch = "add-py311-support", optional = true, extras = ["google_big_query", "mongo", "Redshift", "snowflake"]}
+toucan-connectors = {version = "v4.4.0", optional = true, extras = ["google_big_query", "mongo", "Redshift", "snowflake"]}
 pytest-xdist = ">=2.5,<4.0"
 awswrangler = {version = "^2.20.0", python = "<3.11", optional = true}
 
