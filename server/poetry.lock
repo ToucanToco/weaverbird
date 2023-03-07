@@ -493,7 +493,7 @@ name = "click-plugins"
 version = "1.1.1"
 description = "An extension module for click to enable registering CLI commands via setuptools entry-points."
 category = "main"
-optional = false
+optional = true
 python-versions = "*"
 files = [
     {file = "click-plugins-1.1.1.tar.gz", hash = "sha256:46ab999744a9d831159c3411bb0c79346d94a444df9a3a3742e9ed63645f264b"},
@@ -511,7 +511,7 @@ name = "cligj"
 version = "0.7.2"
 description = "Click params for commmand line interfaces to GeoJSON"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, <4"
 files = [
     {file = "cligj-0.7.2-py3-none-any.whl", hash = "sha256:c1ca117dbce1fe20a5809dc96f01e1c2840f6dcc939b3ddbb1111bf330ba82df"},
@@ -805,7 +805,7 @@ name = "fiona"
 version = "1.9.1"
 description = "Fiona reads and writes spatial data files"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "Fiona-1.9.1-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:902b67b2d012c5797b5d7d3cb3b46dcf9a342cf90a7f7e53fb12c83738d19926"},
@@ -951,7 +951,7 @@ name = "geopandas"
 version = "0.12.2"
 description = "Geographic pandas extensions"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.8"
 files = [
     {file = "geopandas-0.12.2-py3-none-any.whl", hash = "sha256:0a470e4bf6f5367e6fd83ab6b40405e0b805c8174665bbcb7c4077ed90202912"},
@@ -1919,7 +1919,7 @@ name = "munch"
 version = "2.5.0"
 description = "A dot-accessible dictionary (a la JavaScript objects)"
 category = "main"
-optional = false
+optional = true
 python-versions = "*"
 files = [
     {file = "munch-2.5.0-py2.py3-none-any.whl", hash = "sha256:6f44af89a2ce4ed04ff8de41f70b226b984db10a91dcc7b9ac2efc1c77022fdd"},
@@ -2745,7 +2745,7 @@ name = "pypika"
 version = "0.48.9"
 description = "A SQL query builder API for Python"
 category = "main"
-optional = false
+optional = true
 python-versions = "*"
 files = [
     {file = "PyPika-0.48.9.tar.gz", hash = "sha256:838836a61747e7c8380cd1b7ff638694b7a7335345d0f559b04b2cd832ad5378"},
@@ -2756,7 +2756,7 @@ name = "pyproj"
 version = "3.4.1"
 description = "Python interface to PROJ (cartographic projections and coordinate transformations library)"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.8"
 files = [
     {file = "pyproj-3.4.1-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:e463c687007861a9949909211986850cfc2e72930deda0d06449ef2e315db534"},
@@ -3215,7 +3215,7 @@ name = "shapely"
 version = "2.0.1"
 description = "Manipulation and analysis of geometric objects"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "shapely-2.0.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:b06d031bc64149e340448fea25eee01360a58936c89985cf584134171e05863f"},
@@ -3822,9 +3822,12 @@ idna = ">=2.0"
 multidict = ">=4.0"
 
 [extras]
+all = ["PyPika", "geopandas", "pandas"]
+pandas = ["geopandas", "pandas"]
 playground = ["Quart-CORS", "awswrangler", "hypercorn", "pandas", "psycopg", "pymongo", "quart", "toucan-connectors"]
+pypika = ["PyPika"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "ec98de3a926a27ce0aee95b064598a375e3451fe1c31501a7e856ea86aefa67a"
+content-hash = "c35ac45e0b4f802496811c64612ebc8a590a1cc4f4256ba806b99fc0b1512e92"
