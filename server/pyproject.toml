@@ -15,8 +15,6 @@ readme = "README.md"
 python = ">=3.10, <3.12"
 pandas = "^1.2.5"
 pydantic = "^1.9.1"
-numexpr = "^2.8.1"
-typing_extensions = "^4.2"
 geopandas = ">=0.12.2,<0.13.0"
 PyPika = "^0.48.9"
 
