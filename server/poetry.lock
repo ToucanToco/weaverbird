@@ -5,7 +5,7 @@ name = "aenum"
 version = "3.1.11"
 description = "Advanced Enumerations (compatible with Python's stdlib Enum), NamedTuples, and NamedConstants"
 category = "main"
-optional = true
+optional = false
 python-versions = "*"
 files = [
     {file = "aenum-3.1.11-py2-none-any.whl", hash = "sha256:525b4870a27d0b471c265bda692bc657f1e0dd7597ad4186d072c59f9db666f6"},
@@ -197,7 +197,7 @@ name = "awswrangler"
 version = "2.20.0"
 description = "Pandas on AWS."
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.7.1,<4.0"
 files = [
     {file = "awswrangler-2.20.0-py3-none-any.whl", hash = "sha256:186b0482a7520a3f2e7720e74137a0a7460487d2e1e9b473d73e2868d520d2e1"},
@@ -232,7 +232,7 @@ name = "backoff"
 version = "2.2.1"
 description = "Function decoration for backoff and retry"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.7,<4.0"
 files = [
     {file = "backoff-2.2.1-py3-none-any.whl", hash = "sha256:63579f9a0628e06278f7e47b7d7d5b6ce20dc65c5e96a6f3ca99a6adca0396e8"},
@@ -672,7 +672,7 @@ name = "decorator"
 version = "5.1.1"
 description = "Decorators for Humans"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.5"
 files = [
     {file = "decorator-5.1.1-py3-none-any.whl", hash = "sha256:b8c3f85900b9dc423225913c5aace94729fe1fa9763b38939a95226f02d37186"},
@@ -747,7 +747,7 @@ name = "et-xmlfile"
 version = "1.1.0"
 description = "An implementation of lxml.xmlfile for the standard library"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.6"
 files = [
     {file = "et_xmlfile-1.1.0-py3-none-any.whl", hash = "sha256:a2ba85d1d6a74ef63837eed693bcb89c3f752169b0e3e7ae5b16ca5e1b3deada"},
@@ -1302,7 +1302,7 @@ name = "gremlinpython"
 version = "3.6.2"
 description = "Gremlin-Python for Apache TinkerPop"
 category = "main"
-optional = true
+optional = false
 python-versions = "*"
 files = [
     {file = "gremlinpython-3.6.2-py2.py3-none-any.whl", hash = "sha256:0eaa0a3f39d18b65329f93ad1561ea4db7e9f75084d7d66565b8398db5cf568c"},
@@ -1500,7 +1500,7 @@ name = "isodate"
 version = "0.6.1"
 description = "An ISO 8601 date/time/duration parser and formatter"
 category = "main"
-optional = true
+optional = false
 python-versions = "*"
 files = [
     {file = "isodate-0.6.1-py2.py3-none-any.whl", hash = "sha256:0751eece944162659049d35f4f549ed815792b38793f07cf73381c1c87cbed96"},
@@ -1652,7 +1652,7 @@ name = "jsonpath-ng"
 version = "1.5.3"
 description = "A final implementation of JSONPath for Python that aims to be standard compliant, including arithmetic and binary comparison operators and providing clear AST for metaprogramming."
 category = "main"
-optional = true
+optional = false
 python-versions = "*"
 files = [
     {file = "jsonpath-ng-1.5.3.tar.gz", hash = "sha256:a273b182a82c1256daab86a313b937059261b5c5f8c4fa3fc38b882b344dd567"},
@@ -1997,7 +1997,7 @@ name = "nest-asyncio"
 version = "1.5.6"
 description = "Patch asyncio to allow nested event loops"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.5"
 files = [
     {file = "nest_asyncio-1.5.6-py3-none-any.whl", hash = "sha256:b9a953fb40dceaa587d109609098db21900182b16440652454a146cffb06e8b8"},
@@ -2128,7 +2128,7 @@ name = "openpyxl"
 version = "3.0.10"
 description = "A Python library to read/write Excel 2010 xlsx/xlsm files"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.6"
 files = [
     {file = "openpyxl-3.0.10-py2.py3-none-any.whl", hash = "sha256:0ab6d25d01799f97a9464630abacbb34aafecdcaa0ef3cba6d6b3499867d0355"},
@@ -2143,7 +2143,7 @@ name = "opensearch-py"
 version = "2.2.0"
 description = "Python client for OpenSearch"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, <4"
 files = [
     {file = "opensearch-py-2.2.0.tar.gz", hash = "sha256:109fe8d2e1e8f419a22358eb901025f51e6ad2f50014c8962e23796b2a23cb67"},
@@ -2252,7 +2252,7 @@ name = "pg8000"
 version = "1.29.4"
 description = "PostgreSQL interface library"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "pg8000-1.29.4-py3-none-any.whl", hash = "sha256:3264e481857752023eb968016d1b55cceedc0261133cf7a37c87623e465b0146"},
@@ -2300,7 +2300,7 @@ name = "ply"
 version = "3.11"
 description = "Python Lex & Yacc"
 category = "main"
-optional = true
+optional = false
 python-versions = "*"
 files = [
     {file = "ply-3.11-py2.py3-none-any.whl", hash = "sha256:096f9b8350b65ebd2fd1346b12452efe5b9607f7482813ffca50c22722a807ce"},
@@ -2324,7 +2324,7 @@ name = "progressbar2"
 version = "4.2.0"
 description = "A Python Progressbar library to provide visual (yet text based) progress to long running operations."
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.7.0"
 files = [
     {file = "progressbar2-4.2.0-py2.py3-none-any.whl", hash = "sha256:1a8e201211f99a85df55f720b3b6da7fb5c8cdef56792c4547205be2de5ea606"},
@@ -2983,7 +2983,7 @@ name = "python-utils"
 version = "3.5.2"
 description = "Python Utils is a module with some convenient utilities not included with the standard Python install"
 category = "main"
-optional = true
+optional = false
 python-versions = ">3.6.0"
 files = [
     {file = "python-utils-3.5.2.tar.gz", hash = "sha256:68198854fc276bc4b2403b261703c218e01ef564dcb072a7096ed9ea7aa5130c"},
@@ -3174,7 +3174,7 @@ name = "requests-aws4auth"
 version = "1.2.2"
 description = "AWS4 authentication for Requests"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.3"
 files = [
     {file = "requests-aws4auth-1.2.2.tar.gz", hash = "sha256:66bb1d346d8b5fc8fb08a0eb29640e961756dec80732748813525bfe90912610"},
@@ -3864,4 +3864,4 @@ playground = ["quart", "Quart-CORS", "hypercorn", "pymongo", "pandas", "psycopg"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "fa947159402469299d5dad9b2618de754b59d88c6c63793e956096d0c9a28386"
+content-hash = "7665ad4321a82d56c62f199e29e52365fb6c97711eed8ae44247379762632bce"
