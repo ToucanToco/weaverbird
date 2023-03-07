@@ -51,8 +51,7 @@ psycopg2 = "^2.9.5"
 pymongo = ">=4.2.0"
 sqlalchemy-redshift = ">=0.8.11,<1"
 PyYAML = "^6.0"
-pyarrow = "^10.0.0"
-awswrangler = {version = "^2.20.0", python = "<3.11", optional = true}
+awswrangler = {version = "^2.20.0", python = "<3.11"}
 
 [tool.poetry.extras]
 playground = ["quart", "Quart-CORS", "hypercorn", "pymongo", "pandas", "snowflake-connector-python", "psycopg", "google-cloud-bigquery", "toucan-connectors", "awswrangler"]
