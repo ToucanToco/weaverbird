@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [0.29.0] - 2023-03-08
+
+- The upper constraint on python < 3.11 has been lifted. **This does not mean that Python 3.11 is officially supported yet**.
+- The only dependency is now pydantic. pandas/pypika-related dependencies have been moved to the `pandas` and `pypika` extras.
+  An `all` extra is also available, and will install all previously required dependencies.
+
 ## [0.28.2] - 2023-01-23
 
 - Mongo: In case the `_id` column is an expected output column for a `rollup` step, rename it to `__id`
