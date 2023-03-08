@@ -3864,4 +3864,4 @@ playground = ["quart", "Quart-CORS", "hypercorn", "pymongo", "pandas", "psycopg"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "7665ad4321a82d56c62f199e29e52365fb6c97711eed8ae44247379762632bce"
+content-hash = "6d2f8ebca53c732551a2e8a5fb445da87aa29887d84409ec79053acbeb635fcf"
