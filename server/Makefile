@@ -11,11 +11,11 @@ clean:
 
 .PHONY: install
 install:
-	poetry install --no-dev
+	poetry install --no-dev -E all
 
 .PHONY: install-dev
 install-dev:
-	poetry install
+	poetry install -E all
 
 .PHONY: install-playground
 install-playground:

@@ -26,7 +26,7 @@ WORKDIR /weaverbird/server
 COPY server /weaverbird/server
 
 # Install pypi dependencies for the playground
-RUN pip install -e ".[playground]"
+RUN pip install -e ".[playground,all]"
 
 # Copy UI files
 COPY --from=ui-builder /weaverbird/playground/dist/* /weaverbird/server/static/
