@@ -248,7 +248,7 @@ yarn build-bundle
 
 cd ../server
 # install the backend dependencies
-pip install -e ".[playground]"
+pip install -e ".[playground,all]"
 # run the server
 QUART_APP=playground QUART_ENV=development quart run
 # note: in the dockerfile, a production-ready webserver is used instead of a development one
