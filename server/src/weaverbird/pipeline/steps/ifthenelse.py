@@ -1,4 +1,4 @@
-from typing import Any, Literal
+from typing import Any, Literal, Union
 
 from pydantic import Field
 
@@ -12,7 +12,8 @@ from ..conditions import Condition
 class IfThenElse(BaseModel):
     condition: Condition = Field(alias="if")
     then: Any
-    else_value: "IfThenElse" | Any = Field(alias="else")
+    # We can't use | with a quoted type in python 3.11
+    else_value: Union["IfThenElse", Any] = Field(alias="else")
     # NOTE: Some existing pipelines may already have defined this in a nested ifthenelse block. Our
     # BaseStep models forbids extra values, so we add this here too
     name: Literal["ifthenelse"] = "ifthenelse"

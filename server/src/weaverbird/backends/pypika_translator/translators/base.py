@@ -3,7 +3,7 @@ from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from functools import cache
-from typing import TYPE_CHECKING, Any, Literal, TypeVar, cast
+from typing import TYPE_CHECKING, Any, Literal, TypeVar, Union, cast
 
 from dateutil import parser as dateutil_parser
 from pypika import (
@@ -1119,7 +1119,8 @@ class SQLTranslator(ABC):
         *,
         if_: "Condition",
         then_: Any,
-        else_: "Condition" | Any,
+        # We can't use | with a quoted type in python 3.11
+        else_: Union["Condition", Any],
         prev_step_name: str,
         case_: Case,
         table: Table,
