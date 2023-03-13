@@ -7,7 +7,6 @@ import pandas as pd
 
 
 def standardized_columns(df: pd.DataFrame, colname_lowercase: bool = False):
-
     df.columns = [
         (c.replace("-", "_").lower() if colname_lowercase else c.replace("-", "_"))
         for c in df.columns
