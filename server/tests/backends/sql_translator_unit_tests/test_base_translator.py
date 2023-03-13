@@ -158,7 +158,6 @@ def test__get_window_function(base_translator: BaseTranslator, agg_type):
 def test_aggregate_raise_expection(
     base_translator: BaseTranslator, agg_type: str, default_step_kwargs: dict[str, Any]
 ):
-
     new_column = "countDistinctAge"
     agg_field = "age"
 

@@ -30,7 +30,7 @@ def execute_addmissingdates(
         groups = [("", df)]
 
     result = pd.DataFrame()
-    for (key, group) in groups:
+    for key, group in groups:
         # this is used to keep the real date, if it exists, instead of the computed one by pd.Grouper
         group = group.assign(_old_date=group[step.dates_column])
 

@@ -3,7 +3,6 @@ from weaverbird.pipeline.steps import RankStep
 
 
 def translate_rank(step: RankStep) -> list[MongoStep]:
-
     """
     Here we define the order variable that will be used in the '$reduce' step
     defined below. The order definition depends on the ranking method chosen.

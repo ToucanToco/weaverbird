@@ -50,7 +50,6 @@ def test_fillna_multi_columns_incompatible_types(sample_df):
 
 
 def test_benchmark_evolution(benchmark):
-
     df = DataFrame({"value": np.append(np.random.random(500), [None] * 500)})
     step = FillnaStep(name="fillna", columns=["value"], value=-1)
     benchmark(execute_fillna, step, df)

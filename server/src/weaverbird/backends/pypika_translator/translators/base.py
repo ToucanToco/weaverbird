@@ -845,7 +845,6 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "EvolutionStep",
     ) -> StepContext:
-
         prev_table = Table(prev_step_name)
         lagged_date = self._add_date(
             target_column=prev_table.field(step.date_col),
@@ -1017,7 +1016,6 @@ class SQLTranslator(ABC):
                     return column_field.isnotnull()
 
             case DateBoundCondition():  # type:ignore[misc]
-
                 if isinstance(condition.value, (RelativeDate, datetime, str)):
                     if isinstance(condition.value, RelativeDate):
                         dt = evaluate_relative_date(condition.value)
@@ -1070,7 +1068,6 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "FilterStep",
     ) -> StepContext:
-
         query: "QueryBuilder" = (
             self.QUERY_CLS.from_(prev_step_name)
             .select(*columns)
