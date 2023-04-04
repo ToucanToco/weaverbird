@@ -3458,14 +3458,14 @@ sqlcipher = ["sqlcipher3-binary"]
 
 [[package]]
 name = "sqlalchemy-redshift"
-version = "0.8.12"
+version = "0.8.13"
 description = "Amazon Redshift Dialect for sqlalchemy"
 category = "dev"
 optional = false
 python-versions = ">=3.4"
 files = [
-    {file = "sqlalchemy-redshift-0.8.12.tar.gz", hash = "sha256:21635da4e6f6b0b516a923ec02508cff409ce0d757e63a1e4fff39265d0b3208"},
-    {file = "sqlalchemy_redshift-0.8.12-py2.py3-none-any.whl", hash = "sha256:06d1d208a5a0ff7be6b8f346ba0ef30450f6d59190b2ba5316349a507c6f36d9"},
+    {file = "sqlalchemy-redshift-0.8.13.tar.gz", hash = "sha256:fd2d70f138c4be1ad38f5445b6327b52918616d7d937f89c9c4db4ceecd09a11"},
+    {file = "sqlalchemy_redshift-0.8.13-py2.py3-none-any.whl", hash = "sha256:f7dcde077516e40822f3797c27e8be21be8d7763d5267123d9ee9a452d2e3f27"},
 ]
 
 [package.dependencies]
