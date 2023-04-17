@@ -39,7 +39,7 @@ toucan-connectors = { version = "^4.4.0", extras = ["google_big_query", "mongo",
 pytest-benchmark = "^4.0.0"
 snowflake-sqlalchemy = "^1.4.7"
 types-python-dateutil = "^2.8.19"
-pytest = "^7.3.0"
+pytest = "^7.3.1"
 black = "^23.3.0"
 flake8 = "^6.0.0"
 isort = "^5.12.0"
