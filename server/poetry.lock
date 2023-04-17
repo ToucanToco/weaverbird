@@ -3053,19 +3053,19 @@ files = [
 
 [[package]]
 name = "quart"
-version = "0.18.3"
+version = "0.18.4"
 description = "A Python ASGI web microframework with the same API as Flask"
 category = "main"
 optional = true
 python-versions = ">=3.7"
 files = [
-    {file = "Quart-0.18.3-py3-none-any.whl", hash = "sha256:c221a7deb83a014dee040108d654b6141fe37f59e249c5caa0fdcf6506caf50b"},
-    {file = "Quart-0.18.3.tar.gz", hash = "sha256:dc4de597d5d4693627c90904b233d729531f6b27c1164f760476d3967aee2a4a"},
+    {file = "quart-0.18.4-py3-none-any.whl", hash = "sha256:578a466bcd8c58b947b384ca3517c2a2f3bfeec8f58f4ff5038d4506ffee6be7"},
+    {file = "quart-0.18.4.tar.gz", hash = "sha256:c1766f269cdb85daf9da67ba54170abf7839aca97304dcb4cd0778eabfb442c6"},
 ]
 
 [package.dependencies]
 aiofiles = "*"
-blinker = "*"
+blinker = "<1.6"
 click = ">=8.0.0"
 hypercorn = ">=0.11.2"
 itsdangerous = "*"
