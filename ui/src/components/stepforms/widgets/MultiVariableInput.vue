@@ -3,6 +3,7 @@
     <VariableInputBase
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
       :has-arrow="hasArrow"
       :is-multiple="true"
       :value="value"
@@ -38,6 +39,9 @@ export default class MultiVariableInput extends Vue {
 
   @Prop()
   variableDelimiters?: VariableDelimiters;
+
+  @Prop()
+  trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({ default: () => '' })
   editedAdvancedVariable!: string;

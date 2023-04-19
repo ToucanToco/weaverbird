@@ -6,6 +6,7 @@
           :value="value"
           :available-variables="availableVariables"
           :variable-delimiters="variableDelimiters"
+          :trusted-variable-delimiters="trustedVariableDelimiters"
           @removed="dismissVariable"
           @edited="editAdvancedVariable"
         />
@@ -14,6 +15,7 @@
     <VariableInputBase
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
       :has-arrow="hasArrow"
       :edited-advanced-variable="editedAdvancedVariable"
       @chooseAdvancedVariable="chooseVariable"
@@ -55,6 +57,9 @@ export default class VariableInput extends Vue {
   @Prop({ default: undefined })
   variableDelimiters!: VariableDelimiters;
 
+  @Prop({ default: undefined })
+  trustedVariableDelimiters!: VariableDelimiters;
+
   @Prop({ default: false })
   hasArrow?: boolean; //move variable-chooser button to the left if parent has an expand arrow
 
@@ -62,7 +67,11 @@ export default class VariableInput extends Vue {
    * Verify if we need to display the slot or the variableTag
    */
   get isVariable() {
-    const identifier = extractVariableIdentifier(this.value, this.variableDelimiters);
+    const identifier = extractVariableIdentifier(
+      this.value, 
+      this.variableDelimiters, 
+      this.trustedVariableDelimiters
+    );
     return identifier != null;
   }
 
