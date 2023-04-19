@@ -396,17 +396,35 @@ function _replaceAll(str: string, search: string, replace: string) {
   return str.replace(new RegExp(search, 'g'), replace);
 }
 
-// TODO
-export function labelWithReadeableVariables(
+function _replaceDelimitersInLabel(
   label: string | null,
-  variableDelimiters: VariableDelimiters | null,
   replaceDelimiters: VariableDelimiters | null,
+  variableDelimiters?: VariableDelimiters | null,
 ): string {
   if (!variableDelimiters || !replaceDelimiters || !label) {
     return label || '';
   }
   const formattedLabel = _replaceAll(label, variableDelimiters.start, replaceDelimiters.start);
   return _replaceAll(formattedLabel, variableDelimiters.end, replaceDelimiters.end);
+}
+
+export function labelWithReadeableVariables(
+  label: string | null,
+  variableDelimiters: VariableDelimiters | null,
+  replaceDelimiters: VariableDelimiters | null,
+  trustedVariableDelimiters?: VariableDelimiters,
+): string {
+  const labelWithoutTrustedVariableDelimiters = _replaceDelimitersInLabel(
+    label,
+    replaceDelimiters,
+    trustedVariableDelimiters,
+  );
+  const labelWithoutTrustedAndDefaultVariableDelimiters = _replaceDelimitersInLabel(
+    labelWithoutTrustedVariableDelimiters,
+    replaceDelimiters,
+    variableDelimiters,
+  );
+  return labelWithoutTrustedAndDefaultVariableDelimiters;
 }
 
 // enable to retrieve the related name of a query referenced behind an uid

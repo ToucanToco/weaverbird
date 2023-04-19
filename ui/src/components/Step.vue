@@ -147,15 +147,15 @@ export default class Step extends Vue {
   get errorMessage(): string | undefined {
     return this.stepErrors(this.indexInPipeline);
   }
-  // TODO
+
   get stepTitle(): string {
     const replaceDelimiters = { start: '', end: '' };
-    return labelWithReadeableVariables(this.stepName, this.variableDelimiters, replaceDelimiters);
+    return labelWithReadeableVariables(this.stepName, this.variableDelimiters, replaceDelimiters, this.trustedVariableDelimiters);
   }
 
   get stepLabel(): string {
     const replaceDelimiters = { start: '<em>', end: '</em>' };
-    return labelWithReadeableVariables(this.stepName, this.variableDelimiters, replaceDelimiters);
+    return labelWithReadeableVariables(this.stepName, this.variableDelimiters, replaceDelimiters, this.trustedVariableDelimiters);
   }
 
   get classContainer() {
