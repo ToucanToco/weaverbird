@@ -12,6 +12,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
       :columnTypes="columnTypes"
       @filterTreeUpdated="updateFilterTree"
     />
@@ -57,6 +58,7 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
 
   @State(VQBModule) availableVariables?: VariablesBucket;
   @State(VQBModule) variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Getter(VQBModule) columnTypes!: ColumnTypeMapping;
 

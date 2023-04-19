@@ -26,6 +26,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
       unstyled-items
     />
     <StepFormButtonbar />
@@ -61,6 +62,7 @@ export default class ReplaceStepForm extends BaseStepForm<ReplaceStep> {
   @State(VQBModule) availableVariables?: VariablesBucket;
 
   @State(VQBModule) variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'replace', searchColumn: '', toReplace: [[]] }) })
   declare initialStepValue: ReplaceStep;

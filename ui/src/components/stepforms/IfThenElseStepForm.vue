@@ -21,6 +21,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
       :column-types="columnTypes"
       @input="updateIfThenElse"
     />
@@ -55,6 +56,7 @@ export default class IfThenElseStepForm extends BaseStepForm<IfThenElseStep> {
 
   @State(VQBModule) availableVariables?: VariablesBucket;
   @State(VQBModule) variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Getter(VQBModule) columnTypes!: ColumnTypeMapping;
 

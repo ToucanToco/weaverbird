@@ -25,6 +25,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
     <AutocompleteWidget
       class="sortOrderInput"
@@ -45,6 +46,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
     <StepFormButtonbar />
   </div>
@@ -80,6 +82,7 @@ export default class TopStepForm extends BaseStepForm<TopStep> {
   @State(VQBModule) availableVariables?: VariablesBucket;
 
   @State(VQBModule) variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'top', rankOn: '', sort: 'desc' }) })
   declare initialStepValue: TopStep;

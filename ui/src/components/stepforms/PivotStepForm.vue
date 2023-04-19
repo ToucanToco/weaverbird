@@ -15,6 +15,7 @@
       data-path=".index"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
       :errors="errors"
     />
     <ColumnPicker
@@ -25,6 +26,7 @@
       data-path=".columnToPivot"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
       :errors="errors"
     />
     <AutocompleteWidget
@@ -36,6 +38,7 @@
       data-path=".valueColumn"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
       :errors="errors"
     />
     <AutocompleteWidget
@@ -80,6 +83,7 @@ export default class PivotStepForm extends BaseStepForm<PivotStep> {
   @State(VQBModule) availableVariables?: VariablesBucket;
 
   @State(VQBModule) variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,
