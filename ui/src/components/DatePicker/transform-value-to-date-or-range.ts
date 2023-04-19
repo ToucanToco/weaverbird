@@ -40,12 +40,14 @@ export const transformRelativeDateToDate = (
   relativeDate: RelativeDate,
   relativeAvailableVariables: VariablesBucket = [],
   variableDelimiters: VariableDelimiters = { start: '', end: '' },
+  trustedVariableDelimiters?: VariableDelimiters,
 ): Date | undefined => {
   // retrieve relative date variable value in order to use it to calculate date
   const value = retrieveVariable(
     relativeDate.date,
     relativeAvailableVariables,
     variableDelimiters,
+    trustedVariableDelimiters,
   )?.value;
   if (!(value instanceof Date)) return;
 
@@ -71,12 +73,14 @@ export const transformRelativeDateToDateRange = (
   relativeDate: RelativeDate,
   relativeAvailableVariables: VariablesBucket = [],
   variableDelimiters: VariableDelimiters = { start: '', end: '' },
+  trustedVariableDelimiters?: VariableDelimiters,
 ): DateRange | undefined => {
   // retrieve relative date variable value in order to use it to calculate date
   const value = retrieveVariable(
     relativeDate.date,
     relativeAvailableVariables,
     variableDelimiters,
+    trustedVariableDelimiters,
   )?.value;
   if (!(value instanceof Date)) return;
 
@@ -145,6 +149,7 @@ export const transformValueToDate = (
   availableVariables: VariablesBucket = [],
   relativeAvailableVariables: VariablesBucket = [],
   variableDelimiters: VariableDelimiters = { start: '', end: '' },
+  trustedVariableDelimiters?: VariableDelimiters,
 ): Date | undefined => {
   // Undefined
   if (!value) {
@@ -156,7 +161,12 @@ export const transformValueToDate = (
   }
   // Variable reference
   else if (typeof value === 'string') {
-    const variableValue = retrieveVariable(value, availableVariables, variableDelimiters)?.value;
+    const variableValue = retrieveVariable(
+      value,
+      availableVariables,
+      variableDelimiters,
+      trustedVariableDelimiters,
+    )?.value;
     // if a variable is customizable, it can refers to another variable of any type
     // loop to find the variable value as Date or DateRange
     return transformValueToDate(
@@ -164,11 +174,17 @@ export const transformValueToDate = (
       availableVariables,
       relativeAvailableVariables,
       variableDelimiters,
+      trustedVariableDelimiters,
     );
   }
   // RelativeDate
   else {
-    return transformRelativeDateToDate(value, relativeAvailableVariables, variableDelimiters);
+    return transformRelativeDateToDate(
+      value,
+      relativeAvailableVariables,
+      variableDelimiters,
+      trustedVariableDelimiters,
+    );
   }
 };
 
@@ -196,6 +212,7 @@ export const transformValueToDateRange = (
   availableVariables: VariablesBucket = [],
   relativeAvailableVariables: VariablesBucket = [],
   variableDelimiters: VariableDelimiters = { start: '', end: '' },
+  trustedVariableDelimiters?: VariableDelimiters,
 ): DateRange | undefined => {
   let dateRange: DateRange | undefined;
   // Undefined
@@ -208,7 +225,12 @@ export const transformValueToDateRange = (
   }
   // Variable reference
   else if (typeof value === 'string') {
-    const variableValue = retrieveVariable(value, availableVariables, variableDelimiters)?.value;
+    const variableValue = retrieveVariable(
+      value,
+      availableVariables,
+      variableDelimiters,
+      trustedVariableDelimiters,
+    )?.value;
     // if a variable is customizable, it can refers to another variable of any type
     // loop to find the variable value as Date or DateRange
     dateRange = transformValueToDateRange(
@@ -216,6 +238,7 @@ export const transformValueToDateRange = (
       availableVariables,
       relativeAvailableVariables,
       variableDelimiters,
+      trustedVariableDelimiters,
     );
   }
   // RelativeDate
@@ -224,6 +247,7 @@ export const transformValueToDateRange = (
       value,
       relativeAvailableVariables,
       variableDelimiters,
+      trustedVariableDelimiters,
     );
   }
   return setDateRangeHours(dateRange);

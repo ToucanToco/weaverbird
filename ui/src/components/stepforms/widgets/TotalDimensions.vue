@@ -9,6 +9,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
     <InputTextWidget
       class="widget-totals__total-rows-label"
@@ -18,6 +19,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
   </div>
 </template>
@@ -58,6 +60,9 @@ export default class TotalDimensionsWidget extends Vue {
 
   @Prop()
   variableDelimiters?: VariableDelimiters;
+  
+  @Prop()
+  trustedVariableDelimiters?: VariableDelimiters;
 
   @Getter(VQBModule) columnNames!: string[];
 

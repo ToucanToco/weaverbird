@@ -79,6 +79,7 @@
               v-model="currentTabValue"
               :availableVariables="relativeAvailableVariables"
               :variableDelimiters="variableDelimiters"
+              :trusted-variable-delimiters="trustedVariableDelimiters"
             />
           </div>
           <div class="widget-date-input__editor-footer">
@@ -170,6 +171,9 @@ export default class DateRangeInput extends Vue {
   @Prop({ default: () => ({ start: '', end: '' }) })
   variableDelimiters!: VariableDelimiters;
 
+  @Prop({ default: undefined })
+  trustedVariableDelimiters!: VariableDelimiters;
+
   @Prop({ default: () => true })
   enableRelativeDate!: boolean;
 
@@ -249,7 +253,11 @@ export default class DateRangeInput extends Vue {
 
   get variable(): AvailableVariable | undefined {
     if (typeof this.value !== 'string') return undefined;
-    const identifier = extractVariableIdentifier(this.value, this.variableDelimiters);
+    const identifier = extractVariableIdentifier(
+      this.value, 
+      this.variableDelimiters, 
+      this.trustedVariableDelimiters
+    );
     return this.availableVariables.find((v) => v.identifier === identifier);
   }
 
@@ -306,6 +314,7 @@ export default class DateRangeInput extends Vue {
         this.value,
         this.relativeAvailableVariables,
         this.variableDelimiters,
+        this.trustedVariableDelimiters,
       );
     } else {
       return t('SELECT_PERIOD_PLACEHOLDER', this.locale);

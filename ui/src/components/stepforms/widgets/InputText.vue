@@ -11,6 +11,7 @@
       :value="value"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
       @input="updateValue"
     >
       <input
@@ -66,6 +67,9 @@ export default class InputTextWidget extends FormWidget {
 
   @Prop()
   variableDelimiters?: VariableDelimiters;
+
+  @Prop()
+  trustedVariableDelimiters?: VariableDelimiters;
 
   updateValue(newValue: string | undefined) {
     this.$emit('input', newValue || undefined);

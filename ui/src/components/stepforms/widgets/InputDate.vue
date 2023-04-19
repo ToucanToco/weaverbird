@@ -10,6 +10,7 @@
       :value="parsedValue"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
       :has-arrow="true"
       @input="updateValue"
     >
@@ -67,6 +68,9 @@ export default class InputDateWidget extends FormWidget {
 
   @Prop()
   variableDelimiters?: VariableDelimiters;
+
+  @Prop()
+  trustedVariableDelimiters?: VariableDelimiters;
 
   get parsedValue(): string {
     return this.value instanceof Date ? this.parseDateToString(this.value) : this.value;

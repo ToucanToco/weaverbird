@@ -9,6 +9,7 @@
       :value="value"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
       :has-arrow="true"
       @input="updateValue"
     >
@@ -89,6 +90,9 @@ export default class AutocompleteWidget extends FormWidget {
 
   @Prop()
   variableDelimiters?: VariableDelimiters;
+
+  @Prop()
+  trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({ type: Number, default: undefined })
   maxHeight!: number;

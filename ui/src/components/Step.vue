@@ -117,6 +117,9 @@ export default class Step extends Vue {
   variableDelimiters!: VariableDelimiters;
 
   @Prop()
+  trustedVariableDelimiters!: VariableDelimiters;
+
+  @Prop()
   readonly indexInPipeline!: number;
 
   isEditingPreviewSourceSubset = false;
@@ -144,7 +147,7 @@ export default class Step extends Vue {
   get errorMessage(): string | undefined {
     return this.stepErrors(this.indexInPipeline);
   }
-
+  // TODO
   get stepTitle(): string {
     const replaceDelimiters = { start: '', end: '' };
     return labelWithReadeableVariables(this.stepName, this.variableDelimiters, replaceDelimiters);

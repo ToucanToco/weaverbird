@@ -9,6 +9,7 @@
         :value="value.column"
         :available-variables="hideColumnVariables ? undefined : availableVariables"
         :variable-delimiters="hideColumnVariables ? undefined : variableDelimiters"
+        :trusted-variable-delimiters="hideColumnVariables ? undefined : trustedVariableDelimiters"
         :options="columnNames"
         @input="updateStepColumn"
         placeholder="Column"
@@ -39,6 +40,7 @@
       :value="value.value"
       :available-variables="availableVariablesForInputWidget"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
       :placeholder="placeholder"
       :data-path="`${dataPath}.value`"
       :errors="errors"
@@ -172,6 +174,11 @@ export default defineComponent({
 
     variableDelimiters: {
       type: Object as PropType<VariableDelimiters>,
+    },
+
+    trustedVariableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
     },
 
     hideColumnVariables: {

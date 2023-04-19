@@ -17,6 +17,7 @@
             :options="options"
             :available-variables="availableVariables"
             :variable-delimiters="variableDelimiters"
+            :trusted-variable-delimiters="trustedVariableDelimiters"
             @input="updateChildValue($event, index)"
             :data-path="`${dataPath}.${index}`"
             :errors="errors"
@@ -107,6 +108,9 @@ export default class ListWidget extends FormWidget {
 
   @Prop()
   variableDelimiters?: VariableDelimiters;
+
+  @Prop()
+  trustedVariableDelimiters?: VariableDelimiters;
 
   // Remove gray box and padding around list elements
   @Prop({ type: Boolean, default: false })

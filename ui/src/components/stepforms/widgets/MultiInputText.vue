@@ -5,6 +5,7 @@
       :value="value"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
       :edited-advanced-variable="editedAdvancedVariable"
       @resetEditedAdvancedVariable="resetEditedAdvancedVariable"
       @input="updateValue"
@@ -32,6 +33,7 @@
             v-if="isVariable(option)"
             :available-variables="availableVariables"
             :variable-delimiters="variableDelimiters"
+            :trusted-variable-delimiters="trustedVariableDelimiters"
             :value="option"
             @removed="remove(option)"
             @edited="editAdvancedVariable"
@@ -88,6 +90,9 @@ export default class MultiInputTextWidget extends Vue {
   @Prop({ default: undefined })
   variableDelimiters!: VariableDelimiters;
 
+  @Prop({ default: undefined })
+  trustedVariableDelimiters!: VariableDelimiters;
+
   @Prop({ default: true })
   multiVariable!: boolean;
 
@@ -121,7 +126,11 @@ export default class MultiInputTextWidget extends Vue {
    * Verify if we need to use regular template or variable one
    **/
   isVariable(value: string) {
-    const identifier = extractVariableIdentifier(value, this.variableDelimiters);
+    const identifier = extractVariableIdentifier(
+      value, 
+      this.variableDelimiters, 
+      this.VariableDelimiters
+    );
     return identifier != null;
   }
 

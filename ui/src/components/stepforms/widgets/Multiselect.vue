@@ -6,6 +6,7 @@
       :value="stringValue"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
       :has-arrow="true"
       :edited-advanced-variable="editedAdvancedVariable"
       @resetEditedAdvancedVariable="resetEditedAdvancedVariable"
@@ -37,6 +38,7 @@
             v-if="isVariable(option)"
             :available-variables="availableVariables"
             :variable-delimiters="variableDelimiters"
+            :trusted-variable-delimiters="trustedVariableDelimiters"
             :value="customLabel(option)"
             @removed="remove(option)"
             @edited="editAdvancedVariable"
@@ -112,6 +114,9 @@ export default class MultiselectWidget extends FormWidget {
   @Prop({ default: undefined })
   variableDelimiters!: VariableDelimiters;
 
+  @Prop({ default: undefined })
+  trustedVariableDelimiters!: VariableDelimiters;
+
   editedValue: string[] | object[] = [];
 
   /**
@@ -159,7 +164,11 @@ export default class MultiselectWidget extends FormWidget {
    * Verify if we need to use regular template or variable one
    **/
   isVariable(value: string | object) {
-    const identifier = extractVariableIdentifier(this.customLabel(value), this.variableDelimiters);
+    const identifier = extractVariableIdentifier(
+      this.customLabel(value), 
+      this.variableDelimiters, 
+      this.trustedVariableDelimiters
+    );
     return identifier != null;
   }
 

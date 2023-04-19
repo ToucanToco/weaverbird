@@ -17,6 +17,7 @@
         :value="value"
         :available-variables="availableVariables"
         :variable-delimiters="variableDelimiters"
+        :trusted-variable-delimiters="trustedVariableDelimiters"
         :isDate="true"
         @edited="openAdvancedVariableModal"
         @removed="resetValue"
@@ -75,6 +76,7 @@
               v-model="currentTabValue"
               :availableVariables="relativeAvailableVariables"
               :variableDelimiters="variableDelimiters"
+              :trusted-variable-delimiters="trustedVariableDelimiters"
             />
           </div>
           <div class="widget-date-input__editor-footer">
@@ -152,6 +154,9 @@ export default class NewDateInput extends Vue {
   @Prop({ default: () => ({ start: '', end: '' }) })
   variableDelimiters!: VariableDelimiters;
 
+  @Prop({ default: undefined })
+  trustedVariableDelimiters!: VariableDelimiters;
+
   @Prop({ default: true })
   enableCustom!: boolean;
 
@@ -187,13 +192,21 @@ export default class NewDateInput extends Vue {
 
   get variable(): AvailableVariable | undefined {
     if (typeof this.value !== 'string') return undefined;
-    const identifier = extractVariableIdentifier(this.value, this.variableDelimiters);
+    const identifier = extractVariableIdentifier(
+      this.value, 
+      this.variableDelimiters, 
+      this.trustedVariableDelimiters
+    );
     return this.availableVariables.find((v) => v.identifier === identifier);
   }
 
   get advancedVariable(): string | undefined {
     if (typeof this.value !== 'string') return undefined;
-    const identifier = extractVariableIdentifier(this.value, this.variableDelimiters);
+    const identifier = extractVariableIdentifier(
+      this.value, 
+      this.variableDelimiters,
+      this.trustedVariableDelimiters
+    );
     return identifier && !this.variable ? this.value : undefined;
   }
 
@@ -231,6 +244,7 @@ export default class NewDateInput extends Vue {
         this.value,
         this.relativeAvailableVariables,
         this.variableDelimiters,
+        this.trustedVariableDelimiters,
       );
     } else {
       return 'Select a date';
