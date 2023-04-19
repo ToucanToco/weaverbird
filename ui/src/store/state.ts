@@ -23,6 +23,7 @@ export interface VQBState {
   // for templating
   availableVariables?: VariablesBucket;
   variableDelimiters?: VariableDelimiters;
+  trustedVariableDelimiters?: VariableDelimiters;
   variables?: ScopeContext;
   interpolateFunc?: InterpolateFunction;
 

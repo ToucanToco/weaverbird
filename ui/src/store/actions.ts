@@ -41,6 +41,11 @@ export type VQBActions = {
   }: {
     variableDelimiters: VariableDelimiters | undefined;
   }) => void;
+  setTrustedVariableDelimiters: ({
+    variableDelimiters,
+  }: {
+    variableDelimiters: VariableDelimiters | undefined;
+  }) => void;
   setDomains: ({ domains }: { domains: string[] }) => void;
   setAvailableDomains: ({
     availableDomains,
@@ -120,6 +125,9 @@ const actions: PiniaActionAdaptor<VQBActions, VQBStore> = {
     this.variableDelimiters = variableDelimiters;
     // Forward them to translators
     setVariableDelimiters(variableDelimiters);
+  },
+  setTrustedVariableDelimiters({ variableDelimiters }) {
+    this.trustedVariableDelimiters = variableDelimiters;
   },
   // DOMAINS & PIPELINES
   setDomains({ domains }) {
