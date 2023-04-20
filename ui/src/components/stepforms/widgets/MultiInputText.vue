@@ -127,9 +127,9 @@ export default class MultiInputTextWidget extends Vue {
    **/
   isVariable(value: string) {
     const identifier = extractVariableIdentifier(
-      value, 
-      this.variableDelimiters, 
-      this.VariableDelimiters
+      value,
+      this.variableDelimiters,
+      this.trustedVariableDelimiters,
     );
     return identifier != null;
   }

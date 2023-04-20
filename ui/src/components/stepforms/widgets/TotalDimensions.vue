@@ -60,7 +60,7 @@ export default class TotalDimensionsWidget extends Vue {
 
   @Prop()
   variableDelimiters?: VariableDelimiters;
-  
+
   @Prop()
   trustedVariableDelimiters?: VariableDelimiters;
 

@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  type AvailableVariable,
   extractVariableIdentifier,
   retrieveVariable,
-  type AvailableVariable,
 } from '@/lib/variables';
 
 describe('extractVariableIdentifier', () => {
@@ -96,7 +96,9 @@ describe('retrieveVariable', () => {
     ).toBeUndefined();
   });
   it('should return undefined if variable delimiters are not attended one', () => {
-    expect(retrieveVariable('<< date.client >>', availableVariables, variableDelimiters)).toBeUndefined();
+    expect(
+      retrieveVariable('<< date.client >>', availableVariables, variableDelimiters),
+    ).toBeUndefined();
   });
   it('should return variable if variable exist in available variables', () => {
     expect(

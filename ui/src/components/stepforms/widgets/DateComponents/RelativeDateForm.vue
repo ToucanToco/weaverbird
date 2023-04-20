@@ -96,9 +96,9 @@ export default class RelativeDateForm extends Vue {
 
   get baseDate(): AvailableVariable | undefined {
     const identifier = extractVariableIdentifier(
-      this.value.date, 
-      this.variableDelimiters, 
-      this.trustedVariableDelimiters
+      this.value.date,
+      this.variableDelimiters,
+      this.trustedVariableDelimiters,
     );
     return this.availableVariables.find((v) => v.identifier === identifier);
   }

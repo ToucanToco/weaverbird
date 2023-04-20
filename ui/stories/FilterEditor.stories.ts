@@ -126,7 +126,7 @@ export const WithVariables: StoryFn<typeof FilterEditor> = () => ({
           identifier: 'date',
           value: '27/12/2093',
           trusted: true,
-        }
+        },
       ],
       filterTree: {
         column: 'my_col',

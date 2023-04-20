@@ -68,9 +68,9 @@ export default class VariableInput extends Vue {
    */
   get isVariable() {
     const identifier = extractVariableIdentifier(
-      this.value, 
-      this.variableDelimiters, 
-      this.trustedVariableDelimiters
+      this.value,
+      this.variableDelimiters,
+      this.trustedVariableDelimiters,
     );
     return identifier != null;
   }

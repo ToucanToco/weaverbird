@@ -254,9 +254,9 @@ export default class DateRangeInput extends Vue {
   get variable(): AvailableVariable | undefined {
     if (typeof this.value !== 'string') return undefined;
     const identifier = extractVariableIdentifier(
-      this.value, 
-      this.variableDelimiters, 
-      this.trustedVariableDelimiters
+      this.value,
+      this.variableDelimiters,
+      this.trustedVariableDelimiters,
     );
     return this.availableVariables.find((v) => v.identifier === identifier);
   }

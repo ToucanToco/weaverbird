@@ -193,9 +193,9 @@ export default class NewDateInput extends Vue {
   get variable(): AvailableVariable | undefined {
     if (typeof this.value !== 'string') return undefined;
     const identifier = extractVariableIdentifier(
-      this.value, 
-      this.variableDelimiters, 
-      this.trustedVariableDelimiters
+      this.value,
+      this.variableDelimiters,
+      this.trustedVariableDelimiters,
     );
     return this.availableVariables.find((v) => v.identifier === identifier);
   }
@@ -203,9 +203,9 @@ export default class NewDateInput extends Vue {
   get advancedVariable(): string | undefined {
     if (typeof this.value !== 'string') return undefined;
     const identifier = extractVariableIdentifier(
-      this.value, 
+      this.value,
       this.variableDelimiters,
-      this.trustedVariableDelimiters
+      this.trustedVariableDelimiters,
     );
     return identifier && !this.variable ? this.value : undefined;
   }

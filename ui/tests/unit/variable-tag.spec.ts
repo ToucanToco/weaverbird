@@ -141,7 +141,7 @@ describe('Variable Tag', () => {
     it('should compute the variable identifier', () => {
       expect((wrapper as any).vm.variableIdentifier).toBe('appRequesters.date.month');
     });
-  
+
     it('should compute the variable', () => {
       expect((wrapper as any).vm.variable).toStrictEqual({
         category: 'App variables',
@@ -151,15 +151,15 @@ describe('Variable Tag', () => {
         trusted: true,
       });
     });
-  
+
     it('should compute the variable value', () => {
       expect((wrapper as any).vm.variableValue).toBe('Apr');
     });
 
-  it('should display the tag label', () => {
-    const name = wrapper.find('.widget-variable__tag-name');
-    expect(name.exists()).toBe(true);
-    expect(name.text()).toBe('date.month');
-  });
+    it('should display the tag label', () => {
+      const name = wrapper.find('.widget-variable__tag-name');
+      expect(name.exists()).toBe(true);
+      expect(name.text()).toBe('date.month');
+    });
   });
 });

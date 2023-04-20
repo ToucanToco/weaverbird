@@ -95,10 +95,20 @@ export default class VariableInputBase extends Vue {
    */
   get selectedVariables(): string | string[] {
     if (!Array.isArray(this.value)) {
-      return extractVariableIdentifier(this.value, this.variableDelimiters, this.trustedVariableDelimiters) ?? '';
+      return (
+        extractVariableIdentifier(
+          this.value,
+          this.variableDelimiters,
+          this.trustedVariableDelimiters,
+        ) ?? ''
+      );
     } else {
       return this.value.reduce((variables: string[], value: string) => {
-        const identifier = extractVariableIdentifier(value, this.variableDelimiters, this.trustedVariableDelimiters);
+        const identifier = extractVariableIdentifier(
+          value,
+          this.variableDelimiters,
+          this.trustedVariableDelimiters,
+        );
         // in case value is a simple string we still want to keep it in array
         return [...variables, identifier || value];
       }, []);
@@ -131,7 +141,9 @@ export default class VariableInputBase extends Vue {
   }
 
   setVariableDelimiters(value: string | string[]): string | string[] {
-    const retrieveVariableDelimiters = (variableIdentifier: string): VariableDelimiters | undefined => {
+    const retrieveVariableDelimiters = (
+      variableIdentifier: string,
+    ): VariableDelimiters | undefined => {
       const variable = this.availableVariables.find((v) => v.identifier === variableIdentifier);
       if (!variable) {
         return; // if variable is unfound we don't want to display any delimiters
@@ -139,12 +151,12 @@ export default class VariableInputBase extends Vue {
         return this.trustedVariableDelimiters;
       }
       return this.variableDelimiters;
-    }
+    };
     const addVariableDelimiters = (variableIdentifier: string): string => {
-      const delimiters = retrieveVariableDelimiters(variableIdentifier)
+      const delimiters = retrieveVariableDelimiters(variableIdentifier);
       if (!delimiters) return variableIdentifier;
       return `${delimiters.start} ${variableIdentifier} ${delimiters.end}`;
-    }
+    };
     return Array.isArray(value)
       ? value.map((v) => addVariableDelimiters(v))
       : addVariableDelimiters(value);

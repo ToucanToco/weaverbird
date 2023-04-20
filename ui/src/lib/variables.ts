@@ -107,11 +107,9 @@ export const retrieveVariable = (
     isVariable ? trustedVariableDelimiters : variableDelimiters,
   );
   // search on relative available variables
-  return availableVariables.find(
-    (v: AvailableVariable) => v.identifier === identifier,
-  );
+  return availableVariables.find((v: AvailableVariable) => v.identifier === identifier);
 };
 
-export const isTrustedVariable = (variable?: AvailableVariable): Boolean => {
+export const isTrustedVariable = (variable?: AvailableVariable): boolean => {
   return !!variable?.trusted;
-}
+};

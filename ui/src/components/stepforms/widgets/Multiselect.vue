@@ -165,9 +165,9 @@ export default class MultiselectWidget extends FormWidget {
    **/
   isVariable(value: string | object) {
     const identifier = extractVariableIdentifier(
-      this.customLabel(value), 
-      this.variableDelimiters, 
-      this.trustedVariableDelimiters
+      this.customLabel(value),
+      this.variableDelimiters,
+      this.trustedVariableDelimiters,
     );
     return identifier != null;
   }

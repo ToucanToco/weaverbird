@@ -85,7 +85,12 @@ describe('Variable Input', () => {
   describe('with multiple selected variables', () => {
     beforeEach(async () => {
       wrapper.setProps({
-        value: ['{{ appRequesters.city }}', '{{ appRequesters.country }}', '<< server.data >>', 'toto'],
+        value: [
+          '{{ appRequesters.city }}',
+          '{{ appRequesters.country }}',
+          '<< server.data >>',
+          'toto',
+        ],
       });
       await wrapper.vm.$nextTick();
     });

@@ -61,9 +61,9 @@ export default class VariableTag extends Vue {
 
   @Prop({ default: undefined })
   variableDelimiters!: VariableDelimiters;
-  
+
   @Prop({ default: undefined })
-  trustedVariableDelimiters!: VariableDelimiters;  
+  trustedVariableDelimiters!: VariableDelimiters;
 
   @Prop({ default: false })
   isDate!: boolean;
@@ -72,7 +72,11 @@ export default class VariableTag extends Vue {
    * Retrieve identifier by removing delimiters from value.
    */
   get variableIdentifier() {
-    return extractVariableIdentifier(this.value, this.variableDelimiters, this.trustedVariableDelimiters);
+    return extractVariableIdentifier(
+      this.value,
+      this.variableDelimiters,
+      this.trustedVariableDelimiters,
+    );
   }
 
   /**
