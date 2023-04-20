@@ -100,6 +100,7 @@ export function emptyState(): VQBState {
     availableVariables: [],
     variables: {},
     variableDelimiters: undefined,
+    trustedVariableDelimiters: undefined,
     translator: 'mongo50',
     backendService: UnsetBackendService,
     interpolateFunc: (x: string | any[], _context: ScopeContext) => x,
