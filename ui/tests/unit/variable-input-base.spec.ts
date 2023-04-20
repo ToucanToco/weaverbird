@@ -12,6 +12,7 @@ describe('Variable Input', () => {
       sync: false,
       propsData: {
         variableDelimiters: { start: '{{', end: '}}' },
+        trustedVariableDelimiters: { start: '<<', end: '>>' },
         availableVariables: [
           {
             category: 'App variables',
@@ -42,6 +43,13 @@ describe('Variable Input', () => {
             label: 'city',
             identifier: 'appRequesters.city',
             value: 'New York',
+          },
+          {
+            category: 'Server variables',
+            label: 'server',
+            identifier: 'server.data',
+            value: 'Data from server',
+            trusted: true,
           },
         ],
         value: '{{ appRequesters.city }}',
@@ -77,7 +85,12 @@ describe('Variable Input', () => {
   describe('with multiple selected variables', () => {
     beforeEach(async () => {
       wrapper.setProps({
-        value: ['{{ appRequesters.city }}', '{{ appRequesters.country }}', 'toto'],
+        value: [
+          '{{ appRequesters.city }}',
+          '{{ appRequesters.country }}',
+          '<< server.data >>',
+          'toto',
+        ],
       });
       await wrapper.vm.$nextTick();
     });
@@ -86,6 +99,7 @@ describe('Variable Input', () => {
       expect(wrapper.find('VariableChooser-stub').props().selectedVariables).toStrictEqual([
         'appRequesters.city',
         'appRequesters.country',
+        'server.data',
         // toto is a simple string not a variable so keep it unchanged
         'toto',
       ]);
@@ -180,7 +194,7 @@ describe('Variable Input', () => {
           wrapper.setProps({ isMultiple: true });
           wrapper
             .find('VariableChooser-stub')
-            .vm.$emit('input', ['appRequesters.view', 'appRequesters.city', 'toto']);
+            .vm.$emit('input', ['appRequesters.view', 'appRequesters.city', 'server.data', 'toto']);
           await wrapper.vm.$nextTick();
         });
 
@@ -194,6 +208,7 @@ describe('Variable Input', () => {
             [
               '{{ appRequesters.view }}',
               '{{ appRequesters.city }}',
+              '<< server.data >>',
               // toto is a simple string not a variable so keep it unchanged
               'toto',
             ],

@@ -20,6 +20,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
       unstyled-items
     />
     <StepFormButtonbar />
@@ -51,6 +52,7 @@ export default class RenameStepForm extends BaseStepForm<RenameStep> {
   @State(VQBModule) availableVariables?: VariablesBucket;
 
   @State(VQBModule) variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'rename', toRename: [['', '']] }) })
   declare initialStepValue: RenameStep;

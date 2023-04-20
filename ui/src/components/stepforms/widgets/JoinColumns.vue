@@ -9,6 +9,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
     <!-- defaults to a simple text input if we don't have any column names -->
     <AutocompleteWidget
@@ -22,6 +23,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
     <InputTextWidget
       v-else
@@ -33,6 +35,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
   </div>
 </template>
@@ -72,6 +75,9 @@ export default class JoinColumns extends Vue {
 
   @Prop()
   variableDelimiters?: VariableDelimiters;
+
+  @Prop()
+  trustedVariableDelimiters?: VariableDelimiters;
 
   @Getter(VQBModule) columnNames!: string[];
 

@@ -16,6 +16,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
     <AutocompleteWidget
       class="orderInput"
@@ -41,6 +42,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
     <InputTextWidget
       class="newColumnNameInput"
@@ -84,6 +86,7 @@ export default class RankStepForm extends BaseStepForm<RankStep> {
   @State(VQBModule) availableVariables?: VariablesBucket;
 
   @State(VQBModule) variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,

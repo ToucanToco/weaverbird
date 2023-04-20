@@ -77,6 +77,7 @@ export const WithVariables: StoryFn<typeof FilterEditor> = () => ({
         @filterTreeUpdated="updateFilterTree"
         :available-variables="availableVariables"
         :variableDelimiters="variableDelimiters"
+        :trustedVariableDelimiters="trustedVariableDelimiters"
       />
       <pre style="margin-top: 30px;">{{ filterTreeStringify }}</pre>
     </div>
@@ -89,12 +90,18 @@ export const WithVariables: StoryFn<typeof FilterEditor> = () => ({
   data(): {
     availableVariables: AvailableVariable[];
     variableDelimiters: VariableDelimiters;
+    trustedVariableDelimiters: VariableDelimiters;
     filterTree: FilterCondition;
     defaultValue: FilterCondition;
   } {
     return {
       availableVariables: [
-        { category: 'Values', label: 'The best number', identifier: 'bestNumber', value: 42 },
+        {
+          category: 'Values',
+          label: 'The best number',
+          identifier: 'bestNumber',
+          value: 42,
+        },
         {
           category: 'Values',
           label: 'King in the North',
@@ -113,13 +120,21 @@ export const WithVariables: StoryFn<typeof FilterEditor> = () => ({
           identifier: 'pokedeck',
           value: ['pikachu', 'carapuce', 'evoli'],
         },
+        {
+          category: 'Trusted',
+          label: 'Date',
+          identifier: 'date',
+          value: '27/12/2093',
+          trusted: true,
+        },
       ],
       filterTree: {
         column: 'my_col',
         operator: 'in',
-        value: ['{{ someArray }}'],
+        value: ['<%= someArray %>'],
       },
-      variableDelimiters: { start: '{{', end: '}}' },
+      variableDelimiters: { start: '<%=', end: '%>' },
+      trustedVariableDelimiters: { start: '{{', end: '}}' },
       defaultValue: { column: '', value: '', operator: 'eq' },
     };
   },

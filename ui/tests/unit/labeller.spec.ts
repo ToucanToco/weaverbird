@@ -870,6 +870,19 @@ describe('Labeller', () => {
       );
     });
 
+    it('generates label where trusted variable delimiters are replaced with selected ones', () => {
+      const trustedVariableDelimiters: VariableDelimiters = { start: '{{ ', end: ' }}' };
+      const variableDelimiters: VariableDelimiters = { start: '<%= ', end: ' %>' };
+      expect(
+        lwv(
+          'Replace column <%= client %> with {{ server }}',
+          variableDelimiters,
+          replaceDelimiters,
+          trustedVariableDelimiters,
+        ),
+      ).toEqual('Replace column <em>client</em> with <em>server</em>');
+    });
+
     it('generates keep label unchanged when there is no variableDelimiters', () => {
       expect(lwv(label, null, replaceDelimiters)).toEqual('Replace column {{ date.year }} with 9');
     });

@@ -12,6 +12,7 @@
           :columnNamesProp="Object.keys(columnTypes)"
           :available-variables="availableVariables"
           :variable-delimiters="variableDelimiters"
+          :trusted-variable-delimiters="trustedVariableDelimiters"
           :hideColumnVariables="hideColumnVariables"
           :data-path="slotProps.dataPath"
           :errors="errors"
@@ -66,6 +67,9 @@ export default class FilterEditor extends Vue {
 
   @Prop()
   variableDelimiters?: VariableDelimiters;
+
+  @Prop()
+  trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop()
   hideColumnVariables?: boolean;

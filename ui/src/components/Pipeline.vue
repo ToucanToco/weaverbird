@@ -19,6 +19,7 @@
         :step="step"
         :indexInPipeline="index"
         :variable-delimiters="variableDelimiters"
+        :trusted-variable-delimiters="trustedVariableDelimiters"
         @selectedStep="selectStep({ index: index })"
         @editStep="editStep"
         @toggleDelete="toggleStepToDelete({ index })"
@@ -81,6 +82,7 @@ export default class PipelineComponent extends Vue {
 
   @State(VQBModule) domains!: string[];
   @State(VQBModule) variableDelimiters!: VariableDelimiters;
+  @State(VQBModule) trustedVariableDelimiters!: VariableDelimiters;
 
   @Getter(VQBModule, 'computedActiveStepIndex') activeStepIndex!: number;
   @Getter(VQBModule) domainStep!: DomainStep;

@@ -16,6 +16,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
     <ListWidget
       v-model="editedStep.aggregations"
@@ -29,6 +30,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
     <CheckboxWidget
       class="keepNullsCheckbox"
@@ -68,6 +70,7 @@ export default class DissolveStepForm extends BaseStepForm<DissolveStep> {
   @State(VQBModule) availableVariables?: VariablesBucket;
 
   @State(VQBModule) variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,

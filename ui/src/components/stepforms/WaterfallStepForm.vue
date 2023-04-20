@@ -16,6 +16,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
     <ColumnPicker
       class="milestonesColumnInput"
@@ -27,6 +28,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
     <InputTextWidget
       class="startInput"
@@ -37,6 +39,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
     <InputTextWidget
       class="endInput"
@@ -47,6 +50,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
     <ColumnPicker
       class="childrenColumnInput"
@@ -58,6 +62,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
     <ColumnPicker
       class="parentsColumnInput"
@@ -69,6 +74,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
     <MultiselectWidget
       class="groupbyInput"
@@ -80,6 +86,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
     <AutocompleteWidget
       class="sortByInput"
@@ -129,6 +136,7 @@ export default class WaterfallStepForm extends BaseStepForm<WaterfallStep> {
   @State(VQBModule) availableVariables?: VariablesBucket;
 
   @State(VQBModule) variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,

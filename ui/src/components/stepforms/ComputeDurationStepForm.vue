@@ -25,6 +25,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
     <ColumnPicker
       class="endDateColumnInput"
@@ -36,6 +37,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
     <AutocompleteWidget
       class="durationInInput"
@@ -80,6 +82,7 @@ export default class ComputeDurationStepForm extends BaseStepForm<ComputeDuratio
   @State(VQBModule) availableVariables?: VariablesBucket;
 
   @State(VQBModule) variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,

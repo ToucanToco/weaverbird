@@ -10,6 +10,7 @@
       :value="value"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
       :has-arrow="true"
       @input="updateValue"
     >
@@ -77,6 +78,9 @@ export default class InputNumberWidget extends FormWidget {
 
   @Prop()
   variableDelimiters?: VariableDelimiters;
+
+  @Prop()
+  trustedVariableDelimiters?: VariableDelimiters;
 
   isFocused = false;
 

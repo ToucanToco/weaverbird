@@ -130,8 +130,13 @@ export const relativeDateToString = (
   relativeDate: RelativeDate,
   availableVariables: VariablesBucket = [],
   variableDelimiters: VariableDelimiters = { start: '', end: '' },
+  trustedVariableDelimiters?: VariableDelimiters,
 ): string => {
-  const identifier = extractVariableIdentifier(relativeDate.date, variableDelimiters);
+  const identifier = extractVariableIdentifier(
+    relativeDate.date,
+    variableDelimiters,
+    trustedVariableDelimiters,
+  );
   const baseDateLabel =
     availableVariables.find((v) => v.identifier === identifier)?.label ?? identifier;
   const duration: string | undefined = DEFAULT_DURATIONS.find(

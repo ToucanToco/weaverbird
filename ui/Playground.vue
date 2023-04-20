@@ -150,6 +150,13 @@ const AVAILABLE_VARIABLES = [
     identifier: 'city',
     value: 'New York',
   },
+  {
+    category: 'User',
+    label: 'Username',
+    identifier: 'user.username',
+    value: 'Ange',
+    trusted: true,
+  }
 ];
 
 // Create a code editor config for a specific lang
@@ -915,6 +922,9 @@ export default defineComponent({
     });
     this.store.setVariableDelimiters({
       variableDelimiters: { start: '<%=', end: '%>' },
+    });
+    this.store.setTrustedVariableDelimiters({
+      variableDelimiters: { start: '{{', end: '}}' },
     });
     const collections = await backendService.listCollections();
     this.store.setDomains({ domains: collections });

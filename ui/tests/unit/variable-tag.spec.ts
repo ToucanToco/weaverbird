@@ -17,6 +17,7 @@ describe('Variable Tag', () => {
       propsData: {
         value: '{{ appRequesters.view }}',
         variableDelimiters: { start: '{{', end: '}}' },
+        trustedVariableDelimiters: { start: '<<', end: '>>' },
         availableVariables: [
           {
             category: 'App variables',
@@ -29,6 +30,7 @@ describe('Variable Tag', () => {
             label: 'date.month',
             identifier: 'appRequesters.date.month',
             value: 'Apr',
+            trusted: true,
           },
         ],
       },
@@ -127,6 +129,37 @@ describe('Variable Tag', () => {
       it('should use identifier as label', () => {
         expect(wrapper.find('.widget-variable__tag-name').text()).toBe('toto');
       });
+    });
+  });
+
+  describe('if is trusted variable', () => {
+    beforeEach(() => {
+      wrapper.setProps({
+        value: '<< appRequesters.date.month >>',
+      });
+    });
+    it('should compute the variable identifier', () => {
+      expect((wrapper as any).vm.variableIdentifier).toBe('appRequesters.date.month');
+    });
+
+    it('should compute the variable', () => {
+      expect((wrapper as any).vm.variable).toStrictEqual({
+        category: 'App variables',
+        label: 'date.month',
+        identifier: 'appRequesters.date.month',
+        value: 'Apr',
+        trusted: true,
+      });
+    });
+
+    it('should compute the variable value', () => {
+      expect((wrapper as any).vm.variableValue).toBe('Apr');
+    });
+
+    it('should display the tag label', () => {
+      const name = wrapper.find('.widget-variable__tag-name');
+      expect(name.exists()).toBe(true);
+      expect(name.text()).toBe('date.month');
     });
   });
 });

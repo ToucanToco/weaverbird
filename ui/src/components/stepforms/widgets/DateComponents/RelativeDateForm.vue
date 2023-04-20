@@ -65,6 +65,9 @@ export default class RelativeDateForm extends Vue {
   @Prop({ default: () => ({ start: '', end: '' }) })
   variableDelimiters!: VariableDelimiters;
 
+  @Prop({ default: undefined })
+  trustedVariableDelimiters!: VariableDelimiters;
+
   @Prop({ default: () => ({ date: '', quantity: 1, duration: 'year', operator: 'until' }) })
   value!: RelativeDate;
 
@@ -92,7 +95,11 @@ export default class RelativeDateForm extends Vue {
   }
 
   get baseDate(): AvailableVariable | undefined {
-    const identifier = extractVariableIdentifier(this.value.date, this.variableDelimiters);
+    const identifier = extractVariableIdentifier(
+      this.value.date,
+      this.variableDelimiters,
+      this.trustedVariableDelimiters,
+    );
     return this.availableVariables.find((v) => v.identifier === identifier);
   }
 

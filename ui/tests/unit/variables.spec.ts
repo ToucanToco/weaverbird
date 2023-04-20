@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { extractVariableIdentifier, retrieveVariable } from '@/lib/variables';
+import {
+  type AvailableVariable,
+  extractVariableIdentifier,
+  retrieveVariable,
+} from '@/lib/variables';
 
 describe('extractVariableIdentifier', () => {
   it('should extract simple variable names', () => {
@@ -80,19 +84,35 @@ describe('extractVariableIdentifier', () => {
 });
 
 describe('retrieveVariable', () => {
-  const availableVariables = [{ identifier: 'date', value: '', label: 'Date' }];
+  const availableVariables: AvailableVariable[] = [
+    { identifier: 'date.client', value: '', label: 'Date' },
+    { identifier: 'date.server', value: '', label: 'Trusted date variable', trusted: true },
+  ];
   const variableDelimiters = { start: '<%=', end: '%>' };
+  const trustedVariableDelimiters = { start: '{{', end: '}}' };
   it("should return undefined if variable don't exist in available variables", () => {
     expect(
       retrieveVariable('<%= croissant %>', availableVariables, variableDelimiters),
     ).toBeUndefined();
   });
   it('should return undefined if variable delimiters are not attended one', () => {
-    expect(retrieveVariable('{{ date }}', availableVariables, variableDelimiters)).toBeUndefined();
+    expect(
+      retrieveVariable('<< date.client >>', availableVariables, variableDelimiters),
+    ).toBeUndefined();
   });
   it('should return variable if variable exist in available variables', () => {
-    expect(retrieveVariable('<%= date %>', availableVariables, variableDelimiters)).toStrictEqual(
-      availableVariables[0],
-    );
+    expect(
+      retrieveVariable('<%= date.client %>', availableVariables, variableDelimiters)?.label,
+    ).toStrictEqual('Date');
+  });
+  it('should return trusted variable if variable exist in available variables', () => {
+    expect(
+      retrieveVariable(
+        '{{ date.server }}',
+        availableVariables,
+        variableDelimiters,
+        trustedVariableDelimiters,
+      )?.label,
+    ).toStrictEqual('Trusted date variable');
   });
 });

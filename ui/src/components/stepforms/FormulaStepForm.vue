@@ -16,6 +16,7 @@
       :warning="duplicateColumnName"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
     <InputTextWidget
       class="formulaInput"
@@ -56,6 +57,7 @@ export default class FormulaStepForm extends BaseStepForm<FormulaStep> {
   @State(VQBModule) availableVariables?: VariablesBucket;
 
   @State(VQBModule) variableDelimiters?: VariableDelimiters;
+  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'formula', newColumn: '', formula: '' }) })
   declare initialStepValue: FormulaStep;

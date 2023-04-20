@@ -42,7 +42,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
-import { extractVariableIdentifier } from '@/lib/variables';
+import { extractVariableIdentifier, isTrustedVariable } from '@/lib/variables';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 import AdvancedVariableModal from './AdvancedVariableModal.vue';
@@ -72,6 +72,9 @@ export default class VariableInputBase extends Vue {
   @Prop({ default: () => ({ start: '{{', end: '}}' }) })
   variableDelimiters!: VariableDelimiters;
 
+  @Prop({ default: undefined })
+  trustedVariableDelimiters!: VariableDelimiters;
+
   @Prop({ default: () => '' })
   editedAdvancedVariable!: string;
 
@@ -92,10 +95,20 @@ export default class VariableInputBase extends Vue {
    */
   get selectedVariables(): string | string[] {
     if (!Array.isArray(this.value)) {
-      return extractVariableIdentifier(this.value, this.variableDelimiters) ?? '';
+      return (
+        extractVariableIdentifier(
+          this.value,
+          this.variableDelimiters,
+          this.trustedVariableDelimiters,
+        ) ?? ''
+      );
     } else {
       return this.value.reduce((variables: string[], value: string) => {
-        const identifier = extractVariableIdentifier(value, this.variableDelimiters);
+        const identifier = extractVariableIdentifier(
+          value,
+          this.variableDelimiters,
+          this.trustedVariableDelimiters,
+        );
         // in case value is a simple string we still want to keep it in array
         return [...variables, identifier || value];
       }, []);
@@ -128,13 +141,24 @@ export default class VariableInputBase extends Vue {
   }
 
   setVariableDelimiters(value: string | string[]): string | string[] {
-    const addVariableDelimiters = (variableIdentifier: string) =>
-      `${this.variableDelimiters.start} ${variableIdentifier} ${this.variableDelimiters.end}`;
-    // check if value is a variable
-    const isVariable = (identifier: string): boolean =>
-      Boolean(this.availableVariables.find((v) => v.identifier === identifier));
+    const retrieveVariableDelimiters = (
+      variableIdentifier: string,
+    ): VariableDelimiters | undefined => {
+      const variable = this.availableVariables.find((v) => v.identifier === variableIdentifier);
+      if (!variable) {
+        return; // if variable is unfound we don't want to display any delimiters
+      } else if (isTrustedVariable(variable)) {
+        return this.trustedVariableDelimiters;
+      }
+      return this.variableDelimiters;
+    };
+    const addVariableDelimiters = (variableIdentifier: string): string => {
+      const delimiters = retrieveVariableDelimiters(variableIdentifier);
+      if (!delimiters) return variableIdentifier;
+      return `${delimiters.start} ${variableIdentifier} ${delimiters.end}`;
+    };
     return Array.isArray(value)
-      ? value.map((v) => (isVariable(v) ? addVariableDelimiters(v) : v))
+      ? value.map((v) => addVariableDelimiters(v))
       : addVariableDelimiters(value);
   }
 
