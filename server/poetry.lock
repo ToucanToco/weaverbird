@@ -1501,14 +1501,14 @@ files = [
 
 [[package]]
 name = "joblib"
-version = "0.17.0"
-description = "Lightweight pipelining: using Python functions as pipeline jobs."
+version = "1.1.1"
+description = "Lightweight pipelining with Python functions"
 category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "joblib-0.17.0-py3-none-any.whl", hash = "sha256:698c311779f347cf6b7e6b8a39bb682277b8ee4aba8cf9507bc0cf4cd4737b72"},
-    {file = "joblib-0.17.0.tar.gz", hash = "sha256:9e284edd6be6b71883a63c9b7f124738a3c16195513ad940eae7e3438de885d5"},
+    {file = "joblib-1.1.1-py2.py3-none-any.whl", hash = "sha256:f9d6c3cdf2a7778e9058e10e9dba028e47771a1a355e5768f46704bf05342eba"},
+    {file = "joblib-1.1.1.tar.gz", hash = "sha256:301f0375f49586a7effee3f6348c419d5765fca1c750186b20690a0d90b82900"},
 ]
 
 [[package]]
@@ -3346,22 +3346,22 @@ toucan-toco = ["toucan-client (>=1.0.1,<2.0.0)"]
 
 [[package]]
 name = "toucan-data-sdk"
-version = "7.5.0"
+version = "7.6.0"
 description = "Toucan data SDK"
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "toucan_data_sdk-7.5.0-py3-none-any.whl", hash = "sha256:1035b72ab94cafd4c45a0c0724cff73fe7d62fbb310f799c1afd4ced2ade8041"},
-    {file = "toucan_data_sdk-7.5.0.tar.gz", hash = "sha256:29a2d4288ed403aba328561cad1d748077e22ead64edf1c40866ccf146125714"},
+    {file = "toucan_data_sdk-7.6.0-py3-none-any.whl", hash = "sha256:8594eea58f0ffdd4a7f5aeb5d01dcb884378264c564911b4076038e27323c88a"},
+    {file = "toucan_data_sdk-7.6.0.tar.gz", hash = "sha256:07e4bcd2fbbb00988528685d83f427907262e0cf6153296ae48a267b9d3c3597"},
 ]
 
 [package.dependencies]
 engarde = ">=0.4.0,<0.5.0"
-joblib = "<1"
+joblib = ">=1,<2"
 pandas = ">=1.4.1,<2.0.0"
-python-slugify = ">=5.0.2,<6.0.0"
-tabulate = ">=0.8.9,<0.9.0"
+python-slugify = ">=5.0.2,<7.0.0"
+tabulate = ">=0.8.9,<0.10.0"
 toucan-client = ">=1.1.0,<2.0.0"
 
 [[package]]
