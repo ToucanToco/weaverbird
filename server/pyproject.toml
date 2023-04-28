@@ -27,19 +27,18 @@ Quart-CORS = {version = ">=0.5,<0.7", optional = true}
 hypercorn = {version = ">=0.13,<0.15", optional = true}
 pymongo = {version = ">=4.2.0", optional = true, extras = ["srv", "tls"]}
 psycopg = {optional = true, version = "^3.0.15"}
-toucan-connectors = {version = "^4.4.0", optional = true, extras = ["google_big_query", "mongo", "Redshift", "snowflake"]}
-pytest-xdist = ">=2.5,<4.0"
-awswrangler = {version = ">=2.20,<4.0", python = "<3.11", optional = true}
+toucan-connectors = {version = "^4.5.1", optional = true, extras = ["google_big_query", "mongo", "Redshift", "snowflake", "awsathena"]}
 
 [tool.poetry.dev-dependencies]
 pytest-cov = "^4.0.0"
 pytest-mock = "^3.10.0"
 # required so we can use nosql_apply_parameters_to_query during tests
-toucan-connectors = { version = "^4.5.1", extras = ["google_big_query", "mongo", "Redshift", "snowflake"] }
+toucan-connectors = { version = "^4.5.1", extras = ["google_big_query", "mongo", "Redshift", "snowflake", "awsathena"] }
 pytest-benchmark = "^4.0.0"
 snowflake-sqlalchemy = "^1.4.7"
 types-python-dateutil = "^2.8.19"
 pytest = "^7.3.1"
+pytest-xdist = ">=2.5,<4.0"
 black = "^23.3.0"
 flake8 = "^6.0.0"
 isort = "^5.12.0"
@@ -51,7 +50,6 @@ psycopg2 = "^2.9.6"
 pymongo = ">=4.2.0"
 sqlalchemy-redshift = ">=0.8.11,<1"
 PyYAML = "^6.0"
-awswrangler = {version = ">=2.20,<4.0", python = "<3.11"}
 
 [tool.poetry.extras]
 # Lib
@@ -59,7 +57,7 @@ pandas = ["pandas", "geopandas"]
 pypika = ["pypika"]
 all = ["pandas", "geopandas", "pypika"]
 # playground
-playground = ["quart", "Quart-CORS", "hypercorn", "pymongo", "pandas", "snowflake-connector-python", "psycopg", "google-cloud-bigquery", "toucan-connectors", "awswrangler"]
+playground = ["quart", "Quart-CORS", "hypercorn", "pymongo", "pandas", "snowflake-connector-python", "psycopg", "google-cloud-bigquery", "toucan-connectors"]
 
 [tool.black]
 line-length = 100
