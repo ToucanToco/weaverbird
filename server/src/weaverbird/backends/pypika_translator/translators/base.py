@@ -947,25 +947,25 @@ class SQLTranslator(ABC):
                             )
                         case RegexOp.REGEXP_CONTAINS:
                             return functions.Function(
-                                RegexOp.REGEXP_CONTAINS,
+                                RegexOp.REGEXP_CONTAINS.value,
                                 casted_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.REGEXP_LIKE:
                             return functions.Function(
-                                RegexOp.REGEXP_LIKE,
+                                RegexOp.REGEXP_LIKE.value,
                                 casted_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.REGEXP_CONTAINS:
                             return functions.Function(
-                                RegexOp.NOT_REGEXP_CONTAINS,
+                                RegexOp.NOT_REGEXP_CONTAINS.value,
                                 casted_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.REGEXP_LIKE:
                             return functions.Function(
-                                RegexOp.NOT_REGEXP_LIKE,
+                                RegexOp.NOT_REGEXP_LIKE.value,
                                 casted_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
@@ -994,13 +994,13 @@ class SQLTranslator(ABC):
                             )
                         case RegexOp.REGEXP_CONTAINS:
                             return functions.Function(
-                                RegexOp.NOT_REGEXP_CONTAINS,
+                                RegexOp.NOT_REGEXP_CONTAINS.value,
                                 casted_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case RegexOp.REGEXP_LIKE:
                             return functions.Function(
-                                RegexOp.NOT_REGEXP_LIKE,
+                                RegexOp.NOT_REGEXP_LIKE.value,
                                 casted_field,
                                 column_field.wrap_constant(compliant_regex),
                             )
