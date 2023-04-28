@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [0.30.0] - 2023-04-28
+
+- This release officially adds support for Python 3.11.
+
 ## [0.29.1] - 2023-03-09
 
 - Fixed a few typing annotations for Python 3.11 compatibility.
