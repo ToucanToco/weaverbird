@@ -35,7 +35,7 @@ awswrangler = {version = ">=2.20,<4.0", python = "<3.11", optional = true}
 pytest-cov = "^4.0.0"
 pytest-mock = "^3.10.0"
 # required so we can use nosql_apply_parameters_to_query during tests
-toucan-connectors = { version = "^4.4.0", extras = ["google_big_query", "mongo", "Redshift", "snowflake"] }
+toucan-connectors = { version = "^4.5.1", extras = ["google_big_query", "mongo", "Redshift", "snowflake"] }
 pytest-benchmark = "^4.0.0"
 snowflake-sqlalchemy = "^1.4.7"
 types-python-dateutil = "^2.8.19"
