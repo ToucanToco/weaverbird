@@ -16,6 +16,7 @@ from weaverbird.pipeline.pipeline import Pipeline, PipelineWithVariables
 from weaverbird.pipeline.steps import DomainStep, RollupStep
 from weaverbird.pipeline.steps.aggregate import Aggregation
 from weaverbird.pipeline.steps.filter import FilterStep
+from weaverbird.pipeline.steps.top import TopStep
 
 
 class Case(BaseModel):
@@ -149,11 +150,17 @@ def test_skip_void_parameter_from_variables():
             ],
         ),
     )
+
+    void_top_step = TopStep(name="top", rank_on="{{ __front_var_5__ }}", sort="asc", limit=3)
+    none_void_top_step = TopStep(name="top", rank_on="{{ __front_var_6__ }}", sort="asc", limit=3)
+
     steps = [
         {"domain": "foobar", "name": "domain"},
+        void_top_step,
         void_step,
         composed_filter_step_or_,
         simple_filter_step,
+        none_void_top_step,
         composed_filter_step_and_,
     ]
     variables = {
@@ -162,6 +169,8 @@ def test_skip_void_parameter_from_variables():
         "__front_var_2__": "__VOID__",
         "__front_var_3__": "TEST TEST",
         "__front_var_4__": "__VOID__",
+        "__front_var_5__": "__VOID__",
+        "__front_var_6__": "VALUE",
     }
 
     pipeline_with_variables = PipelineWithVariables(steps=steps)
@@ -180,6 +189,7 @@ def test_skip_void_parameter_from_variables():
             },
         },
         {"name": "filter", "condition": {"column": "colB", "operator": "eq", "value": 32}},
+        {"name": "top", "groups": [], "rank_on": "VALUE", "sort": "asc", "limit": 3},
         {
             "name": "filter",
             "condition": {
