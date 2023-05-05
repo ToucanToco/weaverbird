@@ -11,7 +11,6 @@ from weaverbird.pipeline.conditions import (
     InclusionCondition,
     MatchCondition,
     NullCondition,
-    SimpleCondition,
 )
 from weaverbird.pipeline.steps.hierarchy import HierarchyStep
 
