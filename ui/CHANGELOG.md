@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## [0.102.1] - 2023-05-09
+
+#### Fixed
+- CodeEditorWidget: remove unusable @watch vue property decorator
+
 ## [0.102.0] - 2023-04-20
 
 ### Added
@@ -1472,6 +1477,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
+[0.102.1]: https://github.com/ToucanToco/weaverbird/compare/v0.102.0...v0.102.1
 [0.102.0]: https://github.com/ToucanToco/weaverbird/compare/v0.101.1...v0.102.0
 [0.101.1]: https://github.com/ToucanToco/weaverbird/compare/v0.101.0...v0.101.1
 [0.101.0]: https://github.com/ToucanToco/weaverbird/compare/v0.100.0...v0.101.0
