@@ -1,18 +1,10 @@
 from typing import Annotated, Any
 
 from pydantic import BaseModel, Field
+from pydantic.error_wrappers import ValidationError
 
-from weaverbird.pipeline.conditions import (
-    ComparisonCondition,
-    Condition,
-    ConditionComboAnd,
-    ConditionComboOr,
-    DateBoundCondition,
-    InclusionCondition,
-    MatchCondition,
-    NullCondition,
-)
 from weaverbird.pipeline.steps.hierarchy import HierarchyStep
+from weaverbird.pipeline.steps.utils.base import BaseStep
 
 from .steps import (
     AbsoluteValueStep,
@@ -194,70 +186,53 @@ PipelineStepWithVariables = Annotated[
 ]
 
 
-def _get_void_var_keys(variables: dict[str, Any]) -> set[str]:
-    return {k for k, v in variables.items() if v == "__VOID__"}
+def remove_void_conditions_from_filter_steps(
+    steps: list[PipelineStepWithVariables | PipelineStep | BaseStep],
+) -> list[PipelineStepWithVariables | PipelineStep | BaseStep]:
+    """
+    This method will remove all FilterStep with conditions having "__VOID__"
+    in them. either the "value" key or the "column" key.
+    """
 
+    def _contains_void_as_value(value: dict) -> bool:
+        return any(
+            [
+                value.get("value") in ("__VOID__",),
+                value.get("column") in ("__VOID__",),
+            ]
+        )
 
-def _remove_void_condition_steps(
-    void_var_keys: set[str], steps: list[PipelineStepWithVariables | PipelineStep]
-) -> list[PipelineStepWithVariables | PipelineStep]:
-    def is_not_null_and_value_is_void(condition: Condition):
-        if not isinstance(condition, (NullCondition, ConditionComboAnd, ConditionComboOr)):
-            for vv in void_var_keys:
-                if isinstance(condition.value, str) and condition.value == "{{ " + vv + " }}":
-                    return True
-        return False
-
-    # We only choose to loop on filter step like
-    filter_steps = [s for s in steps if isinstance(s, (FilterStep, FilterStepWithVariables))]
-    for step in filter_steps:
-        if isinstance(
-            step.condition,
-            (
-                ComparisonCondition,
-                InclusionCondition,
-                NullCondition,
-                MatchCondition,
-                DateBoundCondition,
-            ),
-        ):
-            if is_not_null_and_value_is_void(step.condition):
-                steps.remove(step)
-        elif isinstance(step.condition, (ConditionComboAnd, ConditionComboOr)):
-            if isinstance(step.condition, ConditionComboOr):
-                for cond in step.condition.or_:
-                    if is_not_null_and_value_is_void(cond):
-                        step.condition.or_.remove(cond)
-            else:
-                for cond in step.condition.and_:
-                    if is_not_null_and_value_is_void(cond):
-                        step.condition.and_.remove(cond)
-    return steps
-
-
-def _remove_simple_steps_that_contains_void(
-    void_var_keys: set[str],
-    steps: list[PipelineStepWithVariables | PipelineStep],
-) -> list[PipelineStepWithVariables | PipelineStep]:
-    def contains_void_as_value(obj: Any) -> bool:
+    def _remove_void_value_elements(obj: dict[str, Any] | list[dict[str, Any]]) -> None:
         if isinstance(obj, dict):
-            for _, value in obj.items():
-                if contains_void_as_value(value) is True:
-                    return True
+            keys_to_remove = [
+                k for k, v in obj.items() if isinstance(v, dict) and _contains_void_as_value(v)
+            ]
+            for key in keys_to_remove:
+                del obj[key]  # remove condition if void is found
+            for v in obj.values():
+                _remove_void_value_elements(v)
+        elif isinstance(obj, list):
+            indices_to_remove = [
+                i for i, v in enumerate(obj) if isinstance(v, dict) and _contains_void_as_value(v)
+            ]
+            for index in sorted(indices_to_remove, reverse=True):
+                del obj[index]
+            for v in obj:
+                _remove_void_value_elements(v)
 
-        for vv in void_var_keys:
-            if isinstance(obj, str) and obj == "{{ " + vv + " }}":
-                return True
+    final_steps = []
+    for step in steps:
+        if isinstance(step, FilterStep):
+            try:
+                step_dict = step.dict()
+                _remove_void_value_elements(step_dict)
+                final_steps.append(FilterStep(**step_dict))
+            except ValidationError:
+                pass  # we skip none valid filter steps
+        else:
+            final_steps.append(step)
 
-        return False
-
-    for s in steps:
-        if isinstance(s, (FilterStep, FilterStepWithVariables)):
-            continue
-        if contains_void_as_value(s.dict()) is True:
-            steps.remove(s)
-
-    return steps
+    return final_steps
 
 
 class PipelineWithVariables(BaseModel):
@@ -265,18 +240,11 @@ class PipelineWithVariables(BaseModel):
 
     def render(self, variables: dict[str, Any], renderer) -> Pipeline:
         # TODO it must be more efficient to render the full pipeline once
-
-        # We clean __VOID__ variable like.
-        # This will also clean the pipeline steps containing those variables
-        # we extract first all __fron_var_x__ keys from variables
-        void_var_keys = _get_void_var_keys(variables)
-        # First we remove simple steps that has __VOID__ in them
-        cleaned_simple_steps = _remove_simple_steps_that_contains_void(void_var_keys, self.steps)
-        # Then we do the same thing with FilterStepWithVariables
-        cleaned_steps = _remove_void_condition_steps(void_var_keys, cleaned_simple_steps)
-        variables_with_no_void = {k: v for k, v in variables.items() if v != "__VOID__"}
         steps_rendered = [
-            step.render(variables_with_no_void, renderer) if hasattr(step, "render") else step  # type: ignore
-            for step in cleaned_steps
+            step.render(variables, renderer) if hasattr(step, "render") else step  # type: ignore
+            for step in self.steps
         ]
-        return Pipeline(steps=steps_rendered)
+        # We clean __VOID__ values from filter steps conditions like.
+        return Pipeline(
+            steps=remove_void_conditions_from_filter_steps(steps_rendered)  # type:ignore
+        )

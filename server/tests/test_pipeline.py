@@ -4,19 +4,11 @@ from datetime import datetime
 
 import pytest
 from pydantic import BaseModel
-from toucan_connectors.common import nosql_apply_parameters_to_query
+from toucan_connectors.common import _render_query, nosql_apply_parameters_to_query
 
-from weaverbird.pipeline.conditions import (
-    ComparisonCondition,
-    ConditionComboAnd,
-    ConditionComboOr,
-    DateBoundCondition,
-)
 from weaverbird.pipeline.pipeline import Pipeline, PipelineWithVariables
 from weaverbird.pipeline.steps import DomainStep, RollupStep
 from weaverbird.pipeline.steps.aggregate import Aggregation
-from weaverbird.pipeline.steps.filter import FilterStep
-from weaverbird.pipeline.steps.top import TopStep
 
 
 class Case(BaseModel):
@@ -94,73 +86,57 @@ def test_to_dict():
 
 
 def test_skip_void_parameter_from_variables():
-    void_step = FilterStep(
-        name="filter",
-        condition=ComparisonCondition(
-            column="colA",
-            operator="ge",
-            value="{{ __front_var_0__ }}",
-        ),
-    )
+    void_step = {
+        "name": "filter",
+        "condition": {"column": "colA", "operator": "ge", "value": "{{ __front_var_0__ }}"},
+    }
 
-    simple_filter_step = FilterStep(
-        name="filter",
-        condition=ComparisonCondition(
-            column="colB",
-            operator="eq",
-            value="{{ __front_var_1__ }}",
-        ),
-    )
+    simple_filter_step = {
+        "name": "filter",
+        "condition": {"column": "colB", "operator": "eq", "value": "{{ __front_var_1__ }}"},
+    }
 
-    composed_filter_step_and_ = FilterStep(
-        condition=ConditionComboAnd(
-            and_=[
-                ComparisonCondition(
-                    column="colC",
-                    operator="gt",
-                    value="{{ __front_var_2__ }}",
-                ),
-                DateBoundCondition(
-                    column="Transaction_date",
-                    operator="until",
-                    value=datetime(2009, 1, 3),  # naive
-                ),
+    composed_filter_step_and_ = {
+        "name": "filter",
+        "condition": {
+            "and_": [
+                {"column": "colC", "operator": "gt", "value": "{{ __front_var_2__ }}"},
+                {"column": "ColD", "operator": "until", "value": datetime(2009, 1, 3, 0, 0)},
             ]
-        )
-    )
+        },
+    }
 
-    composed_filter_step_or_ = FilterStep(
-        condition=ConditionComboOr(
-            or_=[
-                ComparisonCondition(
-                    column="colA",
-                    operator="eq",
-                    value="{{ __front_var_3__ }}",
-                ),
-                ComparisonCondition(
-                    column="colX",
-                    operator="lt",
-                    value="{{ __front_var_4__ }}",
-                ),
-                ComparisonCondition(
-                    column="colA",
-                    operator="eq",
-                    value="toto",
-                ),
-            ],
-        ),
-    )
-
-    void_top_step = TopStep(name="top", rank_on="{{ __front_var_5__ }}", sort="asc", limit=3)
-    none_void_top_step = TopStep(name="top", rank_on="{{ __front_var_6__ }}", sort="asc", limit=3)
+    composed_filter_step_or_and_ = {
+        "name": "filter",
+        "condition": {
+            "or_": [
+                {"column": "colE", "operator": "eq", "value": "{{ __front_var_3__ }}"},
+                {"column": "colF", "operator": "lt", "value": "{{ __front_var_4__ }}"},
+                {
+                    "and_": [
+                        {"column": "colG", "operator": "gt", "value": "{{ __front_var_5__ }}"},
+                        {"column": "colH", "operator": "eq", "value": "{{ __front_var_6__ }}"},
+                        {
+                            "or_": [
+                                {"column": "colI", "operator": "eq", "value": "toto"},
+                                {
+                                    "column": "colJ",
+                                    "operator": "eq",
+                                    "value": "{{ __front_var_7__ }}",
+                                },
+                            ]
+                        },
+                    ]
+                },
+            ]
+        },
+    }
 
     steps = [
         {"domain": "foobar", "name": "domain"},
-        void_top_step,
         void_step,
-        composed_filter_step_or_,
+        composed_filter_step_or_and_,
         simple_filter_step,
-        none_void_top_step,
         composed_filter_step_and_,
     ]
     variables = {
@@ -171,35 +147,41 @@ def test_skip_void_parameter_from_variables():
         "__front_var_4__": "__VOID__",
         "__front_var_5__": "__VOID__",
         "__front_var_6__": "VALUE",
+        "__front_var_7__": "TOTO",
     }
 
     pipeline_with_variables = PipelineWithVariables(steps=steps)
-    pipeline = pipeline_with_variables.render(variables, renderer=nosql_apply_parameters_to_query)
+    pipeline = pipeline_with_variables.render(variables, renderer=_render_query)
 
-    # It should not have been rendered:
-    assert pipeline.steps == [
-        {"name": "domain", "domain": "foobar"},
+    # will render the with no __VOID__ in step, whatever the depth
+    assert [s.dict() for s in pipeline.steps] == [
+        {"domain": "foobar", "name": "domain"},
         {
-            "name": "filter",
             "condition": {
                 "or_": [
-                    {"column": "colA", "operator": "eq", "value": "TEST TEST"},
-                    {"column": "colA", "operator": "eq", "value": "toto"},
-                ]
-            },
-        },
-        {"name": "filter", "condition": {"column": "colB", "operator": "eq", "value": 32}},
-        {"name": "top", "groups": [], "rank_on": "VALUE", "sort": "asc", "limit": 3},
-        {
-            "name": "filter",
-            "condition": {
-                "and_": [
+                    {"column": "colE", "operator": "eq", "value": "TEST TEST"},
                     {
-                        "column": "Transaction_date",
-                        "operator": "until",
-                        "value": datetime(2009, 1, 3, 0, 0),
+                        "and_": [
+                            {"column": "colH", "operator": "eq", "value": "VALUE"},
+                            {
+                                "or_": [
+                                    {"column": "colI", "operator": "eq", "value": "toto"},
+                                    {"column": "colJ", "operator": "eq", "value": "TOTO"},
+                                ]
+                            },
+                        ]
                     },
                 ]
             },
+            "name": "filter",
+        },
+        {"condition": {"column": "colB", "operator": "eq", "value": 32}, "name": "filter"},
+        {
+            "condition": {
+                "and_": [
+                    {"column": "ColD", "operator": "until", "value": datetime(2009, 1, 3, 0, 0)}
+                ]
+            },
+            "name": "filter",
         },
     ]
