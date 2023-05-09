@@ -5,9 +5,10 @@
       :is="codeEditor"
       :class="elementClass"
       :placeholder="placeholder"
-      v-model="editedValue"
+      :value="value"
       @blur="blur()"
       @focus="focus()"
+      @input="updateEditedValue"
     />
     <div v-if="messageError" class="field__msg-error">
       <FAIcon icon="exclamation-circle" />
@@ -21,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch } from 'vue-property-decorator';
+import { Component, Prop } from 'vue-property-decorator';
 
 import { CodeEditor, CodeEditorConfigs } from '@/components/code-editor';
 import type { CodeEditorConfig } from '@/components/code-editor';
@@ -48,17 +49,10 @@ export default class CodeEditorWidget extends FormWidget {
   @Prop({ type: String, default: '' })
   config!: string;
 
-  editedValue = this.value;
-
   isFocused = false;
 
   // Code editor is set through a responsive data so it can be change after import
   codeEditor: CodeEditorConfig = CodeEditor;
-
-  @Watch('editedValue')
-  updateValue(newValue: string) {
-    this.$emit('input', newValue);
-  }
 
   get elementClass() {
     return {
@@ -86,6 +80,10 @@ export default class CodeEditorWidget extends FormWidget {
 
   focus() {
     this.isFocused = true;
+  }
+
+  updateEditedValue(newValue: string) {
+    this.$emit('input', newValue);
   }
 }
 </script>
