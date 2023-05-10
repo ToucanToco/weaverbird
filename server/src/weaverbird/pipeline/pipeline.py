@@ -197,8 +197,8 @@ def remove_void_conditions_from_filter_steps(
     def _contains_void_as_value(value: dict) -> bool:
         return any(
             [
-                value.get("value") in ("__VOID__",),
-                value.get("column") in ("__VOID__",),
+                value.get("value") == "__VOID__",
+                value.get("column") == "__VOID__",
             ]
         )
 
