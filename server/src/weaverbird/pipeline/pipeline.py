@@ -209,16 +209,31 @@ def remove_void_conditions_from_filter_steps(
             ]
             for key in keys_to_remove:
                 del obj[key]  # remove condition if void is found
+
             for v in obj.values():
                 _remove_void_value_elements(v)
+
+            if "condition" in obj:
+                if ("and_" in obj["condition"] and obj["condition"]["and_"] == []) or (
+                    "or_" in obj["condition"] and obj["condition"]["or_"] == []
+                ):
+                    del obj["condition"]
+
         elif isinstance(obj, list):
             indices_to_remove = [
                 i for i, v in enumerate(obj) if isinstance(v, dict) and _contains_void_as_value(v)
             ]
+
             for index in sorted(indices_to_remove, reverse=True):
                 del obj[index]
             for v in obj:
                 _remove_void_value_elements(v)
+
+            for index, v in enumerate(obj):
+                if "or_" in v and v["or_"] == []:
+                    del obj[index]
+                if "and_" in v and v["and_"] == []:
+                    del obj[index]
 
     final_steps = []
     for step in steps:

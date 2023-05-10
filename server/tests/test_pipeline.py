@@ -124,10 +124,34 @@ def test_skip_void_parameter_from_variables():
                                     "operator": "eq",
                                     "value": "{{ __front_var_7__ }}",
                                 },
+                                {
+                                    "or_": [
+                                        {"column": "colM", "operator": "gt", "value": "__VOID__"},
+                                        {"column": "colN", "operator": "le", "value": "__VOID__"},
+                                        {
+                                            "and_": [
+                                                {
+                                                    "column": "colO",
+                                                    "operator": "eq",
+                                                    "value": "__VOID__",
+                                                },
+                                            ]
+                                        },
+                                    ]
+                                },
                             ]
                         },
                     ]
                 },
+            ]
+        },
+    }
+    composed_filter_step_and_all_voids = {
+        "name": "filter",
+        "condition": {
+            "and_": [
+                {"column": "colK", "operator": "gt", "value": "{{ __front_var_8__ }}"},
+                {"column": "colL", "operator": "le", "value": "{{ __front_var_9__ }}"},
             ]
         },
     }
@@ -138,6 +162,7 @@ def test_skip_void_parameter_from_variables():
         composed_filter_step_or_and_,
         simple_filter_step,
         composed_filter_step_and_,
+        composed_filter_step_and_all_voids,
     ]
     variables = {
         "__front_var_0__": "__VOID__",
@@ -148,6 +173,8 @@ def test_skip_void_parameter_from_variables():
         "__front_var_5__": "__VOID__",
         "__front_var_6__": "VALUE",
         "__front_var_7__": "TOTO",
+        "__front_var_8__": "__VOID__",
+        "__front_var_9__": "__VOID__",
     }
 
     pipeline_with_variables = PipelineWithVariables(steps=steps)
