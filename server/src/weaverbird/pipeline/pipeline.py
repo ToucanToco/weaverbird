@@ -1,3 +1,4 @@
+from copy import copy
 from typing import Annotated, Any
 
 from pydantic import BaseModel, Field
@@ -186,6 +187,58 @@ PipelineStepWithVariables = Annotated[
 ]
 
 
+def _contains_void_as_value(value: dict) -> bool:
+    return any(
+        [
+            value.get("value") == "__VOID__",
+            value.get("column") == "__VOID__",
+        ]
+    )
+
+
+def _remove_void_value_elements(obj: dict[str, Any] | list[dict[str, Any]]) -> None:
+    if isinstance(obj, dict):
+        keys_to_remove = (
+            k for k, v in copy(obj).items() if isinstance(v, dict) and _contains_void_as_value(v)
+        )
+        for key in keys_to_remove:
+            del obj[key]  # remove "condition" if __VOID__ is found
+
+        for v in obj.values():
+            _remove_void_value_elements(v)
+
+        if "condition" in obj:
+            if ("and_" in obj["condition"] and obj["condition"]["and_"] == []) or (
+                "or_" in obj["condition"] and obj["condition"]["or_"] == []
+            ):
+                del obj["condition"]
+
+    elif isinstance(obj, list):
+        indices_to_remove = (
+            i for i, v in enumerate(obj) if isinstance(v, dict) and _contains_void_as_value(v)
+        )
+
+        for index in sorted(indices_to_remove, reverse=True):
+            del obj[index]
+        for v in obj:
+            _remove_void_value_elements(v)
+
+        for index, v in enumerate(obj):
+            if "or_" in v and v["or_"] == []:
+                del obj[index]
+            if "and_" in v and v["and_"] == []:
+                del obj[index]
+
+
+def _clean_filter_step(step: FilterStep) -> FilterStep:
+    """
+    Get a filter-step, clean it with it's dict representation
+    """
+    step_dict = step.dict()
+    _remove_void_value_elements(step_dict)
+    return FilterStep(**step_dict)
+
+
 def remove_void_conditions_from_filter_steps(
     steps: list[PipelineStepWithVariables | PipelineStep | BaseStep],
 ) -> list[PipelineStepWithVariables | PipelineStep | BaseStep]:
@@ -194,56 +247,13 @@ def remove_void_conditions_from_filter_steps(
     in them. either the "value" key or the "column" key.
     """
 
-    def _contains_void_as_value(value: dict) -> bool:
-        return any(
-            [
-                value.get("value") == "__VOID__",
-                value.get("column") == "__VOID__",
-            ]
-        )
-
-    def _remove_void_value_elements(obj: dict[str, Any] | list[dict[str, Any]]) -> None:
-        if isinstance(obj, dict):
-            keys_to_remove = [
-                k for k, v in obj.items() if isinstance(v, dict) and _contains_void_as_value(v)
-            ]
-            for key in keys_to_remove:
-                del obj[key]  # remove condition if void is found
-
-            for v in obj.values():
-                _remove_void_value_elements(v)
-
-            if "condition" in obj:
-                if ("and_" in obj["condition"] and obj["condition"]["and_"] == []) or (
-                    "or_" in obj["condition"] and obj["condition"]["or_"] == []
-                ):
-                    del obj["condition"]
-
-        elif isinstance(obj, list):
-            indices_to_remove = [
-                i for i, v in enumerate(obj) if isinstance(v, dict) and _contains_void_as_value(v)
-            ]
-
-            for index in sorted(indices_to_remove, reverse=True):
-                del obj[index]
-            for v in obj:
-                _remove_void_value_elements(v)
-
-            for index, v in enumerate(obj):
-                if "or_" in v and v["or_"] == []:
-                    del obj[index]
-                if "and_" in v and v["and_"] == []:
-                    del obj[index]
-
     final_steps = []
     for step in steps:
         if isinstance(step, FilterStep):
             try:
-                step_dict = step.dict()
-                _remove_void_value_elements(step_dict)
-                final_steps.append(FilterStep(**step_dict))
+                final_steps.append(_clean_filter_step(step))
             except ValidationError:
-                pass  # we skip none valid filter steps
+                pass  # we skip non-valid filter steps
         else:
             final_steps.append(step)
 
@@ -259,7 +269,7 @@ class PipelineWithVariables(BaseModel):
             step.render(variables, renderer) if hasattr(step, "render") else step  # type: ignore
             for step in self.steps
         ]
-        # We clean __VOID__ values from filter steps conditions like.
+        # We clean __VOID__ values from filter steps conditions.
         return Pipeline(
             steps=remove_void_conditions_from_filter_steps(steps_rendered)  # type:ignore
         )
