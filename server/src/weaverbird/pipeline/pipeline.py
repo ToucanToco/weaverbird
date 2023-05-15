@@ -196,7 +196,9 @@ def _contains_void_as_value(value: dict) -> bool:
     )
 
 
-def _remove_void_value_elements(obj: dict[str, Any] | list[dict[str, Any]]) -> None:
+def _remove_void_value_elements(
+    obj: dict[str, Any] | list[dict[str, Any]]
+) -> dict[str, Any] | list[dict[str, Any]]:
     if isinstance(obj, dict):
         keys_to_remove = (
             k for k, v in copy(obj).items() if isinstance(v, dict) and _contains_void_as_value(v)
@@ -212,6 +214,8 @@ def _remove_void_value_elements(obj: dict[str, Any] | list[dict[str, Any]]) -> N
                 "or_" in obj["condition"] and obj["condition"]["or_"] == []
             ):
                 del obj["condition"]
+
+        return obj
 
     elif isinstance(obj, list):
         indices_to_remove = (
@@ -229,14 +233,7 @@ def _remove_void_value_elements(obj: dict[str, Any] | list[dict[str, Any]]) -> N
             if "and_" in v and v["and_"] == []:
                 del obj[index]
 
-
-def _clean_filter_step(step: FilterStep) -> FilterStep:
-    """
-    Get a filter-step, clean it with it's dict representation
-    """
-    step_dict = step.dict()
-    _remove_void_value_elements(step_dict)
-    return FilterStep(**step_dict)
+        return obj
 
 
 def remove_void_conditions_from_filter_steps(
@@ -251,7 +248,10 @@ def remove_void_conditions_from_filter_steps(
     for step in steps:
         if isinstance(step, FilterStep):
             try:
-                final_steps.append(_clean_filter_step(step))
+                transformed_step = FilterStep(
+                    **_remove_void_value_elements(step.dict()) or {}  # type:ignore [arg-type]
+                )
+                final_steps.append(transformed_step)
             except ValidationError:
                 pass  # we skip non-valid filter steps
         else:
