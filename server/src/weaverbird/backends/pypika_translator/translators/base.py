@@ -360,9 +360,10 @@ class SQLTranslator(ABC):
                 agg_cols: list[Field] = []
                 for window_index, window_column_name in enumerate(aggregation.columns):
                     column_field = Table(prev_step_name)[window_column_name]
+                    step_on_formatted = [format_quotes(col, builder.QUOTE_CHAR) for col in step.on]
                     new_window_col = (
                         window_fn(column_field)
-                        .over(*step.on)
+                        .over(*step_on_formatted)
                         .orderby(column_field)
                         .rows(analytics.Preceding(), analytics.Following())
                         .as_(aggregation.new_columns[window_index])
