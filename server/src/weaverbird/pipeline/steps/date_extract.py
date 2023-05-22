@@ -23,26 +23,44 @@ BASIC_DATE_PARTS = Literal[
     "milliseconds",
 ]
 
+FIRST_DAY_DATE_PARTS = Literal[
+    "previousDay",
+    "firstDayOfYear",
+    "firstDayOfMonth",
+    "firstDayOfWeek",
+    "firstDayOfQuarter",
+    "firstDayOfIsoWeek",
+    "firstDayOfPreviousYear",
+    "firstDayOfPreviousMonth",
+    "firstDayOfPreviousWeek",
+    "firstDayOfPreviousQuarter",
+    "firstDayOfPreviousIsoWeek",
+]
+
 DATE_INFO = Union[
     BASIC_DATE_PARTS,
+    FIRST_DAY_DATE_PARTS,
     Literal[
-        "firstDayOfYear",
-        "firstDayOfMonth",
-        "firstDayOfWeek",
-        "firstDayOfQuarter",
-        "firstDayOfIsoWeek",
-        "previousDay",
-        "firstDayOfPreviousYear",
-        "firstDayOfPreviousMonth",
-        "firstDayOfPreviousWeek",
-        "firstDayOfPreviousQuarter",
-        "firstDayOfPreviousIsoWeek",
         "previousYear",
         "previousMonth",
         "previousWeek",
         "previousQuarter",
         "previousIsoWeek",
     ],
+]
+
+DATE_UNIT_WITH_INT_CAST_NOT_NEEDED: list[str] = [
+    "firstdayofpreviousisoweek",
+    "firstdayofpreviousweek",
+    "firstdayofpreviousquarter",
+    "firstdayofpreviousmonth",
+    "firstdayofpreviousyear",
+    "firstdayofquarter",
+    "firstdayofisoweek",
+    "firstdayofweek",
+    "firstdayofmonth",
+    "firstdayofyear",
+    "previousday",
 ]
 
 

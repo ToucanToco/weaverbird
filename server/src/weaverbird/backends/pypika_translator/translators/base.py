@@ -773,15 +773,18 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "DateExtractStep",
     ) -> StepContext:
+        from weaverbird.pipeline.steps.date_extract import DATE_UNIT_WITH_INT_CAST_NOT_NEEDED
+
         date_col: Field = Table(prev_step_name)[step.column]
         extracted_dates: list[LiteralValue] = []
 
         for date_info, new_column_name in zip(step.date_info, step.new_columns):
-            extracted_dates.append(
-                self._get_date_extract_func(date_unit=date_info, target_column=date_col).as_(
-                    new_column_name
-                )
-            )
+            col_field = self._get_date_extract_func(date_unit=date_info, target_column=date_col)
+
+            if date_info.lower() not in DATE_UNIT_WITH_INT_CAST_NOT_NEEDED:
+                col_field = functions.Cast(col_field, self.DATA_TYPE_MAPPING.integer)
+
+            extracted_dates.append(col_field.as_(new_column_name))
         query: "Selectable" = self.QUERY_CLS.from_(prev_step_name).select(
             *columns, *extracted_dates
         )
