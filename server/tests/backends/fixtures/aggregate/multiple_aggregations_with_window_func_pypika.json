@@ -7,9 +7,18 @@
   "step": {
     "pipeline": [
       {
+        "name": "rename",
+        "to_rename": [
+          [
+            "beer_kind",
+            "BEER_KIND"
+          ]
+        ]
+      },
+      {
         "name": "aggregate",
         "on": [
-          "beer_kind"
+          "BEER_KIND"
         ],
         "aggregations": [
           {
@@ -30,6 +39,15 @@
               "name"
             ]
           }
+        ]
+      },
+      {
+        "name": "rename",
+        "to_rename": [
+          [
+            "BEER_KIND",
+            "beer_kind"
+          ]
         ]
       }
     ]
