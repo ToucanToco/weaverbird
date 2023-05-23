@@ -137,6 +137,19 @@ def test_skip_void_parameter_from_variables():
                                                 },
                                             ]
                                         },
+                                        {
+                                            "column": "colP",
+                                            "operator": "in",
+                                            "value": [
+                                                "__VOID__",
+                                                "{{ __front_var_11__ }}",
+                                            ],
+                                        },
+                                        {
+                                            "column": "colQ",
+                                            "operator": "nin",
+                                            "value": [False, "{{ __front_var_10__ }}"],
+                                        },
                                     ]
                                 },
                             ]
@@ -175,6 +188,8 @@ def test_skip_void_parameter_from_variables():
         "__front_var_7__": "TOTO",
         "__front_var_8__": "__VOID__",
         "__front_var_9__": "__VOID__",
+        "__front_var_10__": "__VOID__",
+        "__front_var_11__": True,
     }
 
     pipeline_with_variables = PipelineWithVariables(steps=steps)
@@ -182,8 +197,9 @@ def test_skip_void_parameter_from_variables():
 
     # will render the with no __VOID__ in step, whatever the depth
     assert [s.dict() for s in pipeline.steps] == [
-        {"domain": "foobar", "name": "domain"},
+        {"name": "domain", "domain": "foobar"},
         {
+            "name": "filter",
             "condition": {
                 "or_": [
                     {"column": "colE", "operator": "eq", "value": "TEST TEST"},
@@ -194,21 +210,26 @@ def test_skip_void_parameter_from_variables():
                                 "or_": [
                                     {"column": "colI", "operator": "eq", "value": "toto"},
                                     {"column": "colJ", "operator": "eq", "value": "TOTO"},
+                                    {
+                                        "or_": [
+                                            {"column": "colP", "operator": "in", "value": [True]},
+                                            {"column": "colQ", "operator": "nin", "value": [False]},
+                                        ]
+                                    },
                                 ]
                             },
                         ]
                     },
                 ]
             },
-            "name": "filter",
         },
-        {"condition": {"column": "colB", "operator": "eq", "value": 32}, "name": "filter"},
+        {"name": "filter", "condition": {"column": "colB", "operator": "eq", "value": 32}},
         {
+            "name": "filter",
             "condition": {
                 "and_": [
                     {"column": "ColD", "operator": "until", "value": datetime(2009, 1, 3, 0, 0)}
                 ]
             },
-            "name": "filter",
         },
     ]

@@ -12,7 +12,6 @@ from weaverbird.pipeline.conditions import (
     MatchCondition,
 )
 from weaverbird.pipeline.steps.hierarchy import HierarchyStep
-from weaverbird.pipeline.steps.utils.base import BaseStep
 
 from .steps import (
     AbsoluteValueStep,
@@ -193,64 +192,61 @@ PipelineStepWithVariables = Annotated[
     Field(discriminator="name"),  # noqa: F821
 ]
 
+VOID_REPR = "__VOID__"
+
 
 def _remove_void_from_combo_condition(
-    condition: ConditionComboAnd | ConditionComboOr | None, combo: str
+    condition: ConditionComboAnd | ConditionComboOr, combo: str
 ) -> ConditionComboAnd | ConditionComboOr | None:
     """
     Loop into a combo condition and search for embedded condition that may
     contains __VOID__ as column/value
     """
-    if condition is None:
-        return None
-
-    loop_on: list[Condition] = []
+    sanitized_conditions: list[Condition] = []
 
     for cond in getattr(condition, combo) or []:
         if (transformed_condition := _remove_void_from_condition(cond)) is not None:
-            loop_on.append(transformed_condition)
-    if len(loop_on) == 0:
+            sanitized_conditions.append(transformed_condition)
+    if len(sanitized_conditions) == 0:
         return None
-    else:
-        if combo == "and_":
-            condition.and_ = loop_on
-        else:
-            condition.or_ = loop_on
+
+    setattr(condition, combo, sanitized_conditions)
 
     return condition
 
 
-def _remove_void_from_condition(condition: Condition | None) -> Condition | None:
+def _remove_void_from_condition(condition: Condition) -> Condition | None:
     """
     For a given condition either it's a combo or a simple condition
-    recursivelly check for it's columns and values and remove the one
+    recursively check for it's columns and values and remove the one
     with column/value = __VOID__
 
     """
     if isinstance(condition, (ConditionComboAnd, ConditionComboOr)):
-        if isinstance(condition, ConditionComboAnd):
-            condition = _remove_void_from_combo_condition(condition, "and_")
-        else:
-            condition = _remove_void_from_combo_condition(condition, "or_")
-    elif isinstance(
-        condition, (ComparisonCondition, InclusionCondition, MatchCondition, DateBoundCondition)
-    ):
-        if condition.column == "__VOID__" or (
-            isinstance(condition.value, str) and condition.value == "__VOID__"
-        ):
+        condition = _remove_void_from_combo_condition(
+            condition, "and_" if isinstance(condition, ConditionComboAnd) else "or_"
+        )
+    elif isinstance(condition, (ComparisonCondition, MatchCondition, DateBoundCondition)):
+        if condition.column == VOID_REPR or condition.value == VOID_REPR:
             return None
-        elif isinstance(
-            condition.value,
-            (ComparisonCondition, InclusionCondition, MatchCondition, DateBoundCondition),
-        ):
-            condition.value = _remove_void_from_condition(condition.value)
+    elif isinstance(condition, InclusionCondition):
+        condition_values = []
+        for value in condition.value:
+            if (
+                value != VOID_REPR
+                and (transformed_value := _remove_void_from_condition(value)) is not None
+            ):
+                condition_values.append(transformed_value)
+        if len(condition_values) == 0:
+            return None
+        condition.value = condition_values
 
     return condition
 
 
 def remove_void_conditions_from_filter_steps(
-    steps: list[PipelineStepWithVariables | PipelineStep | BaseStep],
-) -> list[PipelineStepWithVariables | PipelineStep | BaseStep]:
+    steps: list[PipelineStepWithVariables | PipelineStep],
+) -> list[PipelineStepWithVariables | PipelineStep]:
     """
     This method will remove all FilterStep with conditions having "__VOID__"
     in them. either the "value" key or the "column" key.
@@ -277,6 +273,4 @@ class PipelineWithVariables(BaseModel):
             for step in self.steps
         ]
         # We clean __VOID__ values from filter steps conditions.
-        return Pipeline(
-            steps=remove_void_conditions_from_filter_steps(steps_rendered)  # type:ignore
-        )
+        return Pipeline(steps=remove_void_conditions_from_filter_steps(steps_rendered))
