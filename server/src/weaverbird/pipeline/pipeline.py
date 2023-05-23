@@ -196,13 +196,14 @@ VOID_REPR = "__VOID__"
 
 
 def _remove_void_from_combo_condition(
-    condition: ConditionComboAnd | ConditionComboOr, combo: str
+    condition: ConditionComboAnd | ConditionComboOr,
 ) -> ConditionComboAnd | ConditionComboOr | None:
     """
     Loop into a combo condition and search for embedded condition that may
     contains __VOID__ as column/value
     """
     sanitized_conditions: list[Condition] = []
+    combo = "and_" if hasattr(condition, "and_") else "or_"
 
     for cond in getattr(condition, combo) or []:
         if (transformed_condition := _remove_void_from_condition(cond)) is not None:
@@ -223,20 +224,12 @@ def _remove_void_from_condition(condition: Condition) -> Condition | None:
 
     """
     if isinstance(condition, (ConditionComboAnd, ConditionComboOr)):
-        condition = _remove_void_from_combo_condition(
-            condition, "and_" if isinstance(condition, ConditionComboAnd) else "or_"
-        )
+        condition = _remove_void_from_combo_condition(condition)
     elif isinstance(condition, (ComparisonCondition, MatchCondition, DateBoundCondition)):
         if condition.column == VOID_REPR or condition.value == VOID_REPR:
             return None
     elif isinstance(condition, InclusionCondition):
-        condition_values = []
-        for value in condition.value:
-            if (
-                value != VOID_REPR
-                and (transformed_value := _remove_void_from_condition(value)) is not None
-            ):
-                condition_values.append(transformed_value)
+        condition_values = [v for v in condition.value if v != VOID_REPR]
         if len(condition_values) == 0:
             return None
         condition.value = condition_values
