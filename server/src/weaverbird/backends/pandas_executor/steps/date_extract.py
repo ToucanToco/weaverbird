@@ -1,14 +1,9 @@
-from contextlib import suppress
-
 from pandas import DataFrame, to_datetime, to_timedelta
 from pandas.api.types import is_unsigned_integer_dtype
 
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps import DateExtractStep
-from weaverbird.pipeline.steps.date_extract import (
-    DATE_INFO,
-    DATE_UNIT_WITH_INT_CAST_NOT_NEEDED,
-)
+from weaverbird.pipeline.steps.date_extract import DATE_INFO, DATE_UNIT_WITH_INT_CAST_NOT_NEEDED
 
 from .utils.cast import cast_to_int
 
