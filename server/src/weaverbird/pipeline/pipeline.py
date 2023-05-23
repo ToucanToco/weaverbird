@@ -1,9 +1,16 @@
-from copy import copy
 from typing import Annotated, Any
 
 from pydantic import BaseModel, Field
-from pydantic.error_wrappers import ValidationError
 
+from weaverbird.pipeline.conditions import (
+    ComparisonCondition,
+    Condition,
+    ConditionComboAnd,
+    ConditionComboOr,
+    DateBoundCondition,
+    InclusionCondition,
+    MatchCondition,
+)
 from weaverbird.pipeline.steps.hierarchy import HierarchyStep
 from weaverbird.pipeline.steps.utils.base import BaseStep
 
@@ -187,53 +194,58 @@ PipelineStepWithVariables = Annotated[
 ]
 
 
-def _contains_void_as_value(value: dict) -> bool:
-    return any(
-        [
-            value.get("value") == "__VOID__",
-            value.get("column") == "__VOID__",
-        ]
-    )
+def _remove_void_from_combo_condition(
+    condition: ConditionComboAnd | ConditionComboOr | None, combo: str
+) -> ConditionComboAnd | ConditionComboOr | None:
+    """
+    Loop into a combo condition and search for embedded condition that may
+    contains __VOID__ as column/value
+    """
+    if condition is None:
+        return None
+
+    loop_on: list[Condition] = []
+
+    for cond in getattr(condition, combo) or []:
+        if (transformed_condition := _remove_void_from_condition(cond)) is not None:
+            loop_on.append(transformed_condition)
+    if len(loop_on) == 0:
+        return None
+    else:
+        if combo == "and_":
+            condition.and_ = loop_on
+        else:
+            condition.or_ = loop_on
+
+    return condition
 
 
-def _remove_void_value_elements(
-    obj: dict[str, Any] | list[dict[str, Any]]
-) -> dict[str, Any] | list[dict[str, Any]]:
-    if isinstance(obj, dict):
-        keys_to_remove = (
-            k for k, v in copy(obj).items() if isinstance(v, dict) and _contains_void_as_value(v)
-        )
-        for key in keys_to_remove:
-            del obj[key]  # remove "condition" if __VOID__ is found
+def _remove_void_from_condition(condition: Condition | None) -> Condition | None:
+    """
+    For a given condition either it's a combo or a simple condition
+    recursivelly check for it's columns and values and remove the one
+    with column/value = __VOID__
 
-        for v in obj.values():
-            _remove_void_value_elements(v)
+    """
+    if isinstance(condition, (ConditionComboAnd, ConditionComboOr)):
+        if isinstance(condition, ConditionComboAnd):
+            condition = _remove_void_from_combo_condition(condition, "and_")
+        else:
+            condition = _remove_void_from_combo_condition(condition, "or_")
+    elif isinstance(
+        condition, (ComparisonCondition, InclusionCondition, MatchCondition, DateBoundCondition)
+    ):
+        if condition.column == "__VOID__" or (
+            isinstance(condition.value, str) and condition.value == "__VOID__"
+        ):
+            return None
+        elif isinstance(
+            condition.value,
+            (ComparisonCondition, InclusionCondition, MatchCondition, DateBoundCondition),
+        ):
+            condition.value = _remove_void_from_condition(condition.value)
 
-        if "condition" in obj:
-            if ("and_" in obj["condition"] and obj["condition"]["and_"] == []) or (
-                "or_" in obj["condition"] and obj["condition"]["or_"] == []
-            ):
-                del obj["condition"]
-
-        return obj
-
-    elif isinstance(obj, list):
-        indices_to_remove = (
-            i for i, v in enumerate(obj) if isinstance(v, dict) and _contains_void_as_value(v)
-        )
-
-        for index in sorted(indices_to_remove, reverse=True):
-            del obj[index]
-        for v in obj:
-            _remove_void_value_elements(v)
-
-        for index, v in enumerate(obj):
-            if "or_" in v and v["or_"] == []:
-                del obj[index]
-            if "and_" in v and v["and_"] == []:
-                del obj[index]
-
-        return obj
+    return condition
 
 
 def remove_void_conditions_from_filter_steps(
@@ -247,13 +259,8 @@ def remove_void_conditions_from_filter_steps(
     final_steps = []
     for step in steps:
         if isinstance(step, FilterStep):
-            try:
-                transformed_step = FilterStep(
-                    **_remove_void_value_elements(step.dict()) or {}  # type:ignore [arg-type]
-                )
-                final_steps.append(transformed_step)
-            except ValidationError:
-                pass  # we skip non-valid filter steps
+            if (condition := _remove_void_from_condition(step.condition)) is not None:
+                final_steps.append(FilterStep(condition=condition))
         else:
             final_steps.append(step)
 
