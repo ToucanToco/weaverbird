@@ -121,27 +121,9 @@ def test_date_extract_extract_kw(
     )
     expected_query = Query.from_(previous_step).select(
         *[prev_table.field(col) for col in selected_columns],
-        Cast(
-            Extract(
-                "year",
-                Cast(prev_table.brewing_date, snowflake_translator.DATA_TYPE_MAPPING.timestamp),
-            ),
-            snowflake_translator.DATA_TYPE_MAPPING.integer,
-        ).as_("brewing_year"),
-        Cast(
-            Extract(
-                "month",
-                Cast(prev_table.brewing_date, snowflake_translator.DATA_TYPE_MAPPING.timestamp),
-            ),
-            snowflake_translator.DATA_TYPE_MAPPING.integer,
-        ).as_("brewing_month"),
-        Cast(
-            Extract(
-                "day",
-                Cast(prev_table.brewing_date, snowflake_translator.DATA_TYPE_MAPPING.timestamp),
-            ),
-            snowflake_translator.DATA_TYPE_MAPPING.integer,
-        ).as_("brewing_day"),
+        Extract("year", Cast(prev_table.brewing_date, "timestamp")).as_("brewing_year"),
+        Extract("month", Cast(prev_table.brewing_date, "timestamp")).as_("brewing_month"),
+        Extract("day", Cast(prev_table.brewing_date, "timestamp")).as_("brewing_day"),
     )
     assert ctx.selectable.get_sql(quote_char='"') == expected_query.get_sql(quote_char='"')
 
@@ -163,10 +145,7 @@ def test_date_extract_func(
     )
     expected_query = Query.from_(previous_step).select(
         *[prev_table.field(col) for col in selected_columns],
-        Cast(
-            Extract("week", prev_table.brewing_date),
-            snowflake_translator.DATA_TYPE_MAPPING.integer,
-        ).as_("brewing_week"),
+        Extract("week", prev_table.brewing_date).as_("brewing_week"),
     )
     assert ctx.selectable.get_sql(quote_char='"') == expected_query.get_sql(quote_char='"')
 
