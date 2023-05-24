@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [0.30.1] - 2023-05-24
+
+- PyPika: Fixed a bug by quoting column names in `PARTITION BY "column"`
+
 ## [0.30.0] - 2023-04-28
 
 - This release officially adds support for Python 3.11.
