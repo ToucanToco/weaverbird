@@ -1,10 +1,14 @@
 import glob
 import json
+import re
+from copy import deepcopy
 from datetime import datetime
 
 import pytest
+from jinja2 import Environment
+from jinja2.nativetypes import NativeEnvironment
 from pydantic import BaseModel
-from toucan_connectors.common import _render_query, nosql_apply_parameters_to_query
+from toucan_connectors.common import RE_PARAM, is_jinja_alone, nosql_apply_parameters_to_query
 
 from weaverbird.pipeline.pipeline import Pipeline, PipelineWithVariables
 from weaverbird.pipeline.steps import DomainStep, RollupStep
@@ -16,6 +20,30 @@ class Case(BaseModel):
     data: dict
     context: dict
     expected_result: list
+
+
+def jinja_renderer(query: dict | list[dict] | tuple | str, parameters: dict):
+    if isinstance(query, dict):
+        return {key: jinja_renderer(value, parameters) for key, value in deepcopy(query).items()}
+    elif isinstance(query, list):
+        rendered_query = [jinja_renderer(elt, parameters) for elt in deepcopy(query)]
+        return rendered_query
+    elif isinstance(query, tuple):
+        return tuple(jinja_renderer(value, parameters) for value in deepcopy(query))
+    elif isinstance(query, str):
+        # Replace param templating with jinja templating:
+        query = re.sub(RE_PARAM, r"{{ \g<1> }}", query)
+
+        # Add quotes to string parameters to keep type if not complex
+        clean_p = deepcopy(parameters)
+        if is_jinja_alone(query):
+            env = NativeEnvironment()
+        else:
+            env = Environment()
+
+        return env.from_string(query).render(clean_p)
+    else:
+        return query
 
 
 def get_render_variables_test_cases():
@@ -193,7 +221,7 @@ def test_skip_void_parameter_from_variables():
     }
 
     pipeline_with_variables = PipelineWithVariables(steps=steps)
-    pipeline = pipeline_with_variables.render(variables, renderer=_render_query)
+    pipeline = pipeline_with_variables.render(variables, renderer=jinja_renderer)
 
     # will render the with no __VOID__ in step, whatever the depth
     assert [s.dict() for s in pipeline.steps] == [
