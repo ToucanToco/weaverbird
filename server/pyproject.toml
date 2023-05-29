@@ -30,7 +30,7 @@ psycopg = {optional = true, version = "^3.0.15"}
 toucan-connectors = {version = "^4.5.1", optional = true, extras = ["google_big_query", "mongo", "Redshift", "snowflake", "awsathena"]}
 
 [tool.poetry.dev-dependencies]
-pytest-cov = "^4.0.0"
+pytest-cov = "^4.1.0"
 pytest-mock = "^3.10.0"
 # required so we can use nosql_apply_parameters_to_query during tests
 toucan-connectors = { version = "^4.5.1", extras = ["google_big_query", "mongo", "Redshift", "snowflake", "awsathena"] }
