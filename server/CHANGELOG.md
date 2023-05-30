@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## [0.31.0] - 2023-05-30
+
+- **BREAKING CHANGES (VQB)**: Now we clean filter steps containing `__VOID__` as values in conditions while rendering a pipeline.
+- Pandas: Fixed the integer cast for "integer date parts" columns for dateextract step.
+
 ## [0.30.1] - 2023-05-24
 
 - PyPika: Fixed a bug by quoting column names in `PARTITION BY "column"`
