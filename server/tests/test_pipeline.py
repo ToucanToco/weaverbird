@@ -1,7 +1,10 @@
 import glob
 import json
+from copy import deepcopy
+from datetime import datetime
 
 import pytest
+from jinja2.nativetypes import NativeEnvironment
 from pydantic import BaseModel
 from toucan_connectors.common import nosql_apply_parameters_to_query
 
@@ -15,6 +18,20 @@ class Case(BaseModel):
     data: dict
     context: dict
     expected_result: list
+
+
+def jinja_renderer(query: dict | list[dict] | tuple | str, parameters: dict):
+    if isinstance(query, dict):
+        return {key: jinja_renderer(value, parameters) for key, value in deepcopy(query).items()}
+    elif isinstance(query, list):
+        rendered_query = [jinja_renderer(elt, parameters) for elt in deepcopy(query)]
+        return rendered_query
+    elif isinstance(query, tuple):
+        return tuple(jinja_renderer(value, parameters) for value in deepcopy(query))
+    elif isinstance(query, str):
+        return NativeEnvironment().from_string(query).render(parameters)
+    else:
+        return query
 
 
 def get_render_variables_test_cases():
@@ -82,3 +99,153 @@ def test_to_dict():
     }
     assert actual_dict == expected_dict
     assert pipeline == Pipeline(**pipeline.dict())
+
+
+def test_skip_void_parameter_from_variables():
+    void_step = {
+        "name": "filter",
+        "condition": {"column": "colA", "operator": "ge", "value": "{{ __front_var_0__ }}"},
+    }
+
+    simple_filter_step = {
+        "name": "filter",
+        "condition": {"column": "colB", "operator": "eq", "value": "{{ __front_var_1__ }}"},
+    }
+
+    composed_filter_step_and_ = {
+        "name": "filter",
+        "condition": {
+            "and_": [
+                {"column": "colC", "operator": "gt", "value": "{{ __front_var_2__ }}"},
+                {"column": "ColD", "operator": "until", "value": datetime(2009, 1, 3, 0, 0)},
+            ]
+        },
+    }
+
+    composed_filter_step_or_and_ = {
+        "name": "filter",
+        "condition": {
+            "or_": [
+                {"column": "colE", "operator": "eq", "value": "{{ __front_var_3__ }}"},
+                {"column": "colF", "operator": "lt", "value": "{{ __front_var_4__ }}"},
+                {
+                    "and_": [
+                        {"column": "colG", "operator": "gt", "value": "{{ __front_var_5__ }}"},
+                        {"column": "colH", "operator": "eq", "value": "{{ __front_var_6__ }}"},
+                        {
+                            "or_": [
+                                {"column": "colI", "operator": "eq", "value": "toto"},
+                                {
+                                    "column": "colJ",
+                                    "operator": "eq",
+                                    "value": "{{ __front_var_7__ }}",
+                                },
+                                {
+                                    "or_": [
+                                        {"column": "colM", "operator": "gt", "value": "__VOID__"},
+                                        {"column": "colN", "operator": "le", "value": "__VOID__"},
+                                        {
+                                            "and_": [
+                                                {
+                                                    "column": "colO",
+                                                    "operator": "eq",
+                                                    "value": "__VOID__",
+                                                },
+                                            ]
+                                        },
+                                        {
+                                            "column": "colP",
+                                            "operator": "in",
+                                            "value": [
+                                                "__VOID__",
+                                                "{{ __front_var_11__ }}",
+                                            ],
+                                        },
+                                        {
+                                            "column": "colQ",
+                                            "operator": "nin",
+                                            "value": [False, "{{ __front_var_10__ }}"],
+                                        },
+                                    ]
+                                },
+                            ]
+                        },
+                    ]
+                },
+            ]
+        },
+    }
+    composed_filter_step_and_all_voids = {
+        "name": "filter",
+        "condition": {
+            "and_": [
+                {"column": "colK", "operator": "gt", "value": "{{ __front_var_8__ }}"},
+                {"column": "colL", "operator": "le", "value": "{{ __front_var_9__ }}"},
+            ]
+        },
+    }
+
+    steps = [
+        {"domain": "foobar", "name": "domain"},
+        void_step,
+        composed_filter_step_or_and_,
+        simple_filter_step,
+        composed_filter_step_and_,
+        composed_filter_step_and_all_voids,
+    ]
+    variables = {
+        "__front_var_0__": "__VOID__",
+        "__front_var_1__": 32,
+        "__front_var_2__": "__VOID__",
+        "__front_var_3__": "TEST TEST",
+        "__front_var_4__": "__VOID__",
+        "__front_var_5__": "__VOID__",
+        "__front_var_6__": "VALUE",
+        "__front_var_7__": "TOTO",
+        "__front_var_8__": "__VOID__",
+        "__front_var_9__": "__VOID__",
+        "__front_var_10__": "__VOID__",
+        "__front_var_11__": True,
+    }
+
+    pipeline_with_variables = PipelineWithVariables(steps=steps)
+    pipeline = pipeline_with_variables.render(variables, renderer=jinja_renderer)
+
+    # will render the with no __VOID__ in step, whatever the depth
+    assert [s.dict() for s in pipeline.steps] == [
+        {"name": "domain", "domain": "foobar"},
+        {
+            "name": "filter",
+            "condition": {
+                "or_": [
+                    {"column": "colE", "operator": "eq", "value": "TEST TEST"},
+                    {
+                        "and_": [
+                            {"column": "colH", "operator": "eq", "value": "VALUE"},
+                            {
+                                "or_": [
+                                    {"column": "colI", "operator": "eq", "value": "toto"},
+                                    {"column": "colJ", "operator": "eq", "value": "TOTO"},
+                                    {
+                                        "or_": [
+                                            {"column": "colP", "operator": "in", "value": [True]},
+                                            {"column": "colQ", "operator": "nin", "value": [False]},
+                                        ]
+                                    },
+                                ]
+                            },
+                        ]
+                    },
+                ]
+            },
+        },
+        {"name": "filter", "condition": {"column": "colB", "operator": "eq", "value": 32}},
+        {
+            "name": "filter",
+            "condition": {
+                "and_": [
+                    {"column": "ColD", "operator": "until", "value": datetime(2009, 1, 3, 0, 0)}
+                ]
+            },
+        },
+    ]
