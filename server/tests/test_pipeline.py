@@ -1,14 +1,12 @@
 import glob
 import json
-import re
 from copy import deepcopy
 from datetime import datetime
 
 import pytest
-from jinja2 import Environment
 from jinja2.nativetypes import NativeEnvironment
 from pydantic import BaseModel
-from toucan_connectors.common import RE_PARAM, is_jinja_alone, nosql_apply_parameters_to_query
+from toucan_connectors.common import nosql_apply_parameters_to_query
 
 from weaverbird.pipeline.pipeline import Pipeline, PipelineWithVariables
 from weaverbird.pipeline.steps import DomainStep, RollupStep
@@ -31,17 +29,7 @@ def jinja_renderer(query: dict | list[dict] | tuple | str, parameters: dict):
     elif isinstance(query, tuple):
         return tuple(jinja_renderer(value, parameters) for value in deepcopy(query))
     elif isinstance(query, str):
-        # Replace param templating with jinja templating:
-        query = re.sub(RE_PARAM, r"{{ \g<1> }}", query)
-
-        # Add quotes to string parameters to keep type if not complex
-        clean_p = deepcopy(parameters)
-        if is_jinja_alone(query):
-            env = NativeEnvironment()
-        else:
-            env = Environment()
-
-        return env.from_string(query).render(clean_p)
+        return NativeEnvironment().from_string(query).render(parameters)
     else:
         return query
 
