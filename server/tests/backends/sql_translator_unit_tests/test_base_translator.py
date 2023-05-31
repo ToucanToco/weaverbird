@@ -779,3 +779,32 @@ def test_materialize_customsql_query_with_no_columns(base_translator: BaseTransl
         "WITH __step_0_basetranslator__ AS (SELECT titi, tata FROM toto) "
         'SELECT * FROM "__step_0_basetranslator__"'
     )
+
+
+def test_dateextract(base_translator: BaseTranslator, default_step_kwargs: dict[str, Any]):
+    selected_columns = ["name", "pseudonyme", "birth-date"]
+    previous_step = "previous_with"
+    column = "age"
+    date_info = ["hour"]
+    operation = "hour"
+    new_columns = ["birth-date-hour"]
+    new_column_name = "birth-date-hour"
+
+    step = steps.DateExtractStep(
+        column=column,
+        operation=operation,
+        date_info=date_info,  # type:ignore
+        new_column_name=new_column_name,
+        new_columns=new_columns,
+    )
+    ctx = base_translator.dateextract(step=step, columns=selected_columns, **default_step_kwargs)
+
+    expected_query = Query.from_(previous_step).select(
+        *selected_columns,
+        functions.Extract(
+            field=functions.Cast(Field(column), base_translator.DATA_TYPE_MAPPING.timestamp),
+            date_part=operation,
+        ).as_(new_column_name),
+    )
+
+    assert ctx.selectable.get_sql() == expected_query.get_sql()
