@@ -3,6 +3,7 @@ from datetime import date, datetime, timedelta
 import pytest
 from pandas import DataFrame, to_datetime
 from pandas.core.arrays.integer import UInt32Dtype
+from pytest_mock import MockerFixture
 
 from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.date_extract import execute_date_extract
@@ -21,6 +22,26 @@ def sample_df():
                 date(2017, 1, 2),
                 date(2016, 1, 1),
                 None,
+            ]
+        }
+    )
+
+
+@pytest.fixture
+def second_sample_df():
+    return DataFrame(
+        {
+            "date": [
+                None,
+                None,
+                None,
+                date(2021, 3, 29),
+                None,
+                "2020-12-13T00:00:00.000Z",
+                None,
+                to_datetime("2020-07-29T00:00:00.000Z"),
+                None,
+                date(2016, 1, 1),
             ]
         }
     )
@@ -241,6 +262,47 @@ def test_date_extract_no_uint32(sample_df: DataFrame):
             "date_milliseconds": [0, 0, 0, 4, 0, 0, None],
         }
     )
+    assert_dataframes_equals(df_result, expected_result)
+
+    # Ensure there are no unsigned int types in result:
+    assert UInt32Dtype() not in list(df_result.dtypes)
+
+
+def test_date_extract_no_uint32_cast_int(mocker: MockerFixture, second_sample_df: DataFrame):
+    step = DateExtractStep(
+        name="dateextract",
+        column="date",
+        dateInfo=[
+            "week",
+        ],
+        newColumns=[
+            "date_week",
+        ],
+    )
+    expected_result = DataFrame(
+        {
+            "date": second_sample_df["date"],
+            "date_week": [0 for _ in range(10)],
+        }
+    )
+    week_with_floats = [None, None, None, 13.0, None, 50.0, None, 30.0, None, 0.0]
+    week_with_ints_only = [None, None, None, 13, None, 50, None, 30, None, 0]
+
+    # with floats
+    mocker.patch("pandas.api.types.is_unsigned_integer_dtype", return_value=False)
+    df_result = execute_date_extract(step, second_sample_df)
+    expected_result["date_week"] = week_with_floats
+
+    assert_dataframes_equals(df_result, expected_result)
+
+    # Ensure there are no unsigned int types in result:
+    assert UInt32Dtype() not in list(df_result.dtypes)
+
+    # with integers
+    mocker.patch("pandas.api.types.is_unsigned_integer_dtype", return_value=True)
+    df_result = execute_date_extract(step, second_sample_df)
+    expected_result["date_week"] = week_with_ints_only
+
     assert_dataframes_equals(df_result, expected_result)
 
     # Ensure there are no unsigned int types in result:
