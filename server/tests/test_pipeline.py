@@ -8,7 +8,11 @@ from jinja2.nativetypes import NativeEnvironment
 from pydantic import BaseModel
 from toucan_connectors.common import nosql_apply_parameters_to_query
 
-from weaverbird.pipeline.pipeline import Pipeline, PipelineWithVariables
+from weaverbird.pipeline.pipeline import (
+    Pipeline,
+    PipelineWithVariables,
+    remove_void_conditions_from_filter_steps,
+)
 from weaverbird.pipeline.steps import DomainStep, RollupStep
 from weaverbird.pipeline.steps.aggregate import Aggregation
 
@@ -210,9 +214,9 @@ def test_skip_void_parameter_from_variables():
 
     pipeline_with_variables = PipelineWithVariables(steps=steps)
     pipeline = pipeline_with_variables.render(variables, renderer=jinja_renderer)
-
+    steps = remove_void_conditions_from_filter_steps(pipeline.steps)
     # will render the with no __VOID__ in step, whatever the depth
-    assert [s.dict() for s in pipeline.steps] == [
+    assert [s.dict() for s in steps] == [
         {"name": "domain", "domain": "foobar"},
         {
             "name": "filter",

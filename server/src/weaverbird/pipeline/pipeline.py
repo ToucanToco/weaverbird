@@ -265,5 +265,4 @@ class PipelineWithVariables(BaseModel):
             step.render(variables, renderer) if hasattr(step, "render") else step  # type: ignore
             for step in self.steps
         ]
-        # We clean __VOID__ values from filter steps conditions.
-        return Pipeline(steps=remove_void_conditions_from_filter_steps(steps_rendered))
+        return Pipeline(steps=steps_rendered)
