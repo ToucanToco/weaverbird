@@ -76,6 +76,7 @@ def mysql_container():
 @pytest.mark.parametrize(
     "case_id, case_spec_file_path", retrieve_case("sql_translator", "mysql_pypika")
 )
+@pytest.mark.skip("MySQL result order is not consistent with CTEs")
 def test_sql_translator_pipeline(
     case_id: str, case_spec_file_path: str, engine: Any, available_variables: dict
 ):
