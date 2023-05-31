@@ -247,6 +247,50 @@ def test_date_extract_no_uint32(sample_df: DataFrame):
     assert UInt32Dtype() not in list(df_result.dtypes)
 
 
+@pytest.fixture
+def second_sample_df():
+    return DataFrame(
+        {
+            "date": [
+                None,
+                None,
+                None,
+                date(2021, 3, 29),
+                None,
+                "2020-12-13T00:00:00.000Z",
+                None,
+                to_datetime("2020-07-29T00:00:00.000Z"),
+                None,
+                date(2016, 1, 1),
+            ]
+        }
+    )
+
+
+def test_date_extract_no_uint32_cast_int(second_sample_df: DataFrame):
+    step = DateExtractStep(
+        name="dateextract",
+        column="date",
+        dateInfo=[
+            "week",
+        ],
+        newColumns=[
+            "date_week",
+        ],
+    )
+    expected_result = DataFrame(
+        {
+            "date": second_sample_df["date"],
+            "date_week": [None, None, None, 13, None, 50, None, 30, None, 0],
+        }
+    )
+    df_result = execute_date_extract(step, second_sample_df)
+    assert_dataframes_equals(df_result, expected_result)
+
+    # Ensure there are no unsigned int types in result:
+    assert UInt32Dtype() not in list(df_result.dtypes)
+
+
 def test_benchmark_dateextract(benchmark):
     dates = [datetime.today() + timedelta(days=nb_day) for nb_day in range(1, 2001)]
     df = DataFrame(
