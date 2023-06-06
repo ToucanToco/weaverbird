@@ -3,7 +3,7 @@ from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from functools import cache
-from typing import TYPE_CHECKING, Any, Literal, TypeVar, cast, get_args
+from typing import TYPE_CHECKING, Any, Literal, TypeVar, Union, cast, get_args
 
 from dateutil import parser as dateutil_parser
 from pypika import (
