@@ -801,9 +801,12 @@ def test_dateextract(base_translator: BaseTranslator, default_step_kwargs: dict[
 
     expected_query = Query.from_(previous_step).select(
         *selected_columns,
-        functions.Extract(
-            field=functions.Cast(Field(column), base_translator.DATA_TYPE_MAPPING.timestamp),
-            date_part=operation,
+        functions.Cast(
+            functions.Extract(
+                field=functions.Cast(Field(column), base_translator.DATA_TYPE_MAPPING.timestamp),
+                date_part=operation,
+            ),
+            base_translator.DATA_TYPE_MAPPING.integer,
         ).as_(new_column_name),
     )
 

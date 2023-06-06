@@ -3,7 +3,7 @@ from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from functools import cache
-from typing import TYPE_CHECKING, Any, Literal, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, Literal, TypeVar, cast, get_args
 
 from dateutil import parser as dateutil_parser
 from pypika import (
@@ -774,15 +774,18 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "DateExtractStep",
     ) -> StepContext:
+        from weaverbird.pipeline.steps.date_extract import TIMESTAMP_DATE_PARTS
+
         date_col: Field = Table(prev_step_name)[step.column]
         extracted_dates: list[LiteralValue] = []
 
         for date_info, new_column_name in zip(step.date_info, step.new_columns):
-            extracted_dates.append(
-                self._get_date_extract_func(date_unit=date_info, target_column=date_col).as_(
-                    new_column_name
-                )
-            )
+            col_field = self._get_date_extract_func(date_unit=date_info, target_column=date_col)
+
+            if date_info not in get_args(TIMESTAMP_DATE_PARTS):
+                col_field = functions.Cast(col_field, self.DATA_TYPE_MAPPING.integer)
+
+            extracted_dates.append(col_field.as_(new_column_name))
         query: "Selectable" = self.QUERY_CLS.from_(prev_step_name).select(
             *columns, *extracted_dates
         )
