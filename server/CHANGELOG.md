@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [0.26.8] - 2023-06-06
+
+- Pypika: Fixed the integer cast for "integer date parts" columns for dateextract step.
+
 ## [0.26.7] - 2023-05-30
 
 - Pandas: Fixed the integer cast for "integer date parts" columns for dateextract step.
