@@ -60,19 +60,19 @@ class RedshiftTranslator(PostgreSQLTranslator):
         self: Self,
         *,
         builder: QueryBuilder,
-        prev_step_name: str,
+        prev_step_table: str,
         columns: list[str],
         step: "ConcatenateStep",
     ) -> StepContext:
         # from step.columns = ["city", "age", "username"], step.separator = " -> "
         # create [Field("city"), " -> ", Field("age"), " -> ", Field("username")]
-        the_table = Table(prev_step_name)
+        the_table = Table(prev_step_table)
         tokens = [the_table[step.columns[0]]]
         for col in step.columns[1:]:
             tokens.append(step.separator)
             tokens.append(the_table[col])
 
-        query: QueryBuilder = self.QUERY_CLS.from_(prev_step_name).select(
+        query: QueryBuilder = self.QUERY_CLS.from_(prev_step_table).select(
             *columns,
             self._recursive_concat(None, tokens).as_(step.new_column_name),
         )

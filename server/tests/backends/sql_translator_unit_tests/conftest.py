@@ -10,7 +10,7 @@ from weaverbird.backends.pypika_translator.translators.base import SQLTranslator
 
 @pytest.fixture
 def default_step_kwargs() -> dict[str, Any]:
-    return {"builder": QueryBuilder(), "prev_step_name": "previous_with"}
+    return {"builder": QueryBuilder(), "prev_step_table": "previous_with"}
 
 
 @pytest.fixture

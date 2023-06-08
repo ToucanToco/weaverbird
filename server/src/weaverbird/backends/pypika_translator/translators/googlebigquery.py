@@ -109,11 +109,11 @@ class GoogleBigQueryTranslator(SQLTranslator):
         self: Self,
         *,
         builder: "QueryBuilder",
-        prev_step_name: str,
+        prev_step_table: str,
         columns: list[str],
         step: "SplitStep",
     ) -> StepContext:
-        col_field: Field = Table(prev_step_name)[step.column]
+        col_field: Field = Table(prev_step_table)[step.column]
 
         safe_offset = CustomFunction("SAFE_OFFSET", ["index"])
 
@@ -137,7 +137,7 @@ class GoogleBigQueryTranslator(SQLTranslator):
                 )
 
         splitted_cols = list(gen_splitted_cols())
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
+        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *columns, *splitted_cols
         )
         return StepContext(query, columns + splitted_cols)
@@ -210,17 +210,17 @@ class GoogleBigQueryTranslator(SQLTranslator):
         self: Self,
         *,
         builder: "QueryBuilder",
-        prev_step_name: str,
+        prev_step_table: str,
         columns: list[str],
         step: "ToDateStep",
     ) -> StepContext:
-        col_field = Table(prev_step_name)[step.column]
+        col_field = Table(prev_step_table)[step.column]
         if step.format is not None:
             date_selection = self._cast_to_timestamp(GBQParseDateTime(col_field, step.format))
         else:
             date_selection = self._cast_to_timestamp(col_field)
 
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
+        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *(c for c in columns if c != step.column),
             date_selection.as_(step.column),
         )
