@@ -47,7 +47,7 @@ from weaverbird.pipeline.conditions import (
 )
 from weaverbird.pipeline.dates import RelativeDate
 from weaverbird.pipeline.pipeline import Pipeline
-from weaverbird.pipeline.steps import ConvertStep, DomainStep
+from weaverbird.pipeline.steps import ConvertStep, DomainStep, FilterStep, TopStep
 from weaverbird.pipeline.steps.date_extract import DATE_INFO
 from weaverbird.pipeline.steps.utils.combination import PipelineOrDomainNameOrReference, Reference
 
@@ -73,7 +73,6 @@ if TYPE_CHECKING:
         DuplicateStep,
         EvolutionStep,
         FillnaStep,
-        FilterStep,
         FormulaStep,
         FromdateStep,
         IfthenelseStep,
@@ -89,7 +88,6 @@ if TYPE_CHECKING:
         SubstringStep,
         TextStep,
         ToDateStep,
-        TopStep,
         TrimStep,
         UniqueGroupsStep,
         UnpivotStep,
@@ -215,15 +213,43 @@ class SQLTranslator(ABC):
         self._step_count += 1
         return name
 
+    def _extract_columns_from_customsql_step(self: Self, *, step: "CustomSqlStep") -> list[str]:
+        # In case there are several provided tables, we cannot figure out which columns to use
+        if len(self._tables_columns) != 1:
+            raise UnknownTableColumns("Expected columns to be specified for exactly one table")
+        return list(list(self._tables_columns.values())[0])
+
     def _step_context_from_first_step(self, step: "DomainStep | CustomSqlStep") -> StepContext:
         if step.name == "domain":
             return self._domain(step=step)
         else:  # CustomSql step
-            # In case there are several provided tables, we cannot figure out which columns to use
-            if len(self._tables_columns) != 1:
-                raise UnknownTableColumns("Expected columns to be specified for exactly one table")
-            column_names = list(self._tables_columns.values())[0]
-            return StepContext(self._custom_query(step=step), list(column_names))
+            columns = self._extract_columns_from_customsql_step(step=step)
+            return StepContext(self._custom_query(step=step), columns)
+
+    def _merge_first_steps(
+        self: Self, *, domain_step: "DomainStep", second_step: TopStep | FilterStep
+    ) -> StepContext:
+        columns = self._extract_columns_from_domain_step(step=domain_step)
+        # If we have a reference, self._extract_columns_from_domain_step raises
+        assert isinstance(domain_step.domain, str)
+        table = Table(domain_step.domain, schema=self._db_schema)
+        step_method: Callable[..., StepContext] = getattr(self, second_step.name)
+
+        # If we have a top step, ensure we can have at most source_rows_subset results
+        if (
+            self._source_rows_subset is not None
+            and isinstance(second_step, TopStep)
+            and self._source_rows_subset < second_step.limit
+        ):
+            second_step = second_step.copy(update={"limit": self._source_rows_subset})
+
+        ctx = step_method(step=second_step, prev_step_name=table, builder=None, columns=columns)
+
+        # If we have a filter step, add a limit on source_rows_subset
+        if self._source_rows_subset is not None and isinstance(second_step, FilterStep):
+            ctx.selectable = ctx.selectable.limit(self._source_rows_subset)
+
+        return ctx
 
     def get_query_builder(
         self: Self,
@@ -236,13 +262,23 @@ class SQLTranslator(ABC):
         assert steps[0].name == "domain" or steps[0].name == "customsql"
         self._step_count = 0
 
-        ctx = self._step_context_from_first_step(steps[0])
+        if (
+            len(steps) > 1
+            and isinstance(steps[0], DomainStep)
+            and isinstance(steps[1], FilterStep | TopStep)
+        ):
+            ctx = self._merge_first_steps(domain_step=steps[0], second_step=steps[1])
+            remaining_steps = steps[2:]
+        else:
+            ctx = self._step_context_from_first_step(steps[0])
+            remaining_steps = steps[1:]
+
         table_name = self._next_step_name()
         builder = (query_builder if query_builder is not None else self.QUERY_CLS).with_(
             ctx.selectable, table_name
         )
 
-        for step in steps[1:]:
+        for step in remaining_steps:
             step_method: Callable[..., StepContext] | None = getattr(self, step.name, None)
             if step_method is None:
                 raise NotImplementedError(f"[{self.DIALECT}] step {step.name} is not implemented")
@@ -804,17 +840,18 @@ class SQLTranslator(ABC):
         query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(*new_columns)
         return StepContext(query, new_columns)
 
-    # Prefixing domain with a '_', as it is a special case and should not be returned by
-    # getattr(self, step_name)
-    def _domain(self: Self, *, step: "DomainStep") -> StepContext:
+    def _extract_columns_from_domain_step(self: Self, *, step: "DomainStep") -> list[str]:
+        if isinstance(step.domain, Reference):
+            raise NotImplementedError(f"[{self.DIALECT}] Cannot resolve a reference to a query")
         try:
-            if isinstance(step.domain, Reference):
-                raise NotImplementedError(f"[{self.DIALECT}] Cannot resolve a reference to a query")
-            else:
-                selected_cols = list(self._tables_columns[step.domain])
+            return list(self._tables_columns[step.domain])
         except KeyError as exc:
             raise UnknownTableColumns(f"Table {exc} not in table_columns") from exc
 
+    # Prefixing domain with a '_', as it is a special case and should not be returned by
+    # getattr(self, step_name)
+    def _domain(self: Self, *, step: "DomainStep") -> StepContext:
+        selected_cols = self._extract_columns_from_domain_step(step=step)
         query: "QueryBuilder" = self.QUERY_CLS.from_(
             Table(step.domain, schema=self._db_schema)
         ).select(*selected_cols)
@@ -905,9 +942,9 @@ class SQLTranslator(ABC):
         return functions.Cast(value, "TIMESTAMP")
 
     def _get_single_condition_criterion(
-        self: Self, condition: "SimpleCondition", prev_step_name: str
+        self: Self, condition: "SimpleCondition", prev_step_table: Table
     ) -> Criterion:
-        column_field: Field = Table(prev_step_name)[condition.column]
+        column_field = prev_step_table[condition.column]
 
         # NOTE: type ignore comments below are because of 'Expected type in class pattern; found
         # "Any"' mypy errors. Seems like mypy 0.990 does not like typing.Annotated
@@ -1045,7 +1082,9 @@ class SQLTranslator(ABC):
             case _:  # pragma: no cover
                 raise KeyError(f"Operator {condition.operator!r} does not exist")
 
-    def _get_filter_criterion(self: Self, condition: "Condition", prev_step_name: str) -> Criterion:
+    def _get_filter_criterion(
+        self: Self, condition: "Condition", prev_step_table: Table
+    ) -> Criterion:
         from weaverbird.pipeline.conditions import ConditionComboAnd, ConditionComboOr
 
         # NOTE: type ignore comments below are because of 'Expected type in class pattern; found
@@ -1053,29 +1092,30 @@ class SQLTranslator(ABC):
         match condition:
             case ConditionComboOr():  # type:ignore[misc]
                 return Criterion.any(
-                    self._get_filter_criterion(condition, prev_step_name)
+                    self._get_filter_criterion(condition, prev_step_table)
                     for condition in condition.or_
                 )
             case ConditionComboAnd():  # type:ignore[misc]
                 return Criterion.all(
-                    self._get_filter_criterion(condition, prev_step_name)
+                    self._get_filter_criterion(condition, prev_step_table)
                     for condition in condition.and_
                 )
             case _:
-                return self._get_single_condition_criterion(condition, prev_step_name)
+                return self._get_single_condition_criterion(condition, prev_step_table)
 
     def filter(
         self: Self,
         *,
         builder: "QueryBuilder",
-        prev_step_name: str,
+        prev_step_name: str | Table,
         columns: list[str],
         step: "FilterStep",
     ) -> StepContext:
+        table = Table(prev_step_name) if isinstance(prev_step_name, str) else prev_step_name
         query: "QueryBuilder" = (
-            self.QUERY_CLS.from_(prev_step_name)
+            self.QUERY_CLS.from_(table)
             .select(*columns)
-            .where(self._get_filter_criterion(step.condition, prev_step_name))
+            .where(self._get_filter_criterion(step.condition, table))
         )
         return StepContext(query, columns)
 
@@ -1133,12 +1173,12 @@ class SQLTranslator(ABC):
         try:
             # if the value is a string
             then_value = json.loads(then_)
-            case_ = case_.when(self._get_filter_criterion(if_, prev_step_name), then_value)
+            case_ = case_.when(self._get_filter_criterion(if_, Table(prev_step_name)), then_value)
         except (json.JSONDecodeError, TypeError):
             # the value is a formula or a string literal that can't be parsed
             then_value = formula_to_term(then_, table)
             case_ = case_.when(
-                self._get_filter_criterion(if_, prev_step_name), LiteralValue(then_value)
+                self._get_filter_criterion(if_, Table(prev_step_name)), LiteralValue(then_value)
             )
 
         if isinstance(else_, IfThenElse):
@@ -1495,15 +1535,15 @@ class SQLTranslator(ABC):
         self: Self,
         *,
         builder: "QueryBuilder",
-        prev_step_name: str,
+        prev_step_name: str | Table,
         columns: list[str],
         step: "TopStep",
     ) -> StepContext:
+        the_table = Table(prev_step_name) if isinstance(prev_step_name, str) else prev_step_name
         if step.groups:
             if self.SUPPORT_ROW_NUMBER:
-                sub_query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(*columns)
+                sub_query: "QueryBuilder" = self.QUERY_CLS.from_(the_table).select(*columns)
 
-                the_table = Table(prev_step_name)
                 rank_on_field: Field = the_table[step.rank_on]
                 groups_fields: list[Field] = [the_table[group] for group in step.groups]
                 sub_query = sub_query.select(
@@ -1526,7 +1566,7 @@ class SQLTranslator(ABC):
                 raise NotImplementedError(f"[{self.DIALECT}] top is not implemented with groups")
 
         query = (
-            self.QUERY_CLS.from_(prev_step_name)
+            self.QUERY_CLS.from_(the_table)
             .select(*columns)
             .orderby(step.rank_on, order=Order.desc if step.sort == "desc" else Order.asc)
             .limit(step.limit)
