@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- PyPika: In case the second step of a pipeline is a Filter or a Top step, it gets merged with the first step
+  if it is a Domain step. This ensures that the SQl engine works on as few rows as possible as soon as possible.
+
 ## [0.31.1] - 2023-06-06
 
 - Pypika: Fixed the integer cast for "integer date parts" columns for dateextract step.
