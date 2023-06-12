@@ -269,7 +269,7 @@ def _remove_empty_elements(data: Any) -> Any:
         return data_transformed or None
     elif isinstance(data, list):
         data_transformed = [
-            cleaned for item in data if (cleaned := _remove_empty_elements(item)) is not None  # type: ignore
+            cleaned for item in data if (cleaned := _remove_empty_elements(item)) is not None  # type: ignore[assignment]
         ]
         return data_transformed or None
     else:
@@ -291,7 +291,7 @@ def remove_void_conditions_from_mongo_steps(
                     continue
                 step[key] = val
             else:
-                step[key] = remove_void_conditions_from_mongo_steps(val)  # type: ignore
+                step[key] = remove_void_conditions_from_mongo_steps(val)  # type: ignore[assignment]
         return _remove_empty_elements(step)
     elif isinstance(mongo_steps, list):
         return _remove_empty_elements(

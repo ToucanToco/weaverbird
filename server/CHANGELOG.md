@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Now we can clean mongo steps containing `__VOID__` as values with `pipeline.remove_void_conditions_from_mongo_steps()`.
+- `__VOID__` values can now be removed from mongo queries with `weaverbird.pipeline.remove_void_conditions_from_mongo_steps()`.
 
 ## [0.31.1] - 2023-06-06
 
