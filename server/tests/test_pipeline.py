@@ -268,7 +268,19 @@ def test_skip_void_parameter_from_variables_for_mongo_steps():
                     "$and": [
                         {"$or": [{"property2": "value2"}, {"property3": {}}]},
                         {"$nor": [{"property4": {}}, {"property5": {}}]},
-                    ]
+                    ],
+                    "$or": [],
+                    "$nor": [
+                        {
+                            "property9": {
+                                "$and": [
+                                    {
+                                        "property7": {},
+                                    }
+                                ]
+                            }
+                        }
+                    ],
                 }
             }
         ]
