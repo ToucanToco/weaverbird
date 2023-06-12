@@ -258,5 +258,18 @@ def test_skip_void_parameter_from_variables():
 
 def test_skip_void_parameter_from_variables_for_mongo_steps():
     assert remove_void_conditions_from_mongo_steps(
-        [{"$match": {"STORE_TYPE": {"$eq": "__VOID__"}}}]
-    ) == [{"$match": {"STORE_TYPE": {}}}]
+        [{"$match": {"STORE_TYPE": {"$eq": "__VOID__"}, "DOUM": {"$eq": "wut"}}}]
+    ) == [{"$match": {"DOUM": {"$eq": "wut"}}}]
+
+    assert remove_void_conditions_from_mongo_steps(
+        [
+            {
+                "$match": {
+                    "$and": [
+                        {"$or": [{"property2": "value2"}, {"property3": {}}]},
+                        {"$nor": [{"property4": {}}, {"property5": {}}]},
+                    ]
+                }
+            }
+        ]
+    ) == [{"$match": {"$and": [{"$or": [{"property2": "value2"}]}]}}]

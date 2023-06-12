@@ -256,6 +256,36 @@ def remove_void_conditions_from_filter_steps(
     return final_steps
 
 
+def _is_empty(data: dict[str, Any] | list[Any]) -> bool:
+    if isinstance(data, dict):
+        return len(data) == 0
+    elif isinstance(data, list):
+        return len(data) == 0
+    return False
+
+
+def _remove_empty_elements_that_has_empty_value(
+    data: dict[str, Any] | list[Any]
+) -> dict[str, Any] | list[Any]:
+    """
+    This should delete all empty arrays and empty dict
+    """
+    if isinstance(data, dict):
+        return {
+            k: _remove_empty_elements_that_has_empty_value(v)
+            for k, v in data.items()
+            if not _is_empty(v)
+        }
+    elif isinstance(data, list):
+        return [
+            _remove_empty_elements_that_has_empty_value(item)
+            for item in data
+            if not _is_empty(item)
+        ]
+    else:
+        return data
+
+
 def remove_void_conditions_from_mongo_steps(
     mongo_steps: dict[str, Any] | list[dict[str, Any]] | tuple | str,
 ) -> dict[str, Any] | list[dict[str, Any]] | tuple | str:
@@ -267,16 +297,18 @@ def remove_void_conditions_from_mongo_steps(
         step = {}
         for key, val in mongo_steps.items():
             if isinstance(val, str):
-                if val.strip() in ("__VOID__",):
+                if val.strip() == VOID_REPR:
                     continue
                 step[key] = val
             else:
                 step[key] = remove_void_conditions_from_mongo_steps(val)  # type:ignore[assignment]
-        return step
+        return _remove_empty_elements_that_has_empty_value(step)
     elif isinstance(mongo_steps, list):
-        return [
-            remove_void_conditions_from_mongo_steps(s) for s in mongo_steps  # type:ignore[misc]
-        ]
+        return _remove_empty_elements_that_has_empty_value(
+            [
+                remove_void_conditions_from_mongo_steps(s) for s in mongo_steps  # type:ignore[misc]
+            ]
+        )
     else:
         return mongo_steps
 
