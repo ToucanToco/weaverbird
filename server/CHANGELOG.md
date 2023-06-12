@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Now we can clean mongo steps containing `__VOID__` as values with `pipeline.remove_void_conditions_from_mongo_steps()`.
+
 ## [0.31.1] - 2023-06-06
 
 - Pypika: Fixed the integer cast for "integer date parts" columns for dateextract step.
