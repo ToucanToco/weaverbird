@@ -12,6 +12,7 @@ from weaverbird.pipeline.pipeline import (
     Pipeline,
     PipelineWithVariables,
     remove_void_conditions_from_filter_steps,
+    remove_void_conditions_from_mongo_steps,
 )
 from weaverbird.pipeline.steps import DomainStep, RollupStep
 from weaverbird.pipeline.steps.aggregate import Aggregation
@@ -253,3 +254,9 @@ def test_skip_void_parameter_from_variables():
             },
         },
     ]
+
+
+def test_skip_void_parameter_from_variables_for_mongo_steps():
+    assert remove_void_conditions_from_mongo_steps(
+        [{"$match": {"STORE_TYPE": {"$eq": "__VOID__"}}}]
+    ) == [{"$match": {"STORE_TYPE": {}}}]

@@ -256,6 +256,31 @@ def remove_void_conditions_from_filter_steps(
     return final_steps
 
 
+def remove_void_conditions_from_mongo_steps(
+    mongo_steps: dict[str, Any] | list[dict[str, Any]] | tuple | str,
+) -> dict[str, Any] | list[dict[str, Any]] | tuple | str:
+    """
+    This method will remove element with value string as "__VOID__"
+    """
+
+    if isinstance(mongo_steps, dict):
+        step = {}
+        for key, val in mongo_steps.items():
+            if isinstance(val, str):
+                if val.strip() in ("__VOID__",):
+                    continue
+                step[key] = val
+            else:
+                step[key] = remove_void_conditions_from_mongo_steps(val)  # type:ignore[assignment]
+        return step
+    elif isinstance(mongo_steps, list):
+        return [
+            remove_void_conditions_from_mongo_steps(s) for s in mongo_steps  # type:ignore[misc]
+        ]
+    else:
+        return mongo_steps
+
+
 class PipelineWithVariables(BaseModel):
     steps: list[PipelineStepWithVariables | PipelineStep]
 
