@@ -193,6 +193,12 @@ PipelineStepWithVariables = Annotated[
 ]
 
 VOID_REPR = "__VOID__"
+EXCLUDE_CLEANING_FOR = (
+    "pipeline",
+    "localField",
+    "foreignField",
+    "_id",
+)
 
 
 def _remove_void_from_combo_condition(
@@ -261,15 +267,21 @@ def _remove_empty_elements(data: Any) -> Any:
     This should delete all empty arrays and empty dict
     """
     if isinstance(data, dict):
-        data_transformed = {
-            k: cleaned
-            for k, v in data.items()
-            if (cleaned := _remove_empty_elements(v)) is not None
-        }
+        data_transformed: dict[str, Any] = {}
+
+        for k, v in data.items():
+            if k in EXCLUDE_CLEANING_FOR:
+                data_transformed[k] = v
+            else:
+                if (cleaned := _remove_empty_elements(v)) is not None:
+                    data_transformed[k] = cleaned
+
         return data_transformed or None
     elif isinstance(data, list):
         data_transformed = [
-            cleaned for item in data if (cleaned := _remove_empty_elements(item)) is not None  # type: ignore[assignment]
+            cleaned
+            for item in data
+            if (cleaned := _remove_empty_elements(item)) is not None  # type: ignore[assignment]
         ]
         return data_transformed or None
     else:
@@ -277,10 +289,15 @@ def _remove_empty_elements(data: Any) -> Any:
 
 
 def remove_void_conditions_from_mongo_steps(
-    mongo_steps: dict[str, Any] | list[Any] | None,
-) -> dict[str, Any] | list[Any] | None:
+    mongo_steps: dict[str, Any] | list | None,
+) -> dict[str, Any] | list | None:
     """
     This method will remove element with value string as "__VOID__"
+
+    IMPORTANT NOTE:
+    If $match step is empty at the first step (ex: {$match: {}})
+    it's the responsability to the client to add that {$match: {}} at
+    the begining when using this function.
     """
 
     if isinstance(mongo_steps, dict):
@@ -292,6 +309,11 @@ def remove_void_conditions_from_mongo_steps(
                 step[key] = val
             else:
                 step[key] = remove_void_conditions_from_mongo_steps(val)  # type: ignore[assignment]
+                # FIXME: This may happens for more other keys but on mongo
+                # 'pipeline' cannot be None/null, it should be an empty []
+                if key == "pipeline" and step[key] is None:
+                    step[key] = []  # type:ignore[assignment]
+
         return _remove_empty_elements(step)
     elif isinstance(mongo_steps, list):
         return _remove_empty_elements(
