@@ -1,45 +1,8 @@
 import pytest
-from pypika.queries import Query
 
-from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translators.base import SQLTranslator
 from weaverbird.pipeline import steps
 from weaverbird.pipeline.pipeline import Pipeline, PipelineStep
-
-
-@pytest.fixture
-def translator() -> SQLTranslator:
-    class DummyTranslator(SQLTranslator):
-        QUERY_CLS = Query
-        DIALECT = SQLDialect.MYSQL
-        known_instances = {}
-
-        def _id(self) -> str:
-            if id(self) in DummyTranslator.known_instances:
-                return DummyTranslator.known_instances[id(self)]
-            if len(DummyTranslator.known_instances.keys()) == 0:
-                DummyTranslator.known_instances[id(self)] = "dummy"
-                return "dummy"
-            else:
-                id_ = "dummy" + str(len(DummyTranslator.known_instances.keys()))
-                DummyTranslator.known_instances[id(self)] = id_
-                return id_
-
-    return DummyTranslator(
-        tables_columns={
-            "beers_tiny": [
-                "price_per_l",
-                "alcohol_degree",
-                "name",
-                "cost",
-                "beer_kind",
-                "volume_ml",
-                "brewing_date",
-                "nullable_name",
-            ]
-        }
-    )
-
 
 _CASES: list[tuple[list[dict | PipelineStep], str]] = [
     (

@@ -60,11 +60,11 @@ class MySQLTranslator(SQLTranslator):
         self: Self,
         *,
         builder: "QueryBuilder",
-        prev_step_name: str,
+        prev_step_table: str,
         columns: list[str],
         step: "SplitStep",
     ) -> StepContext:
-        col_field: Field = Table(prev_step_name)[step.column]
+        col_field: Field = Table(prev_step_table)[step.column]
         new_cols = [f"{step.column}_{i + 1}" for i in range(step.number_cols_to_keep)]
 
         def build_columns():
@@ -89,7 +89,7 @@ class MySQLTranslator(SQLTranslator):
                     .as_(new_cols[i])
                 )
 
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
+        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *columns, *build_columns()
         )
         return StepContext(query, columns + new_cols)
@@ -113,7 +113,7 @@ class MySQLTranslator(SQLTranslator):
         self: Self,
         *,
         builder: "QueryBuilder",
-        prev_step_name: str,
+        prev_step_table: str,
         columns: list[str],
         step: "DateExtractStep",
     ) -> StepContext:

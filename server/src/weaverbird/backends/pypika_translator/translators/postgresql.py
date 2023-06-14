@@ -40,11 +40,11 @@ class PostgreSQLTranslator(SQLTranslator):
         self: Self,
         *,
         builder: "QueryBuilder",
-        prev_step_name: str,
+        prev_step_table: str,
         columns: list[str],
         step: "DurationStep",
     ) -> StepContext:
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
+        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *columns,
             functions.Extract(
                 step.duration_in, Field(step.end_date_column) - Field(step.start_date_column)
