@@ -309,9 +309,7 @@ def test_skip_void_parameter_from_variables_for_mongo_steps():
             {"$project": {"_id": 0}},
         ]
     ) == [
-        # NOTE: the $match step is rip off because of the cleaning on empty elements,
-        # it's the responsability to the client to add that {$match: {}} as the
-        # first steps
+        {"$match": {}},
         {"$group": {"_id": None, "_vqbPipelineInline": {"$push": "$$ROOT"}}},
         {"$lookup": {"as": "_vqbPipelineToAppend_0", "from": "slide_data-append", "pipeline": []}},
         {
