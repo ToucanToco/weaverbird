@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.32.0] - 2023-06-16
+
 - `__VOID__` values can now be removed from mongo queries with `weaverbird.pipeline.remove_void_conditions_from_mongo_steps()`.
 - PyPika: In case the second step of a pipeline is a Filter or a Top step, it gets merged with the first step
   if it is a Domain step. This ensures that the SQl engine works on as few rows as possible as soon as possible.
