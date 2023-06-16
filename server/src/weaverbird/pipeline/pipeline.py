@@ -193,6 +193,12 @@ PipelineStepWithVariables = Annotated[
 ]
 
 VOID_REPR = "__VOID__"
+EXCLUDE_CLEANING_FOR = (
+    "pipeline",
+    "localField",
+    "foreignField",
+    "_id",
+)
 
 
 def _remove_void_from_combo_condition(
@@ -254,6 +260,118 @@ def remove_void_conditions_from_filter_steps(
             final_steps.append(step)
 
     return final_steps
+
+
+def _remove_empty_elements(data: Any) -> Any:
+    """
+    This should delete all empty arrays and empty dict
+    """
+    if isinstance(data, dict):
+        data_transformed: dict[str, Any] = {}
+
+        for k, v in data.items():
+            if k in EXCLUDE_CLEANING_FOR:
+                data_transformed[k] = v
+            else:
+                if (cleaned := _remove_empty_elements(v)) is not None:
+                    data_transformed[k] = cleaned
+
+        return data_transformed or None
+    elif isinstance(data, list):
+        data_transformed = [
+            cleaned
+            for item in data
+            if (cleaned := _remove_empty_elements(item)) is not None  # type: ignore[assignment]
+        ]
+        return data_transformed or None
+    else:
+        return data
+
+
+def _clean_mongo_steps(
+    mongo_steps: dict[str, Any] | list | None,
+) -> dict[str, Any] | list | None:
+    """
+    This method will remove element with value string as "__VOID__"
+    """
+
+    if isinstance(mongo_steps, dict):
+        step = {}
+        for key, val in mongo_steps.items():
+            if isinstance(val, str):
+                if val.strip() == VOID_REPR:
+                    continue
+                step[key] = val
+            else:
+                step[key] = _clean_mongo_steps(val)  # type: ignore[assignment]
+                # FIXME: This may happens for more other keys but on mongo
+                # 'pipeline' cannot be None/null, it should be an empty []
+                if key == "pipeline" and step[key] is None:
+                    step[key] = []  # type:ignore[assignment]
+
+        return _remove_empty_elements(step)
+    elif isinstance(mongo_steps, list):
+        return _remove_empty_elements(
+            [
+                s_transformed
+                for s_transformed in (_clean_mongo_steps(s) for s in mongo_steps)
+                if s_transformed is not None
+            ]
+        )
+    else:
+        return mongo_steps
+
+
+def _is_empty_match_column(elem: Any):
+    # Not matching None here, because we don't want to consider {'$match': {'col': None}} to be
+    # empty
+    if elem == {}:
+        return True
+    if isinstance(elem, dict):
+        return _is_match_empty(elem)
+
+    return False
+
+
+def _is_match_empty(match_: dict) -> bool:
+    return all(_is_empty_match_column(v) for v in match_.values())
+
+
+def _is_match_statement(d: Any) -> bool:
+    return isinstance(d, dict) and list(d.keys()) == ["$match"]
+
+
+def _sanitize_match(query: dict) -> dict:
+    if _is_match_empty(query):
+        return {}
+    if "$and" in query:
+        and_condition = query["$and"]
+        if isinstance(and_condition, list):
+            query["$and"] = [elem for elem in and_condition if not _is_empty_match_column(elem)]
+    return query
+
+
+def _sanitize_query_matches(query: dict | list[dict]) -> Any:
+    """Transforms match operations matching nothing into match-alls.
+
+    If a $match would match nothing (for example, {'$match': {'field': {}}}), transform into a
+    passthrough. It cannot be removed from the query to prevent having an empty query.
+    """
+    if isinstance(query, list):
+        # we need to have $match as first step here
+        if bool(query) and "$match" not in query[0]:
+            query = [{"$match": {}}] + query
+
+        return [
+            {"$match": _sanitize_match(q["$match"])} if _is_match_statement(q) else q for q in query
+        ]
+    return query
+
+
+def remove_void_conditions_from_mongo_steps(
+    mongo_steps: dict | list[dict],
+) -> dict | list[dict]:
+    return _sanitize_query_matches(_clean_mongo_steps(mongo_steps) or [])
 
 
 class PipelineWithVariables(BaseModel):

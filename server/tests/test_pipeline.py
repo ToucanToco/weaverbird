@@ -12,6 +12,7 @@ from weaverbird.pipeline.pipeline import (
     Pipeline,
     PipelineWithVariables,
     remove_void_conditions_from_filter_steps,
+    remove_void_conditions_from_mongo_steps,
 )
 from weaverbird.pipeline.steps import DomainStep, RollupStep
 from weaverbird.pipeline.steps.aggregate import Aggregation
@@ -252,4 +253,73 @@ def test_skip_void_parameter_from_variables():
                 ]
             },
         },
+    ]
+
+
+def test_skip_void_parameter_from_variables_for_mongo_steps():
+    assert remove_void_conditions_from_mongo_steps(
+        [{"$match": {"STORE_TYPE": {"$eq": "__VOID__"}, "DOUM": {"$eq": "wut"}}}]
+    ) == [{"$match": {"DOUM": {"$eq": "wut"}}}]
+
+    assert remove_void_conditions_from_mongo_steps(
+        [
+            {
+                "$match": {
+                    "$and": [
+                        {"$or": [{"property2": "value2"}, {"property3": {}}]},
+                        {"$nor": [{"property4": {}}, {"property5": {}}]},
+                    ],
+                    "$or": [],
+                    "$nor": [
+                        {
+                            "property9": {
+                                "$and": [
+                                    {
+                                        "property7": {},
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                }
+            }
+        ]
+    ) == [{"$match": {"$and": [{"$or": [{"property2": "value2"}]}]}}]
+
+    assert remove_void_conditions_from_mongo_steps(
+        [
+            {"$match": {}},
+            {"$group": {"_id": None, "_vqbPipelineInline": {"$push": "$$ROOT"}}},
+            {
+                "$lookup": {
+                    "as": "_vqbPipelineToAppend_0",
+                    "from": "slide_data-append",
+                    "pipeline": [],
+                }
+            },
+            {
+                "$project": {
+                    "_vqbPipelinesUnion": {
+                        "$concatArrays": ["$_vqbPipelineInline", "$_vqbPipelineToAppend_0"]
+                    }
+                }
+            },
+            {"$unwind": "$_vqbPipelinesUnion"},
+            {"$replaceRoot": {"newRoot": "$_vqbPipelinesUnion"}},
+            {"$project": {"_id": 0}},
+        ]
+    ) == [
+        {"$match": {}},
+        {"$group": {"_id": None, "_vqbPipelineInline": {"$push": "$$ROOT"}}},
+        {"$lookup": {"as": "_vqbPipelineToAppend_0", "from": "slide_data-append", "pipeline": []}},
+        {
+            "$project": {
+                "_vqbPipelinesUnion": {
+                    "$concatArrays": ["$_vqbPipelineInline", "$_vqbPipelineToAppend_0"]
+                }
+            }
+        },
+        {"$unwind": "$_vqbPipelinesUnion"},
+        {"$replaceRoot": {"newRoot": "$_vqbPipelinesUnion"}},
+        {"$project": {"_id": 0}},
     ]
