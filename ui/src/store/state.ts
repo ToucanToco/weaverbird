@@ -29,7 +29,7 @@ export interface VQBState {
 
   domains: string[];
   availableDomains: { name: string; uid: string }[];
-  unjoinableDomains: { name: string; uid: string }[];
+  unjoinableDomains?: { name: string; uid: string }[];
   pipelines: { [name: string]: Pipeline };
 
   dataset: DataSet; // currently preview one

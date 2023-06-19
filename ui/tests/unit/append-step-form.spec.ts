@@ -46,9 +46,7 @@ describe('Append Step Form', () => {
         { name: 'dataset1', uid: '1' },
         { name: 'dataset2', uid: '2' },
       ],
-      unjoinableDomains: [
-        { name: 'dataset2', uid: '2' },
-      ]
+      unjoinableDomains: [{ name: 'dataset2', uid: '2' }],
     };
     const wrapper = runner.shallowMount(initialState);
     const widgetMultiselect = wrapper.find('multiselectwidget-stub');

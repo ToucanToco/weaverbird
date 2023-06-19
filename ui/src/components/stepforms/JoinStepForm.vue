@@ -53,7 +53,12 @@ import JoinStepFormSchema from '@/components/stepforms/schemas/join';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import JoinColumns from '@/components/stepforms/widgets/JoinColumns.vue';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
-import { isReferenceToExternalQuery, type JoinStep, type PipelineStepName, type ReferenceToExternalQuery } from '@/lib/steps';
+import {
+  isReferenceToExternalQuery,
+  type JoinStep,
+  type PipelineStepName,
+  type ReferenceToExternalQuery,
+} from '@/lib/steps';
 import { Action, State } from 'pinia-class';
 import { VQBModule, type VQBActions } from '@/store';
 
@@ -97,15 +102,14 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
     const domain = this.editedStep.rightPipeline;
     if (isReferenceToExternalQuery(domain)) {
       return {
-        label: this.availableDomains.find(d => d.uid === domain.uid)?.name ?? domain.uid,
+        label: this.availableDomains.find((d) => d.uid === domain.uid)?.name ?? domain.uid,
         trackBy: domain,
-      }
+      };
     } else {
       return {
         label: this.editedStep.rightPipeline as string,
         trackBy: this.editedStep.rightPipeline as string,
       };
-
     }
   }
 
@@ -130,7 +134,7 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
     return this.availableDomains.map((d) => ({
       label: d.name,
       trackBy: { type: 'ref', uid: d.uid },
-      $isDisabled: !!this.unjoinableDomains.find(domain => domain.uid === d.uid),
+      $isDisabled: !!this.unjoinableDomains.find((domain) => domain.uid === d.uid),
     }));
   }
 

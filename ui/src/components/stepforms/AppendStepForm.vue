@@ -61,15 +61,14 @@ export default class AppendStepForm extends BaseStepForm<AppendStep> {
     return this.editedStep.pipelines.map((pipeline) => {
       if (isReferenceToExternalQuery(pipeline)) {
         return {
-          label: this.availableDomains.find(d => d.uid === pipeline.uid)?.name ?? pipeline.uid,
+          label: this.availableDomains.find((d) => d.uid === pipeline.uid)?.name ?? pipeline.uid,
           trackBy: pipeline,
-        }
+        };
       } else {
         return {
           label: pipeline as string,
           trackBy: pipeline as string,
         };
-
       }
     });
   }
@@ -83,7 +82,7 @@ export default class AppendStepForm extends BaseStepForm<AppendStep> {
     return this.availableDomains.map((d) => ({
       label: d.name,
       trackBy: { type: 'ref', uid: d.uid },
-      $isDisabled: !!this.unjoinableDomains.find(domain => domain.uid === d.uid),
+      $isDisabled: !!this.unjoinableDomains.find((domain) => domain.uid === d.uid),
     }));
   }
 }
