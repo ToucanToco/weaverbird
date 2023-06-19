@@ -25,12 +25,15 @@ describe('join Step Form', () => {
           { name: 'dataset1', uid: '1' },
           { name: 'dataset2', uid: '2' },
         ],
+        unjoinableDomains: [
+          { name: 'dataset2', uid: '2' },
+        ]
       };
       const wrapper = runner.shallowMount(initialState);
       const widgetMultiselect = wrapper.find('autocompletewidget-stub');
       expect(widgetMultiselect.props('options')).toEqual([
-        { trackBy: { type: 'ref', uid: '1' }, label: 'dataset1' },
-        { trackBy: { type: 'ref', uid: '2' }, label: 'dataset2' },
+        { trackBy: { type: 'ref', uid: '1' }, label: 'dataset1', $isDisabled: false },
+        { trackBy: { type: 'ref', uid: '2' }, label: 'dataset2', $isDisabled: true },
       ]);
       expect(widgetMultiselect.props('withExample')).toEqual(true);
       expect(widgetMultiselect.props('trackBy')).toEqual('trackBy');

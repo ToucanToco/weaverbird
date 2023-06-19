@@ -598,6 +598,14 @@ describe('mutation tests', () => {
     expect(store.availableDomains).toEqual([{ uid: '1', name: 'Query 1' }]);
   });
 
+  it('sets unjoinableDomains list', () => {
+    const state = buildState({});
+    const store = setupMockStore(state);
+    expect(store.unjoinableDomains).toEqual([]);
+    store.setUnjoinableDomains({ unjoinableDomains: [{ uid: '1', name: 'Query 1' }] });
+    expect(store.unjoinableDomains).toEqual([{ uid: '1', name: 'Query 1' }]);
+  });
+
   it('sets currentPipelineName', () => {
     const state = buildState({
       dataset: {

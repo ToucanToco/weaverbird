@@ -53,6 +53,7 @@ export default class AppendStepForm extends BaseStepForm<AppendStep> {
   declare initialStepValue: AppendStep;
 
   @State(VQBModule) availableDomains!: { name: string; uid: string }[];
+  @State(VQBModule) unjoinableDomains!: { name: string; uid: string }[];
 
   readonly title: string = 'Append datasets';
 
@@ -81,7 +82,8 @@ export default class AppendStepForm extends BaseStepForm<AppendStep> {
   get options(): DropdownOption[] {
     return this.availableDomains.map((d) => ({
       label: d.name,
-      trackBy: { type: 'ref', uid: d.uid }
+      trackBy: { type: 'ref', uid: d.uid },
+      $isDisabled: !!this.unjoinableDomains.find(domain => domain.uid === d.uid),
     }));
   }
 }

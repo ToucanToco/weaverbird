@@ -52,6 +52,11 @@ export type VQBActions = {
   }: {
     availableDomains: { name: string; uid: string }[];
   }) => void;
+  setUnjoinableDomains: ({
+    unjoinableDomains,
+  }: {
+    unjoinableDomains: { name: string; uid: string }[];
+  }) => void;
   setCurrentPipelineName: ({ name }: { name: string }) => void;
   setPipeline: ({ pipeline }: { pipeline: Pipeline }) => void;
   setPipelines: ({ pipelines }: { pipelines: Record<string, Pipeline> }) => void;
@@ -135,6 +140,9 @@ const actions: PiniaActionAdaptor<VQBActions, VQBStore> = {
   },
   setAvailableDomains({ availableDomains }) {
     this.availableDomains = availableDomains;
+  },
+  setUnjoinableDomains({ unjoinableDomains }) {
+    this.unjoinableDomains = unjoinableDomains;
   },
   setCurrentPipelineName({ name }) {
     this.currentPipelineName = name;

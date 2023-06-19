@@ -87,6 +87,7 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
   declare initialStepValue: JoinStep;
 
   @State(VQBModule) availableDomains!: { name: string; uid: string }[];
+  @State(VQBModule) unjoinableDomains!: { name: string; uid: string }[];
 
   readonly title: string = 'Join datasets';
   joinColumns = JoinColumns;
@@ -128,7 +129,8 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
   get options(): object[] {
     return this.availableDomains.map((d) => ({
       label: d.name,
-      trackBy: { type: 'ref', uid: d.uid }
+      trackBy: { type: 'ref', uid: d.uid },
+      $isDisabled: !!this.unjoinableDomains.find(domain => domain.uid === d.uid),
     }));
   }
 
