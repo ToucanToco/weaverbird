@@ -42,11 +42,10 @@ describe('Append Step Form', () => {
   it('should instantiate a multiselect widget with proper options from the store', () => {
     const initialState = {
       currentPipelineName: 'my_dataset',
-      pipelines: {
-        my_dataset: [{ name: 'domain', domain: 'my_data' }],
-        dataset1: [{ name: 'domain', domain: 'my_dataset' }],
-        dataset2: [{ name: 'domain', domain: 'domain2' }],
-      },
+      availableDomains: [
+        { name: 'dataset1', uid: '2' },
+        { name: 'dataset2', uid: '3' },
+      ],
     };
     const wrapper = runner.shallowMount(initialState);
     const widgetMultiselect = wrapper.find('multiselectwidget-stub');

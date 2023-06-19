@@ -26,7 +26,7 @@ import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
 import type { AppendStep, PipelineStepName } from '@/lib/steps';
-import { Getter } from 'pinia-class';
+import { State } from 'pinia-class';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
@@ -44,7 +44,7 @@ export default class AppendStepForm extends BaseStepForm<AppendStep> {
   @Prop({ type: Object, default: () => ({ name: 'append', pipelines: [] }) })
   declare initialStepValue: AppendStep;
 
-  @Getter(VQBModule) availableDatasetNames!: string[];
+  @State(VQBModule) availableDomains!: {name: string; uid: string}[];
 
   readonly title: string = 'Append datasets';
 
@@ -61,7 +61,8 @@ export default class AppendStepForm extends BaseStepForm<AppendStep> {
   }
 
   get options(): object[] {
-    return this.availableDatasetNames.map((name) => ({ label: name, trackBy: name }));
+    // TOFIX: use reference to uid in next commit
+    return this.availableDomains.map((d) => ({ label: d.name, trackBy: d.name }));
   }
 }
 </script>

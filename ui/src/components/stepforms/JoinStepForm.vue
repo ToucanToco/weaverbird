@@ -54,7 +54,7 @@ import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue'
 import JoinColumns from '@/components/stepforms/widgets/JoinColumns.vue';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
 import type { JoinStep, PipelineStepName } from '@/lib/steps';
-import { Action, Getter } from 'pinia-class';
+import { Action, State } from 'pinia-class';
 import { VQBModule, type VQBActions } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
@@ -86,7 +86,7 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
   })
   declare initialStepValue: JoinStep;
 
-  @Getter(VQBModule) availableDatasetNames!: string[];
+  @State(VQBModule) availableDomains!: {name: string; uid: string}[];
 
   readonly title: string = 'Join datasets';
   joinColumns = JoinColumns;
@@ -117,7 +117,8 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
   }
 
   get options(): object[] {
-    return this.availableDatasetNames.map((name) => ({ label: name, trackBy: name }));
+    // TOFIX: use reference to uid in next commit
+    return this.availableDomains.map((d) => ({ label: d.name, trackBy: d.name }));
   }
 
   rightColumnNames: string[] | null | undefined = null;
