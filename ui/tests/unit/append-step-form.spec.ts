@@ -43,15 +43,15 @@ describe('Append Step Form', () => {
     const initialState = {
       currentPipelineName: 'my_dataset',
       availableDomains: [
-        { name: 'dataset1', uid: '2' },
-        { name: 'dataset2', uid: '3' },
+        { name: 'dataset1', uid: '1' },
+        { name: 'dataset2', uid: '2' },
       ],
     };
     const wrapper = runner.shallowMount(initialState);
     const widgetMultiselect = wrapper.find('multiselectwidget-stub');
     expect(widgetMultiselect.props('options')).toEqual([
-      { trackBy: 'dataset1', label: 'dataset1' },
-      { trackBy: 'dataset2', label: 'dataset2' },
+      { trackBy: { type: 'ref', uid: '1' }, label: 'dataset1' },
+      { trackBy: { type: 'ref', uid: '2' }, label: 'dataset2' },
     ]);
     expect(widgetMultiselect.props('trackBy')).toEqual('trackBy');
     expect(widgetMultiselect.props('label')).toEqual('label');

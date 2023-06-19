@@ -25,12 +25,20 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import type { AppendStep, PipelineStepName } from '@/lib/steps';
+import type { AppendStep, PipelineStepName, ReferenceToExternalQuery } from '@/lib/steps';
+import { isReferenceToExternalQuery } from '@/lib/steps';
 import { State } from 'pinia-class';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
+
+interface DropdownOption {
+  label: string;
+  trackBy: string | ReferenceToExternalQuery;
+  $isDisabled?: boolean;
+  tooltip?: string;
+}
 
 @Component({
   name: 'append-step-form',
@@ -44,25 +52,37 @@ export default class AppendStepForm extends BaseStepForm<AppendStep> {
   @Prop({ type: Object, default: () => ({ name: 'append', pipelines: [] }) })
   declare initialStepValue: AppendStep;
 
-  @State(VQBModule) availableDomains!: {name: string; uid: string}[];
+  @State(VQBModule) availableDomains!: { name: string; uid: string }[];
 
   readonly title: string = 'Append datasets';
 
-  get pipelines(): object[] {
-    return this.editedStep.pipelines.map((pipeline) => ({
-      label: pipeline,
-      trackBy: pipeline,
-    }));
+  get pipelines(): DropdownOption[] {
+    return this.editedStep.pipelines.map((pipeline) => {
+      if (isReferenceToExternalQuery(pipeline)) {
+        return {
+          label: this.availableDomains.find(d => d.uid === pipeline.uid)?.name ?? pipeline.uid,
+          trackBy: pipeline,
+        }
+      } else {
+        return {
+          label: pipeline as string,
+          trackBy: pipeline as string,
+        };
+
+      }
+    });
   }
 
-  set pipelines(values: object[]) {
+  set pipelines(values: DropdownOption[]) {
     /* istanbul ignore next */
-    this.editedStep.pipelines = values.map((v) => v.label);
+    this.editedStep.pipelines = values.map((v) => v.trackBy);
   }
 
-  get options(): object[] {
-    // TOFIX: use reference to uid in next commit
-    return this.availableDomains.map((d) => ({ label: d.name, trackBy: d.name }));
+  get options(): DropdownOption[] {
+    return this.availableDomains.map((d) => ({
+      label: d.name,
+      trackBy: { type: 'ref', uid: d.uid }
+    }));
   }
 }
 </script>
