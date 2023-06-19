@@ -1,6 +1,6 @@
 <template>
   <div>
-    <vqb/>
+    <vqb />
     <div class="warning-message" v-if="backendWarnings.length" v-for="warning in backendWarnings">
       <i class="fas fa-exclamation-triangle"></i> {{ warning.message }}
     </div>
@@ -16,37 +16,37 @@
           MongoDB
         </a>
       </div>
-      <div class="toolbar__radio" :class="{ toolbar__selected:isSelectedTranslator('pandas') }">
+      <div class="toolbar__radio" :class="{ toolbar__selected: isSelectedTranslator('pandas') }">
         <a href="?backend=pandas">
           Pandas
         </a>
       </div>
-      <div class="toolbar__radio" :class="{ toolbar__selected:isSelectedTranslator('snowflake') }">
+      <div class="toolbar__radio" :class="{ toolbar__selected: isSelectedTranslator('snowflake') }">
         <a href="?backend=snowflake">
           Snowflake
         </a>
       </div>
-      <div class="toolbar__radio" :class="{ toolbar__selected:isSelectedTranslator('athena') }">
+      <div class="toolbar__radio" :class="{ toolbar__selected: isSelectedTranslator('athena') }">
         <a href="?backend=athena">
           Athena
         </a>
       </div>
-      <div class="toolbar__radio" :class="{ toolbar__selected:isSelectedTranslator('google-big-query') }">
+      <div class="toolbar__radio" :class="{ toolbar__selected: isSelectedTranslator('google-big-query') }">
         <a href="?backend=google-big-query">
           Google big query
         </a>
       </div>
-      <div class="toolbar__radio" :class="{ toolbar__selected:isSelectedTranslator('mysql') }">
+      <div class="toolbar__radio" :class="{ toolbar__selected: isSelectedTranslator('mysql') }">
         <a href="?backend=mysql">
           MySql
         </a>
       </div>
-      <div class="toolbar__radio" :class="{ toolbar__selected:isSelectedTranslator('postgresql') }">
+      <div class="toolbar__radio" :class="{ toolbar__selected: isSelectedTranslator('postgresql') }">
         <a href="?backend=postgresql">
           Postgresql
         </a>
       </div>
-      <div class="toolbar__radio" :class="{ toolbar__selected:isSelectedTranslator('redshift') }">
+      <div class="toolbar__radio" :class="{ toolbar__selected: isSelectedTranslator('redshift') }">
         <a href="?backend=redshift">
           Redshift
         </a>
@@ -160,7 +160,7 @@ const AVAILABLE_VARIABLES = [
 ];
 
 // Create a code editor config for a specific lang
-const codeEditorForLang = function(lang) {
+const codeEditorForLang = function (lang) {
   return {
     props: ['value', 'placeholder'],
     render(createElement) {
@@ -275,31 +275,31 @@ class MongoService {
 
     let isResponseOk, responseContent, query;
 
-      const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(
-        dereferencedPipeline,
-        VARIABLES,
-      );
+    const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(
+      dereferencedPipeline,
+      VARIABLES,
+    );
 
-      // FIXME it would be better if the mongo translator returned a tuple (collection, query)
-      const { domain: collection, pipeline: subpipeline } = filterOutDomain(
-        dereferencedPipelineWithoutVariables,
-      );
+    // FIXME it would be better if the mongo translator returned a tuple (collection, query)
+    const { domain: collection, pipeline: subpipeline } = filterOutDomain(
+      dereferencedPipelineWithoutVariables,
+    );
 
-      const response = await fetch(API_BASEROUTE + '/mongo', {
-        method: 'POST',
-        body: JSON.stringify({
-          limit: limit,
-          offset: offset,
-          collection: collection,
-          pipeline: subpipeline,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      isResponseOk = response.ok;
-      responseContent = await response.json();
-      query = responseContent.query;
+    const response = await fetch(API_BASEROUTE + '/mongo', {
+      method: 'POST',
+      body: JSON.stringify({
+        limit: limit,
+        offset: offset,
+        collection: collection,
+        pipeline: subpipeline,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    isResponseOk = response.ok;
+    responseContent = await response.json();
+    query = responseContent.query;
 
     if (isResponseOk) {
       const { data: rset, types, pagination_info: paginationInfo } = responseContent;
@@ -724,19 +724,19 @@ switch (TRANSLATOR) {
     backendService = new MongoService();
 }
 
-let updateLastExecutedQuery = function() {};
+let updateLastExecutedQuery = function () { };
 
 export default defineComponent({
   components: {
     Vqb,
   },
-  data: function() {
+  data: function () {
     return {
       isCodeOpened: false,
       lastExecutedQuery: undefined,
     };
   },
-  created: async function() {
+  created: async function () {
     const registrationOpts = {
       currentPipelineName: 'pipeline',
       pipelines: {
@@ -928,13 +928,14 @@ export default defineComponent({
     });
     const collections = await backendService.listCollections();
     this.store.setDomains({ domains: collections });
+    this.store.setAvailableDomains({ availableDomains: collections.map(d => ({ name: d, uid: d })) });
     this.store.updateDataset();
   },
   computed: {
     store() {
       return useVQBStore();
     },
-    activePipeline: function() {
+    activePipeline: function () {
       let activePipeline = this.store.activePipeline;
       if (!activePipeline) {
         return undefined;
@@ -946,30 +947,30 @@ export default defineComponent({
         return activePipeline;
       }
     },
-    pipelineAsJSON: function() {
+    pipelineAsJSON: function () {
       return JSON.stringify(this.activePipeline, null, 2);
     },
-    thereIsABackendError: function() {
+    thereIsABackendError: function () {
       return this.store.thereIsABackendError;
     },
-    backendMessages: function() {
+    backendMessages: function () {
       return this.store.state.backendMessages;
     },
-    backendErrors: function() {
+    backendErrors: function () {
       return this.backendMessages.filter(({ type, index }) => type === 'error' && index == null);
     },
-    backendWarnings: function() {
+    backendWarnings: function () {
       return this.backendMessages.filter(({ type }) => type === 'warning');
     },
   },
   methods: {
-    hideCode: function() {
+    hideCode: function () {
       this.isCodeOpened = false;
     },
-    openCode: function() {
+    openCode: function () {
       this.isCodeOpened = true;
     },
-    isSelectedTranslator: function(translator) {
+    isSelectedTranslator: function (translator) {
       return TRANSLATOR === translator;
     },
   },

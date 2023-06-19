@@ -8,13 +8,28 @@ export default {
       enum: ['join'],
     },
     rightPipeline: {
-      type: 'string',
-      minLength: 1,
       title: 'Right dataset',
       description: 'Select a dataset to join (as right dataset):',
       attrs: {
         placeholder: 'Select a dataset',
       },
+      anyOf: [
+        {
+          type: 'string',
+          minLength: 1,
+        },
+        {
+          type: 'object',
+          properties: {
+            type: {
+              type: 'string',
+              enum: ['ref'],
+            },
+            uid: { type: 'string', minLength: 1 },
+          },
+          required: ['uid', 'type'],
+        },
+      ],
     },
     type: {
       type: 'string',

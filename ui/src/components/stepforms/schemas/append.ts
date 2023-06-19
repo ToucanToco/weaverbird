@@ -10,8 +10,23 @@ export default {
     pipelines: {
       type: 'array',
       items: {
-        type: 'string',
-        minLength: 1,
+        anyOf: [
+          {
+            type: 'string',
+            minLength: 1,
+          },
+          {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                enum: ['ref'],
+              },
+              uid: { type: 'string', minLength: 1 },
+            },
+            required: ['uid', 'type'],
+          },
+        ],
       },
       minItems: 1,
       title: 'Datasets to append',
