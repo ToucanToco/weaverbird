@@ -882,6 +882,7 @@ async function buildVueApp() {
       });
       const collections = await backendService.listCollections();
       this.store.setDomains({ domains: collections });
+      this.store.setAvailableDomains({ availableDomains: collections.map(d => ({ name: d, uid: d })) });
       this.store.updateDataset();
     },
     computed: {

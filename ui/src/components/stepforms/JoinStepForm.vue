@@ -53,8 +53,13 @@ import JoinStepFormSchema from '@/components/stepforms/schemas/join';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import JoinColumns from '@/components/stepforms/widgets/JoinColumns.vue';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
-import type { JoinStep, PipelineStepName } from '@/lib/steps';
-import { Action, Getter } from 'pinia-class';
+import {
+  isReferenceToExternalQuery,
+  type JoinStep,
+  type PipelineStepName,
+  type ReferenceToExternalQuery,
+} from '@/lib/steps';
+import { Action, State } from 'pinia-class';
 import { VQBModule, type VQBActions } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
@@ -64,7 +69,7 @@ const joinTypes = JoinStepFormSchema.properties.type.enum as JoinStep['type'][];
 
 interface DropdownOption {
   label: string;
-  trackBy: string;
+  trackBy: string | ReferenceToExternalQuery;
   $isDisabled?: boolean;
   tooltip?: string;
 }
@@ -86,22 +91,31 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
   })
   declare initialStepValue: JoinStep;
 
-  @Getter(VQBModule) availableDatasetNames!: string[];
+  @State(VQBModule) availableDomains!: { name: string; uid: string }[];
+  @State(VQBModule) unjoinableDomains!: { name: string; uid: string }[];
 
   readonly title: string = 'Join datasets';
   joinColumns = JoinColumns;
   joinTypes: JoinStep['type'][] = joinTypes;
 
   get rightPipeline(): DropdownOption {
-    return {
-      label: this.editedStep.rightPipeline as string,
-      trackBy: this.editedStep.rightPipeline as string,
-    };
+    const domain = this.editedStep.rightPipeline;
+    if (isReferenceToExternalQuery(domain)) {
+      return {
+        label: this.availableDomains.find((d) => d.uid === domain.uid)?.name ?? domain.uid,
+        trackBy: domain,
+      };
+    } else {
+      return {
+        label: this.editedStep.rightPipeline as string,
+        trackBy: this.editedStep.rightPipeline as string,
+      };
+    }
   }
 
   set rightPipeline(value: DropdownOption) {
     /* istanbul ignore next */
-    this.editedStep.rightPipeline = value.label;
+    this.editedStep.rightPipeline = value.trackBy;
   }
 
   get on() {
@@ -117,7 +131,11 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
   }
 
   get options(): object[] {
-    return this.availableDatasetNames.map((name) => ({ label: name, trackBy: name }));
+    return this.availableDomains.map((d) => ({
+      label: d.name,
+      trackBy: { type: 'ref', uid: d.uid },
+      $isDisabled: !!this.unjoinableDomains.find((domain) => domain.uid === d.uid),
+    }));
   }
 
   rightColumnNames: string[] | null | undefined = null;
