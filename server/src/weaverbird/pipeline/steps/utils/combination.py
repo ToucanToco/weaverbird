@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Awaitable, Callable, Literal
 
 from pydantic import BaseModel
 
@@ -15,3 +15,25 @@ class Reference(BaseModel):
 
 PipelineOrDomainName = list[dict] | str  # can be either a domain name or a complete pipeline
 PipelineOrDomainNameOrReference = PipelineOrDomainName | Reference
+
+ReferenceResolver = Callable[[Reference], Awaitable[PipelineOrDomainName]]
+
+
+async def resolve_if_reference(
+    reference_resolver: ReferenceResolver,
+    pipeline_or_domain_name_or_ref: PipelineOrDomainNameOrReference,
+) -> PipelineOrDomainName:
+    # TODO local import should not be useful once PipelineWithRefs will be isolated in a .references module
+    from weaverbird.pipeline.pipeline import PipelineWithRefs
+
+    if isinstance(pipeline_or_domain_name_or_ref, Reference):
+        pipeline_or_domain_name = await reference_resolver(pipeline_or_domain_name_or_ref)
+        if isinstance(pipeline_or_domain_name, list):
+            # Recursively resolve any reference in sub-pipelines
+            pipeline = PipelineWithRefs(steps=pipeline_or_domain_name)
+            pipeline_without_refs = await pipeline.resolve_references(reference_resolver)
+            return pipeline_without_refs.dict()["steps"]
+        else:
+            return pipeline_or_domain_name
+    else:
+        return pipeline_or_domain_name_or_ref
