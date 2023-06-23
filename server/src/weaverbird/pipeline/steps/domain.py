@@ -24,7 +24,7 @@ class DomainStepWithRef(BaseDomainStep):
 
     async def resolve_references(
         self, reference_resolver: ReferenceResolver
-    ) -> Union[DomainStep, PipelineWithVariables]:
+    ) -> Union[DomainStep, "PipelineWithVariables"]:
         """
         This resolution can return a whole pipeline, which needs to replace the step.
         Not that the resulting array must be flattened:
