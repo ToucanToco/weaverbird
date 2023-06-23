@@ -2,8 +2,6 @@ from pydantic import BaseConfig
 from pydantic import BaseModel as PydanticBaseModel
 from pydantic import Extra
 
-from .combination import ReferenceResolver
-
 
 def to_camelcase(string: str) -> str:
     first_word, *other_words = string.split("_")
