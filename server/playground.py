@@ -61,7 +61,9 @@ from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import (
     translate_pipeline as pypika_translate_pipeline,
 )
-from weaverbird.pipeline import Pipeline
+from weaverbird.pipeline.pipeline import Pipeline, PipelineWithRefs
+from weaverbird.pipeline.steps import DomainStep
+from weaverbird.pipeline.steps.utils.combination import Reference
 
 app = Quart(__name__)
 if os.environ.get("ALLOW_ORIGIN"):
@@ -330,6 +332,10 @@ def execute_mongo_aggregation_query(collection, query, limit, offset):
     return results
 
 
+async def dummy_reference_resolver(r: Reference) -> PipelineWithRefs:
+    return PipelineWithRefs(steps=[DomainStep(domain=r.uid)])
+
+
 @app.route("/mongo", methods=["GET", "POST"])
 async def handle_mongo_backend_request():
     if request.method == "GET":
@@ -337,7 +343,8 @@ async def handle_mongo_backend_request():
     elif request.method == "POST":
         try:
             req_params = await parse_request_json(request)
-            pipeline = Pipeline(steps=req_params["pipeline"])  # Validation
+            pipeline_with_refs = PipelineWithRefs(steps=req_params["pipeline"])  # Validation
+            pipeline = await pipeline_with_refs.resolve_references(dummy_reference_resolver)
             mongo_query = mongo_translate_pipeline(pipeline)
 
             offset = req_params.get("offset", 0)
