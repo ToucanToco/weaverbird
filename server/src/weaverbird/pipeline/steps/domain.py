@@ -1,4 +1,4 @@
-from typing import Literal, Union
+from typing import TYPE_CHECKING, Literal, Union
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.steps.utils.combination import (
@@ -7,14 +7,24 @@ from weaverbird.pipeline.steps.utils.combination import (
     resolve_if_reference,
 )
 
+if TYPE_CHECKING:
+    from weaverbird.pipeline.pipeline import PipelineWithVariables
 
-class DomainStepWithRef(BaseStep):
+
+class BaseDomainStep(BaseStep):
     name: Literal["domain"] = "domain"
+
+
+class DomainStep(BaseDomainStep):
+    domain: str
+
+
+class DomainStepWithRef(BaseDomainStep):
     domain: str | Reference
 
     async def resolve_references(
         self, reference_resolver: ReferenceResolver
-    ) -> Union["DomainStep", "PipelineWithVariables"]:
+    ) -> Union[DomainStep, PipelineWithVariables]:
         """
         This resolution can return a whole pipeline, which needs to replace the step.
         Not that the resulting array must be flattened:
@@ -30,10 +40,3 @@ class DomainStepWithRef(BaseStep):
                 name=self.name,
                 domain=resolved,
             )
-
-
-class DomainStep(DomainStepWithRef):
-    domain: str
-
-
-DomainStep.update_forward_refs()

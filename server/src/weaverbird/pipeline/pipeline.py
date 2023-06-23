@@ -197,37 +197,7 @@ PipelineStepWithVariables = Annotated[
 ]
 
 PipelineStepWithRefs = Annotated[
-    AbsoluteValueStepWithVariable
-    | AddMissingDatesStepWithVariables
-    | AggregateStepWithVariables
-    | AppendStepWithRefs
-    | ArgmaxStepWithVariable
-    | ArgminStepWithVariable
-    | CompareTextStepWithVariables
-    | ConcatenateStepWithVariable
-    | CumSumStepWithVariable
-    | DateExtractStepWithVariable
-    | DomainStepWithRef
-    | DurationStepWithVariable
-    | EvolutionStepWithVariable
-    | FillnaStepWithVariable
-    | FilterStepWithVariables
-    | FormulaStepWithVariable
-    | IfThenElseStepWithVariables
-    | JoinStepWithRef
-    | PivotStepWithVariable
-    | RankStepWithVariable
-    | RenameStepWithVariable
-    | ReplaceStepWithVariable
-    | ReplaceTextStepWithVariable
-    | RollupStepWithVariable
-    | SplitStepWithVariable
-    | TextStepWithVariable
-    | TopStepWithVariables
-    | TotalsStepWithVariable
-    | UniqueGroupsStepWithVariable
-    | UnpivotStepWithVariable
-    | WaterfallStepWithVariable,
+    AppendStepWithRefs | DomainStepWithRef | JoinStepWithRef,
     Field(discriminator="name"),  # noqa: F821
 ]
 
@@ -445,7 +415,7 @@ class PipelineWithRefs(BaseModel):
         Walk the pipeline steps and replace any reference by its corresponding pipeline.
         The sub-pipelines added should also be handled, so that they will be no references anymore in the result.
         """
-        resolved_steps = []
+        resolved_steps: list[PipelineStepWithRefs | PipelineStepWithVariables | PipelineStep] = []
         for step in self.steps:
             resolved_step = (
                 await step.resolve_references(reference_resolver)

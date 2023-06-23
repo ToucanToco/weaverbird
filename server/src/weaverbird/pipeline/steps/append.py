@@ -11,20 +11,11 @@ from .utils.combination import (
 )
 
 
-class AppendStepWithRefs(BaseStep):
+class BaseAppendStep(BaseStep):
     name: Literal["append"] = "append"
-    pipelines: list[PipelineOrDomainNameOrReference]
-
-    async def resolve_references(
-        self, reference_resolver: ReferenceResolver
-    ) -> "AppendStepWithVariable":
-        return AppendStepWithVariable(
-            name=self.name,
-            pipelines=[await resolve_if_reference(reference_resolver, p) for p in self.pipelines],
-        )
 
 
-class AppendStep(AppendStepWithRefs):
+class AppendStep(BaseAppendStep):
     pipelines: list[PipelineOrDomainName]
 
 
@@ -32,4 +23,13 @@ class AppendStepWithVariable(AppendStep, StepWithVariablesMixin):
     ...
 
 
-AppendStepWithVariable.update_forward_refs()
+class AppendStepWithRefs(BaseAppendStep):
+    pipelines: list[PipelineOrDomainNameOrReference]
+
+    async def resolve_references(
+        self, reference_resolver: ReferenceResolver
+    ) -> AppendStepWithVariable:
+        return AppendStepWithVariable(
+            name=self.name,
+            pipelines=[await resolve_if_reference(reference_resolver, p) for p in self.pipelines],
+        )
