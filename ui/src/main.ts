@@ -7,7 +7,6 @@ export { setAvailableCodeEditors } from './components/code-editor';
 export { defineSendAnalytics } from './lib/send-analytics';
 
 // export store entrypoints
-export { dereferencePipelines } from './lib/dereference-pipeline';
 export { setupVQBStore, useVQBStore, VQBModule, VQB_MODULE_NAME } from './store';
 
 import './lib/icons';

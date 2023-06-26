@@ -1,5 +1,4 @@
 import type { DataSet } from '@/lib/dataset';
-import type { PipelinesScopeContext } from '@/lib/dereference-pipeline';
 import type { Pipeline } from '@/lib/steps';
 
 export type BackendError = {
@@ -31,7 +30,7 @@ export interface BackendService {
    */
   executePipeline(
     pipeline: Pipeline,
-    pipelines: PipelinesScopeContext,
+    pipelines: {[k: string]: Pipeline}, // TODO unused, to be removed
     limit?: number,
     offset?: number,
     sourceRowsSubset?: number | 'unlimited',
