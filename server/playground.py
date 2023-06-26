@@ -48,6 +48,7 @@ from pandas.io.json import build_table_schema
 from pymongo import MongoClient
 from quart import Quart, Request, Response, jsonify, request, send_file
 from quart_cors import cors
+from toucan_connectors.common import nosql_apply_parameters_to_query
 from toucan_connectors.pagination import build_pagination_info
 
 from weaverbird.backends.mongo_translator.mongo_pipeline_translator import (
@@ -147,9 +148,14 @@ def sanitize_table_schema(schema: dict) -> dict:
     }
 
 
-def execute_pipeline(pipeline_steps, **kwargs) -> str:
+VARIABLES = {}  # FIXME provide variables to front-end
+
+
+async def execute_pipeline(pipeline_steps, **kwargs) -> str:
     # Validation
-    pipeline = Pipeline(steps=pipeline_steps)
+    pipeline_with_refs = PipelineWithRefs(steps=pipeline_steps)  # Validation
+    pipeline_with_variables = await pipeline_with_refs.resolve_references(dummy_reference_resolver)
+    pipeline = pipeline_with_variables.render(VARIABLES, nosql_apply_parameters_to_query)
 
     output = json.loads(
         pandas_preview_pipeline(
@@ -186,7 +192,7 @@ async def handle_pandas_backend_request():
         try:
             pipeline = await parse_request_json(request)
             return Response(
-                execute_pipeline(pipeline, **request.args),
+                await execute_pipeline(pipeline, **request.args),
                 mimetype="application/json",
             )
         except PipelineExecutionFailure as e:
@@ -201,6 +207,7 @@ async def handle_pandas_backend_request():
                 400,
             )
         except Exception as e:
+            raise e
             errmsg = f"{e.__class__.__name__}: {e}"
             return jsonify(errmsg), 400
 
@@ -444,10 +451,12 @@ if _SNOWFLAKE_CONNECTION is not None:
             res = {r.name: type_code_mapping.get(r.type_code) for r in describe_res}
             return res
 
+
     def snowflake_query_executor(domain: str, query_string: str = None) -> pd.DataFrame | None:
         with _SNOWFLAKE_CONNECTION.cursor() as cursor:
             res = cursor.execute(domain if domain else query_string).fetchall()
             return res.fetch_pandas_all()
+
 
     def get_table_columns():
         tables_info = _SNOWFLAKE_CONNECTION.cursor().execute("SHOW TABLES;").fetchall()
@@ -462,6 +471,7 @@ if _SNOWFLAKE_CONNECTION is not None:
                 )
                 tables_columns[table_name] = [info[0] for info in infos if info[2] == "COLUMN"]
         return tables_columns
+
 
     @app.route("/snowflake", methods=["GET", "POST"])
     async def handle_snowflake_backend_request():
@@ -824,7 +834,7 @@ async def handle_mysql_post_request():
         ).dict(),
         "results": {
             "headers": result.columns.to_list(),
-            "data": json.loads(result[offset : offset + limit].to_json(orient="records")),
+            "data": json.loads(result[offset: offset + limit].to_json(orient="records")),
             "schema": build_table_schema(result, index=False),
         },
         "query": sql_query,  # provided for inspection purposes
