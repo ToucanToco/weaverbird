@@ -332,8 +332,8 @@ def execute_mongo_aggregation_query(collection, query, limit, offset):
     return results
 
 
-async def dummy_reference_resolver(r: Reference) -> PipelineWithRefs:
-    return PipelineWithRefs(steps=[DomainStep(domain=r.uid)])
+async def dummy_reference_resolver(r: Reference) -> list[dict]:
+    return [DomainStep(domain=r.uid).dict()]
 
 
 @app.route("/mongo", methods=["GET", "POST"])
