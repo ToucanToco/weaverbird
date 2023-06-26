@@ -62,7 +62,8 @@ from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import (
     translate_pipeline as pypika_translate_pipeline,
 )
-from weaverbird.pipeline.pipeline import Pipeline, PipelineWithRefs
+from weaverbird.pipeline.pipeline import Pipeline
+from weaverbird.pipeline.references import PipelineWithRefs
 from weaverbird.pipeline.steps import DomainStep
 from weaverbird.pipeline.steps.utils.combination import Reference
 

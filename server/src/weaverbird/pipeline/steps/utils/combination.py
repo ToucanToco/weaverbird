@@ -23,8 +23,7 @@ async def resolve_if_reference(
     reference_resolver: ReferenceResolver,
     pipeline_or_domain_name_or_ref: PipelineOrDomainNameOrReference,
 ) -> PipelineOrDomainName:
-    # TODO local import should not be useful once PipelineWithRefs will be isolated in a .references module
-    from weaverbird.pipeline.pipeline import PipelineWithRefs
+    from weaverbird.pipeline.references import PipelineWithRefs
 
     if isinstance(pipeline_or_domain_name_or_ref, Reference):
         pipeline_or_domain_name = await reference_resolver(pipeline_or_domain_name_or_ref)

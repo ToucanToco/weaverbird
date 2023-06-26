@@ -21,7 +21,6 @@ from .steps import (
     AggregateStep,
     AggregateStepWithVariables,
     AppendStep,
-    AppendStepWithRefs,
     AppendStepWithVariable,
     ArgmaxStep,
     ArgmaxStepWithVariable,
@@ -41,7 +40,6 @@ from .steps import (
     DeleteStep,
     DissolveStep,
     DomainStep,
-    DomainStepWithRef,
     DuplicateStep,
     DurationStep,
     DurationStepWithVariable,
@@ -57,7 +55,6 @@ from .steps import (
     IfthenelseStep,
     IfThenElseStepWithVariables,
     JoinStep,
-    JoinStepWithRef,
     JoinStepWithVariable,
     LowercaseStep,
     MovingAverageStep,
@@ -97,7 +94,6 @@ from .steps import (
     WaterfallStep,
     WaterfallStepWithVariable,
 )
-from .steps.utils.combination import ReferenceResolver
 
 PipelineStep = Annotated[
     AbsoluteValueStep
@@ -193,11 +189,6 @@ PipelineStepWithVariables = Annotated[
     | UniqueGroupsStepWithVariable
     | UnpivotStepWithVariable
     | WaterfallStepWithVariable,
-    Field(discriminator="name"),  # noqa: F821
-]
-
-PipelineStepWithRefs = Annotated[
-    AppendStepWithRefs | DomainStepWithRef | JoinStepWithRef,
     Field(discriminator="name"),  # noqa: F821
 ]
 
@@ -383,6 +374,7 @@ def remove_void_conditions_from_mongo_steps(
     return _sanitize_query_matches(_clean_mongo_steps(mongo_steps) or [])
 
 
+# TODO move to a dedicated variables module
 class PipelineWithVariables(BaseModel):
     steps: list[PipelineStepWithVariables | PipelineStep]
 
@@ -396,35 +388,3 @@ class PipelineWithVariables(BaseModel):
 
 
 PipelineWithVariables.update_forward_refs()
-
-
-class PipelineWithRefs(BaseModel):
-    """
-    Represents a pipeline in which some steps can reference some other pipelines using the syntax
-    `{"type": "ref", "uid": "..."}`
-
-    TODO move to a dedicated module .references
-    """
-
-    steps: list[PipelineStepWithRefs | PipelineStepWithVariables | PipelineStep]
-
-    async def resolve_references(
-        self, reference_resolver: ReferenceResolver
-    ) -> PipelineWithVariables:
-        """
-        Walk the pipeline steps and replace any reference by its corresponding pipeline.
-        The sub-pipelines added should also be handled, so that they will be no references anymore in the result.
-        """
-        resolved_steps: list[PipelineStepWithRefs | PipelineStepWithVariables | PipelineStep] = []
-        for step in self.steps:
-            resolved_step = (
-                await step.resolve_references(reference_resolver)
-                if hasattr(step, "resolve_references")
-                else step
-            )
-            if isinstance(resolved_step, PipelineWithVariables):
-                resolved_steps.extend(resolved_step.steps)
-            else:
-                resolved_steps.append(resolved_step)
-
-        return PipelineWithVariables(steps=resolved_steps)

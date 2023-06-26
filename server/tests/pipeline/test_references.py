@@ -1,6 +1,7 @@
 import pytest
 
-from weaverbird.pipeline.pipeline import Pipeline, PipelineWithRefs, PipelineWithVariables
+from weaverbird.pipeline.pipeline import Pipeline, PipelineWithVariables
+from weaverbird.pipeline.references import PipelineWithRefs
 from weaverbird.pipeline.steps import (
     AppendStepWithRefs,
     DomainStep,
