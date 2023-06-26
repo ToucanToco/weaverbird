@@ -151,12 +151,18 @@ def sanitize_table_schema(schema: dict) -> dict:
 VARIABLES = {}  # FIXME provide variables to front-end
 
 
-async def execute_pipeline(pipeline_steps, **kwargs) -> str:
-    # Validation
-    pipeline_with_refs = PipelineWithRefs(steps=pipeline_steps)  # Validation
-    pipeline_with_variables = await pipeline_with_refs.resolve_references(dummy_reference_resolver)
-    pipeline = pipeline_with_variables.render(VARIABLES, nosql_apply_parameters_to_query)
+async def prepare_pipeline(req: Request) -> Pipeline:
+    """
+    Validate the pipeline sent in the body of the request, and prepare it for translation (resolve references and
+    interpolate variables).
+    """
+    pipeline_with_refs = PipelineWithRefs(steps=await req.get_json())  # Validation
+    pipeline_with_vars = await pipeline_with_refs.resolve_references(dummy_reference_resolver)
+    pipeline = pipeline_with_vars.render(VARIABLES, nosql_apply_parameters_to_query)
+    return pipeline
 
+
+async def execute_pipeline(pipeline: Pipeline, **kwargs) -> str:
     output = json.loads(
         pandas_preview_pipeline(
             pipeline=pipeline,
@@ -190,7 +196,7 @@ async def handle_pandas_backend_request():
 
     elif request.method == "POST":
         try:
-            pipeline = await parse_request_json(request)
+            pipeline = await prepare_pipeline(request)
             return Response(
                 await execute_pipeline(pipeline, **request.args),
                 mimetype="application/json",
@@ -207,7 +213,6 @@ async def handle_pandas_backend_request():
                 400,
             )
         except Exception as e:
-            raise e
             errmsg = f"{e.__class__.__name__}: {e}"
             return jsonify(errmsg), 400
 
@@ -480,7 +485,7 @@ if _SNOWFLAKE_CONNECTION is not None:
             return jsonify(list(tables_info.keys()))
 
         elif request.method == "POST":
-            pipeline = await parse_request_json(request)
+            pipeline = await prepare_pipeline(request)
 
             # Url parameters are only strings, these two must be understood as numbers
             limit = int(request.args.get("limit", 50))
@@ -490,7 +495,7 @@ if _SNOWFLAKE_CONNECTION is not None:
 
             query = pypika_translate_pipeline(
                 sql_dialect=SQLDialect.SNOWFLAKE,
-                pipeline=Pipeline(steps=pipeline),
+                pipeline=pipeline,
                 db_schema="PUBLIC",
                 tables_columns=tables_columns,
             )
@@ -570,7 +575,7 @@ async def handle_postgres_backend_request():
             return jsonify([table_infos[1] for table_infos in tables_info])
 
     if request.method == "POST":
-        pipeline = await parse_request_json(request)
+        pipeline = await prepare_pipeline(request)
 
         # Url parameters are only strings, these two must be understood as numbers
         limit = int(request.args.get("limit", 50))
@@ -590,7 +595,7 @@ async def handle_postgres_backend_request():
 
         sql_query = pypika_translate_pipeline(
             sql_dialect=SQLDialect.POSTGRES,
-            pipeline=Pipeline(steps=pipeline),
+            pipeline=pipeline,
             db_schema=db_schema,
             tables_columns=table_columns,
         )
