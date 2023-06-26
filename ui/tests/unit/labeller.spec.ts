@@ -68,9 +68,9 @@ describe('Labeller', () => {
   it('generates label for append steps', () => {
     const step: S.AppendStep = {
       name: 'append',
-      pipelines: ['dataset1', 'dataset2'],
+      pipelines: ['dataset1', {type: 'ref', uid: 'dataset2'}],
     };
-    expect(hrl(step)).toEqual('Append "dataset1", "dataset2"');
+    expect(hrl(step, retrieveDomainName)).toEqual('Append "dataset1", "dataset2"');
   });
 
   it('generates label for argmax steps', () => {
@@ -479,11 +479,11 @@ describe('Labeller', () => {
   it('generates label for join steps', () => {
     const step: S.JoinStep = {
       name: 'join',
-      rightPipeline: 'right',
+      rightPipeline: {type: 'ref', uid: 'right-uid'},
       type: 'left',
       on: [['col', 'col']],
     };
-    expect(hrl(step)).toEqual('Join dataset "right"');
+    expect(hrl(step, retrieveDomainName)).toEqual('Join dataset "right-uid"');
   });
 
   it('generates label for percentage steps without output column', () => {
@@ -916,6 +916,9 @@ describe('Labeller', () => {
     });
     it('return query id if domain is a reference to an external query unfound', () => {
       expect(retrieveDomainName({ uid: '2', type: 'ref' }, [])).toBe('2');
+    });
+    it('should return a generic label if domain is a complete pipeline', () => {
+      expect(retrieveDomainName([{ name: 'domain', domain: 'plop'}, { name: 'text', text: 'meow', newColumn: 'cats'}], [])).toBe('[pipeline]');
     });
   });
 });

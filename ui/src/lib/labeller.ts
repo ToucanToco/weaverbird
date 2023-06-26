@@ -14,6 +14,7 @@
 import type { CustomDate } from '@/lib/dates';
 import { dateToString, relativeDateToString } from '@/lib/dates';
 import type { StepMatcher } from '@/lib/matcher';
+import type {Pipeline} from "@/lib/steps";
 import * as S from '@/lib/steps';
 
 import type { VariableDelimiters } from './variables';
@@ -154,8 +155,8 @@ class StepLabeller implements StepMatcher<string> {
     }
   }
 
-  append(step: Readonly<S.AppendStep>) {
-    return `Append ${formatMulticol(step.pipelines as string[])}`;
+  append(step: Readonly<S.AppendStep>, retrieveDomainNameFunc?: typeof retrieveDomainName) {
+    return `Append ${formatMulticol(step.pipelines.map((p) => retrieveDomainNameFunc!(p, [])))}`;
   }
 
   argmax(step: Readonly<S.ArgmaxStep>) {
@@ -256,8 +257,8 @@ class StepLabeller implements StepMatcher<string> {
     return `Add conditional column "${step.newColumn}"`;
   }
 
-  join(step: Readonly<S.JoinStep>) {
-    return `Join dataset "${step.rightPipeline}"`;
+  join(step: Readonly<S.JoinStep>, retrieveDomainNameFunc?: typeof retrieveDomainName) {
+    return `Join dataset "${retrieveDomainNameFunc!(step.rightPipeline, [])}"`;
   }
 
   lowercase(step: Readonly<S.ToLowerStep>) {
@@ -429,9 +430,12 @@ export function labelWithReadeableVariables(
 
 // enable to retrieve the related name of a query referenced behind an uid
 export function retrieveDomainName(
-  domain: string | S.ReferenceToExternalQuery,
+  domain: string | S.ReferenceToExternalQuery | Pipeline,
   availableDomains: { name: string; uid: string }[],
 ): string {
+  if (Array.isArray(domain)) {
+    return '[pipeline]'; // a complete pipeline cannot be labeled
+  }
   const domainOrUid = S.isReferenceToExternalQuery(domain) ? domain.uid : domain;
   return availableDomains.find((q) => q.uid === domainOrUid)?.name ?? domainOrUid;
 }
