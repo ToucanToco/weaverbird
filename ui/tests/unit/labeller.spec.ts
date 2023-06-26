@@ -151,12 +151,6 @@ describe('Labeller', () => {
       newColumnName: 'column2',
     };
     expect(hrl(step)).toEqual('Duplicate "column1" in "column2"');
-    const camelCaseStep = {
-      name: 'duplicate',
-      column: 'column1',
-      newColumnName: 'column2',
-    };
-    expect(hrl(camelCaseStep)).toEqual('Duplicate "column1" in "column2"');
   });
 
   it('generates label for delete steps', () => {
@@ -441,12 +435,6 @@ describe('Labeller', () => {
       formula: 'column1 + column2',
     };
     expect(hrl(step)).toEqual('Compute "column1 + column2" in "column3"');
-    const camelCaseStep = {
-      name: 'formula',
-      newColumn: 'column3',
-      formula: 'column1 + column2',
-    };
-    expect(hrl(camelCaseStep)).toEqual('Compute "column1 + column2" in "column3"');
   });
 
   it('generates label for fromdate steps', () => {
@@ -639,12 +627,6 @@ describe('Labeller', () => {
       newColumn: 'test',
     };
     expect(hrl(step)).toEqual('Add text column "test"');
-    const camelCasestep = {
-      name: 'text',
-      text: 'Hello',
-      newColumn: 'test',
-    };
-    expect(hrl(camelCasestep)).toEqual('Add text column "test"');
   });
 
   it('generates label for todate steps', () => {
