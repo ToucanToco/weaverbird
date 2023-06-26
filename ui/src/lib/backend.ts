@@ -30,7 +30,7 @@ export interface BackendService {
    */
   executePipeline(
     pipeline: Pipeline,
-    pipelines: {[k: string]: Pipeline}, // TODO unused, to be removed
+    pipelines: { [k: string]: Pipeline }, // TODO unused, to be removed
     limit?: number,
     offset?: number,
     sourceRowsSubset?: number | 'unlimited',

@@ -68,7 +68,7 @@ describe('Labeller', () => {
   it('generates label for append steps', () => {
     const step: S.AppendStep = {
       name: 'append',
-      pipelines: ['dataset1', {type: 'ref', uid: 'dataset2'}],
+      pipelines: ['dataset1', { type: 'ref', uid: 'dataset2' }],
     };
     expect(hrl(step, retrieveDomainName)).toEqual('Append "dataset1", "dataset2"');
   });
@@ -467,7 +467,7 @@ describe('Labeller', () => {
   it('generates label for join steps', () => {
     const step: S.JoinStep = {
       name: 'join',
-      rightPipeline: {type: 'ref', uid: 'right-uid'},
+      rightPipeline: { type: 'ref', uid: 'right-uid' },
       type: 'left',
       on: [['col', 'col']],
     };
@@ -900,7 +900,15 @@ describe('Labeller', () => {
       expect(retrieveDomainName({ uid: '2', type: 'ref' }, [])).toBe('2');
     });
     it('should return a generic label if domain is a complete pipeline', () => {
-      expect(retrieveDomainName([{ name: 'domain', domain: 'plop'}, { name: 'text', text: 'meow', newColumn: 'cats'}], [])).toBe('[pipeline]');
+      expect(
+        retrieveDomainName(
+          [
+            { name: 'domain', domain: 'plop' },
+            { name: 'text', text: 'meow', newColumn: 'cats' },
+          ],
+          [],
+        ),
+      ).toBe('[pipeline]');
     });
   });
 });

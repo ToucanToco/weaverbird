@@ -14,7 +14,7 @@
 import type { CustomDate } from '@/lib/dates';
 import { dateToString, relativeDateToString } from '@/lib/dates';
 import type { StepMatcher } from '@/lib/matcher';
-import type {Pipeline} from "@/lib/steps";
+import type { Pipeline } from '@/lib/steps';
 import * as S from '@/lib/steps';
 
 import type { VariableDelimiters } from './variables';
