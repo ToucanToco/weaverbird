@@ -456,12 +456,10 @@ if _SNOWFLAKE_CONNECTION is not None:
             res = {r.name: type_code_mapping.get(r.type_code) for r in describe_res}
             return res
 
-
     def snowflake_query_executor(domain: str, query_string: str = None) -> pd.DataFrame | None:
         with _SNOWFLAKE_CONNECTION.cursor() as cursor:
             res = cursor.execute(domain if domain else query_string).fetchall()
             return res.fetch_pandas_all()
-
 
     def get_table_columns():
         tables_info = _SNOWFLAKE_CONNECTION.cursor().execute("SHOW TABLES;").fetchall()
@@ -476,7 +474,6 @@ if _SNOWFLAKE_CONNECTION is not None:
                 )
                 tables_columns[table_name] = [info[0] for info in infos if info[2] == "COLUMN"]
         return tables_columns
-
 
     @app.route("/snowflake", methods=["GET", "POST"])
     async def handle_snowflake_backend_request():
@@ -839,7 +836,7 @@ async def handle_mysql_post_request():
         ).dict(),
         "results": {
             "headers": result.columns.to_list(),
-            "data": json.loads(result[offset: offset + limit].to_json(orient="records")),
+            "data": json.loads(result[offset : offset + limit].to_json(orient="records")),
             "schema": build_table_schema(result, index=False),
         },
         "query": sql_query,  # provided for inspection purposes
