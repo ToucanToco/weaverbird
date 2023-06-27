@@ -48,6 +48,7 @@ from pandas.io.json import build_table_schema
 from pymongo import MongoClient
 from quart import Quart, Request, Response, jsonify, request, send_file
 from quart_cors import cors
+from toucan_connectors.common import nosql_apply_parameters_to_query
 from toucan_connectors.pagination import build_pagination_info
 
 from weaverbird.backends.mongo_translator.mongo_pipeline_translator import (
@@ -61,7 +62,10 @@ from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import (
     translate_pipeline as pypika_translate_pipeline,
 )
-from weaverbird.pipeline import Pipeline
+from weaverbird.pipeline.pipeline import Pipeline
+from weaverbird.pipeline.references import PipelineWithRefs
+from weaverbird.pipeline.steps import DomainStep
+from weaverbird.pipeline.steps.utils.combination import Reference
 
 app = Quart(__name__)
 if os.environ.get("ALLOW_ORIGIN"):
@@ -145,10 +149,21 @@ def sanitize_table_schema(schema: dict) -> dict:
     }
 
 
-def execute_pipeline(pipeline_steps, **kwargs) -> str:
-    # Validation
-    pipeline = Pipeline(steps=pipeline_steps)
+VARIABLES = {}  # FIXME provide variables to front-end
 
+
+async def prepare_pipeline(req: Request) -> Pipeline:
+    """
+    Validate the pipeline sent in the body of the request, and prepare it for translation (resolve references and
+    interpolate variables).
+    """
+    pipeline_with_refs = PipelineWithRefs(steps=await req.get_json())  # Validation
+    pipeline_with_vars = await pipeline_with_refs.resolve_references(dummy_reference_resolver)
+    pipeline = pipeline_with_vars.render(VARIABLES, nosql_apply_parameters_to_query)
+    return pipeline
+
+
+async def execute_pipeline(pipeline: Pipeline, **kwargs) -> str:
     output = json.loads(
         pandas_preview_pipeline(
             pipeline=pipeline,
@@ -182,9 +197,9 @@ async def handle_pandas_backend_request():
 
     elif request.method == "POST":
         try:
-            pipeline = await parse_request_json(request)
+            pipeline = await prepare_pipeline(request)
             return Response(
-                execute_pipeline(pipeline, **request.args),
+                await execute_pipeline(pipeline, **request.args),
                 mimetype="application/json",
             )
         except PipelineExecutionFailure as e:
@@ -330,6 +345,10 @@ def execute_mongo_aggregation_query(collection, query, limit, offset):
     return results
 
 
+async def dummy_reference_resolver(r: Reference) -> list[dict]:
+    return [DomainStep(domain=r.uid).dict()]
+
+
 @app.route("/mongo", methods=["GET", "POST"])
 async def handle_mongo_backend_request():
     if request.method == "GET":
@@ -337,7 +356,8 @@ async def handle_mongo_backend_request():
     elif request.method == "POST":
         try:
             req_params = await parse_request_json(request)
-            pipeline = Pipeline(steps=req_params["pipeline"])  # Validation
+            pipeline_with_refs = PipelineWithRefs(steps=req_params["pipeline"])  # Validation
+            pipeline = await pipeline_with_refs.resolve_references(dummy_reference_resolver)
             mongo_query = mongo_translate_pipeline(pipeline)
 
             offset = req_params.get("offset", 0)
@@ -463,7 +483,7 @@ if _SNOWFLAKE_CONNECTION is not None:
             return jsonify(list(tables_info.keys()))
 
         elif request.method == "POST":
-            pipeline = await parse_request_json(request)
+            pipeline = await prepare_pipeline(request)
 
             # Url parameters are only strings, these two must be understood as numbers
             limit = int(request.args.get("limit", 50))
@@ -473,7 +493,7 @@ if _SNOWFLAKE_CONNECTION is not None:
 
             query = pypika_translate_pipeline(
                 sql_dialect=SQLDialect.SNOWFLAKE,
-                pipeline=Pipeline(steps=pipeline),
+                pipeline=pipeline,
                 db_schema="PUBLIC",
                 tables_columns=tables_columns,
             )
@@ -553,7 +573,7 @@ async def handle_postgres_backend_request():
             return jsonify([table_infos[1] for table_infos in tables_info])
 
     if request.method == "POST":
-        pipeline = await parse_request_json(request)
+        pipeline = await prepare_pipeline(request)
 
         # Url parameters are only strings, these two must be understood as numbers
         limit = int(request.args.get("limit", 50))
@@ -573,7 +593,7 @@ async def handle_postgres_backend_request():
 
         sql_query = pypika_translate_pipeline(
             sql_dialect=SQLDialect.POSTGRES,
-            pipeline=Pipeline(steps=pipeline),
+            pipeline=pipeline,
             db_schema=db_schema,
             tables_columns=table_columns,
         )

@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Changed
+
+- Support if pipeline references has moved form front-end to back-end.
+  This means the front-end does not need to know all the available pipelines contents anymore (only their name/uids).
+
 ## [0.102.1] - 2023-05-09
 
 #### Fixed

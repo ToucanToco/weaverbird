@@ -1,5 +1,7 @@
 """
 This file contain end-to-end tests for pipeline execution
+
+TODO move to tests/backends/pandas_executor
 """
 import json
 from functools import partial

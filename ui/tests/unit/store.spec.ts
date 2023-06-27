@@ -93,9 +93,9 @@ describe('getter tests', () => {
         },
       });
       const store = setupMockStore(state);
-      expect(store.availableDatasetNames).toEqual(['dataset1', 'dataset2']);
+      expect(store.availableDatasetNames).toEqual([]);
     });
-    it('should return everything if the currentPipelineName is not defined', () => {
+    it('should not return the other pipeline names', () => {
       const state = buildState({
         currentPipelineName: undefined,
         pipelines: {
@@ -104,9 +104,9 @@ describe('getter tests', () => {
         },
       });
       const store = setupMockStore(state);
-      expect(store.availableDatasetNames).toEqual(['dataset1', 'dataset2']);
+      expect(store.availableDatasetNames).toEqual([]);
     });
-    it('should return the pipeline names and the domains', () => {
+    it('should return the available domains, but not the other pipeline names', () => {
       const state = buildState({
         pipelines: {
           dataset1: [],
@@ -115,18 +115,14 @@ describe('getter tests', () => {
         domains: ['domain1', 'domain2'],
       });
       const store = setupMockStore(state);
-      expect(store.availableDatasetNames).toEqual(['dataset1', 'dataset2', 'domain1', 'domain2']);
+      expect(store.availableDatasetNames).toEqual(['domain1', 'domain2']);
     });
-    it('should sort the result: first pipelines ordered alphabetically, then domains ordered alphabetically', () => {
+    it('should sort the result alphabetically', () => {
       const state = buildState({
-        pipelines: {
-          abc: [],
-          xyz: [],
-        },
-        domains: ['mno', 'dataset1'],
+        domains: ['mno', 'Dataset1', 'abc', 'xyz'],
       });
       const store = setupMockStore(state);
-      expect(store.availableDatasetNames).toEqual(['abc', 'xyz', 'dataset1', 'mno']);
+      expect(store.availableDatasetNames).toEqual(['abc', 'Dataset1', 'mno', 'xyz']);
     });
   });
 
