@@ -138,14 +138,43 @@ As of today, no translator backend exists for python. We plan to implement one f
 ### Summary
 
 ```
-[ pipeline with references ] ---- resovle references ---> [ pipeline with variables ] --- replace variables by their value --> [ pipeline ] -------- translate ---> query
-                                                                                                                                                 |
-                                                                                                                                                 or
-                                                                                                                                                 |
-                                                                                                                                                 |-- execute -----> result dataframe
-                                                                                                                                                       ^
-                                                                                                                                                       |
-                                                                                                                                                 input dataframe(s)
+  ┌────────────────────────────┐
+  │                            │
+  │  pipeline with references  │
+  │                            │
+  └──────────────┬─────────────┘
+                 │
+                 │  PipelineWithRefs.resolve_references
+                 │
+                 ▼
+  ┌────────────────────────────┐
+  │                            │
+  │  pipeline with variables   │
+  │                            │
+  └──────────────┬─────────────┘
+                 │
+                 │  PipelieWithVariables.render
+                 │
+                 ▼
+  ┌────────────────────────────┐
+  │                            │
+  │         pipeline           │
+  │                            │
+  └──────────────┬─────────────┘
+                 │
+                 │                                            iinput dataframes
+                 │                                                  │
+                 │                                                  │
+                 OR────────────────────────────────────────┐        │
+                 │                                         │        ▼
+                 │                                         │
+                 │ translate_pipeline                      │ execute_pipeline
+                 │                                         │
+                 ▼                                         ▼
+            ┌─────────┐                          ┌────────────────────┐
+            │  query  │                          │  output dataframe  │
+            └─────────┘                          └────────────────────┘
+
 ```
 
 ### How to: add a new translator
