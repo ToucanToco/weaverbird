@@ -68,9 +68,9 @@ describe('Labeller', () => {
   it('generates label for append steps', () => {
     const step: S.AppendStep = {
       name: 'append',
-      pipelines: ['dataset1', 'dataset2'],
+      pipelines: ['dataset1', { type: 'ref', uid: 'dataset2' }],
     };
-    expect(hrl(step)).toEqual('Append "dataset1", "dataset2"');
+    expect(hrl(step, retrieveDomainName)).toEqual('Append "dataset1", "dataset2"');
   });
 
   it('generates label for argmax steps', () => {
@@ -151,12 +151,6 @@ describe('Labeller', () => {
       newColumnName: 'column2',
     };
     expect(hrl(step)).toEqual('Duplicate "column1" in "column2"');
-    const camelCaseStep = {
-      name: 'duplicate',
-      column: 'column1',
-      newColumnName: 'column2',
-    };
-    expect(hrl(camelCaseStep)).toEqual('Duplicate "column1" in "column2"');
   });
 
   it('generates label for delete steps', () => {
@@ -441,12 +435,6 @@ describe('Labeller', () => {
       formula: 'column1 + column2',
     };
     expect(hrl(step)).toEqual('Compute "column1 + column2" in "column3"');
-    const camelCaseStep = {
-      name: 'formula',
-      newColumn: 'column3',
-      formula: 'column1 + column2',
-    };
-    expect(hrl(camelCaseStep)).toEqual('Compute "column1 + column2" in "column3"');
   });
 
   it('generates label for fromdate steps', () => {
@@ -479,11 +467,11 @@ describe('Labeller', () => {
   it('generates label for join steps', () => {
     const step: S.JoinStep = {
       name: 'join',
-      rightPipeline: 'right',
+      rightPipeline: { type: 'ref', uid: 'right-uid' },
       type: 'left',
       on: [['col', 'col']],
     };
-    expect(hrl(step)).toEqual('Join dataset "right"');
+    expect(hrl(step, retrieveDomainName)).toEqual('Join dataset "right-uid"');
   });
 
   it('generates label for percentage steps without output column', () => {
@@ -639,12 +627,6 @@ describe('Labeller', () => {
       newColumn: 'test',
     };
     expect(hrl(step)).toEqual('Add text column "test"');
-    const camelCasestep = {
-      name: 'text',
-      text: 'Hello',
-      newColumn: 'test',
-    };
-    expect(hrl(camelCasestep)).toEqual('Add text column "test"');
   });
 
   it('generates label for todate steps', () => {
@@ -916,6 +898,17 @@ describe('Labeller', () => {
     });
     it('return query id if domain is a reference to an external query unfound', () => {
       expect(retrieveDomainName({ uid: '2', type: 'ref' }, [])).toBe('2');
+    });
+    it('should return a generic label if domain is a complete pipeline', () => {
+      expect(
+        retrieveDomainName(
+          [
+            { name: 'domain', domain: 'plop' },
+            { name: 'text', text: 'meow', newColumn: 'cats' },
+          ],
+          [],
+        ),
+      ).toBe('[pipeline]');
     });
   });
 });

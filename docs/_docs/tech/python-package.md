@@ -60,6 +60,21 @@ steps -> 1 -> name
 [...]
 ```
 
+### Pipeline combinations: references
+
+Pipelines can reference other pipelines in certain steps.
+These references are accepted only in the model `PipelineWithRefs`.
+This model provides a method to find and replace recursively all references.
+It must be called before trying to execute or translate a pipeline.
+
+
+### Pipeline : variables
+
+Some fields can contain variables instead of the actual value.
+They are accepted only in the model `PipelineWithVariable`.
+This model provides a method to replace all variables by their value.
+It must be called before trying to execute or translate a pipeline.
+
 ### Executor backends: execute a pipeline
 
 ```python
@@ -119,6 +134,48 @@ where:
 The result of `translate_pipeline` is a query, generally a `str` (but other types could be possible, like a `list` or `dict` for MongoDB queries).
 
 As of today, no translator backend exists for python. We plan to implement one for MongoDB, and one for Snowflake SQL.
+
+### Summary
+
+```
+  ┌────────────────────────────┐
+  │                            │
+  │  pipeline with references  │
+  │                            │
+  └──────────────┬─────────────┘
+                 │
+                 │  PipelineWithRefs.resolve_references
+                 │
+                 ▼
+  ┌────────────────────────────┐
+  │                            │
+  │  pipeline with variables   │
+  │                            │
+  └──────────────┬─────────────┘
+                 │
+                 │  PipelieWithVariables.render
+                 │
+                 ▼
+  ┌────────────────────────────┐
+  │                            │
+  │         pipeline           │
+  │                            │
+  └──────────────┬─────────────┘
+                 │
+                 │                                            iinput dataframes
+                 │                                                  │
+                 │                                                  │
+                 OR────────────────────────────────────────┐        │
+                 │                                         │        ▼
+                 │                                         │
+                 │ translate_pipeline                      │ execute_pipeline
+                 │                                         │
+                 ▼                                         ▼
+            ┌─────────┐                          ┌────────────────────┐
+            │  query  │                          │  output dataframe  │
+            └─────────┘                          └────────────────────┘
+
+```
 
 ### How to: add a new translator
 

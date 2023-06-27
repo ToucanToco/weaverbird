@@ -374,6 +374,7 @@ def remove_void_conditions_from_mongo_steps(
     return _sanitize_query_matches(_clean_mongo_steps(mongo_steps) or [])
 
 
+# TODO move to a dedicated variables module
 class PipelineWithVariables(BaseModel):
     steps: list[PipelineStepWithVariables | PipelineStep]
 
@@ -384,3 +385,6 @@ class PipelineWithVariables(BaseModel):
             for step in self.steps
         ]
         return Pipeline(steps=steps_rendered)
+
+
+PipelineWithVariables.update_forward_refs()

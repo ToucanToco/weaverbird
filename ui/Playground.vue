@@ -82,7 +82,6 @@ import { defineComponent } from "vue";
 
 import {
   defineSendAnalytics,
-  dereferencePipelines,
   exampleInterpolateFunc,
   filterOutDomain,
   mongoResultsToDataset,
@@ -271,18 +270,16 @@ class MongoService {
   }
 
   async executePipeline(pipeline, pipelines, limit, offset = 0) {
-    const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
-
     let isResponseOk, responseContent, query;
 
-    const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(
-      dereferencedPipeline,
+    const pipelineWithoutVariables = exampleInterpolateFunc(
+      pipeline,
       VARIABLES,
     );
 
     // FIXME it would be better if the mongo translator returned a tuple (collection, query)
     const { domain: collection, pipeline: subpipeline } = filterOutDomain(
-      dereferencedPipelineWithoutVariables,
+      pipelineWithoutVariables,
     );
 
     const response = await fetch(API_BASEROUTE + '/mongo', {
@@ -328,10 +325,8 @@ class PandasService {
   }
 
   async executePipeline(pipeline, pipelines, limit, offset = 0) {
-    const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
-
-    const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(
-      dereferencedPipeline,
+    const pipelineWithoutVariables = exampleInterpolateFunc(
+      pipeline,
       VARIABLES,
     );
 
@@ -345,7 +340,7 @@ class PandasService {
 
     const response = await fetch(url.toString(), {
       method: 'POST',
-      body: JSON.stringify(dereferencedPipelineWithoutVariables),
+      body: JSON.stringify(pipelineWithoutVariables),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -386,10 +381,8 @@ class SnowflakeService {
   }
 
   async executePipeline(pipeline, pipelines, limit, offset = 0) {
-    const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
-
-    const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(
-      dereferencedPipeline,
+    const pipelineWithoutVariables = exampleInterpolateFunc(
+      pipeline,
       VARIABLES,
     );
 
@@ -403,7 +396,7 @@ class SnowflakeService {
 
     const response = await fetch(url.toString(), {
       method: 'POST',
-      body: JSON.stringify(dereferencedPipelineWithoutVariables),
+      body: JSON.stringify(pipelineWithoutVariables),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -439,10 +432,8 @@ class AthenaService {
   }
 
   async executePipeline(pipeline, pipelines, limit, offset = 0) {
-    const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
-
-    const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(
-      dereferencedPipeline,
+    const pipelineWithoutVariables = exampleInterpolateFunc(
+      pipeline,
       VARIABLES,
     );
 
@@ -456,7 +447,7 @@ class AthenaService {
 
     const response = await fetch(url.toString(), {
       method: 'POST',
-      body: JSON.stringify(dereferencedPipelineWithoutVariables),
+      body: JSON.stringify(pipelineWithoutVariables),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -492,10 +483,8 @@ class GoogleBigQueryService {
   }
 
   async executePipeline(pipeline, pipelines, limit, offset = 0) {
-    const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
-
-    const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(
-      dereferencedPipeline,
+    const pipelineWithoutVariables = exampleInterpolateFunc(
+      pipeline,
       VARIABLES,
     );
 
@@ -509,7 +498,7 @@ class GoogleBigQueryService {
 
     const response = await fetch(url.toString(), {
       method: 'POST',
-      body: JSON.stringify(dereferencedPipelineWithoutVariables),
+      body: JSON.stringify(pipelineWithoutVariables),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -545,10 +534,8 @@ class MySqlService {
   }
 
   async executePipeline(pipeline, pipelines, limit, offset = 0) {
-    const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
-
-    const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(
-      dereferencedPipeline,
+    const pipelineWithoutVariables = exampleInterpolateFunc(
+      pipeline,
       VARIABLES,
     );
 
@@ -562,7 +549,7 @@ class MySqlService {
 
     const response = await fetch(url.toString(), {
       method: 'POST',
-      body: JSON.stringify(dereferencedPipelineWithoutVariables),
+      body: JSON.stringify(pipelineWithoutVariables),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -598,10 +585,9 @@ class PostgresqlService {
   }
 
   async executePipeline(pipeline, pipelines, limit, offset = 0) {
-    const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
 
-    const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(
-      dereferencedPipeline,
+    const pipelineWithoutVariables = exampleInterpolateFunc(
+      pipeline,
       VARIABLES,
     );
 
@@ -615,7 +601,7 @@ class PostgresqlService {
 
     const response = await fetch(url.toString(), {
       method: 'POST',
-      body: JSON.stringify(dereferencedPipelineWithoutVariables),
+      body: JSON.stringify(pipelineWithoutVariables),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -651,10 +637,8 @@ class RedshiftService {
   }
 
   async executePipeline(pipeline, pipelines, limit, offset = 0) {
-    const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
-
-    const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(
-      dereferencedPipeline,
+    const pipelineWithoutVariables = exampleInterpolateFunc(
+      pipeline,
       VARIABLES,
     );
 
@@ -668,7 +652,7 @@ class RedshiftService {
 
     const response = await fetch(url.toString(), {
       method: 'POST',
-      body: JSON.stringify(dereferencedPipelineWithoutVariables),
+      body: JSON.stringify(pipelineWithoutVariables),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -936,16 +920,7 @@ export default defineComponent({
       return useVQBStore();
     },
     activePipeline: function () {
-      let activePipeline = this.store.activePipeline;
-      if (!activePipeline) {
-        return undefined;
-      }
-      const pipelines = this.store.pipelines;
-      if (pipelines) {
-        return dereferencePipelines(activePipeline, pipelines);
-      } else {
-        return activePipeline;
-      }
+      return this.store.activePipeline;
     },
     pipelineAsJSON: function () {
       return JSON.stringify(this.activePipeline, null, 2);
@@ -954,7 +929,7 @@ export default defineComponent({
       return this.store.thereIsABackendError;
     },
     backendMessages: function () {
-      return this.store.state.backendMessages;
+      return this.store.backendMessages;
     },
     backendErrors: function () {
       return this.backendMessages.filter(({ type, index }) => type === 'error' && index == null);

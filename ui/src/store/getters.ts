@@ -42,13 +42,9 @@ const getters: PiniaGetterAdaptor<VQBGetters, VQBStore> = {
   unsupportedSteps: (state: VQBState) => getTranslator(state.translator).unsupportedSteps,
   supportedSteps: (state: VQBState) => getTranslator(state.translator).supportedSteps,
   pipelinesNames: (state: VQBState) => Object.keys(state.pipelines),
-  // Return all available dataset (including pipelines but excluding currentPipelineName)
   availableDatasetNames: (state: VQBState) => {
-    const pipelineNames = Object.keys(state.pipelines)
-      .filter((name: string) => name !== state.currentPipelineName)
-      .sort((a, b) => a.localeCompare(b));
     const domainNames = [...state.domains].sort((a, b) => a.localeCompare(b));
-    return [...pipelineNames, ...domainNames];
+    return [...domainNames];
   },
   pipeline: (state: VQBState) => currentPipeline(state),
   activePipeline: (state: VQBState) => activePipeline(state), // the part of the pipeline that is currently selected.
