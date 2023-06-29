@@ -26,6 +26,19 @@ describe('Append Step Form', () => {
     },
   });
 
+  runner.testValidate({
+    testlabel: 'submitted data is valid',
+    props: {
+      initialStepValue: {
+        name: 'append',
+        pipelines: [
+          { type: 'ref', uid: 'dataset1' },
+          { type: 'ref', uid: 'dataset2' },
+        ],
+      },
+    },
+  });
+
   runner.testCancel({
     currentPipelineName: 'default_pipeline',
     pipelines: {
@@ -56,5 +69,30 @@ describe('Append Step Form', () => {
     ]);
     expect(widgetMultiselect.props('trackBy')).toEqual('trackBy');
     expect(widgetMultiselect.props('label')).toEqual('label');
+  });
+
+  it('should handle dataset references', async () => {
+    const initialState = {
+      currentPipelineName: 'my_dataset',
+      availableDomains: [
+        { name: 'dataset1', uid: '1' },
+        { name: 'dataset2', uid: '2' },
+      ],
+      unjoinableDomains: [],
+    };
+    const wrapper = runner.shallowMount(initialState, {
+      data: {
+        editedStep: {
+          name: 'append',
+          pipelines: [
+            { type: 'ref', uid: '1' },
+          ],
+        },
+      },
+    });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('multiselectwidget-stub').props().value).toStrictEqual([
+      { label: 'dataset1', trackBy: { type: 'ref', uid: '1' } },
+    ]);
   });
 });
