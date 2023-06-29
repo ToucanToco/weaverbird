@@ -14,6 +14,18 @@ describe('join Step Form', () => {
     'listwidget-stub': 1,
   });
 
+  runner.testValidate({
+    testlabel: 'submitted data is valid',
+    props: {
+      initialStepValue: {
+        name: 'join',
+        rightPipeline: { type: 'ref', uid: '1' },
+        type: 'left',
+        on: [['foo', 'bar']],
+      },
+    },
+  });
+
   runner.testCancel();
   runner.testResetSelectedIndex();
 
@@ -36,6 +48,32 @@ describe('join Step Form', () => {
       expect(widgetMultiselect.props('withExample')).toEqual(true);
       expect(widgetMultiselect.props('trackBy')).toEqual('trackBy');
       expect(widgetMultiselect.props('label')).toEqual('label');
+    });
+  });
+
+  it('should handle dataset references', async () => {
+    const initialState = {
+      currentPipelineName: 'my_dataset',
+      availableDomains: [
+        { name: 'dataset1', uid: '1' },
+        { name: 'dataset2', uid: '2' },
+      ],
+      unjoinableDomains: [],
+    };
+    const wrapper = runner.shallowMount(initialState, {
+      data: {
+        editedStep: {
+          name: 'join',
+          rightPipeline: { type: 'ref', uid: '1' },
+          type: 'left',
+          on: [['foo', 'bar']],
+        },
+      },
+    });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('autocompletewidget-stub').props().value).toStrictEqual({
+      label: 'dataset1',
+      trackBy: { type: 'ref', uid: '1' },
     });
   });
 
