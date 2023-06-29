@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Changed
+
+- Support if pipeline references has moved form UI to server.
+  This means the front-end does not need to know all the available pipelines contents anymore (only their name/uids).
+  Introduce the model `PipelineWithRefs`, and its method `resolve_references`.
+
 ## [0.32.0] - 2023-06-16
 
 - `__VOID__` values can now be removed from mongo queries with `weaverbird.pipeline.remove_void_conditions_from_mongo_steps()`.
