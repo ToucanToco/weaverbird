@@ -84,9 +84,7 @@ describe('Append Step Form', () => {
       data: {
         editedStep: {
           name: 'append',
-          pipelines: [
-            { type: 'ref', uid: '1' },
-          ],
+          pipelines: [{ type: 'ref', uid: '1' }],
         },
       },
     });
