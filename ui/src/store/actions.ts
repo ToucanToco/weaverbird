@@ -3,7 +3,7 @@ import Vue from 'vue';
 import type { BackendError, BackendResponse, BackendService, BackendWarning } from '@/lib/backend';
 import { addLocalUniquesToDataset, updateLocalUniquesFromDatabase } from '@/lib/dataset/helpers';
 import { pageOffset } from '@/lib/dataset/pagination';
-import type { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
+import type { Pipeline, PipelineStep, PipelineStepName, Reference } from '@/lib/steps';
 import { setVariableDelimiters } from '@/lib/translators';
 import type { DataSet, VariableDelimiters, VariablesBucket } from '@/types';
 
@@ -56,6 +56,11 @@ export type VQBActions = {
     unjoinableDomains,
   }: {
     unjoinableDomains: { name: string; uid: string }[];
+  }) => void;
+  setCustomRetrieveDomainName: ({
+    customRetrieveDomainName,
+  }: {
+    customRetrieveDomainName: (domain: Reference) => string;
   }) => void;
   setCurrentPipelineName: ({ name }: { name: string }) => void;
   setPipeline: ({ pipeline }: { pipeline: Pipeline }) => void;
@@ -143,6 +148,9 @@ const actions: PiniaActionAdaptor<VQBActions, VQBStore> = {
   },
   setUnjoinableDomains({ unjoinableDomains }) {
     this.unjoinableDomains = unjoinableDomains;
+  },
+  setCustomRetrieveDomainName({ customRetrieveDomainName }) {
+    this.customRetrieveDomainName = customRetrieveDomainName;
   },
   setCurrentPipelineName({ name }) {
     this.currentPipelineName = name;
