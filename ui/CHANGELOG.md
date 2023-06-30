@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## [0.104.0] - 2023-06-30
+
+### Changed
+- Enable to override "retrieveDomainName" by assigning "customRetrieveDomainName" method to store state to display custom name in step label
+
 ## [0.103.0] - 2023-06-29
 
 ### Changed
@@ -1485,6 +1490,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
+[0.104.0]: https://github.com/ToucanToco/weaverbird/compare/v0.103.0...v0.104.0
 [0.103.0]: https://github.com/ToucanToco/weaverbird/compare/v0.102.1...v0.103.0
 [0.102.1]: https://github.com/ToucanToco/weaverbird/compare/v0.102.0...v0.102.1
 [0.102.0]: https://github.com/ToucanToco/weaverbird/compare/v0.101.1...v0.102.0
