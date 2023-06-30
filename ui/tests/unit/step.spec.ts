@@ -162,6 +162,39 @@ describe('Step.vue', () => {
     ]);
   });
 
+  it('should retrieveDomainName for step label (with custom retrieveDomainName method)', () => {
+    const customRetrieveDomainNameStub = vi.fn().mockReturnValue('plop');
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'GoT' },
+      { name: 'replace', searchColumn: 'characters', toReplace: [['Snow', 'Targaryen']] },
+      { name: 'rename', toRename: [['region', 'kingdom']] },
+      { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+    ];
+    setupMockStore(
+      buildStateWithOnePipeline(pipeline, {
+        availableDomains: [{ uid: '1', name: 'Query 1' }],
+        customRetrieveDomainName: customRetrieveDomainNameStub,
+      }),
+    );
+    const wrapper = shallowMount(Step, {
+      propsData: {
+        key: 0,
+        isActive: true,
+        isLastActive: true,
+        isDisabled: false,
+        isFirst: true,
+        isLast: true,
+        step: { name: 'domain', domain: { uid: '1', type: 'ref' } },
+        indexInPipeline: 0,
+        variableDelimiters: { start: '{{ ', end: ' }}' },
+      },
+      pinia,
+      localVue,
+    });
+    expect(customRetrieveDomainNameStub).toHaveBeenCalledWith({ uid: '1', type: 'ref' });
+    expect(wrapper.find('.query-pipeline-step__name').text()).toBe('Source: "plop"');
+  });
+
   it('should toggle the edit mode when clicking on the edit icon and emit editStep', () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'GoT' },

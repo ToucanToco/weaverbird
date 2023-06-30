@@ -4,7 +4,7 @@
 import type { BackendError, BackendService, BackendWarning } from '@/lib/backend';
 import { UnsetBackendService } from '@/lib/backend';
 import type { DataSet } from '@/lib/dataset';
-import type { Pipeline, PipelineStepName } from '@/lib/steps';
+import type { Pipeline, PipelineStepName, Reference } from '@/lib/steps';
 import type { InterpolateFunction, ScopeContext } from '@/lib/templating';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
@@ -29,6 +29,7 @@ export interface VQBState {
 
   domains: string[];
   availableDomains: { name: string; uid: string }[];
+  customRetrieveDomainName?: (domain: Reference) => string;
   unjoinableDomains?: { name: string; uid: string }[];
   pipelines: { [name: string]: Pipeline };
 
@@ -107,6 +108,8 @@ export function emptyState(): VQBState {
     backendService: UnsetBackendService,
     interpolateFunc: (x: string | any[], _context: ScopeContext) => x,
     featureFlags: undefined,
+    // we enable to override retrieveDomainName method to handle names provided by any other source than availableDomains
+    customRetrieveDomainName: undefined,
   };
 }
 

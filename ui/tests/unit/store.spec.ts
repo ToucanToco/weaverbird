@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { BackendService } from '@/lib/backend';
 import type { DataSet } from '@/lib/dataset';
-import type { Pipeline } from '@/lib/steps';
+import type { Pipeline, Reference } from '@/lib/steps';
 import { formatError } from '@/store/actions';
 import { currentPipeline, emptyState } from '@/store/state';
 
@@ -592,6 +592,18 @@ describe('mutation tests', () => {
     expect(store.availableDomains).toEqual([]);
     store.setAvailableDomains({ availableDomains: [{ uid: '1', name: 'Query 1' }] });
     expect(store.availableDomains).toEqual([{ uid: '1', name: 'Query 1' }]);
+  });
+
+  it('sets customRetrieveDomainName function', () => {
+    const customRetrieveDomainName = (
+      _domain: Reference,
+      _availableDomains: { name: string; uid: string }[],
+    ) => 'plop';
+    const state = buildState({});
+    const store = setupMockStore(state);
+    expect(store.customRetrieveDomainName).toEqual(undefined);
+    store.setCustomRetrieveDomainName({ customRetrieveDomainName: customRetrieveDomainName });
+    expect(store.customRetrieveDomainName).toEqual(customRetrieveDomainName);
   });
 
   it('sets unjoinableDomains list', () => {

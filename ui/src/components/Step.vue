@@ -68,11 +68,11 @@ import { Component, Prop } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
 import {
+  retrieveDomainName,
   humanReadableLabel,
   labelWithReadeableVariables,
-  retrieveDomainName,
 } from '@/lib/labeller';
-import type { PipelineStep, ReferenceToExternalQuery } from '@/lib/steps';
+import type { PipelineStep, Reference } from '@/lib/steps';
 import type { VariableDelimiters } from '@/lib/variables';
 import { State, Getter } from 'pinia-class';
 import { VQBModule } from '@/store';
@@ -88,6 +88,7 @@ import PreviewSourceSubset from './PreviewSourceSubset.vue';
 })
 export default class Step extends Vue {
   @State(VQBModule) availableDomains!: { name: string; uid: string }[];
+  @State(VQBModule) customRetrieveDomainName?: (domain: Reference) => string;
 
   @Prop(Boolean)
   readonly isFirst!: boolean;
@@ -135,9 +136,10 @@ export default class Step extends Vue {
 
   get stepName(): string {
     // enable to retrieve the related name of a query referenced behind an uid
-    return humanReadableLabel(this.step, (domain: string | ReferenceToExternalQuery) =>
-      retrieveDomainName(domain, this.availableDomains),
-    );
+    return humanReadableLabel(this.step, (domain: Reference) => {
+      const customDomainName = this.customRetrieveDomainName?.(domain);
+      return customDomainName ?? retrieveDomainName(domain, this.availableDomains);
+    });
   }
 
   get canConfigurePreviewSourceSubset(): boolean {
