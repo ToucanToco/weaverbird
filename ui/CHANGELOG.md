@@ -2,10 +2,13 @@
 
 ## Unreleased
 
+## [0.103.0] - 2023-06-29
+
 ### Changed
 
 - Support if pipeline references has moved form front-end to back-end.
   This means the front-end does not need to know all the available pipelines contents anymore (only their name/uids).
+- Add unjoinableDomains store state property, that can be used to disabled specific domains options in append and join steps.
 
 ## [0.102.1] - 2023-05-09
 
@@ -1482,6 +1485,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
+[0.103.0]: https://github.com/ToucanToco/weaverbird/compare/v0.102.1...v0.103.0
 [0.102.1]: https://github.com/ToucanToco/weaverbird/compare/v0.102.0...v0.102.1
 [0.102.0]: https://github.com/ToucanToco/weaverbird/compare/v0.101.1...v0.102.0
 [0.101.1]: https://github.com/ToucanToco/weaverbird/compare/v0.101.0...v0.101.1
