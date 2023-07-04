@@ -913,6 +913,7 @@ export default defineComponent({
     const collections = await backendService.listCollections();
     this.store.setDomains({ domains: collections });
     this.store.setAvailableDomains({ availableDomains: collections.map(d => ({ name: d, uid: d })) });
+    this.store.setUnjoinableDomains({ unjoinableDomains: [{ name: collections[0], uid: collections[0] }] });
     this.store.updateDataset();
   },
   computed: {
