@@ -131,11 +131,15 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
   }
 
   get options(): object[] {
-    return this.availableDomains.map((d) => ({
-      label: d.name,
-      trackBy: { type: 'ref', uid: d.uid },
-      $isDisabled: !!this.unjoinableDomains.find((domain) => domain.uid === d.uid),
-    }));
+    return this.availableDomains.map((d) => {
+      const isDisabled = !!this.unjoinableDomains.find((domain) => domain.uid === d.uid);
+      return {
+        label: d.name,
+        trackBy: { type: 'ref', uid: d.uid },
+        $isDisabled: isDisabled,
+        tooltip: isDisabled ? 'This dataset cannot be combined with the actual one' : '',
+      }
+    });
   }
 
   rightColumnNames: string[] | null | undefined = null;
