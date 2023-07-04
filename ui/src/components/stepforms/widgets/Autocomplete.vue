@@ -15,6 +15,7 @@
     >
       <multiselect
         :value="value"
+        :class="{ 'widget-autocomplete__multiselect--with-example': withExample }"
         :options="options"
         :placeholder="placeholder"
         :allow-empty="false"
@@ -29,7 +30,14 @@
           <span class="option__title">{{ props.option.label }}</span>
         </template>
         <template v-if="options[0] && options[0].label" slot="option" slot-scope="props">
-          <div class="option__container" :title="props.option.tooltip">
+          <div
+            class="option__container"
+            :class="{
+              'option__container--disabled': props.option.disabled,
+            }"
+            :title="props.option.tooltip"
+            @click="onOptionClick($event, props.option.disabled)"
+          >
             <div class="option__title" :title="props.option.label">{{ props.option.label }}</div>
             <!-- To display an example - e.g. "Wed Jan 04 2023" for "Today" label -
                 you should provide a 'example' key in the options -->
@@ -99,6 +107,10 @@ export default class AutocompleteWidget extends FormWidget {
 
   updateValue(newValue?: string | object) {
     this.$emit('input', newValue);
+  }
+
+  onOptionClick(e: Event, disabled?: boolean) {
+    if (disabled) e.stopPropagation();
   }
 }
 </script>
@@ -212,5 +224,30 @@ export default class AutocompleteWidget extends FormWidget {
 
 .option__example {
   font-style: italic;
+}
+
+.widget-autocomplete__multiselect--with-example {
+  .multiselect__option {
+    display: flex;
+    padding: 0;
+  }
+
+  .option__container {
+    padding: 10px;
+    align-items: center;
+    width: 100%;
+  }
+
+  .option__container--disabled {
+    &,
+    &:hover {
+      background: #ededed;
+      color: #a6a6a6;
+    }
+    cursor: not-allowed;
+    .option__title {
+      pointer-events: none;
+    }
+  }
 }
 </style>

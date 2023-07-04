@@ -16,6 +16,7 @@
       :errors="errors"
       track-by="trackBy"
       label="label"
+      with-example
     />
     <StepFormButtonbar />
   </div>
@@ -84,9 +85,9 @@ export default class AppendStepForm extends BaseStepForm<AppendStep> {
       return {
         label: d.name,
         trackBy: { type: 'ref', uid: d.uid },
-        $isDisabled: isDisabled,
+        disabled: isDisabled,
         tooltip: isDisabled ? 'This dataset cannot be combined with the actual one' : '',
-      }
+      };
     });
   }
 }
