@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.105.0] - 2023-07-06
+
 ### Added
 - Join/Append steps: add a tooltip to explain disabled dataset options
 
@@ -1493,6 +1495,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
+[0.105.0]: https://github.com/ToucanToco/weaverbird/compare/v0.104.0...v0.105.0
 [0.104.0]: https://github.com/ToucanToco/weaverbird/compare/v0.103.0...v0.104.0
 [0.103.0]: https://github.com/ToucanToco/weaverbird/compare/v0.102.1...v0.103.0
 [0.102.1]: https://github.com/ToucanToco/weaverbird/compare/v0.102.0...v0.102.1
