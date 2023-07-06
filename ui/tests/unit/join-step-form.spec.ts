@@ -42,7 +42,7 @@ describe('join Step Form', () => {
       const wrapper = runner.shallowMount(initialState);
       const widgetMultiselect = wrapper.find('autocompletewidget-stub');
       expect(widgetMultiselect.props('options')).toEqual([
-        { trackBy: { type: 'ref', uid: '1' }, label: 'dataset1', disabled: false, tooltip: '' },
+        { trackBy: { type: 'ref', uid: '1' }, label: 'dataset1' },
         {
           trackBy: { type: 'ref', uid: '2' },
           label: 'dataset2',

@@ -136,8 +136,10 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
       return {
         label: d.name,
         trackBy: { type: 'ref', uid: d.uid },
-        disabled: isDisabled,
-        tooltip: isDisabled ? 'This dataset cannot be combined with the actual one' : '',
+        ...(isDisabled && {
+          disabled: true,
+          tooltip: 'This dataset cannot be combined with the actual one',
+        }),
       };
     });
   }
