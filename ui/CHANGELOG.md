@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Added
+- Join/Append steps: add a tooltip to explain disabled dataset options
+
 ## [0.104.0] - 2023-06-30
 
 ### Changed

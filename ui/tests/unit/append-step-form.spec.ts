@@ -64,8 +64,13 @@ describe('Append Step Form', () => {
     const wrapper = runner.shallowMount(initialState);
     const widgetMultiselect = wrapper.find('multiselectwidget-stub');
     expect(widgetMultiselect.props('options')).toEqual([
-      { trackBy: { type: 'ref', uid: '1' }, label: 'dataset1', $isDisabled: false },
-      { trackBy: { type: 'ref', uid: '2' }, label: 'dataset2', $isDisabled: true },
+      { trackBy: { type: 'ref', uid: '1' }, label: 'dataset1' },
+      {
+        trackBy: { type: 'ref', uid: '2' },
+        label: 'dataset2',
+        disabled: true,
+        tooltip: 'This dataset cannot be combined with the actual one',
+      },
     ]);
     expect(widgetMultiselect.props('trackBy')).toEqual('trackBy');
     expect(widgetMultiselect.props('label')).toEqual('label');

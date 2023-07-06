@@ -16,6 +16,7 @@
       :errors="errors"
       track-by="trackBy"
       label="label"
+      with-example
     />
     <StepFormButtonbar />
   </div>
@@ -79,11 +80,17 @@ export default class AppendStepForm extends BaseStepForm<AppendStep> {
   }
 
   get options(): DropdownOption[] {
-    return this.availableDomains.map((d) => ({
-      label: d.name,
-      trackBy: { type: 'ref', uid: d.uid },
-      $isDisabled: !!this.unjoinableDomains.find((domain) => domain.uid === d.uid),
-    }));
+    return this.availableDomains.map((d) => {
+      const isDisabled = !!this.unjoinableDomains.find((domain) => domain.uid === d.uid);
+      return {
+        label: d.name,
+        trackBy: { type: 'ref', uid: d.uid },
+        ...(isDisabled && {
+          disabled: true,
+          tooltip: 'This dataset cannot be combined with the actual one',
+        }),
+      };
+    });
   }
 }
 </script>

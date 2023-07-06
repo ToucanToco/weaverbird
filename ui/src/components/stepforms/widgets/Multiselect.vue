@@ -14,6 +14,7 @@
     >
       <Multiselect
         class="widget-multiselect__multiselect"
+        :class="{ 'widget-multiselect__multiselect--with-example': withExample }"
         v-model="editedValue"
         :options="options"
         :placeholder="placeholder"
@@ -27,7 +28,14 @@
       >
         <!-- If you want to use those templates you should provide a 'label' and 'example' key in the options-->
         <template v-if="withExample" slot="option" slot-scope="props">
-          <div class="option__container" :title="props.option.tooltip">
+          <div
+            class="option__container"
+            :class="{
+              'option__container--disabled': props.option.disabled,
+            }"
+            :title="props.option.tooltip"
+            @click="onOptionClick($event, props.option.disabled)"
+          >
             <div class="option__title">{{ customLabel(props.option) }}</div>
             <div class="option__example">{{ props.option.example }}</div>
           </div>
@@ -197,6 +205,10 @@ export default class MultiselectWidget extends FormWidget {
   resetEditedAdvancedVariable() {
     this.editedAdvancedVariable = '';
   }
+
+  onOptionClick(e: Event, disabled?: boolean) {
+    if (disabled) e.stopPropagation();
+  }
 }
 </script>
 
@@ -326,6 +338,31 @@ export default class MultiselectWidget extends FormWidget {
   ::v-deep .widget-variable__tag-close {
     font-size: 10px;
     padding: 0.6em 0.5em;
+  }
+}
+
+.widget-multiselect__multiselect--with-example {
+  ::v-deep .multiselect__option {
+    display: flex;
+    padding: 0;
+  }
+
+  .option__container {
+    padding: 10px;
+    align-items: center;
+    width: 100%;
+  }
+
+  .option__container--disabled {
+    &,
+    &:hover {
+      background: #ededed;
+      color: #a6a6a6;
+    }
+    cursor: not-allowed;
+    .option__title {
+      pointer-events: none;
+    }
   }
 }
 </style>
