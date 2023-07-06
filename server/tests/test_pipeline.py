@@ -265,6 +265,7 @@ def test_skip_void_parameter_from_variables_for_mongo_steps():
         [
             {
                 "$match": {
+                    "$ne": None,
                     "$and": [
                         {"$or": [{"property2": "value2"}, {"property3": {}}]},
                         {"$nor": [{"property4": {}}, {"property5": {}}]},
@@ -284,11 +285,15 @@ def test_skip_void_parameter_from_variables_for_mongo_steps():
                 }
             }
         ]
-    ) == [{"$match": {"$and": [{"$or": [{"property2": "value2"}]}]}}]
+    ) == [{"$match": {"$and": [{"$or": [{"property2": "value2"}]}], "$ne": None}}]
 
     assert remove_void_conditions_from_mongo_steps(
         [
-            {"$match": {}},
+            {
+                "$match": {
+                    "$eq": None,
+                }
+            },
             {"$group": {"_id": None, "_vqbPipelineInline": {"$push": "$$ROOT"}}},
             {
                 "$lookup": {
@@ -309,7 +314,7 @@ def test_skip_void_parameter_from_variables_for_mongo_steps():
             {"$project": {"_id": 0}},
         ]
     ) == [
-        {"$match": {}},
+        {"$match": {"$eq": None}},
         {"$group": {"_id": None, "_vqbPipelineInline": {"$push": "$$ROOT"}}},
         {"$lookup": {"as": "_vqbPipelineToAppend_0", "from": "slide_data-append", "pipeline": []}},
         {

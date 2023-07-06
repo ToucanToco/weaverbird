@@ -194,6 +194,8 @@ PipelineStepWithVariables = Annotated[
 
 VOID_REPR = "__VOID__"
 EXCLUDE_CLEANING_FOR = (
+    "$ne",  # for isnotnull (None -> null for mongo)
+    "$eq",  # for isnull (None -> null for mongo)
     "pipeline",
     "localField",
     "foreignField",
@@ -371,7 +373,8 @@ def _sanitize_query_matches(query: dict | list[dict]) -> Any:
 def remove_void_conditions_from_mongo_steps(
     mongo_steps: dict | list[dict],
 ) -> dict | list[dict]:
-    return _sanitize_query_matches(_clean_mongo_steps(mongo_steps) or [])
+    mongo_query = _sanitize_query_matches(_clean_mongo_steps(mongo_steps) or [])
+    return mongo_query
 
 
 # TODO move to a dedicated variables module
