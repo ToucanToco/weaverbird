@@ -66,9 +66,9 @@ def build_match_tree(condition: Condition, parent_operator="and") -> dict:
 
     elif isinstance(condition, MatchCondition):
         if condition.operator == "matches":
-            return {condition.column: {"$regex": condition.value}}
+            return {condition.column: {"$regex": condition.value, "$options": "i"}}
         elif condition.operator == "notmatches":
-            return {condition.column: {"$not": {"$regex": condition.value}}}
+            return {condition.column: {"$not": {"$regex": condition.value, "$options": "i"}}}
 
     # dates
     elif isinstance(condition, DateBoundCondition):

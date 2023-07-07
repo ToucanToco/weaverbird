@@ -1,5 +1,9 @@
 # Changelog (weaverbird python package)
 
+### Changed
+
+- Fix[Mongo]: Add case insensitive on `matches/notmatches` mongo filter step.
+
 ## [0.33.0] - 2023-06-29
 
 ### Changed
