@@ -1,5 +1,7 @@
 # Changelog (weaverbird python package)
 
+## [0.33.2] - 2023-07-07
+
 ### Fixed
 
 - Fix[Mongo]: Ignore in the mongo rank step some specific keys that define it and should be considered as 'None'.
