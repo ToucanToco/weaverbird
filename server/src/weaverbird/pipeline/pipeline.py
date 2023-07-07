@@ -194,7 +194,9 @@ PipelineStepWithVariables = Annotated[
 
 VOID_REPR = "__VOID__"
 EXCLUDE_CLEANING_FOR = (
-    "$ne",  # for isnotnull (None -> null for mongo)
+    "prevValue",  # for the rank step, this needs to be kept
+    "prevRank",  # for the rank step, this needs to be kept
+    "$ne",  # for isnotnull (None -> null for mongo),
     "$eq",  # for isnull (None -> null for mongo)
     "pipeline",
     "localField",

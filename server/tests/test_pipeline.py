@@ -328,3 +328,159 @@ def test_skip_void_parameter_from_variables_for_mongo_steps():
         {"$replaceRoot": {"newRoot": "$_vqbPipelinesUnion"}},
         {"$project": {"_id": 0}},
     ]
+
+    # to cover the rank query that have sometimes None values for prevRank
+    assert remove_void_conditions_from_mongo_steps(
+        [
+            {"$match": {"domain": "cars"}},
+            {"$sort": {"color": 1}},
+            {"$group": {"_id": None, "_vqbArray": {"$push": "$$ROOT"}}},
+            {
+                "$project": {
+                    "_vqbSortedArray": {
+                        "$let": {
+                            "vars": {
+                                "reducedArrayInObj": {
+                                    "$reduce": {
+                                        "input": "$_vqbArray",
+                                        "initialValue": {
+                                            "a": [],
+                                            "order": 0,
+                                            "prevValue": None,
+                                            "prevRank": None,
+                                        },
+                                        "in": {
+                                            "$let": {
+                                                "vars": {
+                                                    "order": {
+                                                        "$cond": [
+                                                            {
+                                                                "$ne": [
+                                                                    "$$this.color",
+                                                                    "$$value.prevValue",
+                                                                ]
+                                                            },
+                                                            {"$add": ["$$value.order", 1]},
+                                                            "$$value.order",
+                                                        ]
+                                                    },
+                                                    "rank": {
+                                                        "$cond": [
+                                                            {
+                                                                "$ne": [
+                                                                    "$$this.color",
+                                                                    "$$value.prevValue",
+                                                                ]
+                                                            },
+                                                            {"$add": ["$$value.order", 1]},
+                                                            "$$value.prevRank",
+                                                        ]
+                                                    },
+                                                },
+                                                "in": {
+                                                    "a": {
+                                                        "$concatArrays": [
+                                                            "$$value.a",
+                                                            [
+                                                                {
+                                                                    "$mergeObjects": [
+                                                                        "$$this",
+                                                                        {"color-rank": "$$rank"},
+                                                                    ]
+                                                                }
+                                                            ],
+                                                        ]
+                                                    },
+                                                    "order": "$$order",
+                                                    "prevValue": "$$this.color",
+                                                    "prevRank": "$$rank",
+                                                },
+                                            }
+                                        },
+                                    }
+                                }
+                            },
+                            "in": "$$reducedArrayInObj.a",
+                        }
+                    }
+                }
+            },
+            {"$unwind": "$_vqbSortedArray"},
+            {"$replaceRoot": {"newRoot": "$_vqbSortedArray"}},
+        ]
+    ) == [
+        {"$match": {"domain": "cars"}},
+        {"$sort": {"color": 1}},
+        {"$group": {"_id": None, "_vqbArray": {"$push": "$$ROOT"}}},
+        {
+            "$project": {
+                "_vqbSortedArray": {
+                    "$let": {
+                        "in": "$$reducedArrayInObj.a",
+                        "vars": {
+                            "reducedArrayInObj": {
+                                "$reduce": {
+                                    "in": {
+                                        "$let": {
+                                            "in": {
+                                                "a": {
+                                                    "$concatArrays": [
+                                                        "$$value.a",
+                                                        [
+                                                            {
+                                                                "$mergeObjects": [
+                                                                    "$$this",
+                                                                    {"color-rank": "$$rank"},
+                                                                ]
+                                                            }
+                                                        ],
+                                                    ]
+                                                },
+                                                "order": "$$order",
+                                                "prevRank": "$$rank",
+                                                "prevValue": "$$this.color",
+                                            },
+                                            "vars": {
+                                                "order": {
+                                                    "$cond": [
+                                                        {
+                                                            "$ne": [
+                                                                "$$this.color",
+                                                                "$$value.prevValue",
+                                                            ]
+                                                        },
+                                                        {"$add": ["$$value.order", 1]},
+                                                        "$$value.order",
+                                                    ]
+                                                },
+                                                "rank": {
+                                                    "$cond": [
+                                                        {
+                                                            "$ne": [
+                                                                "$$this.color",
+                                                                "$$value.prevValue",
+                                                            ]
+                                                        },
+                                                        {"$add": ["$$value.order", 1]},
+                                                        "$$value.prevRank",
+                                                    ]
+                                                },
+                                            },
+                                        }
+                                    },
+                                    "initialValue": {
+                                        "order": 0,
+                                        "prevRank": None,
+                                        "prevValue": None,
+                                    },
+                                    "input": "$_vqbArray",
+                                }
+                            }
+                        },
+                    }
+                }
+            }
+        },
+        {"$unwind": "$_vqbSortedArray"},
+        {"$replaceRoot": {"newRoot": "$_vqbSortedArray"}},
+    ]
