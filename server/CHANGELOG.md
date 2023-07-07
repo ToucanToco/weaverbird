@@ -3,6 +3,7 @@
 ### Changed
 
 - Fix[Mongo]: Add case insensitive on `matches/notmatches` mongo filter step.
+- Fix[Mongo]: ignore `$ne` and `$eq` when removing `__VOID__` values from a mongo pipeline to keep mongo filter steps for `isnull` and `isnotnull`.
 
 ## [0.33.0] - 2023-06-29
 
