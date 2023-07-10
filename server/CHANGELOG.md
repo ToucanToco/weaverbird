@@ -1,5 +1,12 @@
 # Changelog (weaverbird python package)
 
+## [0.34.0] - 2023-07-10
+
+### Changed
+
+- References can now be unresolved (None). Append steps can skip unresolved references, while Join and Domain steps
+  raises an error `ReferenceUnresolved`.
+
 ## [0.33.2] - 2023-07-07
 
 ### Fixed
