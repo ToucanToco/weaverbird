@@ -26,7 +26,7 @@ def unused_port():
 
 @pytest.fixture(scope="session")
 def mongo_version():
-    return "5"
+    return "6"
 
 
 @pytest.fixture(scope="session")
