@@ -23,7 +23,7 @@ ReferenceResolver = Callable[[Reference], Awaitable[PipelineOrDomainName | None]
 async def resolve_if_reference(
     reference_resolver: ReferenceResolver,
     pipeline_or_domain_name_or_ref: PipelineOrDomainNameOrReference,
-) -> str | list[dict] | None | Any:
+) -> PipelineOrDomainName | None:
     from weaverbird.pipeline.references import PipelineWithRefs
 
     if isinstance(pipeline_or_domain_name_or_ref, Reference):
