@@ -1,4 +1,4 @@
-from typing import Any, Awaitable, Callable, Literal
+from typing import Awaitable, Callable, Literal
 
 from pydantic import BaseModel
 
