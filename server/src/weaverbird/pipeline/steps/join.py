@@ -38,7 +38,9 @@ class JoinStepWithRef(BaseJoinStep):
     ) -> JoinStepWithVariable | None:
         right_pipeline = await resolve_if_reference(reference_resolver, self.right_pipeline)
         if right_pipeline is None:
-            return None  # skip step
+            from ..references import ReferenceUnresolved
+
+            raise ReferenceUnresolved()
         return JoinStepWithVariable(
             name=self.name,
             type=self.type,

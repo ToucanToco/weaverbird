@@ -236,7 +236,7 @@ async def test_resolve_references_unresolved_append_subpipeline_error():
 @pytest.mark.asyncio
 async def test_resolve_references_unresolved_join():
     """
-    It should skip the step if the joined pipeline is not resolved
+    It should raise an error if the joined pipeline is not resolved
     """
     pipeline_with_refs = PipelineWithRefs(
         steps=[
@@ -249,18 +249,14 @@ async def test_resolve_references_unresolved_join():
             TextStep(new_column="text", text="Lorem ipsum"),
         ]
     )
-    assert await pipeline_with_refs.resolve_references(reference_resolver) == PipelineWithVariables(
-        steps=[
-            DomainStep(domain="source"),
-            TextStep(new_column="text", text="Lorem ipsum"),
-        ]
-    )
+    with pytest.raises(ReferenceUnresolved):
+        assert await pipeline_with_refs.resolve_references(reference_resolver)
 
 
 @pytest.mark.asyncio
 async def test_resolve_references_unresolved_join_subpipeline_error():
     """
-    It should skip the step if the pipeline triggers a resolution error
+    It should raise an error if the joined pipeline raises a resolution error
     """
     pipeline_with_refs = PipelineWithRefs(
         steps=[
@@ -273,9 +269,5 @@ async def test_resolve_references_unresolved_join_subpipeline_error():
             TextStep(new_column="text", text="Lorem ipsum"),
         ]
     )
-    assert await pipeline_with_refs.resolve_references(reference_resolver) == PipelineWithVariables(
-        steps=[
-            DomainStep(domain="source"),
-            TextStep(new_column="text", text="Lorem ipsum"),
-        ]
-    )
+    with pytest.raises(ReferenceUnresolved):
+        await pipeline_with_refs.resolve_references(reference_resolver)
