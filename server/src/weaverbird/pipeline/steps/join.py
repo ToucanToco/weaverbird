@@ -1,4 +1,4 @@
-from typing import Awaitable, Callable, Literal
+from typing import Literal
 
 from pydantic import Field
 
@@ -9,7 +9,7 @@ from weaverbird.pipeline.types import ColumnName
 from .utils.combination import (
     PipelineOrDomainName,
     PipelineOrDomainNameOrReference,
-    Reference,
+    ReferenceResolver,
     resolve_if_reference,
 )
 
@@ -34,11 +34,14 @@ class JoinStepWithRef(BaseJoinStep):
     right_pipeline: PipelineOrDomainNameOrReference
 
     async def resolve_references(
-        self, reference_resolver: Callable[[Reference], Awaitable[PipelineOrDomainName]]
-    ) -> JoinStepWithVariable:
+        self, reference_resolver: ReferenceResolver
+    ) -> JoinStepWithVariable | None:
+        right_pipeline = await resolve_if_reference(reference_resolver, self.right_pipeline)
+        if right_pipeline is None:
+            return None  # skip step
         return JoinStepWithVariable(
             name=self.name,
             type=self.type,
             on=self.on,
-            right_pipeline=await resolve_if_reference(reference_resolver, self.right_pipeline),
+            right_pipeline=right_pipeline,
         )
