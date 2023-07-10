@@ -35,6 +35,10 @@ class DomainStepWithRef(BaseDomainStep):
         resolved = await resolve_if_reference(reference_resolver, self.domain)
         if isinstance(resolved, list):
             return await PipelineWithRefs(steps=resolved).resolve_references(reference_resolver)
+        elif resolved is None:
+            from weaverbird.pipeline.references import ReferenceUnresolved
+
+            raise ReferenceUnresolved()
         else:
             return DomainStep(
                 name=self.name,

@@ -22,7 +22,7 @@ class PipelineWithRefs(BaseModel):
 
     async def resolve_references(
         self, reference_resolver: ReferenceResolver
-    ) -> PipelineWithVariables:
+    ) -> PipelineWithVariables | None:
         """
         Walk the pipeline steps and replace any reference by its corresponding pipeline.
         The sub-pipelines added should also be handled, so that they will be no references anymore in the result.
@@ -36,7 +36,13 @@ class PipelineWithRefs(BaseModel):
             )
             if isinstance(resolved_step, PipelineWithVariables):
                 resolved_steps.extend(resolved_step.steps)
-            else:
+            elif resolved_step is not None:  # None means the step should be skipped
                 resolved_steps.append(resolved_step)
 
         return PipelineWithVariables(steps=resolved_steps)
+
+
+class ReferenceUnresolved(Exception):
+    """
+    Raised when a mandatory reference is not resolved
+    """
