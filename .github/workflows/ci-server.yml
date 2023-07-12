@@ -1,19 +1,7 @@
 name: CI (server)
 
-on:
-  # Trigger analysis when pushing in master or pull requests, and when creating
-  # a pull request, only if `server/` files are modified
-  push:
-    branches:
-      - master
-    paths:
-      - 'server/**'
-      - '.github/workflows/ci-server.yml'
-  pull_request:
-    types: [opened, synchronize, reopened]
-    paths:
-      - 'server/**'
-      - '.github/workflows/ci-server.yml'
+# Temporary for the CI to test the bump of pydantic
+on: [push]
 
 jobs:
   run:
@@ -22,6 +10,7 @@ jobs:
       fail-fast: true
       matrix:
         python-version: ['3.10', '3.11']
+        pydantic-version: ['^1.10', '^2.0']
 
     defaults:
       run:
@@ -39,6 +28,14 @@ jobs:
       run: |
         pip install poetry
         poetry config virtualenvs.create false
+
+    - name: Update Pydantic version on the toml & lock
+      run: |
+        # we update the pydantic version corresponding to the matrix
+        sed -i "s/pydantic = \".*\"/pydantic = \"${PYDANTIC_VERSION}\"/" pyproject.toml
+        poetry lock --no-update
+      env:
+        PYDANTIC_VERSION: ${{ matrix.pydantic-version }}
 
     - name: Install dependencies
       run: make install-dev

@@ -15,7 +15,7 @@ files = [
 name = "aiohttp"
 version = "3.8.4"
 description = "Async http client/server framework (asyncio)"
-optional = false
+optional = true
 python-versions = ">=3.6"
 files = [
     {file = "aiohttp-3.8.4-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:5ce45967538fb747370308d3145aa68a074bdecb4f3a300869590f725ced69c1"},
@@ -123,7 +123,7 @@ speedups = ["Brotli", "aiodns", "cchardet"]
 name = "aiosignal"
 version = "1.3.1"
 description = "aiosignal: a list of registered asynchronous callbacks"
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "aiosignal-1.3.1-py3-none-any.whl", hash = "sha256:f8376fb07dd1e86a584e4fcdec80b36b7f81aac666ebc724e2c090300dd83b17"},
@@ -148,7 +148,7 @@ files = [
 name = "async-timeout"
 version = "4.0.2"
 description = "Timeout context manager for asyncio programs"
-optional = false
+optional = true
 python-versions = ">=3.6"
 files = [
     {file = "async-timeout-4.0.2.tar.gz", hash = "sha256:2163e1640ddb52b7a8c80d0a67a08587e5d245cc9c553a74a847056bc2976b15"},
@@ -159,7 +159,7 @@ files = [
 name = "attrs"
 version = "22.2.0"
 description = "Classes Without Boilerplate"
-optional = false
+optional = true
 python-versions = ">=3.6"
 files = [
     {file = "attrs-22.2.0-py3-none-any.whl", hash = "sha256:29e95c7f6778868dbd49170f98f8818f78f3dc5e0e37c0b1f474e3561b240836"},
@@ -177,7 +177,7 @@ tests-no-zope = ["cloudpickle", "cloudpickle", "hypothesis", "hypothesis", "mypy
 name = "authlib"
 version = "1.2.0"
 description = "The ultimate Python library in building OAuth and OpenID Connect servers and clients."
-optional = false
+optional = true
 python-versions = "*"
 files = [
     {file = "Authlib-1.2.0-py2.py3-none-any.whl", hash = "sha256:4ddf4fd6cfa75c9a460b361d4bd9dac71ffda0be879dbe4292a02e92349ad55a"},
@@ -191,7 +191,7 @@ cryptography = ">=3.2"
 name = "awswrangler"
 version = "3.0.0"
 description = "Pandas on AWS."
-optional = false
+optional = true
 python-versions = ">=3.8,<4.0"
 files = [
     {file = "awswrangler-3.0.0-py3-none-any.whl", hash = "sha256:cccab37dc37dfe0f4a19e00e836ba734601ccb73a114fabdff53cb60e70f8c2c"},
@@ -226,7 +226,7 @@ sqlserver = ["pyodbc (>=4.0.0,<5.0.0)"]
 name = "beautifulsoup4"
 version = "4.11.2"
 description = "Screen-scraping library"
-optional = false
+optional = true
 python-versions = ">=3.6.0"
 files = [
     {file = "beautifulsoup4-4.11.2-py3-none-any.whl", hash = "sha256:0e79446b10b3ecb499c1556f7e228a53e64a2bfcebd455f370d8927cb5b59e39"},
@@ -303,7 +303,7 @@ files = [
 name = "boto3"
 version = "1.26.85"
 description = "The AWS SDK for Python"
-optional = false
+optional = true
 python-versions = ">= 3.7"
 files = [
     {file = "boto3-1.26.85-py3-none-any.whl", hash = "sha256:9afe405c71bfd13fa958637caec9dc91f7009b221a7d87d4b067fa6f262aab67"},
@@ -322,7 +322,7 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 name = "botocore"
 version = "1.29.85"
 description = "Low-level, data-driven core of boto 3."
-optional = false
+optional = true
 python-versions = ">= 3.7"
 files = [
     {file = "botocore-1.29.85-py3-none-any.whl", hash = "sha256:1f2d1f7e3b41f8c9cc5576be16d86552a46724fd5d15f38a50c002a957ac43ff"},
@@ -341,7 +341,7 @@ crt = ["awscrt (==0.16.9)"]
 name = "cached-property"
 version = "1.5.2"
 description = "A decorator for caching properties in classes."
-optional = false
+optional = true
 python-versions = "*"
 files = [
     {file = "cached-property-1.5.2.tar.gz", hash = "sha256:9fa5755838eecbb2d234c3aa390bd80fbd3ac6b6869109bfc1b499f7bd89a130"},
@@ -352,7 +352,7 @@ files = [
 name = "cachetools"
 version = "5.3.0"
 description = "Extensible memoizing collections and decorators"
-optional = false
+optional = true
 python-versions = "~=3.7"
 files = [
     {file = "cachetools-5.3.0-py3-none-any.whl", hash = "sha256:429e1a1e845c008ea6c85aa35d4b98b65d6a9763eeef3e37e92728a12d1de9d4"},
@@ -634,7 +634,7 @@ tox = ["tox"]
 name = "db-dtypes"
 version = "1.0.5"
 description = "Pandas Data Types for SQL systems (BigQuery, Spanner)"
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "db-dtypes-1.0.5.tar.gz", hash = "sha256:ee68f30cbccf343124ef0abebc7f8cc9a74ef8ed7ee4ff61f586117e8040a9d6"},
@@ -692,7 +692,7 @@ ssh = ["paramiko (>=2.4.3)"]
 name = "engarde"
 version = "0.4.0"
 description = "A python package for defensive data analysis."
-optional = false
+optional = true
 python-versions = "*"
 files = [
     {file = "engarde-0.4.0-py2.py3-none-any.whl", hash = "sha256:a5aac1b991801df4484b35a53f911ecd341667dadeabe87ecde34001391b1c93"},
@@ -814,7 +814,7 @@ pyflakes = ">=3.0.0,<3.1.0"
 name = "frozenlist"
 version = "1.3.3"
 description = "A list-like structure which implements collections.abc.MutableSequence"
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "frozenlist-1.3.3-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:ff8bf625fe85e119553b5383ba0fb6aa3d0ec2ae980295aaefa552374926b3f4"},
@@ -915,7 +915,7 @@ shapely = ">=1.7.1"
 name = "google-api-core"
 version = "2.11.0"
 description = "Google API client core library"
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "google-api-core-2.11.0.tar.gz", hash = "sha256:4b9bb5d5a380a0befa0573b302651b8a9a89262c1730e37bf423cec511804c22"},
@@ -945,7 +945,7 @@ grpcio-gcp = ["grpcio-gcp (>=0.2.2,<1.0dev)"]
 name = "google-auth"
 version = "2.16.2"
 description = "Google Authentication Library"
-optional = false
+optional = true
 python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*"
 files = [
     {file = "google-auth-2.16.2.tar.gz", hash = "sha256:07e14f34ec288e3f33e00e2e3cc40c8942aa5d4ceac06256a28cd8e786591420"},
@@ -969,7 +969,7 @@ requests = ["requests (>=2.20.0,<3.0.0dev)"]
 name = "google-cloud-bigquery"
 version = "3.6.0"
 description = "Google BigQuery API client library"
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "google-cloud-bigquery-3.6.0.tar.gz", hash = "sha256:5886c14f29097158d59afa74a6732dbdd583e6ef30dc9934a56ad532906de356"},
@@ -1008,7 +1008,7 @@ tqdm = ["tqdm (>=4.7.4,<5.0.0dev)"]
 name = "google-cloud-bigquery-storage"
 version = "2.19.0"
 description = "Google Cloud Bigquery Storage API client library"
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "google-cloud-bigquery-storage-2.19.0.tar.gz", hash = "sha256:e5bb0ead3e0822bc4e9cf229bd1d13d4c38f19e50d53aa1d70ab3cd9a37c07c2"},
@@ -1032,7 +1032,7 @@ pyarrow = ["pyarrow (>=0.15.0)"]
 name = "google-cloud-core"
 version = "2.3.2"
 description = "Google Cloud API client core library"
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "google-cloud-core-2.3.2.tar.gz", hash = "sha256:b9529ee7047fd8d4bf4a2182de619154240df17fbe60ead399078c1ae152af9a"},
@@ -1050,7 +1050,7 @@ grpc = ["grpcio (>=1.38.0,<2.0dev)"]
 name = "google-crc32c"
 version = "1.5.0"
 description = "A python wrapper of the C library 'Google CRC32C'"
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "google-crc32c-1.5.0.tar.gz", hash = "sha256:89284716bc6a5a415d4eaa11b1726d2d60a0cd12aadf5439828353662ede9dd7"},
@@ -1130,7 +1130,7 @@ testing = ["pytest"]
 name = "google-resumable-media"
 version = "2.4.1"
 description = "Utilities for Google Media Downloads and Resumable Uploads"
-optional = false
+optional = true
 python-versions = ">= 3.7"
 files = [
     {file = "google-resumable-media-2.4.1.tar.gz", hash = "sha256:15b8a2e75df42dc6502d1306db0bce2647ba6013f9cd03b6e17368c0886ee90a"},
@@ -1148,7 +1148,7 @@ requests = ["requests (>=2.18.0,<3.0.0dev)"]
 name = "googleapis-common-protos"
 version = "1.58.0"
 description = "Common protobufs used in Google APIs"
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "googleapis-common-protos-1.58.0.tar.gz", hash = "sha256:c727251ec025947d545184ba17e3578840fc3a24a0516a020479edab660457df"},
@@ -1238,7 +1238,7 @@ test = ["objgraph", "psutil"]
 name = "grpcio"
 version = "1.51.3"
 description = "HTTP/2-based RPC framework"
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "grpcio-1.51.3-cp310-cp310-linux_armv7l.whl", hash = "sha256:f601aaeae18dab81930fb8d4f916b0da21e89bb4b5f7367ef793f46b4a76b7b0"},
@@ -1295,7 +1295,7 @@ protobuf = ["grpcio-tools (>=1.51.3)"]
 name = "grpcio-status"
 version = "1.51.3"
 description = "Status proto mapping for gRPC"
-optional = false
+optional = true
 python-versions = ">=3.6"
 files = [
     {file = "grpcio-status-1.51.3.tar.gz", hash = "sha256:71792c550356ba94e162c70818719ae6d67d960bdd03a9db5ff68faba2927f6c"},
@@ -1433,7 +1433,7 @@ files = [
 name = "jinja2"
 version = "3.1.2"
 description = "A very fast and expressive template engine."
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "Jinja2-3.1.2-py3-none-any.whl", hash = "sha256:6088930bfe239f0e6710546ab9c19c9ef35e29792895fed6e6e31a023a182a61"},
@@ -1450,7 +1450,7 @@ i18n = ["Babel (>=2.7)"]
 name = "jmespath"
 version = "1.0.1"
 description = "JSON Matching Expressions"
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "jmespath-1.0.1-py3-none-any.whl", hash = "sha256:02e2e4cc71b5bcab88332eebf907519190dd9e6e82107fa7f83b1003a6252980"},
@@ -1461,7 +1461,7 @@ files = [
 name = "joblib"
 version = "1.2.0"
 description = "Lightweight pipelining with Python functions"
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "joblib-1.2.0-py3-none-any.whl", hash = "sha256:091138ed78f800342968c523bdde947e7a305b8594b910a0fea2ab83c3c6d385"},
@@ -1472,7 +1472,7 @@ files = [
 name = "jq"
 version = "1.4.0"
 description = "jq is a lightweight and flexible JSON processor."
-optional = false
+optional = true
 python-versions = ">=3.5"
 files = [
     {file = "jq-1.4.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:8fd45a4b3d7b6cb1d8354c56eb505b6d0ff4ef5b0ac12341bb7b74459af4c245"},
@@ -1536,7 +1536,7 @@ files = [
 name = "lxml"
 version = "4.9.2"
 description = "Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API."
-optional = false
+optional = true
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, != 3.4.*"
 files = [
     {file = "lxml-4.9.2-cp27-cp27m-macosx_10_15_x86_64.whl", hash = "sha256:76cf573e5a365e790396a5cc2b909812633409306c6531a6877c59061e42c4f2"},
@@ -1628,7 +1628,7 @@ source = ["Cython (>=0.29.7)"]
 name = "markupsafe"
 version = "2.1.2"
 description = "Safely add untrusted strings to HTML/XML markup."
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "MarkupSafe-2.1.2-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:665a36ae6f8f20a4676b53224e33d456a6f5a72657d9c83c2aa00765072f31f7"},
@@ -1698,7 +1698,7 @@ files = [
 name = "multidict"
 version = "6.0.4"
 description = "multidict implementation"
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "multidict-6.0.4-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:0b1a97283e0c85772d613878028fec909f003993e1007eafa715b24b377cb9b8"},
@@ -1856,7 +1856,7 @@ files = [
 name = "numpy"
 version = "1.24.2"
 description = "Fundamental package for array computing in Python"
-optional = false
+optional = true
 python-versions = ">=3.8"
 files = [
     {file = "numpy-1.24.2-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:eef70b4fc1e872ebddc38cddacc87c19a3709c0e3e5d20bf3954c147b1dd941d"},
@@ -1918,7 +1918,7 @@ files = [
 name = "pandas"
 version = "1.5.3"
 description = "Powerful data structures for data analysis, time series, and statistics"
-optional = false
+optional = true
 python-versions = ">=3.8"
 files = [
     {file = "pandas-1.5.3-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:3749077d86e3a2f0ed51367f30bf5b82e131cc0f14260c4d3e499186fccc4406"},
@@ -2017,7 +2017,7 @@ files = [
 name = "proto-plus"
 version = "1.22.2"
 description = "Beautiful, Pythonic protocol buffers."
-optional = false
+optional = true
 python-versions = ">=3.6"
 files = [
     {file = "proto-plus-1.22.2.tar.gz", hash = "sha256:0e8cda3d5a634d9895b75c573c9352c16486cb75deb0e078b5fda34db4243165"},
@@ -2034,7 +2034,7 @@ testing = ["google-api-core[grpc] (>=1.31.5)"]
 name = "protobuf"
 version = "4.22.0"
 description = ""
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "protobuf-4.22.0-cp310-abi3-win32.whl", hash = "sha256:b2fea9dc8e3c0f32c38124790ef16cba2ee0628fe2022a52e435e1117bfef9b1"},
@@ -2112,7 +2112,7 @@ files = [
 name = "pyarrow"
 version = "10.0.1"
 description = "Python library for Apache Arrow"
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "pyarrow-10.0.1-cp310-cp310-macosx_10_14_x86_64.whl", hash = "sha256:e00174764a8b4e9d8d5909b6d19ee0c217a6cf0232c5682e31fdfbd5a9f0ae52"},
@@ -2149,7 +2149,7 @@ numpy = ">=1.16.6"
 name = "pyasn1"
 version = "0.4.8"
 description = "ASN.1 types and codecs"
-optional = false
+optional = true
 python-versions = "*"
 files = [
     {file = "pyasn1-0.4.8-py2.py3-none-any.whl", hash = "sha256:39c7e2ec30515947ff4e87fb6f456dfc6e84857d34be479c9d4a4ba4bf46aa5d"},
@@ -2160,7 +2160,7 @@ files = [
 name = "pyasn1-modules"
 version = "0.2.8"
 description = "A collection of ASN.1-based protocols modules."
-optional = false
+optional = true
 python-versions = "*"
 files = [
     {file = "pyasn1-modules-0.2.8.tar.gz", hash = "sha256:905f84c712230b2c592c19470d3ca8d552de726050d1d1716282a1f6146be65e"},
@@ -2617,7 +2617,7 @@ testing = ["filelock"]
 name = "python-dateutil"
 version = "2.8.2"
 description = "Extensions to the standard Python datetime module"
-optional = false
+optional = true
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
 files = [
     {file = "python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86"},
@@ -2631,7 +2631,7 @@ six = ">=1.5"
 name = "python-slugify"
 version = "5.0.2"
 description = "A Python Slugify application that handles Unicode"
-optional = false
+optional = true
 python-versions = ">=3.6"
 files = [
     {file = "python-slugify-5.0.2.tar.gz", hash = "sha256:f13383a0b9fcbe649a1892b9c8eb4f8eab1d6d84b84bb7a624317afa98159cab"},
@@ -2770,7 +2770,7 @@ quart = ">=0.15"
 name = "redshift-connector"
 version = "2.0.910"
 description = "Redshift interface library"
-optional = false
+optional = true
 python-versions = ">=3.6"
 files = [
     {file = "redshift_connector-2.0.910-py3-none-any.whl", hash = "sha256:8f5ca07f2bec4a97e7a601ac7f0de9b47495298973c8e4d7f219f995b5682e23"},
@@ -2815,7 +2815,7 @@ use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 name = "rsa"
 version = "4.9"
 description = "Pure-Python RSA implementation"
-optional = false
+optional = true
 python-versions = ">=3.6,<4"
 files = [
     {file = "rsa-4.9-py3-none-any.whl", hash = "sha256:90260d9058e514786967344d0ef75fa8727eed8a7d2e43ce9f4bcf1b536174f7"},
@@ -2829,7 +2829,7 @@ pyasn1 = ">=0.1.3"
 name = "s3transfer"
 version = "0.6.0"
 description = "An Amazon S3 Transfer Manager"
-optional = false
+optional = true
 python-versions = ">= 3.7"
 files = [
     {file = "s3transfer-0.6.0-py3-none-any.whl", hash = "sha256:06176b74f3a15f61f1b4f25a1fc29a4429040b7647133a463da8fa5bd28d5ecd"},
@@ -2846,7 +2846,7 @@ crt = ["botocore[crt] (>=1.20.29,<2.0a.0)"]
 name = "scramp"
 version = "1.4.4"
 description = "An implementation of the SCRAM protocol."
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "scramp-1.4.4-py3-none-any.whl", hash = "sha256:b142312df7c2977241d951318b7ee923d6b7a4f75ba0f05b621ece1ed616faa3"},
@@ -2860,7 +2860,7 @@ asn1crypto = ">=1.5.1"
 name = "setuptools"
 version = "67.5.1"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "setuptools-67.5.1-py3-none-any.whl", hash = "sha256:1c39d42bda4cb89f7fdcad52b6762e3c309ec8f8715b27c684176b7d71283242"},
@@ -2930,7 +2930,7 @@ test = ["pytest", "pytest-cov"]
 name = "six"
 version = "1.16.0"
 description = "Python 2 and 3 compatibility utilities"
-optional = false
+optional = true
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 files = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
@@ -3017,7 +3017,7 @@ pandas = ["snowflake-connector-python[pandas] (<4.0.0)"]
 name = "soupsieve"
 version = "2.4"
 description = "A modern CSS selector implementation for Beautiful Soup."
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "soupsieve-2.4-py3-none-any.whl", hash = "sha256:49e5368c2cda80ee7e84da9dbe3e110b70a4575f196efb74e51b94549d921955"},
@@ -3114,7 +3114,7 @@ SQLAlchemy = ">=0.9.2,<2.0.0"
 name = "tabulate"
 version = "0.8.10"
 description = "Pretty-print tabular data"
-optional = false
+optional = true
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 files = [
     {file = "tabulate-0.8.10-py3-none-any.whl", hash = "sha256:0ba055423dbaa164b9e456abe7920c5e8ed33fcc16f6d1b2f2d152c8e1e8b4fc"},
@@ -3128,7 +3128,7 @@ widechars = ["wcwidth"]
 name = "tenacity"
 version = "8.2.2"
 description = "Retry code until it succeeds"
-optional = false
+optional = true
 python-versions = ">=3.6"
 files = [
     {file = "tenacity-8.2.2-py3-none-any.whl", hash = "sha256:2f277afb21b851637e8f52e6a613ff08734c347dc19ade928e519d7d2d8569b0"},
@@ -3142,7 +3142,7 @@ doc = ["reno", "sphinx", "tornado (>=4.5)"]
 name = "text-unidecode"
 version = "1.3"
 description = "The most basic Text::Unidecode port"
-optional = false
+optional = true
 python-versions = "*"
 files = [
     {file = "text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"},
@@ -3164,7 +3164,7 @@ files = [
 name = "toucan-client"
 version = "1.1.2"
 description = "Toucan API client"
-optional = false
+optional = true
 python-versions = ">=3.8,<4.0"
 files = [
     {file = "toucan_client-1.1.2-py3-none-any.whl", hash = "sha256:35edf56289e4e74ef5ccfedc0a1f51b6cb51678cbd58adcf5150f58d12312fd5"},
@@ -3176,45 +3176,44 @@ requests = ">=2.23,<3.0"
 
 [[package]]
 name = "toucan-connectors"
-version = "4.5.1"
+version = "4.7.0"
 description = "Toucan Toco Connectors"
-optional = false
+optional = true
 python-versions = ">=3.10,<3.12"
-files = [
-    {file = "toucan_connectors-4.5.1-py3-none-any.whl", hash = "sha256:fe44e61b92e3e17ed431ecba33c56aecdffe4d462fb10c452458696a11a8dab1"},
-    {file = "toucan_connectors-4.5.1.tar.gz", hash = "sha256:d43a280c90f6e52c2fbf69ccad11b9136fd583760d8f55d72503dda9cf7470d6"},
-]
+files = []
+develop = false
 
 [package.dependencies]
-aiohttp = ">=3.8.4,<4.0.0"
-Authlib = ">=1.0.1,<2.0.0"
-awswrangler = {version = ">=3.0.0,<4.0.0", optional = true, markers = "extra == \"awsathena\" or extra == \"all\""}
-cached-property = ">=1.5.2,<2.0.0"
-google-cloud-bigquery = {version = ">=3,<4", extras = ["bqstorage", "pandas"], optional = true, markers = "extra == \"google-big-query\" or extra == \"all\""}
-Jinja2 = ">=3.0.3,<4.0.0"
-jq = ">=1.2.2,<2.0.0"
-lxml = {version = ">=4.6.5,<5.0.0", optional = true, markers = "extra == \"redshift\" or extra == \"soap\" or extra == \"all\""}
-pyarrow = {version = "<12", optional = true, markers = "extra == \"snowflake\" or extra == \"all\""}
-pydantic = ">=1.9.1,<2.0.0"
-PyJWT = {version = ">=1.5.3,<3", optional = true, markers = "extra == \"snowflake\" or extra == \"all\""}
-pymongo = {version = ">=3.12.0", optional = true, markers = "extra == \"mongo\" or extra == \"all\""}
-PyMySQL = {version = ">=1.0.2,<2.0.0", optional = true, markers = "extra == \"google-cloud-mysql\" or extra == \"mysql\" or extra == \"all\""}
-redshift-connector = {version = ">=2.0.907,<3.0.0", optional = true, markers = "extra == \"redshift\" or extra == \"all\""}
-requests = ">=2.28.0,<3.0.0"
-snowflake-connector-python = {version = ">=2.7.12,<4.0.0", optional = true, markers = "extra == \"snowflake\" or extra == \"all\""}
-tenacity = ">=8.0.1,<9.0.0"
-toucan-data-sdk = ">=7.6.0,<8.0.0"
+aiohttp = "^3.8.4"
+Authlib = "^1.0.1"
+awswrangler = {version = "^3.0.0", optional = true}
+cached-property = "^1.5.2"
+google-cloud-bigquery = {version = ">=3,<4", extras = ["bqstorage", "pandas"], optional = true}
+Jinja2 = "^3.0.3"
+jq = "^1.2.2"
+lxml = {version = "^4.6.5", optional = true}
+pyarrow = {version = "<12", optional = true}
+pydantic = ">=1.9,<3.0"
+PyJWT = {version = ">=1.5.3,<3", optional = true}
+pymongo = {version = ">=3.12.0", optional = true}
+PyMySQL = {version = "^1.0.2", optional = true}
+redshift-connector = {version = "^2.0.907", optional = true}
+requests = "^2.28.0"
+snowflake-connector-python = {version = ">=2.7.12,<4.0.0", optional = true}
+tenacity = "^8.0.1"
+toucan-data-sdk = "^7.6.0"
 
 [package.extras]
 adobe = ["adobe-analytics (>=1.2.3,<2.0.0)"]
-all = ["PyJWT (>=1.5.3,<3)", "PyMySQL (>=1.0.2,<2.0.0)", "adobe-analytics (>=1.2.3,<2.0.0)", "awswrangler (>=3.0.0,<4.0.0)", "bearer (==3.1.0)", "clickhouse-driver (>=0.2.3,<1.0)", "cx-Oracle (>=8.3.0,<9.0.0)", "dataiku-api-client (>=9.0.1,<10.0.0)", "elasticsearch (>=7.11.0,<8)", "facebook-sdk (>=3.1.0,<4.0.0)", "google-api-python-client (>=2,<3)", "google-cloud-bigquery[bqstorage,pandas] (>=3,<4)", "googleads (>=32,<34)", "gspread (>=5.4.0,<6.0.0)", "hubspot-api-client (>=7.4.0,<8.0.0)", "lxml (>=4.6.5,<5.0.0)", "oauth2client (>=4.1.3,<5.0.0)", "oauthlib (==3.2.2)", "openpyxl (>=3.0.9,<4.0.0)", "peakina (>=0.11.0,<0.12.0)", "psycopg2 (>=2.7.4,<3.0.0)", "pyarrow (<12)", "pyhdb (>=0.3.4,<1.0)", "pymongo (>=3.12.0)", "pyodbc (>=4,<5)", "python-graphql-client (>=0.4.3,<1.0)", "redshift-connector (>=2.0.907,<3.0.0)", "requests-oauthlib (==1.3.1)", "simplejson (>=3.17.6,<4.0.0)", "snowflake-connector-python (>=2.7.12,<4.0.0)", "tctc-odata (>=0.3,<1.0)", "toucan-client (>=1.0.1,<2.0.0)", "xmltodict (>=0.13.0,<1.0)", "zeep (>=4.1.0,<5.0.0)"]
+all = ["PyJWT (>=1.5.3,<3)", "PyMySQL (>=1.0.2,<2.0.0)", "adobe-analytics (>=1.2.3,<2.0.0)", "awswrangler (>=3.0.0,<4.0.0)", "bearer (==3.1.0)", "clickhouse-driver (>=0.2.3,<1.0)", "cx-Oracle (>=8.3.0,<9.0.0)", "dataiku-api-client (>=9.0.1,<13.0.0)", "elasticsearch (>=7.11.0,<8)", "facebook-sdk (>=3.1.0,<4.0.0)", "google-api-python-client (>=2,<3)", "google-cloud-bigquery[bqstorage,pandas] (>=3,<4)", "googleads (>=32,<34)", "gspread (>=5.4.0,<6.0.0)", "hubspot-api-client (>=7.4,<9.0)", "lxml (>=4.6.5,<5.0.0)", "oauth2client (>=4.1.3,<5.0.0)", "oauthlib (==3.2.2)", "openpyxl (>=3.0.9,<4.0.0)", "peakina @ git+https://github.com/toucantoco/peakina.git@dependabot/pip/pydantic-2.0.2", "psycopg2 (>=2.7.4,<3.0.0)", "pyarrow (<12)", "pyhdb (>=0.3.4,<1.0)", "pymongo (>=3.12.0)", "pyodbc (>=4,<5)", "python-graphql-client (>=0.4.3,<1.0)", "redshift-connector (>=2.0.907,<3.0.0)", "requests-oauthlib (==1.3.1)", "simplejson (>=3.17.6,<4.0.0)", "snowflake-connector-python (>=2.7.12,<4.0.0)", "tctc-odata (>=0.3,<1.0)", "toucan-client (>=1.0.1,<2.0.0)", "xmltodict (>=0.13.0,<1.0)", "zeep (>=4.1.0,<5.0.0)"]
 awsathena = ["awswrangler (>=3.0.0,<4.0.0)"]
 azure-mssql = ["pyodbc (>=4,<5)"]
 clickhouse = ["clickhouse-driver (>=0.2.3,<1.0)"]
-dataiku = ["dataiku-api-client (>=9.0.1,<10.0.0)"]
+dataiku = ["dataiku-api-client (>=9.0.1,<13.0.0)"]
 elasticsearch = ["elasticsearch (>=7.11.0,<8)"]
 facebook = ["facebook-sdk (>=3.1.0,<4.0.0)"]
 github = ["python-graphql-client (>=0.4.3,<1.0)"]
+google-adwords = []
 google-analytics = ["google-api-python-client (>=2,<3)", "oauth2client (>=4.1.3,<5.0.0)"]
 google-big-query = ["google-cloud-bigquery[bqstorage,pandas] (>=3,<4)"]
 google-cloud-mysql = ["PyMySQL (>=1.0.2,<2.0.0)"]
@@ -3222,13 +3221,14 @@ google-my-business = ["google-api-python-client (>=2,<3)"]
 google-sheets = ["google-api-python-client (>=2,<3)"]
 google-spreadsheet = ["gspread (>=5.4.0,<6.0.0)", "oauth2client (>=4.1.3,<5.0.0)"]
 http-api = ["oauthlib (==3.2.2)", "requests-oauthlib (==1.3.1)", "xmltodict (>=0.13.0,<1.0)"]
-hubspot = ["hubspot-api-client (>=7.4.0,<8.0.0)"]
+hubspot = ["hubspot-api-client (>=7.4,<9.0)"]
 mongo = ["pymongo (>=3.12.0)"]
 mssql = ["pyodbc (>=4,<5)"]
 mssql-tlsv1-0 = ["pyodbc (>=4,<5)"]
 mysql = ["PyMySQL (>=1.0.2,<2.0.0)"]
 net-explorer = ["openpyxl (>=3.0.9,<4.0.0)"]
 odata = ["oauthlib (==3.2.2)", "requests-oauthlib (==1.3.1)", "tctc-odata (>=0.3,<1.0)"]
+odbc = []
 oracle-sql = ["cx-Oracle (>=8.3.0,<9.0.0)"]
 postgres = ["psycopg2 (>=2.7.4,<3.0.0)"]
 redshift = ["lxml (>=4.6.5,<5.0.0)", "redshift-connector (>=2.0.907,<3.0.0)"]
@@ -3237,11 +3237,17 @@ snowflake = ["PyJWT (>=1.5.3,<3)", "pyarrow (<12)", "snowflake-connector-python 
 soap = ["lxml (>=4.6.5,<5.0.0)", "zeep (>=4.1.0,<5.0.0)"]
 toucan-toco = ["toucan-client (>=1.0.1,<2.0.0)"]
 
+[package.source]
+type = "git"
+url = "https://github.com/toucantoco/toucan-connectors.git"
+reference = "chore/bump-pydantic-v2"
+resolved_reference = "5b1e4ba138954561d0bb59b8023cc5d6940ac5d9"
+
 [[package]]
 name = "toucan-data-sdk"
 version = "7.6.0"
 description = "Toucan data SDK"
-optional = false
+optional = true
 python-versions = ">=3.8,<4.0"
 files = [
     {file = "toucan_data_sdk-7.6.0-py3-none-any.whl", hash = "sha256:8594eea58f0ffdd4a7f5aeb5d01dcb884378264c564911b4076038e27323c88a"},
@@ -3356,7 +3362,7 @@ h11 = ">=0.9.0,<1"
 name = "yarl"
 version = "1.8.2"
 description = "Yet another URL library"
-optional = false
+optional = true
 python-versions = ">=3.7"
 files = [
     {file = "yarl-1.8.2-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:bb81f753c815f6b8e2ddd2eef3c855cf7da193b82396ac013c661aaa6cc6b0a5"},
@@ -3448,4 +3454,4 @@ pypika = ["PyPika"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "61993e57abe2b4772b782cc2cf77e80f560ff899c0906861cc330bb437c0106c"
+content-hash = "a9415349b9c7189ba552359e12b93bdc39d27212085fff7a73de0bf1742916f7"
