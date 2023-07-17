@@ -3,7 +3,13 @@ import Vue from 'vue';
 import type { BackendError, BackendResponse, BackendService, BackendWarning } from '@/lib/backend';
 import { addLocalUniquesToDataset, updateLocalUniquesFromDatabase } from '@/lib/dataset/helpers';
 import { pageOffset } from '@/lib/dataset/pagination';
-import type { Pipeline, PipelineStep, PipelineStepName, Reference } from '@/lib/steps';
+import type {
+  Pipeline,
+  PipelineStep,
+  PipelineStepName,
+  Reference,
+  ReferenceToExternalQuery,
+} from '@/lib/steps';
 import { setVariableDelimiters } from '@/lib/translators';
 import type { DataSet, VariableDelimiters, VariablesBucket } from '@/types';
 
@@ -89,7 +95,9 @@ export type VQBActions = {
   setDataset: ({ dataset }: { dataset: DataSet }) => void;
   setSelectedColumns: ({ column }: { column: string | undefined }) => void;
   toggleColumnSelection: ({ column }: { column: string }) => void;
-  getColumnNamesFromPipeline: (pipelineNameOrDomain: string) => Promise<string[] | undefined>;
+  getColumnNamesFromPipeline: (
+    pipelineNameOrDomain: string | ReferenceToExternalQuery,
+  ) => Promise<string[] | undefined>;
   loadColumnUniqueValues: ({ column }: { column: string }) => void;
   setCurrentPage: ({ pageNumber }: { pageNumber: number }) => void;
   resetPagination: () => void;

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Fixed
+- Join step: retrieve columns for dataset behind reference
+
 ## [0.105.0] - 2023-07-06
 
 ### Added

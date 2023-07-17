@@ -11,7 +11,7 @@
       v-model="rightPipeline"
       name="Select a dataset to join (as right dataset):"
       :options="options"
-      @input="updateRightColumnNames(rightPipeline.label)"
+      @input="updateRightColumnNames(rightPipeline.trackBy)"
       placeholder="Select a dataset"
       data-path=".rightPipeline"
       :errors="errors"
@@ -148,13 +148,13 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
 
   @Action(VQBModule) getColumnNamesFromPipeline!: VQBActions['getColumnNamesFromPipeline'];
 
-  async updateRightColumnNames(pipelineNameOrDomain: string) {
+  async updateRightColumnNames(pipelineNameOrDomain: string | ReferenceToExternalQuery) {
     this.rightColumnNames = await this.getColumnNamesFromPipeline(pipelineNameOrDomain);
   }
 
   created() {
-    if (this.rightPipeline.label) {
-      this.updateRightColumnNames(this.rightPipeline.label);
+    if (this.rightPipeline.trackBy) {
+      this.updateRightColumnNames(this.rightPipeline.trackBy);
     }
   }
 }
