@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.105.1] - 2023-07-17
+
 ### Fixed
 - Join step: retrieve columns for dataset behind reference
 
@@ -1498,6 +1500,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
+[0.105.1]: https://github.com/ToucanToco/weaverbird/compare/v0.105.0...v0.105.1
 [0.105.0]: https://github.com/ToucanToco/weaverbird/compare/v0.104.0...v0.105.0
 [0.104.0]: https://github.com/ToucanToco/weaverbird/compare/v0.103.0...v0.104.0
 [0.103.0]: https://github.com/ToucanToco/weaverbird/compare/v0.102.1...v0.103.0
