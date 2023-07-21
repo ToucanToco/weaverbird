@@ -1,6 +1,15 @@
 import json
 from os import environ
 
+"""
+BigQuery free DBs have tables that expire after 60 days.
+If the table "beers.beers_tiny" is expired, re-create it:
+- open the BigQuery console https://console.cloud.google.com/bigquery?project=biquery-integration-tests&ws=!1m4!1m3!3m2!1sbiquery-integration-tests!2sbeers
+- use "create table", choose "Upload" and use beers.csv
+- name the table "beers_tiny" and check "Autodetect" for the scema 
+"""
+
+
 import pandas as pd
 import pytest
 from google.cloud.bigquery import Client
