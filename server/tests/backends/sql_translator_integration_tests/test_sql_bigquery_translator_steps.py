@@ -7,6 +7,7 @@ If the table "beers.beers_tiny" is expired, re-create it:
 """
 import json
 from os import environ
+
 import pandas as pd
 import pytest
 from google.cloud.bigquery import Client
