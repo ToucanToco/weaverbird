@@ -198,7 +198,6 @@ EXCLUDE_CLEANING_FOR = (
     "prevRank",  # for the rank step, this needs to be kept
     "$ne",  # for isnotnull (None -> null for mongo),
     "$eq",  # for isnull (None -> null for mongo)
-    "pipeline",
     "localField",
     "foreignField",
     "_id",
@@ -280,14 +279,22 @@ def _remove_empty_elements(data: Any) -> Any:
                 if (cleaned := _remove_empty_elements(v)) is not None:
                     data_transformed[k] = cleaned
 
-        return data_transformed or None
+        if isinstance(data_transformed, list):
+            return data_transformed
+        else:
+            return data_transformed or None
+
     elif isinstance(data, list):
         data_transformed = [
             cleaned
             for item in data
             if (cleaned := _remove_empty_elements(item)) is not None  # type: ignore[assignment]
         ]
-        return data_transformed or None
+
+        if isinstance(data_transformed, list):
+            return data_transformed
+        else:
+            return data_transformed or None
     else:
         return data
 
@@ -308,10 +315,6 @@ def _clean_mongo_steps(
                 step[key] = val
             else:
                 step[key] = _clean_mongo_steps(val)  # type: ignore[assignment]
-                # FIXME: This may happens for more other keys but on mongo
-                # 'pipeline' cannot be None/null, it should be an empty []
-                if key == "pipeline" and step[key] is None:
-                    step[key] = []  # type:ignore[assignment]
 
         return _remove_empty_elements(step)
     elif isinstance(mongo_steps, list):

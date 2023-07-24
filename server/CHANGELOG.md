@@ -1,5 +1,10 @@
 # Changelog (weaverbird python package)
 
+### Fixed
+
+- Fix[Mongo]: Keep empty list from mongo pipeline after  `weaverbird.pipeline.remove_void_conditions_from_mongo_steps()`
+  to keep steps that depends on those characteristics to still working.
+
 ## [0.34.0] - 2023-07-10
 
 ### Changed

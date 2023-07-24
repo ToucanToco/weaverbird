@@ -285,7 +285,16 @@ def test_skip_void_parameter_from_variables_for_mongo_steps():
                 }
             }
         ]
-    ) == [{"$match": {"$and": [{"$or": [{"property2": "value2"}]}], "$ne": None}}]
+    ) == [
+        {
+            "$match": {
+                "$and": [{"$or": [{"property2": "value2"}]}, {"$nor": []}],
+                "$ne": None,
+                "$nor": [{"property9": {"$and": []}}],
+                "$or": [],
+            }
+        },
+    ]
 
     assert remove_void_conditions_from_mongo_steps(
         [
@@ -469,6 +478,7 @@ def test_skip_void_parameter_from_variables_for_mongo_steps():
                                         }
                                     },
                                     "initialValue": {
+                                        "a": [],  # array based key field filtering in mongo should be kept
                                         "order": 0,
                                         "prevRank": None,
                                         "prevValue": None,
