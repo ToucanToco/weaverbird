@@ -2,7 +2,7 @@
 BigQuery free DBs have tables that expire after 60 days.
 If the table "beers.beers_tiny" is expired, re-create it:
 - open the BigQuery console https://console.cloud.google.com/bigquery?project=biquery-integration-tests&ws=!1m4!1m3!3m2!1sbiquery-integration-tests!2sbeers
-- use "create table", choose "Upload" and use the `beers-biugquery.csv` file available [here](https://github.com/ToucanToco/weaverbird/pull/1835#issuecomment-1647810149)
+- use "create table", choose "Upload" and use the `beers-bigquery.csv` file available [here](https://github.com/ToucanToco/weaverbird/pull/1835#issuecomment-1647810149)
     - name the table "beers" and check "Edit text" for the schema
     - fill the schema with:
     ```
@@ -15,7 +15,10 @@ If the table "beers.beers_tiny" is expired, re-create it:
     brewing_date:DATE,
     nullable_name:STRING
     ```
-- run the query: CREATE TABLE `beers.beers_tiny` AS SELECT * FROM `beers.beers` ORDER BY brewing_date LIMIT 10
+- run the query:
+``
+`CREATE TABLE `beers.beers_tiny` AS SELECT * FROM `beers.beers` ORDER BY brewing_date LIMIT 10
+```
 """
 import json
 from os import environ
