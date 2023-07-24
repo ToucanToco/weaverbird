@@ -291,10 +291,7 @@ def _remove_empty_elements(data: Any) -> Any:
             if (cleaned := _remove_empty_elements(item)) is not None  # type: ignore[assignment]
         ]
 
-        if isinstance(data_transformed, list):
-            return data_transformed
-        else:
-            return data_transformed or None
+        return data_transformed
     else:
         return data
 
