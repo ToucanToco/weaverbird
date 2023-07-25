@@ -1323,7 +1323,7 @@ class SQLTranslator(ABC):
         step: "RankStep",
     ) -> StepContext:
         col_field: Field = Table(prev_step_table)[step.value_col]
-        new_col_name = step.new_column_name or f"{step.value_col}_RANK"
+        new_col_name = step.new_column_name or f"{step.value_col}_rank"
 
         analytics_fn = analytics.Rank if step.method == "standard" else analytics.DenseRank
         rank_column = (
