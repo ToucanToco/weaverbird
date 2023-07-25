@@ -1,0 +1,76 @@
+exclude:
+- mongo
+- pandas
+- snowflake
+expected:
+  data:
+  - beer_kind: Best-sellers
+    name: Ardwen Blonde
+    price_per_l: 0.056
+    price_per_l_RANK: 1
+  - beer_kind: Sans alcool
+    name: Brewdog Nanny State Alcoholvrij
+    price_per_l: 0.005
+    price_per_l_RANK: 1
+  - beer_kind: Blonde
+    name: "Cuvée des Trolls"
+    price_per_l: 0.07
+    price_per_l_RANK: 1
+  - beer_kind: India Pale Ale
+    name: Ninkasi Ploploplop
+    price_per_l: 0.054
+    price_per_l_RANK: 1
+  - beer_kind: Belge blonde forte & Golden Ale
+    name: Pauwel Kwak
+    price_per_l: 0.084
+    price_per_l_RANK: 1
+  - beer_kind: Triple
+    name: Superstrong beer
+    price_per_l: 0.16
+    price_per_l_RANK: 1
+  - beer_kind: Blanche & Weizen
+    name: Weihenstephan Hefe Weizen Alcoholarm
+    price_per_l: 0.005
+    price_per_l_RANK: 1
+  - beer_kind: India Pale Ale
+    name: Bellfield Lawless Village IPA
+    price_per_l: 0.045
+    price_per_l_RANK: 2
+  - beer_kind: Blonde
+    name: Brasserie De Sutter Brin de Folie
+    price_per_l: 0.065
+    price_per_l_RANK: 2
+  - beer_kind: Blonde
+    name: Brugse Zot blonde
+    price_per_l: 0.06
+    price_per_l_RANK: 3
+  schema:
+    fields:
+    - name: name
+      type: string
+    - name: price_per_l
+      type: number
+    - name: beer_kind
+      type: string
+    - name: price_per_l_RANK
+      type: integer
+    pandas_version: 1.4.0
+step:
+  pipeline:
+  - name: select
+    columns:
+    - name
+    - price_per_l
+    - beer_kind
+  - name: rank
+    value_col: price_per_l
+    order: desc
+    method: standard
+    groupby:
+    - beer_kind
+  - name: sort
+    columns:
+    - column: price_per_l_RANK
+      order: asc
+    - column: name
+      order: asc

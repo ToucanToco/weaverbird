@@ -1,5 +1,9 @@
 # Changelog (weaverbird python package)
 
+### Changed
+
+- The `rank` step is now supported by the pypika translator
+
 ## [0.34.1] - 2023-07-25
 
 ### Fixed
