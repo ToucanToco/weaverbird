@@ -469,6 +469,7 @@ def test_skip_void_parameter_from_variables_for_mongo_steps():
                                         }
                                     },
                                     "initialValue": {
+                                        "a": [],  # array based key field filtering in mongo should be kept
                                         "order": 0,
                                         "prevRank": None,
                                         "prevValue": None,
