@@ -279,6 +279,9 @@ def _remove_empty_elements(data: Any) -> Any:
                 if (cleaned := _remove_empty_elements(v)) is not None:
                     data_transformed[k] = cleaned
 
+                if cleaned == [] and k in ["$or", "$nor", "$and"]:
+                    data_transformed[k] = None
+
         if isinstance(data_transformed, list):
             return data_transformed
         else:

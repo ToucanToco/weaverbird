@@ -285,16 +285,7 @@ def test_skip_void_parameter_from_variables_for_mongo_steps():
                 }
             }
         ]
-    ) == [
-        {
-            "$match": {
-                "$and": [{"$or": [{"property2": "value2"}]}, {"$nor": []}],
-                "$ne": None,
-                "$nor": [{"property9": {"$and": []}}],
-                "$or": [],
-            }
-        },
-    ]
+    ) == [{"$match": {"$and": [{"$or": [{"property2": "value2"}]}], "$ne": None}}]
 
     assert remove_void_conditions_from_mongo_steps(
         [
