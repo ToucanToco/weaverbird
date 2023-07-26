@@ -47,7 +47,7 @@ def mongo_database(mongo_server_port):
 
 
 def _sanitize_df(df: pd.DataFrame) -> pd.DataFrame:
-    non_numeric_cols = [col for col, dtype in df.dtypes.iteritems() if not is_numeric_dtype(dtype)]
+    non_numeric_cols = [col for col, dtype in df.dtypes.items() if not is_numeric_dtype(dtype)]
     # Ensure we have None for non-numeric columns such as datetiems or
     # strings, rather than NaT or NaN (for strings)
     for col in non_numeric_cols:
