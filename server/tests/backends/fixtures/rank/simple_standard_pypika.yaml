@@ -1,0 +1,62 @@
+exclude:
+- mongo
+- pandas
+- snowflake
+expected:
+  data:
+  - coucou: 1
+    name: Brewdog Nanny State Alcoholvrij
+    price_per_l: 0.005
+  - coucou: 1
+    name: Weihenstephan Hefe Weizen Alcoholarm
+    price_per_l: 0.005
+  - coucou: 3
+    name: Bellfield Lawless Village IPA
+    price_per_l: 0.045
+  - coucou: 4
+    name: Ninkasi Ploploplop
+    price_per_l: 0.054
+  - coucou: 5
+    name: Ardwen Blonde
+    price_per_l: 0.056
+  - coucou: 6
+    name: Brugse Zot blonde
+    price_per_l: 0.06
+  - coucou: 7
+    name: Brasserie De Sutter Brin de Folie
+    price_per_l: 0.065
+  - coucou: 8
+    name: "Cuvée des Trolls"
+    price_per_l: 0.07
+  - coucou: 9
+    name: Pauwel Kwak
+    price_per_l: 0.084
+  - coucou: 10
+    name: Superstrong beer
+    price_per_l: 0.16
+  schema:
+    fields:
+    - name: name
+      type: string
+    - name: price_per_l
+      type: number
+    - name: coucou
+      type: integer
+    pandas_version: 1.4.0
+step:
+  pipeline:
+  - name: select
+    columns:
+    - name
+    - price_per_l
+  - name: rank
+    value_col: price_per_l
+    order: asc
+    method: standard
+    new_column_name: coucou
+  - name: sort
+    columns:
+    - column: coucou
+      order: asc
+    - column: name
+      order: asc

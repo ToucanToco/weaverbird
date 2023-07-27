@@ -79,6 +79,7 @@ if TYPE_CHECKING:
         JoinStep,
         LowercaseStep,
         PercentageStep,
+        RankStep,
         RenameStep,
         ReplaceStep,
         ReplaceTextStep,
@@ -1312,6 +1313,31 @@ class SQLTranslator(ABC):
         step: "PercentageStep",
     ) -> StepContext:
         raise NotImplementedError(f"[{self.DIALECT}] percentage is not implemented")
+
+    def rank(
+        self: Self,
+        *,
+        builder: "QueryBuilder",
+        prev_step_table: str,
+        columns: list[str],
+        step: "RankStep",
+    ) -> StepContext:
+        col_field: Field = Table(prev_step_table)[step.value_col]
+        new_col_name = step.new_column_name or f"{step.value_col}_rank"
+
+        analytics_fn = analytics.Rank if step.method == "standard" else analytics.DenseRank
+        rank_column = (
+            (
+                analytics_fn().over(*(Field(group) for group in step.groupby))
+                if step.groupby
+                else analytics_fn()
+            )
+            .orderby(col_field, order=Order.desc if step.order == "desc" else Order.asc)
+            .as_(new_col_name)
+        )
+
+        query = self.QUERY_CLS.from_(prev_step_table).select(*columns, rank_column)
+        return StepContext(query, columns=columns + [new_col_name])
 
     def rename(
         self: Self,
