@@ -2,6 +2,9 @@
 
 ### Changed
 
+## [0.35.0] - 2023-07-27
+
+- Mongo: Fixed an issue with the `join` step when the columns to join on contained illegal characters.
 - The `rank` step is now supported by the pypika translator
 
 ## [0.34.1] - 2023-07-25

@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "weaverbird"
-version = "0.34.1"
+version = "0.35.0"
 description = "A visual data pipeline builder with various backends"
 authors = ["Toucan Toco <dev@toucantoco.com>"]
 keywords = ["mongodb", "pandas", "sql", "data", "dataviz", "pipeline", "query", "builder"]
