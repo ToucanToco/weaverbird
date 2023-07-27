@@ -1,0 +1,134 @@
+{
+  "exclude": [
+    "athena_pypika",
+    "bigquery_pypika",
+    "mysql_pypika",
+    "postgres_pypika",
+    "redshift_pypika",
+    "snowflake",
+    "snowflake_pypika"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "join",
+        "right_pipeline": [
+          {
+            "name": "domain",
+            "domain": "bazz"
+          },
+          {
+            "name": "filter",
+            "condition": {
+              "column": "X",
+              "operator": "gt",
+              "value": 11
+            }
+          }
+        ],
+        "type": "left",
+        "on": [
+          [
+            "WEIRD: NAME",
+            "WEIRD: NAME"
+          ]
+        ]
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "WEIRD: NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "WEIRD: NAME": "foo",
+        "AGE": 42,
+        "SCORE": 100
+      },
+      {
+        "WEIRD: NAME": "fla",
+        "AGE": 42,
+        "SCORE": 100
+      }
+    ]
+  },
+  "other_inputs": {
+    "bazz": {
+      "schema": {
+        "fields": [
+          {
+            "name": "WEIRD: NAME",
+            "type": "string"
+          },
+          {
+            "name": "X",
+            "type": "integer"
+          }
+        ],
+        "pandas_version": "0.20.0"
+      },
+      "data": [
+        {
+          "WEIRD: NAME": "foo",
+          "X": 12
+        },
+        {
+          "WEIRD: NAME": "bar",
+          "X": 20
+        }
+      ]
+    }
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "WEIRD: NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        },
+        {
+          "name": "SCORE",
+          "type": "number"
+        },
+        {
+          "name": "X",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "WEIRD: NAME": "foo",
+        "AGE": 42.0,
+        "SCORE": 100.0,
+        "X": 12.0
+      },
+      {
+        "WEIRD: NAME": "fla",
+        "AGE": 42.0,
+        "SCORE": 100.0,
+        "X": null
+      }
+    ]
+  }
+}

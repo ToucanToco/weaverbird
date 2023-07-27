@@ -1,11 +1,13 @@
 import logging
 
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
-from weaverbird.backends.mongo_translator.utils import column_to_user_variable
 from weaverbird.pipeline import Pipeline, steps
 from weaverbird.pipeline.steps import DomainStep, JoinStep
 
 logger = logging.getLogger(__name__)
+
+
+_JOIN_VAR_KEY_NAME = "mongo_join_key"
 
 
 def translate_join(step: JoinStep) -> list[MongoStep]:
@@ -28,9 +30,10 @@ def translate_join(step: JoinStep) -> list[MongoStep]:
     mongo_let: dict[str, str] = {}
     mongo_expr_and: list[dict[str, list[str]]] = []
 
-    for left_on, right_on in step.on:
-        mongo_let[column_to_user_variable(left_on)] = f"${left_on}"
-        mongo_expr_and.append({"$eq": [f"${right_on}", f"$${column_to_user_variable(left_on)}"]})
+    for idx, (left_on, right_on) in enumerate(step.on):
+        var_name = _JOIN_VAR_KEY_NAME + f"_{idx}"
+        mongo_let[var_name] = f"${left_on}"
+        mongo_expr_and.append({"$eq": [f"${right_on}", f"$${var_name}"]})
 
     from weaverbird.backends.mongo_translator.mongo_pipeline_translator import translate_pipeline
 
