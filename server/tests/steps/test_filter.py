@@ -29,7 +29,7 @@ def test_simple_condition_valid_values(value) -> None:
     sc = ComparisonCondition(column="x", operator="eq", value=value)
     result_value = sc.value
     assert value == result_value
-    assert type(value) == type(result_value)
+    assert type(value) is type(result_value)
 
 
 def test_simple_eq_filter(sample_df):
