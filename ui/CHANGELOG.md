@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Added
+- NativeSQL translator: Added support for the rank step
+
 ## [0.105.1] - 2023-07-17
 
 ### Fixed
