@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Added
+- NativeSQL translator: Added support for the concatenate step
+
 ## [0.106.0] - 2023-07-31
 
 ### Added
