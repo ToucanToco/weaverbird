@@ -462,14 +462,27 @@ class SQLTranslator(ABC):
 
         if step.keep_original_granularity:
             all_agg_col_names: list[str] = [x for agg in step.aggregations for x in agg.new_columns]
-            query = (
-                self.QUERY_CLS.from_(prev_step_table)
-                .select(
-                    *columns, *(Field(agg_col, table=merged_query) for agg_col in all_agg_col_names)
+            if step.on:
+                query = (
+                    self.QUERY_CLS.from_(prev_step_table)
+                    .select(
+                        *columns,
+                        *(Field(agg_col, table=merged_query) for agg_col in all_agg_col_names),
+                    )
+                    .left_join(merged_query)
+                    .on_field(*step.on)
                 )
-                .left_join(merged_query)
-                .on_field(*step.on)
-            )
+            else:
+                # If there is no `step.on` columns to join, just put the 2 subqueries side by side:
+                all_agg_col_names = [col for col in all_agg_col_names if col not in columns]
+                query = (
+                    self.QUERY_CLS.from_(prev_step_table)
+                    .from_(merged_query)
+                    .select(
+                        *columns,
+                        *(Field(agg_col, table=merged_query) for agg_col in all_agg_col_names),
+                    )
+                )
             selected_col_names = [*columns, *all_agg_col_names]
             return StepContext(query.orderby(*step.on) if step.on else query, selected_col_names)
 

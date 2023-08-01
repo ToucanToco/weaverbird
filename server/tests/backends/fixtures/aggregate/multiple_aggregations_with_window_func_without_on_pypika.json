@@ -20,8 +20,8 @@
           },
           {
             "new_columns": [
-              "name",
-              "volume_ml"
+              "first__name",
+              "first__volume_ml"
             ],
             "agg_function": "first",
             "columns": [
@@ -86,11 +86,11 @@
           "type": "number"
         },
         {
-          "name": "name",
+          "name": "first__name",
           "type": "string"
         },
         {
-          "name": "volume_ml",
+          "name": "first__volume_ml",
           "type": "number"
         }
       ],
@@ -99,8 +99,8 @@
     "data": [
       {
         "__sum_volume_ml__": 3390.0,
-        "name": "Ardwen Blonde",
-        "volume_ml": 250.0
+        "first__name": "Ardwen Blonde",
+        "first__volume_ml": 250.0
       }
     ]
   }
