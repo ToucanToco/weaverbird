@@ -1,0 +1,107 @@
+{
+  "exclude": [
+    "mongo",
+    "pandas",
+    "snowflake"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "aggregate",
+        "aggregations": [
+          {
+            "new_columns": [
+              "__sum_volume_ml__"
+            ],
+            "agg_function": "sum",
+            "columns": [
+              "volume_ml"
+            ]
+          },
+          {
+            "new_columns": [
+              "first__name",
+              "first__volume_ml"
+            ],
+            "agg_function": "first",
+            "columns": [
+              "name",
+              "volume_ml"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "volume_ml",
+          "type": "number"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "1.4.0"
+    },
+    "data": [
+      {
+        "volume_ml": 330.0,
+        "name": "Pauwel Kwak"
+      },
+      {
+        "volume_ml": 330.0,
+        "name": "Ardwen Blonde"
+      },
+      {
+        "volume_ml": 500.0,
+        "name": "Weihenstephan Hefe Weizen Alcoholarm"
+      },
+      {
+        "volume_ml": 910.0,
+        "name": "Brasserie De Sutter Brin de Folie"
+      },
+      {
+        "volume_ml": 660.0,
+        "name": "Bellfield Lawless Village IPA"
+      },
+      {
+        "volume_ml": 330.0,
+        "name": "Brewdog Nanny State Alcoholvrij"
+      },
+      {
+        "volume_ml": 330.0,
+        "name": "Superstrong beer"
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "__sum_volume_ml__",
+          "type": "number"
+        },
+        {
+          "name": "first__name",
+          "type": "string"
+        },
+        {
+          "name": "first__volume_ml",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "1.4.0"
+    },
+    "data": [
+      {
+        "__sum_volume_ml__": 3390.0,
+        "first__name": "Ardwen Blonde",
+        "first__volume_ml": 250.0
+      }
+    ]
+  }
+}
