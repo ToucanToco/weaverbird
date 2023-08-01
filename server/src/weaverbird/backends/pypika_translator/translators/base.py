@@ -434,12 +434,20 @@ class SQLTranslator(ABC):
                 *[getattr(agg_table, col.alias) for col in agg_selected],
                 *[getattr(window_table, col[1].alias) for col in window_selected],
             ]
-            merged_query = (
-                self.QUERY_CLS.from_(agg_query)
-                .select(*merged_selected)
-                .inner_join(all_windows_subquery)
-                .on_field(*step.on)
-            )
+            if step.on:
+                merged_query = (
+                    self.QUERY_CLS.from_(agg_query)
+                    .select(*merged_selected)
+                    .inner_join(all_windows_subquery)
+                    .on_field(*step.on)
+                )
+            else:
+                # If there is no `step.on` columns to join, just put the 2 subqueries side by side:
+                merged_query = (
+                    self.QUERY_CLS.from_(agg_query)
+                    .from_(all_windows_subquery)
+                    .select(*merged_selected)
+                )
         elif agg_selected:
             selected_cols = [*step.on, *agg_selected]
             merged_query = (

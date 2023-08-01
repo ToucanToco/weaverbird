@@ -1,5 +1,7 @@
 {
   "exclude": [
+    "mongo",
+    "pandas",
     "snowflake"
   ],
   "step": {
@@ -97,8 +99,8 @@
     "data": [
       {
         "__sum_volume_ml__": 3390.0,
-        "name": "Pauwel Kwak",
-        "volume_ml": 330.0
+        "name": "Ardwen Blonde",
+        "volume_ml": 250.0
       }
     ]
   }
