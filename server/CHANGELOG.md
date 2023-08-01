@@ -2,6 +2,10 @@
 
 ### Changed
 
+## [0.35.1] - 2023-08-01
+
+- Fix[PyPika]: fix aggregate step when there is no `step.on`
+
 ## [0.35.0] - 2023-07-27
 
 - Mongo: Fixed an issue with the `join` step when the columns to join on contained illegal characters.
