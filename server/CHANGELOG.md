@@ -2,11 +2,17 @@
 
 ### Changed
 
+- Pypika: Added support for the `percentage` step
+
 ## [0.35.1] - 2023-08-01
+
+### Fixed
 
 - Fix[PyPika]: fix aggregate step when there is no `step.on`
 
 ## [0.35.0] - 2023-07-27
+
+### Fixed
 
 - Mongo: Fixed an issue with the `join` step when the columns to join on contained illegal characters.
 - The `rank` step is now supported by the pypika translator
