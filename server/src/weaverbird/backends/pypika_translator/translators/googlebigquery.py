@@ -46,6 +46,15 @@ class GoogleBigQueryQuery(Query):
         return GoogleBigQueryQueryBuilder(**kwargs)
 
 
+class GoogleBigQueryValueWrapper(ValueWrapper):
+    @classmethod
+    def get_formatted_value(cls, value: Any, **kwargs):
+        if isinstance(value, str):
+            value = value.replace("'", r"\'")
+            return f"'{value}'"
+        return super().get_formatted_value(value, **kwargs)
+
+
 class GoogleBigQueryQueryBuilder(QueryBuilder):
     QUOTE_CHAR = "`"
     SECONDARY_QUOTE_CHAR = "'"
@@ -54,21 +63,22 @@ class GoogleBigQueryQueryBuilder(QueryBuilder):
     QUERY_CLS = GoogleBigQueryQuery
 
     def __init__(self, **kwargs: Any) -> None:
-        super().__init__(dialect=SQLDialect.GOOGLEBIGQUERY, **kwargs)
+        super().__init__(
+            dialect=SQLDialect.GOOGLEBIGQUERY, wrapper_cls=GoogleBigQueryValueWrapper, **kwargs
+        )
+
+    @staticmethod
+    def wrap_constant(val, wrapper_cls=GoogleBigQueryValueWrapper):
+        return super().wrap_constant(val, wrapper_cls)
+
+    @staticmethod
+    def wrap_json(val, wrapper_cls=GoogleBigQueryValueWrapper):
+        return super().wrap_json(val, wrapper_cls)
 
 
 class GoogleBigQueryDateAdd(Function):
     def __init__(self, *, target_column: Field, interval: Interval) -> None:
         super().__init__("DATE_ADD", target_column, interval)
-
-
-class GoogleBigQueryValueWrapper(ValueWrapper):
-    @classmethod
-    def get_formatted_value(cls, value: Any, **kwargs):
-        if isinstance(value, str):
-            value = value.replace("'", r"\'")
-            return f"'{value}'"
-        return super().get_formatted_value(value, **kwargs)
 
 
 class GoogleBigQueryTranslator(SQLTranslator):
