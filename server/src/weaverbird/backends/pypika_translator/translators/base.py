@@ -1333,7 +1333,43 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "PercentageStep",
     ) -> StepContext:
-        raise NotImplementedError(f"[{self.DIALECT}] percentage is not implemented")
+        table = Table(prev_step_table)
+        new_col_name = step.new_column_name or f"{step.column}_percentage"
+
+        sum_col_name = f"__{step.column}_sum__"
+        sum_col = functions.Sum(table[step.column]).as_(sum_col_name)
+
+        # If we have groups, we need to select them as well, and group the sum by the groups
+        if len(step.group) > 0:
+            agg_query = (
+                self.QUERY_CLS.from_(prev_step_table)
+                .select(sum_col, *step.group)
+                .groupby(*step.group)
+            )
+        # Otherwise we just need a simple sum
+        else:
+            agg_query = self.QUERY_CLS.from_(prev_step_table).select(sum_col)
+
+        perc_column = (
+            functions.Cast(table[step.column], self.DATA_TYPE_MAPPING.float)
+            * 100
+            / agg_query[sum_col_name]
+        ).as_(new_col_name)
+
+        query = self.QUERY_CLS.from_(prev_step_table).select(*columns, perc_column)
+
+        # If we have groups, we need to join on the groups
+        if len(step.group) > 0:
+            query = query.left_join(agg_query).on(
+                Criterion.all(table[field] == agg_query[field] for field in step.group)
+            )
+
+        # Otherwise, a cross join is enough
+        else:
+            # final .cross required by Pypika, otherwise we'd get a Joiner rather than a Selectable
+            query = query.cross_join(agg_query).cross()
+
+        return StepContext(query, columns + [new_col_name])
 
     def rank(
         self: Self,
