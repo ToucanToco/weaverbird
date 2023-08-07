@@ -91,6 +91,10 @@ export class PypikaTranslator extends BaseTranslator {
     return step;
   }
 
+  percentage(step: Readonly<S.PercentageStep>) {
+    return step;
+  }
+
   rank(step: Readonly<S.RankStep>) {
     return step;
   }

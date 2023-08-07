@@ -497,15 +497,6 @@ def test_uppercase(base_translator: BaseTranslator, default_step_kwargs: dict[st
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
-def test_percentage(base_translator: BaseTranslator, default_step_kwargs: dict[str, Any]):
-    with pytest.raises(NotImplementedError):
-        base_translator.percentage(
-            step=steps.PercentageStep(column="", group=[], newColumnName=""),
-            columns=[],
-            **default_step_kwargs,
-        )
-
-
 def test_replace(base_translator: BaseTranslator, default_step_kwargs: dict[str, Any]):
     selected_columns = ["name", "pseudonyme"]
     previous_step = "previous_with"
