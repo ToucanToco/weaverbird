@@ -67,14 +67,6 @@ class GoogleBigQueryQueryBuilder(QueryBuilder):
             dialect=SQLDialect.GOOGLEBIGQUERY, wrapper_cls=GoogleBigQueryValueWrapper, **kwargs
         )
 
-    # @staticmethod
-    # def wrap_constant(val, wrapper_cls=GoogleBigQueryValueWrapper):
-    #     return super().wrap_constant(val, wrapper_cls)
-
-    # @staticmethod
-    # def wrap_json(val, wrapper_cls=GoogleBigQueryValueWrapper):
-    #     return super().wrap_json(val, wrapper_cls)
-
 
 class GoogleBigQueryDateAdd(Function):
     def __init__(self, *, target_column: Field, interval: Interval) -> None:
