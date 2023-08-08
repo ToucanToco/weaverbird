@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+- NativeSQL translator: Added support for steps concatenate and fromdate
 - NativeSQL translator: Added support for the percentage step
 - NativeSQL translator: Added support for the concatenate step
 

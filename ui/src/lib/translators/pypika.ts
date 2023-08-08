@@ -75,6 +75,10 @@ export class PypikaTranslator extends BaseTranslator {
     return step;
   }
 
+  fromdate(step: Readonly<S.FromDateStep>) {
+    return step;
+  }
+
   ifthenelse(step: Readonly<S.IfThenElseStep>) {
     return step;
   }
