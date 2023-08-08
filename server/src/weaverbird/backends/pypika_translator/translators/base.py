@@ -252,6 +252,12 @@ class SQLTranslator(ABC):
 
         return ctx
 
+    def _ensure_term_uses_wrapper(self: Self, term: Term):
+        """(ugly) monkey patch to make sure pypika term uses the right wrapper"""
+        from functools import partial
+
+        term.wrap_constant = partial(term.wrap_constant, wrapper_cls=self.VALUE_WRAPPER_CLS)
+
     def get_query_builder(
         self: Self,
         *,
@@ -967,6 +973,7 @@ class SQLTranslator(ABC):
         self: Self, condition: "SimpleCondition", prev_step_table: Table
     ) -> Criterion:
         column_field = prev_step_table[condition.column]
+        self._ensure_term_uses_wrapper(column_field)
 
         # NOTE: type ignore comments below are because of 'Expected type in class pattern; found
         # "Any"' mypy errors. Seems like mypy 0.990 does not like typing.Annotated
