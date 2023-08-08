@@ -2,7 +2,12 @@
 
 ### Changed
 
+## [0.35.2] - 2023-08-08
+
+### Fixed
+
 - Pypika: Added support for the `percentage` step
+- Fix[PyPika]: escape properly column names on GBQ
 
 ## [0.35.1] - 2023-08-01
 
