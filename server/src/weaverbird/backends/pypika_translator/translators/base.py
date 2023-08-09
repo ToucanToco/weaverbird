@@ -15,7 +15,6 @@ from pypika import (
     Query,
     Schema,
     Table,
-    Tables,
     analytics,
     functions,
 )
@@ -304,23 +303,15 @@ class SQLTranslator(ABC):
                 return functions.Count
             case "count distinct":
                 return CountDistinct
-            case "max":
+            # FIXME first and last are treated as min and max, to get fast results
+            # A more correct query would be to use a subquery with ROW_NUMBER() [PARTITION BY ... OVER ... [DESC]]
+            # and then select only the rows where row number is 1
+            case "max" | "last":
                 return functions.Max
-            case "min":
+            case "min" | "first":
                 return functions.Min
             case "sum":
                 return functions.Sum
-            case _:
-                return None
-
-    def _get_window_function(
-        self: Self, window_function: "AggregateFn"
-    ) -> analytics.AnalyticFunction | None:
-        match window_function:
-            case "first":
-                return analytics.FirstValue
-            case "last":
-                return analytics.LastValue
             case _:
                 return None
 
@@ -347,39 +338,6 @@ class SQLTranslator(ABC):
         step: "AggregateStep",
     ) -> StepContext:
         agg_selected: list[Field] = []
-        window_selected: list[tuple[int, Field]] = []
-        window_subquery_list: list[Tables] = []
-
-        def _build_window_subquery() -> Any:
-            min_window_index = min(c[0] for c in window_selected)
-            first_wq = Table(f"wq{min_window_index}")
-            merged_query = (
-                self.QUERY_CLS.from_(window_subquery_list[0])
-                .select(
-                    *step.on,
-                    *[
-                        getattr(first_wq, col[1].alias)
-                        for col in window_selected
-                        if col[0] == min_window_index
-                    ],
-                )
-                .as_("window_subquery")
-            )
-            for index, sq in enumerate(window_subquery_list[1:]):
-                wq_temp = Table(f"wq{min_window_index + index + 1}")
-                merged_query = (
-                    merged_query.join(sq)
-                    .on_field(*step.on)
-                    .select(
-                        *[
-                            getattr(wq_temp, col[1].alias)
-                            for col in window_selected
-                            if col[0] == min_window_index + index + 1
-                        ]
-                    )
-                    .as_("window_subquery")
-                )
-            return merged_query
 
         # Handle aggregation and analytics functions in distinct subqueries
 
@@ -392,60 +350,15 @@ class SQLTranslator(ABC):
                     new_agg_col = agg_fn(column_field).as_(new_column_name)
                     agg_selected.append(new_agg_col)
 
-            elif window_fn := self._get_window_function(aggregation.agg_function):
-                agg_cols: list[Field] = []
-                for window_index, window_column_name in enumerate(aggregation.columns):
-                    column_field = Table(prev_step_table)[window_column_name]
-                    step_on_formatted = [format_quotes(col, builder.QUOTE_CHAR) for col in step.on]
-                    new_window_col = (
-                        window_fn(column_field)
-                        .over(*step_on_formatted)
-                        .orderby(column_field)
-                        .rows(analytics.Preceding(), analytics.Following())
-                        .as_(aggregation.new_columns[window_index])
-                    )
-
-                    window_selected.append((step_index, new_window_col))
-                    agg_cols.append(new_window_col)
-                window_subquery_list.append(
-                    self.QUERY_CLS.from_(prev_step_table)
-                    .select(*step.on, *agg_cols)
-                    .distinct()
-                    .as_(f"wq{step_index}")
-                )
-
             else:  # pragma: no cover
                 raise NotImplementedError(
                     f"[{self.DIALECT}] Aggregation for {aggregation.agg_function!r} is not yet implemented"
                 )
-        if window_subquery_list and agg_selected:
-            window_table = Table("window_subquery")
-            all_windows_subquery = _build_window_subquery()
-            agg_query = (
-                self.QUERY_CLS.from_(prev_step_table)
-                .select(*agg_selected, *step.on)
-                .groupby(*step.on)
-                .orderby(*step.on, order=Order.asc)
-            ).as_("agg_subquery")
-            agg_table = Table("agg_subquery")
-            merged_selected: list[str | Field] = [
-                *step.on,
-                *[getattr(agg_table, col.alias) for col in agg_selected],
-                *[getattr(window_table, col[1].alias) for col in window_selected],
-            ]
-            merged_query = (
-                self.QUERY_CLS.from_(agg_query)
-                .select(*merged_selected)
-                .inner_join(all_windows_subquery)
-                .on_field(*step.on)
-            )
-        elif agg_selected:
+        if agg_selected:
             selected_cols = [*step.on, *agg_selected]
             merged_query = (
                 self.QUERY_CLS.from_(prev_step_table).select(*selected_cols).groupby(*step.on)
             )
-        elif window_subquery_list:
-            merged_query = _build_window_subquery()
         else:
             merged_query = self.QUERY_CLS.from_(prev_step_table).groupby(*step.on).select(*step.on)
         query: "QueryBuilder"
@@ -468,7 +381,6 @@ class SQLTranslator(ABC):
             selected_col_names = [
                 *step.on,
                 *(f.alias for f in agg_selected),
-                *(f[1].alias for f in window_selected),
             ]
             return StepContext(
                 merged_query.orderby(*step.on) if step.on else merged_query,

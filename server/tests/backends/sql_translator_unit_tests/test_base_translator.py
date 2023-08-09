@@ -142,15 +142,9 @@ def test_get_query_str(base_translator: BaseTranslator):
     assert query == expected
 
 
-@pytest.mark.parametrize("agg_type", ["avg", "count", "count distinct", "max", "min", "sum"])
+@pytest.mark.parametrize("agg_type", ["avg", "count", "count distinct", "max", "min", "sum", "first", "last"])
 def test_get_aggregate_function(base_translator: BaseTranslator, agg_type):
     agg_func = base_translator._get_aggregate_function(agg_type)
-    assert issubclass(agg_func, functions.AggregateFunction)
-
-
-@pytest.mark.parametrize("agg_type", ["first", "last"])
-def test__get_window_function(base_translator: BaseTranslator, agg_type):
-    agg_func = base_translator._get_window_function(agg_type)
     assert issubclass(agg_func, functions.AggregateFunction)
 
 
@@ -171,7 +165,7 @@ def test_aggregate_raise_expection(
         base_translator.aggregate(step=step, columns=["*"], **default_step_kwargs)
 
 
-@pytest.mark.parametrize("agg_type", ["avg", "count", "count distinct", "max", "min", "sum"])
+@pytest.mark.parametrize("agg_type", ["avg", "count", "count distinct", "max", "min", "sum", "first", "last"])
 def test_aggregate(
     base_translator: BaseTranslator, agg_type: str, default_step_kwargs: dict[str, Any]
 ):
@@ -199,7 +193,7 @@ def test_aggregate(
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
-@pytest.mark.parametrize("agg_type", ["avg", "count", "count distinct", "max", "min", "sum"])
+@pytest.mark.parametrize("agg_type", ["avg", "count", "count distinct", "max", "min", "sum", "first", "last"])
 def test_aggregate_with_original_granularity(
     base_translator: BaseTranslator, agg_type: str, default_step_kwargs: dict[str, Any]
 ):
