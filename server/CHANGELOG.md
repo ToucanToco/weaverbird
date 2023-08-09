@@ -1,5 +1,12 @@
 # Changelog (weaverbird python package)
 
+## Unreleased
+
+### Changed
+
+- SQL translation of the `first` and `last` aggregations was implemented with window functions. However, this is
+  way less inefficient than traditional `GROUP BY`. They are now interpreted as `min` and `max` respectively.
+
 ## [0.34.0] - 2023-07-10
 
 ### Changed
