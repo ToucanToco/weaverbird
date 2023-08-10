@@ -11,6 +11,7 @@ from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators.base import (
     DataTypeMapping,
+    DateFormatMapping,
     SQLTranslator,
     StepContext,
 )
@@ -35,6 +36,14 @@ class MySQLTranslator(SQLTranslator):
         text="CHAR",
         datetime="DATETIME",
         timestamp="TIMESTAMP",
+    )
+    DATE_FORMAT_MAPPING = DateFormatMapping(
+        # https://dev.mysql.com/doc/refman/8.0/en/date-and-time-functions.html#function_date-format
+        day_number="%d",
+        month_number="%m",
+        month_short="%b",
+        month_full="%M",
+        year="%Y",
     )
     # Requires MySQL>=8
     SUPPORT_ROW_NUMBER = True
