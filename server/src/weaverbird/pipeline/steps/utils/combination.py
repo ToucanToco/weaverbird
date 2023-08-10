@@ -24,15 +24,13 @@ async def resolve_if_reference(
     reference_resolver: ReferenceResolver,
     pipeline_or_domain_name_or_ref: PipelineOrDomainNameOrReference,
 ) -> PipelineOrDomainName | None:
-    from weaverbird.pipeline.references import PipelineWithRefs
-
     if isinstance(pipeline_or_domain_name_or_ref, Reference):
         pipeline_or_domain_name = await reference_resolver(pipeline_or_domain_name_or_ref)
         if isinstance(pipeline_or_domain_name, list):
+            from weaverbird.pipeline.pipeline import PipelineWithRefs, ReferenceUnresolved
+
             # Recursively resolve any reference in sub-pipelines
             pipeline = PipelineWithRefs(steps=pipeline_or_domain_name)
-            from weaverbird.pipeline.references import ReferenceUnresolved
-
             try:
                 pipeline_without_refs = await pipeline.resolve_references(reference_resolver)
                 return pipeline_without_refs.dict()["steps"]

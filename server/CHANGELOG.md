@@ -2,6 +2,10 @@
 
 ### Changed
 
+### Breaking
+
+- Changed pipeline with refs module API's path.
+
 ## [0.35.2] - 2023-08-08
 
 ### Fixed
