@@ -4,7 +4,7 @@ import pytest
 from pypika import Field, Query, functions
 
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
-from weaverbird.backends.pypika_translator.translators.base import SQLTranslator
+from weaverbird.backends.pypika_translator.translators.base import DateFormatMapping, SQLTranslator
 from weaverbird.pipeline import steps
 
 
@@ -14,6 +14,13 @@ class DateFormatTranslator(SQLTranslator):
     FROM_DATE_OP = FromDateOp.TO_CHAR
     REGEXP_OP = RegexOp.SIMILAR_TO
     TO_DATE_OP = ToDateOp.TIMESTAMP
+    DATE_FORMAT_MAPPING = DateFormatMapping(
+        day_number="%d",
+        month_number="%m",
+        month_short="%b",
+        month_full="%M",
+        year="%Y",
+    )
 
 
 ALL_TABLES = {"users": ["name", "pseudonyme", "age"]}
