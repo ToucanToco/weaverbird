@@ -109,6 +109,15 @@ class DataTypeMapping:
     timestamp: str
 
 
+@dataclass(kw_only=True)
+class DateFormatMapping:
+    day_number: str  # day number (01-31)
+    month_number: str  # month number (01–12)
+    month_short: str  # abbreviated month name (e.g. Dec)
+    month_full: str  # full month name (e.g. December)
+    year: str  # year (4 or more digits)
+
+
 @dataclass
 class StepContext:
     selectable: Selectable | LiteralValue
@@ -161,6 +170,7 @@ class SQLTranslator(ABC):
     QUERY_CLS: Query
     VALUE_WRAPPER_CLS = ValueWrapper
     DATA_TYPE_MAPPING: DataTypeMapping
+    DATE_FORMAT_MAPPING: DateFormatMapping
     # supported extra functions
     SUPPORT_ROW_NUMBER: bool
     SUPPORT_SPLIT_PART: bool
@@ -330,6 +340,21 @@ class SQLTranslator(ABC):
                 return analytics.LastValue
             case _:
                 return None
+
+    @classmethod
+    def _adapt_date_format(cls, format: str) -> str:
+        """
+        We have some custom formats written with the syntax
+        https://pandas.pydata.org/docs/reference/api/pandas.Period.strftime.html
+        that need to be adapted for the SQL engine
+        """
+        return (
+            format.replace("%d", cls.DATE_FORMAT_MAPPING.day_number)
+            .replace("%m", cls.DATE_FORMAT_MAPPING.month_number)
+            .replace("%b", cls.DATE_FORMAT_MAPPING.month_short)
+            .replace("%B", cls.DATE_FORMAT_MAPPING.month_full)
+            .replace("%Y", cls.DATE_FORMAT_MAPPING.year)
+        )
 
     def absolutevalue(
         self: Self,
@@ -1180,7 +1205,7 @@ class SQLTranslator(ABC):
 
         query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *(c for c in columns if c != step.column),
-            convert_fn(col_field, step.format).as_(step.column),
+            convert_fn(col_field, self._adapt_date_format(step.format)).as_(step.column),
         )
         return StepContext(query, columns)
 
@@ -1608,9 +1633,9 @@ class SQLTranslator(ABC):
                 case _:
                     raise NotImplementedError(f"[{self.DIALECT}] todate has no set operator")
             date_selection = (
-                self._cast_to_timestamp(convert_fn(col_field, step.format))
+                self._cast_to_timestamp(convert_fn(col_field, self._adapt_date_format(step.format)))
                 if convert_fn != ToDateOp.TIMESTAMP
-                else convert_fn(col_field, step.format)
+                else convert_fn(col_field, self._adapt_date_format(step.format))
             )
         else:
             date_selection = self._cast_to_timestamp(col_field)

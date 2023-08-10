@@ -12,6 +12,7 @@ from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp
 from weaverbird.backends.pypika_translator.translators.base import (
     DataTypeMapping,
     DateAddWithoutUnderscore,
+    DateFormatMapping,
     SQLTranslator,
     StepContext,
 )
@@ -34,6 +35,14 @@ class RedshiftTranslator(PostgreSQLTranslator):
         text="TEXT",
         datetime="TIMESTAMP",
         timestamp="TIMESTAMP",
+    )
+    DATE_FORMAT_MAPPING = DateFormatMapping(
+        # https://docs.aws.amazon.com/redshift/latest/dg/r_DATEFORMAT_and_TIMEFORMAT_strings.html
+        day_number="DD",
+        month_number="MM",
+        month_short="MON",
+        month_full="MON",
+        year="YYYY",
     )
     SUPPORT_ROW_NUMBER = True
     SUPPORT_SPLIT_PART = True
