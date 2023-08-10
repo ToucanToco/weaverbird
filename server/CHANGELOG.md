@@ -2,6 +2,12 @@
 
 ### Changed
 
+## [0.35.3] - 2023-08-10
+
+### Fixed
+
+- Fix[PyPika]: adapt custom date formats for SQL engines.
+
 ## [0.35.2] - 2023-08-08
 
 ### Fixed
