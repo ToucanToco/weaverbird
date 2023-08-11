@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Fix[PyPika]: ithenelse step supports numerical values
+- Fix[PyPika]: `ifthenelse` step supports numerical values
 
 ### Changed
 
