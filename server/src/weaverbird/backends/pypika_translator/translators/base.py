@@ -1251,7 +1251,7 @@ class SQLTranslator(ABC):
                 return case_.else_(else_value)
             except (json.JSONDecodeError, TypeError):
                 # the value is a formula or a string literal that can't be parsed
-                else_value = formula_to_term(else_, table)  # type: ignore
+                else_value = formula_to_term(else_, table)
                 return case_.else_(else_value)
 
     def ifthenelse(
