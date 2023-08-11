@@ -1,5 +1,11 @@
 # Changelog (weaverbird python package)
 
+## Unreleased
+
+### Fixed
+
+- Fix[PyPika]: ithenelse step supports numerical values
+
 ### Changed
 
 ## [0.35.3] - 2023-08-10

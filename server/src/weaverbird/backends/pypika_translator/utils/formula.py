@@ -1,4 +1,5 @@
 import operator
+from typing import Any
 
 from pypika import Table
 from pypika.functions import NullIf
@@ -37,8 +38,11 @@ def _eval_expression(expr: Expression, table: Table) -> Term:
     return Term.wrap_constant(expr)
 
 
-def formula_to_term(formula: str, table: Table) -> Term:
+def formula_to_term(formula: Any, table: Table) -> Term:
     try:
         return _eval_expression(FormulaParser(formula).parse(), table)
-    except SyntaxError:  # Can happen in case formula is actually a string literal
+    except (
+        SyntaxError,
+        AttributeError,
+    ):  # Can happen in case formula is actually a string literal or a number
         return Term.wrap_constant(formula)
