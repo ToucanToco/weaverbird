@@ -2,8 +2,10 @@
 
 ## Unreleased
 
+## [0.107.0] - 2023-08-16
+
 ### Added
-- NativeSQL translator: Added support for steps concatenate and fromdate
+- NativeSQL translator: Added support for the concatenate and fromdate steps
 - NativeSQL translator: Added support for the percentage step
 - NativeSQL translator: Added support for the concatenate step
 
@@ -1510,6 +1512,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
+[0.107.0]: https://github.com/ToucanToco/weaverbird/compare/v0.106.0...v0.107.0
 [0.106.0]: https://github.com/ToucanToco/weaverbird/compare/v0.105.1...v0.106.0
 [0.105.1]: https://github.com/ToucanToco/weaverbird/compare/v0.105.0...v0.105.1
 [0.105.0]: https://github.com/ToucanToco/weaverbird/compare/v0.104.0...v0.105.0
