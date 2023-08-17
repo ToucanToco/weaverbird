@@ -270,7 +270,7 @@ def test_skip_void_parameter_from_variables_for_mongo_steps():
                         {"$or": [{"property2": "value2"}, {"property3": {}}]},
                         {"$nor": [{"property4": {}}, {"property5": {}}]},
                     ],
-                    "$or": [],
+                    "$or": [{"x": {"$eq": "__VOID__"}}],
                     "$nor": [
                         {
                             "property9": {
@@ -485,3 +485,21 @@ def test_skip_void_parameter_from_variables_for_mongo_steps():
         {"$unwind": "$_vqbSortedArray"},
         {"$replaceRoot": {"newRoot": "$_vqbSortedArray"}},
     ]
+
+
+def test_remove_void_conditions_from_mongo_step_should_only_apply_to_match_operator():
+    step = {
+        "$project": {
+            "Keyword": "$Keyword",
+            "Diff_Organic": "$Diff_Organic",
+            "_vqbToUnpivot": {
+                "$objectToArray": {
+                    "Current_Month": {"$ifNull": ["$Current_Month", None]},
+                    "Previous_Month": {"$ifNull": ["$Previous_Month", None]},
+                }
+            },
+        }
+    }
+    assert remove_void_conditions_from_mongo_steps(step) == step
+    # A list of steps should start with a match-all operation
+    assert remove_void_conditions_from_mongo_steps([step]) == [{"$match": {}}, step]

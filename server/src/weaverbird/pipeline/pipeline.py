@@ -1,4 +1,4 @@
-from typing import Annotated, Any
+from typing import Annotated, Any, Iterable
 
 from pydantic import BaseModel, Field
 
@@ -193,15 +193,6 @@ PipelineStepWithVariables = Annotated[
 ]
 
 VOID_REPR = "__VOID__"
-EXCLUDE_CLEANING_FOR = (
-    "prevValue",  # for the rank step, this needs to be kept
-    "prevRank",  # for the rank step, this needs to be kept
-    "$ne",  # for isnotnull (None -> null for mongo),
-    "$eq",  # for isnull (None -> null for mongo)
-    "localField",
-    "foreignField",
-    "_id",
-)
 
 
 def _remove_void_from_combo_condition(
@@ -265,41 +256,55 @@ def remove_void_conditions_from_filter_steps(
     return final_steps
 
 
-def _remove_empty_elements(data: Any) -> Any:
-    """
-    This should delete all empty arrays and empty dict
+def _is_empty(data: Any) -> bool:
+    if isinstance(data, (list, dict)):
+        return not bool(data)
+    return False
+
+
+def _remove_empty_elements(data: Any) -> tuple[Any, bool]:
+    """Returns the passed data with empty elements removed.
+
+    The passed data is returned along with a boolean indicating wether it is empty
     """
     if isinstance(data, dict):
-        data_transformed: dict[str, Any] = {}
+        data_transformed: dict[str, Any] | list[Any] = {}
 
         for k, v in data.items():
-            if k in EXCLUDE_CLEANING_FOR:
-                data_transformed[k] = v
-            else:
-                if (cleaned := _remove_empty_elements(v)) is not None:
-                    data_transformed[k] = cleaned
+            cleaned, is_empty = _remove_empty_elements(v)
+            if not is_empty:
+                data_transformed[k] = cleaned
 
-                if cleaned == [] and k in ["$or", "$nor", "$and"]:
-                    data_transformed[k] = None
-
-        if isinstance(data_transformed, list):
-            return data_transformed
-        else:
-            return data_transformed or None
+        return data_transformed, _is_empty(data_transformed)
 
     elif isinstance(data, list):
+        # NOTE: Some of our steps, such as rank or addmissingdates, set some values in the pipeline
+        # to and empty list. In consequence, a sanitized list should only be considered empty if it
+        # was not already empty before the transformation
+        if len(data) < 1:
+            return [], False
         data_transformed = [
-            cleaned
-            for item in data
-            if (cleaned := _remove_empty_elements(item)) is not None  # type: ignore[assignment]
+            elem
+            for (elem, is_empty) in (_remove_empty_elements(item) for item in data)
+            if not is_empty
         ]
 
-        return data_transformed
+        return data_transformed, _is_empty(data_transformed)
     else:
-        return data
+        return data, _is_empty(data)
 
 
-def _clean_mongo_steps(
+def _remove_void_entries_from_dict(d: dict[str, Any]) -> Iterable[tuple[str, Any]]:
+    for key, val in d.items():
+        if isinstance(val, str):
+            if val.strip() == VOID_REPR:
+                continue
+            yield key, val
+        else:
+            yield key, _remove_void_entries(val)
+
+
+def _remove_void_entries(
     mongo_steps: dict[str, Any] | list | None,
 ) -> dict[str, Any] | list | None:
     """
@@ -307,24 +312,9 @@ def _clean_mongo_steps(
     """
 
     if isinstance(mongo_steps, dict):
-        step = {}
-        for key, val in mongo_steps.items():
-            if isinstance(val, str):
-                if val.strip() == VOID_REPR:
-                    continue
-                step[key] = val
-            else:
-                step[key] = _clean_mongo_steps(val)  # type: ignore[assignment]
-
-        return _remove_empty_elements(step)
+        return dict(_remove_void_entries_from_dict(mongo_steps))
     elif isinstance(mongo_steps, list):
-        return _remove_empty_elements(
-            [
-                s_transformed
-                for s_transformed in (_clean_mongo_steps(s) for s in mongo_steps)
-                if s_transformed is not None
-            ]
-        )
+        return [_remove_void_entries(step) for step in mongo_steps]
     else:
         return mongo_steps
 
@@ -378,7 +368,9 @@ def _sanitize_query_matches(query: dict | list[dict]) -> Any:
 def remove_void_conditions_from_mongo_steps(
     mongo_steps: dict | list[dict],
 ) -> dict | list[dict]:
-    return _sanitize_query_matches(_clean_mongo_steps(mongo_steps) or [])
+    without_voids = _remove_void_entries(mongo_steps) or []
+    without_empty_elements, _ = _remove_empty_elements(without_voids)
+    return _sanitize_query_matches(without_empty_elements)
 
 
 # TODO move to a dedicated variables module
