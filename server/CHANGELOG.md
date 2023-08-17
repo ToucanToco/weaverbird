@@ -1,5 +1,9 @@
 # Changelog (weaverbird python package)
 
+### Fixed
+
+- `remove_void_conditions_from_mongo_steps` now preserves falsy values in queries, such as `None`, `{}` or `[]`
+
 ## [0.35.4] - 2023-08-11
 
 ### Fixed
