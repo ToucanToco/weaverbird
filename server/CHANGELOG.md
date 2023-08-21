@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.36.0] - 2023-08-21
+
 ### Changed
 
 - Pypika: The `percentage` step now returns a value between 0 and 1 to be consistent with the mongo and pandas backends
