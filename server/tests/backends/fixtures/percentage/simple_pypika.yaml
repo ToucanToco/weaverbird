@@ -16,34 +16,34 @@ expected:
   data:
   - name: Superstrong beer
     price_per_l: 0.16
-    price_per_l_percentage: 26.4900662252
+    price_per_l_percentage: 0.264900662252
   - name: Ninkasi Ploploplop
     price_per_l: 0.054
-    price_per_l_percentage: 8.940397351
+    price_per_l_percentage: 0.08940397351
   - name: Brewdog Nanny State Alcoholvrij
     price_per_l: 0.005
-    price_per_l_percentage: 0.8278145695
+    price_per_l_percentage: 0.008278145695
   - name: Ardwen Blonde
     price_per_l: 0.056
-    price_per_l_percentage: 9.2715231788
+    price_per_l_percentage: 0.092715231788
   - name: "Cuvée des Trolls"
     price_per_l: 0.07
-    price_per_l_percentage: 11.5894039735
+    price_per_l_percentage: 0.115894039735
   - name: Weihenstephan Hefe Weizen Alcoholarm
     price_per_l: 0.005
-    price_per_l_percentage: 0.8278145695
+    price_per_l_percentage: 0.008278145695
   - name: Bellfield Lawless Village IPA
     price_per_l: 0.045
-    price_per_l_percentage: 7.4503311258
+    price_per_l_percentage: 0.074503311258
   - name: Pauwel Kwak
     price_per_l: 0.084
-    price_per_l_percentage: 13.9072847682
+    price_per_l_percentage: 0.139072847682
   - name: Brasserie De Sutter Brin de Folie
     price_per_l: 0.065
-    price_per_l_percentage: 10.761589404
+    price_per_l_percentage: 0.10761589404
   - name: Brugse Zot blonde
     price_per_l: 0.06
-    price_per_l_percentage: 9.9337748344
+    price_per_l_percentage: 0.099337748344
   schema:
     fields:
     - name: price_per_l

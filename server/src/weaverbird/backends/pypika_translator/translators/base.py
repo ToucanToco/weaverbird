@@ -1384,7 +1384,6 @@ class SQLTranslator(ABC):
 
         perc_column = (
             functions.Cast(table[step.column], self.DATA_TYPE_MAPPING.float)
-            * 100
             / agg_query[sum_col_name]
         ).as_(new_col_name)
 
