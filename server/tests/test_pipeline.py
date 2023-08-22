@@ -487,19 +487,25 @@ def test_skip_void_parameter_from_variables_for_mongo_steps():
     ]
 
 
-def test_remove_void_conditions_from_mongo_step_should_only_apply_to_match_operator():
-    step = {
-        "$project": {
-            "Keyword": "$Keyword",
-            "Diff_Organic": "$Diff_Organic",
-            "_vqbToUnpivot": {
-                "$objectToArray": {
-                    "Current_Month": {"$ifNull": ["$Current_Month", None]},
-                    "Previous_Month": {"$ifNull": ["$Previous_Month", None]},
-                }
-            },
-        }
-    }
+@pytest.mark.parametrize(
+    "step",
+    (
+        {
+            "$project": {
+                "Keyword": "$Keyword",
+                "Diff_Organic": "$Diff_Organic",
+                "_vqbToUnpivot": {
+                    "$objectToArray": {
+                        "Current_Month": {"$ifNull": ["$Current_Month", None]},
+                        "Previous_Month": {"$ifNull": ["$Previous_Month", None]},
+                    }
+                },
+            }
+        },
+        {"$group": {"_id": {}, "sum_value": {"$sum": "$Value1"}}},
+    ),
+)
+def test_remove_void_conditions_from_mongo_step_should_only_apply_to_match_operator(step: dict):
     assert remove_void_conditions_from_mongo_steps(step) == step
     # A list of steps should start with a match-all operation
     assert remove_void_conditions_from_mongo_steps([step]) == [{"$match": {}}, step]

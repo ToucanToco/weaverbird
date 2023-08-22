@@ -262,8 +262,8 @@ def _is_empty(data: Any) -> bool:
     return False
 
 
-def _remove_empty_elements(data: Any) -> tuple[Any, bool]:
-    """Returns the passed data with empty elements removed.
+def _remove_empty_elements_from_match_steps(data: Any, depth: int = 0) -> tuple[Any, bool]:
+    """Returns the passed data with empty elements removed from $match steps.
 
     The passed data is returned along with a boolean indicating wether it is empty
     """
@@ -271,7 +271,11 @@ def _remove_empty_elements(data: Any) -> tuple[Any, bool]:
         data_transformed: dict[str, Any] | list[Any] = {}
 
         for k, v in data.items():
-            cleaned, is_empty = _remove_empty_elements(v)
+            # If we are at the root level and the step is not a match, skip it
+            if depth == 0 and k != "$match":
+                data_transformed[k] = v
+                continue
+            cleaned, is_empty = _remove_empty_elements_from_match_steps(v, depth=depth + 1)
             if not is_empty:
                 data_transformed[k] = cleaned
 
@@ -279,13 +283,17 @@ def _remove_empty_elements(data: Any) -> tuple[Any, bool]:
 
     elif isinstance(data, list):
         # NOTE: Some of our steps, such as rank or addmissingdates, set some values in the pipeline
-        # to and empty list. In consequence, a sanitized list should only be considered empty if it
+        # to an empty list. In consequence, a sanitized list should only be considered empty if it
         # was not already empty before the transformation
         if len(data) < 1:
             return [], False
         data_transformed = [
             elem
-            for (elem, is_empty) in (_remove_empty_elements(item) for item in data)
+            for (elem, is_empty) in (
+                # Only increasing depth for dicts
+                _remove_empty_elements_from_match_steps(item, depth=depth)
+                for item in data
+            )
             if not is_empty
         ]
 
@@ -369,7 +377,7 @@ def remove_void_conditions_from_mongo_steps(
     mongo_steps: dict | list[dict],
 ) -> dict | list[dict]:
     without_voids = _remove_void_entries(mongo_steps) or []
-    without_empty_elements, _ = _remove_empty_elements(without_voids)
+    without_empty_elements, _ = _remove_empty_elements_from_match_steps(without_voids)
     return _sanitize_query_matches(without_empty_elements)
 
 

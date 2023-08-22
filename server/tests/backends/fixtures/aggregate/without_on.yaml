@@ -1,0 +1,63 @@
+exclude:
+- athena_pypika
+- bigquery_pypika
+- mysql_pypika
+- postgres_pypika
+- redshift_pypika
+- snowflake_pypika
+step:
+  pipeline:
+  - aggregations:
+    - aggfunction: count
+      columns:
+      - LABEL
+      newcolumns:
+      - LABEL_COUNT
+    keepOriginalGranularity: false
+    name: aggregate
+    'on': []
+input:
+  data:
+  - DOUM: Group 1
+    LABEL: Label 1
+    VALUE1: 13
+    VALUE2: 10
+  - DOUM: Group 1
+    LABEL: Label 2
+    VALUE1: 7
+    VALUE2: 21
+  - DOUM: Group 1
+    LABEL: Label 3
+    VALUE1: 20
+    VALUE2: 4
+  - DOUM: Group 2
+    LABEL: Label 4
+    VALUE1: 1
+    VALUE2: 17
+  - DOUM: Group 2
+    LABEL: Label 5
+    VALUE1: 10
+    VALUE2: 12
+  - DOUM: Group 2
+    LABEL: Label 6
+    VALUE1: 5
+    VALUE2: 2
+  schema:
+    fields:
+    - name: LABEL
+      type: string
+    - name: DOUM
+      type: string
+    - name: VALUE1
+      type: integer
+    - name: VALUE2
+      type: integer
+    pandas_version: 0.20.0
+expected:
+  data:
+  - LABEL_COUNT: 6
+  schema:
+    fields:
+    - name: LABEL_COUNT
+      type: integer
+    pandas_version: 0.20.0
