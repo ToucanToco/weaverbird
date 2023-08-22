@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.36.1] - 2023-08-22
+
 ### Fixed
 
 - `remove_void_conditions_from_mongo_steps` now only applies to `$match` steps
