@@ -3,7 +3,7 @@ from pypika.enums import Dialects
 from pypika.terms import Case, CustomFunction, Field, Term
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
-from weaverbird.backends.pypika_translator.operators import RegexOp, ToDateOp
+from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators.base import (
     DataTypeMapping,
     DateFormatMapping,
@@ -36,6 +36,7 @@ class AthenaTranslator(SQLTranslator):
     )
     REGEXP_OP = RegexOp.REGEXP_LIKE
     TO_DATE_OP = ToDateOp.DATE_PARSE
+    FROM_DATE_OP = FromDateOp.DATE_FORMAT
 
     @classmethod
     def _add_date(

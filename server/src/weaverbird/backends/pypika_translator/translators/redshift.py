@@ -36,14 +36,6 @@ class RedshiftTranslator(PostgreSQLTranslator):
         datetime="TIMESTAMP",
         timestamp="TIMESTAMP",
     )
-    DATE_FORMAT_MAPPING = DateFormatMapping(
-        # https://docs.aws.amazon.com/redshift/latest/dg/r_DATEFORMAT_and_TIMEFORMAT_strings.html
-        day_number="DD",
-        month_number="MM",
-        month_short="MON",
-        month_full="MON",
-        year="YYYY",
-    )
     SUPPORT_ROW_NUMBER = True
     SUPPORT_SPLIT_PART = True
     SUPPORT_UNPIVOT = True

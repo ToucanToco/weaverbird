@@ -14,6 +14,7 @@ class RegexOp(str, Enum):
 class FromDateOp(Enum):
     DATE_FORMAT = auto()
     TO_CHAR = auto()
+    FORMAT_DATE = auto()
 
 
 class ToDateOp(Enum):

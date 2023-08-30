@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Fixed
+
+- PyPika: The `fromdate` step now has consistent formatting between all backends
+- PyPika: Postgres full months are no longer padded to 9 chars
+- PyPika: Added support for `fromdate` to Athena and Google Big Query backends
+
 ## [0.36.1] - 2023-08-22
 
 ### Fixed
