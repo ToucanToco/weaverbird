@@ -12,7 +12,6 @@ from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp
 from weaverbird.backends.pypika_translator.translators.base import (
     DataTypeMapping,
     DateAddWithoutUnderscore,
-    DateFormatMapping,
     SQLTranslator,
     StepContext,
 )
