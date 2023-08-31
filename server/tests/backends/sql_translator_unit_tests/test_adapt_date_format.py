@@ -16,7 +16,7 @@ from weaverbird.backends.pypika_translator.translators import (
         ("%Y-%m-%d", "YYYY-MM-DD"),
         ("%d/%m/%Y", "DD/MM/YYYY"),
         ("%d %b %Y", "DD Mon YYYY"),
-        ("%d %B %Y", "DD Month YYYY"),
+        ("%d %B %Y", "DD FMMonth YYYY"),
     ],
 )
 def test_adapt_date_format_postgresql(input: str, expected: str):
@@ -54,8 +54,8 @@ def test_adapt_date_format_gbq(input: str, expected: str):
     [
         ("%Y-%m-%d", "YYYY-MM-DD"),
         ("%d/%m/%Y", "DD/MM/YYYY"),
-        ("%d %b %Y", "DD MON YYYY"),
-        ("%d %B %Y", "DD MON YYYY"),
+        ("%d %b %Y", "DD Mon YYYY"),
+        ("%d %B %Y", "DD FMMonth YYYY"),
     ],
 )
 def test_adapt_date_format_redshift(input: str, expected: str):
