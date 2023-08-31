@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.36.2] - 2023-08-31
+
 ### Fixed
 
 - PyPika: The `fromdate` step now has consistent formatting between all backends
