@@ -1,0 +1,42 @@
+exclude:
+- mongo
+- pandas
+- snowflake
+step:
+  pipeline:
+  - name: fromdate
+    column: brewing_date
+    format: '%Y-%m-%d'
+  - name: select
+    columns:
+      - name
+      - brewing_date
+expected:
+  data:
+  - brewing_date: '2022-01-01'
+    name: Superstrong beer
+  - brewing_date: '2022-01-02'
+    name: Ninkasi Ploploplop
+  - brewing_date: '2022-01-03'
+    name: Brewdog Nanny State Alcoholvrij
+  - brewing_date: '2022-01-04'
+    name: Ardwen Blonde
+  - brewing_date: '2022-01-05'
+    name: "Cuvée des Trolls"
+  - brewing_date: '2022-01-06'
+    name: Weihenstephan Hefe Weizen Alcoholarm
+  - brewing_date: '2022-01-07'
+    name: Bellfield Lawless Village IPA
+  - brewing_date: '2022-01-08'
+    name: Pauwel Kwak
+  - brewing_date: '2022-01-09'
+    name: Brasserie De Sutter Brin de Folie
+  - brewing_date: '2022-01-10'
+    name: Brugse Zot blonde
+  schema:
+    fields:
+    - name: name
+      type: string
+    - name: brewing_date
+      type: string
+    pandas_version: 1.4.0

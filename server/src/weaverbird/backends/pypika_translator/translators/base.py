@@ -1200,6 +1200,8 @@ class SQLTranslator(ABC):
                 convert_fn = DateFormat
             case FromDateOp.TO_CHAR:
                 convert_fn = functions.ToChar
+            case FromDateOp.FORMAT_DATE:
+                convert_fn = FormatDate
             case _:
                 raise NotImplementedError(f"[{self.DIALECT}] doesn't have from date operator")
 
@@ -1798,6 +1800,12 @@ class CountDistinct(functions.Count):
 class DateFormat(functions.Function):
     def __init__(self, term: str | Field, date_format: str, alias: str | None = None) -> None:
         super().__init__("DATE_FORMAT", term, date_format, alias=alias)
+
+
+# Of course GBQ must have a different name AND inverted arguments
+class FormatDate(functions.Function):
+    def __init__(self, term: str | Field, date_format: str, alias: str | None = None) -> None:
+        super().__init__("FORMAT_DATE", date_format, term, alias=alias)
 
 
 class RowNumber(AnalyticFunction):

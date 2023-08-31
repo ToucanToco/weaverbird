@@ -98,7 +98,7 @@ class GoogleBigQueryTranslator(SQLTranslator):
     SUPPORT_ROW_NUMBER = True
     SUPPORT_SPLIT_PART = False
     SUPPORT_UNPIVOT = True
-    FROM_DATE_OP = FromDateOp.TO_CHAR
+    FROM_DATE_OP = FromDateOp.FORMAT_DATE
     REGEXP_OP = RegexOp.REGEXP_CONTAINS
 
     @classmethod
