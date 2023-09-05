@@ -1,0 +1,129 @@
+exclude:
+- mongo
+- pandas
+- snowflake
+
+step:
+  pipeline:
+  - name: select
+    columns:
+    - name
+    - brewing_date
+
+  - name: dateextract
+    column: brewing_date
+    dateInfo:
+    - previousDay
+    newColumns:
+    - previous_day
+
+  - name: duration
+    durationIn: seconds
+    endDateColumn: brewing_date
+    newColumnName: duration_seconds
+    startDateColumn: previous_day
+  - name: duration
+    durationIn: minutes
+    endDateColumn: brewing_date
+    newColumnName: duration_minutes
+    startDateColumn: previous_day
+  - name: duration
+    durationIn: hours
+    endDateColumn: brewing_date
+    newColumnName: duration_hours
+    startDateColumn: previous_day
+  - name: duration
+    durationIn: days
+    endDateColumn: brewing_date
+    newColumnName: duration_days
+    startDateColumn: previous_day
+
+expected:
+  data:
+  - brewing_date: '2022-01-01'
+    duration_days: 1
+    duration_hours: 24
+    duration_minutes: 1440
+    duration_seconds: 86400
+    name: Superstrong beer
+    previous_day: '2021-12-31T00:00:00.000'
+  - brewing_date: '2022-01-02'
+    duration_days: 1
+    duration_hours: 24
+    duration_minutes: 1440
+    duration_seconds: 86400
+    name: Ninkasi Ploploplop
+    previous_day: '2022-01-01T00:00:00.000'
+  - brewing_date: '2022-01-03'
+    duration_days: 1
+    duration_hours: 24
+    duration_minutes: 1440
+    duration_seconds: 86400
+    name: Brewdog Nanny State Alcoholvrij
+    previous_day: '2022-01-02T00:00:00.000'
+  - brewing_date: '2022-01-04'
+    duration_days: 1
+    duration_hours: 24
+    duration_minutes: 1440
+    duration_seconds: 86400
+    name: Ardwen Blonde
+    previous_day: '2022-01-03T00:00:00.000'
+  - brewing_date: '2022-01-05'
+    duration_days: 1
+    duration_hours: 24
+    duration_minutes: 1440
+    duration_seconds: 86400
+    name: "Cuv\xE9e des Trolls"
+    previous_day: '2022-01-04T00:00:00.000'
+  - brewing_date: '2022-01-06'
+    duration_days: 1
+    duration_hours: 24
+    duration_minutes: 1440
+    duration_seconds: 86400
+    name: Weihenstephan Hefe Weizen Alcoholarm
+    previous_day: '2022-01-05T00:00:00.000'
+  - brewing_date: '2022-01-07'
+    duration_days: 1
+    duration_hours: 24
+    duration_minutes: 1440
+    duration_seconds: 86400
+    name: Bellfield Lawless Village IPA
+    previous_day: '2022-01-06T00:00:00.000'
+  - brewing_date: '2022-01-08'
+    duration_days: 1
+    duration_hours: 24
+    duration_minutes: 1440
+    duration_seconds: 86400
+    name: Pauwel Kwak
+    previous_day: '2022-01-07T00:00:00.000'
+  - brewing_date: '2022-01-09'
+    duration_days: 1
+    duration_hours: 24
+    duration_minutes: 1440
+    duration_seconds: 86400
+    name: Brasserie De Sutter Brin de Folie
+    previous_day: '2022-01-08T00:00:00.000'
+  - brewing_date: '2022-01-10'
+    duration_days: 1
+    duration_hours: 24
+    duration_minutes: 1440
+    duration_seconds: 86400
+    name: Brugse Zot blonde
+    previous_day: '2022-01-09T00:00:00.000'
+  schema:
+    fields:
+    - type: string
+      name: name
+    - name: brewing_date
+      type: datetime
+    - name: previous_day
+      type: datetime
+    - name: duration_seconds
+      type: number
+    - name: duration_minutes
+      type: number
+    - name: duration_hours
+      type: number
+    - name: duration_days
+      type: number
+    pandas_version: 1.4.0

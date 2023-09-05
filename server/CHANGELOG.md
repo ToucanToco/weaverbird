@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- Pypika: Added support for the `duration` step
 - Pandas: The `rank` step now preserves the original order of rows when sorting by rank
 
 ## [0.36.2] - 2023-08-31
@@ -37,8 +38,6 @@
 ### Fixed
 
 - Fix[PyPika]: `ifthenelse` step supports numerical values
-
-### Changed
 
 ## [0.35.3] - 2023-08-10
 
