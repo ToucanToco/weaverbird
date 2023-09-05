@@ -1,6 +1,5 @@
 .DEFAULT_GOAL := all
-flake8 = flake8 src tests playground.py
-isort = isort src tests playground.py
+ruff = ruff src tests playground.py
 black = black src tests playground.py
 
 .PHONY: clean
@@ -23,13 +22,12 @@ install-playground:
 
 .PHONY: format
 format:
-	poetry run $(isort)
+	poetry run $(ruff) --fix
 	poetry run $(black)
 
 .PHONY: lint
 lint:
-	$(flake8)
-	$(isort) --check-only
+	$(ruff)
 	$(black) --check
 	mypy
 
