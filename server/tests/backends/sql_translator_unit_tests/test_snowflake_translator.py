@@ -153,7 +153,7 @@ def test_date_extract_func(
     prev_table = Table(previous_step)
 
     step = DateExtractStep(
-        new_columns=["brewing_week", "brewing_month", "brewing_day"],
+        new_columns=["brewing_week"],
         date_info=["isoWeek"],
         column="brewing_date",
     )

@@ -48,8 +48,8 @@ def test_rank_with_groups(sample_df: DataFrame):
 
     expected_result = DataFrame(
         {
-            "COUNTRY": ["France", "USA", "France", "USA", "France", "USA", "USA"],
-            "VALUE": [30, 50, 20, 40, 10, 30, 10],
+            "COUNTRY": ["France", "USA", "USA", "France", "USA", "France", "USA"],
+            "VALUE": [30, 50, 40, 20, 30, 10, 10],
             "rank": [1, 1, 2, 2, 3, 3, 4],
         }
     )
