@@ -1,5 +1,4 @@
 import pytest
-
 from weaverbird.pipeline.formula_ast import utils
 
 

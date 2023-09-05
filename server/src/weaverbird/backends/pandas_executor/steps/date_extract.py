@@ -30,7 +30,7 @@ def execute_date_extract(
         date_info = step.date_info
         new_columns = step.new_columns
 
-    for dt_info, new_col in zip(date_info, new_columns):
+    for dt_info, new_col in zip(date_info, new_columns, strict=True):
         series_dt = to_datetime(df[step.column], utc=True)
         series_dt_accessor = series_dt.dt
         if dt_info == "week":

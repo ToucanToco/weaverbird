@@ -27,7 +27,7 @@ def translate_totals(step: TotalsStep) -> list[MongoStep]:
     # get combinations, remove last combo (most granular combination of columns
     # so not useful to compute total rows) and add an empty tuple (to compute the grand total)
     combos: list[tuple] = combinations(to_combine)[:-1]
-    combos.append(tuple())
+    combos.append(())
 
     for agg_step in step.aggregations:
         for i in range(len(agg_step.columns)):

@@ -1,7 +1,6 @@
 import numpy as np
 import pytest
 from pandas import DataFrame
-
 from weaverbird.backends.pandas_executor.steps import execute_aggregate
 from weaverbird.exceptions import DuplicateColumnError
 from weaverbird.pipeline.steps import AggregateStep

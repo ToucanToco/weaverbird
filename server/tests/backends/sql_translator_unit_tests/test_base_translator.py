@@ -6,7 +6,6 @@ import pytest
 from pypika import AliasedQuery, Case, Field, Order, Query, Schema, Table, analytics, functions
 from pypika.enums import JoinType
 from pypika.terms import LiteralValue, Term, ValueWrapper
-
 from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, SQLTranslator
 from weaverbird.backends.pypika_translator.translators.exceptions import (
     ForbiddenSQLStep,
@@ -754,7 +753,7 @@ def test_no_extra_quotes_in_base_translator_with_entire_pipeline(base_translator
 
     translated = base_translator.get_query_str(steps=pipeline)
     assert translated == (
-        'WITH __step_0_basetranslator__ AS (SELECT "name","pseudonyme","age","id","project_id" FROM "test_schema"."users") '
+        'WITH __step_0_basetranslator__ AS (SELECT "name","pseudonyme","age","id","project_id" FROM "test_schema"."users") '  # noqa: E501
         'SELECT "name","pseudonyme","age","id","project_id" FROM "__step_0_basetranslator__"'
     )
 

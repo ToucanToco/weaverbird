@@ -2,7 +2,6 @@ from typing import Any
 
 import pytest
 from pypika import Field, Query, functions
-
 from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, SQLTranslator
 from weaverbird.pipeline import steps
 

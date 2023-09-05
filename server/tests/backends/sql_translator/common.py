@@ -31,5 +31,5 @@ def standardized_values(df: pd.DataFrame, convert_nan_to_none: bool = False) -> 
             s = df[colname]
             idx = s.first_valid_index()
             if idx is not None and (first_value := s.loc[idx]) is not None:
-                if isinstance(first_value, (Decimal, float)) and "." in str(first_value):
+                if isinstance(first_value, Decimal | float) and "." in str(first_value):
                     _clean_float(first_value, colname)

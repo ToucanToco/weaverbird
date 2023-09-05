@@ -8,10 +8,10 @@ import pytest
 from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
 from pymongo import MongoClient
 from toucan_connectors.common import nosql_apply_parameters_to_query
-
-from tests.utils import assert_dataframes_content_equals, get_spec_from_json_fixture, retrieve_case
 from weaverbird.backends.mongo_translator.mongo_pipeline_translator import translate_pipeline
 from weaverbird.pipeline import PipelineWithVariables
+
+from tests.utils import assert_dataframes_content_equals, get_spec_from_json_fixture, retrieve_case
 
 exec_type = "mongo"
 test_cases = retrieve_case("mongo_translator", exec_type)

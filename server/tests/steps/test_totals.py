@@ -3,11 +3,11 @@ import random
 import numpy as np
 import pandas as pd
 import pytest
-
-from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.totals import execute_totals
 from weaverbird.pipeline.steps.aggregate import Aggregation
 from weaverbird.pipeline.steps.totals import TotalDimension, TotalsStep
+
+from tests.utils import assert_dataframes_equals
 
 
 def test_single_totals_without_groups():

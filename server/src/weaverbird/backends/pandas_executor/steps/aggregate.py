@@ -51,7 +51,7 @@ def execute_aggregate(
 
     else:
         for aggregation in step.aggregations:
-            for col, new_col in zip(aggregation.columns, aggregation.new_columns):
+            for col, new_col in zip(aggregation.columns, aggregation.new_columns, strict=True):
                 agg_serie = (
                     grouped_by_df[col]
                     .agg(get_aggregate_fn(aggregation.agg_function))

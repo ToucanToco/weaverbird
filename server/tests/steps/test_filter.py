@@ -7,8 +7,6 @@ from zoneinfo import ZoneInfo
 import pytest
 from pandas import DataFrame, read_json
 from pandas.testing import assert_frame_equal
-
-from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.filter import execute_filter
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
@@ -16,6 +14,8 @@ from weaverbird.pipeline.conditions import (
     DateBoundCondition,
 )
 from weaverbird.pipeline.steps import FilterStep
+
+from tests.utils import assert_dataframes_equals
 
 
 @pytest.fixture
@@ -293,7 +293,7 @@ def test_benchmark_filter(benchmark):
 
 @pytest.fixture
 def date_df() -> DataFrame:
-    with open(path_join(dirname(__file__), "fixtures", "sales_df.json"), "r") as fd:
+    with open(path_join(dirname(__file__), "fixtures", "sales_df.json")) as fd:
         return read_json(fd, orient="table")
 
 

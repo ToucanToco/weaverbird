@@ -1,3 +1,4 @@
+# ruff: noqa: S608
 """
 A very simple webserver to test and develop weaverbird.
 
@@ -50,7 +51,6 @@ from quart import Quart, Request, Response, jsonify, request, send_file
 from quart_cors import cors
 from toucan_connectors.common import nosql_apply_parameters_to_query
 from toucan_connectors.pagination import build_pagination_info
-
 from weaverbird.backends.mongo_translator.mongo_pipeline_translator import (
     translate_pipeline as mongo_translate_pipeline,
 )

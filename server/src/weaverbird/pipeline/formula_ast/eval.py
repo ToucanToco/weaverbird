@@ -177,7 +177,7 @@ class FormulaParser:
             # Constant: number, string literal or boolean
             case ast.Constant(value=value):
                 # bool is a subtype of int
-                if isinstance(value, (int, float)):
+                if isinstance(value, int | float):
                     return value
                 elif isinstance(value, str):
                     return f"'{value}'"

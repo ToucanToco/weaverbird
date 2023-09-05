@@ -8,6 +8,9 @@ import psycopg2
 import pytest
 from sqlalchemy import create_engine, text
 from toucan_connectors.common import nosql_apply_parameters_to_query
+from weaverbird.backends.pypika_translator.dialects import SQLDialect
+from weaverbird.backends.pypika_translator.translate import translate_pipeline
+from weaverbird.pipeline import PipelineWithVariables
 
 from tests.utils import (
     _BEERS_TABLE_COLUMNS,
@@ -16,9 +19,6 @@ from tests.utils import (
     get_spec_from_json_fixture,
     retrieve_case,
 )
-from weaverbird.backends.pypika_translator.dialects import SQLDialect
-from weaverbird.backends.pypika_translator.translate import translate_pipeline
-from weaverbird.pipeline import PipelineWithVariables
 
 con_params = {
     "host": "127.0.0.1",

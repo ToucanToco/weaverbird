@@ -78,7 +78,7 @@ def execute_totals(
     # rename columns in the base df, so it will match with the total in schema
     col_to_rm = set()
     for aggregation in step.aggregations:
-        for col, new_col in zip(aggregation.columns, aggregation.new_columns):
+        for col, new_col in zip(aggregation.columns, aggregation.new_columns, strict=True):
             if col != new_col:
                 df[new_col] = df[col]
                 col_to_rm.add(col)

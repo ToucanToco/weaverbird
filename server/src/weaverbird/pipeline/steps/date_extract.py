@@ -24,7 +24,7 @@ BASIC_DATE_PARTS = Literal[
 ]
 
 
-INTEGER_DATE_PARTS = Union[
+INTEGER_DATE_PARTS = Union[  # noqa: UP007
     BASIC_DATE_PARTS,
     Literal[
         "previousYear",
@@ -49,7 +49,7 @@ TIMESTAMP_DATE_PARTS = Literal[
     "firstDayOfPreviousIsoWeek",
 ]
 
-DATE_INFO = Union[
+DATE_INFO = Union[  # noqa: UP007
     INTEGER_DATE_PARTS,
     TIMESTAMP_DATE_PARTS,
 ]

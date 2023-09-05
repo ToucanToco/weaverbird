@@ -23,7 +23,9 @@ def translate_append(step: AppendStep) -> list[MongoStep]:
             try:
                 assert isinstance(sub_pipeline, list)
             except AssertionError:  # in this case sub_pipeline is a Reference
-                raise Exception("References must be resolved before translating the pipeline")
+                raise Exception(  # noqa: B904
+                    "References must be resolved before translating the pipeline"
+                )  # noqa: B904
 
             domain_step = DomainStep(**sub_pipeline[0])
             pipeline_without_domain.steps = [

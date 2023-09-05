@@ -3,10 +3,10 @@ import random
 import numpy as np
 import pytest
 from pandas import DataFrame
-
-from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.rank import execute_rank
 from weaverbird.pipeline.steps import RankStep
+
+from tests.utils import assert_dataframes_equals
 
 
 @pytest.fixture

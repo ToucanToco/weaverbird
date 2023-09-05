@@ -3,7 +3,7 @@ from weaverbird.pipeline.steps import WaterfallStep
 
 
 def translate_waterfall(step: WaterfallStep) -> list[MongoStep]:
-    concatMongo = {}
+    concat_mongo = {}
     facet = {}
     groupby = step.groupby
     parents = [step.parentsColumn] if step.parentsColumn else []
@@ -13,7 +13,7 @@ def translate_waterfall(step: WaterfallStep) -> list[MongoStep]:
 
     # Pipeline that will be executed to get the array of results for the starting
     # and ending milestone of the waterfall
-    facetStartEnd = [
+    facet_start_end = [
         {
             "$group": {
                 "_id": _column_map(groupby + [step.milestonesColumn]),
@@ -40,7 +40,7 @@ def translate_waterfall(step: WaterfallStep) -> list[MongoStep]:
 
     # Pipeline that will be executed to get the array of results for the children
     # elements of the waterfall
-    facetChildren = [
+    facet_children = [
         {
             "$group": {
                 "_id": _column_map(
@@ -85,7 +85,7 @@ def translate_waterfall(step: WaterfallStep) -> list[MongoStep]:
     # get the array of results for the parents elements of the waterfall. In such
     # a case we add it to the concatenation of all the pipelines results arrays
     if step.parentsColumn:
-        facetParents = [
+        facet_parents = [
             {
                 "$group": {
                     "_id": _column_map(groupby + parents + [step.milestonesColumn]),
@@ -125,19 +125,19 @@ def translate_waterfall(step: WaterfallStep) -> list[MongoStep]:
         ]
 
         facet = {
-            "_vqb_start_end": facetStartEnd,
-            "_vqb_parents": facetParents,
-            "_vqb_children": facetChildren,
+            "_vqb_start_end": facet_start_end,
+            "_vqb_parents": facet_parents,
+            "_vqb_children": facet_children,
         }
-        concatMongo = {"$concatArrays": ["$_vqb_start_end", "$_vqb_parents", "$_vqb_children"]}
+        concat_mongo = {"$concatArrays": ["$_vqb_start_end", "$_vqb_parents", "$_vqb_children"]}
     else:
-        facet = {"_vqb_start_end": facetStartEnd, "_vqb_children": facetChildren}
-        concatMongo = {"$concatArrays": ["$_vqb_start_end", "$_vqb_children"]}
+        facet = {"_vqb_start_end": facet_start_end, "_vqb_children": facet_children}
+        concat_mongo = {"$concatArrays": ["$_vqb_start_end", "$_vqb_children"]}
 
     return [
         {"$match": {(step.milestonesColumn): {"$in": [step.start, step.end]}}},
         {"$facet": facet},
-        {"$project": {"_vqbFullArray": concatMongo}},
+        {"$project": {"_vqbFullArray": concat_mongo}},
         {"$unwind": "$_vqbFullArray"},
         {"$replaceRoot": {"newRoot": "$_vqbFullArray"}},
         {

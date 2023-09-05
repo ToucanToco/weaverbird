@@ -1,10 +1,10 @@
 import numpy as np
 import pytest
 from pandas import DataFrame
-
-from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.formula import execute_formula
 from weaverbird.pipeline.steps import FormulaStep
+
+from tests.utils import assert_dataframes_equals
 
 
 @pytest.fixture
@@ -34,7 +34,7 @@ def test_formula(sample_df: DataFrame):
 @pytest.mark.parametrize("bad_expression", ["", 'print("hello")', "import re", "x = colA * 2"])
 def test_bad_formula(sample_df: DataFrame, bad_expression):
     bad_step = FormulaStep(name="formula", new_column="z", formula=bad_expression)
-    with pytest.raises(Exception):
+    with pytest.raises(Exception):  # noqa: B017
         execute_formula(bad_step, sample_df)
 
 

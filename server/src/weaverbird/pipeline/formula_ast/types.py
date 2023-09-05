@@ -67,7 +67,7 @@ def format_expr(
         # Unquoting
         return f"{str_quote_seq}{unquote_string(expr)}{str_quote_seq}"
     # bool is a subtype of int, but we don't want to have 1 and 0 replaced with 'true' or 'false'
-    elif isinstance(expr, (int, float)) and not isinstance(expr, bool):
+    elif isinstance(expr, int | float) and not isinstance(expr, bool):
         return expr
     elif isinstance(expr, bool):
         return expr if bools_as_py else ("true" if expr else "false")

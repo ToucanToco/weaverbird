@@ -1,10 +1,10 @@
 import random
 
 import pandas as pd
-
-from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.waterfall import execute_waterfall
 from weaverbird.pipeline.steps.waterfall import WaterfallStep
+
+from tests.utils import assert_dataframes_equals
 
 
 def test_simple():

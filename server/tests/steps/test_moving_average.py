@@ -1,10 +1,10 @@
 import numpy as np
 import pandas as pd
 from pandas import DataFrame
-
-from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.moving_average import execute_moving_average
 from weaverbird.pipeline.steps import MovingAverageStep
+
+from tests.utils import assert_dataframes_equals
 
 
 def test_moving_average_basic():

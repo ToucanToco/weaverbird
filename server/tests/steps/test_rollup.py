@@ -2,10 +2,10 @@ import random
 
 import pytest
 from pandas import DataFrame
-
-from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.rollup import execute_rollup
 from weaverbird.pipeline.steps import RollupStep
+
+from tests.utils import assert_dataframes_equals
 
 
 @pytest.fixture

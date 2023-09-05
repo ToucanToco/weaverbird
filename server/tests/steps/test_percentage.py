@@ -1,10 +1,10 @@
 import numpy as np
 import pandas as pd
 from pandas import DataFrame
-
-from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.percentage import execute_percentage
 from weaverbird.pipeline.steps import PercentageStep
+
+from tests.utils import assert_dataframes_equals
 
 
 def test_simple_percentage():

@@ -1,7 +1,5 @@
 import pytest
 from pandas import DataFrame
-
-from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.join import execute_join
 from weaverbird.backends.pandas_executor.types import (
     DomainRetriever,
@@ -9,6 +7,8 @@ from weaverbird.backends.pandas_executor.types import (
     PipelineExecutor,
 )
 from weaverbird.pipeline.steps import JoinStep
+
+from tests.utils import assert_dataframes_equals
 
 
 @pytest.fixture
