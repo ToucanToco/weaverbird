@@ -14,7 +14,8 @@ install:
 
 .PHONY: install-dev
 install-dev:
-	poetry install -E all
+	poetry install -E all -E playground
+	pre-commit install
 
 .PHONY: install-playground
 install-playground:

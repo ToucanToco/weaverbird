@@ -8,9 +8,9 @@ We use [poetry](https://python-poetry.org/) for managing dependencies.
 
 Main commands are available through `make`:
 
-    make install # Install dependecies
+    make install # Install dependencies & set up pre-commit
 
-    make format # Fix formatting issues using black and isort
+    make format # Fix formatting issues using black and ruff
     make lint # Execute various checks
 
     make build # Build the project prior to publication

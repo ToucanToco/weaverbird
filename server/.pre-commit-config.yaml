@@ -1,0 +1,27 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.0.1
+  hooks:
+  - id: check-yaml
+  - id: end-of-file-fixer
+
+- repo: local
+  hooks:
+  - id: system
+    name: Lint with Ruff
+    entry: ruff
+    types: [python]
+    language: system
+
+  - id: system
+    name: Lint with Black
+    entry: black
+    types: [python]
+    language: system
+
+  - id: system
+    name: Lint with Mypy
+    entry: mypy
+    types: [python]
+    language: system
+    exclude: ^tests/
