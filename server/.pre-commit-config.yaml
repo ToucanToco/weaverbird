@@ -21,7 +21,8 @@ repos:
 
   - id: system
     name: Lint with Mypy
-    entry: mypy
+    # shitty, but commands are always ran from the repo root: https://github.com/pre-commit/pre-commit/issues/1110
+    entry: bash -c 'cd server && mypy'
     types: [python]
     language: system
     exclude: ^tests/
