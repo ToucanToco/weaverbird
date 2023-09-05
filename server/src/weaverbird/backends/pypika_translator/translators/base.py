@@ -1119,9 +1119,9 @@ class SQLTranslator(ABC):
                     else:
                         dt = dateutil_parser.parse(condition.value)
                     dt = (
-                        dt.replace(tzinfo=timezone.UTC)
+                        dt.replace(tzinfo=timezone.utc)
                         if dt.tzinfo is None
-                        else dt.astimezone(timezone.UTC)
+                        else dt.astimezone(timezone.utc)
                     )
                     value_to_compare = self._cast_to_timestamp(dt.strftime("%Y-%m-%d %H:%M:%S"))
 
