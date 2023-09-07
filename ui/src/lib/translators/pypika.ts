@@ -43,10 +43,6 @@ export class PypikaTranslator extends BaseTranslator {
     return step;
   }
 
-  customsql(step: Readonly<S.CustomSqlStep>) {
-    return step;
-  }
-
   cumsum(step: Readonly<S.CumSumStep>) {
     return step;
   }
