@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Added
+- NativeSQL translator: Added support for the evolution step
+
 ## [0.107.0] - 2023-08-16
 
 ### Added
