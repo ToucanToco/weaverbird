@@ -1,9 +1,17 @@
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any, Literal, TypeAlias, TypeVar
 
 from pypika import Field, Query, Table, functions
 from pypika.enums import Dialects
-from pypika.queries import QueryBuilder
-from pypika.terms import Case, CustomFunction, Function, Interval, LiteralValue, Term, ValueWrapper
+from pypika.queries import QueryBuilder, Selectable
+from pypika.terms import (
+    Case,
+    CustomFunction,
+    Function,
+    Interval,
+    LiteralValue,
+    Term,
+    ValueWrapper,
+)
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp
@@ -14,11 +22,12 @@ from weaverbird.backends.pypika_translator.translators.base import (
     StepContext,
 )
 from weaverbird.pipeline.steps.date_extract import DATE_INFO
+from weaverbird.pipeline.steps.duration import DURATIONS_IN_SECOND
 
 Self = TypeVar("Self", bound="GoogleBigQueryTranslator")
 
 if TYPE_CHECKING:
-    from weaverbird.pipeline.steps import SplitStep, ToDateStep
+    from weaverbird.pipeline.steps import DurationStep, SplitStep, ToDateStep
 
 
 class GBQDateTrunc(Function):
@@ -39,6 +48,16 @@ class GBQSplit(Function):
         # Empty string is the same as None here
         args = ("SPLIT", field, Term.wrap_constant(delimiter)) if delimiter else ("SPLIT", field)
         super().__init__(*args)
+
+
+GQBTimestampDiffUnit: TypeAlias = Literal[
+    "MICROSECOND", "MILLISECOND", "SECOND", "MINUTE", "HOUR", "DAY"
+]
+
+
+class GBQTimestampDiff(Function):
+    def __init__(self, end: Field, start: Field, unit: GQBTimestampDiffUnit) -> None:
+        super().__init__("TIMESTAMP_DIFF", end, start, LiteralValue(unit))
 
 
 class GoogleBigQueryQuery(Query):
@@ -236,6 +255,31 @@ class GoogleBigQueryTranslator(SQLTranslator):
             date_selection.as_(step.column),
         )
         return StepContext(query, columns)
+
+    @classmethod
+    def _interval_to_seconds(cls, value: Selectable) -> functions.Function:
+        # It is very tedious and inefficient to convert an INTERVAL to seconds in postgres
+        raise NotImplementedError
+
+    def duration(
+        self: Self,
+        *,
+        builder: "QueryBuilder",
+        prev_step_table: str,
+        columns: list[str],
+        step: "DurationStep",
+    ) -> StepContext:
+        the_table = Table(prev_step_table)
+        as_seconds = GBQTimestampDiff(
+            self._cast_to_timestamp(the_table[step.end_date_column]),
+            self._cast_to_timestamp(the_table[step.start_date_column]),
+            # NOTE: for consistency with other backends, we're calculating the true duration
+            # here. By  passing a lower unit, we'd lose information
+            "SECOND",
+        )
+        new_column = (as_seconds / DURATIONS_IN_SECOND[step.duration_in]).as_(step.new_column_name)
+        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(*columns, new_column)
+        return StepContext(query, columns + [step.new_column_name])
 
 
 SQLTranslator.register(GoogleBigQueryTranslator)

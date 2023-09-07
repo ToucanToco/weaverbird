@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -49,6 +49,7 @@ from weaverbird.pipeline.dates import RelativeDate
 from weaverbird.pipeline.pipeline import Pipeline
 from weaverbird.pipeline.steps import ConvertStep, DomainStep, FilterStep, TopStep
 from weaverbird.pipeline.steps.date_extract import DATE_INFO
+from weaverbird.pipeline.steps.duration import DURATIONS_IN_SECOND
 from weaverbird.pipeline.steps.utils.combination import PipelineOrDomainNameOrReference, Reference
 
 from .exceptions import ForbiddenSQLStep, UnknownTableColumns
@@ -71,6 +72,7 @@ if TYPE_CHECKING:
         DateExtractStep,
         DeleteStep,
         DuplicateStep,
+        DurationStep,
         EvolutionStep,
         FillnaStep,
         FormulaStep,
@@ -923,6 +925,32 @@ class SQLTranslator(ABC):
         query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *columns, Table(prev_step_table)[step.column].as_(step.new_column_name)
         )
+        return StepContext(query, columns + [step.new_column_name])
+
+    @classmethod
+    @abstractmethod
+    def _interval_to_seconds(cls, value: Selectable) -> functions.Function:
+        """Converts an INTERVAL SQL type to a duration in seconds"""
+
+    def duration(
+        self: Self,
+        *,
+        builder: "QueryBuilder",
+        prev_step_table: str,
+        columns: list[str],
+        step: "DurationStep",
+    ) -> StepContext:
+        the_table = Table(prev_step_table)
+        as_seconds = functions.Cast(
+            self._interval_to_seconds(
+                self._cast_to_timestamp(the_table[step.end_date_column])
+                - self._cast_to_timestamp(the_table[step.start_date_column]),
+            ),
+            self.DATA_TYPE_MAPPING.float,
+        )
+        new_column = (as_seconds / DURATIONS_IN_SECOND[step.duration_in]).as_(step.new_column_name)
+
+        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(*columns, new_column)
         return StepContext(query, columns + [step.new_column_name])
 
     @classmethod

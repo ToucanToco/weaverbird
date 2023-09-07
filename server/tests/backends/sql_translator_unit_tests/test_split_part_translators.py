@@ -11,11 +11,19 @@ class SplitEnabledTranslator(SQLTranslator):
     QUERY_CLS = Query
     SUPPORT_SPLIT_PART = True
 
+    @classmethod
+    def _interval_to_seconds(cls, value):
+        raise NotImplementedError
+
 
 class SplitDisabledTranslator(SQLTranslator):
     DIALECT = "Base"
     QUERY_CLS = Query
     SUPPORT_SPLIT_PART = False
+
+    @classmethod
+    def _interval_to_seconds(cls, value):
+        raise NotImplementedError
 
 
 ALL_TABLES = {"users": ["name", "pseudonyme", "age"]}

@@ -1,5 +1,7 @@
+from pypika import functions
 from pypika.dialects import Query
 from pypika.enums import Dialects
+from pypika.queries import Selectable
 from pypika.terms import Case, CustomFunction, Field, Term
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
@@ -9,6 +11,11 @@ from weaverbird.backends.pypika_translator.translators.base import (
     DateFormatMapping,
     SQLTranslator,
 )
+
+
+class ToMilliseconds(functions.Function):
+    def __init__(self, field: Field):
+        super().__init__("TO_MILLISECONDS", field)
 
 
 class AthenaTranslator(SQLTranslator):
@@ -52,6 +59,10 @@ class AthenaTranslator(SQLTranslator):
         # Athena is the only backend for which SPLIT_PART returns NULL fox out-of-range
         # indexes. Also, IF_NULL is not available
         return Case().when(term.isnull(), "").else_(term)
+
+    @classmethod
+    def _interval_to_seconds(cls, value: Selectable) -> functions.Function:
+        return ToMilliseconds(value) / 1000
 
 
 SQLTranslator.register(AthenaTranslator)

@@ -1,5 +1,6 @@
 from typing import Any, TypeVar
 
+from pypika import functions
 from pypika.dialects import QueryBuilder, SnowflakeQueryBuilder
 from pypika.enums import Dialects
 from pypika.queries import Query, Selectable
@@ -66,6 +67,10 @@ class SnowflakeTranslator(SQLTranslator):
         return DateAddWithoutUnderscore(
             date_part=unit.removesuffix("s"), interval=duration, term=target_column
         )
+
+    @classmethod
+    def _interval_to_seconds(cls, value: Selectable) -> functions.Function:
+        raise NotImplementedError
 
 
 SQLTranslator.register(SnowflakeTranslator)

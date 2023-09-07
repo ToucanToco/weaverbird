@@ -1,22 +1,14 @@
-from typing import TYPE_CHECKING
-
-from pypika import Field, functions
+from pypika import functions
 from pypika.dialects import PostgreSQLQuery
+from pypika.queries import Selectable
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators.base import (
     DataTypeMapping,
     DateFormatMapping,
-    Self,
     SQLTranslator,
-    StepContext,
 )
-
-if TYPE_CHECKING:
-    from pypika.queries import QueryBuilder
-
-    from weaverbird.pipeline.steps import DurationStep
 
 
 class PostgreSQLTranslator(SQLTranslator):
@@ -46,21 +38,9 @@ class PostgreSQLTranslator(SQLTranslator):
     REGEXP_OP = RegexOp.SIMILAR_TO
     TO_DATE_OP = ToDateOp.TO_TIMESTAMP
 
-    def duration(
-        self: Self,
-        *,
-        builder: "QueryBuilder",
-        prev_step_table: str,
-        columns: list[str],
-        step: "DurationStep",
-    ) -> StepContext:
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
-            *columns,
-            functions.Extract(
-                step.duration_in, Field(step.end_date_column) - Field(step.start_date_column)
-            ).as_(step.new_column_name),
-        )
-        return StepContext(query, columns + [step.new_column_name])
+    @classmethod
+    def _interval_to_seconds(cls, value: Selectable) -> functions.Function:
+        return functions.Extract("epoch", value)
 
 
 SQLTranslator.register(PostgreSQLTranslator)

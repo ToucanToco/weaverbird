@@ -30,6 +30,10 @@ def translator() -> SQLTranslator:
                 DummyTranslator.known_instances[id(self)] = id_
                 return id_
 
+        @classmethod
+        def _interval_to_seconds(cls, value):
+            """Converts an INTERVAL SQL type to a duration in seconds"""
+
     return DummyTranslator(
         tables_columns={
             "beers_tiny": [
