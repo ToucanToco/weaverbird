@@ -6,6 +6,9 @@
 - NativeSQL translator: Added support for the duration step
 - NativeSQL translator: Added support for the evolution step
 
+### Removed
+- NativeSQL translator: dropped support for the custom SQL step
+
 ## [0.107.0] - 2023-08-16
 
 ### Added
@@ -43,7 +46,7 @@
 
 ## [0.102.1] - 2023-05-09
 
-#### Fixed
+### Fixed
 - CodeEditorWidget: remove unusable @watch vue property decorator
 
 ## [0.102.0] - 2023-04-20
