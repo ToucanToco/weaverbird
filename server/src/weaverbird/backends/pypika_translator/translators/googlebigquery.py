@@ -2,8 +2,16 @@ from typing import TYPE_CHECKING, Any, Literal, TypeAlias, TypeVar
 
 from pypika import Field, Query, Table, functions
 from pypika.enums import Dialects
-from pypika.queries import QueryBuilder
-from pypika.terms import Case, CustomFunction, Function, Interval, LiteralValue, Term, ValueWrapper
+from pypika.queries import QueryBuilder, Selectable
+from pypika.terms import (
+    Case,
+    CustomFunction,
+    Function,
+    Interval,
+    LiteralValue,
+    Term,
+    ValueWrapper,
+)
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp
@@ -247,6 +255,11 @@ class GoogleBigQueryTranslator(SQLTranslator):
             date_selection.as_(step.column),
         )
         return StepContext(query, columns)
+
+    @classmethod
+    def _interval_to_seconds(cls, value: Selectable) -> functions.Function:
+        # It is very tedious and inefficient to convert an INTERVAL to seconds in postgres
+        raise NotImplementedError
 
     def duration(
         self: Self,

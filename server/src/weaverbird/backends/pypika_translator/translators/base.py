@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -928,10 +928,9 @@ class SQLTranslator(ABC):
         return StepContext(query, columns + [step.new_column_name])
 
     @classmethod
+    @abstractmethod
     def _interval_to_seconds(cls, value: Selectable) -> functions.Function:
-        raise NotImplementedError(
-            f"[{cls.DIALECT}] Converting an INTERVAL to seconds is not supported"
-        )
+        """Converts an INTERVAL SQL type to a duration in seconds"""
 
     def duration(
         self: Self,
