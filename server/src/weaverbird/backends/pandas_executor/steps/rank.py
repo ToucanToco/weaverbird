@@ -18,4 +18,10 @@ def execute_rank(
     else:
         serie = df[step.value_col]
     rank_serie = serie.rank(method=rank_method, ascending=ascending)
-    return df.assign(**{new_column_name: rank_serie}).sort_values(new_column_name)
+    return (
+        df.assign(**{new_column_name: rank_serie})
+        # NOTE: Sorting on a temporary index column as well in order to preserve the order
+        .reset_index()
+        .sort_values(by=[new_column_name, "index"])
+        .drop(["index"], axis=1)
+    )
