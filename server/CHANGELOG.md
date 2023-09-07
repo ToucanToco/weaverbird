@@ -2,9 +2,14 @@
 
 ## Unreleased
 
-### Fixed
+## [0.37.0] - 2023-09-07
+
+### Changed
 
 - Pypika: Added support for the `duration` step
+
+### Fixed
+
 - Pandas: The `rank` step now preserves the original order of rows when sorting by rank
 
 ## [0.36.2] - 2023-08-31
