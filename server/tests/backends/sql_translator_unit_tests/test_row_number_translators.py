@@ -11,11 +11,19 @@ class RowNumberEnabledTranslator(SQLTranslator):
     QUERY_CLS = Query
     SUPPORT_ROW_NUMBER = True
 
+    @classmethod
+    def _interval_to_seconds(cls, value):
+        """Converts an INTERVAL SQL type to a duration in seconds"""
+
 
 class RowNumberDisabledTranslator(SQLTranslator):
     DIALECT = "Base"
     QUERY_CLS = Query
     SUPPORT_ROW_NUMBER = False
+
+    @classmethod
+    def _interval_to_seconds(cls, value):
+        """Converts an INTERVAL SQL type to a duration in seconds"""
 
 
 ALL_TABLES = {"users": ["name", "pseudonyme", "age"]}

@@ -16,6 +16,10 @@ class FilterTranslator(SQLTranslator):
     DIALECT = "Filter"
     QUERY_CLS = Query
 
+    @classmethod
+    def _interval_to_seconds(cls, value):
+        """Converts an INTERVAL SQL type to a duration in seconds"""
+
 
 ALL_TABLES = {"users": ["name", "pseudonyme", "age"]}
 DB_SCHEMA = "test_schema"
@@ -148,6 +152,10 @@ class REGEXPTranslator(SQLTranslator):
     REGEXP_OP = RegexOp.REGEXP
     DATA_TYPE_MAPPING = _DATA_TYPE_MAPPING
 
+    @classmethod
+    def _interval_to_seconds(cls, value):
+        """Converts an INTERVAL SQL type to a duration in seconds"""
+
 
 @pytest.fixture
 def regexp_translator():
@@ -207,6 +215,10 @@ class SimilarToTranslator(SQLTranslator):
     QUERY_CLS = Query
     REGEXP_OP = RegexOp.SIMILAR_TO
     DATA_TYPE_MAPPING = _DATA_TYPE_MAPPING
+
+    @classmethod
+    def _interval_to_seconds(cls, value):
+        """Converts an INTERVAL SQL type to a duration in seconds"""
 
 
 @pytest.fixture
@@ -280,6 +292,10 @@ class ContainsTranslator(SQLTranslator):
     REGEXP_OP = RegexOp.CONTAINS
     DATA_TYPE_MAPPING = _DATA_TYPE_MAPPING
 
+    @classmethod
+    def _interval_to_seconds(cls, value):
+        """Converts an INTERVAL SQL type to a duration in seconds"""
+
 
 @pytest.fixture
 def contains_translator():
@@ -351,6 +367,10 @@ class REGEXP_LIKE_Translator(SQLTranslator):
     QUERY_CLS = Query
     REGEXP_OP = RegexOp.REGEXP_LIKE
 
+    @classmethod
+    def _interval_to_seconds(cls, value):
+        """Converts an INTERVAL SQL type to a duration in seconds"""
+
 
 @pytest.fixture
 def regexp_like_translator():
@@ -409,6 +429,10 @@ class REGEXP_CONTAINS_Translator(SQLTranslator):
     DIALECT = "REGEXP"
     QUERY_CLS = Query
     REGEXP_OP = RegexOp.REGEXP_CONTAINS
+
+    @classmethod
+    def _interval_to_seconds(cls, value):
+        """Converts an INTERVAL SQL type to a duration in seconds"""
 
 
 @pytest.fixture

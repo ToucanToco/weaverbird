@@ -21,6 +21,10 @@ class DateFormatTranslator(SQLTranslator):
         year="%Y",
     )
 
+    @classmethod
+    def _interval_to_seconds(cls, value):
+        """Converts an INTERVAL SQL type to a duration in seconds"""
+
 
 ALL_TABLES = {"users": ["name", "pseudonyme", "age"]}
 DB_SCHEMA = "test_schema"

@@ -30,6 +30,10 @@ class BaseTranslator(SQLTranslator):
         timestamp="TIMESTAMP",
     )
 
+    @classmethod
+    def _interval_to_seconds(cls, value):
+        raise NotImplementedError
+
 
 ALL_TABLES = {
     "users": ["name", "pseudonyme", "age", "id", "project_id"],
