@@ -10,113 +10,113 @@ step:
     - name
     - brewing_date
 
-  - name: dateextract
-    column: brewing_date
-    dateInfo:
-    - previousDay
-    newColumns:
-    - previous_day
+  - name: text
+    newColumn: other_date
+    text: "2022-01-01 06:30:00"
+
+  - name: todate
+    column: other_date
 
   - name: duration
     durationIn: seconds
     endDateColumn: brewing_date
     newColumnName: duration_seconds
-    startDateColumn: previous_day
+    startDateColumn: other_date
   - name: duration
     durationIn: minutes
     endDateColumn: brewing_date
     newColumnName: duration_minutes
-    startDateColumn: previous_day
+    startDateColumn: other_date
   - name: duration
     durationIn: hours
     endDateColumn: brewing_date
     newColumnName: duration_hours
-    startDateColumn: previous_day
+    startDateColumn: other_date
   - name: duration
     durationIn: days
     endDateColumn: brewing_date
     newColumnName: duration_days
-    startDateColumn: previous_day
+    startDateColumn: other_date
 
 expected:
   data:
-  - brewing_date: '2022-01-01'
-    duration_days: 1
-    duration_hours: 24
-    duration_minutes: 1440
-    duration_seconds: 86400
+  - brewing_date: '2022-01-01T00:00:00.000'
+    duration_days: -0.2708333333
+    duration_hours: -6.5
+    duration_minutes: -390.0
+    duration_seconds: -23400.0
     name: Superstrong beer
-    previous_day: '2021-12-31T00:00:00.000'
-  - brewing_date: '2022-01-02'
-    duration_days: 1
-    duration_hours: 24
-    duration_minutes: 1440
-    duration_seconds: 86400
+    other_date: '2022-01-01T06:30:00.000'
+  - brewing_date: '2022-01-02T00:00:00.000'
+    duration_days: 0.7291666667
+    duration_hours: 17.5
+    duration_minutes: 1050.0
+    duration_seconds: 63000.0
     name: Ninkasi Ploploplop
-    previous_day: '2022-01-01T00:00:00.000'
-  - brewing_date: '2022-01-03'
-    duration_days: 1
-    duration_hours: 24
-    duration_minutes: 1440
-    duration_seconds: 86400
+    other_date: '2022-01-01T06:30:00.000'
+  - brewing_date: '2022-01-03T00:00:00.000'
+    duration_days: 1.7291666667
+    duration_hours: 41.5
+    duration_minutes: 2490.0
+    duration_seconds: 149400.0
     name: Brewdog Nanny State Alcoholvrij
-    previous_day: '2022-01-02T00:00:00.000'
-  - brewing_date: '2022-01-04'
-    duration_days: 1
-    duration_hours: 24
-    duration_minutes: 1440
-    duration_seconds: 86400
+    other_date: '2022-01-01T06:30:00.000'
+  - brewing_date: '2022-01-04T00:00:00.000'
+    duration_days: 2.7291666667
+    duration_hours: 65.5
+    duration_minutes: 3930.0
+    duration_seconds: 235800.0
     name: Ardwen Blonde
-    previous_day: '2022-01-03T00:00:00.000'
-  - brewing_date: '2022-01-05'
-    duration_days: 1
-    duration_hours: 24
-    duration_minutes: 1440
-    duration_seconds: 86400
+    other_date: '2022-01-01T06:30:00.000'
+  - brewing_date: '2022-01-05T00:00:00.000'
+    duration_days: 3.7291666667
+    duration_hours: 89.5
+    duration_minutes: 5370.0
+    duration_seconds: 322200.0
     name: "Cuv\xE9e des Trolls"
-    previous_day: '2022-01-04T00:00:00.000'
-  - brewing_date: '2022-01-06'
-    duration_days: 1
-    duration_hours: 24
-    duration_minutes: 1440
-    duration_seconds: 86400
+    other_date: '2022-01-01T06:30:00.000'
+  - brewing_date: '2022-01-06T00:00:00.000'
+    duration_days: 4.7291666667
+    duration_hours: 113.5
+    duration_minutes: 6810.0
+    duration_seconds: 408600.0
     name: Weihenstephan Hefe Weizen Alcoholarm
-    previous_day: '2022-01-05T00:00:00.000'
-  - brewing_date: '2022-01-07'
-    duration_days: 1
-    duration_hours: 24
-    duration_minutes: 1440
-    duration_seconds: 86400
+    other_date: '2022-01-01T06:30:00.000'
+  - brewing_date: '2022-01-07T00:00:00.000'
+    duration_days: 5.7291666667
+    duration_hours: 137.5
+    duration_minutes: 8250.0
+    duration_seconds: 495000.0
     name: Bellfield Lawless Village IPA
-    previous_day: '2022-01-06T00:00:00.000'
-  - brewing_date: '2022-01-08'
-    duration_days: 1
-    duration_hours: 24
-    duration_minutes: 1440
-    duration_seconds: 86400
+    other_date: '2022-01-01T06:30:00.000'
+  - brewing_date: '2022-01-08T00:00:00.000'
+    duration_days: 6.7291666667
+    duration_hours: 161.5
+    duration_minutes: 9690.0
+    duration_seconds: 581400.0
     name: Pauwel Kwak
-    previous_day: '2022-01-07T00:00:00.000'
-  - brewing_date: '2022-01-09'
-    duration_days: 1
-    duration_hours: 24
-    duration_minutes: 1440
-    duration_seconds: 86400
+    other_date: '2022-01-01T06:30:00.000'
+  - brewing_date: '2022-01-09T00:00:00.000'
+    duration_days: 7.7291666667
+    duration_hours: 185.5
+    duration_minutes: 11130.0
+    duration_seconds: 667800.0
     name: Brasserie De Sutter Brin de Folie
-    previous_day: '2022-01-08T00:00:00.000'
-  - brewing_date: '2022-01-10'
-    duration_days: 1
-    duration_hours: 24
-    duration_minutes: 1440
-    duration_seconds: 86400
+    other_date: '2022-01-01T06:30:00.000'
+  - brewing_date: '2022-01-10T00:00:00.000'
+    duration_days: 8.7291666667
+    duration_hours: 209.5
+    duration_minutes: 12570.0
+    duration_seconds: 754200.0
     name: Brugse Zot blonde
-    previous_day: '2022-01-09T00:00:00.000'
+    other_date: '2022-01-01T06:30:00.000'
   schema:
     fields:
-    - type: string
-      name: name
+    - name: name
+      type: string
     - name: brewing_date
       type: datetime
-    - name: previous_day
+    - name: other_date
       type: datetime
     - name: duration_seconds
       type: number

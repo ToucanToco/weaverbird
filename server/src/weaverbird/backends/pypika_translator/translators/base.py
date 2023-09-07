@@ -941,9 +941,12 @@ class SQLTranslator(ABC):
         step: "DurationStep",
     ) -> StepContext:
         the_table = Table(prev_step_table)
-        as_seconds = self._interval_to_seconds(
-            self._cast_to_timestamp(the_table[step.end_date_column])
-            - self._cast_to_timestamp(the_table[step.start_date_column]),
+        as_seconds = functions.Cast(
+            self._interval_to_seconds(
+                self._cast_to_timestamp(the_table[step.end_date_column])
+                - self._cast_to_timestamp(the_table[step.start_date_column]),
+            ),
+            self.DATA_TYPE_MAPPING.float,
         )
         new_column = (as_seconds / DURATIONS_IN_SECOND[step.duration_in]).as_(step.new_column_name)
 
