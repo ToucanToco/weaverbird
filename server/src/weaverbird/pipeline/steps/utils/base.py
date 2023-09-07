@@ -1,6 +1,5 @@
-from pydantic import BaseConfig
+from pydantic import BaseConfig, Extra
 from pydantic import BaseModel as PydanticBaseModel
-from pydantic import Extra
 
 
 def to_camelcase(string: str) -> str:

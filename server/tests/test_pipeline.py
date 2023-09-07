@@ -7,7 +7,6 @@ import pytest
 from jinja2.nativetypes import NativeEnvironment
 from pydantic import BaseModel
 from toucan_connectors.common import nosql_apply_parameters_to_query
-
 from weaverbird.pipeline.pipeline import (
     Pipeline,
     PipelineWithVariables,
@@ -52,7 +51,7 @@ def get_render_variables_test_cases():
 
 
 cases = get_render_variables_test_cases()
-ids = map(lambda x: x.filename, cases)
+ids = (x.filename for x in cases)
 
 
 @pytest.mark.parametrize("case", cases, ids=ids)

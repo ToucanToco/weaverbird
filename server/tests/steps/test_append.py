@@ -2,7 +2,6 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
-
 from weaverbird.backends.pandas_executor.steps.append import execute_append
 from weaverbird.pipeline.steps import AppendStep
 

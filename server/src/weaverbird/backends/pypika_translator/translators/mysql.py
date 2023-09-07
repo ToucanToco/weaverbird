@@ -61,7 +61,7 @@ class MySQLTranslator(SQLTranslator):
         in_cols = [format_quotes(col, quote_char) for col in step.unpivot]
         in_single_quote_cols = [format_quotes(col, secondary_quote_char) for col in step.unpivot]
         rows = " UNION ALL SELECT ".join(
-            [f"{col}, {val}" for col, val in zip(in_cols, in_single_quote_cols)]
+            [f"{col}, {val}" for col, val in zip(in_cols, in_single_quote_cols, strict=True)]
         )
         return f" t1 CROSS JOIN LATERAL(SELECT {rows}) AS t2({value_col}, {unpivot_col})"
 

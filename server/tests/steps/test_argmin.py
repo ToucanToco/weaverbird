@@ -1,6 +1,5 @@
 import numpy as np
 from pandas import DataFrame
-
 from weaverbird.backends.pandas_executor.steps.argmin import execute_argmin
 from weaverbird.pipeline.steps.argmin import ArgminStep
 

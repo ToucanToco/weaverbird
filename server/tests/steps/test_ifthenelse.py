@@ -1,9 +1,9 @@
 import pytest
 from pandas import NA, DataFrame
-
-from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.ifthenelse import execute_ifthenelse
 from weaverbird.pipeline.steps.ifthenelse import IfthenelseStep
+
+from tests.utils import assert_dataframes_equals
 
 
 @pytest.fixture

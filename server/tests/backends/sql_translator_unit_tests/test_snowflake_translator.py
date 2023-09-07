@@ -3,7 +3,6 @@ from typing import Any
 import pytest
 from pypika.functions import Cast, Extract
 from pypika.queries import Query, Table
-
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import translate_pipeline
 from weaverbird.backends.pypika_translator.translators.base import DateAddWithoutUnderscore
@@ -154,7 +153,7 @@ def test_date_extract_func(
     prev_table = Table(previous_step)
 
     step = DateExtractStep(
-        new_columns=["brewing_week", "brewing_month", "brewing_day"],
+        new_columns=["brewing_week"],
         date_info=["isoWeek"],
         column="brewing_date",
     )
@@ -211,6 +210,6 @@ def test_quoted_columns_with_special_chars() -> None:
     )
     assert (
         'WITH "__step_0_snowflaketranslator__" AS (SELECT "price_per_l","test","another-test" FROM "beers_tiny") ,'
-        '"__step_1_snowflaketranslator__" AS (SELECT "price_per_l" "price-per-l","test","another-test" FROM "__step_0_snowflaketranslator__") '
+        '"__step_1_snowflaketranslator__" AS (SELECT "price_per_l" "price-per-l","test","another-test" FROM "__step_0_snowflaketranslator__") '  # noqa: E501
         'SELECT "price-per-l","test","another-test" FROM "__step_1_snowflaketranslator__"' in query
     )

@@ -2,10 +2,10 @@ from datetime import datetime, timedelta
 
 import pytest
 from pandas import DataFrame, to_datetime
-
-from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.fromdate import execute_fromdate
 from weaverbird.pipeline.steps import FromdateStep
+
+from tests.utils import assert_dataframes_equals
 
 
 @pytest.fixture

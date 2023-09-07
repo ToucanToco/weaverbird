@@ -1,5 +1,4 @@
 import pytest
-
 from weaverbird.backends.pypika_translator.translators.googlebigquery import (
     GoogleBigQueryTranslator,
 )

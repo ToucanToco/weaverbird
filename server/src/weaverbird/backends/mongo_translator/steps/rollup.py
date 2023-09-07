@@ -54,7 +54,7 @@ def translate_rollup(step: RollupStep) -> list[MongoStep]:
         if idx > 0:
             project[parent_label_col] = f"${_ID_COLUMN}.{step.hierarchy[idx - 1]}"
 
-        addFieldsToAddToPipeline = [{"$addFields": add_fields}] if add_fields else []
+        add_fields_to_add_to_pipeline = [{"$addFields": add_fields}] if add_fields else []
 
         facet[f"level_{idx}"] = [
             {
@@ -63,7 +63,7 @@ def translate_rollup(step: RollupStep) -> list[MongoStep]:
                     **aggs,
                 },
             },
-            *addFieldsToAddToPipeline,
+            *add_fields_to_add_to_pipeline,
             {
                 "$project": project,
             },

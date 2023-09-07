@@ -1,6 +1,5 @@
 import pydantic
 import pytest
-
 from weaverbird.pipeline.steps import CustomSqlStep
 
 

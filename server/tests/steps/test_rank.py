@@ -3,10 +3,10 @@ import random
 import numpy as np
 import pytest
 from pandas import DataFrame
-
-from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.rank import execute_rank
 from weaverbird.pipeline.steps import RankStep
+
+from tests.utils import assert_dataframes_equals
 
 
 @pytest.fixture
@@ -48,8 +48,8 @@ def test_rank_with_groups(sample_df: DataFrame):
 
     expected_result = DataFrame(
         {
-            "COUNTRY": ["France", "USA", "France", "USA", "France", "USA", "USA"],
-            "VALUE": [30, 50, 20, 40, 10, 30, 10],
+            "COUNTRY": ["France", "USA", "USA", "France", "USA", "France", "USA"],
+            "VALUE": [30, 50, 40, 20, 30, 10, 10],
             "rank": [1, 1, 2, 2, 3, 3, 4],
         }
     )

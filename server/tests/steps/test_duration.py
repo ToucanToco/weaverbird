@@ -3,10 +3,10 @@ from datetime import datetime, timedelta
 import pandas as pd
 import pytest
 from pandas import DataFrame
-
-from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.duration import execute_duration
 from weaverbird.pipeline.steps.duration import DurationStep
+
+from tests.utils import assert_dataframes_equals
 
 
 @pytest.mark.parametrize(

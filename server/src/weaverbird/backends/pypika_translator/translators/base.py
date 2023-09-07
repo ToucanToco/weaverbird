@@ -204,7 +204,7 @@ class SQLTranslator(ABC):
     def __init_subclass__(cls) -> None:
         ALL_TRANSLATORS[cls.DIALECT] = cls
 
-    @cache
+    @cache  # noqa: B019
     def _id(self: Self) -> str:
         if id(self) in self._known_instances:
             return self._known_instances[id(self)]
@@ -418,7 +418,7 @@ class SQLTranslator(ABC):
         for step_index, aggregation in enumerate(step.aggregations):
             if agg_fn := self._get_aggregate_function(aggregation.agg_function):
                 for agg_column_name, new_column_name in zip(
-                    aggregation.columns, aggregation.new_columns
+                    aggregation.columns, aggregation.new_columns, strict=True
                 ):
                     column_field: Field = Table(prev_step_table)[agg_column_name]
                     new_agg_col = agg_fn(column_field).as_(new_column_name)
@@ -577,7 +577,7 @@ class SQLTranslator(ABC):
         query = self.QUERY_CLS.from_(prev_step_table).select(
             *columns, *(LiteralValue("NULL").as_(col) for col in columns_to_add)
         )
-        for table, column_list in zip(tables, column_lists):
+        for table, column_list in zip(tables, column_lists, strict=True):
             query = query.union_all(
                 self.QUERY_CLS.from_(table).select(
                     *(
@@ -868,7 +868,7 @@ class SQLTranslator(ABC):
         date_col: Field = Table(prev_step_table)[step.column]
         extracted_dates: list[LiteralValue] = []
 
-        for date_info, new_column_name in zip(step.date_info, step.new_columns):
+        for date_info, new_column_name in zip(step.date_info, step.new_columns, strict=True):
             col_field = self._get_date_extract_func(date_unit=date_info, target_column=date_col)
 
             if date_info not in get_args(TIMESTAMP_DATE_PARTS):
@@ -1111,7 +1111,7 @@ class SQLTranslator(ABC):
                     return column_field.isnotnull()
 
             case DateBoundCondition():  # type:ignore[misc]
-                if isinstance(condition.value, (RelativeDate, datetime, str)):
+                if isinstance(condition.value, RelativeDate | datetime | str):
                     if isinstance(condition.value, RelativeDate):
                         dt = evaluate_relative_date(condition.value)
                     elif isinstance(condition.value, datetime):

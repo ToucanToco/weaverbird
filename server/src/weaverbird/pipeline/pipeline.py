@@ -1,4 +1,5 @@
-from typing import Annotated, Any, Iterable
+from collections.abc import Iterable
+from typing import Annotated, Any
 
 from pydantic import BaseModel, Field
 
@@ -223,9 +224,9 @@ def _remove_void_from_condition(condition: Condition) -> Condition | None:
     with column/value = __VOID__
 
     """
-    if isinstance(condition, (ConditionComboAnd, ConditionComboOr)):
+    if isinstance(condition, ConditionComboAnd | ConditionComboOr):
         condition = _remove_void_from_combo_condition(condition)
-    elif isinstance(condition, (ComparisonCondition, MatchCondition, DateBoundCondition)):
+    elif isinstance(condition, ComparisonCondition | MatchCondition | DateBoundCondition):
         if condition.column == VOID_REPR or condition.value == VOID_REPR:
             return None
     elif isinstance(condition, InclusionCondition):
@@ -257,7 +258,7 @@ def remove_void_conditions_from_filter_steps(
 
 
 def _is_empty(data: Any) -> bool:
-    if isinstance(data, (list, dict)):
+    if isinstance(data, list | dict):
         return not bool(data)
     return False
 

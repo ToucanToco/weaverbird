@@ -10,10 +10,4 @@ def execute_replace(
     domain_retriever: DomainRetriever = None,
     execute_pipeline: PipelineExecutor = None,
 ) -> DataFrame:
-    return df.assign(
-        **{
-            step.search_column: df[step.search_column].replace(
-                {old_value: new_value for (old_value, new_value) in step.to_replace}
-            )
-        }
-    )
+    return df.assign(**{step.search_column: df[step.search_column].replace(dict(step.to_replace))})

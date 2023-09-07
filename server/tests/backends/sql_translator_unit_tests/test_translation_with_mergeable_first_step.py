@@ -1,5 +1,5 @@
+# ruff:noqa: E501
 import pytest
-
 from weaverbird.backends.pypika_translator.translators.base import SQLTranslator
 from weaverbird.pipeline.pipeline import Pipeline, PipelineStep
 
@@ -57,7 +57,9 @@ _EXPECTED_NO_SOURCE_ROW_SUBSET = [
 ]
 
 
-@pytest.mark.parametrize("steps, expected", zip(_CASES, _EXPECTED_NO_SOURCE_ROW_SUBSET))
+@pytest.mark.parametrize(
+    "steps, expected", zip(_CASES, _EXPECTED_NO_SOURCE_ROW_SUBSET, strict=True)
+)
 def test_base_translator_merge_first_steps(
     translator: SQLTranslator, steps: list[PipelineStep], expected: str
 ):
@@ -77,7 +79,9 @@ _EXPECTED_WITH_SOURCE_ROW_SUBSET = [
 ]
 
 
-@pytest.mark.parametrize("steps, expected", zip(_CASES, _EXPECTED_WITH_SOURCE_ROW_SUBSET))
+@pytest.mark.parametrize(
+    "steps, expected", zip(_CASES, _EXPECTED_WITH_SOURCE_ROW_SUBSET, strict=True)
+)
 def test_base_translator_merge_first_steps_with_subset(
     translator: SQLTranslator, steps: list[PipelineStep], expected: str
 ):

@@ -3,10 +3,10 @@ import random
 import numpy as np
 import pandas as pd
 import pytest
-
-from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.replace import execute_replace
 from weaverbird.pipeline.steps import ReplaceStep
+
+from tests.utils import assert_dataframes_equals
 
 
 @pytest.fixture()
