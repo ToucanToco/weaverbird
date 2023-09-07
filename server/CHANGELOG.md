@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Pandas: The `rank` step now preserves the original order of rows when sorting by rank
+
 ## [0.36.2] - 2023-08-31
 
 ### Fixed

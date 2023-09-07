@@ -3,6 +3,8 @@ from pandas import DataFrame
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps import RankStep
 
+_TMP_INDEX_COLUMN_NAME = "__VQB_TMP_INDEX_COLUMN__"
+
 
 def execute_rank(
     step: RankStep,
@@ -18,4 +20,10 @@ def execute_rank(
     else:
         serie = df[step.value_col]
     rank_serie = serie.rank(method=rank_method, ascending=ascending)
-    return df.assign(**{new_column_name: rank_serie}).sort_values(new_column_name)
+    return (
+        df.assign(**{new_column_name: rank_serie})
+        # NOTE: Sorting on a temporary index column as well in order to preserve the order
+        .reset_index(names=[_TMP_INDEX_COLUMN_NAME])
+        .sort_values(by=[new_column_name, _TMP_INDEX_COLUMN_NAME])
+        .drop([_TMP_INDEX_COLUMN_NAME], axis=1)
+    )
