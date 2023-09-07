@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.108.0] - 2023-09-07
+
 ### Added
 - NativeSQL translator: Added support for the duration step
 - NativeSQL translator: Added support for the evolution step
@@ -1519,6 +1521,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
+[0.108.0]: https://github.com/ToucanToco/weaverbird/compare/v0.107.0...v0.108.0
 [0.107.0]: https://github.com/ToucanToco/weaverbird/compare/v0.106.0...v0.107.0
 [0.106.0]: https://github.com/ToucanToco/weaverbird/compare/v0.105.1...v0.106.0
 [0.105.1]: https://github.com/ToucanToco/weaverbird/compare/v0.105.0...v0.105.1
