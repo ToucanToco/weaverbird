@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+- NativeSQL translator: Added support for the duration step
 - NativeSQL translator: Added support for the evolution step
 
 ## [0.107.0] - 2023-08-16
