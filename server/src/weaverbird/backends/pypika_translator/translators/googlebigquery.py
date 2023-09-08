@@ -234,6 +234,15 @@ class GoogleBigQueryTranslator(SQLTranslator):
             return cls._add_date(
                 target_column=cls._date_trunc("ISOWEEK", target_column), duration=-1, unit="weeks"
             )
+        if date_unit == "firstDayOfPreviousMonth":
+            # We need to cast the truncated timestamp to a date to prevent the following error:
+            # "DATE_ADD does not support the MONTH date part when the argument is TIMESTAMP type at [1:8]"
+            return cls._add_date(
+                target_column=functions.Cast(cls._date_trunc("MONTH", target_column), "DATE"),
+                duration=-1,
+                unit="months",
+            )
+
         return super()._get_date_extract_func(date_unit=date_unit, target_column=target_column)
 
     def todate(

@@ -1,0 +1,95 @@
+exclude:
+- mongo
+- pandas
+step:
+  pipeline:
+  - name: text
+    newColumn: other_date_one
+    text: "2022-03-04 06:30:00"
+  - name: text
+    newColumn: other_date_two
+    text: "1996-01-02"
+  - name: todate
+    column: other_date_one
+  - name: todate
+    column: other_date_two
+  - name: select
+    columns:
+    - name
+    - other_date_one
+    - other_date_two
+
+  - name: dateextract
+    column: other_date_one
+    dateInfo: ["firstDayOfPreviousMonth"]
+    newColumns: ["prev_month_one"]
+  - name: dateextract
+    column: other_date_two
+    dateInfo: ["firstDayOfPreviousMonth"]
+    newColumns: ["prev_month_two"]
+
+expected:
+  data:
+  - name: Superstrong beer
+    other_date_one: '2022-03-04T06:30:00.000'
+    other_date_two: '1996-01-02T00:00:00.000'
+    prev_month_one: '2022-02-01T00:00:00.000'
+    prev_month_two: '1995-12-01T00:00:00.000'
+  - name: Ninkasi Ploploplop
+    other_date_one: '2022-03-04T06:30:00.000'
+    other_date_two: '1996-01-02T00:00:00.000'
+    prev_month_one: '2022-02-01T00:00:00.000'
+    prev_month_two: '1995-12-01T00:00:00.000'
+  - name: Brewdog Nanny State Alcoholvrij
+    other_date_one: '2022-03-04T06:30:00.000'
+    other_date_two: '1996-01-02T00:00:00.000'
+    prev_month_one: '2022-02-01T00:00:00.000'
+    prev_month_two: '1995-12-01T00:00:00.000'
+  - name: Ardwen Blonde
+    other_date_one: '2022-03-04T06:30:00.000'
+    other_date_two: '1996-01-02T00:00:00.000'
+    prev_month_one: '2022-02-01T00:00:00.000'
+    prev_month_two: '1995-12-01T00:00:00.000'
+  - name: "Cuv\xE9e des Trolls"
+    other_date_one: '2022-03-04T06:30:00.000'
+    other_date_two: '1996-01-02T00:00:00.000'
+    prev_month_one: '2022-02-01T00:00:00.000'
+    prev_month_two: '1995-12-01T00:00:00.000'
+  - name: Weihenstephan Hefe Weizen Alcoholarm
+    other_date_one: '2022-03-04T06:30:00.000'
+    other_date_two: '1996-01-02T00:00:00.000'
+    prev_month_one: '2022-02-01T00:00:00.000'
+    prev_month_two: '1995-12-01T00:00:00.000'
+  - name: Bellfield Lawless Village IPA
+    other_date_one: '2022-03-04T06:30:00.000'
+    other_date_two: '1996-01-02T00:00:00.000'
+    prev_month_one: '2022-02-01T00:00:00.000'
+    prev_month_two: '1995-12-01T00:00:00.000'
+  - name: Pauwel Kwak
+    other_date_one: '2022-03-04T06:30:00.000'
+    other_date_two: '1996-01-02T00:00:00.000'
+    prev_month_one: '2022-02-01T00:00:00.000'
+    prev_month_two: '1995-12-01T00:00:00.000'
+  - name: Brasserie De Sutter Brin de Folie
+    other_date_one: '2022-03-04T06:30:00.000'
+    other_date_two: '1996-01-02T00:00:00.000'
+    prev_month_one: '2022-02-01T00:00:00.000'
+    prev_month_two: '1995-12-01T00:00:00.000'
+  - name: Brugse Zot blonde
+    other_date_one: '2022-03-04T06:30:00.000'
+    other_date_two: '1996-01-02T00:00:00.000'
+    prev_month_one: '2022-02-01T00:00:00.000'
+    prev_month_two: '1995-12-01T00:00:00.000'
+  schema:
+    fields:
+    - name: name
+      type: string
+    - name: other_date_one
+      type: datetime
+    - name: other_date_two
+      type: datetime
+    - name: prev_month_one
+      type: datetime
+    - name: prev_month_two
+      type: datetime
+    pandas_version: 1.4.0

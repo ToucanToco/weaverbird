@@ -5,6 +5,8 @@
 ### Fixed
 
 - Pypika: the `evolution` step now casts the value column to a floating point type before calculating a percentage
+- Pypika: the `datetextract` step now returns the first day of the previous month rather than the first day of the previous year
+  for `firstDayOfPreviousMonth`.
 
 ## [0.37.0] - 2023-09-07
 
