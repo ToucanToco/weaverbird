@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Removed
+- NativeSQL translator: dropped support for the join and append steps
+
 ## [0.108.0] - 2023-09-07
 
 ### Added
