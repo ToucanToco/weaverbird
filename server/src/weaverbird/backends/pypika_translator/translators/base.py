@@ -830,7 +830,7 @@ class SQLTranslator(ABC):
             )
         elif lowered_date_unit == "firstdayofpreviousmonth":
             return cls._add_date(
-                target_column=cls._date_trunc("year", target_column), unit="months", duration=-1
+                target_column=cls._date_trunc("month", target_column), unit="months", duration=-1
             )
         elif lowered_date_unit == "firstdayofpreviousquarter":
             # Postgres does not support quarters in intervals
