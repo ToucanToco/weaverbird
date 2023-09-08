@@ -1,0 +1,57 @@
+exclude:
+- mongo
+- pandas
+step:
+  pipeline:
+  - date_col: brewing_date
+    evolution_format: pct
+    evolution_type: vsLastDay
+    name: evolution
+    value_col: volume_ml
+    new_column: volume_evol
+  - columns:
+    - brewing_date
+    - volume_ml
+    - volume_evol
+    name: select
+expected:
+  data:
+  - brewing_date: '2022-01-01T00:00:00.000'
+    volume_evol: null
+    volume_ml: 330
+  - brewing_date: '2022-01-02T00:00:00.000'
+    volume_evol: 0.0
+    volume_ml: 330
+  - brewing_date: '2022-01-03T00:00:00.000'
+    volume_evol: 0.0
+    volume_ml: 330
+  - brewing_date: '2022-01-04T00:00:00.000'
+    volume_evol: 0.0
+    volume_ml: 330
+  - brewing_date: '2022-01-05T00:00:00.000'
+    volume_evol: -0.2424242424
+    volume_ml: 250
+  - brewing_date: '2022-01-06T00:00:00.000'
+    volume_evol: 1.0
+    volume_ml: 500
+  - brewing_date: '2022-01-07T00:00:00.000'
+    volume_evol: -0.34
+    volume_ml: 330
+  - brewing_date: '2022-01-08T00:00:00.000'
+    volume_evol: 0.0
+    volume_ml: 330
+  - brewing_date: '2022-01-09T00:00:00.000'
+    volume_evol: 0.0
+    volume_ml: 330
+  - brewing_date: '2022-01-10T00:00:00.000'
+    volume_evol: 0.0
+    volume_ml: 330
+  schema:
+    fields:
+    - name: brewing_date
+      type: datetime
+    - name: volume_ml
+      type: integer
+    - name: volume_evol
+      type: number
+    pandas_version: 1.4.0

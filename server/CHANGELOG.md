@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Pypika: the `evolution` step now casts the value column to a floating point type before calculating a percentage
+
 ## [0.37.0] - 2023-09-07
 
 ### Changed
