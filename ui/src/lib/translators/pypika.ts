@@ -27,10 +27,6 @@ export class PypikaTranslator extends BaseTranslator {
     return step;
   }
 
-  append(step: Readonly<S.AppendStep>) {
-    return step;
-  }
-
   comparetext(step: Readonly<S.CompareTextStep>) {
     return step;
   }
@@ -83,10 +79,6 @@ export class PypikaTranslator extends BaseTranslator {
   }
 
   ifthenelse(step: Readonly<S.IfThenElseStep>) {
-    return step;
-  }
-
-  join(step: Readonly<S.JoinStep>) {
     return step;
   }
 
