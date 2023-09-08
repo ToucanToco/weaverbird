@@ -978,11 +978,19 @@ class SQLTranslator(ABC):
         query: "QueryBuilder" = (
             self.QUERY_CLS.from_(prev_step_table)
             .select(
-                *[prev_table.field(col) for col in columns],
+                *(prev_table.field(col) for col in columns),
                 (
                     prev_table.field(step.value_col) - right_table.field(step.value_col)
                     if step.evolution_format == "abs"
-                    else prev_table.field(step.value_col) / right_table.field(step.value_col) - 1
+                    else (
+                        functions.Cast(
+                            prev_table.field(step.value_col), self.DATA_TYPE_MAPPING.float
+                        )
+                        / functions.Cast(
+                            right_table.field(step.value_col), self.DATA_TYPE_MAPPING.float
+                        )
+                    )
+                    - 1.0
                 ).as_(new_col),
                 *[prev_table.field(col).as_(f"left_table_{col}") for col in step.index_columns],
             )
