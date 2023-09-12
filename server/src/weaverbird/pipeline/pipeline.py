@@ -159,8 +159,11 @@ PipelineStep = Annotated[
 class Pipeline(BaseModel):
     steps: list[PipelineStep]
 
+    def model_dump(self, *, exclude_none: bool = True, **kwargs) -> dict:
+        return super().model_dump(exclude_none=exclude_none, **kwargs)
+
     def dict(self, *, exclude_none: bool = True, **kwargs) -> dict:
-        return super().dict(exclude_none=True, **kwargs)
+        return self.model_dump(exclude_none=exclude_none, **kwargs)
 
 
 PipelineStepWithVariables = Annotated[

@@ -51,7 +51,7 @@ class BaseConditionCombo(BaseCondition, ABC):
     model_config = ConfigDict(populate_by_name=True)
 
     def to_dict(self):
-        return self.dict(by_alias=True)
+        return self.model_dump(by_alias=True)
 
 
 class ConditionComboAnd(BaseConditionCombo):

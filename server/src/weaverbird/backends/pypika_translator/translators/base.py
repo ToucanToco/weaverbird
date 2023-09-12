@@ -254,7 +254,7 @@ class SQLTranslator(ABC):
             and isinstance(second_step, TopStep)
             and self._source_rows_subset < second_step.limit
         ):
-            second_step = second_step.copy(update={"limit": self._source_rows_subset})
+            second_step = second_step.model_copy(update={"limit": self._source_rows_subset})
 
         ctx = step_method(step=second_step, prev_step_table=table, builder=None, columns=columns)
 

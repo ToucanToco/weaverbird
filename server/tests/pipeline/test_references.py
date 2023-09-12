@@ -1,14 +1,19 @@
 import pytest
-from weaverbird.pipeline.pipeline import Pipeline, PipelineWithVariables
-from weaverbird.pipeline.references import PipelineWithRefs, ReferenceUnresolved
+from weaverbird.pipeline.pipeline import (
+    Pipeline,
+    PipelineWithRefs,
+    PipelineWithVariables,
+    ReferenceUnresolved,
+)
 from weaverbird.pipeline.steps import (
     AppendStepWithRefs,
     DomainStep,
     DomainStepWithRef,
-    JoinStep,
     JoinStepWithRef,
     TextStep,
 )
+from weaverbird.pipeline.steps.append import AppendStepWithVariable
+from weaverbird.pipeline.steps.join import JoinStepWithVariable
 from weaverbird.pipeline.steps.utils.combination import Reference
 
 PIPELINES_LIBRARY: dict[str, list[dict]] = {
@@ -88,10 +93,11 @@ async def test_resolve_references_join():
             TextStep(new_column="text", text="Lorem ipsum"),
         ]
     )
-    assert await pipeline_with_refs.resolve_references(reference_resolver) == PipelineWithVariables(
+
+    expected = PipelineWithVariables(
         steps=[
             DomainStep(domain="source"),
-            JoinStep(
+            JoinStepWithVariable(
                 on=[("key_left", "key_right")],
                 right_pipeline=PIPELINES_LIBRARY["other_pipeline"],
                 type="left",
@@ -99,6 +105,8 @@ async def test_resolve_references_join():
             TextStep(new_column="text", text="Lorem ipsum"),
         ]
     )
+
+    assert await pipeline_with_refs.resolve_references(reference_resolver) == expected
 
 
 @pytest.mark.asyncio
@@ -115,17 +123,15 @@ async def test_resolve_references_append():
         ]
     )
 
-    assert await pipeline_with_refs.resolve_references(reference_resolver) == PipelineWithVariables(
+    expected = PipelineWithVariables(
         steps=[
             DomainStep(domain="source"),
-            AppendStepWithRefs(
-                pipelines=[
-                    PIPELINES_LIBRARY["other_pipeline"],
-                ]
-            ),
+            AppendStepWithVariable(pipelines=[PIPELINES_LIBRARY["other_pipeline"]]),
             TextStep(new_column="text", text="Lorem ipsum"),
         ]
     )
+
+    assert await pipeline_with_refs.resolve_references(reference_resolver) == expected
 
 
 @pytest.mark.asyncio
@@ -147,17 +153,14 @@ async def test_resolve_references_unresolved_append():
         ]
     )
 
-    assert await pipeline_with_refs.resolve_references(reference_resolver) == PipelineWithVariables(
+    expected = PipelineWithVariables(
         steps=[
             DomainStep(domain="source"),
-            AppendStepWithRefs(
-                pipelines=[
-                    PIPELINES_LIBRARY["other_pipeline"],
-                ]
-            ),
+            AppendStepWithVariable(pipelines=[PIPELINES_LIBRARY["other_pipeline"]]),
             TextStep(new_column="text", text="Lorem ipsum"),
         ]
     )
+    assert await pipeline_with_refs.resolve_references(reference_resolver) == expected
 
 
 @pytest.mark.asyncio
@@ -219,17 +222,15 @@ async def test_resolve_references_unresolved_append_subpipeline_error():
         ]
     )
 
-    assert await pipeline_with_refs.resolve_references(reference_resolver) == PipelineWithVariables(
+    expected = PipelineWithVariables(
         steps=[
             DomainStep(domain="source"),
-            AppendStepWithRefs(
-                pipelines=[
-                    PIPELINES_LIBRARY["other_pipeline"],
-                ]
-            ),
+            AppendStepWithVariable(pipelines=[PIPELINES_LIBRARY["other_pipeline"]]),
             TextStep(new_column="text", text="Lorem ipsum"),
         ]
     )
+
+    assert await pipeline_with_refs.resolve_references(reference_resolver) == expected
 
 
 @pytest.mark.asyncio

@@ -19,7 +19,7 @@ def get_total_for_dimension(
     ]
     aggregations = []
     for aggregation in step.aggregations:
-        agg = aggregation.copy()
+        agg = aggregation.model_copy(deep=True)
         agg.columns = agg.new_columns
         aggregations.append(agg)
 

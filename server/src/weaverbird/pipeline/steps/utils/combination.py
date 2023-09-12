@@ -40,7 +40,7 @@ async def resolve_if_reference(
 
             try:
                 pipeline_without_refs = await pipeline.resolve_references(reference_resolver)
-                return pipeline_without_refs.dict()["steps"]
+                return pipeline_without_refs.model_dump()["steps"]
             except ReferenceUnresolved:
                 return None  # skip
         else:
