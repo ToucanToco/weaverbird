@@ -20,7 +20,7 @@ class WaterfallStep(BaseStep):
     labelsColumn: ColumnName
     sortBy: Literal["value", "label"]
     order: Literal["desc", "asc"]
-    parentsColumn: ColumnName | None
+    parentsColumn: ColumnName | None = None
     groupby: list[ColumnName] = []
 
 

@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 
 class RelativeDate(BaseModel):
-    date: datetime | str | None
+    date: datetime | str | None = None
     operator: Literal["from", "until", "before", "after"]
     quantity: int
     duration: Literal["year", "quarter", "month", "week", "day"]

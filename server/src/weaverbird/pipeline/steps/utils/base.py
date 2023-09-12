@@ -1,5 +1,7 @@
-from pydantic import BaseConfig, Extra
+from typing import Any
+
 from pydantic import BaseModel as PydanticBaseModel
+from pydantic import ConfigDict
 
 
 def to_camelcase(string: str) -> str:
@@ -8,17 +10,15 @@ def to_camelcase(string: str) -> str:
 
 
 class BaseModel(PydanticBaseModel):
-    # TODO[pydantic]: The `Config` class inherits from another class, please create the `model_config` manually.
-    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
-    class Config(BaseConfig):
-        allow_population_by_field_name = True
-        extra = Extra.forbid
-        alias_generator = to_camelcase
+    model_config = ConfigDict(populate_by_name=True, extra="forbid", alias_generator=to_camelcase)
 
 
 class BaseStep(BaseModel):
     name: str
 
+    def model_dump(self, *, exclude_none: bool = True, **kwargs) -> dict[str, Any]:
+        return super().model_dump(exclude_none=exclude_none, **kwargs)
+
     # None values are excluded, to avoid triggering validations error in front-ends
-    def dict(self, *, exclude_none: bool = True, **kwargs) -> dict:
-        return super().dict(exclude_none=True, **kwargs)
+    def dict(self, *, exclude_none: bool = True, **kwargs) -> dict[str, Any]:
+        return self.model_dump(exclude_none=exclude_none, **kwargs)

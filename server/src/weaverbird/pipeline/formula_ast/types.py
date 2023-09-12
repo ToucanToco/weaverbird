@@ -26,7 +26,7 @@ Expression = Union["Operation", ColumnName, Constant]
 
 
 # Dataclasses do not supported recursive types for now
-class Operation(BaseModel, smart_union=True):
+class Operation(BaseModel):
     left: Expression
     right: Expression
     operator: Operator

@@ -15,7 +15,7 @@ class CumSumStep(BaseStep):
         alias="toCumSum",
     )
     reference_column: ColumnName
-    groupby: list[ColumnName] | None
+    groupby: list[ColumnName] | None = None
 
     @model_validator(mode="before")
     @classmethod

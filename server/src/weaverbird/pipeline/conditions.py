@@ -2,7 +2,7 @@ from abc import ABC
 from datetime import datetime
 from typing import Annotated, Any, Literal
 
-from pydantic import BaseConfig, BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from weaverbird.pipeline.dates import RelativeDate
 from weaverbird.pipeline.types import ColumnName
@@ -48,8 +48,7 @@ SimpleCondition = Annotated[
 
 
 class BaseConditionCombo(BaseCondition, ABC):
-    class Config(BaseConfig):
-        allow_population_by_field_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
     def to_dict(self):
         return self.dict(by_alias=True)

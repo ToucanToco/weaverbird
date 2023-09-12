@@ -7,4 +7,4 @@ from weaverbird.pipeline.types import ColumnName
 class ToDateStep(BaseStep):
     name: Literal["todate"] = "todate"
     column: ColumnName
-    format: str | None
+    format: str | None = None

@@ -7,6 +7,6 @@ from weaverbird.pipeline.types import ColumnName
 class SubstringStep(BaseStep):
     name: Literal["substring"] = "substring"
     column: ColumnName
-    new_column_name: ColumnName | None
+    new_column_name: ColumnName | None = None
     start_index: int
     end_index: int
