@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import validator
+from pydantic import field_validator
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
 
@@ -13,7 +13,8 @@ class CustomSqlStep(BaseStep):
     def _strip_query(query: str) -> str:
         return query.strip().strip(";")
 
-    @validator("query")
+    @field_validator("query")
+    @classmethod
     def _validate_query(cls, query: str) -> str:
         assert ";" not in (
             stripped := cls._strip_query(query)

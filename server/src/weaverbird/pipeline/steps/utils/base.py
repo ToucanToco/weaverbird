@@ -8,6 +8,8 @@ def to_camelcase(string: str) -> str:
 
 
 class BaseModel(PydanticBaseModel):
+    # TODO[pydantic]: The `Config` class inherits from another class, please create the `model_config` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
     class Config(BaseConfig):
         allow_population_by_field_name = True
         extra = Extra.forbid

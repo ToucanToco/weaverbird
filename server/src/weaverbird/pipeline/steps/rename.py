@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import root_validator
+from pydantic import model_validator
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMixin
@@ -11,7 +11,8 @@ class RenameStep(BaseStep):
     name: Literal["rename"] = "rename"
     to_rename: list[tuple[str, str]]
 
-    @root_validator(pre=True)
+    @model_validator(mode="before")
+    @classmethod
     def handle_legacy_syntax(cls, values):
         if "oldname" in values and "newname" in values:
             values["to_rename"] = [(values.pop("oldname"), values.pop("newname"))]

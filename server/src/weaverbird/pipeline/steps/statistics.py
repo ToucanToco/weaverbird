@@ -11,7 +11,7 @@ Statistics = Literal["count", "max", "min", "average", "variance", "standard dev
 
 
 class Quantile(BaseModel):
-    label: str | None
+    label: str | None = None
     nth: int
     order: int
 

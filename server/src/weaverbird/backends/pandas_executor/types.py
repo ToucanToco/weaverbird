@@ -15,7 +15,7 @@ class StepExecutionReport(BaseModel):
 
 
 class PipelineExecutionReport(BaseModel):
-    steps_reports: list[StepExecutionReport] = Field(min_items=0)
+    steps_reports: list[StepExecutionReport] = Field(min_length=0)
 
 
 DomainRetriever = Callable[[str | Reference], DataFrame]

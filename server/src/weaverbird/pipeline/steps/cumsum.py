@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import Field, root_validator
+from pydantic import Field, model_validator
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMixin
@@ -17,7 +17,8 @@ class CumSumStep(BaseStep):
     reference_column: ColumnName
     groupby: list[ColumnName] | None
 
-    @root_validator(pre=True)
+    @model_validator(mode="before")
+    @classmethod
     def handle_legacy_syntax(cls, values):
         if "valueColumn" in values:
             values["value_column"] = values.pop("valueColumn")

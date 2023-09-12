@@ -1,7 +1,7 @@
 from itertools import chain as ichain
 from typing import Any, Literal
 
-from pydantic import validator
+from pydantic import field_validator
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.types import ColumnName
@@ -20,12 +20,14 @@ class DissolveStep(BaseStep):
         assert all(len(v) for v in values), f"all values in '{col_name}' must be non-empty"
         assert len(values) == len(set(values)), f"all values in '{col_name}' must be unique"
 
-    @validator("groups")
+    @field_validator("groups")
+    @classmethod
     def _len_validator(cls, values: list) -> list:
         assert len(values) > 0, "list must contain at least one element"
         return values
 
-    @validator("aggregations")
+    @field_validator("aggregations")
+    @classmethod
     def _validate_aggregations(cls, values: list[Aggregation]) -> list[Aggregation]:
         if len(values) < 1:
             return values

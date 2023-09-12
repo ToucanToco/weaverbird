@@ -10,7 +10,7 @@ from weaverbird.pipeline.types import ColumnName, TemplatedVariable
 class ReplaceStep(BaseStep):
     name: Literal["replace"] = "replace"
     search_column: ColumnName
-    to_replace: list[tuple[Any, Any]] = Field(min_items=1)
+    to_replace: list[tuple[Any, Any]] = Field(min_length=1)
 
 
 class ReplaceStepWithVariable(ReplaceStep, StepWithVariablesMixin):

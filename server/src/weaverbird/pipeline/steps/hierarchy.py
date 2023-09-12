@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import validator
+from pydantic import field_validator
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
 
@@ -11,7 +11,8 @@ class HierarchyStep(BaseStep):
     hierarchy: list[str]
     include_nulls: bool = False
 
-    @validator("hierarchy")
+    @field_validator("hierarchy")
+    @classmethod
     def _ensure_hierarchy(cls, values: list[str]) -> list[str]:
         assert len(values) > 0, "at least one value must be specified"
         return values

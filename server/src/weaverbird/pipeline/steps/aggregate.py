@@ -1,7 +1,7 @@
 from collections.abc import Sequence
 from typing import Literal
 
-from pydantic import BaseConfig, BaseModel, Field, root_validator, validator
+from pydantic import BaseConfig, BaseModel, Field, field_validator, model_validator
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMixin
@@ -26,14 +26,18 @@ class Aggregation(BaseModel):
     agg_function: AggregateFn = Field(alias="aggfunction")
     columns: list[ColumnName]
 
+    # TODO[pydantic]: The `Config` class inherits from another class, please create the `model_config` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
     class Config(BaseConfig):
         allow_population_by_field_name = True
 
-    @validator("columns", pre=True)
+    @field_validator("columns", mode="before")
+    @classmethod
     def validate_unique_columns(cls, value):
         return validate_unique_columns(value)
 
-    @root_validator(pre=True)
+    @model_validator(mode="before")
+    @classmethod
     def handle_legacy_syntax(cls, values):
         if "column" in values:
             values["columns"] = [values.pop("column")]
