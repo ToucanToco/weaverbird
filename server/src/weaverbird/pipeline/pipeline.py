@@ -12,7 +12,11 @@ from weaverbird.pipeline.conditions import (
     InclusionCondition,
     MatchCondition,
 )
+from weaverbird.pipeline.steps.append import AppendStepWithRefs
+from weaverbird.pipeline.steps.domain import DomainStepWithRef
 from weaverbird.pipeline.steps.hierarchy import HierarchyStep
+from weaverbird.pipeline.steps.join import JoinStepWithRef
+from weaverbird.pipeline.steps.utils.combination import ReferenceResolver
 
 from .steps import (
     AbsoluteValueStep,
@@ -384,7 +388,7 @@ def remove_void_conditions_from_mongo_steps(
 
 # TODO move to a dedicated variables module
 class PipelineWithVariables(BaseModel):
-    steps: list[PipelineStepWithVariables | PipelineStep]
+    steps: list[PipelineStepWithVariables | PipelineStep | "PipelineStepWithRefs"]
 
     def render(self, variables: dict[str, Any], renderer) -> Pipeline:
         # TODO it must be more efficient to render the full pipeline once
@@ -395,4 +399,46 @@ class PipelineWithVariables(BaseModel):
         return Pipeline(steps=steps_rendered)
 
 
+PipelineStepWithRefs = Annotated[
+    AppendStepWithRefs | DomainStepWithRef | JoinStepWithRef,
+    Field(discriminator="name"),
+]
+
+
+class PipelineWithRefs(BaseModel):
+    """
+    Represents a pipeline in which some steps can reference some other pipelines using the syntax
+    `{"type": "ref", "uid": "..."}`
+    """
+
+    steps: list[PipelineStepWithRefs | PipelineStep | PipelineStepWithVariables]
+
+    async def resolve_references(
+        self, reference_resolver: ReferenceResolver
+    ) -> PipelineWithVariables | None:
+        """
+        Walk the pipeline steps and replace any reference by its corresponding pipeline.
+        The sub-pipelines added should also be handled, so that they will be no references anymore in the result.
+        """
+        resolved_steps: list[PipelineStepWithRefs | PipelineStepWithVariables | PipelineStep] = []
+        for step in self.steps:
+            resolved_step = (
+                await step.resolve_references(reference_resolver)
+                if hasattr(step, "resolve_references")
+                else step
+            )
+            if isinstance(resolved_step, PipelineWithVariables):
+                resolved_steps.extend(resolved_step.steps)
+            elif resolved_step is not None:  # None means the step should be skipped
+                resolved_steps.append(resolved_step)
+
+        return PipelineWithVariables(steps=resolved_steps)
+
+
 PipelineWithVariables.update_forward_refs()
+
+
+class ReferenceUnresolved(Exception):
+    """
+    Raised when a mandatory reference is not resolved
+    """

@@ -1,7 +1,10 @@
 from collections.abc import Awaitable, Callable
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 from pydantic import BaseModel
+
+if TYPE_CHECKING:
+    from weaverbird.pipeline.pipeline import PipelineStep
 
 
 class Reference(BaseModel):
@@ -14,7 +17,9 @@ class Reference(BaseModel):
         return hash(f"__ref__{self.uid}")
 
 
-PipelineOrDomainName = list[dict] | str  # can be either a domain name or a complete pipeline
+PipelineOrDomainName = (
+    list[dict] | list["PipelineStep"] | str
+)  # can be either a domain name or a complete pipeline
 PipelineOrDomainNameOrReference = PipelineOrDomainName | Reference
 
 # A reference returning None means that it should be skipped
@@ -25,14 +30,13 @@ async def resolve_if_reference(
     reference_resolver: ReferenceResolver,
     pipeline_or_domain_name_or_ref: PipelineOrDomainNameOrReference,
 ) -> PipelineOrDomainName | None:
-    from weaverbird.pipeline.references import PipelineWithRefs
+    from weaverbird.pipeline.pipeline import PipelineWithRefs, ReferenceUnresolved
 
     if isinstance(pipeline_or_domain_name_or_ref, Reference):
         pipeline_or_domain_name = await reference_resolver(pipeline_or_domain_name_or_ref)
         if isinstance(pipeline_or_domain_name, list):
             # Recursively resolve any reference in sub-pipelines
             pipeline = PipelineWithRefs(steps=pipeline_or_domain_name)
-            from weaverbird.pipeline.references import ReferenceUnresolved
 
             try:
                 pipeline_without_refs = await pipeline.resolve_references(reference_resolver)

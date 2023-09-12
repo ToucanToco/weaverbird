@@ -32,7 +32,7 @@ class NullCondition(BaseCondition):
 class MatchCondition(BaseCondition):
     column: ColumnName
     operator: Literal["matches", "notmatches"]
-    value: str
+    value: str | int | float
 
 
 class DateBoundCondition(BaseModel):
