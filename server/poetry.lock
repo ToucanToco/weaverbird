@@ -3397,7 +3397,7 @@ requests = ">=2.23,<3.0"
 
 [[package]]
 name = "toucan-connectors"
-version = "4.7.3"
+version = "4.8.0"
 description = "Toucan Toco Connectors"
 optional = false
 python-versions = ">=3.10,<3.12"
@@ -3462,7 +3462,7 @@ toucan-toco = ["toucan-client (>=1.0.1,<2.0.0)"]
 type = "git"
 url = "https://github.com/ToucanToco/toucan-connectors"
 reference = "upgrade-pydantic"
-resolved_reference = "8fa9d9a5767b3c83d40bfe79ec35b8c93266f85b"
+resolved_reference = "e47c4773f7812dcf0ada3f2fe1e682475482f444"
 
 [[package]]
 name = "toucan-data-sdk"
