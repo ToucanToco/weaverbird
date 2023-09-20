@@ -3315,13 +3315,13 @@ requests = ">=2.23,<3.0"
 
 [[package]]
 name = "toucan-connectors"
-version = "4.7.3"
+version = "4.8.0"
 description = "Toucan Toco Connectors"
 optional = false
 python-versions = ">=3.10,<3.12"
 files = [
-    {file = "toucan_connectors-4.7.3-py3-none-any.whl", hash = "sha256:9275b02002dbf3f450c11326ee8637d5a2f37af0714f5256c917d4cc42800d4b"},
-    {file = "toucan_connectors-4.7.3.tar.gz", hash = "sha256:79d8be1328c5c41835dbbf9345bc89e431f0ef05c3b4c258bef48e2f21abfd43"},
+    {file = "toucan_connectors-4.8.0-py3-none-any.whl", hash = "sha256:505460417762f804a42616ed2c128fa40feda50dc5400e1ce2fb70839813e633"},
+    {file = "toucan_connectors-4.8.0.tar.gz", hash = "sha256:bdad24c7934e8268215ddfa93f5c2fd8f15dd806ebc10fa928a5084237e2de74"},
 ]
 
 [package.dependencies]
@@ -3333,7 +3333,7 @@ google-cloud-bigquery = {version = ">=3,<4", extras = ["bqstorage", "pandas"], o
 Jinja2 = ">=3.0.3,<4.0.0"
 jq = ">=1.2.2,<2.0.0"
 lxml = {version = ">=4.6.5,<5.0.0", optional = true, markers = "extra == \"redshift\" or extra == \"soap\" or extra == \"all\""}
-pyarrow = {version = "<12", optional = true, markers = "extra == \"snowflake\" or extra == \"all\""}
+pyarrow = {version = "<14", optional = true, markers = "extra == \"snowflake\" or extra == \"all\""}
 pydantic = ">=1.9.1,<2.0.0"
 PyJWT = {version = ">=1.5.3,<3", optional = true, markers = "extra == \"snowflake\" or extra == \"all\""}
 pymongo = {version = ">=3.12.0", optional = true, markers = "extra == \"mongo\" or extra == \"all\""}
@@ -3346,7 +3346,7 @@ toucan-data-sdk = ">=7.6.0,<8.0.0"
 
 [package.extras]
 adobe = ["adobe-analytics (>=1.2.3,<2.0.0)"]
-all = ["PyJWT (>=1.5.3,<3)", "PyMySQL (>=1.0.2,<2.0.0)", "adobe-analytics (>=1.2.3,<2.0.0)", "awswrangler (>=3.0.0,<4.0.0)", "bearer (==3.1.0)", "clickhouse-driver (>=0.2.3,<1.0)", "cx-Oracle (>=8.3.0,<9.0.0)", "dataiku-api-client (>=9.0.1,<13.0.0)", "elasticsearch (>=7.11.0,<8)", "facebook-sdk (>=3.1.0,<4.0.0)", "google-api-python-client (>=2,<3)", "google-cloud-bigquery[bqstorage,pandas] (>=3,<4)", "googleads (>=34,<35)", "gspread (>=5.4.0,<6.0.0)", "hubspot-api-client (>=7.4,<9.0)", "lxml (>=4.6.5,<5.0.0)", "oauth2client (>=4.1.3,<5.0.0)", "oauthlib (==3.2.2)", "openpyxl (>=3.0.9,<4.0.0)", "peakina (>=0.11.0,<0.12.0)", "psycopg2 (>=2.7.4,<3.0.0)", "pyarrow (<12)", "pyhdb (>=0.3.4,<1.0)", "pymongo (>=3.12.0)", "pyodbc (>=4,<5)", "python-graphql-client (>=0.4.3,<1.0)", "redshift-connector (>=2.0.907,<3.0.0)", "requests-oauthlib (==1.3.1)", "simplejson (>=3.17.6,<4.0.0)", "snowflake-connector-python (>=2.7.12,<4.0.0)", "tctc-odata (>=0.3,<1.0)", "toucan-client (>=1.0.1,<2.0.0)", "xmltodict (>=0.13.0,<1.0)", "zeep (>=4.1.0,<5.0.0)"]
+all = ["PyJWT (>=1.5.3,<3)", "PyMySQL (>=1.0.2,<2.0.0)", "adobe-analytics (>=1.2.3,<2.0.0)", "awswrangler (>=3.0.0,<4.0.0)", "bearer (==3.1.0)", "clickhouse-driver (>=0.2.3,<1.0)", "cx-Oracle (>=8.3.0,<9.0.0)", "dataiku-api-client (>=9.0.1,<13.0.0)", "elasticsearch (>=7.11.0,<8)", "facebook-sdk (>=3.1.0,<4.0.0)", "google-api-python-client (>=2,<3)", "google-cloud-bigquery[bqstorage,pandas] (>=3,<4)", "googleads (>=34,<35)", "gspread (>=5.4.0,<6.0.0)", "hubspot-api-client (>=7.4,<9.0)", "lxml (>=4.6.5,<5.0.0)", "oauth2client (>=4.1.3,<5.0.0)", "oauthlib (==3.2.2)", "openpyxl (>=3.0.9,<4.0.0)", "peakina (>=0.11,<0.13)", "psycopg2 (>=2.7.4,<3.0.0)", "pyarrow (<14)", "pyhdb (>=0.3.4,<1.0)", "pymongo (>=3.12.0)", "pyodbc (>=4,<5)", "python-graphql-client (>=0.4.3,<1.0)", "redshift-connector (>=2.0.907,<3.0.0)", "requests-oauthlib (==1.3.1)", "simplejson (>=3.17.6,<4.0.0)", "snowflake-connector-python (>=2.7.12,<4.0.0)", "tctc-odata (>=0.3,<1.0)", "toucan-client (>=1.0.1,<2.0.0)", "xmltodict (>=0.13.0,<1.0)", "zeep (>=4.1.0,<5.0.0)"]
 awsathena = ["awswrangler (>=3.0.0,<4.0.0)"]
 azure-mssql = ["pyodbc (>=4,<5)"]
 clickhouse = ["clickhouse-driver (>=0.2.3,<1.0)"]
@@ -3372,7 +3372,7 @@ oracle-sql = ["cx-Oracle (>=8.3.0,<9.0.0)"]
 postgres = ["psycopg2 (>=2.7.4,<3.0.0)"]
 redshift = ["lxml (>=4.6.5,<5.0.0)", "redshift-connector (>=2.0.907,<3.0.0)"]
 sap-hana = ["pyhdb (>=0.3.4,<1.0)"]
-snowflake = ["PyJWT (>=1.5.3,<3)", "pyarrow (<12)", "snowflake-connector-python (>=2.7.12,<4.0.0)"]
+snowflake = ["PyJWT (>=1.5.3,<3)", "pyarrow (<14)", "snowflake-connector-python (>=2.7.12,<4.0.0)"]
 soap = ["lxml (>=4.6.5,<5.0.0)", "zeep (>=4.1.0,<5.0.0)"]
 toucan-toco = ["toucan-client (>=1.0.1,<2.0.0)"]
 
