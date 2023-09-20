@@ -959,21 +959,21 @@ files = [
 
 [[package]]
 name = "geopandas"
-version = "0.13.2"
+version = "0.14.0"
 description = "Geographic pandas extensions"
 optional = true
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 files = [
-    {file = "geopandas-0.13.2-py3-none-any.whl", hash = "sha256:101cfd0de54bcf9e287a55b5ea17ebe0db53a5e25a28bacf100143d0507cabd9"},
-    {file = "geopandas-0.13.2.tar.gz", hash = "sha256:e5b56d9c20800c77bcc0c914db3f27447a37b23b2cd892be543f5001a694a968"},
+    {file = "geopandas-0.14.0-py3-none-any.whl", hash = "sha256:a402a565e727642cb44a500c911f226eea26c1b1247c6586827031e3d7a9403a"},
+    {file = "geopandas-0.14.0.tar.gz", hash = "sha256:ea6c031889e1e1888aecaa6e182ca620d78f63551c49b3002a998bcbb280531f"},
 ]
 
 [package.dependencies]
-fiona = ">=1.8.19"
+fiona = ">=1.8.21"
 packaging = "*"
-pandas = ">=1.1.0"
-pyproj = ">=3.0.1"
-shapely = ">=1.7.1"
+pandas = ">=1.4.0"
+pyproj = ">=3.3.0"
+shapely = ">=1.8.0"
 
 [[package]]
 name = "google-api-core"
@@ -3607,4 +3607,4 @@ pypika = ["PyPika"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "8e72f71109c8661810e15ba669704ba9f4d4cebb1618ffe2b084712364dff9d2"
+content-hash = "6b91ea9f0e4777586093b89f4879d595681ad71051b963737431a05a918cb446"
