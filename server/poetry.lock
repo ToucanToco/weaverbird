@@ -2846,13 +2846,13 @@ dotenv = ["python-dotenv"]
 
 [[package]]
 name = "quart-cors"
-version = "0.6.0"
+version = "0.7.0"
 description = "A Quart extension to provide Cross Origin Resource Sharing, access control, support"
 optional = true
 python-versions = ">=3.7"
 files = [
-    {file = "quart_cors-0.6.0-py3-none-any.whl", hash = "sha256:a12cb8f82506be9794c7d0fba62be04f07ca719e47e0691bf7a63d5ce661b70e"},
-    {file = "quart_cors-0.6.0.tar.gz", hash = "sha256:e7c3f176624cfaa934ea96eddbcaea0b6c225d8eee543f97bce3bdc22e1e00ef"},
+    {file = "quart_cors-0.7.0-py3-none-any.whl", hash = "sha256:fa872cc94a2ae6b51a35b028ebca65c14069d7121d63a4caa3526ebbfb7c5a99"},
+    {file = "quart_cors-0.7.0.tar.gz", hash = "sha256:d667a0f13b4ce6d9e926489de5d819780844fbff5b2cdea156bd8867dd426a37"},
 ]
 
 [package.dependencies]
@@ -3607,4 +3607,4 @@ pypika = ["PyPika"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "b9229ef7d24d61dda01b41e664c2df1fa3b40d1b155d9bcd5585df70792dc055"
+content-hash = "f48d5114bd90a5fa098a88e702a1cb142ba3845b6b72c41150c619cdb8135469"
