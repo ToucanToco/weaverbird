@@ -49,7 +49,7 @@ psycopg2 = "^2.9.7"
 pymongo = ">=4.2.0"
 sqlalchemy-redshift = ">=0.8.11,<1"
 PyYAML = "^6.0"
-ruff = ">=0.0.287,<0.0.291"
+ruff = ">=0.0.287,<0.0.292"
 pre-commit = "^3.4.0"
 
 [tool.poetry.extras]
