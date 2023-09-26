@@ -420,7 +420,7 @@ describe('Widget FilterSimpleCondition', () => {
 
   describe('date column and date (using an invalid operator)', () => {
     let wrapper: Wrapper<FilterSimpleConditionWidget>;
-    const createWrapper = (operator: string, isRelativeDateEnabled = false) => {
+    const createWrapper = (operator: string) => {
       setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -441,7 +441,7 @@ describe('Widget FilterSimpleCondition', () => {
     };
 
     it('should transform an invalid "le" operator when relative date are enabled', async () => {
-      createWrapper('le', true);
+      createWrapper('le');
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted().input).toHaveLength(1);
       // should emit new value with 'until' operator replacing invalid 'le' operator
@@ -451,7 +451,7 @@ describe('Widget FilterSimpleCondition', () => {
     });
 
     it('should transform an invalid "lt" operator when relative date are enabled', async () => {
-      createWrapper('lt', true);
+      createWrapper('lt');
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted().input).toHaveLength(1);
       // should emit new value with 'until' operator replacing invalid 'lt' operator
@@ -461,7 +461,7 @@ describe('Widget FilterSimpleCondition', () => {
     });
 
     it('should transform an invalid "ge" operator when relative date are enabled', async () => {
-      createWrapper('ge', true);
+      createWrapper('ge');
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted().input).toHaveLength(1);
       // should emit new value with 'from' operator replacing invalid 'ge' operator
@@ -471,7 +471,7 @@ describe('Widget FilterSimpleCondition', () => {
     });
 
     it('should transform an invalid "gt" operator when relative date are enabled', async () => {
-      createWrapper('gt', true);
+      createWrapper('gt');
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted().input).toHaveLength(1);
       // should emit new value with 'from' operator replacing invalid 'gt' operator
@@ -481,7 +481,7 @@ describe('Widget FilterSimpleCondition', () => {
     });
 
     it('should fallback to first available operator when selected operator is invalid and relative date are enabled', async () => {
-      createWrapper('eq', true);
+      createWrapper('eq');
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted().input).toHaveLength(1);
       expect(wrapper.emitted().input[0]).toEqual([
@@ -490,7 +490,7 @@ describe('Widget FilterSimpleCondition', () => {
     });
 
     it('should keep valid operator unchanged', async () => {
-      createWrapper('isnull', true);
+      createWrapper('isnull');
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted().input).toBeUndefined();
     });
