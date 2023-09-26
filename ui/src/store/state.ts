@@ -63,7 +63,6 @@ export interface VQBState {
   stepFormDefaults?: object;
 
   featureFlags?: {
-    RELATIVE_DATE_FILTERING?: 'enable' | 'disable';
     [k: string]: boolean | string | undefined;
   };
 }
