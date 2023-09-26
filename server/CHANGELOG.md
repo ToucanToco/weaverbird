@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## [0.37.2] - 2023-09-26
+
+### Fixed
+
+- `pytest-asyncio` is no longer a dependency
+
+
 ## [0.37.1] - 2023-09-08
 
 ### Fixed
