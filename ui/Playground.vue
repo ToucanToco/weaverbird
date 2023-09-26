@@ -808,10 +808,6 @@ export default defineComponent({
       // based on lodash templates (ERB syntax)
       interpolateFunc: (value, context) => exampleInterpolateFunc(value, context),
       variables: VARIABLES,
-
-      featureFlags: {
-        RELATIVE_DATE_FILTERING: (args.get('RELATIVE_DATE_FILTERING') as 'enable' | 'disable') || 'disable',
-      },
     };
     if (TRANSLATOR === 'pandas') {
       registrationOpts.pipelines.pipelineDepartements = [

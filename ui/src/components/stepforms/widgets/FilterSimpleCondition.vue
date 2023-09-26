@@ -210,10 +210,6 @@ export default defineComponent({
       }
     },
 
-    enableRelativeDateFiltering(): boolean {
-      return this.featureFlags?.RELATIVE_DATE_FILTERING === 'enable';
-    },
-
     dateAvailableVariables(): VariablesBucket | undefined {
       // keep only date variables
       return this.availableVariables?.filter((v) => v.value instanceof Date);
@@ -229,7 +225,7 @@ export default defineComponent({
     },
 
     availableOperators(): Readonly<OperatorOption[]> {
-      if (this.hasDateSelectedColumn && this.enableRelativeDateFiltering) {
+      if (this.hasDateSelectedColumn) {
         return dateOperators;
       }
       return baseOperators;
@@ -254,15 +250,7 @@ export default defineComponent({
     },
 
     inputWidget(): VueConstructor<Vue> | undefined {
-      const widget = this.operator.inputWidget;
-      if (
-        this.hasDateSelectedColumn &&
-        widget === InputTextWidget &&
-        !this.enableRelativeDateFiltering
-      ) {
-        return InputDateWidget;
-      }
-      return widget;
+      return this.operator.inputWidget;
     },
   },
 
@@ -311,12 +299,8 @@ export default defineComponent({
         updatedValue.value = keepCurrentValueIfArrayType(updatedValue.value, []);
       } else if (updatedValue.operator === 'isnull' || updatedValue.operator === 'notnull') {
         updatedValue.value = null;
-      } else if (this.hasDateSelectedColumn && this.enableRelativeDateFiltering) {
-        updatedValue.value = keepCurrentValueIfCompatibleRelativeDate(updatedValue.value, '');
       } else if (this.hasDateSelectedColumn) {
-        // when using date widget, we need value to be a valid date
-        // null as date will become "01/01/1970" as default value for input
-        updatedValue.value = keepCurrentValueIfCompatibleDate(updatedValue.value, null);
+        updatedValue.value = keepCurrentValueIfCompatibleRelativeDate(updatedValue.value, '');
       } else {
         updatedValue.value = keepCurrentValueIfCompatibleType(updatedValue.value, '');
       }

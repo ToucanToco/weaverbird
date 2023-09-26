@@ -312,9 +312,6 @@ describe('Widget FilterSimpleCondition', () => {
           data: [],
         },
         selectedColumns: ['columnA'],
-        featureFlags: {
-          RELATIVE_DATE_FILTERING: 'enable',
-        },
       });
       wrapper = mountType(FilterSimpleConditionWidget, {
         propsData: {
@@ -421,111 +418,15 @@ describe('Widget FilterSimpleCondition', () => {
     });
   });
 
-  describe('date column and date (without relative date filtering)', () => {
-    let wrapper: Wrapper<FilterSimpleConditionWidget>;
-    const createWrapper = (
-      mountType: typeof mount | typeof shallowMount,
-      customProps: any = {},
-    ) => {
-      setupMockStore({
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [],
-        },
-        selectedColumns: ['columnA'],
-      });
-      wrapper = mountType(FilterSimpleConditionWidget, {
-        propsData: {
-          value: { column: 'columnA', value: new Date('2021-01-01'), operator: 'eq' },
-          columnTypes: { columnA: 'date' },
-          availableVariables: AVAILABLE_VARIABLES_SAMPLE,
-          ...customProps,
-        },
-        pinia,
-        localVue,
-        sync: false,
-      });
-    };
-
-    it('should use default operators', () => {
-      createWrapper(shallowMount);
-      const operators = wrapper
-        .find('.filterOperator')
-        .props()
-        .options.map((o: any) => o.operator);
-      expect(operators).not.toContain('from');
-      expect(operators).not.toContain('until');
-      expect(operators).not.toHaveLength(0);
-    });
-
-    it('should use all available variables', () => {
-      createWrapper(shallowMount);
-      expect(wrapper.find('.filterValue').props().availableVariables).toStrictEqual(
-        AVAILABLE_VARIABLES_SAMPLE,
-      );
-    });
-
-    it('should use the date input', () => {
-      createWrapper(mount);
-      const widgetWrappers = wrapper.findAll('.filterValue');
-      expect(widgetWrappers.at(0).classes()).toContain('widget-input-date__container');
-    });
-
-    it('should emit a new condition with the correct type of value when changing the operator', () => {
-      createWrapper(shallowMount);
-      const operatorWrapper = wrapper.findAll('autocompletewidget-stub').at(1);
-      // eq operator
-      operatorWrapper.vm.$emit('input', { operator: 'eq' });
-      expect(wrapper.emitted().input[0]).toEqual([
-        { column: 'columnA', value: new Date('2021-01-01'), operator: 'eq' },
-      ]);
-      // isnull operator
-      operatorWrapper.vm.$emit('input', { operator: 'isnull' });
-      expect(wrapper.emitted().input[1]).toEqual([
-        { column: 'columnA', value: null, operator: 'isnull' },
-      ]);
-      // notnull operator
-      operatorWrapper.vm.$emit('input', { operator: 'notnull' });
-      expect(wrapper.emitted().input[2]).toEqual([
-        { column: 'columnA', value: null, operator: 'notnull' },
-      ]);
-    });
-    it('should transform invalid dates to valid date when changing the operator', () => {
-      createWrapper(shallowMount, {
-        value: { column: 'columnA', value: 1, operator: 'matches' },
-      });
-      const operatorWrapper = wrapper.findAll('autocompletewidget-stub').at(1);
-      // eq operator
-      operatorWrapper.vm.$emit('input', { operator: 'eq' });
-      expect(wrapper.emitted().input[0]).toEqual([
-        { column: 'columnA', value: null, operator: 'eq' },
-      ]);
-    });
-    it('should transform invalid dates to valid date when changing the column type', async () => {
-      createWrapper(shallowMount, {
-        value: { column: 'columnA', value: new Date('2021-01-01'), operator: 'eq' },
-      });
-      wrapper.setProps({ columnTypes: { columnA: 'string' } });
-      await wrapper.vm.$nextTick();
-      // relaunch operator validation automatically when changing the column type
-      expect(wrapper.emitted().input[0]).toEqual([
-        { column: 'columnA', value: '', operator: 'eq' },
-      ]);
-    });
-  });
-
   describe('date column and date (using an invalid operator)', () => {
     let wrapper: Wrapper<FilterSimpleConditionWidget>;
-    const createWrapper = (operator: string, isRelativeDateEnabled = false) => {
+    const createWrapper = (operator: string) => {
       setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [],
         },
         selectedColumns: ['columnA'],
-        featureFlags: {
-          RELATIVE_DATE_FILTERING: isRelativeDateEnabled ? 'enable' : 'disable',
-        },
       });
       wrapper = shallowMount(FilterSimpleConditionWidget, {
         propsData: {
@@ -539,28 +440,8 @@ describe('Widget FilterSimpleCondition', () => {
       });
     };
 
-    it('should transform an invalid "from" operator when relative date are disabled', async () => {
-      createWrapper('from');
-      await wrapper.vm.$nextTick();
-      expect(wrapper.emitted().input).toHaveLength(1);
-      // should emit new value with 'ge' operator replacing invalid 'from' operator
-      expect(wrapper.emitted().input[0]).toEqual([
-        { column: 'columnA', value: '', operator: 'ge' },
-      ]);
-    });
-
-    it('should transform an invalid "until" operator when relative date are disabled', async () => {
-      createWrapper('until');
-      await wrapper.vm.$nextTick();
-      expect(wrapper.emitted().input).toHaveLength(1);
-      // should emit new value with 'le' operator replacing invalid 'until' operator
-      expect(wrapper.emitted().input[0]).toEqual([
-        { column: 'columnA', value: '', operator: 'le' },
-      ]);
-    });
-
-    it('should transform an invalid "le" operator when relative date are enabled', async () => {
-      createWrapper('le', true);
+    it('should transform an invalid "le" operator', async () => {
+      createWrapper('le');
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted().input).toHaveLength(1);
       // should emit new value with 'until' operator replacing invalid 'le' operator
@@ -569,8 +450,8 @@ describe('Widget FilterSimpleCondition', () => {
       ]);
     });
 
-    it('should transform an invalid "lt" operator when relative date are enabled', async () => {
-      createWrapper('lt', true);
+    it('should transform an invalid "lt" operator', async () => {
+      createWrapper('lt');
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted().input).toHaveLength(1);
       // should emit new value with 'until' operator replacing invalid 'lt' operator
@@ -579,8 +460,8 @@ describe('Widget FilterSimpleCondition', () => {
       ]);
     });
 
-    it('should transform an invalid "ge" operator when relative date are enabled', async () => {
-      createWrapper('ge', true);
+    it('should transform an invalid "ge" operator', async () => {
+      createWrapper('ge');
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted().input).toHaveLength(1);
       // should emit new value with 'from' operator replacing invalid 'ge' operator
@@ -589,8 +470,8 @@ describe('Widget FilterSimpleCondition', () => {
       ]);
     });
 
-    it('should transform an invalid "gt" operator when relative date are enabled', async () => {
-      createWrapper('gt', true);
+    it('should transform an invalid "gt" operator', async () => {
+      createWrapper('gt');
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted().input).toHaveLength(1);
       // should emit new value with 'from' operator replacing invalid 'gt' operator
@@ -599,8 +480,8 @@ describe('Widget FilterSimpleCondition', () => {
       ]);
     });
 
-    it('should fallback to first available operator when selected operator is invalid and relative date are enabled', async () => {
-      createWrapper('eq', true);
+    it('should fallback to first available operator when selected operator is invalid', async () => {
+      createWrapper('eq');
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted().input).toHaveLength(1);
       expect(wrapper.emitted().input[0]).toEqual([
@@ -609,7 +490,7 @@ describe('Widget FilterSimpleCondition', () => {
     });
 
     it('should keep valid operator unchanged', async () => {
-      createWrapper('isnull', true);
+      createWrapper('isnull');
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted().input).toBeUndefined();
     });
