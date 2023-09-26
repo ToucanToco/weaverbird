@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## [0.110.0] - 2023-09-26
+
+## Removed
+- Remove `RELATIVE_DATE_FILTERING` feature flag and related code
+
 ## [0.109.0] - 2023-09-08
 
 ### Removed
@@ -1526,6 +1531,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
+[0.110.0]: https://github.com/ToucanToco/weaverbird/compare/v0.109.0...v0.110.0
 [0.109.0]: https://github.com/ToucanToco/weaverbird/compare/v0.108.0...v0.109.0
 [0.108.0]: https://github.com/ToucanToco/weaverbird/compare/v0.107.0...v0.108.0
 [0.107.0]: https://github.com/ToucanToco/weaverbird/compare/v0.106.0...v0.107.0
