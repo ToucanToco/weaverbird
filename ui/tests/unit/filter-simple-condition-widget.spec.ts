@@ -440,7 +440,7 @@ describe('Widget FilterSimpleCondition', () => {
       });
     };
 
-    it('should transform an invalid "le" operator when relative date are enabled', async () => {
+    it('should transform an invalid "le" operator', async () => {
       createWrapper('le');
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted().input).toHaveLength(1);
@@ -450,7 +450,7 @@ describe('Widget FilterSimpleCondition', () => {
       ]);
     });
 
-    it('should transform an invalid "lt" operator when relative date are enabled', async () => {
+    it('should transform an invalid "lt" operator', async () => {
       createWrapper('lt');
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted().input).toHaveLength(1);
@@ -460,7 +460,7 @@ describe('Widget FilterSimpleCondition', () => {
       ]);
     });
 
-    it('should transform an invalid "ge" operator when relative date are enabled', async () => {
+    it('should transform an invalid "ge" operator', async () => {
       createWrapper('ge');
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted().input).toHaveLength(1);
@@ -470,7 +470,7 @@ describe('Widget FilterSimpleCondition', () => {
       ]);
     });
 
-    it('should transform an invalid "gt" operator when relative date are enabled', async () => {
+    it('should transform an invalid "gt" operator', async () => {
       createWrapper('gt');
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted().input).toHaveLength(1);
@@ -480,7 +480,7 @@ describe('Widget FilterSimpleCondition', () => {
       ]);
     });
 
-    it('should fallback to first available operator when selected operator is invalid and relative date are enabled', async () => {
+    it('should fallback to first available operator when selected operator is invalid', async () => {
       createWrapper('eq');
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted().input).toHaveLength(1);
