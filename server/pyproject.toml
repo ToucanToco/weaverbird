@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "weaverbird"
-version = "0.37.1"
+version = "0.37.2"
 description = "A visual data pipeline builder with various backends"
 authors = ["Toucan Toco <dev@toucantoco.com>"]
 keywords = ["mongodb", "pandas", "sql", "data", "dataviz", "pipeline", "query", "builder"]
@@ -18,12 +18,12 @@ pydantic = "^2.3.0"
 # Dependencies for extras
 ## Pandas
 pandas = {version = "^1.2.5", optional = true}
-geopandas = {version = ">=0.12.2,<0.14.0", optional = true}
+geopandas = {version = ">=0.12.2,<0.15.0", optional = true}
 ## PyPika
 PyPika = {version = "^0.48.9", optional = true}
 ## Playground
 quart = {version = ">=0.17,<0.19", optional = true}
-Quart-CORS = {version = ">=0.5,<0.7", optional = true}
+Quart-CORS = {version = ">=0.5,<0.8", optional = true}
 hypercorn = {version = ">=0.13,<0.15", optional = true}
 pymongo = {version = ">=4.2.0", optional = true, extras = ["srv", "tls"]}
 psycopg = {optional = true, version = "^3.0.15"}
@@ -34,6 +34,7 @@ pytest-asyncio = "^0.21.0"
 [tool.poetry.group.dev.dependencies]
 pytest-cov = "^4.1.0"
 pytest-mock = "^3.11.1"
+pytest-asyncio = "^0.21.0"
 # required so we can use nosql_apply_parameters_to_query during tests
 # toucan-connectors = { version = "^4.5.1", extras = ["google_big_query", "mongo", "Redshift", "snowflake", "awsathena"] }
 toucan-connectors = {git = "https://github.com/ToucanToco/toucan-connectors", branch = "upgrade-pydantic", extras = ["google_big_query", "mongo", "Redshift", "snowflake", "awsathena", "mysql"]}
@@ -51,7 +52,7 @@ psycopg2 = "^2.9.7"
 pymongo = ">=4.2.0"
 sqlalchemy-redshift = ">=0.8.11,<1"
 PyYAML = "^6.0"
-ruff = "^0.0.287"
+ruff = ">=0.0.287,<0.0.292"
 pre-commit = "^3.4.0"
 
 [tool.poetry.extras]
