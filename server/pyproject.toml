@@ -13,7 +13,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.10, <3.12"
-pydantic = "^2.3.0"
+pydantic = "^2.4.2"
 
 # Dependencies for extras
 ## Pandas
