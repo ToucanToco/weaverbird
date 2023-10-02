@@ -10,14 +10,15 @@ export type ButtonDef = Readonly<{
 
 export type ActionCategories = {
   add: ActionCategory[];
-  compute: ActionCategory[];
-  filter: ActionCategory[];
-  text: ActionCategory[];
-  date: ActionCategory[];
-  reshape: ActionCategory[];
+  aggregate: ActionCategory[];
   combine: ActionCategory[];
+  compute: ActionCategory[];
+  date: ActionCategory[];
+  filter: ActionCategory[];
   geo: ActionCategory[];
-  [key: string]: ActionCategory[];
+  reshape: ActionCategory[];
+  text: ActionCategory[];
+  time: ActionCategory[];
 };
 
 export type ActionCategory = {
@@ -81,6 +82,9 @@ export const ACTION_CATEGORIES: ActionCategories = {
     { name: 'addmissingdates', label: 'Add missing dates' },
     { name: 'duration', label: 'Compute duration' },
   ],
+  time: [
+    { name: 'totime', label: 'Convert to time' },
+  ],
   reshape: [
     { name: 'pivot', label: 'Pivot' },
     { name: 'unpivot', label: 'Unpivot' },
@@ -121,6 +125,10 @@ export const SEARCH_ACTION: groupActions[] = [
   {
     type: 'date',
     actions: [...ACTION_CATEGORIES.date],
+  },
+  {
+    type: 'time',
+    actions: [...ACTION_CATEGORIES.time],
   },
   {
     type: 'reshape',
@@ -183,6 +191,12 @@ export const CATEGORY_BUTTONS: ButtonDef[] = [
     enable: true,
     icon: 'calendar',
     label: 'Date',
+  },
+  {
+    category: 'time',
+    enable: true,
+    icon: 'clock',
+    label: 'Time',
   },
   {
     category: 'reshape',
