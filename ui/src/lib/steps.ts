@@ -480,6 +480,12 @@ export type ToTimeNumberStep = {
   unit: typeof TIME_UNITS[number];
 }
 
+export type ToTimeTextStep = {
+  name: 'totimetext';
+  column: string;
+  format: string;
+}
+
 export type TopStep = {
   name: 'top';
   groups?: string[];
@@ -572,6 +578,7 @@ export type PipelineStep =
   | ToLowerStep
   | TopStep
   | ToTimeNumberStep
+  | ToTimeTextStep
   | ToUpperStep
   | TrimStep
   | UniqueGroupsStep

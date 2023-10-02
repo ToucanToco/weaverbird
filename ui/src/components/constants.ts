@@ -84,6 +84,7 @@ export const ACTION_CATEGORIES: ActionCategories = {
   ],
   time: [
     { name: 'totimenumber', label: 'Convert number to time' },
+    { name: 'totimetext', label: 'Convert text to time' },
   ],
   reshape: [
     { name: 'pivot', label: 'Pivot' },

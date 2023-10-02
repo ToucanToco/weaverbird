@@ -49,6 +49,7 @@ import ToDateStepForm from './ToDateStepForm.vue';
 import ToLowerStepForm from './ToLowerStepForm.vue';
 import TopStepForm from './TopStepForm.vue';
 import ToTimeNumberStepForm from './ToTimeNumberStepForm.vue';
+import ToTimeTextStepForm from './ToTimeTextStepForm.vue';
 import ToUpperStepForm from './ToUpperStepForm.vue';
 import TrimStepForm from './TrimStepForm.vue';
 import UniqueGroupsStepForm from './UniqueGroupsStepForm.vue';
@@ -103,6 +104,7 @@ const StepFormsComponents: { [K in PipelineStepName]: VueConstructor<StepForm> }
   todate: ToDateStepForm,
   top: TopStepForm,
   totimenumber: ToTimeNumberStepForm,
+  totimetext: ToTimeTextStepForm,
   trim: TrimStepForm,
   uppercase: ToUpperStepForm,
   uniquegroups: UniqueGroupsStepForm,
