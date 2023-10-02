@@ -22,7 +22,7 @@ geopandas = {version = ">=0.12.2,<0.15.0", optional = true}
 ## PyPika
 PyPika = {version = "^0.48.9", optional = true}
 ## Playground
-quart = {version = ">=0.17,<0.19", optional = true}
+quart = {version = ">=0.17,<0.20", optional = true}
 Quart-CORS = {version = ">=0.5,<0.8", optional = true}
 hypercorn = {version = ">=0.13,<0.15", optional = true}
 pymongo = {version = ">=4.2.0", optional = true, extras = ["srv", "tls"]}
