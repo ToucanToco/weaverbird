@@ -21,6 +21,7 @@ import fillnaSchema from './fillna';
 import filterSchema from './filter';
 import formulaSchema from './formula';
 import fromDateSchema from './fromdate';
+import fromTimeSchema from './fromtime';
 import hierarchySchema from './hierarchy';
 import ifthenelseSchema from './ifthenelse';
 import joinSchema from './join';
@@ -77,6 +78,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   filter: filterSchema,
   formula: formulaSchema,
   fromdate: fromDateSchema,
+  fromtime: fromTimeSchema,
   hierarchy: hierarchySchema,
   ifthenelse: ifthenelseSchema,
   join: joinSchema,

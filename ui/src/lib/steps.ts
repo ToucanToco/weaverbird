@@ -331,6 +331,12 @@ export type FromDateStep = {
   format: string;
 };
 
+export type FromTimeStep = {
+  name: 'fromtime';
+  column: string;
+  format: string;
+};
+
 export type HierarchyStep = {
   name: 'hierarchy';
   hierarchyLevelColumn: string;
@@ -557,6 +563,7 @@ export type PipelineStep =
   | FilterStep
   | FormulaStep
   | FromDateStep
+  | FromTimeStep
   | HierarchyStep
   | IfThenElseStep
   | JoinStep
