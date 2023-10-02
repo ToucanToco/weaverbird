@@ -48,6 +48,7 @@ import SubstringStepForm from './SubstringStepForm.vue';
 import ToDateStepForm from './ToDateStepForm.vue';
 import ToLowerStepForm from './ToLowerStepForm.vue';
 import TopStepForm from './TopStepForm.vue';
+import ToTimeNumberStepForm from './ToTimeNumberStepForm.vue';
 import ToUpperStepForm from './ToUpperStepForm.vue';
 import TrimStepForm from './TrimStepForm.vue';
 import UniqueGroupsStepForm from './UniqueGroupsStepForm.vue';
@@ -84,6 +85,7 @@ const StepFormsComponents: { [K in PipelineStepName]: VueConstructor<StepForm> }
   formula: FormulaStepForm,
   fromdate: FromDateStepForm,
   join: JoinStepForm,
+  lowercase: ToLowerStepForm,
   movingaverage: MovingAverageStepForm,
   percentage: PercentageStepForm,
   pivot: PivotStepForm,
@@ -99,8 +101,8 @@ const StepFormsComponents: { [K in PipelineStepName]: VueConstructor<StepForm> }
   statistics: StatisticsStepForm,
   substring: SubstringStepForm,
   todate: ToDateStepForm,
-  lowercase: ToLowerStepForm,
   top: TopStepForm,
+  totimenumber: ToTimeNumberStepForm,
   trim: TrimStepForm,
   uppercase: ToUpperStepForm,
   uniquegroups: UniqueGroupsStepForm,

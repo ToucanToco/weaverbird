@@ -473,6 +473,13 @@ export type ToLowerStep = {
   column: string;
 };
 
+export const TIME_UNITS = ['days', 'hours', 'minutes', 'seconds', 'milliseconds'] as const;
+export type ToTimeNumberStep = {
+  name: 'totimenumber';
+  column: string;
+  unit: typeof TIME_UNITS[number];
+}
+
 export type TopStep = {
   name: 'top';
   groups?: string[];
@@ -564,6 +571,7 @@ export type PipelineStep =
   | ToDateStep
   | ToLowerStep
   | TopStep
+  | ToTimeNumberStep
   | ToUpperStep
   | TrimStep
   | UniqueGroupsStep
