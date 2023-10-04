@@ -3,7 +3,7 @@ import type { DataSetColumnType } from '@/types';
 export function formatCellValue(value: any, type?: DataSetColumnType): string {
   switch (type) {
     case 'date':
-      return value.toString();
+      return dateToHumanReadable(value);
     case 'time':
       return millisecondsToHumanReadable(value);
     // 'object' after 'date' and 'time' because they are also objects
@@ -12,6 +12,11 @@ export function formatCellValue(value: any, type?: DataSetColumnType): string {
     default:
       return value.toString();
   }
+}
+
+function dateToHumanReadable(date: Date): string {
+    // 1970-01-02T10:12:03.123Z => 1970-01-02 10:12:03.123
+    return date.toISOString().replace('T', ' ').slice(0, -1)
 }
 
 const MILLISECONDS_PER_SECOND = 1000;
@@ -29,27 +34,11 @@ function millisecondsToHumanReadable(ms: number): string {
   const numSeconds = Math.floor(ms / MILLISECONDS_PER_SECOND);
   ms -= numSeconds * MILLISECONDS_PER_SECOND;
 
-  let readableStr = '';
-
-  // if we have days, we start with them
-  if (numDays === 1) {
-    readableStr += '1 day ';
-  } else if (numDays > 1) {
-    readableStr += `${numDays} days `;
-  }
-
   // represent hours, minutes and seconds as HH:MM:SS
   const numHoursStr = numHours.toLocaleString(undefined, {minimumIntegerDigits: 2});
   const numMinutesStr = numMinutes.toLocaleString(undefined, {minimumIntegerDigits: 2});
   const numSecondsStr = numSeconds.toLocaleString(undefined, {minimumIntegerDigits: 2});
-  readableStr += `${numHoursStr}:${numMinutesStr}:${numSecondsStr}`;
+  const numMillisecondsStr = ms.toLocaleString(undefined, {minimumIntegerDigits: 3});
 
-  // if we have milliseconds, we append them as HH.MM.SS.mmm
-  if (ms > 0) {
-    const numMillisecondsStr = ms.toLocaleString(undefined, {minimumIntegerDigits: 3});
-    readableStr += `.${numMillisecondsStr}`;
-  }
-
-
-  return readableStr;
+  return `${numDays}d ${numHoursStr}:${numMinutesStr}:${numSecondsStr}.${numMillisecondsStr}`;
 }
