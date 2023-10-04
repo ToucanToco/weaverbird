@@ -36,7 +36,8 @@ class PostgreSQLTranslator(SQLTranslator):
         day_number="DD",
         month_number="MM",
         month_short="Mon",
-        month_full="Month",
+        # FM prefix prevents postgres from padding the month to 9 chars
+        month_full="FMMonth",
         year="YYYY",
     )
     SUPPORT_ROW_NUMBER = True
