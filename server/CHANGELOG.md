@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Pypika: Fixed the `todate` step by ensuring the right formatting is used for every backend
+
 ## [0.26.8] - 2023-06-06
 
 - Pypika: Fixed the integer cast for "integer date parts" columns for dateextract step.
