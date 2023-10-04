@@ -12,14 +12,12 @@ from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp
 from weaverbird.backends.pypika_translator.translators.base import (
     DataTypeMapping,
     DateAddWithoutUnderscore,
-    DateFormatMapping,
     SQLTranslator,
     StepContext,
 )
 from weaverbird.backends.pypika_translator.translators.postgresql import PostgreSQLTranslator
 
 if TYPE_CHECKING:
-
     from weaverbird.pipeline.steps import ConcatenateStep
 
 Self = TypeVar("Self", bound="RedshiftTranslator")
