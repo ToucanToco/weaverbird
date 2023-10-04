@@ -43,6 +43,7 @@ from .text import execute_text
 from .todate import execute_todate
 from .top import execute_top
 from .totals import execute_totals
+from .totimenumber import execute_totimenumber
 from .trim import execute_trim
 from .uniquegroups import execute_uniquegroups
 from .unpivot import execute_unpivot
@@ -93,6 +94,7 @@ steps_executors: dict[str, StepExecutor] = {
     "todate": execute_todate,
     "top": execute_top,
     "totals": execute_totals,
+    "totimenumber": execute_totimenumber,
     "trim": execute_trim,
     "uniquegroups": execute_uniquegroups,
     "unpivot": execute_unpivot,
