@@ -468,6 +468,26 @@ export type SubstringStep = {
   newColumnName?: string;
 };
 
+export const TIME_INFO = [
+  'days',
+  'hours',
+  'minutes',
+  'seconds',
+  'milliseconds',
+  'total_days',
+  'total_hours',
+  'total_minutes',
+  'total_seconds',
+  'total_milliseconds',
+] as const;
+export type TimeInfo = typeof TIME_INFO[number];
+export type TimeExtractStep = {
+  name: 'timeextract';
+  timeInfo: TimeInfo[];
+  column: string;
+  newColumns: string[];
+};
+
 export type ToDateStep = {
   name: 'todate';
   column: string;
@@ -581,6 +601,7 @@ export type PipelineStep =
   | SortStep
   | StatisticsStep
   | SubstringStep
+  | TimeExtractStep
   | ToDateStep
   | ToLowerStep
   | TopStep

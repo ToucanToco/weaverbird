@@ -46,6 +46,7 @@ import SortStepForm from './SortStepForm.vue';
 import SplitStepForm from './SplitStepForm.vue';
 import StatisticsStepForm from './StatisticsStepForm.vue';
 import SubstringStepForm from './SubstringStepForm.vue';
+import TimeExtractStepForm from './TimeExtractStepForm.vue';
 import ToDateStepForm from './ToDateStepForm.vue';
 import ToLowerStepForm from './ToLowerStepForm.vue';
 import TopStepForm from './TopStepForm.vue';
@@ -103,6 +104,7 @@ const StepFormsComponents: { [K in PipelineStepName]: VueConstructor<StepForm> }
   sort: SortStepForm,
   statistics: StatisticsStepForm,
   substring: SubstringStepForm,
+  timeextract: TimeExtractStepForm,
   todate: ToDateStepForm,
   top: TopStepForm,
   totimenumber: ToTimeNumberStepForm,

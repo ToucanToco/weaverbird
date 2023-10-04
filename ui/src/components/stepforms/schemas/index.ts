@@ -40,6 +40,7 @@ import splitSchema from './split';
 import statisticsSchema from './statistics';
 import substringSchema from './substring';
 import textSchema from './text';
+import timeextractSchema from './timeextract';
 import toDateSchema from './todate';
 import toLowerSchema from './tolower';
 import toTimeNumberSchema from './totimenumber';
@@ -98,6 +99,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   statistics: statisticsSchema,
   substring: substringSchema,
   text: textSchema,
+  timeextract: timeextractSchema,
   todate: toDateSchema,
   top: topBuildSchema,
   totals: totalsSchema,
