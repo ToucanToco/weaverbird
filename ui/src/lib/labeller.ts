@@ -356,6 +356,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Convert "${step.column}" into time`;
   }
 
+  totimetext(step: Readonly<S.ToTimeTextStep>) {
+    return `Convert "${step.column}" into time`;
+  }
+
   trim(step: Readonly<S.TrimStep>) {
     return `Trim spaces in ${formatMulticol(step.columns)}`;
   }

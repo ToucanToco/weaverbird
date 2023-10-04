@@ -46,6 +46,7 @@
 <script lang="ts">
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
+import type { PropOptions } from 'vue';
 
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
@@ -73,7 +74,7 @@ type FormatOption = {
 export default class ToTimeTextStepForm extends BaseStepForm<ToTimeTextStep> {
   stepname: PipelineStepName = 'totimetext';
 
-  @Prop({ type: Object, default: () => ({ name: 'totimetext', column: '', format: undefined }) })
+  @Prop({ type: Object, default: () => ({ name: 'totimetext', column: '', format: '%H:%M:%S' }) } as PropOptions<ToTimeTextStep>)
   declare initialStepValue: ToTimeTextStep;
 
   @State(VQBModule) translator!: string;
@@ -82,6 +83,7 @@ export default class ToTimeTextStepForm extends BaseStepForm<ToTimeTextStep> {
   readonly formatOptions: FormatOption[] = [
     { format: 'custom', label: 'Custom', example: '' },
     { format: '%H:%M:%S', label: '%H:%M:%S', example: '19:53:14' },
+    { format: '%H:%M:%S.%f', label: '%H:%M:%S.%f', example: '19:53:14.123' },
     { format: '%M:%S', label: '%M:%S', example: '53:14' },
     { format: '%Mm%Ss', label: '%Mm%Ss', example: '53m14s' },
     { format: '%H:%M', label: '%H:%M', example: '19:53' },

@@ -190,6 +190,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  totimetext(step: Readonly<S.ToTimeTextStep>) {
+    return step;
+  }
+
   trim(step: Readonly<S.TrimStep>) {
     return step;
   }

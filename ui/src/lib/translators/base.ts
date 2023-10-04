@@ -244,6 +244,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   totimenumber(step: Readonly<S.ToTimeNumberStep>) {}
 
   @unsupported
+  totimetext(step: Readonly<S.ToTimeTextStep>) {}
+
+  @unsupported
   trim(step: Readonly<S.TrimStep>) {}
 
   @unsupported

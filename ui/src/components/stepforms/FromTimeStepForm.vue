@@ -80,6 +80,7 @@ export default class FromTimeStepForm extends BaseStepForm<FromTimeStep> {
   readonly formatOptions: FormatOption[] = [
     { format: 'custom', label: 'Custom', example: '' },
     { format: '%H:%M:%S', label: '%H:%M:%S', example: '19:53:14' },
+    { format: '%H:%M:%S.%f', label: '%H:%M:%S.%f', example: '19:53:14.123' },
     { format: '%M:%S', label: '%M:%S', example: '53:14' },
     { format: '%Mm%Ss', label: '%Mm%Ss', example: '53m14s' },
     { format: '%H:%M', label: '%H:%M', example: '19:53' },

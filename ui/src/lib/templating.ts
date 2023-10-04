@@ -516,6 +516,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return { ...step };
   }
 
+  totimetext(step: Readonly<S.ToTimeTextStep>) {
+    return { ...step };
+  }
+
   trim(step: Readonly<S.TrimStep>) {
     return { ...step };
   }

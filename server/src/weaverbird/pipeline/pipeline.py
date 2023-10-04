@@ -87,6 +87,7 @@ from .steps import (
     TotalsStep,
     TotalsStepWithVariable,
     ToTimeNumberStep,
+    ToTimeTextStep,
     TrimStep,
     UniqueGroupsStep,
     UniqueGroupsStepWithVariable,
@@ -145,6 +146,7 @@ PipelineStep = Annotated[
     | TopStep
     | TotalsStep
     | ToTimeNumberStep
+    | ToTimeTextStep
     | TrimStep
     | UniqueGroupsStep
     | UnpivotStep
