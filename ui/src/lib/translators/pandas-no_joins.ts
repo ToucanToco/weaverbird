@@ -163,6 +163,10 @@ export class PandasNoJoinsTranslator extends BaseTranslator {
     return step;
   }
 
+  totimenumber(step: Readonly<S.ToTimeNumberStep>) {
+    return step;
+  }
+
   trim(step: Readonly<S.TrimStep>) {
     return step;
   }

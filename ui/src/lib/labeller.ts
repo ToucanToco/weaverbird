@@ -352,6 +352,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Add total rows in columns ${formatMulticol(columns)}`;
   }
 
+  totimenumber(step: Readonly<S.ToTimeNumberStep>) {
+    return `Convert "${step.column}" into time`;
+  }
+
   trim(step: Readonly<S.TrimStep>) {
     return `Trim spaces in ${formatMulticol(step.columns)}`;
   }

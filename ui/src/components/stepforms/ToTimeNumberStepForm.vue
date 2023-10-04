@@ -30,6 +30,7 @@
 <script lang="ts">
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
+import type { PropOptions } from 'vue';
 
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
@@ -51,7 +52,7 @@ import BaseStepForm from './StepForm.vue';
 export default class ToDateStepForm extends BaseStepForm<ToTimeNumberStep> {
   stepname: PipelineStepName = 'totimenumber';
 
-  @Prop({ type: Object, default: () => ({ name: 'totimenumber', column: '', format: undefined }) })
+  @Prop({ type: Object, default: () => ({ name: 'totimenumber', column: '', unit: 'seconds' }) } as PropOptions<ToTimeNumberStep>)
   declare initialStepValue: ToTimeNumberStep;
 
   @State(VQBModule) translator!: string;

@@ -235,10 +235,13 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   todate(step: Readonly<S.ToDateStep>) {}
 
   @unsupported
+  top(step: Readonly<S.TopStep>) {}
+
+  @unsupported
   totals(step: Readonly<S.AddTotalRowsStep>) {}
 
   @unsupported
-  top(step: Readonly<S.TopStep>) {}
+  totimenumber(step: Readonly<S.ToTimeNumberStep>) {}
 
   @unsupported
   trim(step: Readonly<S.TrimStep>) {}
