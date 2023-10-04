@@ -19,13 +19,26 @@
             'data-types-menu__option--active': isCastableToDate,
             'data-types-menu__option--deactivated': !isCastableToDate,
           }"
-          title="Cannot be converted to date"
+          :title="isCastableToDate ? '' : 'Cannot be converted to date'"
           @click="openToDateStep()"
         >
           <span class="data-types-menu__icon">
             <FAIcon icon="calendar-alt" />
           </span>
           <span>Date</span>
+        </div>
+        <div
+          :class="{
+            'data-types-menu__option--active': isCastableToTime,
+            'data-types-menu__option--deactivated': !isCastableToTime,
+          }"
+          :title="isCastableToTime ? '' : 'Cannot be converted to time'"
+          @click="openToTimeStep()"
+        >
+          <span class="data-types-menu__icon">
+            <FAIcon icon="clock" />
+          </span>
+          <span>Time</span>
         </div>
         <div class="data-types-menu__option--active" @click="createConvertStep('boolean')">
           <span class="data-types-menu__icon">
@@ -91,6 +104,13 @@ export default class DataTypesMenu extends Vue {
     );
   }
 
+  get isCastableToTime() {
+    return (
+      this.columnTypes[this.columnName] === 'string' ||
+      this.columnTypes[this.columnName] === 'integer'
+    );
+  }
+
   close() {
     this.$emit('closed');
   }
@@ -127,6 +147,16 @@ export default class DataTypesMenu extends Vue {
     // if date, we can convert the column directly
     if (this.columnTypes[this.columnName] === 'date') {
       this.createConvertStep('date');
+    }
+  }
+
+  openToTimeStep() {
+    if (this.columnTypes[this.columnName] === 'integer') {
+      this.$emit('actionClicked', 'totimenumber');
+      this.close();
+    } else if (this.columnTypes[this.columnName] === 'string') {
+      this.$emit('actionClicked', 'totimetext');
+      this.close();
     }
   }
 }

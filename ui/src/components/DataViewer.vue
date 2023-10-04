@@ -84,6 +84,7 @@
                 v-for="(cell, cellidx) in row"
                 :key="cellidx"
                 :value="cell"
+                :type="columnHeaders[cellidx].type"
               />
             </tr>
           </tbody>
@@ -227,6 +228,8 @@ export default class DataViewer extends Vue {
         return '1.2';
       case 'date':
         return 'calendar-alt';
+      case 'time':
+        return 'clock';
       case 'boolean':
         return 'check';
       case 'object':
@@ -241,6 +244,8 @@ export default class DataViewer extends Vue {
   shouldUseFAIcon(type: DataSetColumnType): boolean {
     switch (type) {
       case 'date':
+        return true;
+      case 'time':
         return true;
       case 'boolean':
         return true;
