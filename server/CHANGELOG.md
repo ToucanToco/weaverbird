@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.26.9] - 2023-10-05
+
 - Pypika: Fixed the `todate` step by ensuring the right formatting is used for every backend
 
 ## [0.26.8] - 2023-06-06
