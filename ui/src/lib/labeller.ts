@@ -343,6 +343,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Add text column "${step.newColumn}"`;
   }
 
+  timeextract(step: Readonly<S.TimeExtractStep>) {
+    return `Extract time information from "${step.column}"`;
+  }
+
   todate(step: Readonly<S.ToDateStep>) {
     return `Convert "${step.column}" into date`;
   }

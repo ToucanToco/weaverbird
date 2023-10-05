@@ -82,6 +82,8 @@ from .steps import (
     SubstringStep,
     TextStep,
     TextStepWithVariable,
+    TimeExtractStep,
+    TimeExtractStepWithVariable,
     ToDateStep,
     TopStep,
     TopStepWithVariables,
@@ -143,6 +145,7 @@ PipelineStep = Annotated[
     | StatisticsStep
     | SubstringStep
     | TextStep
+    | TimeExtractStep
     | ToDateStep
     | TopStep
     | TotalsStep
@@ -190,6 +193,7 @@ PipelineStepWithVariables = Annotated[
     | RollupStepWithVariable
     | SplitStepWithVariable
     | TextStepWithVariable
+    | TimeExtractStepWithVariable
     | TopStepWithVariables
     | TotalsStepWithVariable
     | UniqueGroupsStepWithVariable

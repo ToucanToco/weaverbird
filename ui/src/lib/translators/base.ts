@@ -235,6 +235,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   text(step: Readonly<S.AddTextColumnStep>) {}
 
   @unsupported
+  timeextract(step: Readonly<S.TimeExtractStep>) {}
+
+  @unsupported
   todate(step: Readonly<S.ToDateStep>) {}
 
   @unsupported

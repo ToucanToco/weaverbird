@@ -485,6 +485,13 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     };
   }
 
+  timeextract(step: Readonly<S.TimeExtractStep>) {
+    return {
+      ...step,
+      column: _interpolate(this.interpolateFunc, step.column, this.context),
+    };
+  }
+
   todate(step: Readonly<S.ToDateStep>) {
     return { ...step };
   }

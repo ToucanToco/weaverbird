@@ -34,6 +34,7 @@
   <script lang="ts">
   import Component from 'vue-class-component';
   import { Prop } from 'vue-property-decorator';
+  import type { PropOptions } from 'vue';
   
   import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
   import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
@@ -61,7 +62,7 @@
   
     @Prop({
       type: Object,
-      default: () => ({ name: 'timeextract', column: '', timeInfo: [], newColumns: [] }),
+      default: () => ({ name: 'timeextract', column: '', timeInfo: [], newColumns: [] } as PropOptions<TimeExtractStep>),
     })
     declare initialStepValue: TimeExtractStep;
 

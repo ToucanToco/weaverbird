@@ -41,6 +41,7 @@ from .split import execute_split
 from .statistics import execute_statistics
 from .substring import execute_substring
 from .text import execute_text
+from .timeextract import execute_timeextract
 from .todate import execute_todate
 from .top import execute_top
 from .totals import execute_totals
@@ -94,6 +95,7 @@ steps_executors: dict[str, StepExecutor] = {
     "statistics": execute_statistics,
     "substring": execute_substring,
     "text": execute_text,
+    "timeextract": execute_timeextract,
     "todate": execute_todate,
     "top": execute_top,
     "totals": execute_totals,

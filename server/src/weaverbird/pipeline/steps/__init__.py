@@ -45,6 +45,7 @@ from .statistics import StatisticsStep
 from .substring import SubstringStep
 from .table import TableStep
 from .text import TextStep, TextStepWithVariable
+from .timeextract import TimeExtractStep, TimeExtractStepWithVariable
 from .todate import ToDateStep
 from .top import TopStep, TopStepWithVariables
 from .totals import TotalsStep, TotalsStepWithVariable

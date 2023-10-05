@@ -155,6 +155,10 @@ export class PandasNoJoinsTranslator extends BaseTranslator {
     return step;
   }
 
+  timeextract(step: Readonly<S.TimeExtractStep>) {
+    return step;
+  }
+
   todate(step: Readonly<S.ToDateStep>) {
     return step;
   }
