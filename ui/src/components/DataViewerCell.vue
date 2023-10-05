@@ -11,10 +11,7 @@
 </template>
 
 <script lang="ts">
-import type { DataSetColumnType } from '@/types';
-import Vue, { type PropType } from 'vue';
-
-import { formatCellValue } from './format-cell-value';
+import Vue from 'vue';
 
 /**
  * @name DataViewerCell
@@ -29,18 +26,22 @@ export default Vue.extend({
     value: {
       default: () => '-',
     },
-    type: {
-      type: String as PropType<DataSetColumnType | undefined>,
-      default: undefined,
-    }
   },
 
   computed: {
     stringifiedValue(): string {
-      return formatCellValue(this.value, this.type);
+      return this.getValue(this.value);
     },
     isNumeric(): boolean {
       return typeof this.value === 'number';
+    },
+  },
+
+  methods: {
+    getValue(value: any): string {
+      return typeof value === 'object' && !(value instanceof Date)
+        ? JSON.stringify(value)
+        : value.toString();
     },
   },
 });
