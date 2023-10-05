@@ -9,6 +9,7 @@ from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp
 from weaverbird.backends.pypika_translator.translators.base import (
     DataTypeMapping,
+    DateFormatMapping,
     SQLTranslator,
     StepContext,
 )
@@ -73,6 +74,14 @@ class GoogleBigQueryTranslator(SQLTranslator):
         text="STRING",
         datetime="TIMESTAMP",
         timestamp="TIMESTAMP",
+    )
+    DATE_FORMAT_MAPPING = DateFormatMapping(
+        # https://cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_elements_date_time
+        day_number="%d",
+        month_number="%m",
+        month_short="%b",
+        month_full="%B",
+        year="%Y",
     )
     SUPPORT_ROW_NUMBER = True
     SUPPORT_SPLIT_PART = False

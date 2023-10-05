@@ -1,0 +1,35 @@
+exclude:
+- mongo
+- pandas
+- snowflake
+- athena_pypika
+- bigquery_pypika
+- mysql_pypika
+step:
+  pipeline:
+  - name: text
+    new_column: literal_date
+    text: "11/05/2023"
+  - name: select
+    columns:
+    - literal_date
+  - name: todate
+    column: literal_date
+    format: '%d/%m/%Y'
+expected:
+  data:
+  - literal_date: "2023-05-11 00:00:00"
+  - literal_date: "2023-05-11 00:00:00"
+  - literal_date: "2023-05-11 00:00:00"
+  - literal_date: "2023-05-11 00:00:00"
+  - literal_date: "2023-05-11 00:00:00"
+  - literal_date: "2023-05-11 00:00:00"
+  - literal_date: "2023-05-11 00:00:00"
+  - literal_date: "2023-05-11 00:00:00"
+  - literal_date: "2023-05-11 00:00:00"
+  - literal_date: "2023-05-11 00:00:00"
+  schema:
+    fields:
+    - name: literal_date
+      type: datetime
+    pandas_version: 1.4.0

@@ -11,6 +11,7 @@ from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp,
 from weaverbird.backends.pypika_translator.translators.base import (
     DataTypeMapping,
     DateAddWithoutUnderscore,
+    DateFormatMapping,
     SQLTranslator,
 )
 
@@ -42,6 +43,14 @@ class SnowflakeTranslator(SQLTranslator):
         text="TEXT",
         datetime="TIMESTAMP",
         timestamp="TIMESTAMP",
+    )
+    DATE_FORMAT_MAPPING = DateFormatMapping(
+        # https://docs.snowflake.com/en/sql-reference/data-types-datetime#date-and-time-formats
+        day_number="DD",
+        month_number="MM",
+        month_short="MON",
+        month_full="MON",
+        year="YYYY",
     )
     SUPPORT_ROW_NUMBER = True
     SUPPORT_SPLIT_PART = True

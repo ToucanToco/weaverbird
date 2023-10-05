@@ -4,7 +4,11 @@ from pypika.terms import Case, CustomFunction, Field, Term
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import RegexOp, ToDateOp
-from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, SQLTranslator
+from weaverbird.backends.pypika_translator.translators.base import (
+    DataTypeMapping,
+    DateFormatMapping,
+    SQLTranslator,
+)
 
 
 class AthenaTranslator(SQLTranslator):
@@ -21,6 +25,14 @@ class AthenaTranslator(SQLTranslator):
         text="VARCHAR",
         datetime="TIMESTAMP",
         timestamp="TIMESTAMP",
+    )
+    DATE_FORMAT_MAPPING = DateFormatMapping(
+        # https://prestodb.io/docs/current/functions/datetime.html#mysql-date-functions
+        day_number="%d",
+        month_number="%m",
+        month_short="%b",
+        month_full="%M",
+        year="%Y",
     )
     REGEXP_OP = RegexOp.REGEXP_LIKE
     TO_DATE_OP = ToDateOp.DATE_PARSE

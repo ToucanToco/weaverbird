@@ -18,7 +18,6 @@ from weaverbird.backends.pypika_translator.translators.base import (
 from weaverbird.backends.pypika_translator.translators.postgresql import PostgreSQLTranslator
 
 if TYPE_CHECKING:
-
     from weaverbird.pipeline.steps import ConcatenateStep
 
 Self = TypeVar("Self", bound="RedshiftTranslator")
