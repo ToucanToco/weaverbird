@@ -11,7 +11,6 @@ def execute_timeextract(
     execute_pipeline: PipelineExecutor = None,
 ) -> DataFrame:
     for time_info, new_col in zip(step.time_info, step.new_columns, strict=True):
-        # 0 days 13:54:13.789000
         match time_info:
             case "days":
                 df[new_col] = df[step.column].dt.days
