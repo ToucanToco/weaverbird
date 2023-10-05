@@ -87,6 +87,10 @@ export class PandasNoJoinsTranslator extends BaseTranslator {
     return step;
   }
 
+  fromtime(step: Readonly<S.FromTimeStep>) {
+    return step;
+  }
+
   ifthenelse(step: Readonly<S.IfThenElseStep>) {
     return step;
   }

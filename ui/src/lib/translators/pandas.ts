@@ -98,6 +98,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  fromtime(step: Readonly<S.FromTimeStep>) {
+    return step;
+  }
+
   hierarchy(step: Readonly<S.HierarchyStep>) {
     return step;
   }

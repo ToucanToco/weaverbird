@@ -22,6 +22,7 @@ from .fillna import execute_fillna
 from .filter import execute_filter
 from .formula import execute_formula
 from .fromdate import execute_fromdate
+from .fromtime import execute_fromtime
 from .hierarchy import execute_hierarchy
 from .ifthenelse import execute_ifthenelse
 from .join import execute_join
@@ -73,6 +74,7 @@ steps_executors: dict[str, StepExecutor] = {
     "filter": execute_filter,
     "formula": execute_formula,
     "fromdate": execute_fromdate,
+    "fromtime": execute_fromtime,
     "hierarchy": execute_hierarchy,
     "ifthenelse": execute_ifthenelse,
     "join": execute_join,  # type: ignore

@@ -44,6 +44,7 @@
 <script lang="ts">
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
+import type { PropOptions } from 'vue';
 
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
@@ -71,7 +72,7 @@ type FormatOption = {
 export default class FromTimeStepForm extends BaseStepForm<FromTimeStep> {
   stepname: PipelineStepName = 'fromtime';
 
-  @Prop({ type: Object, default: () => ({ name: 'fromtime', column: '', format: '%H:%M:%S' }) })
+  @Prop({ type: Object, default: () => ({ name: 'fromtime', column: '', format: '%H:%M:%S' }) } as PropOptions<FromTimeStep>)
   declare initialStepValue: FromTimeStep;
 
   @State(VQBModule) translator!: string;
@@ -80,7 +81,7 @@ export default class FromTimeStepForm extends BaseStepForm<FromTimeStep> {
   readonly formatOptions: FormatOption[] = [
     { format: 'custom', label: 'Custom', example: '' },
     { format: '%H:%M:%S', label: '%H:%M:%S', example: '19:53:14' },
-    { format: '%H:%M:%S.%f', label: '%H:%M:%S.%f', example: '19:53:14.123' },
+    { format: '%H:%M:%S.%f', label: '%H:%M:%S.%f', example: '19:53:14.123456' },
     { format: '%M:%S', label: '%M:%S', example: '53:14' },
     { format: '%Mm%Ss', label: '%Mm%Ss', example: '53m14s' },
     { format: '%H:%M', label: '%H:%M', example: '19:53' },

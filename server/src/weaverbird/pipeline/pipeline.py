@@ -53,6 +53,7 @@ from .steps import (
     FormulaStep,
     FormulaStepWithVariable,
     FromdateStep,
+    FromtimeStep,
     IfthenelseStep,
     IfThenElseStepWithVariables,
     JoinStep,
@@ -122,7 +123,7 @@ PipelineStep = Annotated[
     | FilterStep
     | FormulaStep
     | FromdateStep
-    | FromdateStep
+    | FromtimeStep
     | HierarchyStep
     | IfthenelseStep
     | JoinStep

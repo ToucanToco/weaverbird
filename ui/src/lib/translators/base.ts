@@ -172,16 +172,19 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   formula(step: Readonly<S.FormulaStep>) {}
 
   @unsupported
-  hierarchy(step: Readonly<S.HierarchyStep>) {}
+  fromdate(step: Readonly<S.FromDateStep>) {}
 
   @unsupported
-  join(step: Readonly<S.JoinStep>) {}
+  fromtime(step: Readonly<S.FromTimeStep>) {}
+
+  @unsupported
+  hierarchy(step: Readonly<S.HierarchyStep>) {}
 
   @unsupported
   ifthenelse(step: Readonly<S.IfThenElseStep>) {}
 
   @unsupported
-  fromdate(step: Readonly<S.FromDateStep>) {}
+  join(step: Readonly<S.JoinStep>) {}
 
   @unsupported
   lowercase(step: Readonly<S.ToLowerStep>) {}
