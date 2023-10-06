@@ -2,9 +2,12 @@
 
 ## Unreleased
 
+### Added
+- Waterfall step: Added support for the `backfill` option
+
 ## [0.110.0] - 2023-09-26
 
-## Removed
+### Removed
 - Remove `RELATIVE_DATE_FILTERING` feature flag and related code
 
 ## [0.109.0] - 2023-09-08

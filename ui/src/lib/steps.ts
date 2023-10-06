@@ -516,6 +516,7 @@ export type WaterfallStep = {
   groupby?: string[];
   sortBy: 'label' | 'value';
   order: 'asc' | 'desc';
+  backfill?: boolean;
 };
 
 export type PipelineStep =

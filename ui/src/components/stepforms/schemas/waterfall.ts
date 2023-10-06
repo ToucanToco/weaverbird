@@ -67,6 +67,13 @@ export default {
       description:
         'Whether to use ascending or descending order when applying the "sortBy" parameter',
     },
+    backfill: {
+      type: 'boolean',
+      default: true,
+      title: 'Backfill missing values',
+      description:
+        'Wether elements with a missing start or end value should be backfilled or discarded',
+    },
   },
   required: [
     'name',
@@ -77,6 +84,7 @@ export default {
     'labelsColumn',
     'sortBy',
     'order',
+    'backfill',
   ],
   additionalProperties: false,
 };
