@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+### Added
+
+- Waterfall step: Added a `backfill` option defaulting to true. In case `backfill` is specified, missing start or end rows are
+  backfilled. In case `backfill` is false, elements with a missing start or end row are filtered out and not taken into account
+  for calculations.
+
+### Fixed
+
+- Waterfall step: Mongo and pandas results are now identical. This includes:
+    - `parent` and `child` are now lowercase for both backends
+    - The row order is now always children, parents, milestones
+    - In case no backfill is specified, rows without a start or end value are not taken into account anymore. (see `Added`
+    section for details)
+
 ## [0.37.2] - 2023-09-26
 
 ### Fixed

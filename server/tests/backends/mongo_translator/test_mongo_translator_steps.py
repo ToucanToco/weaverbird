@@ -104,5 +104,5 @@ def test_mongo_translator_pipeline(
     expected_df = _sanitized_df_from_pandas_table(
         spec[f"expected_{exec_type}" if f"expected_{exec_type}" in spec else "expected"]
     )
-
+    # FIXME: should use assert_dataframe_equals, as we're not checking order here
     assert_dataframes_content_equals(df, expected_df)

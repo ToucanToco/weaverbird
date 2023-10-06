@@ -1,0 +1,308 @@
+exclude:
+- athena_pypika
+- bigquery_pypika
+- mysql_pypika
+- postgres_pypika
+- redshift_pypika
+- snowflake
+- snowflake_pypika
+step:
+  pipeline:
+  - start: 01 January 2023
+    end: 01 December 2023
+    parentsColumn: country
+    labelsColumn: account
+    milestonesColumn: month
+    name: waterfall
+    order: desc
+    sortBy: value
+    valueColumn: price
+    backfill: false
+input:
+  data:
+  - account: A Auctor PC
+    country: Germany
+    month: 01 October 2023
+    price: 63378
+  - account: A Facilisis Industries
+    country: France
+    month: 01 April 2023
+    price: 38889
+  - account: Aliquet Nec Imperdiet Industries
+    country: France
+    month: 01 April 2023
+    price: 38836
+  - account: Amet Dapibus Id Corporation
+    country: France
+    month: 01 April 2023
+    price: 66101
+  - account: Amet PC
+    country: France
+    month: 01 April 2023
+    price: 62043
+  - account: Augue Ut Corporation
+    country: Germany
+    month: 01 March 2023
+    price: 49630
+  - account: Consectetuer Adipiscing Associates
+    country: France
+    month: 01 April 2023
+    price: 64996
+  - account: Consectetuer Rhoncus PC
+    country: France
+    month: 01 October 2023
+    price: 66024
+  - account: Cras Company
+    country: Germany
+    month: 01 April 2023
+    price: 60792
+  - account: Cras Lorem Lorem Ltd
+    country: France
+    month: 01 July 2023
+    price: 27860
+  - account: Cursus Consulting
+    country: France
+    month: 01 July 2023
+    price: 53052
+  - account: Dictum Phasellus LLP
+    country: Germany
+    month: 01 September 2023
+    price: 52371
+  - account: Dignissim Maecenas Foundation
+    country: France
+    month: 01 January 2023
+    price: 62202
+  - account: Donec Dignissim Magna Corporation
+    country: Germany
+    month: 01 March 2023
+    price: 67085
+  - account: Donec Vitae Erat LLP
+    country: Germany
+    month: 01 November 2023
+    price: 63600
+  - account: Enim Sit Amet Corp.
+    country: France
+    month: 01 August 2023
+    price: 64185
+  - account: Erat Eget Tincidunt Associates
+    country: France
+    month: 01 September 2023
+    price: 65741
+  - account: Et Ltd
+    country: France
+    month: 01 November 2023
+    price: 53437
+  - account: Eu Lacus Quisque Limited
+    country: Germany
+    month: 01 October 2023
+    price: 44426
+  - account: Facilisis Lorem Tristique Foundation
+    country: France
+    month: 01 November 2023
+    price: 45129
+  - account: Fermentum Industries
+    country: Germany
+    month: 01 December 2023
+    price: 24852
+  - account: Fermentum Industries
+    country: Germany
+    month: 01 January 2023
+    price: 33267
+  - account: Fermentum Institute
+    country: France
+    month: 01 January 2023
+    price: 33267
+  - account: Feugiat Nec Industries
+    country: Germany
+    month: 01 October 2023
+    price: 64941
+  - account: Gravida Sit Incorporated
+    country: Germany
+    month: 01 April 2023
+    price: 55666
+  - account: Id Sapien LLP
+    country: France
+    month: 01 April 2023
+    price: 48211
+  - account: In LLC
+    country: Germany
+    month: 01 May 2023
+    price: 31484
+  - account: Interdum Nunc Sollicitudin Corporation
+    country: Germany
+    month: 01 May 2023
+    price: 52383
+  - account: Ipsum Primis Company
+    country: France
+    month: 01 October 2023
+    price: 65595
+  - account: Justo Sit PC
+    country: Germany
+    month: 01 May 2023
+    price: 33302
+  - account: Libero Proin Consulting
+    country: France
+    month: 01 February 2023
+    price: 53298
+  - account: Ligula Industries
+    country: France
+    month: 01 September 2023
+    price: 31462
+  - account: Lorem Associates
+    country: France
+    month: 01 December 2023
+    price: 17182
+  - account: Magna Praesent Associates
+    country: France
+    month: 01 October 2023
+    price: 73347
+  - account: Magna Tellus Ltd
+    country: Germany
+    month: 01 February 2023
+    price: 62999
+  - account: Magnis Dis Company
+    country: France
+    month: 01 October 2023
+    price: 36997
+  - account: Malesuada Vel LLP
+    country: Germany
+    month: 01 June 2023
+    price: 21151
+  - account: Metus Urna Corp.
+    country: Germany
+    month: 01 November 2023
+    price: 68617
+  - account: Nam Foundation
+    country: Germany
+    month: 01 April 2023
+    price: 66564
+  - account: Nullam Lobortis PC
+    country: France
+    month: 01 June 2023
+    price: 45160
+  - account: Nunc Corporation
+    country: Germany
+    month: 01 July 2023
+    price: 65097
+  - account: Nunc Est Corporation
+    country: France
+    month: 01 August 2023
+    price: 15426
+  - account: Nunc Inc.
+    country: Germany
+    month: 01 January 2023
+    price: 24438
+  - account: Odio Semper Corp.
+    country: France
+    month: 01 February 2023
+    price: 41765
+  - account: Orci LLP
+    country: Germany
+    month: 01 May 2023
+    price: 71314
+  - account: Ornare In Faucibus Corp.
+    country: France
+    month: 01 March 2023
+    price: 51246
+  - account: Pede Sagittis Augue Limited
+    country: France
+    month: 01 November 2023
+    price: 60961
+  - account: Pellentesque Massa Industries
+    country: Germany
+    month: 01 August 2023
+    price: 52188
+  - account: Phasellus Fermentum Convallis Ltd
+    country: Germany
+    month: 01 March 2023
+    price: 23146
+  - account: Posuere Enim LLP
+    country: France
+    month: 01 November 2023
+    price: 23477
+  - account: Scelerisque Sed Sapien Inc.
+    country: Germany
+    month: 01 October 2023
+    price: 47292
+  - account: Sed Nunc Associates
+    country: France
+    month: 01 July 2023
+    price: 40324
+  - account: Sed Turpis Nec Ltd
+    country: France
+    month: 01 August 2023
+    price: 40578
+  - account: Sem Ut Corporation
+    country: France
+    month: 01 June 2023
+    price: 23105
+  - account: Sit Amet Orci Institute
+    country: Germany
+    month: 01 October 2023
+    price: 26139
+  - account: Sociis Natoque Limited
+    country: France
+    month: 01 February 2023
+    price: 74707
+  - account: Tellus Aenean Limited
+    country: Germany
+    month: 01 July 2023
+    price: 59285
+  - account: Tellus Corporation
+    country: Germany
+    month: 01 July 2023
+    price: 62131
+  - account: Ut Erat Sed Institute
+    country: France
+    month: 01 November 2023
+    price: 58206
+  - account: Ut Quam Ltd
+    country: France
+    month: 01 November 2023
+    price: 25379
+  - account: Volutpat Ornare Associates
+    country: Germany
+    month: 01 April 2023
+    price: 65076
+  schema:
+    fields:
+    - name: account
+      type: string
+    - name: country
+      type: string
+    - name: price
+      type: integer
+    - name: month
+      type: string
+    pandas_version: 1.4.0
+expected:
+  data:
+  # Added a start date for this one compared to with_backfill.yaml
+  - GROUP_waterfall: Germany
+    LABEL_waterfall: Fermentum Industries
+    TYPE_waterfall: child
+    price: -8415
+  - GROUP_waterfall: Germany
+    LABEL_waterfall: Germany
+    TYPE_waterfall: parent
+    price: -8415
+  # France has no results, it should not appear
+  - GROUP_waterfall: 01 January 2023
+    LABEL_waterfall: 01 January 2023
+    TYPE_waterfall: null
+    price: 33267
+  - GROUP_waterfall: 01 December 2023
+    LABEL_waterfall: 01 December 2023
+    TYPE_waterfall: null
+    price: 24852
+  schema:
+    fields:
+    - name: LABEL_waterfall
+      type: string
+    - name: price
+      type: integer
+    - name: GROUP_waterfall
+      type: string
+    - name: TYPE_waterfall
+      type: string
+    pandas_version: 1.4.0
