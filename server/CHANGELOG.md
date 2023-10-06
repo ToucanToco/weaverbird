@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.38.0] - 2023-10-06
+
 ### Added
 
 - Waterfall step: Added a `backfill` option defaulting to true. In case `backfill` is specified, missing start or end rows are
