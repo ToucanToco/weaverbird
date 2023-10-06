@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.111.0] - 2023-10-06
+
 ### Added
 - Waterfall step: Added support for the `backfill` option
 
@@ -1534,6 +1536,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
+[0.111.0]: https://github.com/ToucanToco/weaverbird/compare/v0.110.0...v0.111.0
 [0.110.0]: https://github.com/ToucanToco/weaverbird/compare/v0.109.0...v0.110.0
 [0.109.0]: https://github.com/ToucanToco/weaverbird/compare/v0.108.0...v0.109.0
 [0.108.0]: https://github.com/ToucanToco/weaverbird/compare/v0.107.0...v0.108.0
