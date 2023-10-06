@@ -102,6 +102,11 @@
       :options="['asc', 'desc']"
       data-path=".order"
     />
+    <CheckboxWidget
+      class="backfillCheckbox"
+      label="Backfill missing values"
+      v-model="editedStep.backfill"
+    />
     <StepFormButtonbar />
   </div>
 </template>
@@ -112,6 +117,7 @@ import { Prop } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
+import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 import type { PipelineStepName, WaterfallStep } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
@@ -128,6 +134,7 @@ import MultiselectWidget from './widgets/Multiselect.vue';
     ColumnPicker,
     InputTextWidget,
     MultiselectWidget,
+    CheckboxWidget,
   },
 })
 export default class WaterfallStepForm extends BaseStepForm<WaterfallStep> {
@@ -149,6 +156,7 @@ export default class WaterfallStepForm extends BaseStepForm<WaterfallStep> {
       labelsColumn: '',
       sortBy: 'value',
       order: 'desc',
+      backfill: true,
     }),
   })
   declare initialStepValue: WaterfallStep;
