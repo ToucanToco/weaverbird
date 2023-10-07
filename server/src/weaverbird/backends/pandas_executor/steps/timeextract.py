@@ -36,10 +36,7 @@ def execute_timeextract(
             case "total_seconds":
                 df[new_col] = df[step.column].dt.total_seconds()
             case "total_milliseconds":
-                df[new_col] = (
-                    df[step.column].dt.total_seconds().astype(int) * 1000
-                    + df[step.column].dt.microseconds // 1000
-                )
+                df[new_col] = (df[step.column].dt.total_seconds() * 1000).astype(int)
             case _:
                 raise ValueError(f"Invalid time_info: {time_info}")
     return df
