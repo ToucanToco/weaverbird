@@ -16,11 +16,11 @@
       :errors="errors"
     />
     <AutocompleteWidget
-      name="Time unit:"
+      name="Duration unit:"
       class="unit"
       v-model="editedStep.unit"
-      :options="TIME_UNITS"
-      placeholder="Time unit"
+      :options="DURATION_UNITS"
+      placeholder="Duration unit"
       data-path=".unit"
     />
     <StepFormButtonbar />
@@ -35,30 +35,30 @@ import type { PropOptions } from 'vue';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { TIME_UNITS, type PipelineStepName, type ToTimeNumberStep } from '@/lib/steps';
+import { DURATION_UNITS, type PipelineStepName, type ToDurationNumberStep } from '@/lib/steps';
 import { VQBModule } from '@/store';
 import { State } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 
 @Component({
-  name: 'totimenumber-step-form',
+  name: 'todurationnumber-step-form',
   components: {
     AutocompleteWidget,
     ColumnPicker,
     InputTextWidget,
   },
 })
-export default class ToDateStepForm extends BaseStepForm<ToTimeNumberStep> {
-  stepname: PipelineStepName = 'totimenumber';
+export default class ToDateStepForm extends BaseStepForm<ToDurationNumberStep> {
+  stepname: PipelineStepName = 'todurationnumber';
 
-  @Prop({ type: Object, default: () => ({ name: 'totimenumber', column: '', unit: 'seconds' }) } as PropOptions<ToTimeNumberStep>)
-  declare initialStepValue: ToTimeNumberStep;
+  @Prop({ type: Object, default: () => ({ name: 'todurationnumber', column: '', unit: 'seconds' }) } as PropOptions<ToDurationNumberStep>)
+  declare initialStepValue: ToDurationNumberStep;
 
   @State(VQBModule) translator!: string;
 
-  readonly title: string = 'Convert Column From Number to Time';
-  readonly TIME_UNITS = TIME_UNITS;
+  readonly title: string = 'Convert Column From Number to Duration';
+  readonly DURATION_UNITS = DURATION_UNITS;
 
   get stepSelectedColumn() {
     return this.editedStep.column;

@@ -11,30 +11,28 @@
       v-model="editedStep.column"
       name="Column to convert:"
       :options="columnNames"
-      placeholder="Add column"
+      placeholder="Add columns"
       data-path=".column"
       :errors="errors"
     />
-    <!-- Format options are not supported in Mongo 3.6 -->
     <AutocompleteWidget
-      v-if="translator !== 'mongo36'"
-      name="Time format:"
+      name="Duration format:"
       class="format"
       :value="selectedFormat"
       @input="updateStepFormat"
       :options="formatOptions"
-      placeholder="Time format"
+      placeholder="Duration format"
       :trackBy="`format`"
       :label="`label`"
       :withExample="true"
     />
     <InputTextWidget
-      v-if="translator !== 'mongo36' && useCustomFormat"
+      v-if="useCustomFormat"
       class="customFormat"
       :value="editedStep.format"
       @input="updateCustomFormat"
-      name="Custom time format:"
-      :placeholder="`Enter a ${translators.find((t) => t.id === translator).label} time format`"
+      name="Custom duration format:"
+      :placeholder="`Enter a ${translators.find((t) => t.id === translator).label} duration format`"
       data-path=".format"
       :errors="errors"
       :docUrl="translators.find((t) => t.id === translator).doc"
@@ -51,7 +49,7 @@ import type { PropOptions } from 'vue';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import type { PipelineStepName, ToTimeTextStep } from '@/lib/steps';
+import type { FromDurationStep, PipelineStepName } from '@/lib/steps';
 import { VQBModule } from '@/store';
 import { State } from 'pinia-class';
 
@@ -64,97 +62,66 @@ type FormatOption = {
 };
 
 @Component({
-  name: 'totimetext-step-form',
+  name: 'fromduration-step-form',
   components: {
     AutocompleteWidget,
     ColumnPicker,
     InputTextWidget,
   },
 })
-export default class ToTimeTextStepForm extends BaseStepForm<ToTimeTextStep> {
-  stepname: PipelineStepName = 'totimetext';
+export default class FromDurationStepForm extends BaseStepForm<FromDurationStep> {
+  stepname: PipelineStepName = 'fromduration';
 
-  @Prop({ type: Object, default: () => ({ name: 'totimetext', column: '', format: '%H:%M:%S' }) } as PropOptions<ToTimeTextStep>)
-  declare initialStepValue: ToTimeTextStep;
+  @Prop({ type: Object, default: () => ({ name: 'fromduration', column: '', format: '%H:%M:%S' }) } as PropOptions<FromDurationStep>)
+  declare initialStepValue: FromDurationStep;
 
   @State(VQBModule) translator!: string;
 
-  readonly title: string = 'Convert Column From Text to Time';
+  readonly title: string = 'Convert Column From Date to Text';
   readonly formatOptions: FormatOption[] = [
     { format: 'custom', label: 'Custom', example: '' },
     { format: '%H:%M:%S', label: '%H:%M:%S', example: '19:53:14' },
-    { format: '%H:%M:%S.%f', label: '%H:%M:%S.%f', example: '19:53:14.123' },
+    { format: '%H:%M:%S.%f', label: '%H:%M:%S.%f', example: '19:53:14.123456' },
     { format: '%M:%S', label: '%M:%S', example: '53:14' },
     { format: '%Mm%Ss', label: '%Mm%Ss', example: '53m14s' },
     { format: '%H:%M', label: '%H:%M', example: '19:53' },
     { format: '%Hh%M', label: '%Hh%M', example: '19h53' },
   ];
-  readonly timePresets = this.formatOptions
+  readonly datePresets = this.formatOptions
     .filter((d) => d.format !== 'custom')
     .map((d) => d.format);
   readonly translators = [
     {
       id: 'mongo36',
       label: 'Mongo 3.6',
-      doc: 'https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers',
+      doc: 'https://docs.mongodb.com/manual/reference/operator/aggregation/dateToString/#format-specifiers',
     },
     {
       id: 'mongo40',
       label: 'Mongo 4.0',
-      doc: 'https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers',
+      doc: 'https://docs.mongodb.com/manual/reference/operator/aggregation/dateToString/#format-specifiers',
     },
     {
       id: 'mongo42',
       label: 'Mongo 4.2',
-      doc: 'https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers',
+      doc: 'https://docs.mongodb.com/manual/reference/operator/aggregation/dateToString/#format-specifiers',
     },
     {
       id: 'mongo50',
       label: 'Mongo 5.0',
-      doc: 'https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers',
+      doc: 'https://docs.mongodb.com/manual/reference/operator/aggregation/dateToString/#format-specifiers',
     },
     {
       id: 'pandas',
       label: 'Pandas',
-      doc: 'https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes',
+      doc: 'https://docs.python.org/3/library/dateduration.html#strfduration-and-strpduration-format-codes',
     },
     {
       id: 'pandas-no_joins',
       label: 'Pandas',
-      doc: 'https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes',
-    },
-    {
-      id: 'athena',
-      label: 'AWS Athena',
-      doc: 'https://prestodb.io/docs/current/functions/datetime.html#mysql-date-functions',
-    },
-    {
-      id: 'google-big-query',
-      label: 'Google Big Query',
-      doc: 'https://cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_elements_date_time',
-    },
-    {
-      id: 'mysql',
-      label: 'MySQL',
-      doc: 'https://dev.mysql.com/doc/refman/8.0/en/date-and-time-functions.html#function_date-format',
-    },
-    {
-      id: 'postgresql',
-      label: 'PostgresSQL',
-      doc: 'https://www.postgresql.org/docs/8.2/functions-formatting.html#FUNCTIONS-FORMATTING-DATETIME-TABLE',
-    },
-    {
-      id: 'redshift',
-      label: 'AWS Redshift',
-      doc: 'https://docs.aws.amazon.com/redshift/latest/dg/r_FORMAT_strings.html',
-    },
-    {
-      id: 'snowflake',
-      label: 'Snowflake',
-      doc: 'https://docs.snowflake.com/en/sql-reference/functions-conversion.html#date-and-time-formats-in-conversion-functions',
+      doc: 'https://docs.python.org/3/library/dateduration.html#strfduration-and-strpduration-format-codes',
     },
   ];
-
   selectedFormat: FormatOption = this.formatOptions[0];
 
   get stepSelectedColumn() {
@@ -167,6 +134,7 @@ export default class ToTimeTextStepForm extends BaseStepForm<ToTimeTextStep> {
     }
     this.editedStep.column = colname;
   }
+
   get useCustomFormat(): boolean {
     return this.selectedFormat.format === 'custom';
   }
@@ -176,7 +144,7 @@ export default class ToTimeTextStepForm extends BaseStepForm<ToTimeTextStep> {
   }
 
   getSelectedFormat(): FormatOption {
-    if (this.editedStep.format && this.timePresets.includes(this.editedStep.format)) {
+    if (this.datePresets.includes(this.editedStep.format)) {
       return this.formatOptions.filter((d) => d.format === this.editedStep.format)[0];
     }
     return this.formatOptions.filter((d) => d.format !== 'custom')[0];

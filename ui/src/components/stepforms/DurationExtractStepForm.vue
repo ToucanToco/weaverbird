@@ -9,22 +9,22 @@
       <ColumnPicker
         class="column"
         v-model="editedStep.column"
-        name="Time column:"
+        name="Duration column:"
         :options="columnNames"
         placeholder="Pick a column"
         data-path=".column"
         :errors="errors"
       />
       <MultiselectWidget
-        class="timeInfoInput"
-        name="Time information to extract:"
-        :value="currentTimeInfo"
-        @input="updateCurrentTimeInfo"
-        :options="timeInfo"
+        class="durationInfoInput"
+        name="Duration information to extract:"
+        :value="currentDurationInfo"
+        @input="updateCurrentDurationInfo"
+        :options="durationInfo"
         :trackBy="`info`"
         :label="`label`"
         placeholder="Select one or several"
-        data-path=".timeInfo"
+        data-path=".durationInfo"
         :errors="errors"
       />
       <StepFormButtonbar />
@@ -40,35 +40,35 @@
   import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
   import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
   import { generateNewColumnName } from '@/lib/helpers';
-  import type { TimeExtractStep, TimeInfo, PipelineStepName } from '@/lib/steps';
+  import type { DurationExtractStep, DurationInfo, PipelineStepName } from '@/lib/steps';
   
   import BaseStepForm from './StepForm.vue';
   
-  type TimeInfoOption = {
-    info: TimeInfo;
+  type DurationInfoOption = {
+    info: DurationInfo;
     label: string;
   };
   
   @Component({
-    name: 'timeextract-step-form',
+    name: 'durationextract-step-form',
     components: {
       ColumnPicker,
       InputTextWidget,
       MultiselectWidget,
     },
   })
-  export default class TimeExtractStepForm extends BaseStepForm<TimeExtractStep> {
-    stepname: PipelineStepName = 'timeextract';
+  export default class DurationExtractStepForm extends BaseStepForm<DurationExtractStep> {
+    stepname: PipelineStepName = 'durationextract';
   
     @Prop({
       type: Object,
-      default: () => ({ name: 'timeextract', column: '', timeInfo: [], newColumns: [] } as PropOptions<TimeExtractStep>),
+      default: () => ({ name: 'durationextract', column: '', durationInfo: [], newColumns: [] } as PropOptions<DurationExtractStep>),
     })
-    declare initialStepValue: TimeExtractStep;
+    declare initialStepValue: DurationExtractStep;
 
-    readonly title: string = 'Extract Time Information';
+    readonly title: string = 'Extract Duration Information';
   
-    readonly timeInfo: TimeInfoOption[] = [
+    readonly durationInfo: DurationInfoOption[] = [
       { info: 'days', label: 'days' },
       { info: 'hours', label: 'hours'},
       { info: 'minutes', label: 'minutes' },
@@ -81,17 +81,17 @@
       { info: 'total_milliseconds', label: 'total milliseconds'},
     ];
   
-    get currentTimeInfo(): TimeInfoOption[] {
-      return this.timeInfo.filter((d) => this.editedStep.timeInfo.includes(d.info));
+    get currentDurationInfo(): DurationInfoOption[] {
+      return this.durationInfo.filter((d) => this.editedStep.durationInfo.includes(d.info));
     }
   
-    updateCurrentTimeInfo(options: TimeInfoOption[]) {
-      this.editedStep.timeInfo = [...options.map((o) => o.info)];
+    updateCurrentDurationInfo(options: DurationInfoOption[]) {
+      this.editedStep.durationInfo = [...options.map((o) => o.info)];
     }
   
     submit() {
       // populate the newColumns field with automatic, safe column names
-      this.editedStep.newColumns = this.editedStep.timeInfo.map((d) =>
+      this.editedStep.newColumns = this.editedStep.durationInfo.map((d) =>
         generateNewColumnName(`${this.editedStep.column}_${d}`, this.columnNames),
       );
       this.$$super.submit();

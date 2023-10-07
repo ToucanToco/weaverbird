@@ -4,7 +4,7 @@ from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.types import ColumnName
 
 
-class FromtimeStep(BaseStep):
-    name: Literal["fromtime"] = "fromtime"
+class ToDurationTextStep(BaseStep):
+    name: Literal["todurationtext"] = "todurationtext"
     column: ColumnName
     format: str

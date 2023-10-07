@@ -16,12 +16,13 @@ import dissolveSchema from './dissolve';
 import domainSchema from './domain';
 import duplicateSchema from './duplicate';
 import durationSchema from './duration';
+import durationextractSchema from './durationextract';
 import evolutionSchema from './evolution';
 import fillnaSchema from './fillna';
 import filterSchema from './filter';
 import formulaSchema from './formula';
 import fromDateSchema from './fromdate';
-import fromTimeSchema from './fromtime';
+import fromDurationSchema from './fromduration';
 import hierarchySchema from './hierarchy';
 import ifthenelseSchema from './ifthenelse';
 import joinSchema from './join';
@@ -40,11 +41,10 @@ import splitSchema from './split';
 import statisticsSchema from './statistics';
 import substringSchema from './substring';
 import textSchema from './text';
-import timeextractSchema from './timeextract';
 import toDateSchema from './todate';
+import toDurationNumberSchema from './todurationnumber';
+import toDurationTextSchema from './todurationtext';
 import toLowerSchema from './tolower';
-import toTimeNumberSchema from './totimenumber';
-import toTimeTextSchema from './totimetext';
 import topBuildSchema from './top';
 import totalsSchema from './totals';
 import toUpperSchema from './toupper';
@@ -74,12 +74,13 @@ const factories: { [stepname: string]: buildSchemaType } = {
   domain: domainSchema,
   duplicate: duplicateSchema,
   duration: durationSchema,
+  durationextract: durationextractSchema,
   evolution: evolutionSchema,
   fillna: fillnaSchema,
   filter: filterSchema,
   formula: formulaSchema,
   fromdate: fromDateSchema,
-  fromtime: fromTimeSchema,
+  fromduration: fromDurationSchema,
   hierarchy: hierarchySchema,
   ifthenelse: ifthenelseSchema,
   join: joinSchema,
@@ -99,12 +100,11 @@ const factories: { [stepname: string]: buildSchemaType } = {
   statistics: statisticsSchema,
   substring: substringSchema,
   text: textSchema,
-  timeextract: timeextractSchema,
   todate: toDateSchema,
+  todurationnumber: toDurationNumberSchema,
+  todurationtext: toDurationTextSchema,
   top: topBuildSchema,
   totals: totalsSchema,
-  totimenumber: toTimeNumberSchema,
-  totimetext: toTimeTextSchema,
   trim: trimSchema,
   unpivot: unpivotSchema,
   uniquegroups: uniqueGroupsSchema,

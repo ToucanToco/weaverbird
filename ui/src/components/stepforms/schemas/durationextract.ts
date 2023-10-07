@@ -1,11 +1,11 @@
 export default {
   $schema: 'http://json-schema.org/draft-07/schema#',
-  title: 'Extract time property from time step',
+  title: 'Extract duration property from duration step',
   type: 'object',
   properties: {
     name: {
       type: 'string',
-      enum: ['timeextract'],
+      enum: ['durationextract'],
     },
     column: {
       type: 'string',
@@ -16,7 +16,7 @@ export default {
         placeholder: 'Select a column',
       },
     },
-    timeInfo: {
+    durationInfo: {
       type: 'array',
       items: {
         type: 'string',
@@ -34,8 +34,8 @@ export default {
         ],
       },
       minItems: 1,
-      title: 'Time information to extract',
-      description: 'A list of all the information to extract from the time column',
+      title: 'Duration information to extract',
+      description: 'A list of all the information to extract from the duration column',
     },
     newColumns: {
       type: 'array',
@@ -45,9 +45,9 @@ export default {
       },
       minItems: 1,
       title: 'New column(s) name',
-      description: 'The name of the time information column(s) that will be created',
+      description: 'The name of the duration information column(s) that will be created',
     },
   },
-  required: ['name', 'column', 'timeInfo', 'newColumns'],
+  required: ['name', 'column', 'durationInfo', 'newColumns'],
   additionalProperties: false,
 };

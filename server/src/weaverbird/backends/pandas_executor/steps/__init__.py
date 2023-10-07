@@ -17,12 +17,13 @@ from .dissolve import execute_dissolve
 from .domain import execute_domain
 from .duplicate import execute_duplicate
 from .duration import execute_duration
+from .durationextract import execute_durationextract
 from .evolution import execute_evolution
 from .fillna import execute_fillna
 from .filter import execute_filter
 from .formula import execute_formula
 from .fromdate import execute_fromdate
-from .fromtime import execute_fromtime
+from .fromduration import execute_fromduration
 from .hierarchy import execute_hierarchy
 from .ifthenelse import execute_ifthenelse
 from .join import execute_join
@@ -41,12 +42,11 @@ from .split import execute_split
 from .statistics import execute_statistics
 from .substring import execute_substring
 from .text import execute_text
-from .timeextract import execute_timeextract
 from .todate import execute_todate
+from .todurationnumber import execute_todurationnumber
+from .todurationtext import execute_todurationtext
 from .top import execute_top
 from .totals import execute_totals
-from .totimenumber import execute_totimenumber
-from .totimetext import execute_totimetext
 from .trim import execute_trim
 from .uniquegroups import execute_uniquegroups
 from .unpivot import execute_unpivot
@@ -75,7 +75,7 @@ steps_executors: dict[str, StepExecutor] = {
     "filter": execute_filter,
     "formula": execute_formula,
     "fromdate": execute_fromdate,
-    "fromtime": execute_fromtime,
+    "fromduration": execute_fromduration,
     "hierarchy": execute_hierarchy,
     "ifthenelse": execute_ifthenelse,
     "join": execute_join,  # type: ignore
@@ -95,12 +95,12 @@ steps_executors: dict[str, StepExecutor] = {
     "statistics": execute_statistics,
     "substring": execute_substring,
     "text": execute_text,
-    "timeextract": execute_timeextract,
+    "durationextract": execute_durationextract,
     "todate": execute_todate,
     "top": execute_top,
     "totals": execute_totals,
-    "totimenumber": execute_totimenumber,
-    "totimetext": execute_totimetext,
+    "todurationnumber": execute_todurationnumber,
+    "todurationtext": execute_todurationtext,
     "trim": execute_trim,
     "uniquegroups": execute_uniquegroups,
     "unpivot": execute_unpivot,

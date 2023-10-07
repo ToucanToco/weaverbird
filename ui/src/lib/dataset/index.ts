@@ -11,7 +11,7 @@ export type DataSetColumnType =
   | 'boolean'
   | 'string'
   | 'date'
-  | 'time'
+  | 'duration'
   | 'object'
   | 'geometry';
 export type ColumnTypeMapping = {

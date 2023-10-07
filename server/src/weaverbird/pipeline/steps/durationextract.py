@@ -6,7 +6,7 @@ from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMixin
 from weaverbird.pipeline.types import ColumnName
 
-TIME_INFO = Literal[
+DURATION_INFO = Literal[
     "days",
     "hours",
     "minutes",
@@ -20,12 +20,12 @@ TIME_INFO = Literal[
 ]
 
 
-class TimeExtractStep(BaseStep):
-    name: Literal["timeextract"] = "timeextract"
+class DurationExtractStep(BaseStep):
+    name: Literal["durationextract"] = "durationextract"
     column: str
-    time_info: list[TIME_INFO] = Field(default_factory=list)
+    duration_info: list[DURATION_INFO] = Field(default_factory=list)
     new_columns: list[ColumnName] = Field(default_factory=list)
 
 
-class TimeExtractStepWithVariable(TimeExtractStep, StepWithVariablesMixin):
+class DurationExtractStepWithVariable(DurationExtractStep, StepWithVariablesMixin):
     ...

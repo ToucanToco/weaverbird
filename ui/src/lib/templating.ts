@@ -281,6 +281,13 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     };
   }
 
+  durationextract(step: Readonly<S.DurationExtractStep>) {
+    return {
+      ...step,
+      column: _interpolate(this.interpolateFunc, step.column, this.context),
+    };
+  }
+
   evolution(step: Readonly<S.EvolutionStep>) {
     return {
       ...step,
@@ -318,7 +325,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return { ...step };
   }
 
-  fromtime(step: Readonly<S.FromTimeStep>) {
+  fromduration(step: Readonly<S.FromDurationStep>) {
     return { ...step };
   }
 
@@ -485,14 +492,15 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     };
   }
 
-  timeextract(step: Readonly<S.TimeExtractStep>) {
-    return {
-      ...step,
-      column: _interpolate(this.interpolateFunc, step.column, this.context),
-    };
+  todate(step: Readonly<S.ToDateStep>) {
+    return { ...step };
   }
 
-  todate(step: Readonly<S.ToDateStep>) {
+  todurationnumber(step: Readonly<S.ToDurationNumberStep>) {
+    return { ...step };
+  }
+
+  todurationtext(step: Readonly<S.ToDurationTextStep>) {
     return { ...step };
   }
 
@@ -521,14 +529,6 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
       aggregations,
       groups,
     };
-  }
-
-  totimenumber(step: Readonly<S.ToTimeNumberStep>) {
-    return { ...step };
-  }
-
-  totimetext(step: Readonly<S.ToTimeTextStep>) {
-    return { ...step };
   }
 
   trim(step: Readonly<S.TrimStep>) {

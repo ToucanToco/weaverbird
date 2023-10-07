@@ -1,11 +1,11 @@
 from pandas import DataFrame, to_timedelta
 
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
-from weaverbird.pipeline.steps import ToTimeNumberStep
+from weaverbird.pipeline.steps import ToDurationNumberStep
 
 
-def execute_totimenumber(
-    step: ToTimeNumberStep,
+def execute_todurationnumber(
+    step: ToDurationNumberStep,
     df: DataFrame,
     domain_retriever: DomainRetriever = None,
     execute_pipeline: PipelineExecutor = None,

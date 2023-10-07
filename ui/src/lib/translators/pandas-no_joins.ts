@@ -67,6 +67,10 @@ export class PandasNoJoinsTranslator extends BaseTranslator {
     return step;
   }
 
+  durationextract(step: Readonly<S.DurationExtractStep>) {
+    return step;
+  }
+
   evolution(step: Readonly<S.EvolutionStep>) {
     return step;
   }
@@ -87,7 +91,7 @@ export class PandasNoJoinsTranslator extends BaseTranslator {
     return step;
   }
 
-  fromtime(step: Readonly<S.FromTimeStep>) {
+  fromduration(step: Readonly<S.FromDurationStep>) {
     return step;
   }
 
@@ -155,11 +159,15 @@ export class PandasNoJoinsTranslator extends BaseTranslator {
     return step;
   }
 
-  timeextract(step: Readonly<S.TimeExtractStep>) {
+  todate(step: Readonly<S.ToDateStep>) {
     return step;
   }
 
-  todate(step: Readonly<S.ToDateStep>) {
+  todurationnumber(step: Readonly<S.ToDurationNumberStep>) {
+    return step;
+  }
+
+  todurationtext(step: Readonly<S.ToDurationTextStep>) {
     return step;
   }
 
@@ -168,14 +176,6 @@ export class PandasNoJoinsTranslator extends BaseTranslator {
   }
 
   totals(step: Readonly<S.AddTotalRowsStep>) {
-    return step;
-  }
-
-  totimenumber(step: Readonly<S.ToTimeNumberStep>) {
-    return step;
-  }
-
-  totimetext(step: Readonly<S.ToTimeTextStep>) {
     return step;
   }
 

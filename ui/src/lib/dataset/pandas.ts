@@ -31,7 +31,7 @@ const COL_TYPE_MAPPING: Record<TableSchemaType, DataSetColumnType> = {
   number: 'float',
   boolean: 'boolean',
   datetime: 'date',
-  duration: 'time',
+  duration: 'duration',
   any: 'object',
   string: 'string',
   geometry: 'geometry',

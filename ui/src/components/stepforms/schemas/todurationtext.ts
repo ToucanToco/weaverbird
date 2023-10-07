@@ -1,11 +1,11 @@
 export default {
   $schema: 'http://json-schema.org/draft-07/schema#',
-  title: 'Convert text column to time step',
+  title: 'Convert text column to duration step',
   type: 'object',
   properties: {
     name: {
       type: 'string',
-      enum: ['totimetext'],
+      enum: ['todurationtext'],
     },
     column: {
       type: 'string',
@@ -19,7 +19,7 @@ export default {
     format: {
       type: 'string',
       minLength: 1,
-      title: 'Time format',
+      title: 'Duration format',
     },
   },
   required: ['name', 'column', 'format'],

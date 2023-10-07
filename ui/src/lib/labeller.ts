@@ -224,6 +224,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Compute duration between "${step.startDateColumn}" and "${step.endDateColumn}"`;
   }
 
+  durationextract(step: Readonly<S.DurationExtractStep>) {
+    return `Extract duration information from "${step.column}"`;
+  }
+
   evolution(step: Readonly<S.EvolutionStep>) {
     return `Compute evolution of column "${step.valueCol}"`;
   }
@@ -247,7 +251,7 @@ class StepLabeller implements StepMatcher<string> {
     return `Convert "${step.column}" into text`;
   }
 
-  fromtime(step: Readonly<S.FromTimeStep>) {
+  fromduration(step: Readonly<S.FromDurationStep>) {
     return `Convert "${step.column}" into text`;
   }
 
@@ -343,12 +347,16 @@ class StepLabeller implements StepMatcher<string> {
     return `Add text column "${step.newColumn}"`;
   }
 
-  timeextract(step: Readonly<S.TimeExtractStep>) {
-    return `Extract time information from "${step.column}"`;
-  }
-
   todate(step: Readonly<S.ToDateStep>) {
     return `Convert "${step.column}" into date`;
+  }
+
+  todurationnumber(step: Readonly<S.ToDurationNumberStep>) {
+    return `Convert "${step.column}" into duration`;
+  }
+
+  todurationtext(step: Readonly<S.ToDurationTextStep>) {
+    return `Convert "${step.column}" into duration`;
   }
 
   top(step: Readonly<S.TopStep>) {
@@ -358,14 +366,6 @@ class StepLabeller implements StepMatcher<string> {
   totals(step: Readonly<S.AddTotalRowsStep>) {
     const columns = step.totalDimensions.map((c) => c.totalColumn);
     return `Add total rows in columns ${formatMulticol(columns)}`;
-  }
-
-  totimenumber(step: Readonly<S.ToTimeNumberStep>) {
-    return `Convert "${step.column}" into time`;
-  }
-
-  totimetext(step: Readonly<S.ToTimeTextStep>) {
-    return `Convert "${step.column}" into time`;
   }
 
   trim(step: Readonly<S.TrimStep>) {

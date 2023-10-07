@@ -24,7 +24,8 @@ from .fillna import FillnaStep, FillnaStepWithVariable
 from .filter import FilterStep, FilterStepWithVariables
 from .formula import FormulaStep, FormulaStepWithVariable
 from .fromdate import FromdateStep
-from .fromtime import FromtimeStep
+from .fromduration import FromdurationStep
+from .durationextract import DurationExtractStep, DurationExtractStepWithVariable
 from .hierarchy import HierarchyStep
 from .ifthenelse import IfthenelseStep, IfThenElseStepWithVariables
 from .join import JoinStep, JoinStepWithRef, JoinStepWithVariable
@@ -45,12 +46,11 @@ from .statistics import StatisticsStep
 from .substring import SubstringStep
 from .table import TableStep
 from .text import TextStep, TextStepWithVariable
-from .timeextract import TimeExtractStep, TimeExtractStepWithVariable
 from .todate import ToDateStep
+from .todurationnumber import ToDurationNumberStep
+from .todurationtext import ToDurationTextStep
 from .top import TopStep, TopStepWithVariables
 from .totals import TotalsStep, TotalsStepWithVariable
-from .totimenumber import ToTimeNumberStep
-from .totimetext import ToTimeTextStep
 from .trim import TrimStep
 from .uniquegroups import UniqueGroupsStep, UniqueGroupsStepWithVariable
 from .unpivot import UnpivotStep, UnpivotStepWithVariable

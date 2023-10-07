@@ -212,6 +212,26 @@ export type DateExtractStep = {
   newColumnName?: string; // Supported for retrocompatibility only
 };
 
+export const DURATION_INFO = [
+  'days',
+  'hours',
+  'minutes',
+  'seconds',
+  'milliseconds',
+  'total_days',
+  'total_hours',
+  'total_minutes',
+  'total_seconds',
+  'total_milliseconds',
+] as const;
+export type DurationInfo = typeof DURATION_INFO[number];
+export type DurationExtractStep = {
+  name: 'durationextract';
+  durationInfo: DurationInfo[];
+  column: string;
+  newColumns: string[];
+};
+
 export type DeleteStep = {
   name: 'delete';
   columns: string[];
@@ -331,8 +351,8 @@ export type FromDateStep = {
   format: string;
 };
 
-export type FromTimeStep = {
-  name: 'fromtime';
+export type FromDurationStep = {
+  name: 'fromduration';
   column: string;
   format: string;
 };
@@ -468,49 +488,29 @@ export type SubstringStep = {
   newColumnName?: string;
 };
 
-export const TIME_INFO = [
-  'days',
-  'hours',
-  'minutes',
-  'seconds',
-  'milliseconds',
-  'total_days',
-  'total_hours',
-  'total_minutes',
-  'total_seconds',
-  'total_milliseconds',
-] as const;
-export type TimeInfo = typeof TIME_INFO[number];
-export type TimeExtractStep = {
-  name: 'timeextract';
-  timeInfo: TimeInfo[];
-  column: string;
-  newColumns: string[];
-};
-
 export type ToDateStep = {
   name: 'todate';
   column: string;
   format?: string;
 };
 
+export const DURATION_UNITS = ['days', 'hours', 'minutes', 'seconds', 'milliseconds'] as const;
+export type ToDurationNumberStep = {
+  name: 'todurationnumber';
+  column: string;
+  unit: typeof DURATION_UNITS[number];
+}
+
+export type ToDurationTextStep = {
+  name: 'todurationtext';
+  column: string;
+  format: string;
+}
+
 export type ToLowerStep = {
   name: 'lowercase';
   column: string;
 };
-
-export const TIME_UNITS = ['days', 'hours', 'minutes', 'seconds', 'milliseconds'] as const;
-export type ToTimeNumberStep = {
-  name: 'totimenumber';
-  column: string;
-  unit: typeof TIME_UNITS[number];
-}
-
-export type ToTimeTextStep = {
-  name: 'totimetext';
-  column: string;
-  format: string;
-}
 
 export type TopStep = {
   name: 'top';
@@ -578,12 +578,13 @@ export type PipelineStep =
   | DeleteStep
   | DuplicateColumnStep
   | DomainStep
+  | DurationExtractStep
   | EvolutionStep
   | FillnaStep
   | FilterStep
   | FormulaStep
   | FromDateStep
-  | FromTimeStep
+  | FromDurationStep
   | HierarchyStep
   | IfThenElseStep
   | JoinStep
@@ -601,12 +602,11 @@ export type PipelineStep =
   | SortStep
   | StatisticsStep
   | SubstringStep
-  | TimeExtractStep
   | ToDateStep
+  | ToDurationNumberStep
+  | ToDurationTextStep
   | ToLowerStep
   | TopStep
-  | ToTimeNumberStep
-  | ToTimeTextStep
   | ToUpperStep
   | TrimStep
   | UniqueGroupsStep

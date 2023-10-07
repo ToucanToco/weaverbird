@@ -1,17 +1,17 @@
 from pandas import DataFrame
 
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
-from weaverbird.pipeline.steps import TimeExtractStep
+from weaverbird.pipeline.steps import DurationExtractStep
 
 
-def execute_timeextract(
-    step: TimeExtractStep,
+def execute_durationextract(
+    step: DurationExtractStep,
     df: DataFrame,
     domain_retriever: DomainRetriever = None,
     execute_pipeline: PipelineExecutor = None,
 ) -> DataFrame:
-    for time_info, new_col in zip(step.time_info, step.new_columns, strict=True):
-        match time_info:
+    for duration_info, new_col in zip(step.duration_info, step.new_columns, strict=True):
+        match duration_info:
             case "days":
                 df[new_col] = df[step.column].dt.days
             case "hours":
@@ -38,5 +38,5 @@ def execute_timeextract(
             case "total_milliseconds":
                 df[new_col] = (df[step.column].dt.total_seconds() * 1000).astype(int)
             case _:
-                raise ValueError(f"Invalid time_info: {time_info}")
+                raise ValueError(f"Invalid duration info: {duration_info}")
     return df

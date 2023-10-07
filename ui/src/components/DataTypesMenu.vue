@@ -29,16 +29,16 @@
         </div>
         <div
           :class="{
-            'data-types-menu__option--active': isCastableToTime,
-            'data-types-menu__option--deactivated': !isCastableToTime,
+            'data-types-menu__option--active': isCastableToDuration,
+            'data-types-menu__option--deactivated': !isCastableToDuration,
           }"
-          :title="isCastableToTime ? '' : 'Cannot be converted to time'"
-          @click="openToTimeStep()"
+          :title="isCastableToDuration ? '' : 'Cannot be converted to duration'"
+          @click="openToDurationStep()"
         >
           <span class="data-types-menu__icon">
             <FAIcon icon="clock" />
           </span>
-          <span>Time</span>
+          <span>Duration</span>
         </div>
         <div class="data-types-menu__option--active" @click="createConvertStep('boolean')">
           <span class="data-types-menu__icon">
@@ -104,7 +104,7 @@ export default class DataTypesMenu extends Vue {
     );
   }
 
-  get isCastableToTime() {
+  get isCastableToDuration() {
     return (
       this.columnTypes[this.columnName] === 'string' ||
       this.columnTypes[this.columnName] === 'integer'
@@ -150,12 +150,12 @@ export default class DataTypesMenu extends Vue {
     }
   }
 
-  openToTimeStep() {
+  openToDurationStep() {
     if (this.columnTypes[this.columnName] === 'integer') {
-      this.$emit('actionClicked', 'totimenumber');
+      this.$emit('actionClicked', 'todurationnumber');
       this.close();
     } else if (this.columnTypes[this.columnName] === 'string') {
-      this.$emit('actionClicked', 'totimetext');
+      this.$emit('actionClicked', 'todurationtext');
       this.close();
     }
   }

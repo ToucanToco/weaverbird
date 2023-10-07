@@ -228,7 +228,7 @@ export default class DataViewer extends Vue {
         return '1.2';
       case 'date':
         return 'calendar-alt';
-      case 'time':
+      case 'duration':
         return 'clock';
       case 'boolean':
         return 'check';
@@ -245,7 +245,7 @@ export default class DataViewer extends Vue {
     switch (type) {
       case 'date':
         return true;
-      case 'time':
+      case 'duration':
         return true;
       case 'boolean':
         return true;

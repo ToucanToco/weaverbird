@@ -42,6 +42,8 @@ from .steps import (
     DissolveStep,
     DomainStep,
     DuplicateStep,
+    DurationExtractStep,
+    DurationExtractStepWithVariable,
     DurationStep,
     DurationStepWithVariable,
     EvolutionStep,
@@ -53,7 +55,7 @@ from .steps import (
     FormulaStep,
     FormulaStepWithVariable,
     FromdateStep,
-    FromtimeStep,
+    FromdurationStep,
     IfthenelseStep,
     IfThenElseStepWithVariables,
     JoinStep,
@@ -82,15 +84,13 @@ from .steps import (
     SubstringStep,
     TextStep,
     TextStepWithVariable,
-    TimeExtractStep,
-    TimeExtractStepWithVariable,
     ToDateStep,
+    ToDurationNumberStep,
+    ToDurationTextStep,
     TopStep,
     TopStepWithVariables,
     TotalsStep,
     TotalsStepWithVariable,
-    ToTimeNumberStep,
-    ToTimeTextStep,
     TrimStep,
     UniqueGroupsStep,
     UniqueGroupsStepWithVariable,
@@ -120,12 +120,13 @@ PipelineStep = Annotated[
     | DomainStep
     | DuplicateStep
     | DurationStep
+    | DurationExtractStep
     | EvolutionStep
     | FillnaStep
     | FilterStep
     | FormulaStep
     | FromdateStep
-    | FromtimeStep
+    | FromdurationStep
     | HierarchyStep
     | IfthenelseStep
     | JoinStep
@@ -145,12 +146,11 @@ PipelineStep = Annotated[
     | StatisticsStep
     | SubstringStep
     | TextStep
-    | TimeExtractStep
     | ToDateStep
+    | ToDurationNumberStep
+    | ToDurationTextStep
     | TopStep
     | TotalsStep
-    | ToTimeNumberStep
-    | ToTimeTextStep
     | TrimStep
     | UniqueGroupsStep
     | UnpivotStep
@@ -179,6 +179,7 @@ PipelineStepWithVariables = Annotated[
     | CumSumStepWithVariable
     | DateExtractStepWithVariable
     | DurationStepWithVariable
+    | DurationExtractStepWithVariable
     | EvolutionStepWithVariable
     | FillnaStepWithVariable
     | FilterStepWithVariables
@@ -193,7 +194,6 @@ PipelineStepWithVariables = Annotated[
     | RollupStepWithVariable
     | SplitStepWithVariable
     | TextStepWithVariable
-    | TimeExtractStepWithVariable
     | TopStepWithVariables
     | TotalsStepWithVariable
     | UniqueGroupsStepWithVariable

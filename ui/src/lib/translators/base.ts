@@ -160,6 +160,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   duration(step: Readonly<S.ComputeDurationStep>) {}
 
   @unsupported
+  durationextract(step: Readonly<S.DurationExtractStep>) {}
+
+  @unsupported
   evolution(step: Readonly<S.EvolutionStep>) {}
 
   @unsupported
@@ -175,7 +178,7 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   fromdate(step: Readonly<S.FromDateStep>) {}
 
   @unsupported
-  fromtime(step: Readonly<S.FromTimeStep>) {}
+  fromduration(step: Readonly<S.FromDurationStep>) {}
 
   @unsupported
   hierarchy(step: Readonly<S.HierarchyStep>) {}
@@ -235,22 +238,19 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   text(step: Readonly<S.AddTextColumnStep>) {}
 
   @unsupported
-  timeextract(step: Readonly<S.TimeExtractStep>) {}
+  todate(step: Readonly<S.ToDateStep>) {}
 
   @unsupported
-  todate(step: Readonly<S.ToDateStep>) {}
+  todurationnumber(step: Readonly<S.ToDurationNumberStep>) {}
+
+  @unsupported
+  todurationtext(step: Readonly<S.ToDurationTextStep>) {}
 
   @unsupported
   top(step: Readonly<S.TopStep>) {}
 
   @unsupported
   totals(step: Readonly<S.AddTotalRowsStep>) {}
-
-  @unsupported
-  totimenumber(step: Readonly<S.ToTimeNumberStep>) {}
-
-  @unsupported
-  totimetext(step: Readonly<S.ToTimeTextStep>) {}
 
   @unsupported
   trim(step: Readonly<S.TrimStep>) {}

@@ -23,12 +23,13 @@ import DeleteColumnStepForm from './DeleteColumnStepForm.vue';
 import DissolveStepForm from './DissolveStepForm.vue';
 import DomainStepForm from './DomainStepForm.vue';
 import DuplicateColumnStepForm from './DuplicateColumnStepForm.vue';
+import DurationExtractStepForm from './DurationExtractStepForm.vue';
 import EvolutionStepForm from './EvolutionStepForm.vue';
 import FillnaStepForm from './FillnaStepForm.vue';
 import FilterStepForm from './FilterStepForm.vue';
 import FormulaStepForm from './FormulaStepForm.vue';
 import FromDateStepForm from './FromDateStepForm.vue';
-import FromTimeStepForm from './FromTimeStepForm.vue';
+import FromDurationStepForm from './FromDurationStepForm.vue';
 import HierarchyStepForm from './HierarchyStepForm.vue';
 import IfThenElseStepForm from './IfThenElseStepForm.vue';
 import JoinStepForm from './JoinStepForm.vue';
@@ -46,12 +47,11 @@ import SortStepForm from './SortStepForm.vue';
 import SplitStepForm from './SplitStepForm.vue';
 import StatisticsStepForm from './StatisticsStepForm.vue';
 import SubstringStepForm from './SubstringStepForm.vue';
-import TimeExtractStepForm from './TimeExtractStepForm.vue';
 import ToDateStepForm from './ToDateStepForm.vue';
+import ToDurationNumberStepForm from './ToDurationNumberStepForm.vue';
+import ToDurationTextStepForm from './ToDurationTextStepForm.vue';
 import ToLowerStepForm from './ToLowerStepForm.vue';
 import TopStepForm from './TopStepForm.vue';
-import ToTimeNumberStepForm from './ToTimeNumberStepForm.vue';
-import ToTimeTextStepForm from './ToTimeTextStepForm.vue';
 import ToUpperStepForm from './ToUpperStepForm.vue';
 import TrimStepForm from './TrimStepForm.vue';
 import UniqueGroupsStepForm from './UniqueGroupsStepForm.vue';
@@ -78,6 +78,7 @@ const StepFormsComponents: { [K in PipelineStepName]: VueConstructor<StepForm> }
   delete: DeleteColumnStepForm,
   dissolve: DissolveStepForm,
   duration: ComputeDurationStepForm,
+  durationextract: DurationExtractStepForm,
   duplicate: DuplicateColumnStepForm,
   domain: DomainStepForm,
   evolution: EvolutionStepForm,
@@ -87,7 +88,7 @@ const StepFormsComponents: { [K in PipelineStepName]: VueConstructor<StepForm> }
   ifthenelse: IfThenElseStepForm,
   formula: FormulaStepForm,
   fromdate: FromDateStepForm,
-  fromtime: FromTimeStepForm,
+  fromduration: FromDurationStepForm,
   join: JoinStepForm,
   lowercase: ToLowerStepForm,
   movingaverage: MovingAverageStepForm,
@@ -104,11 +105,10 @@ const StepFormsComponents: { [K in PipelineStepName]: VueConstructor<StepForm> }
   sort: SortStepForm,
   statistics: StatisticsStepForm,
   substring: SubstringStepForm,
-  timeextract: TimeExtractStepForm,
   todate: ToDateStepForm,
+  todurationnumber: ToDurationNumberStepForm,
+  todurationtext: ToDurationTextStepForm,
   top: TopStepForm,
-  totimenumber: ToTimeNumberStepForm,
-  totimetext: ToTimeTextStepForm,
   trim: TrimStepForm,
   uppercase: ToUpperStepForm,
   uniquegroups: UniqueGroupsStepForm,

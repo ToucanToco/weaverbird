@@ -1,11 +1,11 @@
 export default {
   $schema: 'http://json-schema.org/draft-07/schema#',
-  title: 'Convert number column to time step',
+  title: 'Convert number column to duration step',
   type: 'object',
   properties: {
     name: {
       type: 'string',
-      enum: ['totimenumber'],
+      enum: ['todurationnumber'],
     },
     column: {
       type: 'string',
