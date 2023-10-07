@@ -203,7 +203,7 @@ const sendAnalytics = ({ name, value }) => {
 defineSendAnalytics(sendAnalytics);
 
 const CASTERS = {
-  date: val => new Date(val),
+  // date: val => new Date(val),
 };
 
 function mongoToVQBType(type) {

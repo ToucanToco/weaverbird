@@ -181,6 +181,19 @@ async def execute_pipeline(pipeline: Pipeline, **kwargs) -> str:
         retrieved_rows=len(output["data"]),
     ).dict()
 
+    # mimic what we have in laputa where we convert
+    # - datetimes into `{ $date: <date since unix epoch in ms> }`
+    # - durations into `{ $duration: <duration in ms> }`
+    to_convert: dict[str, callable] = {}
+    for field in output["schema"]["fields"]:
+        if field["type"] == "datetime":
+            to_convert[field["name"]] = lambda x: {"$date": x}
+        elif field["type"] == "duration":
+            to_convert[field["name"]] = lambda x: {"$duration": x}
+    for row in output["data"]:
+        for column, func in to_convert.items():
+            row[column] = func(row[column])
+
     return json.dumps(
         {
             **output,
