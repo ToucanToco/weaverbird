@@ -27,6 +27,7 @@ module.exports = {
     '@typescript-eslint/explicit-member-accessibility': ['error', {
       accessibility: 'no-public'
     }],
+    '@typescript-eslint/no-non-null-assertion': 'off',
     // "@typescript-eslint/naming-convention": [
     //   "error",
     //   { "selector": "objectLiteralProperty", "format": ["camelCase"] }
