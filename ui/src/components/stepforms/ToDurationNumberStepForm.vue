@@ -52,7 +52,10 @@ import BaseStepForm from './StepForm.vue';
 export default class ToDateStepForm extends BaseStepForm<ToDurationNumberStep> {
   stepname: PipelineStepName = 'todurationnumber';
 
-  @Prop({ type: Object, default: () => ({ name: 'todurationnumber', column: '', unit: 'seconds' }) } as PropOptions<ToDurationNumberStep>)
+  @Prop({
+    type: Object,
+    default: () => ({ name: 'todurationnumber', column: '', unit: 'seconds' }),
+  } as PropOptions<ToDurationNumberStep>)
   declare initialStepValue: ToDurationNumberStep;
 
   @State(VQBModule) translator!: string;

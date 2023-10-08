@@ -53,7 +53,7 @@ const FA_ICONS = {
   'chevron-left': faChevronLeft,
   'chevron-right': faChevronRight,
   'code-branch': faCodeBranch,
-  'clock': faClock,
+  clock: faClock,
   cog: faCog,
   'draw-polygon': faDrawPolygon,
   exclamation: faExclamation,

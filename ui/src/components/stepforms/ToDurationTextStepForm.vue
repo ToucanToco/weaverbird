@@ -74,7 +74,10 @@ type FormatOption = {
 export default class ToDurationTextStepForm extends BaseStepForm<ToDurationTextStep> {
   stepname: PipelineStepName = 'todurationtext';
 
-  @Prop({ type: Object, default: () => ({ name: 'todurationtext', column: '', format: '%H:%M:%S' }) } as PropOptions<ToDurationTextStep>)
+  @Prop({
+    type: Object,
+    default: () => ({ name: 'todurationtext', column: '', format: '%H:%M:%S' }),
+  } as PropOptions<ToDurationTextStep>)
   declare initialStepValue: ToDurationTextStep;
 
   @State(VQBModule) translator!: string;

@@ -499,13 +499,13 @@ export type ToDurationNumberStep = {
   name: 'todurationnumber';
   column: string;
   unit: typeof DURATION_UNITS[number];
-}
+};
 
 export type ToDurationTextStep = {
   name: 'todurationtext';
   column: string;
   format: string;
-}
+};
 
 export type ToLowerStep = {
   name: 'lowercase';
