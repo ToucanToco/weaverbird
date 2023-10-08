@@ -79,6 +79,7 @@
 // TODO: factor common code
 
 import { defineComponent } from "vue";
+import { DateTime, Duration } from "luxon";
 
 import {
   defineSendAnalytics,
@@ -203,7 +204,11 @@ const sendAnalytics = ({ name, value }) => {
 defineSendAnalytics(sendAnalytics);
 
 const CASTERS = {
-  // date: val => new Date(val),
+  date: val => DateTime.fromMillis(val.$date).toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS),
+  duration: val => {
+    // we don't use the `rescale` method because we want `days` as the max unit (a year makes no sense)
+    return Duration.fromMillis(val.$duration).shiftTo('days', 'hours', 'minutes', 'seconds', 'milliseconds').toHuman({ unitDisplay: 'narrow' });
+  },
 };
 
 function mongoToVQBType(type) {

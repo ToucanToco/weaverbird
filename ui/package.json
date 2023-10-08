@@ -60,7 +60,7 @@
     "@pinia/testing": "^0.0.14",
     "ajv": "^8.11.0",
     "lodash": "^4.17.11",
-    "luxon": "^2.0.2",
+    "luxon": "^3.3.2",
     "mathjs": "^11.3.3"
   },
   "devDependencies": {
@@ -68,7 +68,7 @@
     "@storybook/builder-vite": "^0.2.5",
     "@storybook/vue": "^6.5.14",
     "@types/lodash": "^4.14.138",
-    "@types/luxon": "^2.0.4",
+    "@types/luxon": "^3.3.2",
     "@typescript-eslint/eslint-plugin": "^5.42.0",
     "@typescript-eslint/parser": "^5.42.0",
     "@vitejs/plugin-vue2": "2.0.0",
