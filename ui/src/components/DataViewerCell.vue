@@ -13,6 +13,8 @@
 <script lang="ts">
 import Vue from 'vue';
 
+import { Duration } from 'luxon';
+
 /**
  * @name DataViewerCell
  * @description A table cell displayed in a DataViewer
@@ -39,7 +41,7 @@ export default Vue.extend({
 
   methods: {
     getValue(value: any): string {
-      return typeof value === 'object' && !(value instanceof Date)
+      return typeof value === 'object' && !(value instanceof Date) && !(value instanceof Duration)
         ? JSON.stringify(value)
         : value.toString();
     },
