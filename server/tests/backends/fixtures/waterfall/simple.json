@@ -103,6 +103,11 @@
     },
     "data": [
       {
+        "LABEL_waterfall": "2018",
+        "TYPE_waterfall": null,
+        "REVENUE": 831
+      },
+      {
         "LABEL_waterfall": "Paris",
         "TYPE_waterfall": "parent",
         "REVENUE": 65
@@ -126,11 +131,6 @@
         "LABEL_waterfall": "2019",
         "TYPE_waterfall": null,
         "REVENUE": 975
-      },
-      {
-        "LABEL_waterfall": "2018",
-        "TYPE_waterfall": null,
-        "REVENUE": 831
       }
     ]
   }

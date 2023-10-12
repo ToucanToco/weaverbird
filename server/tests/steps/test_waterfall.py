@@ -29,9 +29,9 @@ def test_simple():
 
     expected_df = pd.DataFrame(
         {
-            "LABEL_waterfall": ["Paris", "Bordeaux", "Boston", "New-York", "2019", "2018"],
-            "TYPE_waterfall": ["parent", "parent", "parent", "parent", None, None],
-            "revenue": [65, 37, 30, 12, 975, 831],
+            "LABEL_waterfall": ["2018", "Paris", "Bordeaux", "Boston", "New-York", "2019"],
+            "TYPE_waterfall": [None, "parent", "parent", "parent", "parent", None],
+            "revenue": [831, 65, 37, 30, 12, 975],
         }
     )
 
@@ -59,9 +59,9 @@ def test_simple_with_aggregation():
     result_df = execute_waterfall(step, sample_df)
     expected_df = pd.DataFrame(
         {
-            "LABEL_waterfall": ["Paris", "Bordeaux", "Boston", "New-York", "2019", "2018"],
-            "TYPE_waterfall": ["parent", "parent", "parent", "parent", None, None],
-            "revenue": [65, 37, 30, 12, 985, 841],
+            "LABEL_waterfall": ["2018", "Paris", "Bordeaux", "Boston", "New-York", "2019"],
+            "TYPE_waterfall": [None, "parent", "parent", "parent", "parent", None],
+            "revenue": [841, 65, 37, 30, 12, 985],
         }
     )
     assert_dataframes_equals(result_df, expected_df)
@@ -98,22 +98,22 @@ def test_with_groups():
                 "product2",
             ]
             * 8,
-            "LABEL_waterfall": ["Bordeaux"] * 2
+            "LABEL_waterfall": ["2018"] * 2
+            + ["Bordeaux"] * 2
             + ["Boston"] * 2
             + ["New-York"] * 2
             + ["Paris"] * 2
             + ["France"] * 2
             + ["USA"] * 2
-            + ["2018"] * 2
             + ["2019"] * 2,
-            "revenue": [27, 10, 35, -5, 5, 7, 35, 30, 62, 40, 40, 2, 358, 473, 460, 515],
-            "GROUP_waterfall": ["France"] * 2
+            "revenue": [358, 473, 27, 10, 35, -5, 5, 7, 35, 30, 62, 40, 40, 2, 460, 515],
+            "GROUP_waterfall": ["2018"] * 2
+            + ["France"] * 2
             + ["USA"] * 4
             + ["France"] * 4
             + ["USA"] * 2
-            + ["2018"] * 2
             + ["2019"] * 2,
-            "TYPE_waterfall": ["child"] * 8 + ["parent"] * 4 + [None] * 4,
+            "TYPE_waterfall": [None] * 2 + ["child"] * 8 + ["parent"] * 4 + [None] * 2,
         }
     )
     assert_dataframes_equals(expected_df, result_df)
@@ -144,9 +144,9 @@ def test_bug_duplicate_rows():
 
     expected_df = pd.DataFrame(
         {
-            "LABEL_waterfall": ["France", "USA", "2018", "2019"],
-            "revenue": [102, 42, 831, 975],
-            "TYPE_waterfall": ["parent", "parent", None, None],
+            "LABEL_waterfall": ["2018", "France", "USA", "2019"],
+            "revenue": [831, 102, 42, 975],
+            "TYPE_waterfall": [None, "parent", "parent", None],
         }
     )
     assert_dataframes_equals(result_df, expected_df)
@@ -181,20 +181,21 @@ def test_waterfall_bug_drill():
     expected_df = pd.DataFrame(
         {
             "grand parent": [
+                "Food",
+                "Vegetarian",
+                "Fruits",
                 "Vegetarian",
                 "Fruits",
                 "Food",
                 "Fruits",
                 "Vegetarian",
                 "Food",
-                "Food",
-                "Vegetarian",
-                "Fruits",
                 "Food",
                 "Vegetarian",
                 "Fruits",
             ],
-            "LABEL_waterfall": [
+            "LABEL_waterfall": ["A"] * 3
+            + [
                 "Berries",
                 "Blueberries",
                 "Fruits",
@@ -202,10 +203,10 @@ def test_waterfall_bug_drill():
                 "Fruits",
                 "Vegetarian",
             ]
-            + ["A"] * 3
             + ["B"] * 3,
-            "value": [10] * 6 + [1, 2, 3] + [11, 12, 13],
-            "GROUP_waterfall": [
+            "value": [1, 2, 3] + [10] * 6 + [11, 12, 13],
+            "GROUP_waterfall": ["A"] * 3
+            + [
                 "Fruits",
                 "Berries",
                 "Vegetarian",
@@ -213,9 +214,8 @@ def test_waterfall_bug_drill():
                 "Fruits",
                 "Vegetarian",
             ]
-            + ["A"] * 3
             + ["B"] * 3,
-            "TYPE_waterfall": ["child"] * 3 + ["parent"] * 3 + [None] * 6,
+            "TYPE_waterfall": [None] * 3 + ["child"] * 3 + ["parent"] * 3 + [None] * 3,
         }
     )
 

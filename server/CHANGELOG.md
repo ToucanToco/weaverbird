@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+- Waterfall step: Instead of having both milestones last, the first milestone is now the first element
+  and the last one is last.
+
 ## [0.38.0] - 2023-10-06
 
 ### Added

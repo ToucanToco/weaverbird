@@ -236,15 +236,6 @@ def _facet_results(step: WaterfallStep) -> list[MongoStep]:
             },
             {
                 "$project": {
-                    # **{col: f"${_VQB_CHILDREN}.{col}" for col in step.groupby},
-                    # "LABEL_waterfall": f"${_VQB_CHILDREN}.{step.labelsColumn}",
-                    # **(
-                    #     {"GROUP_waterfall": f"${_VQB_CHILDREN}.{step.parentsColumn}"}
-                    #     if step.parentsColumn
-                    #     else {}
-                    # ),
-                    # "TYPE_waterfall": "child" if step.parentsColumn else "parent",
-                    # step.valueColumn: f"${_VQB_CHILDREN}.{step.valueColumn}",
                     **{col: f"$_id.{col}" for col in step.groupby},
                     "LABEL_waterfall": f"$_id.{step.labelsColumn}",
                     **(
@@ -254,7 +245,7 @@ def _facet_results(step: WaterfallStep) -> list[MongoStep]:
                     ),
                     "TYPE_waterfall": "child" if step.parentsColumn else "parent",
                     step.valueColumn: f"${step.valueColumn}",
-                    _VQB_ORDER: {"$literal": 0},
+                    _VQB_ORDER: {"$literal": 1},
                 }
             },
         ],
@@ -275,8 +266,7 @@ def _facet_results(step: WaterfallStep) -> list[MongoStep]:
                     "GROUP_waterfall": {"$literal": str(step.start)},
                     "TYPE_waterfall": None,
                     step.valueColumn: f"${step.valueColumn}",
-                    # "_id": False,
-                    _VQB_ORDER: {"$literal": 2},
+                    _VQB_ORDER: {"$literal": 0},
                 },
             },
         ],
@@ -297,8 +287,7 @@ def _facet_results(step: WaterfallStep) -> list[MongoStep]:
                     "GROUP_waterfall": {"$literal": str(step.end)},
                     "TYPE_waterfall": None,
                     step.valueColumn: f"${step.valueColumn}",
-                    # "_id": False,
-                    _VQB_ORDER: {"$literal": 2},
+                    _VQB_ORDER: {"$literal": 3},
                 },
             },
         ],
@@ -324,7 +313,7 @@ def _facet_results(step: WaterfallStep) -> list[MongoStep]:
                     "TYPE_waterfall": "parent",
                     step.valueColumn: f"${step.valueColumn}",
                     "_id": False,
-                    _VQB_ORDER: {"$literal": 1},
+                    _VQB_ORDER: {"$literal": 2},
                 },
             },
         ]
@@ -332,7 +321,7 @@ def _facet_results(step: WaterfallStep) -> list[MongoStep]:
 
 
 def _unwind_results(step: WaterfallStep) -> list[MongoStep]:
-    to_concat = [_VQB_CHILDREN, _VQB_START, _VQB_END]
+    to_concat = [_VQB_START, _VQB_CHILDREN, _VQB_END]
     if step.parentsColumn:
         to_concat.append(_VQB_PARENTS)
 
