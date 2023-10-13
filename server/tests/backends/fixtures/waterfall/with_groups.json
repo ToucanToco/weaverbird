@@ -195,6 +195,20 @@
     },
     "data": [
       {
+        "LABEL_waterfall": "2018",
+        "GROUP_waterfall": "2018",
+        "TYPE_waterfall": null,
+        "PRODUCT": "product1",
+        "REVENUE": 358
+      },
+      {
+        "LABEL_waterfall": "2018",
+        "GROUP_waterfall": "2018",
+        "TYPE_waterfall": null,
+        "PRODUCT": "product2",
+        "REVENUE": 473
+      },
+      {
         "LABEL_waterfall": "Bordeaux",
         "GROUP_waterfall": "France",
         "TYPE_waterfall": "child",
@@ -277,20 +291,6 @@
         "TYPE_waterfall": "parent",
         "PRODUCT": "product2",
         "REVENUE": 2
-      },
-      {
-        "LABEL_waterfall": "2018",
-        "GROUP_waterfall": "2018",
-        "TYPE_waterfall": null,
-        "PRODUCT": "product1",
-        "REVENUE": 358
-      },
-      {
-        "LABEL_waterfall": "2018",
-        "GROUP_waterfall": "2018",
-        "TYPE_waterfall": null,
-        "PRODUCT": "product2",
-        "REVENUE": 473
       },
       {
         "LABEL_waterfall": "2019",

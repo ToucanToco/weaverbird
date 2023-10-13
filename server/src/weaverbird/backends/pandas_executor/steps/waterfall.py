@@ -73,10 +73,11 @@ def execute_waterfall(
         df,
         start_df.rename(columns={f"{step.valueColumn}_start": step.valueColumn}),
         step.start,
+        0,
     )
     parents_children = _compute_parents_and_children(step, merged)
     end_values = _compute_agg_milestone(
-        step, df, end_df.rename(columns={f"{step.valueColumn}_end": step.valueColumn}), step.end
+        step, df, end_df.rename(columns={f"{step.valueColumn}_end": step.valueColumn}), step.end, 3
     )
     result = pd.concat([start_values, parents_children, end_values])
     result.sort_values(
@@ -184,7 +185,7 @@ def _backfill_missing_values(
 
 
 def _compute_agg_milestone(
-    step: WaterfallStep, df: DataFrame, start_df: DataFrame, milestone
+    step: WaterfallStep, df: DataFrame, start_df: DataFrame, milestone, sort_order: int
 ) -> pd.DataFrame:
     """Creates the top and bottom rows for waterfalls"""
     if len(step.groupby) > 0:
@@ -208,7 +209,7 @@ def _compute_agg_milestone(
     if len(step.groupby) == 0:
         del start_df[_VQB_GROUP]
         del agg[_VQB_GROUP]
-    agg[_VQB_SORT_ORDER] = 2
+    agg[_VQB_SORT_ORDER] = sort_order
     return agg
 
 
@@ -219,7 +220,7 @@ def _compute_parents_and_children(step: WaterfallStep, merged_df: DataFrame) -> 
 
     if step.parentsColumn is None:
         result_df[TYPE_WATERFALL_COLUMN] = "parent"
-        result_df[_VQB_SORT_ORDER] = 1
+        result_df[_VQB_SORT_ORDER] = 2
     else:
         result_df[GROUP_WATERFALL_COLUMN] = merged_df[step.parentsColumn]
         result_df[TYPE_WATERFALL_COLUMN] = numpy.where(
@@ -228,7 +229,7 @@ def _compute_parents_and_children(step: WaterfallStep, merged_df: DataFrame) -> 
             "child",
         )
         result_df[_VQB_SORT_ORDER] = numpy.where(
-            result_df[LABEL_WATERFALL_COLUMN] == (result_df[GROUP_WATERFALL_COLUMN]), 1, 0
+            result_df[LABEL_WATERFALL_COLUMN] == (result_df[GROUP_WATERFALL_COLUMN]), 2, 1
         )
 
     result_df[step.valueColumn] = merged_df[RESULT_COLUMN]

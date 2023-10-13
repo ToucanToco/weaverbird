@@ -272,6 +272,10 @@ input:
     pandas_version: 1.4.0
 expected:
   data:
+  - GROUP_waterfall: 01 January 2023
+    LABEL_waterfall: 01 January 2023
+    TYPE_waterfall: null
+    price: 119907
   - GROUP_waterfall: Germany
     LABEL_waterfall: Fermentum Industries
     TYPE_waterfall: child
@@ -300,10 +304,6 @@ expected:
     LABEL_waterfall: France
     TYPE_waterfall: parent
     price: -78287
-  - GROUP_waterfall: 01 January 2023
-    LABEL_waterfall: 01 January 2023
-    TYPE_waterfall: null
-    price: 119907
   - GROUP_waterfall: 01 December 2023
     LABEL_waterfall: 01 December 2023
     TYPE_waterfall: null
