@@ -113,8 +113,5 @@
     "vue-tsc": "^1.0.9",
     "vuedraggable": "^2.24.3",
     "vuejs-paginate": "^2.1.0"
-  },
-  "engines": {
-    "node": ">=18 <19"
   }
 }
