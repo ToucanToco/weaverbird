@@ -3361,13 +3361,13 @@ requests = ">=2.23,<3.0"
 
 [[package]]
 name = "toucan-connectors"
-version = "4.9.2"
+version = "4.9.5"
 description = "Toucan Toco Connectors"
 optional = false
 python-versions = ">=3.10,<3.12"
 files = [
-    {file = "toucan_connectors-4.9.2-py3-none-any.whl", hash = "sha256:4ef37dc38fc06887516706dd1ae89c0857e74cdd8cbb579a938b14b982a61a7d"},
-    {file = "toucan_connectors-4.9.2.tar.gz", hash = "sha256:5e28f252c2f631a18c3f9fdfa7a92f31f197c1dd44ee7863c7e909393baf7739"},
+    {file = "toucan_connectors-4.9.5-py3-none-any.whl", hash = "sha256:76d049d211abca5e6a84462380f5b4ec810e7f1e204f183358eca3968776b6b9"},
+    {file = "toucan_connectors-4.9.5.tar.gz", hash = "sha256:ab0f7dfeee31e8e70da9da747d691c5f4a6cd78d2982aa6aaf2ab218a97ed175"},
 ]
 
 [package.dependencies]
@@ -3530,7 +3530,7 @@ test = ["websockets"]
 name = "werkzeug"
 version = "3.0.1"
 description = "The comprehensive WSGI web application library."
-optional = false
+optional = true
 python-versions = ">=3.8"
 files = [
     {file = "werkzeug-3.0.1-py3-none-any.whl", hash = "sha256:90a285dc0e42ad56b34e696398b8122ee4c681833fb35b8334a095d82c56da10"},
