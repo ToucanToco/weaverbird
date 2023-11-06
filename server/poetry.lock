@@ -3135,13 +3135,13 @@ secure-local-storage = ["keyring (!=16.1.0,<25.0.0)"]
 
 [[package]]
 name = "snowflake-sqlalchemy"
-version = "1.5.0"
+version = "1.5.1"
 description = "Snowflake SQLAlchemy Dialect"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "snowflake-sqlalchemy-1.5.0.tar.gz", hash = "sha256:3ed0f77d09c8a9defd35c605743325a4dc21098e8f1c62ffc0347f42729db05a"},
-    {file = "snowflake_sqlalchemy-1.5.0-py2.py3-none-any.whl", hash = "sha256:e816f64e9b00dc2506b7a52d983263694031cd5ee06bac9fcedea2e47379a42a"},
+    {file = "snowflake-sqlalchemy-1.5.1.tar.gz", hash = "sha256:4f1383402ffc89311974bd810dee22003aef4af0f312a0fdb55778333ad1abf7"},
+    {file = "snowflake_sqlalchemy-1.5.1-py2.py3-none-any.whl", hash = "sha256:df022fb73bc04d68dfb3216ebf7a1bfbd14d22def9c38bbe05275beb258adcd0"},
 ]
 
 [package.dependencies]
@@ -3530,7 +3530,7 @@ test = ["websockets"]
 name = "werkzeug"
 version = "3.0.1"
 description = "The comprehensive WSGI web application library."
-optional = false
+optional = true
 python-versions = ">=3.8"
 files = [
     {file = "werkzeug-3.0.1-py3-none-any.whl", hash = "sha256:90a285dc0e42ad56b34e696398b8122ee4c681833fb35b8334a095d82c56da10"},
