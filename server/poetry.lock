@@ -977,13 +977,13 @@ files = [
 
 [[package]]
 name = "geopandas"
-version = "0.14.0"
+version = "0.14.1"
 description = "Geographic pandas extensions"
 optional = true
 python-versions = ">=3.9"
 files = [
-    {file = "geopandas-0.14.0-py3-none-any.whl", hash = "sha256:a402a565e727642cb44a500c911f226eea26c1b1247c6586827031e3d7a9403a"},
-    {file = "geopandas-0.14.0.tar.gz", hash = "sha256:ea6c031889e1e1888aecaa6e182ca620d78f63551c49b3002a998bcbb280531f"},
+    {file = "geopandas-0.14.1-py3-none-any.whl", hash = "sha256:ed5a7cae7874bfc3238fb05e0501cc1760e1b7b11e5b76ecad29da644ca305da"},
+    {file = "geopandas-0.14.1.tar.gz", hash = "sha256:4853ff89ecb6d1cfc43e7b3671092c8160e8a46a3dd7368f25906283314e42bb"},
 ]
 
 [package.dependencies]
