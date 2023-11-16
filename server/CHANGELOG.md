@@ -4,8 +4,8 @@
 
 ### Added
 
-- Pypika translator: added an option `columns` property to CustomSQL step. This columns list is used when translating
-  the query, and avoid relying on a fake table in `table_columns`. Prevents name conflicts when joining multiple
+- Pypika translator: added an optional `columns` property to CustomSQL step. This column list is used when translating
+  the query, and avoid relying on a fake table in `table_columns`. This prevents name conflicts when joining multiple
   pipelines with different CustomSQL steps.
 
 ## [0.38.1] - 2023-10-13
