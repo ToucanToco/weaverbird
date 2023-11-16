@@ -201,6 +201,7 @@ export type CustomStep = {
 export type CustomSqlStep = {
   name: 'customsql';
   query: string;
+  columns?: string[];
 };
 
 export type DateExtractStep = {
