@@ -8,6 +8,7 @@ from weaverbird.pipeline.steps.utils.base import BaseStep
 class CustomSqlStep(BaseStep):
     name: Literal["customsql"] = "customsql"
     query: str
+    columns: list[str] | None = None
 
     @staticmethod
     def _strip_query(query: str) -> str:

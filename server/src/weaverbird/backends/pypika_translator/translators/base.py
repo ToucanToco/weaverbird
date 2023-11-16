@@ -227,6 +227,8 @@ class SQLTranslator(ABC):
         return name
 
     def _extract_columns_from_customsql_step(self: Self, *, step: "CustomSqlStep") -> list[str]:
+        if step.columns:
+            return step.columns
         # In case there are several provided tables, we cannot figure out which columns to use
         if len(self._tables_columns) != 1:
             raise UnknownTableColumns("Expected columns to be specified for exactly one table")
