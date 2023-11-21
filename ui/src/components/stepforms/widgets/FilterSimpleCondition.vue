@@ -210,18 +210,8 @@ export default defineComponent({
       }
     },
 
-    dateAvailableVariables(): VariablesBucket | undefined {
-      // keep only date variables
-      return this.availableVariables?.filter((v) => v.value instanceof Date);
-    },
-
     availableVariablesForInputWidget(): VariablesBucket | undefined {
-      switch (this.inputWidget) {
-        case NewDateInput:
-          return this.dateAvailableVariables;
-        default:
-          return this.availableVariables;
-      }
+      return this.availableVariables;
     },
 
     availableOperators(): Readonly<OperatorOption[]> {

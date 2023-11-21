@@ -335,15 +335,6 @@ describe('Widget FilterSimpleCondition', () => {
       expect(operators).toStrictEqual(['from', 'until', 'isnull', 'notnull']);
     });
 
-    it('should filter available variables to keep only date once', () => {
-      createWrapper(shallowMount);
-      const variables = wrapper
-        .find('.filterValue')
-        .props()
-        .availableVariables.map((v: any) => v.label);
-      expect(variables).toStrictEqual(['Date category', 'Date not in date category']);
-    });
-
     it('should use the widget accordingly when changing the operator', async () => {
       createWrapper(mount);
       // from operator (from mount)
