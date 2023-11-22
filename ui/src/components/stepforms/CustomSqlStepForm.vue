@@ -1,3 +1,5 @@
+<!-- Unused, only supported as first step of a pipeline -->
+
 <template>
   <div>
     <StepFormHeader

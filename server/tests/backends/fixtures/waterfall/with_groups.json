@@ -167,147 +167,6 @@
       }
     ]
   },
-  "expected_mongo": {
-    "schema": {
-      "fields": [
-        {
-          "name": "LABEL_waterfall",
-          "type": "string"
-        },
-        {
-          "name": "GROUP_waterfall",
-          "type": "string"
-        },
-        {
-          "name": "TYPE_waterfall",
-          "type": "string"
-        },
-        {
-          "name": "PRODUCT",
-          "type": "string"
-        },
-        {
-          "name": "REVENUE",
-          "type": "integer"
-        }
-      ],
-      "pandas_version": "0.20.0"
-    },
-    "data": [
-      {
-        "LABEL_waterfall": 2018,
-        "GROUP_waterfall": 2018,
-        "TYPE_waterfall": null,
-        "PRODUCT": "product1",
-        "REVENUE": 358
-      },
-      {
-        "LABEL_waterfall": 2018,
-        "GROUP_waterfall": 2018,
-        "TYPE_waterfall": null,
-        "PRODUCT": "product2",
-        "REVENUE": 473
-      },
-      {
-        "LABEL_waterfall": "Bordeaux",
-        "GROUP_waterfall": "France",
-        "TYPE_waterfall": "child",
-        "PRODUCT": "product1",
-        "REVENUE": 27
-      },
-      {
-        "LABEL_waterfall": "Bordeaux",
-        "GROUP_waterfall": "France",
-        "TYPE_waterfall": "child",
-        "PRODUCT": "product2",
-        "REVENUE": 10
-      },
-      {
-        "LABEL_waterfall": "Boston",
-        "GROUP_waterfall": "USA",
-        "TYPE_waterfall": "child",
-        "PRODUCT": "product1",
-        "REVENUE": 35
-      },
-      {
-        "LABEL_waterfall": "Boston",
-        "GROUP_waterfall": "USA",
-        "TYPE_waterfall": "child",
-        "PRODUCT": "product2",
-        "REVENUE": -5
-      },
-      {
-        "LABEL_waterfall": "France",
-        "GROUP_waterfall": "France",
-        "TYPE_waterfall": "parent",
-        "PRODUCT": "product1",
-        "REVENUE": 62
-      },
-      {
-        "LABEL_waterfall": "France",
-        "GROUP_waterfall": "France",
-        "TYPE_waterfall": "parent",
-        "PRODUCT": "product2",
-        "REVENUE": 40
-      },
-      {
-        "LABEL_waterfall": "New-York",
-        "GROUP_waterfall": "USA",
-        "TYPE_waterfall": "child",
-        "PRODUCT": "product1",
-        "REVENUE": 5
-      },
-      {
-        "LABEL_waterfall": "New-York",
-        "GROUP_waterfall": "USA",
-        "TYPE_waterfall": "child",
-        "PRODUCT": "product2",
-        "REVENUE": 7
-      },
-      {
-        "LABEL_waterfall": "Paris",
-        "GROUP_waterfall": "France",
-        "TYPE_waterfall": "child",
-        "PRODUCT": "product1",
-        "REVENUE": 35
-      },
-      {
-        "LABEL_waterfall": "Paris",
-        "GROUP_waterfall": "France",
-        "TYPE_waterfall": "child",
-        "PRODUCT": "product2",
-        "REVENUE": 30
-      },
-      {
-        "LABEL_waterfall": "USA",
-        "GROUP_waterfall": "USA",
-        "TYPE_waterfall": "parent",
-        "PRODUCT": "product1",
-        "REVENUE": 40
-      },
-      {
-        "LABEL_waterfall": "USA",
-        "GROUP_waterfall": "USA",
-        "TYPE_waterfall": "parent",
-        "PRODUCT": "product2",
-        "REVENUE": 2
-      },
-      {
-        "LABEL_waterfall": 2019,
-        "GROUP_waterfall": 2019,
-        "TYPE_waterfall": null,
-        "PRODUCT": "product1",
-        "REVENUE": 460
-      },
-      {
-        "LABEL_waterfall": 2019,
-        "GROUP_waterfall": 2019,
-        "TYPE_waterfall": null,
-        "PRODUCT": "product2",
-        "REVENUE": 515
-      }
-    ]
-  },
   "expected": {
     "schema": {
       "fields": [
@@ -332,7 +191,7 @@
           "type": "integer"
         }
       ],
-      "pandas_version": "0.20.0"
+      "pandas_version": "1.4.0"
     },
     "data": [
       {
@@ -378,20 +237,6 @@
         "REVENUE": -5
       },
       {
-        "LABEL_waterfall": "France",
-        "GROUP_waterfall": "France",
-        "TYPE_waterfall": "parent",
-        "PRODUCT": "product1",
-        "REVENUE": 62
-      },
-      {
-        "LABEL_waterfall": "France",
-        "GROUP_waterfall": "France",
-        "TYPE_waterfall": "parent",
-        "PRODUCT": "product2",
-        "REVENUE": 40
-      },
-      {
         "LABEL_waterfall": "New-York",
         "GROUP_waterfall": "USA",
         "TYPE_waterfall": "child",
@@ -418,6 +263,20 @@
         "TYPE_waterfall": "child",
         "PRODUCT": "product2",
         "REVENUE": 30
+      },
+      {
+        "LABEL_waterfall": "France",
+        "GROUP_waterfall": "France",
+        "TYPE_waterfall": "parent",
+        "PRODUCT": "product1",
+        "REVENUE": 62
+      },
+      {
+        "LABEL_waterfall": "France",
+        "GROUP_waterfall": "France",
+        "TYPE_waterfall": "parent",
+        "PRODUCT": "product2",
+        "REVENUE": 40
       },
       {
         "LABEL_waterfall": "USA",

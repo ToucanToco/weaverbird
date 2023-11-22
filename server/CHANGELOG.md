@@ -1,6 +1,35 @@
 # Changelog (weaverbird python package)
 
-## Unreleased
+## [0.39.0] - 2023-10-16
+
+### Added
+
+- Pypika translator: added an optional `columns` property to CustomSQL step. This column list is used when translating
+  the query, and avoid relying on a fake table in `table_columns`. This prevents name conflicts when joining multiple
+  pipelines with different CustomSQL steps.
+
+## [0.38.1] - 2023-10-13
+
+### Fixed
+
+- Waterfall step: Instead of having both milestones last, the first milestone is now the first element
+  and the last one is last.
+
+## [0.38.0] - 2023-10-06
+
+### Added
+
+- Waterfall step: Added a `backfill` option defaulting to true. In case `backfill` is specified, missing start or end rows are
+  backfilled. In case `backfill` is false, elements with a missing start or end row are filtered out and not taken into account
+  for calculations.
+
+### Fixed
+
+- Waterfall step: Mongo and pandas results are now identical. This includes:
+    - `parent` and `child` are now lowercase for both backends
+    - The row order is now always children, parents, milestones
+    - In case no backfill is specified, rows without a start or end value are not taken into account anymore. (see `Added`
+    section for details)
 
 ## [0.37.2] - 2023-09-26
 

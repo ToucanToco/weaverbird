@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "weaverbird"
-version = "0.37.2"
+version = "0.39.0"
 description = "A visual data pipeline builder with various backends"
 authors = ["Toucan Toco <dev@toucantoco.com>"]
 keywords = ["mongodb", "pandas", "sql", "data", "dataviz", "pipeline", "query", "builder"]
@@ -22,9 +22,9 @@ geopandas = {version = ">=0.12.2,<0.15.0", optional = true}
 ## PyPika
 PyPika = {version = "^0.48.9", optional = true}
 ## Playground
-quart = {version = ">=0.17,<0.19", optional = true}
+quart = {version = ">=0.17,<0.20", optional = true}
 Quart-CORS = {version = ">=0.5,<0.8", optional = true}
-hypercorn = {version = ">=0.13,<0.15", optional = true}
+hypercorn = {version = ">=0.13,<0.16", optional = true}
 pymongo = {version = ">=4.2.0", optional = true, extras = ["srv", "tls"]}
 psycopg = {optional = true, version = "^3.0.15"}
 # toucan-connectors = {version = "^4.5.1", optional = true, extras = ["google_big_query", "mongo", "Redshift", "snowflake", "awsathena", "mysql"]}
@@ -52,7 +52,7 @@ psycopg2 = "^2.9.7"
 pymongo = ">=4.2.0"
 sqlalchemy-redshift = ">=0.8.11,<1"
 PyYAML = "^6.0"
-ruff = ">=0.0.287,<0.0.292"
+ruff = "^0.1.1"
 pre-commit = "^3.4.0"
 
 [tool.poetry.extras]

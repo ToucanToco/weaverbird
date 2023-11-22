@@ -93,57 +93,6 @@
       }
     ]
   },
-  "expected_mongo": {
-    "schema": {
-      "fields": [
-        {
-          "name": "LABEL_waterfall",
-          "type": "string"
-        },
-        {
-          "name": "TYPE_waterfall",
-          "type": "string"
-        },
-        {
-          "name": "REVENUE",
-          "type": "number"
-        }
-      ],
-      "pandas_version": "0.20.0"
-    },
-    "data": [
-      {
-        "LABEL_waterfall": 2018,
-        "TYPE_waterfall": null,
-        "REVENUE": 841
-      },
-      {
-        "LABEL_waterfall": "Paris",
-        "TYPE_waterfall": "parent",
-        "REVENUE": 65
-      },
-      {
-        "LABEL_waterfall": "Bordeaux",
-        "TYPE_waterfall": "parent",
-        "REVENUE": 37
-      },
-      {
-        "LABEL_waterfall": "Boston",
-        "TYPE_waterfall": "parent",
-        "REVENUE": 30
-      },
-      {
-        "LABEL_waterfall": "New-York",
-        "TYPE_waterfall": "parent",
-        "REVENUE": 12
-      },
-      {
-        "LABEL_waterfall": 2019,
-        "TYPE_waterfall": null,
-        "REVENUE": 985
-      }
-    ]
-  },
   "expected": {
     "schema": {
       "fields": [
@@ -170,22 +119,22 @@
       },
       {
         "LABEL_waterfall": "Paris",
-        "TYPE_waterfall": "Parent",
+        "TYPE_waterfall": "parent",
         "REVENUE": 65
       },
       {
         "LABEL_waterfall": "Bordeaux",
-        "TYPE_waterfall": "Parent",
+        "TYPE_waterfall": "parent",
         "REVENUE": 37
       },
       {
         "LABEL_waterfall": "Boston",
-        "TYPE_waterfall": "Parent",
+        "TYPE_waterfall": "parent",
         "REVENUE": 30
       },
       {
         "LABEL_waterfall": "New-York",
-        "TYPE_waterfall": "Parent",
+        "TYPE_waterfall": "parent",
         "REVENUE": 12
       },
       {

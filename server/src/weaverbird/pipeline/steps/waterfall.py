@@ -8,7 +8,7 @@ TYPE_WATERFALL_COLUMN = "TYPE_waterfall"
 LABEL_WATERFALL_COLUMN = "LABEL_waterfall"
 GROUP_WATERFALL_COLUMN = "GROUP_waterfall"
 
-_RESULT_COLUMN = "result"
+RESULT_COLUMN = "result"
 
 
 class WaterfallStep(BaseStep):
@@ -22,6 +22,7 @@ class WaterfallStep(BaseStep):
     order: Literal["desc", "asc"]
     parentsColumn: ColumnName | None = None
     groupby: list[ColumnName] = []
+    backfill: bool = True
 
 
 class WaterfallStepWithVariable(WaterfallStep, StepWithVariablesMixin):

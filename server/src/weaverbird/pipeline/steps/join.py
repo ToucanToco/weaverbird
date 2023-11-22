@@ -19,7 +19,7 @@ JoinColumnsPair = tuple[ColumnName, ColumnName]
 class BaseJoinStep(BaseStep):
     name: Literal["join"] = "join"
     type: Literal["left", "inner", "left outer"]
-    on: list[JoinColumnsPair] = Field(..., min_items=1)
+    on: list[JoinColumnsPair] = Field(..., min_length=1)
 
 
 class JoinStep(BaseJoinStep):

@@ -30,7 +30,7 @@ def test_simple():
     expected_df = pd.DataFrame(
         {
             "LABEL_waterfall": ["2018", "Paris", "Bordeaux", "Boston", "New-York", "2019"],
-            "TYPE_waterfall": [None, "Parent", "Parent", "Parent", "Parent", None],
+            "TYPE_waterfall": [None, "parent", "parent", "parent", "parent", None],
             "revenue": [831, 65, 37, 30, 12, 975],
         }
     )
@@ -57,11 +57,10 @@ def test_simple_with_aggregation():
         order="desc",
     )
     result_df = execute_waterfall(step, sample_df)
-
     expected_df = pd.DataFrame(
         {
             "LABEL_waterfall": ["2018", "Paris", "Bordeaux", "Boston", "New-York", "2019"],
-            "TYPE_waterfall": [None, "Parent", "Parent", "Parent", "Parent", None],
+            "TYPE_waterfall": [None, "parent", "parent", "parent", "parent", None],
             "revenue": [841, 65, 37, 30, 12, 985],
         }
     )
@@ -94,38 +93,30 @@ def test_with_groups():
 
     expected_df = pd.DataFrame(
         {
+            "product": [
+                "product1",
+                "product2",
+            ]
+            * 8,
             "LABEL_waterfall": ["2018"] * 2
             + ["Bordeaux"] * 2
             + ["Boston"] * 2
-            + ["France"] * 2
             + ["New-York"] * 2
             + ["Paris"] * 2
+            + ["France"] * 2
             + ["USA"] * 2
             + ["2019"] * 2,
+            "revenue": [358, 473, 27, 10, 35, -5, 5, 7, 35, 30, 62, 40, 40, 2, 460, 515],
             "GROUP_waterfall": ["2018"] * 2
             + ["France"] * 2
-            + ["USA"] * 2
-            + ["France"] * 2
-            + ["USA"] * 2
-            + ["France"] * 2
+            + ["USA"] * 4
+            + ["France"] * 4
             + ["USA"] * 2
             + ["2019"] * 2,
-            "TYPE_waterfall": [None, None, "child"]
-            + ["child"] * 3
-            + ["parent"] * 2
-            + ["child"] * 4
-            + ["parent"]
-            + ["parent", None, None],
-            "product": ["product1", "product2"] * 3
-            + ["product2", "product1"]
-            + ["product1", "product2"] * 2
-            + ["product2", "product1"] * 2,
-            "revenue": [358, 473, 27, 10, 35, -5, 40, 62, 5, 7, 35, 30, 2, 40, 515, 460],
+            "TYPE_waterfall": [None] * 2 + ["child"] * 8 + ["parent"] * 4 + [None] * 2,
         }
     )
-    assert_dataframes_equals(
-        expected_df.sort_values(by="revenue"), result_df.sort_values(by="revenue")
-    )
+    assert_dataframes_equals(expected_df, result_df)
 
 
 def test_bug_duplicate_rows():
@@ -155,10 +146,9 @@ def test_bug_duplicate_rows():
         {
             "LABEL_waterfall": ["2018", "France", "USA", "2019"],
             "revenue": [831, 102, 42, 975],
-            "TYPE_waterfall": [None, "Parent", "Parent", None],
+            "TYPE_waterfall": [None, "parent", "parent", None],
         }
     )
-
     assert_dataframes_equals(result_df, expected_df)
 
 
@@ -188,48 +178,48 @@ def test_waterfall_bug_drill():
         order="asc",
     )
     result = execute_waterfall(step, base_df)
-    assert_dataframes_equals(
-        result,
-        pd.DataFrame(
-            {
-                "grand parent": [
-                    "Food",
-                    "Vegetarian",
-                    "Fruits",
-                    "Vegetarian",
-                    "Fruits",
-                    "Fruits",
-                    "Food",
-                    "Vegetarian",
-                    "Food",
-                    "Food",
-                    "Vegetarian",
-                    "Fruits",
-                ],
-                "LABEL_waterfall": ["A"] * 3
-                + ["Berries", "Berries", "Blueberries", "Fruits", "Fruits", "Vegetarian"]
-                + ["B"] * 3,
-                "value": [1, 2, 3] + [10] * 6 + [11, 12, 13],
-                "GROUP_waterfall": ["A"] * 3
-                + ["Fruits", "Berries", "Berries", "Vegetarian", "Fruits", "Vegetarian"]
-                + ["B"] * 3,
-                "TYPE_waterfall": [
-                    None,
-                    None,
-                    None,
-                    "child",
-                    "parent",
-                    "child",
-                    "child",
-                    "parent",
-                    "parent",
-                    None,
-                    None,
-                    None,
-                ],
-            }
-        ),
+    expected_df = pd.DataFrame(
+        {
+            "grand parent": [
+                "Food",
+                "Vegetarian",
+                "Fruits",
+                "Vegetarian",
+                "Fruits",
+                "Food",
+                "Fruits",
+                "Vegetarian",
+                "Food",
+                "Food",
+                "Vegetarian",
+                "Fruits",
+            ],
+            "LABEL_waterfall": ["A"] * 3
+            + [
+                "Berries",
+                "Blueberries",
+                "Fruits",
+                "Berries",
+                "Fruits",
+                "Vegetarian",
+            ]
+            + ["B"] * 3,
+            "value": [1, 2, 3] + [10] * 6 + [11, 12, 13],
+            "GROUP_waterfall": ["A"] * 3
+            + [
+                "Fruits",
+                "Berries",
+                "Vegetarian",
+                "Berries",
+                "Fruits",
+                "Vegetarian",
+            ]
+            + ["B"] * 3,
+            "TYPE_waterfall": [None] * 3 + ["child"] * 3 + ["parent"] * 3 + [None] * 3,
+        }
     )
+
+    assert_dataframes_equals(result, expected_df)
 
 
 def _make_benchmark_data():

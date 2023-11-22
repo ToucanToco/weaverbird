@@ -201,6 +201,7 @@ export type CustomStep = {
 export type CustomSqlStep = {
   name: 'customsql';
   query: string;
+  columns?: string[];
 };
 
 export type DateExtractStep = {
@@ -516,6 +517,7 @@ export type WaterfallStep = {
   groupby?: string[];
   sortBy: 'label' | 'value';
   order: 'asc' | 'desc';
+  backfill?: boolean;
 };
 
 export type PipelineStep =
