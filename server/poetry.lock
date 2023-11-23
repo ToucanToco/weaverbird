@@ -3734,4 +3734,4 @@ pypika = ["PyPika"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.12"
-content-hash = "eb25ac0beba98433c1cc3b53df3361ccc527cb46cad9f7c695da9d57b28e56ff"
+content-hash = "28820f14e7f66542685f1bd7b1732d4eba1f04cd72e3d62b8b55c1d51a0dbf14"
