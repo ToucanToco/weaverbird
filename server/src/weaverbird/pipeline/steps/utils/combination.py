@@ -1,7 +1,7 @@
-from collections.abc import Awaitable, Callable
-from typing import TYPE_CHECKING, Literal
+from collections.abc import Awaitable, Callable, Iterable
+from typing import TYPE_CHECKING, Annotated, Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, BeforeValidator, TypeAdapter
 
 if TYPE_CHECKING:
     from weaverbird.pipeline.pipeline import PipelineStep
@@ -17,8 +17,56 @@ class Reference(BaseModel):
         return hash(f"__ref__{self.uid}")
 
 
+# FIXME: Required because of https://github.com/pydantic/pydantic/issues/7487.
+# Repro case:
+# {
+#     "name": "append",
+#     "pipelines": [
+#         [
+#             {"name": "domain", "domain": "styles"},
+#             {
+#                 "name": "join",
+#                 "type": "inner",
+#                 "right_pipeline": [
+#                     {"name": "domain", "domain": "beers"},
+#                     {"name": "uppercase", "column": "a"},
+#                     {"name": "uppercase", "column": "b"},
+#                 ],
+#                 "on": [("style", "name")],
+#             },
+#         ],
+#         [
+#             {"name": "domain", "domain": "beers"},
+#             {"name": "uppercase", "column": "a"},
+#         ],
+#     ],
+# }
+
+
+def _ensure_is_pipeline_step(
+    v: str | list[dict] | list["PipelineStep"],
+) -> str | list["PipelineStep"]:
+    from weaverbird.pipeline.pipeline import PipelineStep
+
+    adapter = TypeAdapter(PipelineStep)
+    if isinstance(v, str):
+        return v
+
+    def iter_() -> Iterable["PipelineStep"]:
+        for elem in v:
+            if isinstance(elem, dict):
+                yield adapter.validate_python(elem)
+            else:
+                yield elem
+
+    out = list(iter_())
+    return out
+
+
 # can be either a domain name or a complete pipeline
-PipelineOrDomainName = str | list["PipelineStep"]
+PipelineOrDomainName = Annotated[
+    str | list["PipelineStep"], BeforeValidator(_ensure_is_pipeline_step)
+]
 
 
 PipelineOrDomainNameOrReference = PipelineOrDomainName | Reference
