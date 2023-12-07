@@ -1,5 +1,12 @@
 # Changelog (weaverbird python package)
 
+## Unreleased
+
+## Breaking
+
+- Dropped support for Python 3.10
+- Bumped `pydantic` minimum version from 1.x to 2.4.2
+
 ## [0.39.0] - 2023-10-16
 
 ### Added
