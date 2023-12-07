@@ -8,7 +8,7 @@ from weaverbird.pipeline.types import ColumnName
 
 from .utils.combination import (
     PipelineOrDomainName,
-    PipelineOrDomainNameOrReference,
+    PipelineWithRefsOrDomainNameOrReference,
     ReferenceResolver,
     resolve_if_reference,
 )
@@ -31,7 +31,7 @@ class JoinStepWithVariable(JoinStep, StepWithVariablesMixin):
 
 
 class JoinStepWithRef(BaseJoinStep):
-    right_pipeline: PipelineOrDomainNameOrReference
+    right_pipeline: PipelineWithRefsOrDomainNameOrReference
 
     async def resolve_references(
         self, reference_resolver: ReferenceResolver

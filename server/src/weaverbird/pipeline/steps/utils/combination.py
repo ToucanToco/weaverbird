@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Annotated, Literal
 from pydantic import BaseModel, BeforeValidator, TypeAdapter
 
 if TYPE_CHECKING:
-    from weaverbird.pipeline.pipeline import PipelineStep
+    from weaverbird.pipeline.pipeline import PipelineStep, PipelineStepWithRefs
 
 
 class Reference(BaseModel):
@@ -69,7 +69,35 @@ PipelineOrDomainName = Annotated[
 ]
 
 
+def _ensure_is_pipeline_step_with_ref(
+    v: str | list[dict] | list["PipelineStep | PipelineStepWithRefs"],
+) -> str | list["PipelineStep"]:
+    from weaverbird.pipeline.pipeline import PipelineStep, PipelineStepWithRefs
+
+    adapter = TypeAdapter(PipelineStepWithRefs | PipelineStep)
+    if isinstance(v, str):
+        return v
+
+    def iter_() -> Iterable["PipelineStepWithRefs | PipelineStep"]:
+        for elem in v:
+            if isinstance(elem, dict):
+                yield adapter.validate_python(elem)
+            else:
+                yield elem
+
+    out = list(iter_())
+    return out
+
+
+# can be either a domain name or a complete pipeline
+PipelineWithRefsOrDomainName = Annotated[
+    str | list["PipelineStepWithRefs | PipelineStep"],
+    BeforeValidator(_ensure_is_pipeline_step_with_ref),
+]
+
+
 PipelineOrDomainNameOrReference = PipelineOrDomainName | Reference
+PipelineWithRefsOrDomainNameOrReference = PipelineWithRefsOrDomainName | Reference
 
 # A reference returning None means that it should be skipped
 ReferenceResolver = Callable[[Reference], Awaitable[PipelineOrDomainName | None]]
