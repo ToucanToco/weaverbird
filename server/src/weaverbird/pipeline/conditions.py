@@ -63,5 +63,5 @@ class ConditionComboOr(BaseConditionCombo):
 
 
 Condition = ConditionComboAnd | ConditionComboOr | SimpleCondition
-ConditionComboOr.update_forward_refs()
-ConditionComboAnd.update_forward_refs()
+ConditionComboOr.model_rebuild()
+ConditionComboAnd.model_rebuild()

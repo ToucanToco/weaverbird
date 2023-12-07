@@ -438,7 +438,7 @@ class PipelineWithRefs(BaseModel):
         return PipelineWithVariables(steps=resolved_steps)
 
 
-PipelineWithVariables.update_forward_refs()
+PipelineWithVariables.model_rebuild()
 
 
 class ReferenceUnresolved(Exception):

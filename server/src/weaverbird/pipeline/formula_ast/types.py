@@ -32,7 +32,7 @@ class Operation(BaseModel):
     operator: Operator
 
 
-Operation.update_forward_refs()
+Operation.model_rebuild()
 
 
 def format_expr(
