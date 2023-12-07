@@ -27,10 +27,14 @@ def translate_append(step: AppendStep) -> list[MongoStep]:
                     "References must be resolved before translating the pipeline"
                 )  # noqa: B904
 
-            domain_step = DomainStep(**sub_pipeline[0])
-            pipeline_without_domain.steps = [
-                getattr(steps, f"{s['name'].capitalize()}Step")(**s) for s in sub_pipeline[1:]
-            ]
+            if isinstance(sub_pipeline[0], DomainStep):
+                domain_step = sub_pipeline[0]
+                pipeline_without_domain.steps = [s.copy(deep=True) for s in sub_pipeline[1:]]
+            else:
+                domain_step = DomainStep(**sub_pipeline[0])
+                pipeline_without_domain.steps = [
+                    getattr(steps, f"{s['name'].capitalize()}Step")(**s) for s in sub_pipeline[1:]
+                ]
         lookups.append(
             {
                 "$lookup": {

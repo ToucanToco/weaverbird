@@ -18,7 +18,7 @@ class Reference(BaseModel):
 
 
 # can be either a domain name or a complete pipeline
-PipelineOrDomainName = list[dict] | str | list["PipelineStep"]
+PipelineOrDomainName = str | list["PipelineStep"]
 
 
 PipelineOrDomainNameOrReference = PipelineOrDomainName | Reference
