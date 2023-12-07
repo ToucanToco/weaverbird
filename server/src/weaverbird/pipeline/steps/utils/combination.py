@@ -1,9 +1,10 @@
 from collections.abc import Awaitable, Callable
-from typing import Annotated, Any, Literal
+from typing import TYPE_CHECKING, Literal
 
-from pydantic import BaseModel, BeforeValidator
+from pydantic import BaseModel
 
-from weaverbird.pipeline.steps.utils.base import BaseStep
+if TYPE_CHECKING:
+    from weaverbird.pipeline.pipeline import PipelineStep
 
 
 class Reference(BaseModel):
@@ -16,21 +17,10 @@ class Reference(BaseModel):
         return hash(f"__ref__{self.uid}")
 
 
-def _convert_basestep_to_dict(value: Any) -> Any:
-    if isinstance(value, BaseStep):
-        return value.model_dump()
-    elif isinstance(value, list) and all(isinstance(v, BaseStep) for v in value):
-        return [v.model_dump() for v in value]
-    return value
+# can be either a domain name or a complete pipeline
+PipelineOrDomainName = list[dict] | str | list["PipelineStep"]
 
 
-# FIXME: pydantic v2 is stricter with typing, and requires this to be
-# list[dict] | str | PipelineStep. However it would result in a circular import.
-# In python 3.11, importing the PipelineStep only when TYPE_CHECKING is True works,
-# but seems a bit hacky. So this ensures that the input can only be a dict
-PipelineOrDomainName = Annotated[
-    list[dict] | str, BeforeValidator(_convert_basestep_to_dict)
-]  # can be either a domain name or a complete pipeline
 PipelineOrDomainNameOrReference = PipelineOrDomainName | Reference
 
 # A reference returning None means that it should be skipped
