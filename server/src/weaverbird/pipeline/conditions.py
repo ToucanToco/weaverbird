@@ -2,7 +2,7 @@ from abc import ABC
 from datetime import datetime
 from typing import Annotated, Any, Literal
 
-from pydantic import BaseConfig, BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from weaverbird.pipeline.dates import RelativeDate
 from weaverbird.pipeline.types import ColumnName
@@ -32,7 +32,7 @@ class NullCondition(BaseCondition):
 class MatchCondition(BaseCondition):
     column: ColumnName
     operator: Literal["matches", "notmatches"]
-    value: str
+    value: str | int | float
 
 
 class DateBoundCondition(BaseModel):
@@ -48,11 +48,10 @@ SimpleCondition = Annotated[
 
 
 class BaseConditionCombo(BaseCondition, ABC):
-    class Config(BaseConfig):
-        allow_population_by_field_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
     def to_dict(self):
-        return self.dict(by_alias=True)
+        return self.model_dump(by_alias=True)
 
 
 class ConditionComboAnd(BaseConditionCombo):
@@ -64,5 +63,5 @@ class ConditionComboOr(BaseConditionCombo):
 
 
 Condition = ConditionComboAnd | ConditionComboOr | SimpleCondition
-ConditionComboOr.update_forward_refs()
-ConditionComboAnd.update_forward_refs()
+ConditionComboOr.model_rebuild()
+ConditionComboAnd.model_rebuild()

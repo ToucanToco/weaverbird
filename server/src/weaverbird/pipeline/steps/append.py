@@ -5,7 +5,7 @@ from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMi
 
 from .utils.combination import (
     PipelineOrDomainName,
-    PipelineOrDomainNameOrReference,
+    PipelineWithRefsOrDomainNameOrReference,
     ReferenceResolver,
     resolve_if_reference,
 )
@@ -24,7 +24,7 @@ class AppendStepWithVariable(AppendStep, StepWithVariablesMixin):
 
 
 class AppendStepWithRefs(BaseAppendStep):
-    pipelines: list[PipelineOrDomainNameOrReference]
+    pipelines: list[PipelineWithRefsOrDomainNameOrReference]
 
     async def resolve_references(
         self, reference_resolver: ReferenceResolver

@@ -17,7 +17,7 @@ class EvolutionStep(BaseStep):
     evolution_type: EVOLUTION_TYPE
     evolution_format: EVOLUTION_FORMAT
     index_columns: list[str] = Field(default_factory=list)
-    new_column: str | None
+    new_column: str | None = None
 
 
 class EvolutionStepWithVariable(EvolutionStep, StepWithVariablesMixin):

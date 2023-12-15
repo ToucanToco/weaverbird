@@ -24,7 +24,4 @@ def evaluate_relative_date(relative_date: RelativeDate) -> datetime:
         quantity = relative_date.quantity
         duration = relative_date.duration + "s"
 
-    return operation(
-        relative_date.date,
-        relativedelta(**{duration: quantity}),  # type: ignore
-    )
+    return operation(relative_date.date, relativedelta(**{duration: quantity}))

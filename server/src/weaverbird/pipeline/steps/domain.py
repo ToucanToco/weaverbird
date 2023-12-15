@@ -30,14 +30,12 @@ class DomainStepWithRef(BaseDomainStep):
         Not that the resulting array must be flattened:
         it should look like [step 1, step 2, step 3], not [[step 1, step 2], step 3]
         """
-        from weaverbird.pipeline.references import PipelineWithRefs
+        from weaverbird.pipeline.pipeline import PipelineWithRefs, ReferenceUnresolved
 
         resolved = await resolve_if_reference(reference_resolver, self.domain)
         if isinstance(resolved, list):
             return await PipelineWithRefs(steps=resolved).resolve_references(reference_resolver)
         elif resolved is None:
-            from weaverbird.pipeline.references import ReferenceUnresolved
-
             raise ReferenceUnresolved()
         else:
             return DomainStep(

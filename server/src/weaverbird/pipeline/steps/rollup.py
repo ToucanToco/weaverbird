@@ -14,13 +14,13 @@ class RollupStep(BaseStep):
     # The list of columnns to aggregate, with related aggregation function to use:
     aggregations: Sequence[Aggregation]
     # Groupby columns if rollup has to be performed by groups:
-    groupby: list[ColumnName] | None
+    groupby: list[ColumnName] | None = None
     # To give a custom name to the output label column:
-    label_col: ColumnName | None
+    label_col: ColumnName | None = None
     # To give a custom name to the output level column:
-    level_col: ColumnName | None
+    level_col: ColumnName | None = None
     # To give a custom name to the output parent column:
-    parent_label_col: ColumnName | None
+    parent_label_col: ColumnName | None = None
 
 
 class RollupStepWithVariable(RollupStep, StepWithVariablesMixin):

@@ -24,10 +24,14 @@ def translate_join(step: JoinStep) -> list[MongoStep]:
             raise Exception(  # noqa: B904
                 "References must be resolved before translating the pipeline"
             )
-        right_domain = DomainStep(**right[0])
-        right_without_domain.steps = [
-            getattr(steps, f"{s['name'].capitalize()}Step")(**s) for s in right[1:]
-        ]
+        if isinstance(right[0], DomainStep):
+            right_domain = right[0]
+            right_without_domain.steps = [s.copy(deep=True) for s in right[1:]]
+        else:
+            right_domain = DomainStep(**right[0])
+            right_without_domain.steps = [
+                getattr(steps, f"{s['name'].capitalize()}Step")(**s) for s in right[1:]
+            ]
 
     mongo_let: dict[str, str] = {}
     mongo_expr_and: list[dict[str, list[str]]] = []

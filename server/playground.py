@@ -62,8 +62,7 @@ from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import (
     translate_pipeline as pypika_translate_pipeline,
 )
-from weaverbird.pipeline.pipeline import Pipeline
-from weaverbird.pipeline.references import PipelineWithRefs
+from weaverbird.pipeline.pipeline import Pipeline, PipelineWithRefs
 from weaverbird.pipeline.steps import DomainStep
 from weaverbird.pipeline.steps.utils.combination import Reference
 
@@ -179,7 +178,7 @@ async def execute_pipeline(pipeline: Pipeline, **kwargs) -> str:
         limit=output.pop("limit"),
         total_rows=output.pop("total"),
         retrieved_rows=len(output["data"]),
-    ).dict()
+    ).model_dump()
 
     return json.dumps(
         {
@@ -206,7 +205,7 @@ async def handle_pandas_backend_request():
             return (
                 jsonify(
                     {
-                        "step": e.step.dict(),
+                        "step": e.step.model_dump(),
                         "index": e.index,
                         "message": e.message,
                     }
@@ -346,7 +345,7 @@ def execute_mongo_aggregation_query(collection, query, limit, offset):
 
 
 async def dummy_reference_resolver(r: Reference) -> list[dict]:
-    return [DomainStep(domain=r.uid).dict()]
+    return [DomainStep(domain=r.uid).model_dump()]
 
 
 @app.route("/mongo", methods=["GET", "POST"])
@@ -379,7 +378,7 @@ async def handle_mongo_backend_request():
 
             return jsonify(
                 {
-                    "pagination_info": pagination_info.dict(),
+                    "pagination_info": pagination_info.model_dump(),
                     "data": results["data"],
                     "types": results["types"],
                     "query": mongo_query,  # provided for inspection purposes
@@ -406,7 +405,7 @@ async def handle_mongo_translated_backend_request():
 
         return jsonify(
             {
-                "pagination_info": pagination_info.dict(),
+                "pagination_info": pagination_info.model_dump(),
                 "data": results["data"],
                 "types": results["types"],
                 "query": req_params["query"],  # provided for inspection purposes
@@ -519,7 +518,7 @@ if _SNOWFLAKE_CONNECTION is not None:
                             limit=limit,
                             retrieved_rows=len(df_results),
                             total_rows=total_count,
-                        ).dict(),
+                        ).model_dump(),
                         "schema": build_table_schema(df_results, index=False),
                         "data": json.loads(df_results.to_json(orient="records")),
                         "query": query,  # provided for inspection purposes
@@ -637,7 +636,7 @@ async def handle_postgres_backend_request():
                 limit=limit,
                 retrieved_rows=len(query_results_page),
                 total_rows=query_total_count,
-            ).dict(),
+            ).model_dump(),
             "results": {
                 "headers": query_results_columns,
                 "data": query_results_page,
@@ -699,7 +698,7 @@ async def handle_athena_post_request():
     return {
         "pagination_info": build_pagination_info(
             offset=offset, limit=limit, retrieved_rows=len(result), total_rows=None
-        ).dict(),
+        ).model_dump(),
         "results": {
             "headers": result.columns.to_list(),
             "data": json.loads(result.to_json(orient="records")),
@@ -767,7 +766,7 @@ async def hangle_bigquery_post_request():
     return {
         "pagination_info": build_pagination_info(
             offset=offset, limit=limit, retrieved_rows=len(result), total_rows=None
-        ).dict(),
+        ).model_dump(),
         "results": {
             "headers": result.columns.to_list(),
             "data": json.loads(result.to_json(orient="records")),
@@ -834,7 +833,7 @@ async def handle_mysql_post_request():
     return {
         "pagination_info": build_pagination_info(
             offset=offset, limit=limit, retrieved_rows=len(result), total_rows=None
-        ).dict(),
+        ).model_dump(),
         "results": {
             "headers": result.columns.to_list(),
             "data": json.loads(result[offset : offset + limit].to_json(orient="records")),

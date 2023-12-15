@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from functools import cache
 from typing import TYPE_CHECKING, Any, Literal, TypeVar, Union, cast, get_args
 
@@ -256,7 +256,7 @@ class SQLTranslator(ABC):
             and isinstance(second_step, TopStep)
             and self._source_rows_subset < second_step.limit
         ):
-            second_step = second_step.copy(update={"limit": self._source_rows_subset})
+            second_step = second_step.model_copy(update={"limit": self._source_rows_subset})
 
         ctx = step_method(step=second_step, prev_step_table=table, builder=None, columns=columns)
 
@@ -1156,11 +1156,7 @@ class SQLTranslator(ABC):
                         dt = condition.value
                     else:
                         dt = dateutil_parser.parse(condition.value)
-                    dt = (
-                        dt.replace(tzinfo=timezone.utc)
-                        if dt.tzinfo is None
-                        else dt.astimezone(timezone.utc)
-                    )
+                    dt = dt.replace(tzinfo=UTC) if dt.tzinfo is None else dt.astimezone(UTC)
                     value_to_compare = self._cast_to_timestamp(dt.strftime("%Y-%m-%d %H:%M:%S"))
 
                 elif isinstance(condition.value, functions.Function):

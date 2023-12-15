@@ -48,7 +48,7 @@ def execute_pipeline(
                         "type": "pandas",
                         "index": index + 1,
                         "name": step.name,
-                        "details": step.dict(),
+                        "details": step.model_dump(),
                         "elapsed_time": stopwatch.interval * 1000,
                         "sizes": {
                             "memory_used": convert_size(df.memory_usage(deep=True).sum()),

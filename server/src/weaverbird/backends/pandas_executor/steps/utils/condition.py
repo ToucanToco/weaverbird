@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 
 from numpy.ma import logical_and, logical_or
 from pandas import DataFrame, Series, Timestamp
@@ -23,12 +23,12 @@ def _date_bound_condition_to_tz_aware_timestamp(value: str | RelativeDate | date
     if isinstance(value, RelativeDate):
         value = evaluate_relative_date(value)
     if isinstance(value, datetime):
-        tz = value.tzinfo or "UTC"
+        tz = value.tzinfo or UTC
         # Cannot pass a tz-aware datetime object with tz arg
         return Timestamp(value.replace(tzinfo=None), tz=tz)
     else:  # str
         ts = Timestamp(value)
-        return ts if ts.tzinfo else ts.replace(tz="UTC")
+        return ts if ts.tzinfo else ts.replace(tzinfo=UTC)
 
 
 def apply_condition(condition: Condition, df: DataFrame) -> Series:

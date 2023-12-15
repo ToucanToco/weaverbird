@@ -60,8 +60,8 @@ class DateExtractStep(BaseStep):
     column: str
     date_info: list[DATE_INFO] = Field(default_factory=list)
     new_columns: list[ColumnName] = Field(default_factory=list)
-    operation: BASIC_DATE_PARTS | None
-    new_column_name: ColumnName | None
+    operation: BASIC_DATE_PARTS | None = None
+    new_column_name: ColumnName | None = None
 
 
 class DateExtractStepWithVariable(DateExtractStep, StepWithVariablesMixin):

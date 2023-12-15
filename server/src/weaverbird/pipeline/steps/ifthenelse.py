@@ -19,7 +19,7 @@ class IfThenElse(BaseModel):
     name: Literal["ifthenelse"] = "ifthenelse"
 
 
-IfThenElse.update_forward_refs()
+IfThenElse.model_rebuild()
 
 
 class IfthenelseStep(BaseStep, IfThenElse):
