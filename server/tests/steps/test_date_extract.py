@@ -298,8 +298,6 @@ def test_benchmark_dateextract(benchmark):
             "date": dates,
         }
     )
-    step = DateExtractStep(
-        name="dateextract", column="date", operation="day", new_column_name="date"
-    )
+    step = DateExtractStep(name="dateextract", column="date", operation="day", new_column_name="date")
 
     benchmark(execute_date_extract, step, df)

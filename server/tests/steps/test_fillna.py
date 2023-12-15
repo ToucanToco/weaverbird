@@ -9,9 +9,7 @@ from tests.utils import assert_dataframes_equals
 
 @pytest.fixture
 def sample_df():
-    return DataFrame(
-        {"colA": ["toto", "tutu", None], "colB": [1, 2, None], "colC": [100, 50, None]}
-    )
+    return DataFrame({"colA": ["toto", "tutu", None], "colB": [1, 2, None], "colC": [100, 50, None]})
 
 
 def test_simple_fillna(sample_df):

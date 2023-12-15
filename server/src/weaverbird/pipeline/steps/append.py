@@ -26,12 +26,8 @@ class AppendStepWithVariable(AppendStep, StepWithVariablesMixin):
 class AppendStepWithRefs(BaseAppendStep):
     pipelines: list[PipelineWithRefsOrDomainNameOrReference]
 
-    async def resolve_references(
-        self, reference_resolver: ReferenceResolver
-    ) -> AppendStepWithVariable | None:
-        resolved_pipelines = [
-            await resolve_if_reference(reference_resolver, p) for p in self.pipelines
-        ]
+    async def resolve_references(self, reference_resolver: ReferenceResolver) -> AppendStepWithVariable | None:
+        resolved_pipelines = [await resolve_if_reference(reference_resolver, p) for p in self.pipelines]
         resolved_pipelines_without_nones = [p for p in resolved_pipelines if p is not None]
         if len(resolved_pipelines_without_nones) == 0:
             return None  # skip the step

@@ -17,9 +17,9 @@ _OP_MAP = {
 
 
 def _eval_operation(df: DataFrame, op: Operation) -> Series:
-    return _OP_MAP[op.operator](
-        _eval_expression(df, op.left), _eval_expression(df, op.right)
-    ).replace([np.inf, -np.inf], np.nan)
+    return _OP_MAP[op.operator](_eval_expression(df, op.left), _eval_expression(df, op.right)).replace(
+        [np.inf, -np.inf], np.nan
+    )
 
 
 def _eval_expression(df: DataFrame, expr: Expression) -> Series:

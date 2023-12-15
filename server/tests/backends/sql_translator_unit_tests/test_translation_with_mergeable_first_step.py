@@ -57,12 +57,8 @@ _EXPECTED_NO_SOURCE_ROW_SUBSET = [
 ]
 
 
-@pytest.mark.parametrize(
-    "steps, expected", zip(_CASES, _EXPECTED_NO_SOURCE_ROW_SUBSET, strict=True)
-)
-def test_base_translator_merge_first_steps(
-    translator: SQLTranslator, steps: list[PipelineStep], expected: str
-):
+@pytest.mark.parametrize("steps, expected", zip(_CASES, _EXPECTED_NO_SOURCE_ROW_SUBSET, strict=True))
+def test_base_translator_merge_first_steps(translator: SQLTranslator, steps: list[PipelineStep], expected: str):
     pipeline = Pipeline(steps=steps)
     assert translator.get_query_str(steps=pipeline.steps) == expected
 
@@ -79,9 +75,7 @@ _EXPECTED_WITH_SOURCE_ROW_SUBSET = [
 ]
 
 
-@pytest.mark.parametrize(
-    "steps, expected", zip(_CASES, _EXPECTED_WITH_SOURCE_ROW_SUBSET, strict=True)
-)
+@pytest.mark.parametrize("steps, expected", zip(_CASES, _EXPECTED_WITH_SOURCE_ROW_SUBSET, strict=True))
 def test_base_translator_merge_first_steps_with_subset(
     translator: SQLTranslator, steps: list[PipelineStep], expected: str
 ):

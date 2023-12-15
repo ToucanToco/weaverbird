@@ -299,9 +299,7 @@ def translate_date_extract(step: DateExtractStep) -> list[MongoStep]:
     # For retrocompatibility
     if step.operation:
         date_info = [step.operation] if step.operation else step.date_info
-        new_columns = [
-            step.new_column_name if step.new_column_name else f"{step.column}_{step.operation}"
-        ]
+        new_columns = [step.new_column_name if step.new_column_name else f"{step.column}_{step.operation}"]
     else:
         date_info = step.date_info.copy()
         new_columns = step.new_columns.copy()

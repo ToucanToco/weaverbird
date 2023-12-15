@@ -34,9 +34,7 @@ def filter_translator():
 
 
 @pytest.mark.parametrize("op", ["eq", "ne", "lt", "le", "gt", "ge"])
-def test_comparison_filter(
-    filter_translator: FilterTranslator, op: str, default_step_kwargs: dict[str, Any]
-):
+def test_comparison_filter(filter_translator: FilterTranslator, op: str, default_step_kwargs: dict[str, Any]):
     selected_columns = ["name", "age"]
     previous_step = "previous_with"
     column = "name"
@@ -50,19 +48,13 @@ def test_comparison_filter(
     import operator
 
     op_func = getattr(operator, op)
-    expected_query = (
-        Query.from_(previous_step)
-        .where(op_func(Field(column), anonymous))
-        .select(*selected_columns)
-    )
+    expected_query = Query.from_(previous_step).where(op_func(Field(column), anonymous)).select(*selected_columns)
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
 @pytest.mark.parametrize("op", ["in", "nin"])
-def test_inclusion_filter(
-    filter_translator: FilterTranslator, op: str, default_step_kwargs: dict[str, Any]
-):
+def test_inclusion_filter(filter_translator: FilterTranslator, op: str, default_step_kwargs: dict[str, Any]):
     selected_columns = ["name", "age"]
     previous_step = "previous_with"
     column = "name"
@@ -75,17 +67,13 @@ def test_inclusion_filter(
     step = steps.FilterStep(condition=condition)
     ctx = filter_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
 
-    expected_query = (
-        Query.from_(previous_step).where(op_func[op](inclusion)).select(*selected_columns)
-    )
+    expected_query = Query.from_(previous_step).where(op_func[op](inclusion)).select(*selected_columns)
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
 @pytest.mark.parametrize("op", ["isnull", "notnull"])
-def test_null_filter(
-    filter_translator: FilterTranslator, op: str, default_step_kwargs: dict[str, Any]
-):
+def test_null_filter(filter_translator: FilterTranslator, op: str, default_step_kwargs: dict[str, Any]):
     selected_columns = ["name", "age"]
     previous_step = "previous_with"
     column = "name"
@@ -103,9 +91,7 @@ def test_null_filter(
 
 
 @pytest.mark.parametrize("op", ["from", "until"])
-def test_datebound_filter(
-    filter_translator: FilterTranslator, op: str, default_step_kwargs: dict[str, Any]
-):
+def test_datebound_filter(filter_translator: FilterTranslator, op: str, default_step_kwargs: dict[str, Any]):
     selected_columns = ["name", "age"]
     previous_step = "previous_with"
     column = "name"
@@ -117,13 +103,9 @@ def test_datebound_filter(
 
     value_str_time = dateutil_parser.parse(datetime).astimezone().strftime("%Y-%m-%d %H:%M:%S")
     if op == "from":
-        op_func = functions.Cast(Field(column), "TIMESTAMP") >= functions.Cast(
-            value_str_time, "TIMESTAMP"
-        )
+        op_func = functions.Cast(Field(column), "TIMESTAMP") >= functions.Cast(value_str_time, "TIMESTAMP")
     else:
-        op_func = functions.Cast(Field(column), "TIMESTAMP") <= functions.Cast(
-            value_str_time, "TIMESTAMP"
-        )
+        op_func = functions.Cast(Field(column), "TIMESTAMP") <= functions.Cast(value_str_time, "TIMESTAMP")
 
     step = steps.FilterStep(condition=condition)
     ctx = filter_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)
@@ -165,9 +147,7 @@ def regexp_translator():
     )
 
 
-def test_matches_regexp_filter(
-    regexp_translator: REGEXPTranslator, default_step_kwargs: dict[str, Any]
-):
+def test_matches_regexp_filter(regexp_translator: REGEXPTranslator, default_step_kwargs: dict[str, Any]):
     selected_columns = ["name", "age"]
     previous_step = "previous_with"
     column = "name"
@@ -186,9 +166,7 @@ def test_matches_regexp_filter(
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
-def test_notmatches_regexp_filter(
-    regexp_translator: REGEXPTranslator, default_step_kwargs: dict[str, Any]
-):
+def test_notmatches_regexp_filter(regexp_translator: REGEXPTranslator, default_step_kwargs: dict[str, Any]):
     selected_columns = ["name", "age"]
     previous_step = "previous_with"
     column = "name"
@@ -229,9 +207,7 @@ def similar_to_translator():
     )
 
 
-def test_matches_similar_to_filter(
-    similar_to_translator: SimilarToTranslator, default_step_kwargs: dict[str, Any]
-):
+def test_matches_similar_to_filter(similar_to_translator: SimilarToTranslator, default_step_kwargs: dict[str, Any]):
     selected_columns = ["name", "age"]
     previous_step = "previous_with"
     column = "name"
@@ -256,9 +232,7 @@ def test_matches_similar_to_filter(
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
-def test_notmatches_similar_to_filter(
-    similar_to_translator: SimilarToTranslator, default_step_kwargs: dict[str, Any]
-):
+def test_notmatches_similar_to_filter(similar_to_translator: SimilarToTranslator, default_step_kwargs: dict[str, Any]):
     selected_columns = ["name", "age"]
     previous_step = "previous_with"
     column = "name"
@@ -305,9 +279,7 @@ def contains_translator():
     )
 
 
-def test_matches_contains_filter(
-    contains_translator: ContainsTranslator, default_step_kwargs: dict[str, Any]
-):
+def test_matches_contains_filter(contains_translator: ContainsTranslator, default_step_kwargs: dict[str, Any]):
     selected_columns = ["name", "age"]
     previous_step = "previous_with"
     column = "name"
@@ -332,9 +304,7 @@ def test_matches_contains_filter(
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
-def test_notmatches_contains_filter(
-    contains_translator: ContainsTranslator, default_step_kwargs: dict[str, Any]
-):
+def test_notmatches_contains_filter(contains_translator: ContainsTranslator, default_step_kwargs: dict[str, Any]):
     selected_columns = ["name", "age"]
     previous_step = "previous_with"
     column = "name"
@@ -380,9 +350,7 @@ def regexp_like_translator():
     )
 
 
-def test_matches_regexp_like_filter(
-    regexp_translator: REGEXP_LIKE_Translator, default_step_kwargs: dict[str, Any]
-):
+def test_matches_regexp_like_filter(regexp_translator: REGEXP_LIKE_Translator, default_step_kwargs: dict[str, Any]):
     selected_columns = ["name", "age"]
     previous_step = "previous_with"
     column = "name"
@@ -401,9 +369,7 @@ def test_matches_regexp_like_filter(
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
-def test_notmatches_regexp__like_filter(
-    regexp_translator: REGEXP_LIKE_Translator, default_step_kwargs: dict[str, Any]
-):
+def test_notmatches_regexp__like_filter(regexp_translator: REGEXP_LIKE_Translator, default_step_kwargs: dict[str, Any]):
     selected_columns = ["name", "age"]
     previous_step = "previous_with"
     column = "name"
@@ -443,9 +409,7 @@ def regexp_contains_translator():
     )
 
 
-def test_matches_regexp_contains_filter(
-    regexp_translator: REGEXP_LIKE_Translator, default_step_kwargs: dict[str, Any]
-):
+def test_matches_regexp_contains_filter(regexp_translator: REGEXP_LIKE_Translator, default_step_kwargs: dict[str, Any]):
     selected_columns = ["name", "age"]
     previous_step = "previous_with"
     column = "name"

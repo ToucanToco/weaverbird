@@ -71,24 +71,20 @@ def build_cond_expression(
             return cond_expression
 
 
-def build_dates_expressions(
-    cond: SimpleCondition, cond_expression: dict[str, Any], operator_mapping: dict[str, str]
-):
+def build_dates_expressions(cond: SimpleCondition, cond_expression: dict[str, Any], operator_mapping: dict[str, str]):
     if cond.operator == "until":
         if isinstance(cond.value, datetime.datetime):
             cond_expression[operator_mapping[cond.operator]][1] = [
-                datetime.datetime(
-                    day=cond.value.day, month=cond.value.month, year=cond.value.month
-                ).replace(hour=23, minute=59, second=59, microsecond=999999)
+                datetime.datetime(day=cond.value.day, month=cond.value.month, year=cond.value.month).replace(
+                    hour=23, minute=59, second=59, microsecond=999999
+                )
             ]
     if cond.operator == "from" or cond.operator == "until":
         cond_expression = {
             operator_mapping[cond.operator]: [
                 truncate_to_day(f"${cond.column}"),
                 truncate_to_day(
-                    translate_relative_date(cond.value)
-                    if isinstance(cond.value, RelativeDate)
-                    else cond.value
+                    translate_relative_date(cond.value) if isinstance(cond.value, RelativeDate) else cond.value
                 ),
             ]
         }

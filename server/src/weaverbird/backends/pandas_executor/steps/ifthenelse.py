@@ -15,13 +15,7 @@ def _execute_ifthenelse(ifthenelse: IfThenElse, df: DataFrame, new_column) -> Da
         else_branch = eval_formula(df, str(ifthenelse.else_value))
 
     then_branch = eval_formula(df, str(ifthenelse.then))
-    return df.assign(
-        **{
-            new_column: np.where(
-                apply_condition(ifthenelse.condition, df), then_branch, else_branch
-            )
-        }
-    )
+    return df.assign(**{new_column: np.where(apply_condition(ifthenelse.condition, df), then_branch, else_branch)})
 
 
 def execute_ifthenelse(

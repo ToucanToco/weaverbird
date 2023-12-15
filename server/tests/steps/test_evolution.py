@@ -70,9 +70,7 @@ def test_evolution_percentage(sample_df: DataFrame):
     )
     df_result = execute_evolution(step, sample_df)
 
-    expected_result = sample_df.assign(
-        VALUE_EVOL_PCT=[None, 0.0253164, -0.0493827, -0.025974, None, 0.1282051]
-    )
+    expected_result = sample_df.assign(VALUE_EVOL_PCT=[None, 0.0253164, -0.0493827, -0.025974, None, 0.1282051])
     assert_dataframes_equals(df_result, expected_result)
 
 
@@ -114,9 +112,7 @@ def test_evolution_with_groups(df_with_groups: DataFrame):
     )
     df_result = execute_evolution(step, df_with_groups)
 
-    expected_result = df_with_groups.assign(
-        MY_EVOL=[None, 2, -4, -2, None, 10, None, 0, -1, -1, 3, None]
-    )
+    expected_result = df_with_groups.assign(MY_EVOL=[None, 2, -4, -2, None, 10, None, 0, -1, -1, 3, None])
     assert_dataframes_equals(df_result, expected_result)
 
 

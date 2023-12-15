@@ -49,18 +49,14 @@ def bigquery_client() -> Client:
     return Client(credentials=credentials)
 
 
-@pytest.mark.parametrize(
-    "case_id, case_spec_file", retrieve_case("sql_translator", "bigquery_pypika")
-)
+@pytest.mark.parametrize("case_id, case_spec_file", retrieve_case("sql_translator", "bigquery_pypika"))
 def test_bigquery_translator_pipeline(
     bigquery_client: Client, case_id: str, case_spec_file: str, available_variables: dict
 ):
     pipeline_spec = get_spec_from_json_fixture(case_id, case_spec_file)
 
     steps = [{"name": "domain", "domain": "beers_tiny"}] + pipeline_spec["step"]["pipeline"]
-    pipeline = PipelineWithVariables(steps=steps).render(
-        available_variables, nosql_apply_parameters_to_query
-    )
+    pipeline = PipelineWithVariables(steps=steps).render(available_variables, nosql_apply_parameters_to_query)
 
     query = translate_pipeline(
         sql_dialect=SQLDialect.GOOGLEBIGQUERY,

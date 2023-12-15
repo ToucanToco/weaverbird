@@ -19,9 +19,7 @@ def test_simple_percentage():
 def test_percentage_with_groups():
     sample_df = pd.DataFrame({"a_bool": [True, False, True, False], "values": [50, 25, 50, 75]})
 
-    step = PercentageStep(
-        name="percentage", column="values", group=["a_bool"], newColumnName="result"
-    )
+    step = PercentageStep(name="percentage", column="values", group=["a_bool"], newColumnName="result")
     result = execute_percentage(step, sample_df)
     expected_df = pd.DataFrame(
         {

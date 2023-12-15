@@ -11,9 +11,7 @@ from tests.utils import assert_dataframes_equals
 
 @pytest.fixture
 def sample_df():
-    return DataFrame(
-        {"COUNTRY": ["France"] * 3 + ["USA"] * 4, "VALUE": [10, 20, 30, 10, 40, 30, 50]}
-    )
+    return DataFrame({"COUNTRY": ["France"] * 3 + ["USA"] * 4, "VALUE": [10, 20, 30, 10, 40, 30, 50]})
 
 
 def test_rank(sample_df: DataFrame):

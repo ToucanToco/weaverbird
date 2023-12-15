@@ -241,9 +241,7 @@ class SQLTranslator(ABC):
             columns = self._extract_columns_from_customsql_step(step=step)
             return StepContext(self._custom_query(step=step), columns)
 
-    def _merge_first_steps(
-        self: Self, *, domain_step: "DomainStep", second_step: TopStep | FilterStep
-    ) -> StepContext:
+    def _merge_first_steps(self: Self, *, domain_step: "DomainStep", second_step: TopStep | FilterStep) -> StepContext:
         columns = self._extract_columns_from_domain_step(step=domain_step)
         # If we have a reference, self._extract_columns_from_domain_step raises
         assert isinstance(domain_step.domain, str)
@@ -283,11 +281,7 @@ class SQLTranslator(ABC):
         assert steps[0].name == "domain" or steps[0].name == "customsql"
         self._step_count = 0
 
-        if (
-            len(steps) > 1
-            and isinstance(steps[0], DomainStep)
-            and isinstance(steps[1], FilterStep | TopStep)
-        ):
+        if len(steps) > 1 and isinstance(steps[0], DomainStep) and isinstance(steps[1], FilterStep | TopStep):
             ctx = self._merge_first_steps(domain_step=steps[0], second_step=steps[1])
             remaining_steps = steps[2:]
         else:
@@ -295,17 +289,13 @@ class SQLTranslator(ABC):
             remaining_steps = steps[1:]
 
         table_name = self._next_step_name()
-        builder = (query_builder if query_builder is not None else self.QUERY_CLS).with_(
-            ctx.selectable, table_name
-        )
+        builder = (query_builder if query_builder is not None else self.QUERY_CLS).with_(ctx.selectable, table_name)
 
         for step in remaining_steps:
             step_method: Callable[..., StepContext] | None = getattr(self, step.name, None)
             if step_method is None:
                 raise NotImplementedError(f"[{self.DIALECT}] step {step.name} is not implemented")
-            ctx = step_method(
-                step=step, prev_step_table=table_name, builder=builder, columns=ctx.columns
-            )
+            ctx = step_method(step=step, prev_step_table=table_name, builder=builder, columns=ctx.columns)
             table_name = self._next_step_name()
             builder = ctx.update_builder(builder=builder, step_name=table_name)
         return QueryBuilderContext(builder=builder, columns=ctx.columns, table_name=table_name)
@@ -315,9 +305,7 @@ class SQLTranslator(ABC):
 
     # All other methods implement step from https://weaverbird.toucantoco.com/docs/steps/,
     # the name of the method being the name of the step and the kwargs the rest of the params
-    def _get_aggregate_function(
-        self: Self, agg_function: "AggregateFn"
-    ) -> type[functions.AggregateFunction] | None:
+    def _get_aggregate_function(self: Self, agg_function: "AggregateFn") -> type[functions.AggregateFunction] | None:
         match agg_function:
             case "avg":
                 return functions.Avg
@@ -334,9 +322,7 @@ class SQLTranslator(ABC):
             case _:
                 return None
 
-    def _get_window_function(
-        self: Self, window_function: "AggregateFn"
-    ) -> analytics.AnalyticFunction | None:
+    def _get_window_function(self: Self, window_function: "AggregateFn") -> analytics.AnalyticFunction | None:
         match window_function:
             case "first":
                 return analytics.FirstValue
@@ -393,11 +379,7 @@ class SQLTranslator(ABC):
                 self.QUERY_CLS.from_(window_subquery_list[0])
                 .select(
                     *step.on,
-                    *[
-                        getattr(first_wq, col[1].alias)
-                        for col in window_selected
-                        if col[0] == min_window_index
-                    ],
+                    *[getattr(first_wq, col[1].alias) for col in window_selected if col[0] == min_window_index],
                 )
                 .as_("window_subquery")
             )
@@ -421,9 +403,7 @@ class SQLTranslator(ABC):
 
         for step_index, aggregation in enumerate(step.aggregations):
             if agg_fn := self._get_aggregate_function(aggregation.agg_function):
-                for agg_column_name, new_column_name in zip(
-                    aggregation.columns, aggregation.new_columns, strict=True
-                ):
+                for agg_column_name, new_column_name in zip(aggregation.columns, aggregation.new_columns, strict=True):
                     column_field: Field = Table(prev_step_table)[agg_column_name]
                     new_agg_col = agg_fn(column_field).as_(new_column_name)
                     agg_selected.append(new_agg_col)
@@ -444,10 +424,7 @@ class SQLTranslator(ABC):
                     window_selected.append((step_index, new_window_col))
                     agg_cols.append(new_window_col)
                 window_subquery_list.append(
-                    self.QUERY_CLS.from_(prev_step_table)
-                    .select(*step.on, *agg_cols)
-                    .distinct()
-                    .as_(f"wq{step_index}")
+                    self.QUERY_CLS.from_(prev_step_table).select(*step.on, *agg_cols).distinct().as_(f"wq{step_index}")
                 )
 
             else:  # pragma: no cover
@@ -478,16 +455,10 @@ class SQLTranslator(ABC):
                 )
             else:
                 # If there is no `step.on` columns to join, just put the 2 subqueries side by side:
-                merged_query = (
-                    self.QUERY_CLS.from_(agg_query)
-                    .from_(all_windows_subquery)
-                    .select(*merged_selected)
-                )
+                merged_query = self.QUERY_CLS.from_(agg_query).from_(all_windows_subquery).select(*merged_selected)
         elif agg_selected:
             selected_cols = [*step.on, *agg_selected]
-            merged_query = (
-                self.QUERY_CLS.from_(prev_step_table).select(*selected_cols).groupby(*step.on)
-            )
+            merged_query = self.QUERY_CLS.from_(prev_step_table).select(*selected_cols).groupby(*step.on)
         elif window_subquery_list:
             merged_query = _build_window_subquery()
         else:
@@ -550,10 +521,7 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "AppendStep",
     ) -> StepContext:
-        pipelines = [
-            self._pipeline_or_domain_name_or_reference_to_pipeline(pipeline)
-            for pipeline in step.pipelines
-        ]
+        pipelines = [self._pipeline_or_domain_name_or_reference_to_pipeline(pipeline) for pipeline in step.pipelines]
         tables: list[str] = []
         column_lists: list[list[str]] = []
         for pipeline in pipelines:
@@ -641,10 +609,7 @@ class SQLTranslator(ABC):
         table = Table(prev_step_table)
         query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *columns,
-            Case()
-            .when(table[step.str_col_1] == table[step.str_col_2], True)
-            .else_(False)
-            .as_(step.new_column_name),
+            Case().when(table[step.str_col_1] == table[step.str_col_2], True).else_(False).as_(step.new_column_name),
         )
         return StepContext(query, columns + [step.new_column_name])
 
@@ -682,9 +647,7 @@ class SQLTranslator(ABC):
         query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *(c for c in columns if c not in step.columns),
             *(
-                functions.Cast(col_field, getattr(self.DATA_TYPE_MAPPING, step.data_type)).as_(
-                    col_field.name
-                )
+                functions.Cast(col_field, getattr(self.DATA_TYPE_MAPPING, step.data_type)).as_(col_field.name)
                 for col_field in col_fields
             ),
         )
@@ -712,16 +675,15 @@ class SQLTranslator(ABC):
         # In case some cumsum columns have overwritten previously exising columns, don't select twice
         original_column_names = [col for col in columns if col not in cumsum_colnames]
         query: "QueryBuilder" = (
-            self.QUERY_CLS.from_(prev_step_table).select(*original_column_names, *cumsum_cols)
+            self.QUERY_CLS.from_(prev_step_table)
+            .select(*original_column_names, *cumsum_cols)
             # Depending on the backend, results are ordered by partition or by reference colum, so
             # we choose an arbitrary ordering here
             .orderby(order_by)
         )
         return StepContext(query, original_column_names + cumsum_colnames)
 
-    def _custom_query(
-        self: Self, *, step: "CustomSqlStep", prev_step_table: str | None = None
-    ) -> CustomQuery:
+    def _custom_query(self: Self, *, step: "CustomSqlStep", prev_step_table: str | None = None) -> CustomQuery:
         table_name = prev_step_table or "_"
         return CustomQuery(
             name=f"custom_from_{table_name}",
@@ -759,9 +721,7 @@ class SQLTranslator(ABC):
             "year",
             "yearofweek",
         ):
-            return Extract(
-                lowered_date_unit.removesuffix("s"), cls._cast_to_timestamp(target_column)
-            )
+            return Extract(lowered_date_unit.removesuffix("s"), cls._cast_to_timestamp(target_column))
         # ms aren't supported by snowflake's EXTRACT, even if the docs state otherwise:
         # https://community.snowflake.com/s/question/0D50Z00008dWkrpSAC/supported-time-parts-in-datepart
         elif lowered_date_unit == "milliseconds":
@@ -774,11 +734,7 @@ class SQLTranslator(ABC):
             return Extract("week", target_column)
         elif lowered_date_unit == "isodayofweek":
             # We want monday as 1, sunday as 7. Redshift goes from sunday as 0 to saturday as 6
-            return (
-                Case()
-                .when(cls._day_of_week(target_column) == 0, 7)
-                .else_(cls._day_of_week(target_column))
-            )
+            return Case().when(cls._day_of_week(target_column) == 0, 7).else_(cls._day_of_week(target_column))
         elif lowered_date_unit == "firstdayofyear":
             return cls._date_trunc("year", target_column)
         elif lowered_date_unit == "firstdayofmonth":
@@ -810,13 +766,9 @@ class SQLTranslator(ABC):
                 cls._add_date(target_column=target_column, unit="months", duration=-1),
             )
         elif lowered_date_unit == "previousweek":
-            return Extract(
-                "week", cls._add_date(target_column=target_column, unit="weeks", duration=-1)
-            )
+            return Extract("week", cls._add_date(target_column=target_column, unit="weeks", duration=-1))
         elif lowered_date_unit == "previousisoweek":
-            return Extract(
-                "week", cls._add_date(target_column=target_column, unit="weeks", duration=-1)
-            )
+            return Extract("week", cls._add_date(target_column=target_column, unit="weeks", duration=-1))
         elif lowered_date_unit == "previousquarter":
             return Extract(
                 "quarter",
@@ -827,18 +779,12 @@ class SQLTranslator(ABC):
                 ),
             )
         elif lowered_date_unit == "firstdayofpreviousyear":
-            return cls._add_date(
-                target_column=cls._date_trunc("year", target_column), unit="years", duration=-1
-            )
+            return cls._add_date(target_column=cls._date_trunc("year", target_column), unit="years", duration=-1)
         elif lowered_date_unit == "firstdayofpreviousmonth":
-            return cls._add_date(
-                target_column=cls._date_trunc("month", target_column), unit="months", duration=-1
-            )
+            return cls._add_date(target_column=cls._date_trunc("month", target_column), unit="months", duration=-1)
         elif lowered_date_unit == "firstdayofpreviousquarter":
             # Postgres does not support quarters in intervals
-            return cls._add_date(
-                target_column=cls._date_trunc("year", target_column), unit="months", duration=-3
-            )
+            return cls._add_date(target_column=cls._date_trunc("year", target_column), unit="months", duration=-3)
         elif lowered_date_unit == "firstdayofpreviousweek":
             return cls._add_date(
                 target_column=cls._add_date(
@@ -852,9 +798,7 @@ class SQLTranslator(ABC):
                 duration=-1,
             )
         elif lowered_date_unit == "firstdayofpreviousisoweek":
-            return cls._add_date(
-                target_column=cls._date_trunc("week", target_column), unit="weeks", duration=-1
-            )
+            return cls._add_date(target_column=cls._date_trunc("week", target_column), unit="weeks", duration=-1)
         # Postgres supports EXTRACT(isoyear) but redshift doesn't so...
         elif lowered_date_unit == "isoyear":
             return Extract("year", cls._date_trunc("week", target_column))
@@ -879,9 +823,7 @@ class SQLTranslator(ABC):
                 col_field = functions.Cast(col_field, self.DATA_TYPE_MAPPING.integer)
 
             extracted_dates.append(col_field.as_(new_column_name))
-        query: "Selectable" = self.QUERY_CLS.from_(prev_step_table).select(
-            *columns, *extracted_dates
-        )
+        query: "Selectable" = self.QUERY_CLS.from_(prev_step_table).select(*columns, *extracted_dates)
 
         return StepContext(query, columns + [col.alias for col in extracted_dates])
 
@@ -909,9 +851,7 @@ class SQLTranslator(ABC):
     # getattr(self, step_name)
     def _domain(self: Self, *, step: "DomainStep") -> StepContext:
         selected_cols = self._extract_columns_from_domain_step(step=step)
-        query: "QueryBuilder" = self.QUERY_CLS.from_(
-            Table(step.domain, schema=self._db_schema)
-        ).select(*selected_cols)
+        query: "QueryBuilder" = self.QUERY_CLS.from_(Table(step.domain, schema=self._db_schema)).select(*selected_cols)
         if self._source_rows_subset:
             query = query.limit(self._source_rows_subset)
         return StepContext(query, selected_cols)
@@ -956,9 +896,7 @@ class SQLTranslator(ABC):
         return StepContext(query, columns + [step.new_column_name])
 
     @classmethod
-    def _add_date(
-        cls, *, target_column: Field, duration: int, unit: str, dialect: Dialects | None = None
-    ) -> Term:
+    def _add_date(cls, *, target_column: Field, duration: int, unit: str, dialect: Dialects | None = None) -> Term:
         return target_column + Interval(**{unit: duration, "dialect": dialect})
 
     def evolution(
@@ -985,12 +923,8 @@ class SQLTranslator(ABC):
                     prev_table.field(step.value_col) - right_table.field(step.value_col)
                     if step.evolution_format == "abs"
                     else (
-                        functions.Cast(
-                            prev_table.field(step.value_col), self.DATA_TYPE_MAPPING.float
-                        )
-                        / functions.Cast(
-                            right_table.field(step.value_col), self.DATA_TYPE_MAPPING.float
-                        )
+                        functions.Cast(prev_table.field(step.value_col), self.DATA_TYPE_MAPPING.float)
+                        / functions.Cast(right_table.field(step.value_col), self.DATA_TYPE_MAPPING.float)
                     )
                     - 1.0
                 ).as_(new_col),
@@ -1021,10 +955,7 @@ class SQLTranslator(ABC):
         the_table = Table(prev_step_table)
         query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *(c for c in columns if c not in step.columns),
-            *(
-                functions.Coalesce(the_table[col_name], step.value).as_(col_name)
-                for col_name in step.columns
-            ),
+            *(functions.Coalesce(the_table[col_name], step.value).as_(col_name) for col_name in step.columns),
         )
         return StepContext(query, columns)
 
@@ -1032,9 +963,7 @@ class SQLTranslator(ABC):
     def _cast_to_timestamp(value: str | datetime | Field | Term) -> functions.Function:
         return functions.Cast(value, "TIMESTAMP")
 
-    def _get_single_condition_criterion(
-        self: Self, condition: "SimpleCondition", prev_step_table: Table
-    ) -> Criterion:
+    def _get_single_condition_criterion(self: Self, condition: "SimpleCondition", prev_step_table: Table) -> Criterion:
         column_field = prev_step_table[condition.column]
         self._ensure_term_uses_wrapper(column_field)
 
@@ -1103,9 +1032,7 @@ class SQLTranslator(ABC):
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case _:
-                            raise NotImplementedError(
-                                f"[{self.DIALECT}] doesn't have regexp operator"
-                            )
+                            raise NotImplementedError(f"[{self.DIALECT}] doesn't have regexp operator")
 
                 elif condition.operator == "notmatches":
                     # Casting the field to str first as it is the only compatible type for regex
@@ -1138,9 +1065,7 @@ class SQLTranslator(ABC):
                                 column_field.wrap_constant(compliant_regex),
                             )
                         case _:
-                            raise NotImplementedError(
-                                f"[{self.DIALECT}] doesn't have regexp operator"
-                            )
+                            raise NotImplementedError(f"[{self.DIALECT}] doesn't have regexp operator")
 
             case NullCondition():  # type:ignore[misc]
                 if condition.operator == "isnull":
@@ -1170,9 +1095,7 @@ class SQLTranslator(ABC):
             case _:  # pragma: no cover
                 raise KeyError(f"Operator {condition.operator!r} does not exist")
 
-    def _get_filter_criterion(
-        self: Self, condition: "Condition", prev_step_table: Table
-    ) -> Criterion:
+    def _get_filter_criterion(self: Self, condition: "Condition", prev_step_table: Table) -> Criterion:
         from weaverbird.pipeline.conditions import ConditionComboAnd, ConditionComboOr
 
         # NOTE: type ignore comments below are because of 'Expected type in class pattern; found
@@ -1180,13 +1103,11 @@ class SQLTranslator(ABC):
         match condition:
             case ConditionComboOr():  # type:ignore[misc]
                 return Criterion.any(
-                    self._get_filter_criterion(condition, prev_step_table)
-                    for condition in condition.or_
+                    self._get_filter_criterion(condition, prev_step_table) for condition in condition.or_
                 )
             case ConditionComboAnd():  # type:ignore[misc]
                 return Criterion.all(
-                    self._get_filter_criterion(condition, prev_step_table)
-                    for condition in condition.and_
+                    self._get_filter_criterion(condition, prev_step_table) for condition in condition.and_
                 )
             case _:
                 return self._get_single_condition_criterion(condition, prev_step_table)
@@ -1201,9 +1122,7 @@ class SQLTranslator(ABC):
     ) -> StepContext:
         table = Table(prev_step_table) if isinstance(prev_step_table, str) else prev_step_table
         query: "QueryBuilder" = (
-            self.QUERY_CLS.from_(table)
-            .select(*columns)
-            .where(self._get_filter_criterion(step.condition, table))
+            self.QUERY_CLS.from_(table).select(*columns).where(self._get_filter_criterion(step.condition, table))
         )
         return StepContext(query, columns)
 
@@ -1267,9 +1186,7 @@ class SQLTranslator(ABC):
         except (json.JSONDecodeError, TypeError):
             # the value is a formula or a string literal that can't be parsed
             then_value = formula_to_term(then_, table)
-            case_ = case_.when(
-                self._get_filter_criterion(if_, Table(prev_step_table)), LiteralValue(then_value)
-            )
+            case_ = case_.when(self._get_filter_criterion(if_, Table(prev_step_table)), LiteralValue(then_value))
 
         if isinstance(else_, IfThenElse):
             return self._build_ifthenelse_case(
@@ -1363,11 +1280,7 @@ class SQLTranslator(ABC):
             self.QUERY_CLS.from_(left_table)
             .select(*left_cols, *right_cols)
             .join(right_table, self._get_join_type(step.type))
-            .on(
-                Criterion.all(
-                    Field(f[0], table=left_table) == Field(f[1], table=right_table) for f in step.on
-                )
-            )
+            .on(Criterion.all(Field(f[0], table=left_table) == Field(f[1], table=right_table) for f in step.on))
             # Order of results is not consistent depending on the SQL Engine (inconsistencies
             # observed with Athena and BigQuery).
             .orderby(*(c[0] for c in step.on))
@@ -1409,19 +1322,14 @@ class SQLTranslator(ABC):
 
         # If we have groups, we need to select them as well, and group the sum by the groups
         if len(step.group) > 0:
-            agg_query = (
-                self.QUERY_CLS.from_(prev_step_table)
-                .select(sum_col, *step.group)
-                .groupby(*step.group)
-            )
+            agg_query = self.QUERY_CLS.from_(prev_step_table).select(sum_col, *step.group).groupby(*step.group)
         # Otherwise we just need a simple sum
         else:
             agg_query = self.QUERY_CLS.from_(prev_step_table).select(sum_col)
 
-        perc_column = (
-            functions.Cast(table[step.column], self.DATA_TYPE_MAPPING.float)
-            / agg_query[sum_col_name]
-        ).as_(new_col_name)
+        perc_column = (functions.Cast(table[step.column], self.DATA_TYPE_MAPPING.float) / agg_query[sum_col_name]).as_(
+            new_col_name
+        )
 
         query = self.QUERY_CLS.from_(prev_step_table).select(*columns, perc_column)
 
@@ -1451,11 +1359,7 @@ class SQLTranslator(ABC):
 
         analytics_fn = analytics.Rank if step.method == "standard" else analytics.DenseRank
         rank_column = (
-            (
-                analytics_fn().over(*(Field(group) for group in step.groupby))
-                if step.groupby
-                else analytics_fn()
-            )
+            (analytics_fn().over(*(Field(group) for group in step.groupby)) if step.groupby else analytics_fn())
             .orderby(col_field, order=Order.desc if step.order == "desc" else Order.asc)
             .as_(new_col_name)
         )
@@ -1547,9 +1451,7 @@ class SQLTranslator(ABC):
         query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(*columns)
 
         for column_sort in step.columns:
-            query = query.orderby(
-                column_sort.column, order=Order.desc if column_sort.order == "desc" else Order.asc
-            )
+            query = query.orderby(column_sort.column, order=Order.desc if column_sort.order == "desc" else Order.asc)
 
         return StepContext(query, columns)
 
@@ -1572,9 +1474,7 @@ class SQLTranslator(ABC):
             query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
                 *columns,
                 *(
-                    self._wrap_split_part(
-                        functions.SplitPart(col_field, step.delimiter, i + 1)
-                    ).as_(new_cols[i])
+                    self._wrap_split_part(functions.SplitPart(col_field, step.delimiter, i + 1)).as_(new_cols[i])
                     for i in range(step.number_cols_to_keep)
                 ),
             )
@@ -1590,15 +1490,13 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "SubstringStep",
     ) -> StepContext:
-        step.new_column_name = (
-            f"{step.column}_substr" if step.new_column_name is None else step.new_column_name
-        )
+        step.new_column_name = f"{step.column}_substr" if step.new_column_name is None else step.new_column_name
         col_field: Field = Table(prev_step_table)[step.column]
         query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *columns,
-            functions.Substring(
-                col_field, step.start_index, (step.end_index - step.start_index) + 1
-            ).as_(step.new_column_name),
+            functions.Substring(col_field, step.start_index, (step.end_index - step.start_index) + 1).as_(
+                step.new_column_name
+            ),
         )
         return StepContext(query, columns + [step.new_column_name])
 
@@ -1769,9 +1667,7 @@ class SQLTranslator(ABC):
 
         if cls.SUPPORT_UNPIVOT:
             return f"UNPIVOT({value_col} FOR {unpivot_col} IN ({in_cols}))"
-        in_single_quote_cols = ", ".join(
-            format_quotes(col, secondary_quote_char) for col in step.unpivot
-        )
+        in_single_quote_cols = ", ".join(format_quotes(col, secondary_quote_char) for col in step.unpivot)
         return f" t1 CROSS JOIN UNNEST(ARRAY[{in_single_quote_cols}], ARRAY[{in_cols}]) t2 ({unpivot_col}, {value_col})"
 
     def unpivot(

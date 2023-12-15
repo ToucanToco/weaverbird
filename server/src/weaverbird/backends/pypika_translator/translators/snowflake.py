@@ -61,12 +61,8 @@ class SnowflakeTranslator(SQLTranslator):
     TO_DATE_OP = ToDateOp.TO_TIMESTAMP_NTZ
 
     @classmethod
-    def _add_date(
-        cls, *, target_column: Field, duration: int, unit: str, dialect: Dialects | None = None
-    ) -> Term:
-        return DateAddWithoutUnderscore(
-            date_part=unit.removesuffix("s"), interval=duration, term=target_column
-        )
+    def _add_date(cls, *, target_column: Field, duration: int, unit: str, dialect: Dialects | None = None) -> Term:
+        return DateAddWithoutUnderscore(date_part=unit.removesuffix("s"), interval=duration, term=target_column)
 
     @classmethod
     def _interval_to_seconds(cls, value: Selectable) -> functions.Function:

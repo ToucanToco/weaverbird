@@ -63,9 +63,7 @@ def translate_rank(step: RankStep) -> list[MongoStep]:
                                     "$$this",
                                     {
                                         (
-                                            step.new_column_name
-                                            if step.new_column_name
-                                            else f"{step.value_col}_RANK"
+                                            step.new_column_name if step.new_column_name else f"{step.value_col}_RANK"
                                         ): "$$rank"
                                     },
                                 ],

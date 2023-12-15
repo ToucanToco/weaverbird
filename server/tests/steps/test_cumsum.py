@@ -16,9 +16,7 @@ def test_cumsum_legacy_syntax():
 
 def test_benchmark_cumsum_legacy_syntax(benchmark):
     big_df = DataFrame({"value": list(range(1000))})
-    step = CumSumStep(
-        name="cumsum", referenceColumn="value", value_column="value", new_column="my_cumsum"
-    )
+    step = CumSumStep(name="cumsum", referenceColumn="value", value_column="value", new_column="my_cumsum")
     benchmark(execute_cumsum, step, big_df)
 
 

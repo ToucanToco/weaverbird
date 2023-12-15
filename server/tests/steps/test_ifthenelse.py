@@ -41,9 +41,7 @@ def test_simple_condition_strings():
     )
     result_df = execute_ifthenelse(step, sample_df)
 
-    expected_df = DataFrame(
-        {"a_str": ["test", "test", "autre chose"], "test": ["foo", "foo", "bar"]}
-    )
+    expected_df = DataFrame({"a_str": ["test", "test", "autre chose"], "test": ["foo", "foo", "bar"]})
 
     assert_dataframes_equals(result_df, expected_df)
 
@@ -61,9 +59,7 @@ def test_then_should_support_formulas():
     )
     result_df = execute_ifthenelse(step, base_df)
 
-    expected_df = DataFrame(
-        {"a_bool": [True, False, True], "a_number": [1, 2, 3], "result": [1, -2, 3]}
-    )
+    expected_df = DataFrame({"a_bool": [True, False, True], "a_number": [1, 2, 3], "result": [1, -2, 3]})
 
     assert_dataframes_equals(result_df, expected_df)
 
@@ -89,9 +85,7 @@ def test_then_should_support_nested_else():
     )
     result_df = execute_ifthenelse(step, base_df)
 
-    expected_df = DataFrame(
-        {"a_bool": [True, False, False], "a_number": [1, 2, 3], "result": [3, 2, 1]}
-    )
+    expected_df = DataFrame({"a_bool": [True, False, False], "a_number": [1, 2, 3], "result": [3, 2, 1]})
 
     assert_dataframes_equals(result_df, expected_df)
 

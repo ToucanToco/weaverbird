@@ -8,9 +8,7 @@ from tests.utils import assert_dataframes_equals
 
 
 def test_moving_average_basic():
-    df = DataFrame(
-        {"date": [f"2018-01-0{i}" for i in range(1, 9)], "value": [75, 80, 82, 83, 80, 86, 79, 76]}
-    )
+    df = DataFrame({"date": [f"2018-01-0{i}" for i in range(1, 9)], "value": [75, 80, 82, 83, 80, 86, 79, 76]})
     df["date"] = pd.to_datetime(df["date"])
 
     step = MovingAverageStep(
@@ -21,9 +19,7 @@ def test_moving_average_basic():
     )
     df_result = execute_moving_average(step, df)
 
-    expected_result = df.assign(
-        **{"value_MOVING_AVG": [None, 77.5, 81, 82.5, 81.5, 83, 82.5, 77.5]}
-    )
+    expected_result = df.assign(**{"value_MOVING_AVG": [None, 77.5, 81, 82.5, 81.5, 83, 82.5, 77.5]})
     assert_dataframes_equals(df_result, expected_result)
 
 
@@ -48,10 +44,7 @@ def test_moving_average_with_groups():
     df_result = execute_moving_average(step, df)
 
     expected_result = df.assign(
-        **{
-            "rolling_average": [None, None, 79, 81.6667, 81.6667, 83]
-            + [None, None, 71.6667, 73.6667, 72.6667, 73.6667]
-        }
+        **{"rolling_average": [None, None, 79, 81.6667, 81.6667, 83] + [None, None, 71.6667, 73.6667, 72.6667, 73.6667]}
     )
     assert_dataframes_equals(df_result, expected_result)
 

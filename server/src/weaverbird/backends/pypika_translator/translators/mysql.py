@@ -53,9 +53,7 @@ class MySQLTranslator(SQLTranslator):
     TO_DATE_OP = ToDateOp.STR_TO_DATE
 
     @classmethod
-    def _build_unpivot_col(
-        cls, *, step: "UnpivotStep", quote_char: str | None, secondary_quote_char: str
-    ) -> str:
+    def _build_unpivot_col(cls, *, step: "UnpivotStep", quote_char: str | None, secondary_quote_char: str) -> str:
         value_col = format_quotes(step.value_column_name, quote_char)
         unpivot_col = format_quotes(step.unpivot_column_name, quote_char)
         in_cols = [format_quotes(col, quote_char) for col in step.unpivot]
@@ -90,17 +88,13 @@ class MySQLTranslator(SQLTranslator):
                         # but having another Case statement for i=0 would be hell
                         col_field.regexp(f"(({step.delimiter}).*){{{i}}}"),
                         # https://stackoverflow.com/a/32500349
-                        SubstringIndex(
-                            SubstringIndex(col_field, step.delimiter, i + 1), step.delimiter, -1
-                        ),
+                        SubstringIndex(SubstringIndex(col_field, step.delimiter, i + 1), step.delimiter, -1),
                     )
                     .else_("")
                     .as_(new_cols[i])
                 )
 
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
-            *columns, *build_columns()
-        )
+        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(*columns, *build_columns())
         return StepContext(query, columns + new_cols)
 
     @staticmethod
@@ -108,9 +102,7 @@ class MySQLTranslator(SQLTranslator):
         return functions.Timestamp(value)
 
     @classmethod
-    def _add_date(
-        cls, *, target_column: Field, duration: int, unit: str, dialect: Dialects | None = None
-    ) -> Term:
+    def _add_date(cls, *, target_column: Field, duration: int, unit: str, dialect: Dialects | None = None) -> Term:
         return super()._add_date(
             target_column=target_column,
             duration=duration,
@@ -133,7 +125,5 @@ SQLTranslator.register(MySQLTranslator)
 
 
 class SubstringIndex(functions.Function):
-    def __init__(
-        self, term: str | Field, delimiter: str, count: int, alias: str | None = None
-    ) -> None:
+    def __init__(self, term: str | Field, delimiter: str, count: int, alias: str | None = None) -> None:
         super().__init__("SUBSTRING_INDEX", term, delimiter, count, alias=alias)

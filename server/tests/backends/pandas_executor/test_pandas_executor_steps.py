@@ -29,9 +29,7 @@ def test_pandas_execute_pipeline(case_id, case_spec_file_path, available_variabl
 
     steps = spec["step"]["pipeline"]
     steps.insert(0, {"name": "domain", "domain": "in"})
-    pipeline = PipelineWithVariables(steps=steps).render(
-        available_variables, nosql_apply_parameters_to_query
-    )
+    pipeline = PipelineWithVariables(steps=steps).render(available_variables, nosql_apply_parameters_to_query)
 
     domains = {"in": df_in, **dfs_in_others}
     result = execute_pipeline(pipeline, domain_retriever=lambda x: domains[x])[0]

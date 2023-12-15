@@ -26,9 +26,7 @@ def translate_moving_average(step: MovingAverageStep) -> list[MongoStep]:
                         "in": {
                             "$cond": [
                                 # If the index is less than the moving window minus 1...
-                                {
-                                    "$lt": ["$$idx", (step.moving_window) - 1]
-                                },  # explicit type for typescript
+                                {"$lt": ["$$idx", (step.moving_window) - 1]},  # explicit type for typescript
                                 # ... then we cannot apply the moving average computation, and
                                 # we just keep the original document without any new field...
                                 {"$arrayElemAt": ["$_vqbArray", "$$idx"]},
@@ -40,8 +38,7 @@ def translate_moving_average(step: MovingAverageStep) -> list[MongoStep]:
                                         {"$arrayElemAt": ["$_vqbArray", "$$idx"]},
                                         # and add the new moving average column
                                         {
-                                            step.new_column_name
-                                            or f"{step.value_column}_MOVING_AVG": {
+                                            step.new_column_name or f"{step.value_column}_MOVING_AVG": {
                                                 "$avg": {
                                                     "$slice": [
                                                         f"$_vqbArray.{step.value_column}",

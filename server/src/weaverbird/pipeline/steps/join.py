@@ -33,9 +33,7 @@ class JoinStepWithVariable(JoinStep, StepWithVariablesMixin):
 class JoinStepWithRef(BaseJoinStep):
     right_pipeline: PipelineWithRefsOrDomainNameOrReference
 
-    async def resolve_references(
-        self, reference_resolver: ReferenceResolver
-    ) -> JoinStepWithVariable | None:
+    async def resolve_references(self, reference_resolver: ReferenceResolver) -> JoinStepWithVariable | None:
         right_pipeline = await resolve_if_reference(reference_resolver, self.right_pipeline)
         if right_pipeline is None:
             from weaverbird.pipeline.pipeline import ReferenceUnresolved

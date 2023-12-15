@@ -375,9 +375,7 @@ def _sanitize_query_matches(query: dict | list[dict]) -> Any:
         if bool(query) and "$match" not in query[0]:
             query = [{"$match": {}}] + query
 
-        return [
-            {"$match": _sanitize_match(q["$match"])} if _is_match_statement(q) else q for q in query
-        ]
+        return [{"$match": _sanitize_match(q["$match"])} if _is_match_statement(q) else q for q in query]
     return query
 
 
@@ -416,9 +414,7 @@ class PipelineWithRefs(BaseModel):
 
     steps: list[PipelineStepWithRefs | PipelineStep | PipelineStepWithVariables]
 
-    async def resolve_references(
-        self, reference_resolver: ReferenceResolver
-    ) -> PipelineWithVariables | None:
+    async def resolve_references(self, reference_resolver: ReferenceResolver) -> PipelineWithVariables | None:
         """
         Walk the pipeline steps and replace any reference by its corresponding pipeline.
         The sub-pipelines added should also be handled, so that they will be no references anymore in the result.
@@ -426,9 +422,7 @@ class PipelineWithRefs(BaseModel):
         resolved_steps: list[PipelineStepWithRefs | PipelineStepWithVariables | PipelineStep] = []
         for step in self.steps:
             resolved_step = (
-                await step.resolve_references(reference_resolver)
-                if hasattr(step, "resolve_references")
-                else step
+                await step.resolve_references(reference_resolver) if hasattr(step, "resolve_references") else step
             )
             if isinstance(resolved_step, PipelineWithVariables):
                 resolved_steps.extend(resolved_step.steps)

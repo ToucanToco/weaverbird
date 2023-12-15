@@ -122,14 +122,8 @@ geojson_files = glob("../playground/datastore/*.geojson")
 
 DOMAINS = {
     **{splitext(basename(csv_file))[0]: pd.read_csv(csv_file) for csv_file in csv_files},
-    **{
-        splitext(basename(json_file))[0]: pd.read_json(json_file, orient="table")
-        for json_file in json_files
-    },
-    **{
-        splitext(basename(geojson_file))[0]: gpd.read_file(geojson_file)
-        for geojson_file in geojson_files
-    },
+    **{splitext(basename(json_file))[0]: pd.read_json(json_file, orient="table") for json_file in json_files},
+    **{splitext(basename(geojson_file))[0]: gpd.read_file(geojson_file) for geojson_file in geojson_files},
 }
 
 
@@ -140,9 +134,7 @@ def get_available_domains():
 def sanitize_table_schema(schema: dict) -> dict:
     return {
         "fields": [
-            {"name": field["name"], "type": "geometry"}
-            if field.get("extDtype") == "geometry"
-            else field
+            {"name": field["name"], "type": "geometry"} if field.get("extDtype") == "geometry" else field
             for field in schema["fields"]
         ]
     }
@@ -467,11 +459,7 @@ if _SNOWFLAKE_CONNECTION is not None:
         for table in tables_info:
             with suppress(Exception):
                 table_name = table[1]
-                infos = (
-                    _SNOWFLAKE_CONNECTION.cursor()
-                    .execute(f'DESCRIBE TABLE "{table_name}";')
-                    .fetchall()
-                )
+                infos = _SNOWFLAKE_CONNECTION.cursor().execute(f'DESCRIBE TABLE "{table_name}";').fetchall()
                 tables_columns[table_name] = [info[0] for info in infos if info[2] == "COLUMN"]
         return tables_columns
 
@@ -497,11 +485,7 @@ if _SNOWFLAKE_CONNECTION is not None:
                 tables_columns=tables_columns,
             )
 
-            total_count = (
-                _SNOWFLAKE_CONNECTION.cursor()
-                .execute(f"SELECT COUNT(*) FROM ({query})")
-                .fetchone()[0]
-            )
+            total_count = _SNOWFLAKE_CONNECTION.cursor().execute(f"SELECT COUNT(*) FROM ({query})").fetchone()[0]
             # By using snowflake's connector ability to turn results into a DataFrame,
             # we can re-use all the methods to parse this data- interchange format in the front-end
             df_results = (
@@ -558,16 +542,12 @@ def postgresql_type_to_data_type(pg_type: str) -> ColumnType | None:
 @app.route("/postgresql", methods=["GET", "POST"])
 async def handle_postgres_backend_request():
     # improve by using a connexion pool
-    postgresql_connexion = await psycopg.AsyncConnection.connect(
-        os.getenv("POSTGRESQL_CONNECTION_STRING")
-    )
+    postgresql_connexion = await psycopg.AsyncConnection.connect(os.getenv("POSTGRESQL_CONNECTION_STRING"))
     db_schema = "public"
 
     if request.method == "GET":
         async with postgresql_connexion.cursor() as cur:
-            tables_info_exec = await cur.execute(
-                f"SELECT * FROM pg_catalog.pg_tables WHERE schemaname='{db_schema}';"
-            )
+            tables_info_exec = await cur.execute(f"SELECT * FROM pg_catalog.pg_tables WHERE schemaname='{db_schema}';")
             tables_info = await tables_info_exec.fetchall()
             return jsonify([table_infos[1] for table_infos in tables_info])
 
@@ -598,9 +578,7 @@ async def handle_postgres_backend_request():
         )
 
         async with postgresql_connexion.cursor() as cur:
-            query_total_count_exec = await cur.execute(
-                f"WITH Q AS ({sql_query}) SELECT COUNT(*) FROM Q"
-            )
+            query_total_count_exec = await cur.execute(f"WITH Q AS ({sql_query}) SELECT COUNT(*) FROM Q")
             # fetchone() returns a tuple
             query_total_count = (await query_total_count_exec.fetchone())[0]
 
@@ -623,9 +601,7 @@ async def handle_postgres_backend_request():
             query_results_columns = [
                 {
                     "name": c.name,
-                    "type": [
-                        postgresql_type_to_data_type(t[1]) for t in types if t[0] == c.type_code
-                    ][0],
+                    "type": [postgresql_type_to_data_type(t[1]) for t in types if t[0] == c.type_code][0],
                 }
                 for c in query_results_desc
             ]
@@ -681,10 +657,7 @@ async def handle_athena_post_request():
 
     # Find all columns for all available tables
     table_info = _athena_table_info()
-    tables_columns = {
-        row["Table"]: [c.strip() for c in row["Columns"].split(",")]
-        for _, row in table_info.iterrows()
-    }
+    tables_columns = {row["Table"]: [c.strip() for c in row["Columns"].split(",")] for _, row in table_info.iterrows()}
 
     sql_query = (
         pypika_translate_pipeline(
@@ -731,10 +704,7 @@ def _bigquery_tables_list(client: bigquery.Client) -> list[str]:
 
 
 def _bigquery_tables_info(client: bigquery.Client) -> dict[str, list[str]]:
-    return {
-        table: [field.name for field in client.get_table(table).schema]
-        for table in _bigquery_tables_list(client)
-    }
+    return {table: [field.name for field in client.get_table(table).schema] for table in _bigquery_tables_list(client)}
 
 
 @app.get("/google-big-query")

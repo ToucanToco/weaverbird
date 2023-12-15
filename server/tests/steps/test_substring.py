@@ -62,9 +62,7 @@ def test_substring_negative_start_negative_end(sample_df):
 
 
 def test_substring_new_column_name(sample_df):
-    step = SubstringStep(
-        name="substring", column="Label", start_index=-3, end_index=-1, newColumnName="FOO"
-    )
+    step = SubstringStep(name="substring", column="Label", start_index=-3, end_index=-1, newColumnName="FOO")
     result_df = execute_substring(step, sample_df)
 
     expected_df = pd.DataFrame(
@@ -87,7 +85,5 @@ def test_benchmark_substring(benchmark):
         }
     )
 
-    step = SubstringStep(
-        name="substring", column="group", start_index=0, end_index=3, newColumnName="FOO"
-    )
+    step = SubstringStep(name="substring", column="group", start_index=0, end_index=3, newColumnName="FOO")
     benchmark(execute_substring, step, df)

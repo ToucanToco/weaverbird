@@ -46,9 +46,7 @@ def split_disabled_translator():
     )
 
 
-def test_split_enabled(
-    split_enabled_translator: SplitEnabledTranslator, default_step_kwargs: dict[str, Any]
-):
+def test_split_enabled(split_enabled_translator: SplitEnabledTranslator, default_step_kwargs: dict[str, Any]):
     selected_columns = ["name", "pseudonyme"]
     previous_step = "previous_with"
     column = "name"
@@ -66,9 +64,7 @@ def test_split_enabled(
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
-def test_split_disabled(
-    split_disabled_translator: SplitDisabledTranslator, default_step_kwargs: dict[str, Any]
-):
+def test_split_disabled(split_disabled_translator: SplitDisabledTranslator, default_step_kwargs: dict[str, Any]):
     selected_columns = ["name", "pseudonyme"]
     column = "name"
     delimiter = ","

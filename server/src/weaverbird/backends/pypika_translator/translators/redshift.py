@@ -45,9 +45,7 @@ class RedshiftTranslator(PostgreSQLTranslator):
     # helpers allow to nest concatenations:
     # https://docs.aws.amazon.com/redshift/latest/dg/r_CONCAT.html
 
-    def _recursive_concat(
-        self, concat: functions.Concat | None, tokens: list[str]
-    ) -> functions.Concat:
+    def _recursive_concat(self, concat: functions.Concat | None, tokens: list[str]) -> functions.Concat:
         if len(tokens) == 0:
             assert concat is not None
             return concat
@@ -79,9 +77,7 @@ class RedshiftTranslator(PostgreSQLTranslator):
         return StepContext(query, columns + [step.new_column_name])
 
     @classmethod
-    def _add_date(
-        cls, *, target_column: Field, duration: int, unit: str, dialect: Dialects | None = None
-    ) -> Term:
+    def _add_date(cls, *, target_column: Field, duration: int, unit: str, dialect: Dialects | None = None) -> Term:
         return DateAddWithoutUnderscore(date_part=unit, interval=duration, term=target_column)
 
 

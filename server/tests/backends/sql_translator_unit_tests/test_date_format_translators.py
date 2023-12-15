@@ -38,18 +38,14 @@ def date_format_translators():
     )
 
 
-def test_fromdate(
-    date_format_translators: DateFormatTranslator, default_step_kwargs: dict[str, Any]
-):
+def test_fromdate(date_format_translators: DateFormatTranslator, default_step_kwargs: dict[str, Any]):
     selected_columns = ["name", "pseudonyme"]
     previous_step = "previous_with"
     column = "birthday"
     format_ = "dd/yy"
 
     step = steps.FromdateStep(column=column, format=format_)
-    ctx = date_format_translators.fromdate(
-        step=step, columns=selected_columns, **default_step_kwargs
-    )
+    ctx = date_format_translators.fromdate(step=step, columns=selected_columns, **default_step_kwargs)
 
     expected_query = Query.from_(previous_step).select(
         *selected_columns, functions.ToChar(Field(column), format_).as_(column)

@@ -23,9 +23,7 @@ def translate_rollup(step: RollupStep) -> list[MongoStep]:
             cols = agg_step.columns
             # _id is a name reserved by mongo. If for some reason, a user wants to aggregate the _id
             # column, the aggregation result will be stored in a new __id column
-            new_cols = [
-                col if col != _ID_COLUMN else _NEW_ID_COLUMN for col in agg_step.new_columns
-            ]
+            new_cols = [col if col != _ID_COLUMN else _NEW_ID_COLUMN for col in agg_step.new_columns]
 
             if agg_step.agg_function == "count":
                 for i in range(len(cols)):

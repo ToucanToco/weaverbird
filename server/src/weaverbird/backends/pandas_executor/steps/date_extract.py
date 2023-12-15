@@ -50,9 +50,7 @@ def execute_date_extract(
             result = to_datetime(DataFrame({"year": series_dt_accessor.year, "month": 1, "day": 1}))
         elif dt_info == "firstDayOfMonth":
             result = to_datetime(
-                DataFrame(
-                    {"year": series_dt_accessor.year, "month": series_dt_accessor.month, "day": 1}
-                )
+                DataFrame({"year": series_dt_accessor.year, "month": series_dt_accessor.month, "day": 1})
             )
         elif dt_info == "firstDayOfWeek":
             # dayofweek should be between 1 (sunday) and 7 (saturday)
@@ -83,9 +81,7 @@ def execute_date_extract(
             # the result should be returned with 0-ed time information
             result = to_datetime(result.dt.date)
         elif dt_info == "firstDayOfPreviousYear":
-            result = to_datetime(
-                DataFrame({"year": series_dt_accessor.year - 1, "month": 1, "day": 1})
-            )
+            result = to_datetime(DataFrame({"year": series_dt_accessor.year - 1, "month": 1, "day": 1}))
         elif dt_info == "firstDayOfPreviousMonth":
             prev_month = series_dt_accessor.month - 1
             prev_month = prev_month.replace({0: 12})

@@ -58,9 +58,7 @@ ids = (x.filename for x in cases)
 def test_step_with_variables(case: Case):
     pipeline_with_variables = PipelineWithVariables(**case.data)
 
-    pipeline = pipeline_with_variables.render(
-        case.context, renderer=nosql_apply_parameters_to_query
-    )
+    pipeline = pipeline_with_variables.render(case.context, renderer=nosql_apply_parameters_to_query)
 
     expected_result = Pipeline(steps=case.expected_result)
     assert pipeline == expected_result
@@ -246,11 +244,7 @@ def test_skip_void_parameter_from_variables():
         {"name": "filter", "condition": {"column": "colB", "operator": "eq", "value": 32}},
         {
             "name": "filter",
-            "condition": {
-                "and_": [
-                    {"column": "ColD", "operator": "until", "value": datetime(2009, 1, 3, 0, 0)}
-                ]
-            },
+            "condition": {"and_": [{"column": "ColD", "operator": "until", "value": datetime(2009, 1, 3, 0, 0)}]},
         },
     ]
 
@@ -301,13 +295,7 @@ def test_skip_void_parameter_from_variables_for_mongo_steps():
                     "pipeline": [],
                 }
             },
-            {
-                "$project": {
-                    "_vqbPipelinesUnion": {
-                        "$concatArrays": ["$_vqbPipelineInline", "$_vqbPipelineToAppend_0"]
-                    }
-                }
-            },
+            {"$project": {"_vqbPipelinesUnion": {"$concatArrays": ["$_vqbPipelineInline", "$_vqbPipelineToAppend_0"]}}},
             {"$unwind": "$_vqbPipelinesUnion"},
             {"$replaceRoot": {"newRoot": "$_vqbPipelinesUnion"}},
             {"$project": {"_id": 0}},
@@ -316,13 +304,7 @@ def test_skip_void_parameter_from_variables_for_mongo_steps():
         {"$match": {"$eq": None}},
         {"$group": {"_id": None, "_vqbPipelineInline": {"$push": "$$ROOT"}}},
         {"$lookup": {"as": "_vqbPipelineToAppend_0", "from": "slide_data-append", "pipeline": []}},
-        {
-            "$project": {
-                "_vqbPipelinesUnion": {
-                    "$concatArrays": ["$_vqbPipelineInline", "$_vqbPipelineToAppend_0"]
-                }
-            }
-        },
+        {"$project": {"_vqbPipelinesUnion": {"$concatArrays": ["$_vqbPipelineInline", "$_vqbPipelineToAppend_0"]}}},
         {"$unwind": "$_vqbPipelinesUnion"},
         {"$replaceRoot": {"newRoot": "$_vqbPipelinesUnion"}},
         {"$project": {"_id": 0}},

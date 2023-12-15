@@ -15,9 +15,7 @@ def sample_df() -> pd.DataFrame:
 
 
 def test_simple_replace(sample_df):
-    step = ReplaceTextStep(
-        name="replacetext", search_column="values", old_str="FR", new_str="France"
-    )
+    step = ReplaceTextStep(name="replacetext", search_column="values", old_str="FR", new_str="France")
     result = execute_replacetext(step, sample_df)
     expected_df = pd.DataFrame({"values": ["France", "a string with France in it", "UK"]})
 

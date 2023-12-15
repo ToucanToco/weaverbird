@@ -17,9 +17,7 @@ def snowflake_translator() -> SnowflakeTranslator:
     return SnowflakeTranslator(tables_columns={})
 
 
-def test_evolution_abs_day(
-    snowflake_translator: SnowflakeTranslator, default_step_kwargs: dict[str, Any]
-) -> None:
+def test_evolution_abs_day(snowflake_translator: SnowflakeTranslator, default_step_kwargs: dict[str, Any]) -> None:
     selected_columns = ["name", "brewing_date"]
     previous_step = "previous_with"
     new_column = "evol"
@@ -39,17 +37,13 @@ def test_evolution_abs_day(
         Query.from_(previous_step)
         .select(
             *[prev_table.field(col) for col in selected_columns],
-            (prev_table.field(step.value_col) - right_table.field(step.value_col)).as_(
-                step.new_column
-            ),
+            (prev_table.field(step.value_col) - right_table.field(step.value_col)).as_(step.new_column),
         )
         .left_join(
             Query.from_(previous_step)
             .select(
                 step.value_col,
-                DateAddWithoutUnderscore("day", 1, prev_table.field(step.date_col)).as_(
-                    step.date_col
-                ),
+                DateAddWithoutUnderscore("day", 1, prev_table.field(step.date_col)).as_(step.date_col),
             )
             .as_("right_table")
         )
@@ -81,18 +75,16 @@ def test_evolution_perc_groups_day(
         Query.from_(previous_step)
         .select(
             *[prev_table.field(col) for col in selected_columns],
-            (prev_table.field(step.value_col) - right_table.field(step.value_col)).as_(
-                step.new_column
-            ),
+            (prev_table.field(step.value_col) - right_table.field(step.value_col)).as_(step.new_column),
             *[prev_table.field(col).as_(f"left_table_{col}") for col in step.index_columns],
         )
         .left_join(
             Query.from_(previous_step)
             .select(
                 step.value_col,
-                DateAddWithoutUnderscore(
-                    date_part="day", interval=1, term=prev_table.field(step.date_col)
-                ).as_(step.date_col),
+                DateAddWithoutUnderscore(date_part="day", interval=1, term=prev_table.field(step.date_col)).as_(
+                    step.date_col
+                ),
                 *step.index_columns,
             )
             .as_("right_table")
@@ -115,9 +107,7 @@ def test_date_extract_extract_kw(
         date_info=["year", "month", "day"],
         column="brewing_date",
     )
-    ctx = snowflake_translator.dateextract(
-        step=step, columns=selected_columns, **default_step_kwargs
-    )
+    ctx = snowflake_translator.dateextract(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = Query.from_(previous_step).select(
         *[prev_table.field(col) for col in selected_columns],
         Cast(
@@ -145,9 +135,7 @@ def test_date_extract_extract_kw(
     assert ctx.selectable.get_sql(quote_char='"') == expected_query.get_sql(quote_char='"')
 
 
-def test_date_extract_func(
-    snowflake_translator: SnowflakeTranslator, default_step_kwargs: dict[str, Any]
-) -> None:
+def test_date_extract_func(snowflake_translator: SnowflakeTranslator, default_step_kwargs: dict[str, Any]) -> None:
     selected_columns = ["name", "brewing_date"]
     previous_step = "previous_with"
     prev_table = Table(previous_step)
@@ -157,9 +145,7 @@ def test_date_extract_func(
         date_info=["isoWeek"],
         column="brewing_date",
     )
-    ctx = snowflake_translator.dateextract(
-        step=step, columns=selected_columns, **default_step_kwargs
-    )
+    ctx = snowflake_translator.dateextract(step=step, columns=selected_columns, **default_step_kwargs)
     expected_query = Query.from_(previous_step).select(
         *[prev_table.field(col) for col in selected_columns],
         Cast(

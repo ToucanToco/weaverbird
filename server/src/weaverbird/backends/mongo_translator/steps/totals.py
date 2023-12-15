@@ -6,11 +6,7 @@ from weaverbird.pipeline.steps import TotalsStep
 
 def combinations(iterable: list) -> list:
     """combinations([1,2,3]) --> (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)"""
-    return list(
-        itertools.chain.from_iterable(
-            itertools.combinations(iterable, r) for r in range(1, len(iterable) + 1)
-        )
-    )
+    return list(itertools.chain.from_iterable(itertools.combinations(iterable, r) for r in range(1, len(iterable) + 1)))
 
 
 def column_map(s: list[str]) -> dict[str, str]:
@@ -62,9 +58,7 @@ def translate_totals(step: TotalsStep) -> list[MongoStep]:
                 else:
                     aggs[aggregated_col] = {f"${agg_func}": f"${value_col}"}
 
-        add_fields_to_add_to_pipeline = (
-            [{"$addFields": count_distinct_add_fields}] if count_distinct_add_fields else []
-        )
+        add_fields_to_add_to_pipeline = [{"$addFields": count_distinct_add_fields}] if count_distinct_add_fields else []
 
         facet[f"combo_{i}"] = [
             {

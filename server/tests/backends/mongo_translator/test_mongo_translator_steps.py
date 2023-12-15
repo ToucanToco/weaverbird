@@ -72,9 +72,7 @@ def _sanitized_df_from_pandas_table(df_spec: dict) -> pd.DataFrame:
 
 
 @pytest.mark.parametrize("case_id,case_spec_file_path", test_cases)
-def test_mongo_translator_pipeline(
-    mongo_database, case_id, case_spec_file_path, available_variables
-):
+def test_mongo_translator_pipeline(mongo_database, case_id, case_spec_file_path, available_variables):
     # insert in mongoDB
     collection_uid = uuid.uuid4().hex
     spec = get_spec_from_json_fixture(case_id, case_spec_file_path)
@@ -84,17 +82,13 @@ def test_mongo_translator_pipeline(
         "join" in case_id or "append" in case_id
     ):  # needed for join & append steps tests as we need a != collection
         [
-            mongo_database[k].insert_many(
-                pd.read_json(json.dumps(v), orient="table").to_dict(orient="records")
-            )
+            mongo_database[k].insert_many(pd.read_json(json.dumps(v), orient="table").to_dict(orient="records"))
             for k, v in spec.get("other_inputs", {}).items()
         ]
 
     # create query
     steps = spec["step"]["pipeline"]
-    pipeline = PipelineWithVariables(steps=steps).render(
-        available_variables, nosql_apply_parameters_to_query
-    )
+    pipeline = PipelineWithVariables(steps=steps).render(available_variables, nosql_apply_parameters_to_query)
     query = translate_pipeline(pipeline)
     # execute query
     result = list(mongo_database[collection_uid].aggregate(query))

@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := all
 ruff = ruff src tests playground.py
-black = black src tests playground.py
+format = ruff format src tests playground.py
 
 .PHONY: clean
 clean:
@@ -24,12 +24,12 @@ install-playground:
 .PHONY: format
 format:
 	poetry run $(ruff) --fix
-	poetry run $(black)
+	poetry run $(format)
 
 .PHONY: lint
 lint:
 	$(ruff)
-	$(black) --check
+	$(format) --check
 	mypy
 
 .PHONY: test

@@ -17,9 +17,7 @@ class CustomSqlStep(BaseStep):
     @field_validator("query")
     @classmethod
     def _validate_query(cls, query: str) -> str:
-        assert ";" not in (
-            stripped := cls._strip_query(query)
-        ), "Custom SQL queries must not contain semicolumns"
+        assert ";" not in (stripped := cls._strip_query(query)), "Custom SQL queries must not contain semicolumns"
         return stripped
 
 

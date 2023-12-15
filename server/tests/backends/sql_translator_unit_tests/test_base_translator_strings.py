@@ -14,9 +14,7 @@ _CASES: list[tuple[list[dict | PipelineStep], str]] = [
             steps.DomainStep(domain="beers_tiny"),
             steps.AggregateStep(
                 on=["beer_kind"],
-                aggregations=[
-                    {"aggfunction": "count", "new_columns": ["beer_count"], "columns": ["name"]}
-                ],
+                aggregations=[{"aggfunction": "count", "new_columns": ["beer_count"], "columns": ["name"]}],
             ),
         ],
         'WITH __step_0_dummy__ AS (SELECT "price_per_l","alcohol_degree","name","cost","beer_kind","volume_ml","brewing_date","nullable_name" FROM "beers_tiny") ,__step_1_dummy__ AS (SELECT "beer_kind",COUNT("name") "beer_count" FROM "__step_0_dummy__" GROUP BY "beer_kind" ORDER BY "beer_kind") SELECT "beer_kind","beer_count" FROM "__step_1_dummy__"',
@@ -26,9 +24,7 @@ _CASES: list[tuple[list[dict | PipelineStep], str]] = [
             steps.DomainStep(domain="beers_tiny"),
             steps.AggregateStep(
                 on=["beer_kind"],
-                aggregations=[
-                    {"aggfunction": "count", "new_columns": ["beer_count"], "columns": ["name"]}
-                ],
+                aggregations=[{"aggfunction": "count", "new_columns": ["beer_count"], "columns": ["name"]}],
                 keep_original_granularity=True,
             ),
         ],

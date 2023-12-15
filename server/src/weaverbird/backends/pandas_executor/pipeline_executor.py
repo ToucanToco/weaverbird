@@ -73,9 +73,7 @@ def execute_pipeline(
     return df, PipelineExecutionReport(steps_reports=step_reports)
 
 
-def preview_pipeline(
-    pipeline: Pipeline, domain_retriever: DomainRetriever, limit: int = 50, offset: int = 0
-) -> str:
+def preview_pipeline(pipeline: Pipeline, domain_retriever: DomainRetriever, limit: int = 50, offset: int = 0) -> str:
     """
     Execute a pipeline but returns only a slice of the results, determined by `limit` and `offset` parameters, as JSON.
 
@@ -99,9 +97,7 @@ def preview_pipeline(
             "limit": limit,
             "total": df.shape[0],
             "data": json.loads(
-                df[offset : offset + limit].to_json(
-                    orient="records", default_handler=_default_formatter
-                )
+                df[offset : offset + limit].to_json(orient="records", default_handler=_default_formatter)
             ),
         }
     )

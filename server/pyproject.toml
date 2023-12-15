@@ -42,7 +42,6 @@ snowflake-sqlalchemy = "^1.5.0"
 types-python-dateutil = "^2.8.19"
 pytest = "^7.4.1"
 pytest-xdist = ">=2.5,<4.0"
-black = "^23.7.0"
 mypy = ">=0.990,<2"
 docker = "^6.1.3"
 sqlalchemy = "^1.4.49"
@@ -61,10 +60,6 @@ pypika = ["pypika"]
 all = ["pandas", "geopandas", "pypika"]
 # playground
 playground = ["quart", "Quart-CORS", "hypercorn", "pymongo", "pandas", "psycopg", "toucan-connectors"]
-
-[tool.black]
-line-length = 100
-target-version = ["py310"]
 
 [tool.mypy]
 files = "src/"

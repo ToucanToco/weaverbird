@@ -49,9 +49,7 @@ def test_join_left(
         execute_pipeline=mock_execute_pipeline,
     )
 
-    expected_result = DataFrame(
-        {"NAME": ["foo", "bar"], "name": [None, "bar"], "AGE": [42, 43], "score": [None, 100]}
-    )
+    expected_result = DataFrame({"NAME": ["foo", "bar"], "name": [None, "bar"], "AGE": [42, 43], "score": [None, 100]})
     assert_dataframes_equals(df_result, expected_result)
 
 
@@ -140,9 +138,7 @@ def test_join_domain_name(
         execute_pipeline=mock_execute_pipeline,
     )
 
-    expected_result = DataFrame(
-        {"NAME": ["foo", "bar"], "name": [None, "bar"], "AGE": [42, 43], "score": [None, 1]}
-    )
+    expected_result = DataFrame({"NAME": ["foo", "bar"], "name": [None, "bar"], "AGE": [42, 43], "score": [None, 1]})
     assert_dataframes_equals(df_result, expected_result)
 
 

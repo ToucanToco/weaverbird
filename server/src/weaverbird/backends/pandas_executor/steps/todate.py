@@ -21,7 +21,5 @@ def execute_todate(
             # Timestamps are expected in ms (not in ns, which is pandas' default)
             timestamp_unit = "ms"
 
-    datetime_serie = to_datetime(
-        df[step.column], format=format, errors="coerce", unit=timestamp_unit
-    )
+    datetime_serie = to_datetime(df[step.column], format=format, errors="coerce", unit=timestamp_unit)
     return df.assign(**{step.column: datetime_serie})
