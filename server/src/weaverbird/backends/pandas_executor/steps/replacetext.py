@@ -10,6 +10,4 @@ def execute_replacetext(
     domain_retriever: DomainRetriever | None = None,
     execute_pipeline: PipelineExecutor | None = None,
 ) -> DataFrame:
-    return df.assign(
-        **{step.search_column: df[step.search_column].str.replace(step.old_str, step.new_str)}
-    )
+    return df.assign(**{step.search_column: df[step.search_column].str.replace(step.old_str, step.new_str)})

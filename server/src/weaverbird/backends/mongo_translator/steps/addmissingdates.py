@@ -99,9 +99,7 @@ def _add_missing_dates_day_or_month(step: AddMissingDatesStep) -> list[MongoStep
                     # use the variable in the following expression, in which we recreate a date which granularity will
                     # depend on the user-specified granularity
                     "in": {
-                        "$dateFromParts": _generate_date_from_parts(
-                            "$$currentDay", step.dates_granularity
-                        ),
+                        "$dateFromParts": _generate_date_from_parts("$$currentDay", step.dates_granularity),
                     },
                 },
             },
@@ -132,9 +130,7 @@ def _add_missing_dates_day_or_month(step: AddMissingDatesStep) -> list[MongoStep
     add_missing_dates = {
         "$map": {
             # loop over unique dates array
-            "input": all_days_range
-            if step.dates_granularity == "day"
-            else unique_days_for_month_granularity,
+            "input": all_days_range if step.dates_granularity == "day" else unique_days_for_month_granularity,
             # use a variable "date" as cursor
             "as": "date",
             # and apply the following expression to every "date"
@@ -167,9 +163,7 @@ def _add_missing_dates_day_or_month(step: AddMissingDatesStep) -> list[MongoStep
         {
             "$addFields": {
                 "_vqbDay": {
-                    "$dateFromParts": _generate_date_from_parts(
-                        f"${step.dates_column}", step.dates_granularity
-                    ),
+                    "$dateFromParts": _generate_date_from_parts(f"${step.dates_column}", step.dates_granularity),
                 },
             },
         },
@@ -200,9 +194,7 @@ def _add_missing_dates_day_or_month(step: AddMissingDatesStep) -> list[MongoStep
 
 def translate_addmissingdates(step: AddMissingDatesStep) -> list[MongoStep]:
     return (
-        _add_missing_dates_year(step)
-        if step.dates_granularity == "year"
-        else _add_missing_dates_day_or_month(step)
+        _add_missing_dates_year(step) if step.dates_granularity == "year" else _add_missing_dates_day_or_month(step)
     ) + [
         # Get back to 1 row per document
         {"$unwind": "$_vqbAllDates"},

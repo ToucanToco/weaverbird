@@ -78,9 +78,7 @@ def apply_condition(condition: Condition, df: DataFrame) -> Series:
             hour=0, minute=0, second=0, microsecond=0, nanosecond=0
         )
         # Do the same with the value to compare it to
-        value_without_time = value - DateOffset(
-            hour=0, minute=0, second=0, microsecond=0, nanosecond=0
-        )
+        value_without_time = value - DateOffset(hour=0, minute=0, second=0, microsecond=0, nanosecond=0)
 
         return getattr(column_without_time, comparison_method)(value_without_time)
 

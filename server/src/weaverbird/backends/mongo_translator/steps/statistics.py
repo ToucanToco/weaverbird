@@ -38,11 +38,7 @@ def _need_to_compute_column_square(step: StatisticsStep) -> bool:
 
 
 def _need_to_compute_average(step: StatisticsStep) -> bool:
-    return (
-        "average" in step.statistics
-        or "variance" in step.statistics
-        or "standard deviation" in step.statistics
-    )
+    return "average" in step.statistics or "variance" in step.statistics or "standard deviation" in step.statistics
 
 
 def _need_to_sort(step: StatisticsStep) -> bool:
@@ -72,11 +68,7 @@ def translate_statistics(step: StatisticsStep) -> list[MongoStep]:
             "$project": {
                 **{col: 1 for col in step.groupby_columns},
                 "column": f"${step.column}",
-                **(
-                    {"column_square": {"$pow": [f"${step.column}", 2]}}
-                    if _need_to_compute_column_square(step)
-                    else {}
-                ),
+                **({"column_square": {"$pow": [f"${step.column}", 2]}} if _need_to_compute_column_square(step) else {}),
             },
         },
         {
@@ -92,11 +84,7 @@ def translate_statistics(step: StatisticsStep) -> list[MongoStep]:
                 **({"count": {"$sum": 1}} if _need_to_count(step) else {}),
                 **({"max": {"$max": "$column"}} if "max" in step.statistics else {}),
                 **({"min": {"$min": "$column"}} if "min" in step.statistics else {}),
-                **(
-                    {"average_sum_square": {"$avg": "$column_square"}}
-                    if _need_to_compute_column_square(step)
-                    else {}
-                ),
+                **({"average_sum_square": {"$avg": "$column_square"}} if _need_to_compute_column_square(step) else {}),
                 **({"average": {"$avg": "$column"}} if _need_to_compute_average(step) else {}),
             },
         },
@@ -108,9 +96,7 @@ def translate_statistics(step: StatisticsStep) -> list[MongoStep]:
                 **{statistic: _STATISTICS_FORMULA[statistic] for statistic in step.statistics},
                 #  quantiles
                 **{
-                    quantile.label
-                    if quantile.label
-                    else f"{quantile.nth}-th {quantile.order}-quantile": _get_quantile(
+                    quantile.label if quantile.label else f"{quantile.nth}-th {quantile.order}-quantile": _get_quantile(
                         quantile.nth, quantile.order
                     )
                     for quantile in step.quantiles

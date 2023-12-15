@@ -50,9 +50,7 @@ class GBQSplit(Function):
         super().__init__(*args)
 
 
-GQBTimestampDiffUnit: TypeAlias = Literal[
-    "MICROSECOND", "MILLISECOND", "SECOND", "MINUTE", "HOUR", "DAY"
-]
+GQBTimestampDiffUnit: TypeAlias = Literal["MICROSECOND", "MILLISECOND", "SECOND", "MINUTE", "HOUR", "DAY"]
 
 
 class GBQTimestampDiff(Function):
@@ -83,9 +81,7 @@ class GoogleBigQueryQueryBuilder(QueryBuilder):
     QUERY_CLS = GoogleBigQueryQuery
 
     def __init__(self, **kwargs: Any) -> None:
-        super().__init__(
-            dialect=SQLDialect.GOOGLEBIGQUERY, wrapper_cls=GoogleBigQueryValueWrapper, **kwargs
-        )
+        super().__init__(dialect=SQLDialect.GOOGLEBIGQUERY, wrapper_cls=GoogleBigQueryValueWrapper, **kwargs)
 
 
 class GoogleBigQueryDateAdd(Function):
@@ -121,9 +117,7 @@ class GoogleBigQueryTranslator(SQLTranslator):
     REGEXP_OP = RegexOp.REGEXP_CONTAINS
 
     @classmethod
-    def _add_date(
-        cls, *, target_column: Field, duration: int, unit: str, dialect: Dialects | None = None
-    ) -> Term:
+    def _add_date(cls, *, target_column: Field, duration: int, unit: str, dialect: Dialects | None = None) -> Term:
         return GoogleBigQueryDateAdd(
             target_column=target_column,
             # Cheating a bit here: MySQL's syntax is compatible with GBQ for intervals
@@ -154,9 +148,7 @@ class GoogleBigQueryTranslator(SQLTranslator):
                 split_str = GBQSplit(col_field, step.delimiter).get_sql(
                     quote_char=GoogleBigQueryQueryBuilder.QUOTE_CHAR
                 )
-                safe_offset_str = safe_offset(i).get_sql(
-                    quote_char=GoogleBigQueryQueryBuilder.QUOTE_CHAR
-                )
+                safe_offset_str = safe_offset(i).get_sql(quote_char=GoogleBigQueryQueryBuilder.QUOTE_CHAR)
                 # LiteralValue is ugly, but it does not seem like pypika supports "[]" array
                 # accessing, and GBQ does not seem to provide functions to access array value.
                 #
@@ -167,9 +159,7 @@ class GoogleBigQueryTranslator(SQLTranslator):
                 )
 
         splitted_cols = list(gen_splitted_cols())
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
-            *columns, *splitted_cols
-        )
+        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(*columns, *splitted_cols)
         return StepContext(query, columns + splitted_cols)
 
     @classmethod
@@ -184,9 +174,7 @@ class GoogleBigQueryTranslator(SQLTranslator):
         if date_unit == "week":
             return functions.Extract("isoweek", target_column)
         if date_unit == "previousWeek":
-            return functions.Extract(
-                "isoweek", cls._add_date(target_column=target_column, unit="weeks", duration=-1)
-            )
+            return functions.Extract("isoweek", cls._add_date(target_column=target_column, unit="weeks", duration=-1))
 
         if date_unit == "isoWeek":
             return (
@@ -225,15 +213,11 @@ class GoogleBigQueryTranslator(SQLTranslator):
         if date_unit == "firstDayOfWeek":
             return cls._date_trunc("WEEK", target_column)
         if date_unit == "firstDayOfPreviousWeek":
-            return cls._add_date(
-                target_column=cls._date_trunc("WEEK", target_column), duration=-1, unit="weeks"
-            )
+            return cls._add_date(target_column=cls._date_trunc("WEEK", target_column), duration=-1, unit="weeks")
         if date_unit == "firstDayOfIsoWeek":
             return cls._date_trunc("ISOWEEK", target_column)
         if date_unit == "firstDayOfPreviousIsoWeek":
-            return cls._add_date(
-                target_column=cls._date_trunc("ISOWEEK", target_column), duration=-1, unit="weeks"
-            )
+            return cls._add_date(target_column=cls._date_trunc("ISOWEEK", target_column), duration=-1, unit="weeks")
         if date_unit == "firstDayOfPreviousMonth":
             # We need to cast the truncated timestamp to a date to prevent the following error:
             # "DATE_ADD does not support the MONTH date part when the argument is TIMESTAMP type at [1:8]"

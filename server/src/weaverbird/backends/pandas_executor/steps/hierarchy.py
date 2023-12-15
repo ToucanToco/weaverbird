@@ -7,9 +7,7 @@ from weaverbird.pipeline.steps.hierarchy import HierarchyStep
 from .dissolve import execute_dissolve
 
 
-def _dissolve_one_level(
-    df: pd.DataFrame, groups: list[str], level_col: str, level: int
-) -> pd.DataFrame:
+def _dissolve_one_level(df: pd.DataFrame, groups: list[str], level_col: str, level: int) -> pd.DataFrame:
     dissolved = execute_dissolve(DissolveStep(groups=groups), df)
     dissolved[level_col] = level
     return dissolved

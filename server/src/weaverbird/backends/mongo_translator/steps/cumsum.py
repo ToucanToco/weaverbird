@@ -19,9 +19,7 @@ def translate_cumsum(step: CumSumStep) -> list[MongoStep]:
             "$project": {
                 **{col: f"$_id.{col}" for col in groupby},
                 **{
-                    new_name
-                    if new_name
-                    else f"{name}_CUMSUM": {
+                    new_name if new_name else f"{name}_CUMSUM": {
                         "$sum": {"$slice": [f"${name}", {"$add": ["$_VQB_INDEX", 1]}]}
                     }
                     for name, new_name in step.to_cumsum

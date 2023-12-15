@@ -15,10 +15,7 @@ def test_benchmark_sort(benchmark):
         {
             "value": np.random.random(1000),
             "id": list(range(1000)),
-            "date": [
-                (today + datetime.timedelta(days=nb_day)).strftime("%Y-%m-%d")
-                for nb_day in list(range(1000))
-            ],
+            "date": [(today + datetime.timedelta(days=nb_day)).strftime("%Y-%m-%d") for nb_day in list(range(1000))],
             "group": [random.choice(groups) for _ in range(1000)],
         }
     )

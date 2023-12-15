@@ -36,10 +36,6 @@ class DissolveStep(BaseStep):
             assert len(agg.columns) == 1, "aggregations can only contain a single column"
             assert len(agg.new_columns) == 1, "aggregations can only contain a single new column"
 
-        cls._ensure_unique_and_non_empty(
-            list(ichain.from_iterable(agg.columns for agg in values)), "columns"
-        )
-        cls._ensure_unique_and_non_empty(
-            list(ichain.from_iterable(agg.new_columns for agg in values)), "new_columns"
-        )
+        cls._ensure_unique_and_non_empty(list(ichain.from_iterable(agg.columns for agg in values)), "columns")
+        cls._ensure_unique_and_non_empty(list(ichain.from_iterable(agg.new_columns for agg in values)), "new_columns")
         return values

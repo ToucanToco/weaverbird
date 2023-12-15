@@ -29,9 +29,7 @@ def test_single_totals_without_groups():
     expected_result = pd.concat(
         [
             sample_df,
-            pd.DataFrame(
-                {"COUNTRY": "All countries", "PRODUCT": [None], "YEAR": [None], "VALUE": [135]}
-            ),
+            pd.DataFrame({"COUNTRY": "All countries", "PRODUCT": [None], "YEAR": [None], "VALUE": [135]}),
         ]
     )
 
@@ -85,9 +83,7 @@ def test_totals_2():
             pd.DataFrame(
                 {
                     "COUNTRY": ["USA", "France"] * 2 + ["All countries"] * 6,
-                    "PRODUCT": ["All products"] * 4
-                    + ["product B", "product A"] * 2
-                    + ["All products"] * 2,
+                    "PRODUCT": ["All products"] * 4 + ["product B", "product A"] * 2 + ["All products"] * 2,
                     "YEAR": (["2020"] * 2 + ["2019"] * 2) * 2 + ["2020", "2019"],
                     "VALUE_2": [450, 500, 250, 150, 550, 400, 250, 150, 950, 400],
                     "VALUE_1-sum": [45, 50, 25, 15, 55, 40, 25, 15, 95, 40],
@@ -141,9 +137,7 @@ def test_total_must_contains_aggregation():
     with pytest.raises(ValueError):
         TotalsStep(
             name="totals",
-            totalDimensions=[
-                TotalDimension(total_column="COUNTRY", total_rows_label="All countries")
-            ],
+            totalDimensions=[TotalDimension(total_column="COUNTRY", total_rows_label="All countries")],
             aggregations=[],
             groups=[],
         )

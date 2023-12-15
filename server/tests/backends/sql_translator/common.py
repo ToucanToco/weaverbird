@@ -7,10 +7,7 @@ import pandas as pd
 
 
 def standardized_columns(df: pd.DataFrame, colname_lowercase: bool = False):
-    df.columns = [
-        (c.replace("-", "_").lower() if colname_lowercase else c.replace("-", "_"))
-        for c in df.columns
-    ]
+    df.columns = [(c.replace("-", "_").lower() if colname_lowercase else c.replace("-", "_")) for c in df.columns]
 
 
 def standardized_values(df: pd.DataFrame, convert_nan_to_none: bool = False) -> None:

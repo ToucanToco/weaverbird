@@ -49,18 +49,12 @@ def execute_waterfall(
 
     # Backfilling missing values
     if step.backfill:
-        start_df = _backfill_missing_values(
-            start_df, step, step.labelsColumn, group_columns, unique_values_groups
-        )
-        end_df = _backfill_missing_values(
-            end_df, step, step.labelsColumn, group_columns, unique_values_groups
-        )
+        start_df = _backfill_missing_values(start_df, step, step.labelsColumn, group_columns, unique_values_groups)
+        end_df = _backfill_missing_values(end_df, step, step.labelsColumn, group_columns, unique_values_groups)
     # Otherwise, filter out rows which do not have a start and end date
     else:
         # We want to remove all value groups which are not in both the start and end dataframes
-        value_groups_to_remove = unique_values_groups - start_value_groups.intersection(
-            end_value_groups
-        )
+        value_groups_to_remove = unique_values_groups - start_value_groups.intersection(end_value_groups)
         start_df = _filter_out_rows(start_df, group_columns, value_groups_to_remove)
         end_df = _filter_out_rows(end_df, group_columns, value_groups_to_remove)
 
@@ -119,9 +113,7 @@ def _merge(step: WaterfallStep, start_df: DataFrame, end_df: DataFrame) -> DataF
 
     # we join the result to compare them
     merged_df = start_df.merge(end_df, on=_get_join_key(step))
-    merged_df[RESULT_COLUMN] = (
-        merged_df[f"{step.valueColumn}_end"] - merged_df[f"{step.valueColumn}_start"]
-    )
+    merged_df[RESULT_COLUMN] = merged_df[f"{step.valueColumn}_end"] - merged_df[f"{step.valueColumn}_start"]
     merged_df = merged_df.drop(
         columns=[
             f"{step.valueColumn}_start",
@@ -131,9 +123,9 @@ def _merge(step: WaterfallStep, start_df: DataFrame, end_df: DataFrame) -> DataF
 
     # if there is a parent column, we need to aggregate for them
     if step.parentsColumn is not None:
-        parents_results = merged_df.groupby(
-            step.groupby + [step.parentsColumn], as_index=False
-        ).agg({RESULT_COLUMN: "sum"})
+        parents_results = merged_df.groupby(step.groupby + [step.parentsColumn], as_index=False).agg(
+            {RESULT_COLUMN: "sum"}
+        )
         parents_results[step.labelsColumn] = parents_results[step.parentsColumn]
         return pd.concat([merged_df, parents_results])
     return merged_df
@@ -150,9 +142,7 @@ def _filter_out_rows(
         return df
 
     for value_group_to_remove in value_groups_to_remove:
-        conditions = (
-            df[col] == val for col, val in zip(group_columns, value_group_to_remove, strict=True)
-        )
+        conditions = (df[col] == val for col, val in zip(group_columns, value_group_to_remove, strict=True))
         condition = reduce(lambda s1, s2: s1 & s2, conditions)
         df = df[~condition]
 

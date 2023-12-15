@@ -69,9 +69,7 @@ def test_preview_pipeline_limit(pipeline_previewer):
         ),
         limit=1,
     )
-    assert json.loads(result)["data"] == [
-        {"colA": "toto", "colB": 1, "colC": 100}
-    ]  # first row of the data frame
+    assert json.loads(result)["data"] == [{"colA": "toto", "colB": 1, "colC": 100}]  # first row of the data frame
 
 
 def test_preview_pipeline_limit_offset(pipeline_previewer):
@@ -127,9 +125,7 @@ def test_rename(pipeline_executor):
 
     assert_dataframes_equals(
         df,
-        pd.DataFrame(
-            {"col_a": ["toto", "tutu", "tata"], "col_b": [1, 2, 3], "colC": [100, 50, 25]}
-        ),
+        pd.DataFrame({"col_a": ["toto", "tutu", "tata"], "col_b": [1, 2, 3], "colC": [100, 50, 25]}),
     )
 
 

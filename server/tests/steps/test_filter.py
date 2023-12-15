@@ -57,9 +57,7 @@ def test_simple_ne_filter(sample_df):
     )
     df_result = execute_filter(step, sample_df)
 
-    assert_dataframes_equals(
-        df_result, DataFrame({"colA": ["toto", "tata"], "colB": [1, 3], "colC": [100, 25]})
-    )
+    assert_dataframes_equals(df_result, DataFrame({"colA": ["toto", "tata"], "colB": [1, 3], "colC": [100, 25]}))
 
 
 def test_simple_gt_filter(sample_df):
@@ -87,9 +85,7 @@ def test_simple_ge_filter(sample_df):
     )
     df_result = execute_filter(step, sample_df)
 
-    assert_dataframes_equals(
-        df_result, DataFrame({"colA": ["tutu", "tata"], "colB": [2, 3], "colC": [50, 25]})
-    )
+    assert_dataframes_equals(df_result, DataFrame({"colA": ["tutu", "tata"], "colB": [2, 3], "colC": [50, 25]}))
 
 
 def test_simple_lt_filter(sample_df):
@@ -117,9 +113,7 @@ def test_simple_le_filter(sample_df):
     )
     df_result = execute_filter(step, sample_df)
 
-    assert_dataframes_equals(
-        df_result, DataFrame({"colA": ["toto", "tutu"], "colB": [1, 2], "colC": [100, 50]})
-    )
+    assert_dataframes_equals(df_result, DataFrame({"colA": ["toto", "tutu"], "colB": [1, 2], "colC": [100, 50]}))
 
 
 def test_simple_in_filter(sample_df):
@@ -133,9 +127,7 @@ def test_simple_in_filter(sample_df):
     )
     df_result = execute_filter(step, sample_df)
 
-    assert_dataframes_equals(
-        df_result, DataFrame({"colA": ["toto", "tutu"], "colB": [1, 2], "colC": [100, 50]})
-    )
+    assert_dataframes_equals(df_result, DataFrame({"colA": ["toto", "tutu"], "colB": [1, 2], "colC": [100, 50]}))
 
 
 def test_simple_nin_filter(sample_df):
@@ -203,9 +195,7 @@ def test_simple_notmatches_filter(sample_df):
     )
     df_result = execute_filter(step, sample_df)
 
-    assert_dataframes_equals(
-        df_result, DataFrame({"colA": ["toto", "tutu"], "colB": [1, 2], "colC": [100, 50]})
-    )
+    assert_dataframes_equals(df_result, DataFrame({"colA": ["toto", "tutu"], "colB": [1, 2], "colC": [100, 50]}))
 
 
 def test_and_logical_conditions(sample_df):
@@ -251,9 +241,7 @@ def test_or_logical_conditions(sample_df):
     )
     df_result = execute_filter(step, sample_df)
 
-    assert_dataframes_equals(
-        df_result, DataFrame({"colA": ["toto", "tata"], "colB": [1, 3], "colC": [100, 25]})
-    )
+    assert_dataframes_equals(df_result, DataFrame({"colA": ["toto", "tata"], "colB": [1, 3], "colC": [100, 25]}))
 
 
 def test_nested_logical_conditions(sample_df):
@@ -370,7 +358,9 @@ def test_date_filter(date_df: DataFrame, expected_date_filter_result: DataFrame)
         condition=ConditionComboAnd(
             and_=[
                 DateBoundCondition(
-                    column="Transaction_date", operator="from", value="2009-01-02T00:00:00"  # naive
+                    column="Transaction_date",
+                    operator="from",
+                    value="2009-01-02T00:00:00",  # naive
                 ),
                 DateBoundCondition(
                     column="Transaction_date",

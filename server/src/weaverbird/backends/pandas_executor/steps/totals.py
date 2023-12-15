@@ -13,9 +13,7 @@ def get_total_for_dimension(
     # get all group_by columns: all total_dimensions, except the current one + groups
     # all columns that are either not aggregated, or groups, or total will be null
     group_by_columns = step.groups + [
-        group_column.total_column
-        for group_column in step.total_dimensions
-        if group_column != total_dimension
+        group_column.total_column for group_column in step.total_dimensions if group_column != total_dimension
     ]
     aggregations = []
     for aggregation in step.aggregations:
@@ -40,9 +38,7 @@ def get_total_for_dimension(
                 full_aggregation = concat(
                     [
                         full_aggregation,
-                        get_total_for_dimension(
-                            step, aggregated_df, dimension, dimensions_to_skip + [dimension]
-                        ),
+                        get_total_for_dimension(step, aggregated_df, dimension, dimensions_to_skip + [dimension]),
                     ]
                 )
     return full_aggregation

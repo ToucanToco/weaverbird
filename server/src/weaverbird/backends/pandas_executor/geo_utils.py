@@ -18,6 +18,4 @@ def df_to_geodf(df: pd.DataFrame) -> gpd.GeoDataFrame:
     try:
         return gpd.GeoDataFrame(df)
     except Exception as exc:
-        raise UnsupportedGeoOperation(
-            f"Could not convert DataFrame to GeoDataFrame: {exc}"
-        ) from exc
+        raise UnsupportedGeoOperation(f"Could not convert DataFrame to GeoDataFrame: {exc}") from exc

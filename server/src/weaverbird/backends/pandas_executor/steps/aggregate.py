@@ -52,11 +52,7 @@ def execute_aggregate(
     else:
         for aggregation in step.aggregations:
             for col, new_col in zip(aggregation.columns, aggregation.new_columns, strict=True):
-                agg_serie = (
-                    grouped_by_df[col]
-                    .agg(get_aggregate_fn(aggregation.agg_function))
-                    .rename(new_col)
-                )
+                agg_serie = grouped_by_df[col].agg(get_aggregate_fn(aggregation.agg_function)).rename(new_col)
                 aggregated_cols.append(agg_serie)
 
         df_result = concat(aggregated_cols, axis=1).reset_index()

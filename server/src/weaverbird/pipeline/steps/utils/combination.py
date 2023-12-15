@@ -64,9 +64,7 @@ def _ensure_is_pipeline_step(
 
 
 # can be either a domain name or a complete pipeline
-PipelineOrDomainName = Annotated[
-    str | list["PipelineStep"], BeforeValidator(_ensure_is_pipeline_step)
-]
+PipelineOrDomainName = Annotated[str | list["PipelineStep"], BeforeValidator(_ensure_is_pipeline_step)]
 
 
 def _ensure_is_pipeline_step_with_ref(

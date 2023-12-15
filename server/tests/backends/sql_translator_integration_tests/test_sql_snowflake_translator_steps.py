@@ -50,21 +50,13 @@ def engine():
     connection.close()
 
 
-@pytest.skip(
-    "Should be skipped, waiting the payment of creds on november...", allow_module_level=True
-)
-@pytest.mark.parametrize(
-    "case_id, case_spec_file", retrieve_case("sql_translator", "snowflake_pypika")
-)
-def test_snowflake_translator_pipeline(
-    engine: Any, case_id: str, case_spec_file: str, available_variables: dict
-):
+@pytest.skip("Should be skipped, waiting the payment of creds on november...", allow_module_level=True)
+@pytest.mark.parametrize("case_id, case_spec_file", retrieve_case("sql_translator", "snowflake_pypika"))
+def test_snowflake_translator_pipeline(engine: Any, case_id: str, case_spec_file: str, available_variables: dict):
     pipeline_spec = get_spec_from_json_fixture(case_id, case_spec_file)
 
     steps = [{"name": "domain", "domain": "beers_tiny"}] + pipeline_spec["step"]["pipeline"]
-    pipeline = PipelineWithVariables(steps=steps).render(
-        available_variables, nosql_apply_parameters_to_query
-    )
+    pipeline = PipelineWithVariables(steps=steps).render(available_variables, nosql_apply_parameters_to_query)
 
     query = translate_pipeline(
         sql_dialect=SQLDialect.SNOWFLAKE,

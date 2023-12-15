@@ -14,9 +14,7 @@ def test_escape_names(gbq_translator: GoogleBigQueryTranslator) -> None:
     query = gbq_translator.get_query_str(
         steps=[
             DomainStep(domain="table"),
-            FilterStep(
-                condition={"column": "col1", "operator": "in", "value": ["pika", "l'alcool"]}
-            ),
+            FilterStep(condition={"column": "col1", "operator": "in", "value": ["pika", "l'alcool"]}),
         ]
     )
     assert query == (

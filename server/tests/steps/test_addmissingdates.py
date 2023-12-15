@@ -29,29 +29,22 @@ def test_missing_date(today):
         }
     )
 
-    step = AddMissingDatesStep(
-        name="addmissingdates", datesColumn="date", datesGranularity="day", groups=[]
-    )
+    step = AddMissingDatesStep(name="addmissingdates", datesColumn="date", datesGranularity="day", groups=[])
 
     result = execute_addmissingdates(step, df)
-    expected_result = pd.concat(
-        [df, pd.DataFrame({"date": missing_dates, "value": [None, None]})]
-    ).sort_values(by="date")
+    expected_result = pd.concat([df, pd.DataFrame({"date": missing_dates, "value": [None, None]})]).sort_values(
+        by="date"
+    )
 
     assert_dataframes_equals(result, expected_result)
 
 
 def test_missing_date_years(today):
-    dates = [
-        today + timedelta(days=nb_years * 365)
-        for nb_years in list(range(1, 10)) + list(range(12, 20))
-    ]
+    dates = [today + timedelta(days=nb_years * 365) for nb_years in list(range(1, 10)) + list(range(12, 20))]
     missing_dates = [today + timedelta(days=10 * 365), today + timedelta(days=11 * 365)]
 
     # dates added by pandas are at the beginning of the last day of the year
-    missing_dates = [
-        datetime.datetime(year=missing_date.year, month=1, day=1) for missing_date in missing_dates
-    ]
+    missing_dates = [datetime.datetime(year=missing_date.year, month=1, day=1) for missing_date in missing_dates]
     values = [idx for (idx, value) in enumerate(dates)]
 
     df = pd.DataFrame(
@@ -61,14 +54,12 @@ def test_missing_date_years(today):
         }
     )
 
-    step = AddMissingDatesStep(
-        name="addmissingdates", datesColumn="date", datesGranularity="year", groups=[]
-    )
+    step = AddMissingDatesStep(name="addmissingdates", datesColumn="date", datesGranularity="year", groups=[])
 
     result = execute_addmissingdates(step, df)
-    expected_result = pd.concat(
-        [df, pd.DataFrame({"date": missing_dates, "value": [None, None]})]
-    ).sort_values(by="date")
+    expected_result = pd.concat([df, pd.DataFrame({"date": missing_dates, "value": [None, None]})]).sort_values(
+        by="date"
+    )
 
     assert_dataframes_equals(result, expected_result)
 
@@ -89,9 +80,7 @@ def test_missing_date_with_groups_correct_indexing(today):
         }
     )
 
-    step = AddMissingDatesStep(
-        name="addmissingdates", datesColumn="date", datesGranularity="day", groups=["country"]
-    )
+    step = AddMissingDatesStep(name="addmissingdates", datesColumn="date", datesGranularity="day", groups=["country"])
     result = execute_addmissingdates(step, df)
     expected_result = pd.concat(
         [
@@ -110,10 +99,7 @@ def test_missing_date_with_groups_correct_indexing(today):
 
 
 def test_missing_date_with_groups_various_length(today):
-    dates = [
-        datetime.datetime(year=2020, month=nb_month, day=1)
-        for nb_month in list(range(1, 5)) + list(range(8, 10))
-    ]
+    dates = [datetime.datetime(year=2020, month=nb_month, day=1) for nb_month in list(range(1, 5)) + list(range(8, 10))]
 
     missing_dates = [datetime.datetime(year=2020, month=nb_month, day=1) for nb_month in [5, 6, 7]]
 
@@ -126,9 +112,7 @@ def test_missing_date_with_groups_various_length(today):
         }
     )
 
-    step = AddMissingDatesStep(
-        name="addmissingdates", datesColumn="date", datesGranularity="month", groups=["country"]
-    )
+    step = AddMissingDatesStep(name="addmissingdates", datesColumn="date", datesGranularity="month", groups=["country"])
     result = execute_addmissingdates(step, df)
     expected_result = pd.concat(
         [
@@ -165,9 +149,7 @@ def test_benchmark_addmissingdate(benchmark, today):
         }
     )
 
-    step = AddMissingDatesStep(
-        name="addmissingdates", datesColumn="date", datesGranularity="day", groups=[]
-    )
+    step = AddMissingDatesStep(name="addmissingdates", datesColumn="date", datesGranularity="day", groups=[])
 
     result = benchmark(execute_addmissingdates, step, df)
     assert len(result) == 2000
@@ -198,9 +180,7 @@ def test_add_missing_dates_with_tz_aware_timestamps():
         }
     )
 
-    step = AddMissingDatesStep(
-        name="addmissingdates", dates_column="date", dates_granularity="day", groups=[]
-    )
+    step = AddMissingDatesStep(name="addmissingdates", dates_column="date", dates_granularity="day", groups=[])
     result = execute_addmissingdates(step, df)
 
     assert_dataframes_equals(result, expected_result)

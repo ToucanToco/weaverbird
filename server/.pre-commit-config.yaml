@@ -14,8 +14,8 @@ repos:
     language: system
 
   - id: system
-    name: Lint with Black
-    entry: black
+    name: Lint with Ruff format
+    entry: ruff format
     types: [python]
     language: system
 

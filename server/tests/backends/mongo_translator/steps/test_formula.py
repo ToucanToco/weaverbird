@@ -13,11 +13,7 @@ def test_formula_basic_operators():
         {"$addFields": {"diff": {"$subtract": ["$you", "$two"]}}}
     ]
     assert translate_formula(FormulaStep(new_column="conquer", formula="1 / pi")) == [
-        {
-            "$addFields": {
-                "conquer": {"$cond": [{"$in": ["$pi", [0, None]]}, None, {"$divide": [1, "$pi"]}]}
-            }
-        }
+        {"$addFields": {"conquer": {"$cond": [{"$in": ["$pi", [0, None]]}, None, {"$divide": [1, "$pi"]}]}}}
     ]
 
 
@@ -52,9 +48,7 @@ def test_formula_nested():
         }
     ]
 
-    assert translate_formula(
-        FormulaStep(new_column="bar", formula="1 / ((column_1 + column_2 + column_3)) * 10")
-    ) == [
+    assert translate_formula(FormulaStep(new_column="bar", formula="1 / ((column_1 + column_2 + column_3)) * 10")) == [
         {
             "$addFields": {
                 "bar": {
@@ -197,9 +191,7 @@ def test_special_column_name():
 
 
 def test_special_column_name_and_normal_column_name():
-    assert translate_formula(
-        FormulaStep(new_column="test", formula="[column with spaces] + A")
-    ) == [
+    assert translate_formula(FormulaStep(new_column="test", formula="[column with spaces] + A")) == [
         {
             "$addFields": {
                 "test": {

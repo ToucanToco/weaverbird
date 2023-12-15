@@ -79,9 +79,7 @@ class FormulaParser:
                     self._columns[col_name] = self._formula[start:end]
                     return col_name
                 prev_token = tok
-            raise UnclosedColumnName(
-                f"Expected column to be closed near {prev_token.string} at {prev_token.start[1]}"
-            )
+            raise UnclosedColumnName(f"Expected column to be closed near {prev_token.string} at {prev_token.start[1]}")
 
         while token := next_token():
             if token.type in (
@@ -110,9 +108,7 @@ class FormulaParser:
         self._columns = {}
         # Stripping because strings starting with whitespace raise UnexpectedIndent when parsed by
         # the ast module
-        return " ".join(
-            self._iterate_tokens(tokenize.tokenize(BytesIO(self._formula.encode()).readline))
-        ).strip()
+        return " ".join(self._iterate_tokens(tokenize.tokenize(BytesIO(self._formula.encode()).readline))).strip()
 
     @staticmethod
     def _operator_from_ast_op(op: ast.operator) -> types.Operator:
@@ -165,15 +161,11 @@ class FormulaParser:
             # -colname: -mycol, -[my col]
             case ast.UnaryOp(op=ast.USub(), operand=ast.Name(id=name)):
                 # Cheating a bit here, assuming the column is numeric
-                return types.Operation(
-                    left=-1, operator=types.Operator.MUL, right=self._build_name(name)
-                )
+                return types.Operation(left=-1, operator=types.Operator.MUL, right=self._build_name(name))
             # Recursing down into both branches of the operation
             case ast.BinOp(left=left, right=right, op=op):
                 operator = self._operator_from_ast_op(op)
-                return types.Operation(
-                    left=self._parse_expr(left), right=self._parse_expr(right), operator=operator
-                )
+                return types.Operation(left=self._parse_expr(left), right=self._parse_expr(right), operator=operator)
             # Constant: number, string literal or boolean
             case ast.Constant(value=value):
                 # bool is a subtype of int
@@ -182,9 +174,7 @@ class FormulaParser:
                 elif isinstance(value, str):
                     return f"'{value}'"
                 else:
-                    raise UnsupportedConstant(
-                        f"Unsupported constant '{expr}' of type {type(value)}"
-                    )
+                    raise UnsupportedConstant(f"Unsupported constant '{expr}' of type {type(value)}")
             # Column name
             case ast.Name(id=name):
                 return self._build_name(name)

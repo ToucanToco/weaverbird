@@ -22,9 +22,7 @@ def sample_df() -> DataFrame:
 
 
 def test_formula(sample_df: DataFrame):
-    step = FormulaStep(
-        name="formula", new_column="z", formula="(colA + [col B]) * ([col C] + [col D]) / 10"
-    )
+    step = FormulaStep(name="formula", new_column="z", formula="(colA + [col B]) * ([col C] + [col D]) / 10")
     df_result = execute_formula(step, sample_df)
 
     expected_result = sample_df.assign(z=[2.1, 210.0])

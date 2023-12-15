@@ -16,9 +16,7 @@ _VQB_RESULTS = "_vqbResults"
 _VQB_ORDER = "_vqbOrder"
 
 
-def _facet_keys_and_elements(
-    step: WaterfallStep, *, group_key: list[str], project_key: list[str]
-) -> list[MongoStep]:
+def _facet_keys_and_elements(step: WaterfallStep, *, group_key: list[str], project_key: list[str]) -> list[MongoStep]:
     """Facets the input document in order to get:
 
     * A list of all existing group keys
@@ -72,19 +70,11 @@ def _facet_keys_and_elements(
     ]
 
 
-def _filter_out_incomplete_elements(
-    *, group_key: list[str], project_key: list[str]
-) -> list[MongoStep]:
+def _filter_out_incomplete_elements(*, group_key: list[str], project_key: list[str]) -> list[MongoStep]:
     """Filters out elements which do not have a start and end value"""
     return [
         # Determining which keys should be kept: We only what those with a start and end value
-        {
-            "$addFields": {
-                _VQB_KEYS_TO_KEEP: {
-                    "$setIntersection": [f"${_VQB_START_KEYS}", f"${_VQB_END_KEYS}"]
-                }
-            }
-        },
+        {"$addFields": {_VQB_KEYS_TO_KEEP: {"$setIntersection": [f"${_VQB_START_KEYS}", f"${_VQB_END_KEYS}"]}}},
         # filtering start and elements on keys that should be kept
         {
             "$project": {
@@ -105,9 +95,7 @@ def _filter_out_incomplete_elements(
     ]
 
 
-def _backfill_missing_values(
-    step: WaterfallStep, *, group_key: list[str], project_key: list[str]
-) -> list[MongoStep]:
+def _backfill_missing_values(step: WaterfallStep, *, group_key: list[str], project_key: list[str]) -> list[MongoStep]:
     """Backfills the missing start and end values."""
     mongo_step = {
         "$project": {
@@ -121,9 +109,7 @@ def _backfill_missing_values(
                         "$map": {
                             # Determining the missing keys by doing a set difference between all
                             # keys and the start keys
-                            "input": {
-                                "$setDifference": [f"${_VQB_ALL_KEYS}", f"${_VQB_START_KEYS}"]
-                            },
+                            "input": {"$setDifference": [f"${_VQB_ALL_KEYS}", f"${_VQB_START_KEYS}"]},
                             "in": {
                                 "$mergeObjects": [
                                     "$$this",
@@ -165,9 +151,7 @@ def _calculate_children_deltas(step: WaterfallStep) -> list[MongoStep]:
             _VQB_CHILDREN: {
                 # Iterating over a zip op (end_element, start_element) pairs
                 "$map": {
-                    "input": {
-                        "$zip": {"inputs": [f"${_VQB_END_ELEMENTS}", f"${_VQB_START_ELEMENTS}"]}
-                    },
+                    "input": {"$zip": {"inputs": [f"${_VQB_END_ELEMENTS}", f"${_VQB_START_ELEMENTS}"]}},
                     "in": {
                         # Here, we are merging the start object with another object containg the
                         # value column with the start element's value subtracted from the end
@@ -222,9 +206,7 @@ def _sort_elements(*, group_key: list[str], project_key: list[str]) -> list[Mong
 
 
 def _facet_results(step: WaterfallStep) -> list[MongoStep]:
-    children_group = (
-        step.groupby + [step.labelsColumn] + ([step.parentsColumn] if step.parentsColumn else [])
-    )
+    children_group = step.groupby + [step.labelsColumn] + ([step.parentsColumn] if step.parentsColumn else [])
     facet: dict[str, list] = {
         _VQB_CHILDREN: [
             {"$unwind": f"${_VQB_CHILDREN}"},
@@ -238,11 +220,7 @@ def _facet_results(step: WaterfallStep) -> list[MongoStep]:
                 "$project": {
                     **{col: f"$_id.{col}" for col in step.groupby},
                     "LABEL_waterfall": f"$_id.{step.labelsColumn}",
-                    **(
-                        {"GROUP_waterfall": f"$_id.{step.parentsColumn}"}
-                        if step.parentsColumn
-                        else {}
-                    ),
+                    **({"GROUP_waterfall": f"$_id.{step.parentsColumn}"} if step.parentsColumn else {}),
                     "TYPE_waterfall": "child" if step.parentsColumn else "parent",
                     step.valueColumn: f"${step.valueColumn}",
                     _VQB_ORDER: {"$literal": 1},
@@ -253,9 +231,7 @@ def _facet_results(step: WaterfallStep) -> list[MongoStep]:
             {"$unwind": f"${_VQB_START_ELEMENTS}"},
             {
                 "$group": {
-                    "_id": {col: f"${_VQB_START_ELEMENTS}.{col}" for col in step.groupby}
-                    if step.groupby
-                    else True,
+                    "_id": {col: f"${_VQB_START_ELEMENTS}.{col}" for col in step.groupby} if step.groupby else True,
                     step.valueColumn: {"$sum": f"${_VQB_START_ELEMENTS}.{step.valueColumn}"},
                 }
             },
@@ -274,9 +250,7 @@ def _facet_results(step: WaterfallStep) -> list[MongoStep]:
             {"$unwind": f"${_VQB_END_ELEMENTS}"},
             {
                 "$group": {
-                    "_id": {col: f"${_VQB_END_ELEMENTS}.{col}" for col in step.groupby}
-                    if step.groupby
-                    else True,
+                    "_id": {col: f"${_VQB_END_ELEMENTS}.{col}" for col in step.groupby} if step.groupby else True,
                     step.valueColumn: {"$sum": f"${_VQB_END_ELEMENTS}.{step.valueColumn}"},
                 }
             },
@@ -298,10 +272,7 @@ def _facet_results(step: WaterfallStep) -> list[MongoStep]:
             {"$unwind": f"${_VQB_CHILDREN}"},
             {
                 "$group": {
-                    "_id": {
-                        col: f"${_VQB_CHILDREN}.{col}"
-                        for col in (step.groupby + [step.parentsColumn])
-                    },
+                    "_id": {col: f"${_VQB_CHILDREN}.{col}" for col in (step.groupby + [step.parentsColumn])},
                     step.valueColumn: {"$sum": f"${_VQB_CHILDREN}.{step.valueColumn}"},
                 }
             },
@@ -337,9 +308,7 @@ def _column_map(colnames: list[str]) -> dict[str, str]:
 
 
 def translate_waterfall(step: WaterfallStep) -> list[MongoStep]:
-    group_key = (
-        step.groupby + ([step.parentsColumn] if step.parentsColumn else []) + [step.labelsColumn]
-    )
+    group_key = step.groupby + ([step.parentsColumn] if step.parentsColumn else []) + [step.labelsColumn]
     project_key = group_key + [step.milestonesColumn, step.valueColumn, "_id"]
 
     steps = _facet_keys_and_elements(step, group_key=group_key, project_key=project_key)
@@ -367,9 +336,7 @@ def translate_waterfall(step: WaterfallStep) -> list[MongoStep]:
         {
             "$sort": {
                 _VQB_ORDER: 1,
-                ("LABEL_waterfall" if step.sortBy == "label" else step.valueColumn): 1
-                if step.order == "asc"
-                else -1,
+                ("LABEL_waterfall" if step.sortBy == "label" else step.valueColumn): 1 if step.order == "asc" else -1,
             },
         },
         {"$unset": unset},

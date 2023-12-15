@@ -29,9 +29,7 @@ def translate_join(step: JoinStep) -> list[MongoStep]:
             right_without_domain.steps = [s.copy(deep=True) for s in right[1:]]
         else:
             right_domain = DomainStep(**right[0])
-            right_without_domain.steps = [
-                getattr(steps, f"{s['name'].capitalize()}Step")(**s) for s in right[1:]
-            ]
+            right_without_domain.steps = [getattr(steps, f"{s['name'].capitalize()}Step")(**s) for s in right[1:]]
 
     mongo_let: dict[str, str] = {}
     mongo_expr_and: list[dict[str, list[str]]] = []
@@ -57,14 +55,10 @@ def translate_join(step: JoinStep) -> list[MongoStep]:
     if step.type == "inner":
         mongo_pipeline.append({"$unwind": "$_vqbJoinKey"})
     elif step.type == "left":
-        mongo_pipeline.append(
-            {"$unwind": {"path": "$_vqbJoinKey", "preserveNullAndEmptyArrays": True}}
-        )
+        mongo_pipeline.append({"$unwind": {"path": "$_vqbJoinKey", "preserveNullAndEmptyArrays": True}})
     else:
         mongo_pipeline.append({"$match": {"_vqbJoinKey": {"$eq": []}}})
-        mongo_pipeline.append(
-            {"$unwind": {"path": "$_vqbJoinKey", "preserveNullAndEmptyArrays": True}}
-        )
+        mongo_pipeline.append({"$unwind": {"path": "$_vqbJoinKey", "preserveNullAndEmptyArrays": True}})
 
     mongo_pipeline.append(
         {

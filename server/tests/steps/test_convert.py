@@ -7,9 +7,7 @@ from weaverbird.pipeline.steps import ConvertStep
 
 
 def test_benchmark_convert(benchmark):
-    dates = [
-        str(datetime.datetime.today() + timedelta(days=nb_day)) for nb_day in list(range(1, 2001))
-    ]
+    dates = [str(datetime.datetime.today() + timedelta(days=nb_day)) for nb_day in list(range(1, 2001))]
     df = pandas.DataFrame(
         {
             "date": dates,

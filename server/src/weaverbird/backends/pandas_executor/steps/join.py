@@ -13,9 +13,7 @@ def execute_join(
     domain_retriever: DomainRetriever,
     execute_pipeline: PipelineExecutor,
 ) -> DataFrame:
-    right_df = resolve_pipeline_for_combination(
-        step.right_pipeline, domain_retriever, execute_pipeline
-    )
+    right_df = resolve_pipeline_for_combination(step.right_pipeline, domain_retriever, execute_pipeline)
 
     if step.type == "left outer":
         how = "outer"

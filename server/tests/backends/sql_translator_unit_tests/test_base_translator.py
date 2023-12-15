@@ -106,14 +106,9 @@ def test_get_query_builder_more_than_one_step(base_translator: BaseTranslator):
     schema = Schema(DB_SCHEMA)
 
     step_0_query = Query.from_(schema.users).select(*ALL_TABLES["users"])
-    expected = (
-        Query.with_(step_0_query, "__step_0_basetranslator__").from_(schema.users).select("*")
-    )
+    expected = Query.with_(step_0_query, "__step_0_basetranslator__").from_(schema.users).select("*")
 
-    columns = (
-        Field(col) if col is not to_rename else Field(col).as_(rename_as)
-        for col in ALL_TABLES["users"]
-    )
+    columns = (Field(col) if col is not to_rename else Field(col).as_(rename_as) for col in ALL_TABLES["users"])
     expected_cols = (col if col != to_rename else rename_as for col in ALL_TABLES["users"])
     step_1_query = Query.from_(AliasedQuery('"__step_0_basetranslator__"')).select(*columns)
 
@@ -158,45 +153,34 @@ def test__get_window_function(base_translator: BaseTranslator, agg_type):
 
 
 @pytest.mark.parametrize("agg_type", ["count distinct including empty"])
-def test_aggregate_raise_expection(
-    base_translator: BaseTranslator, agg_type: str, default_step_kwargs: dict[str, Any]
-):
+def test_aggregate_raise_expection(base_translator: BaseTranslator, agg_type: str, default_step_kwargs: dict[str, Any]):
     new_column = "countDistinctAge"
     agg_field = "age"
 
     step = steps.AggregateStep(
         on=[agg_field],
-        aggregations=[
-            steps.Aggregation(new_columns=[new_column], agg_function=agg_type, columns=[agg_field])
-        ],
+        aggregations=[steps.Aggregation(new_columns=[new_column], agg_function=agg_type, columns=[agg_field])],
     )
     with pytest.raises(NotImplementedError):
         base_translator.aggregate(step=step, columns=["*"], **default_step_kwargs)
 
 
 @pytest.mark.parametrize("agg_type", ["avg", "count", "count distinct", "max", "min", "sum"])
-def test_aggregate(
-    base_translator: BaseTranslator, agg_type: str, default_step_kwargs: dict[str, Any]
-):
+def test_aggregate(base_translator: BaseTranslator, agg_type: str, default_step_kwargs: dict[str, Any]):
     new_column = "avgAge"
     previous_step = "previous_with"
     agg_field = "age"
 
     step = steps.AggregateStep(
         on=[agg_field],
-        aggregations=[
-            steps.Aggregation(new_columns=[new_column], agg_function=agg_type, columns=[agg_field])
-        ],
+        aggregations=[steps.Aggregation(new_columns=[new_column], agg_function=agg_type, columns=[agg_field])],
     )
     ctx = base_translator.aggregate(step=step, columns=["*"], **default_step_kwargs)
 
     agg_func = base_translator._get_aggregate_function(agg_type)
     field = Field(agg_field)
     expected_query = (
-        Query.from_(previous_step)
-        .groupby(field)
-        .orderby(agg_field)
-        .select(field, agg_func(field).as_(new_column))
+        Query.from_(previous_step).groupby(field).orderby(agg_field).select(field, agg_func(field).as_(new_column))
     )
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
@@ -213,18 +197,14 @@ def test_aggregate_with_original_granularity(
 
     step = steps.AggregateStep(
         on=[agg_field],
-        aggregations=[
-            steps.Aggregation(new_columns=[new_column], agg_function=agg_type, columns=[agg_field])
-        ],
+        aggregations=[steps.Aggregation(new_columns=[new_column], agg_function=agg_type, columns=[agg_field])],
         keepOriginalGranularity=True,
     )
     ctx = base_translator.aggregate(step=step, columns=original_select, **default_step_kwargs)
 
     agg_func = base_translator._get_aggregate_function(agg_type)
     field = Field(agg_field)
-    agg_query = (
-        Query.from_(previous_step).groupby(field).select(field, agg_func(field).as_(new_column))
-    )
+    agg_query = Query.from_(previous_step).groupby(field).select(field, agg_func(field).as_(new_column))
 
     expected_query = (
         Query.from_(previous_step)
@@ -244,9 +224,7 @@ def test_comparetext(base_translator: BaseTranslator, default_step_kwargs: dict[
     compare_b = "pseudonyme"
     previous_step = "previous_with"
     selected_columns = ["*"]
-    step = steps.CompareTextStep(
-        newColumnName=new_column_name, strCol1=compare_a, strCol2=compare_b
-    )
+    step = steps.CompareTextStep(newColumnName=new_column_name, strCol1=compare_a, strCol2=compare_b)
     ctx = base_translator.comparetext(step=step, columns=selected_columns, **default_step_kwargs)
 
     expected_query = Query.from_(previous_step).select(
@@ -264,9 +242,7 @@ def test_concatenate(base_translator: BaseTranslator, default_step_kwargs: dict[
     concat_columns = ["name", "pseudonyme"]
     separator = ","
 
-    step = steps.ConcatenateStep(
-        columns=concat_columns, separator=separator, new_column_name=new_column_name
-    )
+    step = steps.ConcatenateStep(columns=concat_columns, separator=separator, new_column_name=new_column_name)
     ctx = base_translator.concatenate(step=step, columns=selected_columns, **default_step_kwargs)
 
     expected_query = Query.from_(previous_step).select(
@@ -435,9 +411,7 @@ def test_ifthenelse_columns(base_translator: BaseTranslator, default_step_kwargs
     then = "a"
     reject = "b"
 
-    step = steps.IfthenelseStep(
-        condition=statement, then=then, else_value=reject, newColumn=new_column_name
-    )
+    step = steps.IfthenelseStep(condition=statement, then=then, else_value=reject, newColumn=new_column_name)
     ctx = base_translator.ifthenelse(step=step, columns=selected_columns, **default_step_kwargs)
 
     expected_query = Query.from_(previous_step).select(
@@ -458,9 +432,7 @@ def test_ifthenelse_strings(base_translator: BaseTranslator, default_step_kwargs
     then = "'a'"
     reject = '"b"'
 
-    step = steps.IfthenelseStep(
-        condition=statement, then=then, else_value=reject, newColumn=new_column_name
-    )
+    step = steps.IfthenelseStep(condition=statement, then=then, else_value=reject, newColumn=new_column_name)
     ctx = base_translator.ifthenelse(step=step, columns=selected_columns, **default_step_kwargs)
 
     expected_query = Query.from_(previous_step).select(
@@ -478,9 +450,7 @@ def test_lowercase(base_translator: BaseTranslator, default_step_kwargs: dict[st
     step = steps.LowercaseStep(column=column)
     ctx = base_translator.lowercase(step=step, columns=selected_columns, **default_step_kwargs)
 
-    expected_query = Query.from_(previous_step).select(
-        Field("pseudonyme"), functions.Lower(Field(column)).as_("name")
-    )
+    expected_query = Query.from_(previous_step).select(Field("pseudonyme"), functions.Lower(Field(column)).as_("name"))
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
@@ -493,9 +463,7 @@ def test_uppercase(base_translator: BaseTranslator, default_step_kwargs: dict[st
     step = steps.UppercaseStep(column=column)
     ctx = base_translator.uppercase(step=step, columns=selected_columns, **default_step_kwargs)
 
-    expected_query = Query.from_(previous_step).select(
-        Field("pseudonyme"), functions.Upper(Field(column)).as_("name")
-    )
+    expected_query = Query.from_(previous_step).select(Field("pseudonyme"), functions.Upper(Field(column)).as_("name"))
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
@@ -556,9 +524,7 @@ def test_sort(base_translator: BaseTranslator, default_step_kwargs: dict[str, An
     step = steps.SortStep(columns=columns)
     ctx = base_translator.sort(step=step, columns=selected_columns, **default_step_kwargs)
 
-    expected_query = (
-        Query.from_(previous_step).select(*selected_columns).orderby(Field("name"), order=Order.asc)
-    )
+    expected_query = Query.from_(previous_step).select(*selected_columns).orderby(Field("name"), order=Order.asc)
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
@@ -569,9 +535,7 @@ def test_substring(base_translator: BaseTranslator, default_step_kwargs: dict[st
     column = "name"
     new_column_name = "name"
 
-    step = steps.SubstringStep(
-        column=column, newColumnName=new_column_name, start_index=0, end_index=10
-    )
+    step = steps.SubstringStep(column=column, newColumnName=new_column_name, start_index=0, end_index=10)
     ctx = base_translator.substring(step=step, columns=selected_columns, **default_step_kwargs)
 
     expected_query = Query.from_(previous_step).select(
@@ -606,9 +570,7 @@ def test_text_with_datetime(base_translator: BaseTranslator, default_step_kwargs
     step = steps.TextStep(text=text, new_column=new_column_name)
     ctx = base_translator.text(step=step, columns=selected_columns, **default_step_kwargs)
 
-    text_as_str = (
-        text.astimezone(ZoneInfo("UTC")).replace(tzinfo=None).strftime("%Y-%m-%d %H:%M:%S")
-    )
+    text_as_str = text.astimezone(ZoneInfo("UTC")).replace(tzinfo=None).strftime("%Y-%m-%d %H:%M:%S")
 
     expected_query = Query.from_(previous_step).select(
         *selected_columns,
@@ -627,9 +589,7 @@ def test_trim(base_translator: BaseTranslator, default_step_kwargs: dict[str, An
     step = steps.TrimStep(columns=columns)
     ctx = base_translator.trim(step=step, columns=selected_columns, **default_step_kwargs)
 
-    expected_query = Query.from_(previous_step).select(
-        Field("pseudonyme"), functions.Trim(Field(column)).as_(column)
-    )
+    expected_query = Query.from_(previous_step).select(Field("pseudonyme"), functions.Trim(Field(column)).as_(column))
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
@@ -643,12 +603,7 @@ def test_uniquegroups(base_translator: BaseTranslator, default_step_kwargs: dict
     step = steps.UniqueGroupsStep(on=columns)
     ctx = base_translator.uniquegroups(step=step, columns=selected_columns, **default_step_kwargs)
 
-    expected_query = (
-        Query.from_(previous_step)
-        .select(Field(column))
-        .groupby(Field(column))
-        .orderby(Field(column))
-    )
+    expected_query = Query.from_(previous_step).select(Field(column)).groupby(Field(column)).orderby(Field(column))
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
@@ -662,9 +617,7 @@ def test_absolutevalue(base_translator: BaseTranslator, default_step_kwargs: dic
     step = steps.AbsoluteValueStep(column=column, new_column=new_column)
     ctx = base_translator.absolutevalue(step=step, columns=selected_columns, **default_step_kwargs)
 
-    expected_query = Query.from_(previous_step).select(
-        *selected_columns, functions.Abs(Field(column)).as_(new_column)
-    )
+    expected_query = Query.from_(previous_step).select(*selected_columns, functions.Abs(Field(column)).as_(new_column))
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
@@ -685,9 +638,7 @@ def test_join_simple(
     join_columns = [("project_id", "id")]
     previous_step = "previous_with"
 
-    step = steps.JoinStep(
-        right_pipeline=[steps.DomainStep(domain=right_domain)], type=join_type, on=join_columns
-    )
+    step = steps.JoinStep(right_pipeline=[steps.DomainStep(domain=right_domain)], type=join_type, on=join_columns)
     ctx = base_translator.join(step=step, columns=selected_columns, **default_step_kwargs)
 
     left_table = Table(previous_step)
@@ -727,11 +678,7 @@ def test_append_simple(base_translator: BaseTranslator, default_step_kwargs: dic
     expected_query = (
         Query.from_(previous_step)
         .select(*selected_columns, LiteralValue("NULL").as_("user_id"))
-        .union_all(
-            Query.from_(right_table).select(
-                "name", LiteralValue("NULL").as_("created_at"), "user_id"
-            )
-        )
+        .union_all(Query.from_(right_table).select("name", LiteralValue("NULL").as_("created_at"), "user_id"))
         .orderby("name", "created_at", "user_id")
     )
     assert ctx.selectable.get_sql() == expected_query.get_sql()
@@ -746,19 +693,19 @@ def test_no_extra_quotes_in_base_translator(
 
     step = steps.RenameStep(toRename=[(to_rename, rename_as)])
     ctx = base_translator.rename(step=step, columns=selected_columns, **default_step_kwargs)
-    assert (
-        '''SELECT "name","age" "old-est","created_at" FROM "previous_with"'''
-        in ctx.selectable.get_sql()
-    )
+    assert '''SELECT "name","age" "old-est","created_at" FROM "previous_with"''' in ctx.selectable.get_sql()
 
 
 def test_no_extra_quotes_in_base_translator_with_entire_pipeline(base_translator: BaseTranslator):
     pipeline = [steps.DomainStep(domain="users")]
 
     translated = base_translator.get_query_str(steps=pipeline)
-    assert translated == (
-        'WITH __step_0_basetranslator__ AS (SELECT "name","pseudonyme","age","id","project_id" FROM "test_schema"."users") '  # noqa: E501
-        'SELECT "name","pseudonyme","age","id","project_id" FROM "__step_0_basetranslator__"'
+    assert (
+        translated
+        == (
+            'WITH __step_0_basetranslator__ AS (SELECT "name","pseudonyme","age","id","project_id" FROM "test_schema"."users") '  # noqa: E501
+            'SELECT "name","pseudonyme","age","id","project_id" FROM "__step_0_basetranslator__"'
+        )
     )
 
 
@@ -770,8 +717,7 @@ def test_materialize_customsql_query_with_no_columns(base_translator: BaseTransl
 
     translated = base_translator.get_query_str(steps=pipeline)
     assert translated == (
-        "WITH __step_0_basetranslator__ AS (SELECT titi, tata FROM toto) "
-        'SELECT * FROM "__step_0_basetranslator__"'
+        "WITH __step_0_basetranslator__ AS (SELECT titi, tata FROM toto) " 'SELECT * FROM "__step_0_basetranslator__"'
     )
 
 

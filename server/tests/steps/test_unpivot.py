@@ -69,10 +69,7 @@ def test_unpivot_with_dropna_false(sample_df: DataFrame):
     result = execute_unpivot(step, sample_df, domain_retriever=None, execute_pipeline=None)
     expected_result = DataFrame(
         {
-            "COMPANY": ["Company 1"] * 2
-            + ["Company 2"] * 2
-            + ["Company 1"] * 2
-            + ["Company 2"] * 2,
+            "COMPANY": ["Company 1"] * 2 + ["Company 2"] * 2 + ["Company 1"] * 2 + ["Company 2"] * 2,
             "COUNTRY": ["France"] * 4 + ["USA"] * 4,
             "KPI": ["NB_CLIENTS", "REVENUES"] * 4,
             "VALUE": [7, 10, 2, None, 12, 6, 1, 3],

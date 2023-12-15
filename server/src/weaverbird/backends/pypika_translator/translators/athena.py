@@ -46,9 +46,7 @@ class AthenaTranslator(SQLTranslator):
     FROM_DATE_OP = FromDateOp.DATE_FORMAT
 
     @classmethod
-    def _add_date(
-        cls, *, target_column: Field, duration: int, unit: str, dialect: Dialects | None = None
-    ) -> Term:
+    def _add_date(cls, *, target_column: Field, duration: int, unit: str, dialect: Dialects | None = None) -> Term:
         # We need implement our own function for athena because Presto requires the units to be
         # quoted. PyPika's DateAdd function removes them by applying LiteralValue to the unit
         custom = CustomFunction("DATE_ADD", ["unit", "duration", "target"])

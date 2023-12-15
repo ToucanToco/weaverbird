@@ -30,9 +30,7 @@ def translate_todate(step: ToDateStep) -> list[MongoStep]:
                                             {"$lt": [f"${step.column}", 10_000]},
                                             {
                                                 "$dateFromString": {
-                                                    "dateString": {
-                                                        "$concat": [col_as_string, "-01-01"]
-                                                    },
+                                                    "dateString": {"$concat": [col_as_string, "-01-01"]},
                                                     "format": "%Y-%m-%d",
                                                     "onError": {"$literal": None},
                                                 }
@@ -109,9 +107,7 @@ def translate_todate(step: ToDateStep) -> list[MongoStep]:
             {"$addFields": {"_vqbTempArray": {"$split": [col_as_string, " "]}}},
             _extract_date_parts_to_temp_fields(1, 0),
             MONTH_REPLACEMENT_STEP,
-            _concat_fields_to_date(
-                step.column, ["01-", "$_vqbTempMonth", "-", "$_vqbTempYear"], "%d-%m-%Y"
-            ),
+            _concat_fields_to_date(step.column, ["01-", "$_vqbTempMonth", "-", "$_vqbTempYear"], "%d-%m-%Y"),
             _clean_temp_fields(),
         ]
 
@@ -120,9 +116,7 @@ def translate_todate(step: ToDateStep) -> list[MongoStep]:
             {"$addFields": {"_vqbTempArray": {"$split": [col_as_string, "-"]}}},
             _extract_date_parts_to_temp_fields(1, 0),
             MONTH_REPLACEMENT_STEP,
-            _concat_fields_to_date(
-                step.column, ["01-", "$_vqbTempMonth", "-", "$_vqbTempYear"], "%d-%m-%Y"
-            ),
+            _concat_fields_to_date(step.column, ["01-", "$_vqbTempMonth", "-", "$_vqbTempYear"], "%d-%m-%Y"),
             _clean_temp_fields(),
         ]
 
@@ -185,8 +179,7 @@ MONTH_NUMBER_TO_NAMES = {
 
 MONTH_REPLACEMENT_STEP: MongoStep = {
     "$addFields": {
-        "_vqbTempMonth"
-        "$switch": {
+        "_vqbTempMonth" "$switch": {
             "branches": [
                 {
                     "case": {"$in": month_names},
@@ -208,9 +201,7 @@ def _extract_date_parts_to_temp_fields(
     }
 
     if month_position is not None:
-        date_parts_temp_fields["_vqbTempMonth"] = {
-            "$toLower": {"$arrayElemAt": ["$_vqbTempArray", month_position]}
-        }
+        date_parts_temp_fields["_vqbTempMonth"] = {"$toLower": {"$arrayElemAt": ["$_vqbTempArray", month_position]}}
 
     if day_position is not None:
         date_parts_temp_fields["_vqbTempDay"] = {"$arrayElemAt": ["$_vqbTempArray", day_position]}
@@ -221,9 +212,7 @@ def _extract_date_parts_to_temp_fields(
 
 
 def _clean_temp_fields():
-    return {
-        "$project": {"_vqbTempArray": 0, "_vqbTempMonth": 0, "_vqbTempYear": 0, "_vqbTempDate": 0}
-    }
+    return {"$project": {"_vqbTempArray": 0, "_vqbTempMonth": 0, "_vqbTempYear": 0, "_vqbTempDate": 0}}
 
 
 def _concat_fields_to_date(target_col: str, fields: list[str | dict], format: str):

@@ -51,9 +51,7 @@ def test_duration(time_delta_parameters: dict[str, int], duration_in: str, expec
         ({"hours": 1}, "days", 1 / 24.0),
     ],
 )
-def test_duration_with_dates(
-    time_delta_parameters: dict[str, int], duration_in: str, expected_result: float
-):
+def test_duration_with_dates(time_delta_parameters: dict[str, int], duration_in: str, expected_result: float):
     step = DurationStep(
         name="duration",
         newColumnName="DURATION",
