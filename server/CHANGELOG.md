@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-## Breaking
+## [0.40.0] - 2023-12-15
+
+### Breaking
 
 - Dropped support for Python 3.10
 - Bumped `pydantic` minimum version from 1.x to 2.4.2
