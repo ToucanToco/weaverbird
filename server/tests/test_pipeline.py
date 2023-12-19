@@ -7,14 +7,19 @@ import pytest
 from jinja2.nativetypes import NativeEnvironment
 from pydantic import BaseModel
 from toucan_connectors.common import nosql_apply_parameters_to_query
+from weaverbird.pipeline.conditions import ComparisonCondition
 from weaverbird.pipeline.pipeline import (
     Pipeline,
+    PipelineStep,
+    PipelineStepWithVariables,
     PipelineWithVariables,
     remove_void_conditions_from_filter_steps,
     remove_void_conditions_from_mongo_steps,
 )
-from weaverbird.pipeline.steps import DomainStep, RollupStep
+from weaverbird.pipeline.steps import DomainStep, FilterStep, JoinStep, RollupStep, TrimStep
 from weaverbird.pipeline.steps.aggregate import Aggregation
+from weaverbird.pipeline.steps.append import AppendStep
+from weaverbird.pipeline.steps.text import TextStep
 
 
 class Case(BaseModel):
@@ -490,3 +495,106 @@ def test_remove_void_conditions_from_mongo_step_should_only_apply_to_match_opera
     assert remove_void_conditions_from_mongo_steps(step) == step
     # A list of steps should start with a match-all operation
     assert remove_void_conditions_from_mongo_steps([step]) == [{"$match": {}}, step]
+
+
+@pytest.mark.parametrize(
+    "steps,expected_steps",
+    [
+        (
+            [
+                DomainStep(domain="domain__beers"),
+                FilterStep(condition=ComparisonCondition(column="beer_kind", operator="eq", value="__VOID__")),
+                JoinStep(
+                    type="left",
+                    on=[("name", "name")],
+                    right_pipeline=[
+                        DomainStep(domain="domain__beers"),
+                        TrimStep(columns=["name"]),
+                        FilterStep(condition=ComparisonCondition(column="beer_kind", operator="eq", value="__VOID__")),
+                        TextStep(name="text", text="var_two", new_column="var_two"),
+                    ],
+                ),
+                AppendStep(
+                    pipelines=[
+                        [
+                            FilterStep(
+                                condition=ComparisonCondition(column="beer_kind", operator="eq", value="__VOID__")
+                            ),
+                        ],
+                        "some-domain",
+                        [
+                            DomainStep(domain="domain__beers"),
+                            TrimStep(columns=["name"]),
+                            FilterStep(
+                                condition=ComparisonCondition(column="beer_kind", operator="eq", value="__VOID__")
+                            ),
+                        ],
+                        "__VOID__",
+                    ]
+                ),
+            ],
+            [
+                # First filter step should have been removed
+                DomainStep(domain="domain__beers"),
+                JoinStep(
+                    type="left",
+                    on=[("name", "name")],
+                    right_pipeline=[
+                        # First filter step should have been removed here too
+                        DomainStep(domain="domain__beers"),
+                        TrimStep(columns=["name"]),
+                        TextStep(name="text", text="var_two", new_column="var_two"),
+                    ],
+                ),
+                AppendStep(
+                    pipelines=[
+                        # First pipeline should have been removed
+                        # regular domains should be left untouched
+                        "some-domain",
+                        [
+                            DomainStep(domain="domain__beers"),
+                            TrimStep(columns=["name"]),
+                            # filter step should have been removed from here too
+                        ],
+                        # regular domains should be left untouched
+                        "__VOID__",
+                    ]
+                ),
+            ],
+        ),
+        (
+            [
+                JoinStep(
+                    type="left",
+                    on=[("name", "name")],
+                    right_pipeline=[
+                        FilterStep(condition=ComparisonCondition(column="beer_kind", operator="eq", value="__VOID__"))
+                    ],
+                )
+            ],
+            # The join step should be completely removed
+            [],
+        ),
+        (
+            [JoinStep(type="left", on=[("name", "name")], right_pipeline="__VOID__")],
+            # The join step should be left untouched
+            [JoinStep(type="left", on=[("name", "name")], right_pipeline="__VOID__")],
+        ),
+        (
+            [
+                AppendStep(
+                    pipelines=[
+                        [FilterStep(condition=ComparisonCondition(column="beer_kind", operator="eq", value="__VOID__"))]
+                    ]
+                )
+            ],
+            # the append step should have been completely removed
+            [],
+        ),
+    ],
+)
+def test_remove_void_conditions_from_filter_steps_with_combinations(
+    steps: list[PipelineStep | PipelineStepWithVariables],
+    expected_steps: list[PipelineStep | PipelineStepWithVariables],
+) -> None:
+    assert remove_void_conditions_from_filter_steps(steps) == expected_steps

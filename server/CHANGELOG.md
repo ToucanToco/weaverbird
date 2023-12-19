@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- `remove_void_conditions_from_filter_steps` now properly recurses into `append` and `join` steps.
+
 ## [0.40.0] - 2023-12-15
 
 ### Breaking
