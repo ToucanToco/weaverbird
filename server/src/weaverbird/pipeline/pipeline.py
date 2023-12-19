@@ -16,7 +16,7 @@ from weaverbird.pipeline.steps.append import AppendStepWithRefs
 from weaverbird.pipeline.steps.domain import DomainStepWithRef
 from weaverbird.pipeline.steps.hierarchy import HierarchyStep
 from weaverbird.pipeline.steps.join import JoinStepWithRef
-from weaverbird.pipeline.steps.utils.combination import ReferenceResolver
+from weaverbird.pipeline.steps.utils.combination import PipelineOrDomainName, ReferenceResolver
 
 from .steps import (
     AbsoluteValueStep,
@@ -245,6 +245,29 @@ def _remove_void_from_condition(condition: Condition) -> Condition | None:
     return condition
 
 
+def _remove_void_condition_from_join_step(
+    step: JoinStepWithVariable | JoinStep,
+) -> JoinStep | JoinStepWithVariable | None:
+    if isinstance(step.right_pipeline, str):
+        return step
+    cleaned_steps = remove_void_conditions_from_filter_steps(step.right_pipeline)
+    return step.__class__(**{**step.model_dump(), "right_pipeline": cleaned_steps}) if cleaned_steps else None
+
+
+def _remove_void_condition_from_append_step(
+    step: AppendStep | AppendStepWithVariable,
+) -> AppendStep | AppendStepWithVariable | None:
+    cleaned_pipelines: list[PipelineOrDomainName] = []
+    for pipeline in step.pipelines:
+        if isinstance(pipeline, str):
+            cleaned_pipelines.append(pipeline)
+        else:
+            if cleaned_pipeline := remove_void_conditions_from_filter_steps(pipeline):
+                cleaned_pipelines.append(cleaned_pipeline)
+
+    return step.__class__(pipelines=cleaned_pipelines) if cleaned_pipelines else None
+
+
 def remove_void_conditions_from_filter_steps(
     steps: list[PipelineStepWithVariables | PipelineStep],
 ) -> list[PipelineStepWithVariables | PipelineStep]:
@@ -258,6 +281,12 @@ def remove_void_conditions_from_filter_steps(
         if isinstance(step, FilterStep):
             if (condition := _remove_void_from_condition(step.condition)) is not None:
                 final_steps.append(FilterStep(condition=condition))
+        elif isinstance(step, JoinStep | JoinStepWithVariable):
+            if (clean_step := _remove_void_condition_from_join_step(step)) is not None:
+                final_steps.append(clean_step)
+        elif isinstance(step, AppendStep | AppendStepWithVariable):
+            if (clean_step := _remove_void_condition_from_append_step(step)) is not None:
+                final_steps.append(clean_step)
         else:
             final_steps.append(step)
 
