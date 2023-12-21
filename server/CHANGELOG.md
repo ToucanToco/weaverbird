@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.40.2] - 2023-12-21
+
 ### Fixed
 
 - Fixed a performance issue in a `PipelineStep{WithRefs,}OrDomainName` validator which is used to
