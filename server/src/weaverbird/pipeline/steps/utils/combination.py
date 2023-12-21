@@ -1,4 +1,5 @@
-from collections.abc import Awaitable, Callable, Iterable
+from collections.abc import Awaitable, Callable
+from functools import cache
 from typing import TYPE_CHECKING, Annotated, Literal
 
 from pydantic import BaseModel, BeforeValidator, TypeAdapter
@@ -43,24 +44,27 @@ class Reference(BaseModel):
 # }
 
 
+# Instantiating a TypeAdapter is costly, so we do it here in a cached function
+@cache
+def _pipelinestep_adapter() -> TypeAdapter["str | list[PipelineStep]"]:
+    from weaverbird.pipeline.pipeline import PipelineStep
+
+    # mypy is confused by the type with a postponed annotation above, so it expects str | list[Any]
+    # here
+    return TypeAdapter(str | list[PipelineStep])  # type: ignore[arg-type]
+
+
+@cache
+def _pipelinestepwithref_adapter() -> TypeAdapter["str | list[PipelineStepWithRefs | PipelineStep]"]:
+    from weaverbird.pipeline.pipeline import PipelineStep, PipelineStepWithRefs
+
+    return TypeAdapter(str | list[PipelineStepWithRefs | PipelineStep])  # type: ignore[arg-type]
+
+
 def _ensure_is_pipeline_step(
     v: str | list[dict] | list["PipelineStep"],
 ) -> str | list["PipelineStep"]:
-    from weaverbird.pipeline.pipeline import PipelineStep
-
-    adapter = TypeAdapter(PipelineStep)
-    if isinstance(v, str):
-        return v
-
-    def iter_() -> Iterable["PipelineStep"]:
-        for elem in v:
-            if isinstance(elem, dict):
-                yield adapter.validate_python(elem)
-            else:
-                yield elem
-
-    out = list(iter_())
-    return out
+    return _pipelinestep_adapter().validate_python(v)
 
 
 # can be either a domain name or a complete pipeline
@@ -69,22 +73,8 @@ PipelineOrDomainName = Annotated[str | list["PipelineStep"], BeforeValidator(_en
 
 def _ensure_is_pipeline_step_with_ref(
     v: str | list[dict] | list["PipelineStep | PipelineStepWithRefs"],
-) -> str | list["PipelineStep"]:
-    from weaverbird.pipeline.pipeline import PipelineStep, PipelineStepWithRefs
-
-    adapter = TypeAdapter(PipelineStepWithRefs | PipelineStep)
-    if isinstance(v, str):
-        return v
-
-    def iter_() -> Iterable["PipelineStepWithRefs | PipelineStep"]:
-        for elem in v:
-            if isinstance(elem, dict):
-                yield adapter.validate_python(elem)
-            else:
-                yield elem
-
-    out = list(iter_())
-    return out
+) -> str | list["PipelineStep | PipelineStepWithRefs"]:
+    return _pipelinestepwithref_adapter().validate_python(v)
 
 
 # can be either a domain name or a complete pipeline

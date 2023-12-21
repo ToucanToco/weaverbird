@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+- Fixed a performance issue in a `PipelineStep{WithRefs,}OrDomainName` validator which is used to
+  mitigate some issues with recursive tagged unions in Pydantic v2
+
 ## [0.40.1] - 2023-12-19
 
 ### Fixed
