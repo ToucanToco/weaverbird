@@ -6,13 +6,10 @@ from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMi
 from ..conditions import Condition, ConditionWithVariables
 
 
-class BaseFilterStep(BaseStep):
+class FilterStep(BaseStep):
     name: Literal["filter"] = "filter"
-
-
-class FilterStep(BaseFilterStep):
     condition: Condition
 
 
-class FilterStepWithVariables(BaseFilterStep, StepWithVariablesMixin):
-    condition: ConditionWithVariables
+class FilterStepWithVariables(FilterStep, StepWithVariablesMixin):
+    condition: ConditionWithVariables  # type:ignore[assignment]
