@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.41.0] - 2023-12-27
+
 ### Added
 
 - It is now possible to use variables in a `RelativeDateCondition` when instantiating a `FilterStepWithVariables`
