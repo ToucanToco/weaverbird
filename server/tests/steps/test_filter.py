@@ -13,7 +13,9 @@ from weaverbird.pipeline.conditions import (
     ConditionComboAnd,
     DateBoundCondition,
 )
+from weaverbird.pipeline.dates import RelativeDateWithVariables
 from weaverbird.pipeline.steps import FilterStep
+from weaverbird.pipeline.steps.filter import FilterStepWithVariables
 
 from tests.utils import assert_dataframes_equals
 
@@ -373,3 +375,55 @@ def test_date_filter(date_df: DataFrame, expected_date_filter_result: DataFrame)
 
     result = execute_filter(step=step, df=date_df).reset_index(drop=True)
     assert_frame_equal(expected_date_filter_result, result)
+
+
+def test_filter_step_with_variable_in_relative_date() -> None:
+    raw = {
+        "name": "filter",
+        "condition": {
+            "or": [
+                {
+                    "and": [
+                        {
+                            "column": "Date_firstDayOfMonth",
+                            "value": "<%=appRequesters.date.start%>",
+                            "operator": "from",
+                        },
+                        {
+                            "column": "Date_firstDayOfMonth",
+                            "value": "<%=appRequesters.date.end%>",
+                            "operator": "until",
+                        },
+                    ]
+                },
+                {
+                    "and": [
+                        {
+                            "column": "Date_firstDayOfMonth",
+                            "value": {
+                                "date": "<%=appRequesters.date.start%>",
+                                "quantity": 1,
+                                "duration": "year",
+                                "operator": "until",
+                            },
+                            "operator": "from",
+                        },
+                        {
+                            "column": "Date_firstDayOfMonth",
+                            "value": {
+                                "date": "<%=appRequesters.date.end%>",
+                                "quantity": 1,
+                                "duration": "year",
+                                "operator": "until",
+                            },
+                            "operator": "until",
+                        },
+                    ]
+                },
+            ]
+        },
+    }
+
+    step = FilterStepWithVariables(**raw)
+    assert step.condition.or_[0].and_[0].value == "<%=appRequesters.date.start%>"
+    assert all(isinstance(cond.value, RelativeDateWithVariables) for cond in step.condition.or_[1].and_)

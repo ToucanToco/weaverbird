@@ -4,7 +4,7 @@ from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from weaverbird.pipeline.dates import RelativeDate
+from weaverbird.pipeline.dates import RelativeDate, RelativeDateWithVariables
 from weaverbird.pipeline.types import ColumnName
 
 
@@ -41,10 +41,17 @@ class DateBoundCondition(BaseModel):
     value: RelativeDate | datetime | str
 
 
+class DateBoundConditionWithVariables(BaseModel):
+    column: ColumnName
+    operator: Literal["from", "until"]
+    value: RelativeDateWithVariables | RelativeDate | datetime | str
+
+
 SimpleCondition = Annotated[
     ComparisonCondition | InclusionCondition | NullCondition | MatchCondition | DateBoundCondition,
     Field(discriminator="operator"),  # noqa: F821
 ]
+SimpleConditionWithVariables = DateBoundConditionWithVariables | SimpleCondition
 
 
 class BaseConditionCombo(BaseCondition, ABC):
@@ -58,10 +65,22 @@ class ConditionComboAnd(BaseConditionCombo):
     and_: list["Condition"] = Field(..., alias="and")
 
 
+class ConditionComboAndWithVariables(BaseConditionCombo):
+    and_: list["ConditionWithVariables | Condition"] = Field(..., alias="and")
+
+
 class ConditionComboOr(BaseConditionCombo):
     or_: list["Condition"] = Field(..., alias="or")
 
 
+class ConditionComboOrWithVariables(BaseConditionCombo):
+    or_: list["ConditionWithVariables | Condition"] = Field(..., alias="or")
+
+
 Condition = ConditionComboAnd | ConditionComboOr | SimpleCondition
+ConditionWithVariables = (
+    SimpleConditionWithVariables | ConditionComboAndWithVariables | ConditionComboOrWithVariables | SimpleCondition
+)
+
 ConditionComboOr.model_rebuild()
 ConditionComboAnd.model_rebuild()
