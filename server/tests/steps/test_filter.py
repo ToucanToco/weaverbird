@@ -2,18 +2,22 @@ import json
 from datetime import datetime
 from os.path import dirname
 from os.path import join as path_join
+from typing import Any
 from zoneinfo import ZoneInfo
 
 import pytest
 from pandas import DataFrame, read_json
 from pandas.testing import assert_frame_equal
+from toucan_connectors.common import nosql_apply_parameters_to_query
 from weaverbird.backends.pandas_executor.steps.filter import execute_filter
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
     ConditionComboAnd,
     DateBoundCondition,
 )
+from weaverbird.pipeline.dates import RelativeDateWithVariables
 from weaverbird.pipeline.steps import FilterStep
+from weaverbird.pipeline.steps.filter import FilterStepWithVariables
 
 from tests.utils import assert_dataframes_equals
 
@@ -373,3 +377,86 @@ def test_date_filter(date_df: DataFrame, expected_date_filter_result: DataFrame)
 
     result = execute_filter(step=step, df=date_df).reset_index(drop=True)
     assert_frame_equal(expected_date_filter_result, result)
+
+
+def test_filter_step_with_variable_in_relative_date() -> None:
+    raw = {
+        "name": "filter",
+        "condition": {
+            "or": [
+                {
+                    "and": [
+                        {
+                            "column": "Date_firstDayOfMonth",
+                            "value": "<%=appRequesters.date.start%>",
+                            "operator": "from",
+                        },
+                        {
+                            "column": "Date_firstDayOfMonth",
+                            "value": "<%=appRequesters.date.end%>",
+                            "operator": "until",
+                        },
+                    ]
+                },
+                {
+                    "and": [
+                        {
+                            "column": "Date_firstDayOfMonth",
+                            "value": {
+                                "date": "<%=appRequesters.date.start%>",
+                                "quantity": 1,
+                                "duration": "year",
+                                "operator": "until",
+                            },
+                            "operator": "from",
+                        },
+                        {
+                            "column": "Date_firstDayOfMonth",
+                            "value": {
+                                "date": "<%=appRequesters.date.end%>",
+                                "quantity": 1,
+                                "duration": "year",
+                                "operator": "until",
+                            },
+                            "operator": "until",
+                        },
+                    ]
+                },
+            ]
+        },
+    }
+
+    step = FilterStepWithVariables(**raw)
+    assert step.condition.or_[0].and_[0].value == "<%=appRequesters.date.start%>"
+    assert all(isinstance(cond.value, RelativeDateWithVariables) for cond in step.condition.or_[1].and_)
+
+
+def test_render_filter_step_with_variables(available_variables: dict[str, Any]) -> None:
+    step = FilterStepWithVariables(
+        condition={
+            "column": "foo",
+            "value": "{{ TODAY }}",
+            "operator": "from",
+        }
+    )
+    rendered = step.render(available_variables, nosql_apply_parameters_to_query)
+    assert rendered.condition.value == available_variables["TODAY"]
+
+    step = FilterStepWithVariables(
+        condition={
+            "column": "foo",
+            "value": {
+                "date": "{{ TODAY }}",
+                "quantity": 1,
+                "duration": "year",
+                "operator": "until",
+            },
+            "operator": "from",
+        }
+    )
+    rendered = step.render(available_variables, nosql_apply_parameters_to_query)
+    assert rendered.condition.value.date == available_variables["TODAY"]
+
+    step = FilterStepWithVariables(condition={"or": [step.model_dump()["condition"]]})
+    rendered = step.render(available_variables, nosql_apply_parameters_to_query)
+    assert rendered.condition.or_[0].value.date == available_variables["TODAY"]
