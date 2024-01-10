@@ -56,8 +56,8 @@ describe('CustomGranularityCalendar', () => {
 
       describe('when clicking on a a month', () => {
         beforeEach(async () => {
-          const february = wrapper.findAll('.custom-granularity-calendar__option').at(1);
-          await february.trigger('click');
+          const march = wrapper.findAll('.custom-granularity-calendar__option').at(2);
+          await march.trigger('click');
         });
 
         it('should emit the selected date range', () => {
@@ -66,10 +66,10 @@ describe('CustomGranularityCalendar', () => {
           expect(emittedDate.start).toBeInstanceOf(Date);
           expect(emittedDate.end).toBeInstanceOf(Date);
           expect(emittedDate.start?.toISOString()).toStrictEqual(
-            `${currentYear}-02-01T00:00:00.000Z`,
+            `${currentYear}-03-01T00:00:00.000Z`,
           );
           expect(emittedDate.end?.toISOString()).toStrictEqual(
-            `${currentYear}-02-28T23:59:59.999Z`,
+            `${currentYear}-03-31T23:59:59.999Z`,
           );
           expect(emittedDate.duration).toBe('month');
         });
