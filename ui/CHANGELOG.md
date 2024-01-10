@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.111.2] - 2024-01-10
+
 ### Fixed
 - RelativeDateForm: use correct delimiters depending on if date variable is trusted or not
 
@@ -1544,6 +1546,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
+[0.111.2]: https://github.com/ToucanToco/weaverbird/compare/v0.111.1...v0.111.2
 [0.111.1]: https://github.com/ToucanToco/weaverbird/compare/v0.111.0...v0.111.1
 [0.111.0]: https://github.com/ToucanToco/weaverbird/compare/v0.110.0...v0.111.0
 [0.110.0]: https://github.com/ToucanToco/weaverbird/compare/v0.109.0...v0.110.0
