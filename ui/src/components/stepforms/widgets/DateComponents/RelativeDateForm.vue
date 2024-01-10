@@ -105,9 +105,9 @@ export default class RelativeDateForm extends Vue {
 
   set baseDate(variable: AvailableVariable | undefined) {
     // use correct delimiters depending on if the variable is trusted or not
-    const attendedVariableDelimiters = isTrustedVariable(variable) ? 
-      this.trustedVariableDelimiters : 
-      this.variableDelimiters;
+    const attendedVariableDelimiters = isTrustedVariable(variable)
+      ? this.trustedVariableDelimiters
+      : this.variableDelimiters;
     const value = `${attendedVariableDelimiters.start}${variable?.identifier}${attendedVariableDelimiters.end}`;
     this.$emit('input', { ...this.value, date: value });
   }
