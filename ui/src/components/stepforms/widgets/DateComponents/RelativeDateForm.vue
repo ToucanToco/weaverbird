@@ -45,7 +45,7 @@ import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue'
 import InputNumberWidget from '@/components/stepforms/widgets/InputNumber.vue';
 import { DEFAULT_DURATIONS, RELATIVE_DATE_OPERATORS } from '@/lib/dates';
 import type { DurationOption, RelativeDate } from '@/lib/dates';
-import { extractVariableIdentifier } from '@/lib/variables';
+import { extractVariableIdentifier, isTrustedVariable } from '@/lib/variables';
 import type { AvailableVariable, VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 /**
@@ -104,7 +104,11 @@ export default class RelativeDateForm extends Vue {
   }
 
   set baseDate(variable: AvailableVariable | undefined) {
-    const value = `${this.variableDelimiters.start}${variable?.identifier}${this.variableDelimiters.end}`;
+    // use correct delimiters depending on if the variable is trusted or not
+    const attendedVariableDelimiters = isTrustedVariable(variable)
+      ? this.trustedVariableDelimiters
+      : this.variableDelimiters;
+    const value = `${attendedVariableDelimiters.start}${variable?.identifier}${attendedVariableDelimiters.end}`;
     this.$emit('input', { ...this.value, date: value });
   }
 
