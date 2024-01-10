@@ -28,7 +28,8 @@ describe('RelativeDate form', () => {
     beforeEach(() => {
       createWrapper({
         value: { date, quantity: 1, duration: 'month', operator: 'until' },
-        variableDelimiters: { start: '{{', end: '}}' },
+        variableDelimiters: { start: '<%=', end: '%>' },
+        trustedVariableDelimiters: { start: '{{', end: '}}' },
         availableVariables: SAMPLE_VARIABLES,
       });
     });
@@ -58,17 +59,25 @@ describe('RelativeDate form', () => {
     });
 
     describe('when baseDate is updated', () => {
-      const selectedDateVariable = SAMPLE_VARIABLES[1];
-      beforeEach(async () => {
+      it('should emit value with updated date with delimiters', async () => {
+        const trustedVariable = { label: 'Trusted', identifier: 'trusted', trusted: true };
+        const untrustedVariable = { label: 'Untrusted', identifier: 'untrusted' };
         wrapper
           .find('.widget-relative-date-range-form__input--base-date')
-          .vm.$emit('input', selectedDateVariable);
+          .vm.$emit('input', trustedVariable);
         await wrapper.vm.$nextTick();
-      });
-      it('should emit value with updated date with delimiters', () => {
-        const newDate = `{{${selectedDateVariable.identifier}}}`;
         expect(wrapper.emitted().input[0][0]).toStrictEqual({
-          date: newDate,
+          date: '{{trusted}}', // trusted delimiters usage
+          quantity: 1,
+          duration: 'month',
+          operator: 'until',
+        });
+        wrapper
+          .find('.widget-relative-date-range-form__input--base-date')
+          .vm.$emit('input', untrustedVariable);
+        await wrapper.vm.$nextTick();
+        expect(wrapper.emitted().input[1][0]).toStrictEqual({
+          date: '<%=untrusted%>', // untrusted delimiters usage
           quantity: 1,
           duration: 'month',
           operator: 'until',

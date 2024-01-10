@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Fixed
+- RelativeDateForm: use correct delimiters depending on if date variable is trusted or not
+
 ## [0.111.1] - 2023-11-21
 
 ### Fixed
