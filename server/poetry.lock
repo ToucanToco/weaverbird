@@ -1346,13 +1346,13 @@ files = [
 
 [[package]]
 name = "hypercorn"
-version = "0.15.0"
+version = "0.16.0"
 description = "A ASGI Server based on Hyper libraries and inspired by Gunicorn"
 optional = true
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "hypercorn-0.15.0-py3-none-any.whl", hash = "sha256:5008944999612fd188d7a1ca02e89d20065642b89503020ac392dfed11840730"},
-    {file = "hypercorn-0.15.0.tar.gz", hash = "sha256:d517f68d5dc7afa9a9d50ecefb0f769f466ebe8c1c18d2c2f447a24e763c9a63"},
+    {file = "hypercorn-0.16.0-py3-none-any.whl", hash = "sha256:929e45c4acde3fbf7c58edf55336d30a009d2b4cb1f1eb96e6a515d61b663f58"},
+    {file = "hypercorn-0.16.0.tar.gz", hash = "sha256:3b17d1dcf4992c1f262d9f9dd799c374125d0b9a8e40e1e2d11e2938b0adfe03"},
 ]
 
 [package.dependencies]
@@ -3601,4 +3601,4 @@ pypika = ["PyPika"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11, <3.12"
-content-hash = "91cff47f6d780df04a02b28ed1c4d4a5d40ef8c1b0482ac558f166f7651b307c"
+content-hash = "4aafa116988bc7a585e485f0f7ea7c4cbf9170e499228c83bfe6005668d4e390"
