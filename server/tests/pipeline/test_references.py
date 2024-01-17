@@ -133,6 +133,30 @@ async def test_resolve_references_append():
 
     assert await pipeline_with_refs.resolve_references(reference_resolver) == expected
 
+    pipeline_with_refs = PipelineWithRefs(
+        steps=[
+            DomainStep(domain="source"),
+            AppendStepWithRefs(
+                pipelines=[
+                    [
+                        DomainStepWithRef(domain=Reference(uid="other_pipeline")),
+                        TextStep(new_column="text", text="Lorem ipsum"),
+                    ],
+                ]
+            ),
+        ]
+    )
+    expected = PipelineWithVariables(
+        steps=[
+            DomainStep(domain="source"),
+            AppendStepWithVariable(
+                pipelines=[[*PIPELINES_LIBRARY["other_pipeline"], TextStep(new_column="text", text="Lorem ipsum")]]
+            ),
+        ]
+    )
+
+    assert await pipeline_with_refs.resolve_references(reference_resolver) == expected
+
 
 @pytest.mark.asyncio
 async def test_resolve_references_unresolved_append():
