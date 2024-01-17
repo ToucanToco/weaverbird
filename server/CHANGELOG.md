@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed 
+
+- Append step now works with pipelines that contain steps with references
+
 ## [0.41.0] - 2023-12-27
 
 ### Added
