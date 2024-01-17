@@ -115,7 +115,7 @@ async def resolve_if_reference(
 
 async def _resolve_references_in_pipeline(
     reference_resolver: ReferenceResolver,
-    pipeline: list[PipelineStepWithRefs | PipelineStep],
+    pipeline: list["PipelineStepWithRefs | PipelineStep"],
 ) -> PipelineOrDomainName | None:
     from weaverbird.pipeline.pipeline import PipelineWithRefs, ReferenceUnresolved
 
