@@ -95,20 +95,34 @@ async def resolve_if_reference(
     reference_resolver: ReferenceResolver,
     pipeline_or_domain_name_or_ref: PipelineOrDomainNameOrReference,
 ) -> PipelineOrDomainName | None:
-    from weaverbird.pipeline.pipeline import PipelineWithRefs, ReferenceUnresolved
+    from weaverbird.pipeline.pipeline import ReferenceUnresolved
 
     if isinstance(pipeline_or_domain_name_or_ref, Reference):
-        pipeline_or_domain_name = await reference_resolver(pipeline_or_domain_name_or_ref)
-        if isinstance(pipeline_or_domain_name, list):
-            # Recursively resolve any reference in sub-pipelines
-            pipeline = PipelineWithRefs(steps=pipeline_or_domain_name)
+        try:
+            pipeline_or_domain_name = await reference_resolver(pipeline_or_domain_name_or_ref)
+            if isinstance(pipeline_or_domain_name, list):
+                return await _resolve_references_in_pipeline(reference_resolver, pipeline_or_domain_name)
+            else:
+                return pipeline_or_domain_name
+        except ReferenceUnresolved:
+            return None  # skip
 
-            try:
-                pipeline_without_refs = await pipeline.resolve_references(reference_resolver)
-                return pipeline_without_refs.model_dump()["steps"]
-            except ReferenceUnresolved:
-                return None  # skip
-        else:
-            return pipeline_or_domain_name
+    if isinstance(pipeline_or_domain_name_or_ref, list):
+        return await _resolve_references_in_pipeline(reference_resolver, pipeline_or_domain_name_or_ref)
     else:
         return pipeline_or_domain_name_or_ref
+
+
+async def _resolve_references_in_pipeline(
+    reference_resolver: ReferenceResolver,
+    pipeline: list["PipelineStepWithRefs | PipelineStep"],
+) -> PipelineOrDomainName | None:
+    from weaverbird.pipeline.pipeline import PipelineWithRefs, ReferenceUnresolved
+
+    # Recursively resolve any reference in sub-pipelines
+    pipeline_with_refs = PipelineWithRefs(steps=pipeline)
+    try:
+        pipeline_without_refs = await pipeline_with_refs.resolve_references(reference_resolver)
+        return pipeline_without_refs.model_dump()["steps"]
+    except ReferenceUnresolved:
+        return None  # skip
