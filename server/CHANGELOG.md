@@ -2,8 +2,11 @@
 
 ## Unreleased
 
-### Fixed 
+## [0.41.1] - 2024-01-18
 
+### Fixed
+
+- `pytest-asyncio` is no longer a requirement
 - Append step now works with pipelines that contain steps with references
 
 ## [0.41.0] - 2023-12-27
