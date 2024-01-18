@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- `IfThenElseStepWithVariables` can now be used with a `RelativeDateCondition` containing a variable.
+
 ## [0.41.1] - 2024-01-18
 
 ### Fixed
