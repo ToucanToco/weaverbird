@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Annotated, Literal
 from pydantic import BaseModel, BeforeValidator, TypeAdapter
 
 if TYPE_CHECKING:
-    from weaverbird.pipeline.pipeline import PipelineStep, PipelineStepWithRefs
+    from weaverbird.pipeline.pipeline import PipelineStep, PipelineStepWithRefs, PipelineStepWithVariables
 
 
 class Reference(BaseModel):
@@ -55,10 +55,14 @@ def _pipelinestep_adapter() -> TypeAdapter["str | list[PipelineStep]"]:
 
 
 @cache
-def _pipelinestepwithref_adapter() -> TypeAdapter["str | list[PipelineStepWithRefs | PipelineStep]"]:
-    from weaverbird.pipeline.pipeline import PipelineStep, PipelineStepWithRefs
+def _pipelinestepwithref_adapter() -> (
+    TypeAdapter["str | list[PipelineStepWithRefs | PipelineStepWithVariables | PipelineStep]"]
+):
+    from weaverbird.pipeline.pipeline import PipelineStep, PipelineStepWithRefs, PipelineStepWithVariables
 
-    return TypeAdapter(str | list[PipelineStepWithRefs | PipelineStep])  # type: ignore[arg-type]
+    # Note: PipelineStep must appear _before_ PipelineStepWithVariables, to avoid fields that could contain variables
+    # to always be matched as strings
+    return TypeAdapter(str | list[PipelineStepWithRefs | PipelineStep | PipelineStepWithVariables])  # type: ignore[arg-type]
 
 
 def _ensure_is_pipeline_step(
@@ -72,14 +76,14 @@ PipelineOrDomainName = Annotated[str | list["PipelineStep"], BeforeValidator(_en
 
 
 def _ensure_is_pipeline_step_with_ref(
-    v: str | list[dict] | list["PipelineStep | PipelineStepWithRefs"],
-) -> str | list["PipelineStep | PipelineStepWithRefs"]:
+    v: str | list[dict] | list["PipelineStep | PipelineStepWithVariables | PipelineStepWithRefs"],
+) -> str | list["PipelineStep | PipelineStepWithVariables | PipelineStepWithRefs"]:
     return _pipelinestepwithref_adapter().validate_python(v)
 
 
 # can be either a domain name or a complete pipeline
 PipelineWithRefsOrDomainName = Annotated[
-    str | list["PipelineStepWithRefs | PipelineStep"],
+    str | list["PipelineStepWithRefs | PipelineStepWithVariables | PipelineStep"],
     BeforeValidator(_ensure_is_pipeline_step_with_ref),
 ]
 

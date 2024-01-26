@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Using variables in combined pipelines was considered invalid.
+
 ## [0.41.2] - 2024-01-18
 
 ### Fixed
