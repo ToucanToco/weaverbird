@@ -59,6 +59,7 @@ def _pipelinestepwithref_adapter() -> (
     TypeAdapter["str | list[PipelineStepWithRefs | PipelineStepWithVariables | PipelineStep]"]
 ):
     from weaverbird.pipeline.pipeline import PipelineStep, PipelineStepWithRefs, PipelineStepWithVariables
+
     # Note: PipelineStep must appear _before_ PipelineStepWithVariables, to avoid fields that could contain variables
     # to always be matched as strings
     return TypeAdapter(str | list[PipelineStepWithRefs | PipelineStep | PipelineStepWithVariables])  # type: ignore[arg-type]
