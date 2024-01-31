@@ -6,10 +6,9 @@ from weaverbird.pipeline.pipeline import (
 )
 from weaverbird.pipeline.steps import (
     AppendStep,
-    AppendStepWithVariable,
     DomainStep,
+    FilterStepWithVariables,
     JoinStep,
-    JoinStepWithVariable,
     TextStep,
 )
 from weaverbird.pipeline.steps.utils.combination import Reference
@@ -293,3 +292,30 @@ async def test_resolve_references_unresolved_join_subpipeline_error():
     )
     with pytest.raises(ReferenceUnresolved):
         await pipeline_with_refs.resolve_references(reference_resolver)
+
+
+@pytest.mark.asyncio
+async def test_resolve_references_with_variables():
+    pipeline_with_refs = PipelineWithVariables(
+        steps=[
+            DomainStep(domain=Reference(uid="intermediate_pipeline")),
+            FilterStepWithVariables(condition={"column": "date", "operator": "from", "value": {
+                "quantity": 1,
+                "duration": "year",
+                "operator": "before",
+                "date": "{{ TODAY }}",
+            }}),
+        ]
+    )
+    assert await pipeline_with_refs.resolve_references(reference_resolver) == PipelineWithVariables(
+        steps=[
+            DomainStep(domain="source"),
+            TextStep(new_column="meow", text="Cat"),
+            FilterStepWithVariables(condition={"column": "date", "operator": "from", "value": {
+                "quantity": 1,
+                "duration": "year",
+                "operator": "before",
+                "date": "{{ TODAY }}",
+            }}),
+        ]
+    )

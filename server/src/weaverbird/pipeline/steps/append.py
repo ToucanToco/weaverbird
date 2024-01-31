@@ -1,4 +1,4 @@
-from typing import Literal, Self, TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING, Literal, Self, TypeVar
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMixin
