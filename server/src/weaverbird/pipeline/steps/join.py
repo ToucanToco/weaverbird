@@ -9,7 +9,7 @@ from weaverbird.pipeline.types import ColumnName
 if TYPE_CHECKING:
     from weaverbird.pipeline.pipeline import Pipeline, PipelineWithVariables
 
-    PipelineType = TypeVar('PipelineType', bound=Pipeline | PipelineWithVariables)
+    PipelineType = TypeVar("PipelineType", bound=Pipeline | PipelineWithVariables)
 
 from .utils.combination import (
     PipelineOrDomainNameOrReference,
@@ -29,7 +29,9 @@ class BaseJoinStep(BaseStep):
 class JoinStep(BaseJoinStep):
     right_pipeline: PipelineOrDomainNameOrReference
 
-    async def resolve_references(self, reference_resolver: ReferenceResolver, parent_pipeline: "PipelineType") -> Self | None:
+    async def resolve_references(
+        self, reference_resolver: ReferenceResolver, parent_pipeline: "PipelineType"
+    ) -> Self | None:
         right_pipeline = await resolve_if_reference(reference_resolver, self.right_pipeline)
         if right_pipeline is None:
             from weaverbird.pipeline.pipeline import ReferenceUnresolved

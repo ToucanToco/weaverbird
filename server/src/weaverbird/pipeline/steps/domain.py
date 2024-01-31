@@ -10,7 +10,7 @@ from weaverbird.pipeline.steps.utils.combination import (
 if TYPE_CHECKING:
     from weaverbird.pipeline.pipeline import Pipeline, PipelineWithVariables
 
-    PipelineType = TypeVar('PipelineType', bound=Pipeline | PipelineWithVariables)
+    PipelineType = TypeVar("PipelineType", bound=Pipeline | PipelineWithVariables)
 
 
 class DomainStep(BaseStep):

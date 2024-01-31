@@ -6,7 +6,7 @@ from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMi
 if TYPE_CHECKING:
     from weaverbird.pipeline.pipeline import Pipeline, PipelineWithVariables
 
-    PipelineType = TypeVar('PipelineType', bound=Pipeline | PipelineWithVariables)
+    PipelineType = TypeVar("PipelineType", bound=Pipeline | PipelineWithVariables)
 
 from .utils.combination import (
     PipelineOrDomainNameOrReference,
@@ -22,7 +22,9 @@ class BaseAppendStep(BaseStep):
 class AppendStep(BaseAppendStep):
     pipelines: list[PipelineOrDomainNameOrReference]
 
-    async def resolve_references(self, reference_resolver: ReferenceResolver, parent_pipeline: "PipelineType") -> Self | None:
+    async def resolve_references(
+        self, reference_resolver: ReferenceResolver, parent_pipeline: "PipelineType"
+    ) -> Self | None:
         resolved_pipelines = [await resolve_if_reference(reference_resolver, p) for p in self.pipelines]
         resolved_pipelines_without_nones = [p for p in resolved_pipelines if p is not None]
         if len(resolved_pipelines_without_nones) == 0:

@@ -299,23 +299,35 @@ async def test_resolve_references_with_variables():
     pipeline_with_refs = PipelineWithVariables(
         steps=[
             DomainStep(domain=Reference(uid="intermediate_pipeline")),
-            FilterStepWithVariables(condition={"column": "date", "operator": "from", "value": {
-                "quantity": 1,
-                "duration": "year",
-                "operator": "before",
-                "date": "{{ TODAY }}",
-            }}),
+            FilterStepWithVariables(
+                condition={
+                    "column": "date",
+                    "operator": "from",
+                    "value": {
+                        "quantity": 1,
+                        "duration": "year",
+                        "operator": "before",
+                        "date": "{{ TODAY }}",
+                    },
+                }
+            ),
         ]
     )
     assert await pipeline_with_refs.resolve_references(reference_resolver) == PipelineWithVariables(
         steps=[
             DomainStep(domain="source"),
             TextStep(new_column="meow", text="Cat"),
-            FilterStepWithVariables(condition={"column": "date", "operator": "from", "value": {
-                "quantity": 1,
-                "duration": "year",
-                "operator": "before",
-                "date": "{{ TODAY }}",
-            }}),
+            FilterStepWithVariables(
+                condition={
+                    "column": "date",
+                    "operator": "from",
+                    "value": {
+                        "quantity": 1,
+                        "duration": "year",
+                        "operator": "before",
+                        "date": "{{ TODAY }}",
+                    },
+                }
+            ),
         ]
     )
