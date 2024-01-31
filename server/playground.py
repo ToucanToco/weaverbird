@@ -62,7 +62,7 @@ from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import (
     translate_pipeline as pypika_translate_pipeline,
 )
-from weaverbird.pipeline.pipeline import Pipeline, PipelineWithRefs
+from weaverbird.pipeline.pipeline import Pipeline, PipelineWithVariables
 from weaverbird.pipeline.steps import DomainStep
 from weaverbird.pipeline.steps.utils.combination import Reference
 
@@ -148,7 +148,7 @@ async def prepare_pipeline(req: Request) -> Pipeline:
     Validate the pipeline sent in the body of the request, and prepare it for translation (resolve references and
     interpolate variables).
     """
-    pipeline_with_refs = PipelineWithRefs(steps=await req.get_json())  # Validation
+    pipeline_with_refs = PipelineWithVariables(steps=await req.get_json())  # Validation
     pipeline_with_vars = await pipeline_with_refs.resolve_references(dummy_reference_resolver)
     pipeline = pipeline_with_vars.render(VARIABLES, nosql_apply_parameters_to_query)
     return pipeline
@@ -347,7 +347,7 @@ async def handle_mongo_backend_request():
     elif request.method == "POST":
         try:
             req_params = await parse_request_json(request)
-            pipeline_with_refs = PipelineWithRefs(steps=req_params["pipeline"])  # Validation
+            pipeline_with_refs = PipelineWithVariables(steps=req_params["pipeline"])  # Validation
             pipeline = await pipeline_with_refs.resolve_references(dummy_reference_resolver)
             mongo_query = mongo_translate_pipeline(pipeline)
 

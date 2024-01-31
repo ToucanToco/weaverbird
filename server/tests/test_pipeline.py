@@ -12,7 +12,6 @@ from weaverbird.pipeline.pipeline import (
     Pipeline,
     PipelineStep,
     PipelineStepWithVariables,
-    PipelineWithRefs,
     PipelineWithVariables,
     remove_void_conditions_from_filter_steps,
     remove_void_conditions_from_mongo_steps,
@@ -602,7 +601,7 @@ def test_remove_void_conditions_from_filter_steps_with_combinations(
 
 
 def test_pipeline_with_refs_variables_and_date_validity():
-    PipelineWithRefs(
+    PipelineWithVariables(
         steps=[
             {"domain": {"type": "ref", "uid": "83ff1fa2-d186-4a7b-a53b-47c901a076c7"}, "name": "domain"},
             {
