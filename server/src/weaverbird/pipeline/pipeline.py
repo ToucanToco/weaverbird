@@ -451,7 +451,7 @@ def remove_void_conditions_from_mongo_steps(
 
 # TODO move to a dedicated variables module
 class PipelineWithVariables(Pipeline):
-    steps: list[PipelineStep | PipelineStepWithVariables]
+    steps: list[PipelineStepWithVariables | PipelineStep]
 
     def render(self, variables: dict[str, Any], renderer) -> Pipeline:
         # TODO it must be more efficient to render the full pipeline once

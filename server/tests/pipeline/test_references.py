@@ -10,6 +10,7 @@ from weaverbird.pipeline.steps import (
     FilterStepWithVariables,
     JoinStep,
     TextStep,
+    TextStepWithVariable,
 )
 from weaverbird.pipeline.steps.utils.combination import Reference
 
@@ -316,7 +317,7 @@ async def test_resolve_references_with_variables():
     assert await pipeline_with_refs.resolve_references(reference_resolver) == PipelineWithVariables(
         steps=[
             DomainStep(domain="source"),
-            TextStep(new_column="meow", text="Cat"),
+            TextStepWithVariable(new_column="meow", text="Cat"),
             FilterStepWithVariables(
                 condition={
                     "column": "date",
