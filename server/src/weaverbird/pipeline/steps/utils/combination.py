@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Annotated, Literal
 from pydantic import BaseModel, BeforeValidator, TypeAdapter
 
 if TYPE_CHECKING:
-    from weaverbird.pipeline.pipeline import PipelineStep, PipelineStepWithRefs, PipelineStepWithVariables
+    from weaverbird.pipeline.pipeline import PipelineStep, PipelineStepWithVariables
 
 
 class Reference(BaseModel):
@@ -55,14 +55,12 @@ def _pipelinestep_adapter() -> TypeAdapter["str | list[PipelineStep]"]:
 
 
 @cache
-def _pipelinestepwithref_adapter() -> (
-    TypeAdapter["str | list[PipelineStepWithRefs | PipelineStepWithVariables | PipelineStep]"]
-):
-    from weaverbird.pipeline.pipeline import PipelineStep, PipelineStepWithRefs, PipelineStepWithVariables
+def _pipelinestepwithvariables_adapter() -> TypeAdapter["str | list[PipelineStep | PipelineStepWithVariables]"]:
+    from weaverbird.pipeline.pipeline import PipelineStep, PipelineStepWithVariables
 
-    # Note: PipelineStep must appear _before_ PipelineStepWithVariables, to avoid fields that could contain variables
-    # to always be matched as strings
-    return TypeAdapter(str | list[PipelineStepWithRefs | PipelineStep | PipelineStepWithVariables])  # type: ignore[arg-type]
+    # mypy is confused by the type with a postponed annotation above, so it expects str | list[Any]
+    # here
+    return TypeAdapter(str | list[PipelineStep | PipelineStepWithVariables])  # type: ignore[arg-type]
 
 
 def _ensure_is_pipeline_step(
@@ -71,25 +69,21 @@ def _ensure_is_pipeline_step(
     return _pipelinestep_adapter().validate_python(v)
 
 
+def _ensure_is_pipeline_step_with_variables(
+    v: str | list[dict] | list["PipelineStep" | "PipelineStepWithVariables"],
+) -> str | list["PipelineStep" | "PipelineStepWithVariables"]:
+    return _pipelinestep_adapter().validate_python(v)
+
+
 # can be either a domain name or a complete pipeline
 PipelineOrDomainName = Annotated[str | list["PipelineStep"], BeforeValidator(_ensure_is_pipeline_step)]
-
-
-def _ensure_is_pipeline_step_with_ref(
-    v: str | list[dict] | list["PipelineStep | PipelineStepWithVariables | PipelineStepWithRefs"],
-) -> str | list["PipelineStep | PipelineStepWithVariables | PipelineStepWithRefs"]:
-    return _pipelinestepwithref_adapter().validate_python(v)
-
-
-# can be either a domain name or a complete pipeline
-PipelineWithRefsOrDomainName = Annotated[
-    str | list["PipelineStepWithRefs | PipelineStepWithVariables | PipelineStep"],
-    BeforeValidator(_ensure_is_pipeline_step_with_ref),
+PipelineWithVariablesOrDomainName = Annotated[
+    str | list["PipelineStepWithVariables"], BeforeValidator(_ensure_is_pipeline_step_with_variables)
 ]
 
 
 PipelineOrDomainNameOrReference = PipelineOrDomainName | Reference
-PipelineWithRefsOrDomainNameOrReference = PipelineWithRefsOrDomainName | Reference
+PipelineWithVariablesOrDomainNameOrReference = PipelineWithVariablesOrDomainName | Reference
 
 # A reference returning None means that it should be skipped
 ReferenceResolver = Callable[[Reference], Awaitable[PipelineOrDomainName | None]]
@@ -119,12 +113,12 @@ async def resolve_if_reference(
 
 async def _resolve_references_in_pipeline(
     reference_resolver: ReferenceResolver,
-    pipeline: list["PipelineStepWithRefs | PipelineStep"],
+    pipeline: list["PipelineStep"],
 ) -> PipelineOrDomainName | None:
-    from weaverbird.pipeline.pipeline import PipelineWithRefs, ReferenceUnresolved
+    from weaverbird.pipeline.pipeline import Pipeline, ReferenceUnresolved
 
     # Recursively resolve any reference in sub-pipelines
-    pipeline_with_refs = PipelineWithRefs(steps=pipeline)
+    pipeline_with_refs = Pipeline(steps=pipeline)
     try:
         pipeline_without_refs = await pipeline_with_refs.resolve_references(reference_resolver)
         return pipeline_without_refs.model_dump()["steps"]

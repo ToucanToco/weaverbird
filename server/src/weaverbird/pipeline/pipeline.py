@@ -1,5 +1,5 @@
 from collections.abc import Iterable
-from typing import Annotated, Any
+from typing import Annotated, Any, Self, TypeVar
 
 from pydantic import BaseModel, Field
 
@@ -12,11 +12,8 @@ from weaverbird.pipeline.conditions import (
     InclusionCondition,
     MatchCondition,
 )
-from weaverbird.pipeline.steps.append import AppendStepWithRefs
-from weaverbird.pipeline.steps.domain import DomainStepWithRef
 from weaverbird.pipeline.steps.hierarchy import HierarchyStep
-from weaverbird.pipeline.steps.join import JoinStepWithRef
-from weaverbird.pipeline.steps.utils.combination import PipelineOrDomainName, ReferenceResolver
+from weaverbird.pipeline.steps.utils.combination import PipelineOrDomainName, Reference, ReferenceResolver
 
 from .steps import (
     AbsoluteValueStep,
@@ -262,32 +259,45 @@ def _remove_void_from_condition(condition: Condition) -> Condition | None:
     return condition
 
 
+JoinStepMaybeWithVariables = TypeVar("JoinStepMaybeWithVariables", bound=JoinStep | JoinStepWithVariable)
+
+
 def _remove_void_condition_from_join_step(
-    step: JoinStepWithVariable | JoinStep,
-) -> JoinStep | JoinStepWithVariable | None:
-    if isinstance(step.right_pipeline, str):
+    step: JoinStepMaybeWithVariables,
+) -> JoinStepMaybeWithVariables | None:
+    if isinstance(step.right_pipeline, str | Reference):
         return step
-    cleaned_steps = remove_void_conditions_from_filter_steps(step.right_pipeline)
-    return step.__class__(**{**step.model_dump(), "right_pipeline": cleaned_steps}) if cleaned_steps else None
+    elif isinstance(step.right_pipeline, list):
+        cleaned_steps = remove_void_conditions_from_filter_steps(step.right_pipeline)
+        return step.__class__(**{**step.model_dump(), "right_pipeline": cleaned_steps}) if cleaned_steps else None
+    return None
+
+
+AppendStepMaybeWithVariables = TypeVar("AppendStepMaybeWithVariables", bound=AppendStep | AppendStepWithVariable)
 
 
 def _remove_void_condition_from_append_step(
-    step: AppendStep | AppendStepWithVariable,
-) -> AppendStep | AppendStepWithVariable | None:
+    step: AppendStepMaybeWithVariables,
+) -> AppendStepMaybeWithVariables | None:
     cleaned_pipelines: list[PipelineOrDomainName] = []
     for pipeline in step.pipelines:
-        if isinstance(pipeline, str):
+        if isinstance(pipeline, str | Reference):
             cleaned_pipelines.append(pipeline)
-        else:
+        elif isinstance(pipeline, list):
             if cleaned_pipeline := remove_void_conditions_from_filter_steps(pipeline):
                 cleaned_pipelines.append(cleaned_pipeline)
 
     return step.__class__(pipelines=cleaned_pipelines) if cleaned_pipelines else None
 
 
+PipelineStepMaybeWithVariables = TypeVar(
+    "PipelineStepMaybeWithVariables", bound=PipelineStep | PipelineStepWithVariables
+)
+
+
 def remove_void_conditions_from_filter_steps(
-    steps: list[PipelineStepWithVariables | PipelineStep],
-) -> list[PipelineStepWithVariables | PipelineStep]:
+    steps: list[PipelineStepMaybeWithVariables],
+) -> list[PipelineStepMaybeWithVariables]:
     """
     This method will remove all FilterStep with conditions having "__VOID__"
     in them. either the "value" key or the "column" key.
@@ -295,9 +305,9 @@ def remove_void_conditions_from_filter_steps(
 
     final_steps = []
     for step in steps:
-        if isinstance(step, FilterStep):
+        if isinstance(step, FilterStep | FilterStepWithVariables):
             if (condition := _remove_void_from_condition(step.condition)) is not None:
-                final_steps.append(FilterStep(condition=condition))
+                final_steps.append(step.__class__(condition=condition))
         elif isinstance(step, JoinStep | JoinStepWithVariable):
             if (clean_step := _remove_void_condition_from_join_step(step)) is not None:
                 final_steps.append(clean_step)
