@@ -70,8 +70,8 @@ def _ensure_is_pipeline_step(
 
 
 def _ensure_is_pipeline_step_with_variables(
-    v: str | list[dict] | list["PipelineStep" | "PipelineStepWithVariables"],
-) -> str | list["PipelineStep" | "PipelineStepWithVariables"]:
+    v: str | list[dict] | list["PipelineStep | PipelineStepWithVariables"],
+) -> str | list["PipelineStep | PipelineStepWithVariables"]:
     return _pipelinestep_adapter().validate_python(v)
 
 

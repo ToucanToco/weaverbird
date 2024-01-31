@@ -1,19 +1,17 @@
 import pytest
 from weaverbird.pipeline.pipeline import (
     Pipeline,
-    PipelineWithRefs,
     PipelineWithVariables,
     ReferenceUnresolved,
 )
 from weaverbird.pipeline.steps import (
-    AppendStepWithRefs,
+    AppendStep,
+    AppendStepWithVariable,
     DomainStep,
-    DomainStepWithRef,
-    JoinStepWithRef,
+    JoinStep,
+    JoinStepWithVariable,
     TextStep,
 )
-from weaverbird.pipeline.steps.append import AppendStepWithVariable
-from weaverbird.pipeline.steps.join import JoinStepWithVariable
 from weaverbird.pipeline.steps.utils.combination import Reference
 
 PIPELINES_LIBRARY: dict[str, list[dict]] = {
@@ -22,9 +20,9 @@ PIPELINES_LIBRARY: dict[str, list[dict]] = {
             DomainStep(domain="source"),
         ]
     ).dict()["steps"],
-    "intermediate_pipeline": PipelineWithRefs(
+    "intermediate_pipeline": Pipeline(
         steps=[
-            DomainStepWithRef(domain=Reference(uid="source_pipeline")),
+            DomainStep(domain=Reference(uid="source_pipeline")),
             TextStep(new_column="meow", text="Cat"),
         ]
     ).dict()["steps"],
@@ -34,9 +32,9 @@ PIPELINES_LIBRARY: dict[str, list[dict]] = {
             TextStep(new_column="comes_from", text="other"),
         ]
     ).dict()["steps"],
-    "pipeline_with_unresolved_ref": PipelineWithRefs(
+    "pipeline_with_unresolved_ref": Pipeline(
         steps=[
-            DomainStepWithRef(domain=Reference(uid="unresolved")),
+            DomainStep(domain=Reference(uid="unresolved")),
             TextStep(new_column="fail", text="yes"),
         ]
     ).dict()["steps"],
@@ -49,13 +47,13 @@ async def reference_resolver(ref: Reference) -> list[dict] | None:
 
 @pytest.mark.asyncio
 async def test_resolve_references_domain():
-    pipeline_with_refs = PipelineWithRefs(
+    pipeline_with_refs = Pipeline(
         steps=[
-            DomainStepWithRef(domain=Reference(uid="source_pipeline")),
+            DomainStep(domain=Reference(uid="source_pipeline")),
             TextStep(new_column="text", text="Lorem ipsum"),
         ]
     )
-    assert await pipeline_with_refs.resolve_references(reference_resolver) == PipelineWithVariables(
+    assert await pipeline_with_refs.resolve_references(reference_resolver) == Pipeline(
         steps=[
             DomainStep(domain="source"),
             TextStep(new_column="text", text="Lorem ipsum"),
@@ -65,13 +63,13 @@ async def test_resolve_references_domain():
 
 @pytest.mark.asyncio
 async def test_resolve_references_recursive():
-    pipeline_with_refs = PipelineWithRefs(
+    pipeline_with_refs = Pipeline(
         steps=[
-            DomainStepWithRef(domain=Reference(uid="intermediate_pipeline")),
+            DomainStep(domain=Reference(uid="intermediate_pipeline")),
             TextStep(new_column="text", text="Lorem ipsum"),
         ]
     )
-    assert await pipeline_with_refs.resolve_references(reference_resolver) == PipelineWithVariables(
+    assert await pipeline_with_refs.resolve_references(reference_resolver) == Pipeline(
         steps=[
             DomainStep(domain="source"),
             TextStep(new_column="meow", text="Cat"),
@@ -82,10 +80,10 @@ async def test_resolve_references_recursive():
 
 @pytest.mark.asyncio
 async def test_resolve_references_join():
-    pipeline_with_refs = PipelineWithRefs(
+    pipeline_with_refs = Pipeline(
         steps=[
-            DomainStepWithRef(domain="source"),
-            JoinStepWithRef(
+            DomainStep(domain="source"),
+            JoinStep(
                 on=[("key_left", "key_right")],
                 right_pipeline=Reference(uid="other_pipeline"),
                 type="left",
@@ -94,10 +92,10 @@ async def test_resolve_references_join():
         ]
     )
 
-    expected = PipelineWithVariables(
+    expected = Pipeline(
         steps=[
             DomainStep(domain="source"),
-            JoinStepWithVariable(
+            JoinStep(
                 on=[("key_left", "key_right")],
                 right_pipeline=PIPELINES_LIBRARY["other_pipeline"],
                 type="left",
@@ -111,10 +109,10 @@ async def test_resolve_references_join():
 
 @pytest.mark.asyncio
 async def test_resolve_references_append():
-    pipeline_with_refs = PipelineWithRefs(
+    pipeline_with_refs = Pipeline(
         steps=[
             DomainStep(domain="source"),
-            AppendStepWithRefs(
+            AppendStep(
                 pipelines=[
                     Reference(uid="other_pipeline"),
                 ]
@@ -123,33 +121,33 @@ async def test_resolve_references_append():
         ]
     )
 
-    expected = PipelineWithVariables(
+    expected = Pipeline(
         steps=[
             DomainStep(domain="source"),
-            AppendStepWithVariable(pipelines=[PIPELINES_LIBRARY["other_pipeline"]]),
+            AppendStep(pipelines=[PIPELINES_LIBRARY["other_pipeline"]]),
             TextStep(new_column="text", text="Lorem ipsum"),
         ]
     )
 
     assert await pipeline_with_refs.resolve_references(reference_resolver) == expected
 
-    pipeline_with_refs = PipelineWithRefs(
+    pipeline_with_refs = Pipeline(
         steps=[
             DomainStep(domain="source"),
-            AppendStepWithRefs(
+            AppendStep(
                 pipelines=[
                     [
-                        DomainStepWithRef(domain=Reference(uid="other_pipeline")),
+                        DomainStep(domain=Reference(uid="other_pipeline")),
                         TextStep(new_column="text", text="Lorem ipsum"),
                     ],
                 ]
             ),
         ]
     )
-    expected = PipelineWithVariables(
+    expected = Pipeline(
         steps=[
             DomainStep(domain="source"),
-            AppendStepWithVariable(
+            AppendStep(
                 pipelines=[[*PIPELINES_LIBRARY["other_pipeline"], TextStep(new_column="text", text="Lorem ipsum")]]
             ),
         ]
@@ -163,10 +161,10 @@ async def test_resolve_references_unresolved_append():
     """
     It should skip pipelines that are not resolved in an append step
     """
-    pipeline_with_refs = PipelineWithRefs(
+    pipeline_with_refs = Pipeline(
         steps=[
             DomainStep(domain="source"),
-            AppendStepWithRefs(
+            AppendStep(
                 pipelines=[
                     Reference(uid="unresolved"),
                     Reference(uid="other_pipeline"),
@@ -177,10 +175,10 @@ async def test_resolve_references_unresolved_append():
         ]
     )
 
-    expected = PipelineWithVariables(
+    expected = Pipeline(
         steps=[
             DomainStep(domain="source"),
-            AppendStepWithVariable(pipelines=[PIPELINES_LIBRARY["other_pipeline"]]),
+            AppendStep(pipelines=[PIPELINES_LIBRARY["other_pipeline"]]),
             TextStep(new_column="text", text="Lorem ipsum"),
         ]
     )
@@ -192,10 +190,10 @@ async def test_resolve_references_unresolved_append_all():
     """
     It should skip the append step if all its pipelines are not resolved
     """
-    pipeline_with_refs = PipelineWithRefs(
+    pipeline_with_refs = Pipeline(
         steps=[
             DomainStep(domain="source"),
-            AppendStepWithRefs(
+            AppendStep(
                 pipelines=[
                     Reference(uid="unresolved"),
                     Reference(uid="unresolved_2"),
@@ -205,7 +203,7 @@ async def test_resolve_references_unresolved_append_all():
         ]
     )
 
-    assert await pipeline_with_refs.resolve_references(reference_resolver) == PipelineWithVariables(
+    assert await pipeline_with_refs.resolve_references(reference_resolver) == Pipeline(
         steps=[
             DomainStep(domain="source"),
             TextStep(new_column="text", text="Lorem ipsum"),
@@ -218,9 +216,9 @@ async def test_resolve_references_unresolved_domain():
     """
     It should raise an error if the domain reference is not resolved
     """
-    pipeline_with_refs = PipelineWithRefs(
+    pipeline_with_refs = Pipeline(
         steps=[
-            DomainStepWithRef(domain=Reference(uid="unresolved")),
+            DomainStep(domain=Reference(uid="unresolved")),
             TextStep(new_column="text", text="Lorem ipsum"),
         ]
     )
@@ -233,10 +231,10 @@ async def test_resolve_references_unresolved_append_subpipeline_error():
     """
     It should skip pipelines that trigger a resolution error
     """
-    pipeline_with_refs = PipelineWithRefs(
+    pipeline_with_refs = Pipeline(
         steps=[
             DomainStep(domain="source"),
-            AppendStepWithRefs(
+            AppendStep(
                 pipelines=[
                     Reference(uid="pipeline_with_unresolved_ref"),
                     Reference(uid="other_pipeline"),
@@ -246,10 +244,10 @@ async def test_resolve_references_unresolved_append_subpipeline_error():
         ]
     )
 
-    expected = PipelineWithVariables(
+    expected = Pipeline(
         steps=[
             DomainStep(domain="source"),
-            AppendStepWithVariable(pipelines=[PIPELINES_LIBRARY["other_pipeline"]]),
+            AppendStep(pipelines=[PIPELINES_LIBRARY["other_pipeline"]]),
             TextStep(new_column="text", text="Lorem ipsum"),
         ]
     )
@@ -262,10 +260,10 @@ async def test_resolve_references_unresolved_join():
     """
     It should raise an error if the joined pipeline is not resolved
     """
-    pipeline_with_refs = PipelineWithRefs(
+    pipeline_with_refs = Pipeline(
         steps=[
-            DomainStepWithRef(domain="source"),
-            JoinStepWithRef(
+            DomainStep(domain="source"),
+            JoinStep(
                 on=[("key_left", "key_right")],
                 right_pipeline=Reference(uid="unresolved"),
                 type="left",
@@ -282,10 +280,10 @@ async def test_resolve_references_unresolved_join_subpipeline_error():
     """
     It should raise an error if the joined pipeline raises a resolution error
     """
-    pipeline_with_refs = PipelineWithRefs(
+    pipeline_with_refs = Pipeline(
         steps=[
-            DomainStepWithRef(domain="source"),
-            JoinStepWithRef(
+            DomainStep(domain="source"),
+            JoinStep(
                 on=[("key_left", "key_right")],
                 right_pipeline=Reference(uid="pipeline_with_unresolved_step"),
                 type="left",

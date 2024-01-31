@@ -176,7 +176,7 @@ class Pipeline(BaseModel):
         resolved_steps: list[PipelineStep | PipelineStepWithVariables] = []
         for step in self.steps:
             resolved_step = (
-                await step.resolve_references(reference_resolver) if hasattr(step, "resolve_references") else step
+                await step.resolve_references(reference_resolver, self) if hasattr(step, "resolve_references") else step
             )
             if isinstance(resolved_step, self.__class__):
                 resolved_steps.extend(resolved_step.steps)
@@ -450,7 +450,7 @@ def remove_void_conditions_from_mongo_steps(
 
 
 # TODO move to a dedicated variables module
-class PipelineWithVariables(BaseModel):
+class PipelineWithVariables(Pipeline):
     steps: list[PipelineStepWithVariables | PipelineStep]
 
     def render(self, variables: dict[str, Any], renderer) -> Pipeline:
