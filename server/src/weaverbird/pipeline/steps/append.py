@@ -1,11 +1,10 @@
-from typing import Literal
+from typing import Literal, Self
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMixin
 
 from .utils.combination import (
-    PipelineOrDomainName,
-    PipelineWithRefsOrDomainNameOrReference,
+    PipelineOrDomainNameOrReference,
     ReferenceResolver,
     resolve_if_reference,
 )
@@ -16,22 +15,18 @@ class BaseAppendStep(BaseStep):
 
 
 class AppendStep(BaseAppendStep):
-    pipelines: list[PipelineOrDomainName]
+    pipelines: list[PipelineOrDomainNameOrReference]
 
-
-class AppendStepWithVariable(AppendStep, StepWithVariablesMixin):
-    ...
-
-
-class AppendStepWithRefs(BaseAppendStep):
-    pipelines: list[PipelineWithRefsOrDomainNameOrReference]
-
-    async def resolve_references(self, reference_resolver: ReferenceResolver) -> AppendStepWithVariable | None:
+    async def resolve_references(self, reference_resolver: ReferenceResolver) -> Self | None:
         resolved_pipelines = [await resolve_if_reference(reference_resolver, p) for p in self.pipelines]
         resolved_pipelines_without_nones = [p for p in resolved_pipelines if p is not None]
         if len(resolved_pipelines_without_nones) == 0:
             return None  # skip the step
-        return AppendStepWithVariable(
+        return self.__class__(
             name=self.name,
             pipelines=resolved_pipelines_without_nones,
         )
+
+
+class AppendStepWithVariable(AppendStep, StepWithVariablesMixin):
+    ...
