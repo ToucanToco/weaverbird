@@ -1,5 +1,11 @@
 from collections.abc import Iterable
-from typing import Annotated, Any, Self, TypeVar
+from sys import version_info
+from typing import Annotated, Any, TypeVar
+
+if version_info < (3, 11):  # noqa: UP036
+    from typing_extensions import Self  # noqa: UP035
+else:
+    from typing import Self
 
 from pydantic import BaseModel, Field
 
