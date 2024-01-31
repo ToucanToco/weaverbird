@@ -62,16 +62,14 @@ steps -> 1 -> name
 
 ### Pipeline combinations: references
 
-Pipelines can reference other pipelines in certain steps.
-These references are accepted only in the model `PipelineWithRefs`.
-This model provides a method to find and replace recursively all references.
+Pipelines can reference other pipelines in certain steps: domain, append, and join.
+A method `resolve_references` is provided to find and replace recursively all references.
 It must be called before trying to execute or translate a pipeline.
-
 
 ### Pipeline : variables
 
 Some fields can contain variables instead of the actual value.
-They are accepted only in the model `PipelineWithVariable`.
+They are accepted only in the model `PipelineWithVariables`.
 This model provides a method to replace all variables by their value.
 It must be called before trying to execute or translate a pipeline.
 
@@ -138,15 +136,7 @@ As of today, no translator backend exists for python. We plan to implement one f
 ### Summary
 
 ```
-  ┌────────────────────────────┐
-  │                            │
-  │  pipeline with references  │
-  │                            │
-  └──────────────┬─────────────┘
-                 │
-                 │  PipelineWithRefs.resolve_references
-                 │
-                 ▼
+
   ┌────────────────────────────┐
   │                            │
   │  pipeline with variables   │
@@ -162,7 +152,7 @@ As of today, no translator backend exists for python. We plan to implement one f
   │                            │
   └──────────────┬─────────────┘
                  │
-                 │                                            iinput dataframes
+                 │                                            input dataframes
                  │                                                  │
                  │                                                  │
                  OR────────────────────────────────────────┐        │
