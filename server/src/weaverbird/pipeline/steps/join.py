@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 
 from .utils.combination import (
     PipelineOrDomainNameOrReference,
+    PipelineWithVariablesOrDomainNameOrReference,
     ReferenceResolver,
     resolve_if_reference,
 )
@@ -46,4 +47,4 @@ class JoinStep(BaseJoinStep):
 
 
 class JoinStepWithVariable(JoinStep, StepWithVariablesMixin):
-    ...
+    right_pipeline: PipelineWithVariablesOrDomainNameOrReference

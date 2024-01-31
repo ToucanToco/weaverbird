@@ -55,7 +55,7 @@ def _pipelinestep_adapter() -> TypeAdapter["str | list[PipelineStep]"]:
 
 
 @cache
-def _pipelinestepwithvariables_adapter() -> TypeAdapter["str | list[PipelineStep | PipelineStepWithVariables]"]:
+def _pipelinestepwithvariables_adapter() -> TypeAdapter["str | list[PipelineStepWithVariables | PipelineStep]"]:
     from weaverbird.pipeline.pipeline import PipelineStep, PipelineStepWithVariables
 
     # mypy is confused by the type with a postponed annotation above, so it expects str | list[Any]
@@ -70,15 +70,15 @@ def _ensure_is_pipeline_step(
 
 
 def _ensure_is_pipeline_step_with_variables(
-    v: str | list[dict] | list["PipelineStep | PipelineStepWithVariables"],
-) -> str | list["PipelineStep | PipelineStepWithVariables"]:
-    return _pipelinestep_adapter().validate_python(v)
+    v: str | list[dict] | list["PipelineStepWithVariables | PipelineStep"],
+) -> str | list["PipelineStepWithVariables | PipelineStep"]:
+    return _pipelinestepwithvariables_adapter().validate_python(v)
 
 
 # can be either a domain name or a complete pipeline
 PipelineOrDomainName = Annotated[str | list["PipelineStep"], BeforeValidator(_ensure_is_pipeline_step)]
 PipelineWithVariablesOrDomainName = Annotated[
-    str | list["PipelineStepWithVariables"], BeforeValidator(_ensure_is_pipeline_step_with_variables)
+    str | list["PipelineStepWithVariables | PipelineStep"], BeforeValidator(_ensure_is_pipeline_step_with_variables)
 ]
 
 

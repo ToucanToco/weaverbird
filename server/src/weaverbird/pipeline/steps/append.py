@@ -10,6 +10,7 @@ if TYPE_CHECKING:
 
 from .utils.combination import (
     PipelineOrDomainNameOrReference,
+    PipelineWithVariablesOrDomainNameOrReference,
     ReferenceResolver,
     resolve_if_reference,
 )
@@ -36,4 +37,4 @@ class AppendStep(BaseAppendStep):
 
 
 class AppendStepWithVariable(AppendStep, StepWithVariablesMixin):
-    ...
+    pipelines: list[PipelineWithVariablesOrDomainNameOrReference]
