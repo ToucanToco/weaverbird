@@ -1,8 +1,7 @@
 from typing import Any
 
 import pytest
-from pydantic import ValidationError
-from weaverbird.pipeline.steps import AppendStep, AppendStepWithRefs
+from weaverbird.pipeline.steps import AppendStep
 
 
 @pytest.fixture
@@ -80,13 +79,6 @@ def raw_append_step_with_refs() -> dict[str, Any]:
     }
 
 
-def test_pipelinestep_validation(raw_append_step: dict[str, Any], raw_append_step_with_refs: dict[str, Any]) -> None:
-    step = AppendStep(**raw_append_step)
-    assert isinstance(step, AppendStep)
-    with pytest.raises(ValidationError):
-        AppendStep(**raw_append_step_with_refs)
-
-
 def test_pipelinestepwith_refs_validation(raw_append_step_with_refs: dict[str, Any]) -> None:
-    step = AppendStepWithRefs(**raw_append_step_with_refs)
-    assert isinstance(step, AppendStepWithRefs)
+    step = AppendStep(**raw_append_step_with_refs)
+    assert isinstance(step, AppendStep)

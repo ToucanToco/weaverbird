@@ -345,7 +345,7 @@ def test_domain_with_wrong_domain_name(base_translator: BaseTranslator):
 def test_domain_with_reference(base_translator: BaseTranslator):
     uid = "to be or not to be a query ?"
     type = "ref"
-    step = steps.DomainStepWithRef(domain=Reference(type=type, uid=uid))
+    step = steps.DomainStep(domain=Reference(type=type, uid=uid))
     with pytest.raises(NotImplementedError):
         base_translator._domain(step=step)
 

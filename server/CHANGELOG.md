@@ -1,5 +1,11 @@
 # Changelog (weaverbird python package)
 
+## Unreleased
+
+### Changed
+
+- Remove `PipelineWithRefs`. Instead, support method `resolve_references` on types `Pipeline` and `PipelineWithVariables`.
+
 ## [0.41.3] - 2024-01-26
 
 ### Fixed

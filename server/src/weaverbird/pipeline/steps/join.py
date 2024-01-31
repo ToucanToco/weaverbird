@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import TYPE_CHECKING, Literal, Self, TypeVar
 
 from pydantic import Field
 
@@ -6,9 +6,14 @@ from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMixin
 from weaverbird.pipeline.types import ColumnName
 
+if TYPE_CHECKING:
+    from weaverbird.pipeline.pipeline import Pipeline, PipelineWithVariables
+
+    PipelineType = TypeVar("PipelineType", bound=Pipeline | PipelineWithVariables)
+
 from .utils.combination import (
-    PipelineOrDomainName,
-    PipelineWithRefsOrDomainNameOrReference,
+    PipelineOrDomainNameOrReference,
+    PipelineWithVariablesOrDomainNameOrReference,
     ReferenceResolver,
     resolve_if_reference,
 )
@@ -23,25 +28,23 @@ class BaseJoinStep(BaseStep):
 
 
 class JoinStep(BaseJoinStep):
-    right_pipeline: PipelineOrDomainName
+    right_pipeline: PipelineOrDomainNameOrReference
 
-
-class JoinStepWithVariable(JoinStep, StepWithVariablesMixin):
-    ...
-
-
-class JoinStepWithRef(BaseJoinStep):
-    right_pipeline: PipelineWithRefsOrDomainNameOrReference
-
-    async def resolve_references(self, reference_resolver: ReferenceResolver) -> JoinStepWithVariable | None:
+    async def resolve_references(
+        self, reference_resolver: ReferenceResolver, parent_pipeline: "PipelineType"
+    ) -> Self | None:
         right_pipeline = await resolve_if_reference(reference_resolver, self.right_pipeline)
         if right_pipeline is None:
             from weaverbird.pipeline.pipeline import ReferenceUnresolved
 
             raise ReferenceUnresolved()
-        return JoinStepWithVariable(
+        return self.__class__(
             name=self.name,
             type=self.type,
             on=self.on,
             right_pipeline=right_pipeline,
         )
+
+
+class JoinStepWithVariable(JoinStep, StepWithVariablesMixin):
+    right_pipeline: PipelineWithVariablesOrDomainNameOrReference

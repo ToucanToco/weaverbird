@@ -4,7 +4,7 @@ from weaverbird.pipeline.steps.utils.base import BaseStep
 from .absolutevalue import AbsoluteValueStep, AbsoluteValueStepWithVariable
 from .addmissingdates import AddMissingDatesStep, AddMissingDatesStepWithVariables
 from .aggregate import AggregateStep, AggregateStepWithVariables, Aggregation
-from .append import AppendStep, AppendStepWithRefs, AppendStepWithVariable
+from .append import AppendStep, AppendStepWithVariable
 from .argmax import ArgmaxStep, ArgmaxStepWithVariable
 from .argmin import ArgminStep, ArgminStepWithVariable
 from .comparetext import CompareTextStep, CompareTextStepWithVariables
@@ -16,7 +16,7 @@ from .customsql import CustomSqlStep
 from .date_extract import DateExtractStep, DateExtractStepWithVariable
 from .delete import DeleteStep
 from .dissolve import DissolveStep
-from .domain import DomainStep, DomainStepWithRef
+from .domain import DomainStep
 from .duplicate import DuplicateStep
 from .duration import DurationStep, DurationStepWithVariable
 from .evolution import EvolutionStep, EvolutionStepWithVariable
@@ -26,7 +26,7 @@ from .formula import FormulaStep, FormulaStepWithVariable
 from .fromdate import FromdateStep
 from .hierarchy import HierarchyStep
 from .ifthenelse import IfthenelseStep, IfThenElseStepWithVariables
-from .join import JoinStep, JoinStepWithRef, JoinStepWithVariable
+from .join import JoinStep, JoinStepWithVariable
 from .lowercase import LowercaseStep
 from .moving_average import MovingAverageStep
 from .percentage import PercentageStep

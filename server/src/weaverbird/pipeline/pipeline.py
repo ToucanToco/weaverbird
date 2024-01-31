@@ -1,5 +1,11 @@
 from collections.abc import Iterable
-from typing import Annotated, Any
+from sys import version_info
+from typing import Annotated, Any, TypeVar
+
+if version_info < (3, 11):  # noqa: UP036
+    from typing_extensions import Self  # noqa: UP035
+else:
+    from typing import Self
 
 from pydantic import BaseModel, Field
 
@@ -12,11 +18,8 @@ from weaverbird.pipeline.conditions import (
     InclusionCondition,
     MatchCondition,
 )
-from weaverbird.pipeline.steps.append import AppendStepWithRefs
-from weaverbird.pipeline.steps.domain import DomainStepWithRef
 from weaverbird.pipeline.steps.hierarchy import HierarchyStep
-from weaverbird.pipeline.steps.join import JoinStepWithRef
-from weaverbird.pipeline.steps.utils.combination import PipelineOrDomainName, ReferenceResolver
+from weaverbird.pipeline.steps.utils.combination import PipelineOrDomainName, Reference, ReferenceResolver
 
 from .steps import (
     AbsoluteValueStep,
@@ -165,6 +168,23 @@ class Pipeline(BaseModel):
     def dict(self, *, exclude_none: bool = True, **kwargs) -> dict:
         return self.model_dump(exclude_none=exclude_none, **kwargs)
 
+    async def resolve_references(self, reference_resolver: ReferenceResolver) -> Self | None:
+        """
+        Walk the pipeline steps and replace any reference by its corresponding pipeline.
+        The sub-pipelines added should also be handled, so that they will be no references anymore in the result.
+        """
+        resolved_steps: list[PipelineStep | PipelineStepWithVariables] = []
+        for step in self.steps:
+            resolved_step = (
+                await step.resolve_references(reference_resolver, self) if hasattr(step, "resolve_references") else step
+            )
+            if isinstance(resolved_step, self.__class__):
+                resolved_steps.extend(resolved_step.steps)
+            elif resolved_step is not None:  # None means the step should be skipped
+                resolved_steps.append(resolved_step)
+
+        return self.__class__(steps=resolved_steps)
+
 
 PipelineStepWithVariables = Annotated[
     AbsoluteValueStepWithVariable
@@ -245,32 +265,45 @@ def _remove_void_from_condition(condition: Condition) -> Condition | None:
     return condition
 
 
+JoinStepMaybeWithVariables = TypeVar("JoinStepMaybeWithVariables", bound=JoinStep | JoinStepWithVariable)
+
+
 def _remove_void_condition_from_join_step(
-    step: JoinStepWithVariable | JoinStep,
-) -> JoinStep | JoinStepWithVariable | None:
-    if isinstance(step.right_pipeline, str):
+    step: JoinStepMaybeWithVariables,
+) -> JoinStepMaybeWithVariables | None:
+    if isinstance(step.right_pipeline, str | Reference):
         return step
-    cleaned_steps = remove_void_conditions_from_filter_steps(step.right_pipeline)
-    return step.__class__(**{**step.model_dump(), "right_pipeline": cleaned_steps}) if cleaned_steps else None
+    elif isinstance(step.right_pipeline, list):
+        cleaned_steps = remove_void_conditions_from_filter_steps(step.right_pipeline)
+        return step.__class__(**{**step.model_dump(), "right_pipeline": cleaned_steps}) if cleaned_steps else None
+    return None
+
+
+AppendStepMaybeWithVariables = TypeVar("AppendStepMaybeWithVariables", bound=AppendStep | AppendStepWithVariable)
 
 
 def _remove_void_condition_from_append_step(
-    step: AppendStep | AppendStepWithVariable,
-) -> AppendStep | AppendStepWithVariable | None:
+    step: AppendStepMaybeWithVariables,
+) -> AppendStepMaybeWithVariables | None:
     cleaned_pipelines: list[PipelineOrDomainName] = []
     for pipeline in step.pipelines:
-        if isinstance(pipeline, str):
+        if isinstance(pipeline, str | Reference):
             cleaned_pipelines.append(pipeline)
-        else:
+        elif isinstance(pipeline, list):
             if cleaned_pipeline := remove_void_conditions_from_filter_steps(pipeline):
                 cleaned_pipelines.append(cleaned_pipeline)
 
     return step.__class__(pipelines=cleaned_pipelines) if cleaned_pipelines else None
 
 
+PipelineStepMaybeWithVariables = TypeVar(
+    "PipelineStepMaybeWithVariables", bound=PipelineStep | PipelineStepWithVariables
+)
+
+
 def remove_void_conditions_from_filter_steps(
-    steps: list[PipelineStepWithVariables | PipelineStep],
-) -> list[PipelineStepWithVariables | PipelineStep]:
+    steps: list[PipelineStepMaybeWithVariables],
+) -> list[PipelineStepMaybeWithVariables]:
     """
     This method will remove all FilterStep with conditions having "__VOID__"
     in them. either the "value" key or the "column" key.
@@ -278,9 +311,9 @@ def remove_void_conditions_from_filter_steps(
 
     final_steps = []
     for step in steps:
-        if isinstance(step, FilterStep):
+        if isinstance(step, FilterStep | FilterStepWithVariables):
             if (condition := _remove_void_from_condition(step.condition)) is not None:
-                final_steps.append(FilterStep(condition=condition))
+                final_steps.append(step.__class__(condition=condition))
         elif isinstance(step, JoinStep | JoinStepWithVariable):
             if (clean_step := _remove_void_condition_from_join_step(step)) is not None:
                 final_steps.append(clean_step)
@@ -417,7 +450,7 @@ def remove_void_conditions_from_mongo_steps(
 
 
 # TODO move to a dedicated variables module
-class PipelineWithVariables(BaseModel):
+class PipelineWithVariables(Pipeline):
     steps: list[PipelineStepWithVariables | PipelineStep]
 
     def render(self, variables: dict[str, Any], renderer) -> Pipeline:
@@ -427,41 +460,6 @@ class PipelineWithVariables(BaseModel):
             for step in self.steps
         ]
         return Pipeline(steps=steps_rendered)
-
-
-PipelineStepWithRefs = Annotated[
-    AppendStepWithRefs | DomainStepWithRef | JoinStepWithRef,
-    Field(discriminator="name"),
-]
-
-
-class PipelineWithRefs(BaseModel):
-    """
-    Represents a pipeline in which some steps can reference some other pipelines using the syntax
-    `{"type": "ref", "uid": "..."}`
-    """
-
-    steps: list[PipelineStepWithRefs | PipelineStep | PipelineStepWithVariables]
-
-    async def resolve_references(self, reference_resolver: ReferenceResolver) -> PipelineWithVariables | None:
-        """
-        Walk the pipeline steps and replace any reference by its corresponding pipeline.
-        The sub-pipelines added should also be handled, so that they will be no references anymore in the result.
-        """
-        resolved_steps: list[PipelineStepWithRefs | PipelineStepWithVariables | PipelineStep] = []
-        for step in self.steps:
-            resolved_step = (
-                await step.resolve_references(reference_resolver) if hasattr(step, "resolve_references") else step
-            )
-            if isinstance(resolved_step, PipelineWithVariables):
-                resolved_steps.extend(resolved_step.steps)
-            elif resolved_step is not None:  # None means the step should be skipped
-                resolved_steps.append(resolved_step)
-
-        return PipelineWithVariables(steps=resolved_steps)
-
-
-PipelineWithVariables.model_rebuild()
 
 
 class ReferenceUnresolved(Exception):
