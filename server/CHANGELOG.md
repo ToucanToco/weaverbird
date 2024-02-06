@@ -2,8 +2,10 @@
 
 ## Unreleased
 
+## [0.26.10] - 2024-02-06
+
 - Mongo: Fixed the `evolution` step when several index columns are used. The generated pipeline now filters on all of them
-  rather than jsut the last one.
+  rather than just the last one.
 
 ## [0.26.9] - 2023-10-05
 
