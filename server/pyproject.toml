@@ -49,7 +49,7 @@ psycopg2 = "^2.9.7"
 pymongo = ">=4.2.0"
 sqlalchemy-redshift = ">=0.8.11,<1"
 PyYAML = "^6.0"
-ruff = ">=0.1.1,<0.3.0"
+ruff = "^0.2.0"
 pre-commit = "^3.4.0"
 
 [tool.poetry.extras]
@@ -81,6 +81,12 @@ markers = [
 [tool.ruff]
 # a bit longer to allow for some lines which black would not wrap
 line-length = 120
+# Exclude a variety of commonly ignored directories.
+exclude = [".git", ".direnv"]
+# Assume Python 3.11.
+target-version = "py311"
+
+[tool.ruff.lint]
 select = ["E", "F", "UP", "N", "C", "B", "I001", "S"]
 ignore = [
        "S101", # allow use of assert
@@ -90,15 +96,11 @@ ignore = [
        "N818", # allow exceptions that do not end with the `Error` suffix
 ]
 
-# Exclude a variety of commonly ignored directories.
-exclude = [".git", ".direnv"]
-# Assume Python 3.11.
-target-version = "py311"
 
-[tool.ruff.flake8-quotes]
+[tool.ruff.lint.flake8-quotes]
 docstring-quotes = "double"
 
-[tool.ruff.pep8-naming]
+[tool.ruff.lint.pep8-naming]
 # Allow a few decorators to trigger class method treatment.
 classmethod-decorators = [
     "classmethod",
