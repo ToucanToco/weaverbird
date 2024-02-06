@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Mongo: Fixed the `evolution` step when several index columns are used. The generated pipeline now filters on all of them
+  rather than jsut the last one.
+
 ## [0.26.9] - 2023-10-05
 
 - Pypika: Fixed the `todate` step by ensuring the right formatting is used for every backend
