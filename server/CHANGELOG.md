@@ -1,8 +1,13 @@
 # Changelog (weaverbird python package)
 
-## [0.42.0] - 2024-01-31
+## Unreleased
 
-### Changed
+### Fixed
+
+- Mongo: Fixed the `evolution` step when several index columns are used. The generated pipeline now filters on all of them
+  rather than just the last one.
+
+## [0.42.0] - 2024-01-31
 
 - Remove `PipelineWithRefs`. Instead, support method `resolve_references` on types `Pipeline` and `PipelineWithVariables`.
 
