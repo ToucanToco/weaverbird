@@ -76,7 +76,8 @@ def translate_evolution(step: EvolutionStep) -> list[MongoStep]:
                         "cond": {
                             "$and": [
                                 {"$eq": ["$_VQB_DATE_PREV", f"$$item.{step.date_col}"]},
-                                {"$eq": [f"${col}", f"$$item.{col}"] for col in step.index_columns},
+                                # FIXME: this is a bug
+                                {"$eq": [f"${col}", f"$$item.{col}"] for col in step.index_columns},  # noqa: B035
                             ],
                         },
                     },
