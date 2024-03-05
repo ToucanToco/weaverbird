@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [0.26.11] - 2024-03-05
+
+- Mongo: Fixed the `ifthenelse` step which generated "$and" clauses instead of "$or"
+
 ## [0.26.10] - 2024-02-06
 
 - Mongo: Fixed the `evolution` step when several index columns are used. The generated pipeline now filters on all of them
