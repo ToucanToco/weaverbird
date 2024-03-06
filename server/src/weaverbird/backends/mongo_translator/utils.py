@@ -50,7 +50,7 @@ def build_cond_expression(
     if isinstance(cond, ConditionComboAnd):
         return build_and_expression(cond)
     if isinstance(cond, ConditionComboOr):
-        return {"$and": [build_cond_expression(elem) for elem in cond.or_]}
+        return {"$or": [build_cond_expression(elem) for elem in cond.or_]}
     if cond.operator in unsupported_operators:
         raise UnsupportedOperatorError(f"Unsupported operator ${cond.operator} in conditions")
 
