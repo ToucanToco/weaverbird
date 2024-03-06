@@ -99,7 +99,7 @@ class GoogleBigQueryTranslator(SQLTranslator):
         float="FLOAT64",
         integer="INTEGER",
         text="STRING",
-        datetime="TIMESTAMP",
+        datetime="DATETIME",
         timestamp="TIMESTAMP",
     )
     DATE_FORMAT_MAPPING = DateFormatMapping(
@@ -219,13 +219,7 @@ class GoogleBigQueryTranslator(SQLTranslator):
         if date_unit == "firstDayOfPreviousIsoWeek":
             return cls._add_date(target_column=cls._date_trunc("ISOWEEK", target_column), duration=-1, unit="weeks")
         if date_unit == "firstDayOfPreviousMonth":
-            # We need to cast the truncated timestamp to a date to prevent the following error:
-            # "DATE_ADD does not support the MONTH date part when the argument is TIMESTAMP type at [1:8]"
-            return cls._add_date(
-                target_column=functions.Cast(cls._date_trunc("MONTH", target_column), "DATE"),
-                duration=-1,
-                unit="months",
-            )
+            return cls._add_date(target_column=cls._date_trunc("MONTH", target_column), duration=-1, unit="months")
 
         return super()._get_date_extract_func(date_unit=date_unit, target_column=target_column)
 
@@ -239,9 +233,9 @@ class GoogleBigQueryTranslator(SQLTranslator):
     ) -> StepContext:
         col_field = Table(prev_step_table)[step.column]
         if step.format is not None:
-            date_selection = self._cast_to_timestamp(GBQParseDateTime(col_field, step.format))
+            date_selection = GBQParseDateTime(col_field, step.format)
         else:
-            date_selection = self._cast_to_timestamp(col_field)
+            date_selection = functions.Cast(col_field, "DATETIME")
 
         query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *(c for c in columns if c != step.column),
