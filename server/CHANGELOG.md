@@ -4,6 +4,7 @@
 
 ## [0.26.11] - 2024-03-05
 
+- Google Biq Query: ToDate step now produces datetime columns, not timestamp
 - Mongo: Fixed the `ifthenelse` step which generated "$and" clauses instead of "$or"
 
 ## [0.26.10] - 2024-02-06
