@@ -1,0 +1,89 @@
+{
+  "exclude": [
+    "athena_pypika",
+    "bigquery_pypika",
+    "mysql_pypika",
+    "postgres_pypika",
+    "redshift_pypika",
+    "snowflake_pypika"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "if": {
+          "or": [{
+            "column": "NAME",
+            "operator": "eq",
+            "value": "perceval"
+          }, {
+            "column": "NAME",
+            "operator": "eq",
+            "value": "karadoc"
+          }]
+        },
+        "then": "\"chevalier\"",
+        "else": "\"paysan\"",
+        "name": "ifthenelse",
+        "newColumn": "CLASS"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "perceval"
+      },
+      {
+        "NAME": "karadoc"
+      },
+      {
+        "NAME": "guethenoc"
+      },
+      {
+        "NAME": "roparzh"
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "CLASS",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "perceval",
+        "CLASS": "chevalier"
+      },
+      {
+        "NAME": "karadoc",
+        "CLASS": "chevalier"
+      },
+      {
+        "NAME": "guethenoc",
+        "CLASS": "paysan"
+      },
+      {
+        "NAME": "roparzh",
+        "CLASS": "paysan"
+      }
+    ]
+  }
+}
