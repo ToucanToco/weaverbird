@@ -72,7 +72,7 @@ class GoogleBigQueryTranslator(SQLTranslator):
         float="FLOAT64",
         integer="INTEGER",
         text="STRING",
-        datetime="TIMESTAMP",
+        datetime="DATETIME",
         timestamp="TIMESTAMP",
     )
     DATE_FORMAT_MAPPING = DateFormatMapping(
@@ -215,9 +215,9 @@ class GoogleBigQueryTranslator(SQLTranslator):
     ) -> StepContext:
         col_field = Table(prev_step_name)[step.column]
         if step.format is not None:
-            date_selection = self._cast_to_timestamp(GBQParseDateTime(col_field, step.format))
+            date_selection = GBQParseDateTime(col_field, step.format)
         else:
-            date_selection = self._cast_to_timestamp(col_field)
+            date_selection = functions.Cast(col_field, "DATETIME")
 
         query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_name).select(
             *(c for c in columns if c != step.column),
