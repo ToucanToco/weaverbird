@@ -5,6 +5,11 @@ updates:
     directory: "/server"
     schedule:
       interval: "weekly"
+    groups:
+      prod-deps:
+        dependency-type: "production"
+      dev-deps:
+        dependency-type: "development"
   # yarn
   - package-ecosystem: "npm"
     directory: "/"
