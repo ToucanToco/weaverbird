@@ -3300,13 +3300,13 @@ requests = ">=2.23,<3.0"
 
 [[package]]
 name = "toucan-connectors"
-version = "5.2.0"
+version = "5.3.0"
 description = "Toucan Toco Connectors"
 optional = false
 python-versions = ">=3.10,<3.12"
 files = [
-    {file = "toucan_connectors-5.2.0-py3-none-any.whl", hash = "sha256:5401bc130aa38a30772d809ca79b6731d14bbe7f774320699801056b57c2abe0"},
-    {file = "toucan_connectors-5.2.0.tar.gz", hash = "sha256:60f0e78424205117c221a183bc2c44a8b0fb4ccfb685b4bed9b989d2221ad3ac"},
+    {file = "toucan_connectors-5.3.0-py3-none-any.whl", hash = "sha256:7a14f7ce17af4d5f4ef114a1d09dbce1b350fa703b3219a924872249a8f68eac"},
+    {file = "toucan_connectors-5.3.0.tar.gz", hash = "sha256:6a46703538a97198acd0c44a8d4e3099044be93766933de0db5b5787411c8202"},
 ]
 
 [package.dependencies]
