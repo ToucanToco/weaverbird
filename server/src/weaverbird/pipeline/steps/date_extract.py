@@ -64,5 +64,4 @@ class DateExtractStep(BaseStep):
     new_column_name: ColumnName | None = None
 
 
-class DateExtractStepWithVariable(DateExtractStep, StepWithVariablesMixin):
-    ...
+class DateExtractStepWithVariable(DateExtractStep, StepWithVariablesMixin): ...

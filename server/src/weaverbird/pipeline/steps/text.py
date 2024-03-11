@@ -22,5 +22,4 @@ class TextStep(BaseStep):
         return value
 
 
-class TextStepWithVariable(TextStep, StepWithVariablesMixin):
-    ...
+class TextStepWithVariable(TextStep, StepWithVariablesMixin): ...

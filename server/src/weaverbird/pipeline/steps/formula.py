@@ -11,5 +11,4 @@ class FormulaStep(BaseStep):
     formula: str
 
 
-class FormulaStepWithVariable(FormulaStep, StepWithVariablesMixin):
-    ...
+class FormulaStepWithVariable(FormulaStep, StepWithVariablesMixin): ...

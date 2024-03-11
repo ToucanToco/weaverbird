@@ -8,8 +8,7 @@ from weaverbird.pipeline.dates import RelativeDate, RelativeDateWithVariables
 from weaverbird.pipeline.types import ColumnName
 
 
-class BaseCondition(BaseModel):
-    ...
+class BaseCondition(BaseModel): ...
 
 
 class ComparisonCondition(BaseCondition):

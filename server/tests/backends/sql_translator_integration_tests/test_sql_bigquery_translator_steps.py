@@ -20,6 +20,7 @@ If the table "beers.beers_tiny" is expired, re-create it:
 `CREATE TABLE `beers.beers_tiny` AS SELECT * FROM `beers.beers` ORDER BY brewing_date LIMIT 10
 ```
 """
+
 import json
 from os import environ
 

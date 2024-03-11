@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := all
-ruff = ruff src tests playground.py
+ruff = ruff check src tests playground.py
 format = ruff format src tests playground.py
 
 .PHONY: clean

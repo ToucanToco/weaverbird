@@ -11,5 +11,4 @@ class AbsoluteValueStep(BaseStep):
     new_column: ColumnName
 
 
-class AbsoluteValueStepWithVariable(AbsoluteValueStep, StepWithVariablesMixin):
-    ...
+class AbsoluteValueStepWithVariable(AbsoluteValueStep, StepWithVariablesMixin): ...

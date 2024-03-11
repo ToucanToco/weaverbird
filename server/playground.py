@@ -27,6 +27,7 @@ Environment variables:
 - for snowflake, SNOWFLAKE_USER, SNOWFLAKE_PASSWORD, SNOWFLAKE_ACCOUNT and SNOWFLAKE_DATABASE
 - for postgresql, POSTGRESQL_CONNECTION_STRING
 """
+
 import json
 import os
 from contextlib import suppress

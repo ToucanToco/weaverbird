@@ -20,5 +20,4 @@ class FillnaStep(BaseStep):
         return values
 
 
-class FillnaStepWithVariable(FillnaStep, StepWithVariablesMixin):
-    ...
+class FillnaStepWithVariable(FillnaStep, StepWithVariablesMixin): ...
