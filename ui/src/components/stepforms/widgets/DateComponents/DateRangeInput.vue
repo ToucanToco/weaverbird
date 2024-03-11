@@ -127,6 +127,7 @@ import t, { LocaleIdentifier } from '@/lib/internationalization';
 import {
   AvailableVariable,
   extractVariableIdentifier,
+  isTrustedVariable,
   VariableDelimiters,
   VariablesBucket,
 } from '@/lib/variables';
@@ -374,8 +375,26 @@ export default class DateRangeInput extends Vue {
     this.isEditorOpened = false;
   }
 
+  setVariableDelimiters(value: string): string {
+    const retrieveVariableDelimiters = (
+      variableIdentifier: string,
+    ): VariableDelimiters | undefined => {
+      const variable = this.availableVariables.find((v) => v.identifier === variableIdentifier);
+      if (!variable) {
+        return; // if variable is unfound we don't want to display any delimiters
+      } else if (isTrustedVariable(variable)) {
+        return this.trustedVariableDelimiters;
+      }
+      return this.variableDelimiters;
+    };
+
+    const delimiters = retrieveVariableDelimiters(value);
+    if (!delimiters) return value;
+    return `${delimiters.start}${value}${delimiters.end}`;
+  }
+
   selectVariable(value: string): void {
-    const variableWithDelimiters = `${this.variableDelimiters.start}${value}${this.variableDelimiters.end}`;
+    const variableWithDelimiters = this.setVariableDelimiters(value);
     this.$emit('input', variableWithDelimiters);
     this.closeEditor();
   }
