@@ -122,7 +122,7 @@ import Tabs from '@/components/Tabs.vue';
 import { dateToString, isRelativeDate, relativeDateToString } from '@/lib/dates';
 import type { CustomDate, DateRange } from '@/lib/dates';
 import { sendAnalytics } from '@/lib/send-analytics';
-import { extractVariableIdentifier } from '@/lib/variables';
+import { extractVariableIdentifier, isTrustedVariable } from '@/lib/variables';
 import type { AvailableVariable, VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 import CustomVariableList from './CustomVariableList.vue';
@@ -283,8 +283,26 @@ export default class NewDateInput extends Vue {
     this.isEditingCustomVariable = false;
   }
 
+  setVariableDelimiters(value: string): string {
+    const retrieveVariableDelimiters = (
+      variableIdentifier: string,
+    ): VariableDelimiters | undefined => {
+      const variable = this.availableVariables.find((v) => v.identifier === variableIdentifier);
+      if (!variable) {
+        return; // if variable is unfound we don't want to display any delimiters
+      } else if (isTrustedVariable(variable)) {
+        return this.trustedVariableDelimiters;
+      }
+      return this.variableDelimiters;
+    };
+    
+    const delimiters = retrieveVariableDelimiters(value);
+    if (!delimiters) return value;
+    return `${delimiters.start}${value}${delimiters.end}`;
+  }
+
   selectVariable(value: string): void {
-    const variableWithDelimiters = `${this.variableDelimiters.start}${value}${this.variableDelimiters.end}`;
+    const variableWithDelimiters = this.setVariableDelimiters(value);
     this.$emit('input', variableWithDelimiters);
     this.closeEditor();
     sendAnalytics({ name: 'Date input - Select variable', value });

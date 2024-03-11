@@ -16,6 +16,7 @@ const RELATIVE_SAMPLE_VARIABLES = [
     label: 'Today',
     identifier: 'today',
     value: new Date(2020, 11),
+    trusted: true,
   },
 ];
 
@@ -23,34 +24,42 @@ const SAMPLE_VARIABLES = [
   {
     identifier: 'dates.last_7_days',
     label: 'Last 7 days',
+    trusted: true,
   },
   {
     identifier: 'dates.last_14_days',
     label: 'Last 14 days',
+    trusted: true,
   },
   {
     identifier: 'dates.last_30_days',
     label: 'Last 30 days',
+    trusted: true,
   },
   {
     identifier: 'dates.last_3_months',
     label: 'Last 3 Months',
+    trusted: true,
   },
   {
     identifier: 'dates.last_12_months',
     label: 'Last 12 Months',
+    trusted: true,
   },
   {
     identifier: 'dates.month_to_date',
     label: 'Month to date',
+    trusted: true,
   },
   {
     identifier: 'dates.quarter_to_date',
     label: 'Quarter to date',
+    trusted: true,
   },
   {
     identifier: 'dates.all_time',
     label: 'All time',
+    trusted: true,
   },
   ...RELATIVE_SAMPLE_VARIABLES,
 ];
@@ -74,7 +83,8 @@ describe('Date input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
-        variableDelimiters: { start: '{{', end: '}}' },
+        variableDelimiters: { start: '<%=', end: '%>' },
+        trustedVariableDelimiters: { start: '{{', end: '}}' },
         value: 'anythingnotokay',
       });
     });
@@ -184,7 +194,7 @@ describe('Date input', () => {
 
       it('should emit the new value with delimiters', () => {
         expect(wrapper.emitted('input')).toHaveLength(1);
-        expect(wrapper.emitted('input')[0]).toEqual(['{{ Test }}']);
+        expect(wrapper.emitted('input')[0]).toEqual(['<%= Test %>']);
       });
       it('should send analytics event', () => {
         expect(sendAnalyticsSpy).toHaveBeenCalledWith({
@@ -199,7 +209,8 @@ describe('Date input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
-        variableDelimiters: { start: '{{', end: '}}' },
+        variableDelimiters: { start: '<%=', end: '%>' },
+        trustedVariableDelimiters: { start: '{{', end: '}}' },
       });
     });
 
@@ -346,7 +357,8 @@ describe('Date input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
-        variableDelimiters: { start: '{{', end: '}}' },
+        variableDelimiters: { start: '<%=', end: '%>' },
+        trustedVariableDelimiters: { start: '{{', end: '}}' },
         value: `{{${selectedVariable.identifier}}}`,
       });
     });
@@ -366,7 +378,8 @@ describe('Date input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
-        variableDelimiters: { start: '{{', end: '}}' },
+        variableDelimiters: { start: '<%=', end: '%>' },
+        trustedVariableDelimiters: { start: '{{', end: '}}' },
         value: advancedVariable,
       });
     });
@@ -405,7 +418,8 @@ describe('Date input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
-        variableDelimiters: { start: '{{', end: '}}' },
+        variableDelimiters: { start: '<%=', end: '%>' },
+        trustedVariableDelimiters: { start: '{{', end: '}}' },
         value,
       });
     });
@@ -438,7 +452,8 @@ describe('Date input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
-        variableDelimiters: { start: '{{', end: '}}' },
+        variableDelimiters: { start: '<%=', end: '%>' },
+        trustedVariableDelimiters: { start: '{{', end: '}}' },
         value,
       });
     });
@@ -459,7 +474,8 @@ describe('Date input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
-        variableDelimiters: { start: '{{', end: '}}' },
+        variableDelimiters: { start: '<%=', end: '%>' },
+        trustedVariableDelimiters: { start: '{{', end: '}}' },
         enableCustom: false,
       });
     });
@@ -475,7 +491,8 @@ describe('Date input', () => {
     beforeEach(async () => {
       createWrapper({
         availableVariables: [],
-        variableDelimiters: { start: '{{', end: '}}' },
+        variableDelimiters: { start: '<%=', end: '%>' },
+        trustedVariableDelimiters: { start: '{{', end: '}}' },
       });
       wrapper.find('.widget-date-input__container').trigger('click');
       await wrapper.vm.$nextTick();
@@ -493,7 +510,8 @@ describe('Date input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
-        variableDelimiters: { start: '{{', end: '}}' },
+        variableDelimiters: { start: '<%=', end: '%>' },
+        trustedVariableDelimiters: { start: '{{', end: '}}' },
         bounds,
         value: new Date('2020/2/1'),
       });
