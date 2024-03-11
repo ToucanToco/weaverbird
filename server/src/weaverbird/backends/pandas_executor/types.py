@@ -29,5 +29,4 @@ class StepExecutor(Protocol):
         df: DataFrame,
         domain_retriever: DomainRetriever | None,
         execute_pipeline: PipelineExecutor | None,
-    ) -> DataFrame:
-        ...
+    ) -> DataFrame: ...

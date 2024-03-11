@@ -15,5 +15,4 @@ class SplitStep(BaseStep):
     number_cols_to_keep: int = Field(gt=0)
 
 
-class SplitStepWithVariable(SplitStep, StepWithVariablesMixin):
-    ...
+class SplitStepWithVariable(SplitStep, StepWithVariablesMixin): ...
