@@ -295,7 +295,7 @@ export default class NewDateInput extends Vue {
       }
       return this.variableDelimiters;
     };
-    
+
     const delimiters = retrieveVariableDelimiters(value);
     if (!delimiters) return value;
     return `${delimiters.start}${value}${delimiters.end}`;

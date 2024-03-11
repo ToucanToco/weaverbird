@@ -387,7 +387,7 @@ export default class DateRangeInput extends Vue {
       }
       return this.variableDelimiters;
     };
-    
+
     const delimiters = retrieveVariableDelimiters(value);
     if (!delimiters) return value;
     return `${delimiters.start}${value}${delimiters.end}`;

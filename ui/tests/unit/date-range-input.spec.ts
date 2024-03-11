@@ -102,7 +102,7 @@ describe('Date range input', () => {
         availableVariables: SAMPLE_VARIABLES,
         relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '<%=', end: '%>' },
-        trustedVariableDelimiters:  { start: '{{', end: '}}' },
+        trustedVariableDelimiters: { start: '{{', end: '}}' },
         value: 'anythingnotokay',
       });
     });
@@ -215,7 +215,7 @@ describe('Date range input', () => {
         availableVariables: SAMPLE_VARIABLES,
         relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '<%=', end: '%>' },
-        trustedVariableDelimiters:  { start: '{{', end: '}}' },
+        trustedVariableDelimiters: { start: '{{', end: '}}' },
       });
     });
 
@@ -299,7 +299,7 @@ describe('Date range input', () => {
           availableVariables: SAMPLE_VARIABLES,
           relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
           variableDelimiters: { start: '<%=', end: '%>' },
-          trustedVariableDelimiters:  { start: '{{', end: '}}' },
+          trustedVariableDelimiters: { start: '{{', end: '}}' },
           value: initialValue,
         });
         await wrapper.setProps({
@@ -366,7 +366,7 @@ describe('Date range input', () => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
         variableDelimiters: { start: '<%=', end: '%>' },
-        trustedVariableDelimiters:  { start: '{{', end: '}}' },
+        trustedVariableDelimiters: { start: '{{', end: '}}' },
         value: `{{${selectedVariable.identifier}}}`,
       });
     });
@@ -388,7 +388,7 @@ describe('Date range input', () => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
         variableDelimiters: { start: '<%=', end: '%>' },
-        trustedVariableDelimiters:  { start: '{{', end: '}}' },
+        trustedVariableDelimiters: { start: '{{', end: '}}' },
         value,
       });
     });
@@ -437,7 +437,7 @@ describe('Date range input', () => {
         availableVariables: SAMPLE_VARIABLES,
         relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '<%=', end: '%>' },
-        trustedVariableDelimiters:  { start: '{{', end: '}}' },
+        trustedVariableDelimiters: { start: '{{', end: '}}' },
         value,
       });
     });
@@ -467,7 +467,7 @@ describe('Date range input', () => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
         variableDelimiters: { start: '<%=', end: '%>' },
-        trustedVariableDelimiters:  { start: '{{', end: '}}' },
+        trustedVariableDelimiters: { start: '{{', end: '}}' },
         enableRelativeDate: false,
       });
     });
@@ -487,7 +487,7 @@ describe('Date range input', () => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
         variableDelimiters: { start: '<%=', end: '%>' },
-        trustedVariableDelimiters:  { start: '{{', end: '}}' },
+        trustedVariableDelimiters: { start: '{{', end: '}}' },
         enableCustom: false,
       });
     });
@@ -504,7 +504,7 @@ describe('Date range input', () => {
       createWrapper({
         availableVariables: [{ label: 'Hidden', identifier: 'hidden', category: 'hidden' }],
         variableDelimiters: { start: '<%=', end: '%>' },
-        trustedVariableDelimiters:  { start: '{{', end: '}}' },
+        trustedVariableDelimiters: { start: '{{', end: '}}' },
       });
       wrapper.find('.widget-date-input__container').trigger('click');
       await wrapper.vm.$nextTick();
@@ -526,7 +526,7 @@ describe('Date range input', () => {
         ],
         bounds: '{{hidden}}', // hidden variables can be used as variable reference for bounds or presets
         variableDelimiters: { start: '<%=', end: '%>' },
-        trustedVariableDelimiters:  { start: '{{', end: '}}' },
+        trustedVariableDelimiters: { start: '{{', end: '}}' },
       });
       wrapper.find('.widget-date-input__container').trigger('click');
       await wrapper.vm.$nextTick();
@@ -550,7 +550,7 @@ describe('Date range input', () => {
         availableVariables: SAMPLE_VARIABLES,
         relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '<%=', end: '%>' },
-        trustedVariableDelimiters:  { start: '{{', end: '}}' },
+        trustedVariableDelimiters: { start: '{{', end: '}}' },
         value: { start: new Date('2020/2/1'), end: new Date('2020/3/1') },
         bounds,
       });
@@ -596,7 +596,7 @@ describe('Date range input', () => {
           availableVariables: SAMPLE_VARIABLES,
           relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
           variableDelimiters: { start: '<%=', end: '%>' },
-          trustedVariableDelimiters:  { start: '{{', end: '}}' },
+          trustedVariableDelimiters: { start: '{{', end: '}}' },
           compactMode: true,
         });
       });
@@ -626,7 +626,7 @@ describe('Date range input', () => {
         createWrapper({
           availableVariables: SAMPLE_VARIABLES,
           variableDelimiters: { start: '<%=', end: '%>' },
-          trustedVariableDelimiters:  { start: '{{', end: '}}' },
+          trustedVariableDelimiters: { start: '{{', end: '}}' },
           value: { start: new Date(), end: new Date(1) },
           compactMode: true,
         });
@@ -649,7 +649,7 @@ describe('Date range input', () => {
         availableVariables: SAMPLE_VARIABLES,
         relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '<%=', end: '%>' },
-        trustedVariableDelimiters:  { start: '{{', end: '}}' },
+        trustedVariableDelimiters: { start: '{{', end: '}}' },
         hidePlaceholder: true,
       });
     });
