@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Fixed
+- DateForms: use correct delimiters for default date variables
+
 ## [0.111.2] - 2024-01-10
 
 ### Fixed
