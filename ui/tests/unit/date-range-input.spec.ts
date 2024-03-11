@@ -52,7 +52,6 @@ const SAMPLE_VARIABLES = [
     identifier: 'dates.quarter_to_date',
     label: 'Quarter to date',
     value: '',
-    trusted: true,
   },
   {
     identifier: 'dates.all_time',
@@ -171,16 +170,26 @@ describe('Date range input', () => {
       });
     });
 
-    describe('when selecting a variable in CustomVariableList', () => {
-      const selectedVariable = SAMPLE_VARIABLES[1].identifier;
-      beforeEach(async () => {
-        wrapper.find('CustomVariableList-stub').vm.$emit('input', selectedVariable);
+    describe('when choosing a variable', () => {
+      it('should emit the new value with correct delimiters (trusted variable)', async () => {
+        wrapper.find('CustomVariableList-stub').vm.$emit('input', 'dates.last_7_days');
         await wrapper.vm.$nextTick();
+        expect(wrapper.emitted('input')).toHaveLength(1);
+        expect(wrapper.emitted('input')[0]).toEqual(['{{dates.last_7_days}}']);
+        expect(wrapper.find('popover-stub').props().visible).toBe(false);
       });
-      it('should emit the selected variable identifier with delimiters', () => {
-        expect(wrapper.emitted().input[0][0]).toBe(`{{${selectedVariable}}}`);
+      it('should emit the new value with correct delimiters (untrusted variable)', async () => {
+        wrapper.find('CustomVariableList-stub').vm.$emit('input', 'dates.quarter_to_date');
+        await wrapper.vm.$nextTick();
+        expect(wrapper.emitted('input')).toHaveLength(1);
+        expect(wrapper.emitted('input')[0]).toEqual(['<%=dates.quarter_to_date%>']);
+        expect(wrapper.find('popover-stub').props().visible).toBe(false);
       });
-      it('should hide editor', () => {
+      it('should emit the correct value (undefined variable)', async () => {
+        wrapper.find('CustomVariableList-stub').vm.$emit('input', 'noop');
+        await wrapper.vm.$nextTick();
+        expect(wrapper.emitted('input')).toHaveLength(1);
+        expect(wrapper.emitted('input')[0]).toEqual(['noop']);
         expect(wrapper.find('popover-stub').props().visible).toBe(false);
       });
     });

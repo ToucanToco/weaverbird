@@ -54,7 +54,6 @@ const SAMPLE_VARIABLES = [
   {
     identifier: 'dates.quarter_to_date',
     label: 'Quarter to date',
-    trusted: true,
   },
   {
     identifier: 'dates.all_time',
@@ -172,6 +171,27 @@ describe('Date input', () => {
 
       it('should open the advanced variable modal', () => {
         expect(wrapper.find('AdvancedVariableModal-stub').props().isOpened).toBe(true);
+      });
+    });
+
+    describe('when choosing a variable', () => {
+      it('should emit the new value with correct delimiters (trusted variable)', async () => {
+        wrapper.find('CustomVariableList-stub').vm.$emit('input', 'dates.last_7_days');
+        await wrapper.vm.$nextTick();
+        expect(wrapper.emitted('input')).toHaveLength(1);
+        expect(wrapper.emitted('input')[0]).toEqual(['{{dates.last_7_days}}']);
+      });
+      it('should emit the new value with correct delimiters (untrusted variable)', async () => {
+        wrapper.find('CustomVariableList-stub').vm.$emit('input', 'dates.quarter_to_date');
+        await wrapper.vm.$nextTick();
+        expect(wrapper.emitted('input')).toHaveLength(1);
+        expect(wrapper.emitted('input')[0]).toEqual(['<%=dates.quarter_to_date%>']);
+      });
+      it('should emit the correct value (undefined variable)', async () => {
+        wrapper.find('CustomVariableList-stub').vm.$emit('input', 'noop');
+        await wrapper.vm.$nextTick();
+        expect(wrapper.emitted('input')).toHaveLength(1);
+        expect(wrapper.emitted('input')[0]).toEqual(['noop']);
       });
     });
 
