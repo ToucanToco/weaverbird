@@ -460,3 +460,7 @@ def test_render_filter_step_with_variables(available_variables: dict[str, Any]) 
     step = FilterStepWithVariables(condition={"or": [step.model_dump()["condition"]]})
     rendered = step.render(available_variables, nosql_apply_parameters_to_query)
     assert rendered.condition.or_[0].value.date == available_variables["TODAY"]
+
+    step = FilterStepWithVariables(condition={"column": "int_column", "operator": "in", "value": "{{ INTEGER_LIST }}"})
+    rendered = step.render(available_variables, nosql_apply_parameters_to_query)
+    assert rendered.condition.value == available_variables["INTEGER_LIST"] == [1, 2, 3]
