@@ -23,6 +23,12 @@ class InclusionCondition(BaseCondition):
     value: list[Any]
 
 
+class InclusionConditionWithVariables(BaseCondition):
+    column: ColumnName
+    operator: Literal["in", "nin"]
+    value: list[Any] | str
+
+
 class NullCondition(BaseCondition):
     column: ColumnName
     operator: Literal["isnull", "notnull"]
@@ -50,7 +56,7 @@ SimpleCondition = Annotated[
     ComparisonCondition | InclusionCondition | NullCondition | MatchCondition | DateBoundCondition,
     Field(discriminator="operator"),  # noqa: F821
 ]
-SimpleConditionWithVariables = DateBoundConditionWithVariables | SimpleCondition
+SimpleConditionWithVariables = DateBoundConditionWithVariables | InclusionConditionWithVariables | SimpleCondition
 
 
 class BaseConditionCombo(BaseCondition, ABC):

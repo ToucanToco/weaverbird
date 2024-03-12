@@ -2,11 +2,15 @@
 
 ## Unreleased
 
+### Fixed
+
+- A `FilterStepWithVariables` can now contain an `InclusionConditionWithVariables`
+
 ## [0.42.1] - 2024-03-05
 
 ### Fixed
 
-- Google Biq Query: ToDate step now produces datetime columns, not timestamp
+- Google Big Query: ToDate step now produces datetime columns, not timestamp
 - Mongo: Fixed the `ifthenelse` step which generated "$and" clauses instead of "$or"
 - Mongo: Fixed the `evolution` step when several index columns are used. The generated pipeline now filters on all of them
   rather than just the last one.
