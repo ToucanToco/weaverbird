@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.42.2] - 2024-03-12
+
 ### Fixed
 
 - A `FilterStepWithVariables` can now contain an `InclusionConditionWithVariables`
