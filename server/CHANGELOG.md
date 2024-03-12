@@ -5,6 +5,7 @@
 ### Fixed
 
 - A `FilterStepWithVariables` can now contain an `InclusionConditionWithVariables`
+- Pypika translators: allow (de)selecting NULL in FilterStep with operators in / nin / eq / ne
 
 ## [0.42.1] - 2024-03-05
 

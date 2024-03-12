@@ -973,14 +973,33 @@ class SQLTranslator(ABC):
             case ComparisonCondition():  # type:ignore[misc]
                 import operator
 
+                # Handle special case of checking (in)equality to NULL
+                if condition.value is None:
+                    if condition.operator == "eq":
+                        return column_field.isnull()
+                    elif condition.operator == "ne":
+                        return column_field.isnotnull()
+
                 op = getattr(operator, condition.operator)
                 return op(column_field, condition.value)
 
             case InclusionCondition():  # type:ignore[misc]
                 if condition.operator == "in":
-                    return column_field.isin(condition.value)
+                    if None in condition.value:
+                        # handle special case of having NULL amongst selected values
+                        case_null = column_field.isnull()
+                        other_cases = column_field.isin([v for v in condition.value if v is not None])
+                        return Criterion.any([case_null, other_cases])
+                    else:
+                        return column_field.isin(condition.value)
                 elif condition.operator == "nin":
-                    return column_field.notin(condition.value)
+                    if None in condition.value:
+                        # handle special case of having NULL amongst excluded values
+                        case_null = column_field.isnotnull()
+                        other_cases = column_field.notin([v for v in condition.value if v is not None])
+                        return Criterion.all([case_null, other_cases])
+                    else:
+                        return column_field.notin(condition.value)
 
             case MatchCondition():  # type:ignore[misc]
                 compliant_regex = _compliant_regex(condition.value, self.DIALECT)
