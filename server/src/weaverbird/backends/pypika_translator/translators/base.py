@@ -973,6 +973,13 @@ class SQLTranslator(ABC):
             case ComparisonCondition():  # type:ignore[misc]
                 import operator
 
+                # Handle special case of checking (in)equality to NULL
+                if condition.value is None:
+                    if condition.operator == "eq":
+                        return column_field.isnull()
+                    elif condition.operator == "ne":
+                        return column_field.isnotnull()
+
                 op = getattr(operator, condition.operator)
                 return op(column_field, condition.value)
 
