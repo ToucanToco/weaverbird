@@ -978,9 +978,21 @@ class SQLTranslator(ABC):
 
             case InclusionCondition():  # type:ignore[misc]
                 if condition.operator == "in":
-                    return column_field.isin(condition.value)
+                    if None in condition.value:
+                        # handle special case of having NULL amongst selected values
+                        case_null = column_field.isnull()
+                        other_cases = column_field.isin([v for v in condition.value if v is not None])
+                        return Criterion.any([case_null, other_cases])
+                    else:
+                        return column_field.isin(condition.value)
                 elif condition.operator == "nin":
-                    return column_field.notin(condition.value)
+                    if None in condition.value:
+                        # handle special case of having NULL amongst excluded values
+                        case_null = column_field.isnotnull()
+                        other_cases = column_field.notin([v for v in condition.value if v is not None])
+                        return Criterion.all([case_null, other_cases])
+                    else:
+                        return column_field.notin(condition.value)
 
             case MatchCondition():  # type:ignore[misc]
                 compliant_regex = _compliant_regex(condition.value, self.DIALECT)
