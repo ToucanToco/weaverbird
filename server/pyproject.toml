@@ -31,7 +31,7 @@ toucan-connectors = {version = ">=5,<7", optional = true, extras = ["google_big_
 python-dateutil = "^2.8.2"
 
 [tool.poetry.group.dev.dependencies]
-pytest-cov = "^4.1.0"
+pytest-cov = ">=4.1,<6.0"
 pytest-mock = "^3.11.1"
 pytest-asyncio = ">=0.21,<0.24"
 # required so we can use nosql_apply_parameters_to_query during tests
