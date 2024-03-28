@@ -21,6 +21,7 @@ import { Component } from 'vue-property-decorator';
   name: 'resizable-panels',
 })
 export default class ResizablePanels extends Vue {
+  controller = new window.AbortController();
   private ratio = 0.4;
 
   get leftPanelWidth() {
@@ -48,9 +49,19 @@ export default class ResizablePanels extends Vue {
       window.removeEventListener('blur', mouseupListener);
     };
 
-    window.addEventListener('mousemove', mousemoveListener);
-    window.addEventListener('mouseup', mouseupListener);
-    window.addEventListener('blur', mouseupListener);
+    window.addEventListener('mousemove', mousemoveListener, {
+      signal: this.controller?.signal
+    });
+    window.addEventListener('mouseup', mouseupListener, {
+      signal: this.controller?.signal
+    });
+    window.addEventListener('blur', mouseupListener, {
+      signal: this.controller?.signal
+    });
+  }
+
+  beforeDestroy() {
+    this.controller.abort();
   }
 }
 </script>

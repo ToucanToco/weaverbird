@@ -85,6 +85,7 @@ function componentProxyBoundOn(self: Vue) {
   },
 })
 export default class BaseStepForm<StepType> extends Vue {
+  controller = new window.AbortController();
   version = version; // display the current version of the package
 
   @Prop({ type: Boolean, default: true })
@@ -139,7 +140,9 @@ export default class BaseStepForm<StepType> extends Vue {
       if ((event.metaKey || event.ctrlKey) && event.code == 'Enter') {
         this.submit();
       }
-    }) as EventListener);
+    }) as EventListener, {
+      signal: this.controller?.signal
+    });
   }
 
   /**
@@ -242,6 +245,10 @@ export default class BaseStepForm<StepType> extends Vue {
     if (errors === null) {
       this.$emit('formSaved', { ...this.editedStep });
     }
+  }
+
+  beforeDestroy() {
+    this.controller.abort();
   }
 }
 </script>
