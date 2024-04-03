@@ -105,8 +105,6 @@ describe('ActionToolbarButton active', () => {
       'Add text column',
       'Add formula column',
       'Add conditional column',
-      'Add custom step',
-      'Add custom sql step',
     ]);
   });
 
