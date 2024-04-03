@@ -174,7 +174,7 @@ describe('ActionToolbarButton active', () => {
 
     const actionsWrappers = wrapper.findAll('.action-menu__option');
     const actionsIsDisabled = actionsWrappers.wrappers.map((w) => w.props().isDisabled);
-    expect(actionsIsDisabled).toEqual([false, false, false, true, true]);
+    expect(actionsIsDisabled).toEqual([false, false, false]);
   });
 
   it('should instantiate a Date button with the right list of actions', () => {
