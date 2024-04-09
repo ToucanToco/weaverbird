@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- ActionMenu: remove deprecated Custom and Custom Sql step from action menu 
+
 ## [0.111.3] - 2024-03-11
 
 ### Fixed
