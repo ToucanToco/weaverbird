@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [0.112.1] - 2024-04-15
+
+- Bump luxon dependency for security reasons
+
 ## [0.112.0] - 2024-04-09
 
 - ActionMenu: remove deprecated Custom and Custom Sql step from action menu 
@@ -1555,6 +1559,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
+[0.112.1]: https://github.com/ToucanToco/weaverbird/compare/v0.112.0...v0.112.1
 [0.112.0]: https://github.com/ToucanToco/weaverbird/compare/v0.111.3...v0.112.0
 [0.111.3]: https://github.com/ToucanToco/weaverbird/compare/v0.111.2...v0.111.3
 [0.111.2]: https://github.com/ToucanToco/weaverbird/compare/v0.111.1...v0.111.2
