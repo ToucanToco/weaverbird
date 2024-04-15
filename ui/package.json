@@ -63,7 +63,7 @@
     "@pinia/testing": "^0.0.14",
     "ajv": "^8.11.0",
     "lodash": "^4.17.11",
-    "luxon": "^2.0.2",
+    "luxon": "^3.4.4",
     "mathjs": "^11.3.3"
   },
   "devDependencies": {
