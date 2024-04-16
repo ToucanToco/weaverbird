@@ -4,7 +4,6 @@ from typing import Any
 import numpy
 import pandas as pd
 from pandas import DataFrame
-
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps.waterfall import (
     GROUP_WATERFALL_COLUMN,
@@ -127,7 +126,11 @@ def _merge(step: WaterfallStep, start_df: DataFrame, end_df: DataFrame) -> DataF
             {RESULT_COLUMN: "sum"}
         )
         parents_results[step.labelsColumn] = parents_results[step.parentsColumn]
+        parents_results[TYPE_WATERFALL_COLUMN] = "parent"
+        merged_df[TYPE_WATERFALL_COLUMN] = "child"
         return pd.concat([merged_df, parents_results])
+    else:
+        merged_df[TYPE_WATERFALL_COLUMN] = "parent"
     return merged_df
 
 
@@ -207,19 +210,14 @@ def _compute_parents_and_children(step: WaterfallStep, merged_df: DataFrame) -> 
     """Computes children values (the deepest nesting level)"""
     result_df = DataFrame({LABEL_WATERFALL_COLUMN: merged_df[step.labelsColumn].astype(str)})
     result_df[step.groupby] = merged_df[step.groupby]
+    result_df[TYPE_WATERFALL_COLUMN] = merged_df[TYPE_WATERFALL_COLUMN]
 
     if step.parentsColumn is None:
-        result_df[TYPE_WATERFALL_COLUMN] = "parent"
         result_df[_VQB_SORT_ORDER] = 2
     else:
         result_df[GROUP_WATERFALL_COLUMN] = merged_df[step.parentsColumn]
-        result_df[TYPE_WATERFALL_COLUMN] = numpy.where(
-            result_df[LABEL_WATERFALL_COLUMN] == (result_df[GROUP_WATERFALL_COLUMN]),
-            "parent",
-            "child",
-        )
         result_df[_VQB_SORT_ORDER] = numpy.where(
-            result_df[LABEL_WATERFALL_COLUMN] == (result_df[GROUP_WATERFALL_COLUMN]), 2, 1
+            result_df[TYPE_WATERFALL_COLUMN] == "parent", 2, 1
         )
 
     result_df[step.valueColumn] = merged_df[RESULT_COLUMN]
