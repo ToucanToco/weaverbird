@@ -4,6 +4,7 @@ from typing import Any
 import numpy
 import pandas as pd
 from pandas import DataFrame
+
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps.waterfall import (
     GROUP_WATERFALL_COLUMN,
@@ -216,9 +217,7 @@ def _compute_parents_and_children(step: WaterfallStep, merged_df: DataFrame) -> 
         result_df[_VQB_SORT_ORDER] = 2
     else:
         result_df[GROUP_WATERFALL_COLUMN] = merged_df[step.parentsColumn]
-        result_df[_VQB_SORT_ORDER] = numpy.where(
-            result_df[TYPE_WATERFALL_COLUMN] == "parent", 2, 1
-        )
+        result_df[_VQB_SORT_ORDER] = numpy.where(result_df[TYPE_WATERFALL_COLUMN] == "parent", 2, 1)
 
     result_df[step.valueColumn] = merged_df[RESULT_COLUMN]
     return result_df
