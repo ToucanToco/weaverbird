@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Pandas: Waterfall step: generate one parent and one child row even if labels are the same (instead of two parent rows)
+
 ## [0.42.2] - 2024-03-12
 
 ### Fixed

@@ -259,6 +259,11 @@ input:
     country: Germany
     month: 01 April 2023
     price: 65076
+  # Only element with the same name as the group
+  - account: England
+    country: England
+    month: 01 January 2023
+    price: 123456
   schema:
     fields:
     - name: account
@@ -275,7 +280,7 @@ expected:
   - GROUP_waterfall: 01 January 2023
     LABEL_waterfall: 01 January 2023
     TYPE_waterfall: null
-    price: 119907
+    price: 243363
   - GROUP_waterfall: Germany
     LABEL_waterfall: Fermentum Industries
     TYPE_waterfall: child
@@ -296,6 +301,10 @@ expected:
     LABEL_waterfall: Dignissim Maecenas Foundation
     TYPE_waterfall: child
     price: -62202
+  - GROUP_waterfall: England
+    LABEL_waterfall: England
+    TYPE_waterfall: child
+    price: -123456
   - GROUP_waterfall: Germany
     LABEL_waterfall: Germany
     TYPE_waterfall: parent
@@ -304,6 +313,10 @@ expected:
     LABEL_waterfall: France
     TYPE_waterfall: parent
     price: -78287
+  - GROUP_waterfall: England
+    LABEL_waterfall: England
+    TYPE_waterfall: parent
+    price: -123456
   - GROUP_waterfall: 01 December 2023
     LABEL_waterfall: 01 December 2023
     TYPE_waterfall: null
