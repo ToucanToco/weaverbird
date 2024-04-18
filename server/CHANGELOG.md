@@ -1,6 +1,6 @@
 # Changelog (weaverbird python package)
 
-## Unreleased
+## [0.42.3] - 2024-04-18
 
 ### Fixed
 
