@@ -1,5 +1,11 @@
 # Changelog (weaverbird python package)
 
+## [0.42.4] - 2024-04-18
+
+### Fixed
+
+- Pandas: Rollup step: Fix rollup steps in case there is a single hierarchy level
+
 ## [0.42.3] - 2024-04-18
 
 ### Fixed
