@@ -1,0 +1,86 @@
+exclude:
+- athena_pypika
+- bigquery_pypika
+- mysql_pypika
+- postgres_pypika
+- redshift_pypika
+- snowflake_pypika
+step:
+  pipeline:
+  - aggregations: []
+    hierarchy:
+    - STATE
+    label_col: LABEL
+    level_col: LEVEL
+    name: rollup
+    parent_label_col: PARENT
+input:
+  data:
+  - CITY: SF
+    PRODUCT_ID: 1
+    QUANTITY: 2
+    RETAIL_PRICE: 1
+    STATE: CA
+  - CITY: SJ
+    PRODUCT_ID: 1
+    QUANTITY: 2
+    RETAIL_PRICE: 2
+    STATE: CA
+  - CITY: SF
+    PRODUCT_ID: 2
+    QUANTITY: 5
+    RETAIL_PRICE: 4
+    STATE: CA
+  - CITY: SJ
+    PRODUCT_ID: 2
+    QUANTITY: 5
+    RETAIL_PRICE: 8
+    STATE: CA
+  - CITY: Miami
+    PRODUCT_ID: 2
+    QUANTITY: 5
+    RETAIL_PRICE: 16
+    STATE: FL
+  - CITY: Orlando
+    PRODUCT_ID: 2
+    QUANTITY: 5
+    RETAIL_PRICE: 32
+    STATE: FL
+  - CITY: SJ
+    PRODUCT_ID: 2
+    QUANTITY: 5
+    RETAIL_PRICE: 64
+    STATE: PR
+  schema:
+    fields:
+    - name: PRODUCT_ID
+      type: integer
+    - name: RETAIL_PRICE
+      type: number
+    - name: QUANTITY
+      type: integer
+    - name: CITY
+      type: string
+    - name: STATE
+      type: string
+    pandas_version: 1.4.0
+expected:
+  data:
+  - LABEL: CA
+    LEVEL: STATE
+    STATE: CA
+  - LABEL: FL
+    LEVEL: STATE
+    STATE: FL
+  - LABEL: PR
+    LEVEL: STATE
+    STATE: PR
+  schema:
+    fields:
+    - name: STATE
+      type: string
+    - name: LABEL
+      type: string
+    - name: LEVEL
+      type: string
+    pandas_version: 1.4.0
