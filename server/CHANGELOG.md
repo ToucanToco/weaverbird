@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Pandas: Fixed a bug in the `evolution` step, where a shift in DataFrame indices could happen, causing
+  the delta to be assigned to the wrong row.
+
 ## [0.26.11] - 2024-03-05
 
 - Google Biq Query: ToDate step now produces datetime columns, not timestamp

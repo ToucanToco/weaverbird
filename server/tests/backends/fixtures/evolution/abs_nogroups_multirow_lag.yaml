@@ -1,0 +1,81 @@
+exclude:
+- athena_pypika
+- bigquery_pypika
+- mysql_pypika
+- postgres_pypika
+- redshift_pypika
+- snowflake_pypika
+step:
+  pipeline:
+  - date_col: DATE
+    evolution_format: abs
+    evolution_type: vsLastMonth
+    name: evolution
+    new_column: POUET
+    value_col: VALUE
+input:
+  schema:
+    fields:
+    - name: DATE
+      type: datetime
+    - name: VALUE
+      type: integer
+    pandas_version: 1.4.0
+  data:
+  - DATE: '2018-12-02'
+    VALUE: 0
+  - DATE: '2019-01-03'
+    VALUE: 3
+  - DATE: '2018-12-03'
+    VALUE: 7
+  - DATE: '2019-01-01'
+    VALUE: 2
+  - DATE: '2018-12-01'
+    VALUE: -15
+  - DATE: '2019-01-02'
+    VALUE: 12
+  - DATE: '2019-02-02'
+    VALUE: 8
+  - DATE: '2019-02-03'
+    VALUE: 9
+  - DATE: '2019-02-04'
+    VALUE: 6
+expected:
+  schema:
+    fields:
+    - name: DATE
+      type: datetime
+    - name: VALUE
+      type: integer
+    - name: POUET
+      type: number
+    pandas_version: 1.4.0
+  data:
+  # values should be in the order, and should not have shifted
+  - DATE: '2018-12-02'
+    POUET: null
+    VALUE: 0
+  - DATE: '2019-01-03'
+    POUET: -4.0
+    VALUE: 3
+  - DATE: '2018-12-03'
+    POUET: null
+    VALUE: 7
+  - DATE: '2019-01-01'
+    POUET: 17.0
+    VALUE: 2
+  - DATE: '2018-12-01'
+    POUET: null
+    VALUE: -15
+  - DATE: '2019-01-02'
+    POUET: 12.0
+    VALUE: 12
+  - DATE: '2019-02-02'
+    POUET: -4.0
+    VALUE: 8
+  - DATE: '2019-02-03'
+    POUET: 6.0
+    VALUE: 9
+  - DATE: '2019-02-04'
+    POUET: null
+    VALUE: 6
