@@ -1,8 +1,11 @@
 # Changelog (weaverbird python package)
 
-## [0.42.4] - 2024-04-18
+## Unreleased
 
-### Fixed
+- Pandas: Fixed a bug in the `evolution` step, where a shift in DataFrame indices could happen, causing
+  the delta to be assigned to the wrong row.
+
+## [0.42.4] - 2024-04-18
 
 - Pandas: Rollup step: Fix rollup steps in case there is a single hierarchy level
 
