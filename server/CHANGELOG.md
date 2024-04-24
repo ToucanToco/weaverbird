@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.26.12] - 2024-04-24
+
 - Pandas: Fixed a bug in the `evolution` step, where a shift in DataFrame indices could happen, causing
   the delta to be assigned to the wrong row.
 
