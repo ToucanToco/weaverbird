@@ -137,7 +137,7 @@ class QueryBuilderContext:
     columns: list[str]
     table_name: str
 
-    def materialize(self) -> QueryBuilder:
+    def materialize(self, *, offset: int | None = None, limit: int | None = None) -> QueryBuilder:
         # In case we have no columns, select everything by default.
         # NOTE: This is the only place where a wildcard should ever be used: Since we're
         # materializing the query, the columns won't be used by downstream consumers, so no other
@@ -146,7 +146,12 @@ class QueryBuilderContext:
         # Note that this will only work for queries consisting of a single CustomSQL step, as all
         # other steps require a valid column list to work properly
         columns = self.columns or ["*"]
-        return self.builder.from_(self.table_name).select(*columns)
+        qb = self.builder.from_(self.table_name).select(*columns)
+        if offset is not None:
+            qb = qb.offset(offset)
+        if limit is not None:
+            qb = qb.limit(limit)
+        return qb
 
 
 class CustomQuery(AliasedQuery):
@@ -300,8 +305,10 @@ class SQLTranslator(ABC):
             builder = ctx.update_builder(builder=builder, step_name=table_name)
         return QueryBuilderContext(builder=builder, columns=ctx.columns, table_name=table_name)
 
-    def get_query_str(self: Self, *, steps: Sequence["PipelineStep"]) -> str:
-        return self.get_query_builder(steps=steps).materialize().get_sql()
+    def get_query_str(
+        self: Self, *, steps: Sequence["PipelineStep"], offset: int | None = None, limit: int | None = None
+    ) -> str:
+        return self.get_query_builder(steps=steps).materialize(offset=offset, limit=limit).get_sql()
 
     # All other methods implement step from https://weaverbird.toucantoco.com/docs/steps/,
     # the name of the method being the name of the step and the kwargs the rest of the params
