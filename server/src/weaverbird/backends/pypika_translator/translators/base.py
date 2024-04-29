@@ -21,7 +21,8 @@ from pypika import (
 )
 from pypika.enums import Comparator, Dialects, JoinType
 from pypika.functions import Extract, ToDate
-from pypika.queries import QueryBuilder, Selectable
+from pypika.queries import QueryBuilder as PyPikaQueryBuilder
+from pypika.queries import Selectable
 from pypika.terms import (
     AnalyticFunction,
     BasicCriterion,
@@ -279,7 +280,7 @@ class SQLTranslator(ABC):
         self: Self,
         *,
         steps: Sequence["PipelineStep"],
-        query_builder: QueryBuilder | None = None,
+        query_builder: PyPikaQueryBuilder | None = None,
     ) -> QueryBuilderContext:
         if len(steps) < 0:
             ValueError("No steps provided")
@@ -356,7 +357,7 @@ class SQLTranslator(ABC):
     def absolutevalue(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "AbsoluteValueStep",
@@ -370,7 +371,7 @@ class SQLTranslator(ABC):
     def aggregate(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "AggregateStep",
@@ -470,7 +471,7 @@ class SQLTranslator(ABC):
             merged_query = _build_window_subquery()
         else:
             merged_query = self.QUERY_CLS.from_(prev_step_table).groupby(*step.on).select(*step.on)
-        query: "QueryBuilder"
+        query: "PyPikaQueryBuilder"
         selected_col_names: list[str]
 
         if step.keep_original_granularity:
@@ -574,7 +575,7 @@ class SQLTranslator(ABC):
     def argmax(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "ArgmaxStep",
@@ -591,7 +592,7 @@ class SQLTranslator(ABC):
     def argmin(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "ArgminStep",
@@ -608,13 +609,13 @@ class SQLTranslator(ABC):
     def comparetext(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "CompareTextStep",
     ) -> StepContext:
         table = Table(prev_step_table)
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
+        query: "PyPikaQueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *columns,
             Case().when(table[step.str_col_1] == table[step.str_col_2], True).else_(False).as_(step.new_column_name),
         )
@@ -623,7 +624,7 @@ class SQLTranslator(ABC):
     def concatenate(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "ConcatenateStep",
@@ -636,7 +637,7 @@ class SQLTranslator(ABC):
             tokens.append(step.separator)
             tokens.append(the_table[col])
 
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
+        query: "PyPikaQueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *columns,
             functions.Concat(*tokens).as_(step.new_column_name),
         )
@@ -645,13 +646,13 @@ class SQLTranslator(ABC):
     def convert(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "ConvertStep",
     ) -> StepContext:
         col_fields: list[Field] = [Table(prev_step_table)[col] for col in step.columns]
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
+        query: "PyPikaQueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *(c for c in columns if c not in step.columns),
             *(
                 functions.Cast(col_field, getattr(self.DATA_TYPE_MAPPING, step.data_type)).as_(col_field.name)
@@ -663,7 +664,7 @@ class SQLTranslator(ABC):
     def cumsum(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "CumSumStep",
@@ -681,7 +682,7 @@ class SQLTranslator(ABC):
         cumsum_colnames = [col.alias for col in cumsum_cols]
         # In case some cumsum columns have overwritten previously exising columns, don't select twice
         original_column_names = [col for col in columns if col not in cumsum_colnames]
-        query: "QueryBuilder" = (
+        query: "PyPikaQueryBuilder" = (
             self.QUERY_CLS.from_(prev_step_table)
             .select(*original_column_names, *cumsum_cols)
             # Depending on the backend, results are ordered by partition or by reference colum, so
@@ -700,7 +701,7 @@ class SQLTranslator(ABC):
     def customsql(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "CustomSqlStep",
@@ -813,7 +814,7 @@ class SQLTranslator(ABC):
     def dateextract(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "DateExtractStep",
@@ -837,13 +838,13 @@ class SQLTranslator(ABC):
     def delete(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "DeleteStep",
     ) -> StepContext:
         new_columns = [c for c in columns if c not in step.columns]
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(*new_columns)
+        query: "PyPikaQueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(*new_columns)
         return StepContext(query, new_columns)
 
     def _extract_columns_from_domain_step(self: Self, *, step: "DomainStep") -> list[str]:
@@ -858,20 +859,23 @@ class SQLTranslator(ABC):
     # getattr(self, step_name)
     def _domain(self: Self, *, step: "DomainStep") -> StepContext:
         selected_cols = self._extract_columns_from_domain_step(step=step)
-        query: "QueryBuilder" = self.QUERY_CLS.from_(Table(step.domain, schema=self._db_schema)).select(*selected_cols)
+        query: "PyPikaQueryBuilder" = self.QUERY_CLS.from_(Table(step.domain, schema=self._db_schema)).select(
+            *selected_cols
+        )
         if self._source_rows_subset:
             query = query.limit(self._source_rows_subset)
+        breakpoint()
         return StepContext(query, selected_cols)
 
     def duplicate(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "DuplicateStep",
     ) -> StepContext:
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
+        query: "PyPikaQueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *columns, Table(prev_step_table)[step.column].as_(step.new_column_name)
         )
         return StepContext(query, columns + [step.new_column_name])
@@ -884,7 +888,7 @@ class SQLTranslator(ABC):
     def duration(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "DurationStep",
@@ -899,7 +903,7 @@ class SQLTranslator(ABC):
         )
         new_column = (as_seconds / DURATIONS_IN_SECOND[step.duration_in]).as_(step.new_column_name)
 
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(*columns, new_column)
+        query: "PyPikaQueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(*columns, new_column)
         return StepContext(query, columns + [step.new_column_name])
 
     @classmethod
@@ -909,7 +913,7 @@ class SQLTranslator(ABC):
     def evolution(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "EvolutionStep",
@@ -922,7 +926,7 @@ class SQLTranslator(ABC):
         ).as_(step.date_col)
         right_table = Table("right_table")
         new_col = step.new_column if step.new_column else "evol"
-        query: "QueryBuilder" = (
+        query: "PyPikaQueryBuilder" = (
             self.QUERY_CLS.from_(prev_step_table)
             .select(
                 *(prev_table.field(col) for col in columns),
@@ -954,13 +958,13 @@ class SQLTranslator(ABC):
     def fillna(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "FillnaStep",
     ) -> StepContext:
         the_table = Table(prev_step_table)
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
+        query: "PyPikaQueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *(c for c in columns if c not in step.columns),
             *(functions.Coalesce(the_table[col_name], step.value).as_(col_name) for col_name in step.columns),
         )
@@ -1141,13 +1145,13 @@ class SQLTranslator(ABC):
     def filter(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str | Table,
         columns: list[str],
         step: "FilterStep",
     ) -> StepContext:
         table = Table(prev_step_table) if isinstance(prev_step_table, str) else prev_step_table
-        query: "QueryBuilder" = (
+        query: "PyPikaQueryBuilder" = (
             self.QUERY_CLS.from_(table).select(*columns).where(self._get_filter_criterion(step.condition, table))
         )
         return StepContext(query, columns)
@@ -1155,7 +1159,7 @@ class SQLTranslator(ABC):
     def formula(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "FormulaStep",
@@ -1167,7 +1171,7 @@ class SQLTranslator(ABC):
     def fromdate(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "FromdateStep",
@@ -1184,7 +1188,7 @@ class SQLTranslator(ABC):
             case _:
                 raise NotImplementedError(f"[{self.DIALECT}] doesn't have from date operator")
 
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
+        query: "PyPikaQueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *(c for c in columns if c != step.column),
             convert_fn(col_field, self._adapt_date_format(step.format)).as_(step.column),
         )
@@ -1236,12 +1240,12 @@ class SQLTranslator(ABC):
     def ifthenelse(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "IfthenelseStep",
     ) -> StepContext:
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
+        query: "PyPikaQueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *columns,
             self._build_ifthenelse_case(
                 if_=step.condition,
@@ -1320,13 +1324,13 @@ class SQLTranslator(ABC):
     def lowercase(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "LowercaseStep",
     ) -> StepContext:
         col_field: Field = Table(prev_step_table)[step.column]
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
+        query: "PyPikaQueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *(c for c in columns if c != step.column),
             functions.Lower(col_field).as_(step.column),
         )
@@ -1335,7 +1339,7 @@ class SQLTranslator(ABC):
     def percentage(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "PercentageStep",
@@ -1375,7 +1379,7 @@ class SQLTranslator(ABC):
     def rank(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "RankStep",
@@ -1396,7 +1400,7 @@ class SQLTranslator(ABC):
     def rename(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "RenameStep",
@@ -1411,13 +1415,13 @@ class SQLTranslator(ABC):
             else:
                 selected_col_fields.append(Field(name=col_name))
 
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(*selected_col_fields)
+        query: "PyPikaQueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(*selected_col_fields)
         return StepContext(query, [f.alias or f.name for f in selected_col_fields])
 
     def replacetext(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "ReplaceTextStep",
@@ -1426,7 +1430,7 @@ class SQLTranslator(ABC):
 
         replaced_col = functions.Replace(col_field, step.old_str, step.new_str)
 
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
+        query: "PyPikaQueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *(c for c in columns if c != step.search_column),
             replaced_col.as_(step.search_column),
         )
@@ -1436,7 +1440,7 @@ class SQLTranslator(ABC):
     def replace(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "ReplaceStep",
@@ -1448,7 +1452,7 @@ class SQLTranslator(ABC):
         for old_name, new_name in step.to_replace:
             replaced_col = functions.Replace(replaced_col, old_name, new_name)
 
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
+        query: "PyPikaQueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *(c for c in columns if c != step.search_column),
             replaced_col.as_(step.search_column),
         )
@@ -1458,23 +1462,23 @@ class SQLTranslator(ABC):
     def select(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "SelectStep",
     ) -> StepContext:
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(*step.columns)
+        query: "PyPikaQueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(*step.columns)
         return StepContext(query, step.columns)
 
     def sort(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "SortStep",
     ) -> StepContext:
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(*columns)
+        query: "PyPikaQueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(*columns)
 
         for column_sort in step.columns:
             query = query.orderby(column_sort.column, order=Order.desc if column_sort.order == "desc" else Order.asc)
@@ -1489,7 +1493,7 @@ class SQLTranslator(ABC):
     def split(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "SplitStep",
@@ -1497,7 +1501,7 @@ class SQLTranslator(ABC):
         if self.SUPPORT_SPLIT_PART:
             col_field: Field = Table(prev_step_table)[step.column]
             new_cols = [f"{step.column}_{i + 1}" for i in range(step.number_cols_to_keep)]
-            query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
+            query: "PyPikaQueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
                 *columns,
                 *(
                     self._wrap_split_part(functions.SplitPart(col_field, step.delimiter, i + 1)).as_(new_cols[i])
@@ -1511,14 +1515,14 @@ class SQLTranslator(ABC):
     def substring(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "SubstringStep",
     ) -> StepContext:
         step.new_column_name = f"{step.column}_substr" if step.new_column_name is None else step.new_column_name
         col_field: Field = Table(prev_step_table)[step.column]
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
+        query: "PyPikaQueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *columns,
             functions.Substring(col_field, step.start_index, (step.end_index - step.start_index) + 1).as_(
                 step.new_column_name
@@ -1529,7 +1533,7 @@ class SQLTranslator(ABC):
     def text(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "TextStep",
@@ -1557,7 +1561,7 @@ class SQLTranslator(ABC):
         else:
             value_wrapped = functions.Cast(value_wrapped, self.DATA_TYPE_MAPPING.text)
 
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
+        query: "PyPikaQueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *columns,
             value_wrapped.as_(step.new_column),
         )
@@ -1566,7 +1570,7 @@ class SQLTranslator(ABC):
     def todate(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "ToDateStep",
@@ -1599,7 +1603,7 @@ class SQLTranslator(ABC):
         else:
             date_selection = self._cast_to_timestamp(col_field)
 
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
+        query: "PyPikaQueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *(c for c in columns if c != step.column),
             date_selection.as_(col_field.name),
         )
@@ -1608,7 +1612,7 @@ class SQLTranslator(ABC):
     def top(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str | Table,
         columns: list[str],
         step: "TopStep",
@@ -1616,7 +1620,7 @@ class SQLTranslator(ABC):
         the_table = Table(prev_step_table) if isinstance(prev_step_table, str) else prev_step_table
         if step.groups:
             if self.SUPPORT_ROW_NUMBER:
-                sub_query: "QueryBuilder" = self.QUERY_CLS.from_(the_table).select(*columns)
+                sub_query: "PyPikaQueryBuilder" = self.QUERY_CLS.from_(the_table).select(*columns)
 
                 rank_on_field: Field = the_table[step.rank_on]
                 groups_fields: list[Field] = [the_table[group] for group in step.groups]
@@ -1626,7 +1630,7 @@ class SQLTranslator(ABC):
                     .orderby(rank_on_field, order=Order.desc if step.sort == "desc" else Order.asc)
                     .as_("row_number")
                 )
-                query: "QueryBuilder" = (
+                query: "PyPikaQueryBuilder" = (
                     self.QUERY_CLS.from_(sub_query)
                     .select(*columns)
                     .where(Field("row_number") <= step.limit)
@@ -1650,13 +1654,13 @@ class SQLTranslator(ABC):
     def trim(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "TrimStep",
     ) -> StepContext:
         col_fields: list[Field] = [Table(prev_step_table)[col] for col in step.columns]
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
+        query: "PyPikaQueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *(c for c in columns if c not in step.columns),
             *(functions.Trim(col_field).as_(col_field.name) for col_field in col_fields),
         )
@@ -1665,7 +1669,7 @@ class SQLTranslator(ABC):
     def uniquegroups(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "UniqueGroupsStep",
@@ -1699,7 +1703,7 @@ class SQLTranslator(ABC):
     def unpivot(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "UnpivotStep",
@@ -1734,13 +1738,13 @@ class SQLTranslator(ABC):
     def uppercase(
         self: Self,
         *,
-        builder: "QueryBuilder",
+        builder: "PyPikaQueryBuilder",
         prev_step_table: str,
         columns: list[str],
         step: "UppercaseStep",
     ) -> StepContext:
         col_field: Field = Table(prev_step_table)[step.column]
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
+        query: "PyPikaQueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
             *(c for c in columns if c != step.column),
             functions.Upper(col_field).as_(step.column),
         )
