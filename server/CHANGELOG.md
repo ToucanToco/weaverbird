@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Added
+
+- PyPika: Added optional `offset` and `limit` parameters to `translate_pipeline`.
+
+### Fixed
+
 - Pandas: Fixed a bug in the `evolution` step, where a shift in DataFrame indices could happen, causing
   the delta to be assigned to the wrong row.
 
