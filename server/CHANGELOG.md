@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Removed
+
+- PyPika: the `join` and `append` steps have been removed.
+
 ### Added
 
 - PyPika: Added optional `offset` and `limit` parameters to `translate_pipeline`.

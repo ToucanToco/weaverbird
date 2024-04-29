@@ -48,61 +48,6 @@ _CASES: list[tuple[list[dict | PipelineStep], str]] = [
         ],
         'WITH __step_0_dummy__ AS (SELECT "price_per_l","alcohol_degree","name","cost","beer_kind","volume_ml","brewing_date","nullable_name" FROM "beers_tiny") ,__step_1_dummy__ AS (SELECT "beer_kind",COUNT("name") "beer_count",AVG("price_per_l") "avg_price_per_l" FROM "__step_0_dummy__" GROUP BY "beer_kind" ORDER BY "beer_kind") ,__step_2_dummy__ AS (SELECT "beer_kind","beer_count","avg_price_per_l",ABS("avg_price_per_l") "avg_price_per_l_abs" FROM "__step_1_dummy__") SELECT "beer_kind","beer_count","avg_price_per_l","avg_price_per_l_abs" FROM "__step_2_dummy__"',
     ),
-    (
-        [
-            steps.DomainStep(domain="beers_tiny"),
-            steps.SelectStep(columns=["name", "beer_kind"]),
-            steps.JoinStep(
-                type="left",
-                on=[("name", "name")],
-                right_pipeline=[
-                    steps.DomainStep(domain="beers_tiny"),
-                    steps.SelectStep(columns=["name", "price_per_l"]),
-                ],
-            ),
-        ],
-        'WITH __step_0_dummy__ AS (SELECT "price_per_l","alcohol_degree","name","cost","beer_kind","volume_ml","brewing_date","nullable_name" FROM "beers_tiny") ,__step_1_dummy__ AS (SELECT "name","beer_kind" FROM "__step_0_dummy__") ,__step_0_dummy1__ AS (SELECT "price_per_l","alcohol_degree","name","cost","beer_kind","volume_ml","brewing_date","nullable_name" FROM "beers_tiny") ,__step_1_dummy1__ AS (SELECT "name","price_per_l" FROM "__step_0_dummy1__") ,__step_2_dummy__ AS (SELECT "__step_1_dummy__"."name","__step_1_dummy__"."beer_kind","__step_1_dummy1__"."name" "name_right","__step_1_dummy1__"."price_per_l" FROM "__step_1_dummy__" LEFT JOIN "__step_1_dummy1__" ON "__step_1_dummy__"."name"="__step_1_dummy1__"."name" ORDER BY "__step_1_dummy__"."name") SELECT "name","beer_kind","name_right","price_per_l" FROM "__step_2_dummy__"',
-    ),
-    (
-        [
-            steps.DomainStep(domain="beers_tiny"),
-            steps.SelectStep(columns=["name", "beer_kind"]),
-            steps.JoinStep(
-                type="left",
-                on=[("name", "renamed")],
-                right_pipeline=[
-                    steps.DomainStep(domain="beers_tiny"),
-                    steps.SelectStep(columns=["name", "price_per_l"]),
-                    steps.RenameStep(to_rename=[("name", "renamed")]),
-                ],
-            ),
-        ],
-        'WITH __step_0_dummy__ AS (SELECT "price_per_l","alcohol_degree","name","cost","beer_kind","volume_ml","brewing_date","nullable_name" FROM "beers_tiny") ,__step_1_dummy__ AS (SELECT "name","beer_kind" FROM "__step_0_dummy__") ,__step_0_dummy1__ AS (SELECT "price_per_l","alcohol_degree","name","cost","beer_kind","volume_ml","brewing_date","nullable_name" FROM "beers_tiny") ,__step_1_dummy1__ AS (SELECT "name","price_per_l" FROM "__step_0_dummy1__") ,__step_2_dummy1__ AS (SELECT "name" "renamed","price_per_l" FROM "__step_1_dummy1__") ,__step_2_dummy__ AS (SELECT "__step_1_dummy__"."name","__step_1_dummy__"."beer_kind","__step_2_dummy1__"."renamed","__step_2_dummy1__"."price_per_l" FROM "__step_1_dummy__" LEFT JOIN "__step_2_dummy1__" ON "__step_1_dummy__"."name"="__step_2_dummy1__"."renamed" ORDER BY "__step_1_dummy__"."name") SELECT "name","beer_kind","renamed","price_per_l" FROM "__step_2_dummy__"',
-    ),
-    (
-        [
-            steps.DomainStep(domain="beers_tiny"),
-            steps.SelectStep(columns=["name", "beer_kind"]),
-            steps.JoinStep(
-                type="left",
-                on=[("name", "name")],
-                right_pipeline=[
-                    steps.DomainStep(domain="beers_tiny"),
-                    steps.SelectStep(columns=["name", "price_per_l"]),
-                    steps.JoinStep(
-                        type="left",
-                        on=[("name", "name")],
-                        right_pipeline=[
-                            steps.DomainStep(domain="beers_tiny"),
-                            steps.SelectStep(columns=["name", "cost"]),
-                        ],
-                    ),
-                    steps.SelectStep(columns=["name", "cost", "price_per_l"]),
-                ],
-            ),
-        ],
-        'WITH __step_0_dummy__ AS (SELECT "price_per_l","alcohol_degree","name","cost","beer_kind","volume_ml","brewing_date","nullable_name" FROM "beers_tiny") ,__step_1_dummy__ AS (SELECT "name","beer_kind" FROM "__step_0_dummy__") ,__step_0_dummy1__ AS (SELECT "price_per_l","alcohol_degree","name","cost","beer_kind","volume_ml","brewing_date","nullable_name" FROM "beers_tiny") ,__step_1_dummy1__ AS (SELECT "name","price_per_l" FROM "__step_0_dummy1__") ,__step_0_dummy2__ AS (SELECT "price_per_l","alcohol_degree","name","cost","beer_kind","volume_ml","brewing_date","nullable_name" FROM "beers_tiny") ,__step_1_dummy2__ AS (SELECT "name","cost" FROM "__step_0_dummy2__") ,__step_2_dummy1__ AS (SELECT "__step_1_dummy1__"."name","__step_1_dummy1__"."price_per_l","__step_1_dummy2__"."name" "name_right","__step_1_dummy2__"."cost" FROM "__step_1_dummy1__" LEFT JOIN "__step_1_dummy2__" ON "__step_1_dummy1__"."name"="__step_1_dummy2__"."name" ORDER BY "__step_1_dummy1__"."name") ,__step_3_dummy1__ AS (SELECT "name","cost","price_per_l" FROM "__step_2_dummy1__") ,__step_2_dummy__ AS (SELECT "__step_1_dummy__"."name","__step_1_dummy__"."beer_kind","__step_3_dummy1__"."name" "name_right","__step_3_dummy1__"."cost","__step_3_dummy1__"."price_per_l" FROM "__step_1_dummy__" LEFT JOIN "__step_3_dummy1__" ON "__step_1_dummy__"."name"="__step_3_dummy1__"."name" ORDER BY "__step_1_dummy__"."name") SELECT "name","beer_kind","name_right","cost","price_per_l" FROM "__step_2_dummy__"',
-    ),
 ]
 
 

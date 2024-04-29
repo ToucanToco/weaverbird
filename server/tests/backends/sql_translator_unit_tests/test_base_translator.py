@@ -4,9 +4,8 @@ from zoneinfo import ZoneInfo
 
 import pytest
 from pypika import AliasedQuery, Case, Field, Order, Query, Schema, Table, analytics, functions
-from pypika.enums import JoinType
 from pypika.queries import QueryBuilder
-from pypika.terms import LiteralValue, Term, ValueWrapper
+from pypika.terms import Term, ValueWrapper
 from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, SQLTranslator
 from weaverbird.backends.pypika_translator.translators.exceptions import (
     ForbiddenSQLStep,
@@ -620,68 +619,6 @@ def test_absolutevalue(base_translator: BaseTranslator, default_step_kwargs: dic
 
     expected_query = Query.from_(previous_step).select(*selected_columns, functions.Abs(Field(column)).as_(new_column))
 
-    assert ctx.selectable.get_sql() == expected_query.get_sql()
-
-
-# Join tests
-@pytest.mark.parametrize(
-    "join_type, join_type_variant",
-    [("left", JoinType.left), ("left outer", JoinType.left_outer), ("inner", JoinType.inner)],
-)
-def test_join_simple(
-    base_translator: BaseTranslator,
-    join_type: str,
-    join_type_variant: JoinType,
-    default_step_kwargs: dict[str, Any],
-):
-    right_domain = "projects"
-    selected_columns = ["name", "project_id"]
-    join_columns = [("project_id", "id")]
-    previous_step = "previous_with"
-
-    step = steps.JoinStep(right_pipeline=[steps.DomainStep(domain=right_domain)], type=join_type, on=join_columns)
-    ctx = base_translator.join(step=step, columns=selected_columns, **default_step_kwargs)
-
-    left_table = Table(previous_step)
-    right_table = Table("__step_0_basetranslator__")
-    expected_query = (
-        Query.from_(previous_step)
-        .select(
-            *(left_table[col] for col in selected_columns),
-            right_table.id,
-            Field("name", table=right_table, alias="name_right"),
-            right_table.created_at,
-        )
-        .join(right_table, join_type_variant)
-        .on(left_table.project_id == right_table.id)
-        .orderby(left_table.project_id)
-    )
-    assert ctx.selectable.get_sql() == expected_query.get_sql()
-
-
-def test_append_simple(base_translator: BaseTranslator, default_step_kwargs: dict[str, Any]):
-    right_domain = "projects"
-    selected_columns = ["name", "created_at"]
-    right_selected_columns = ["name", "user_id"]
-    previous_step = "previous_with"
-
-    step = steps.AppendStep(
-        pipelines=[
-            [
-                steps.DomainStep(domain=right_domain),
-                steps.SelectStep(columns=right_selected_columns),
-            ]
-        ]
-    )
-    ctx = base_translator.append(step=step, columns=selected_columns, **default_step_kwargs)
-
-    right_table = Table("__step_1_basetranslator__")
-    expected_query = (
-        Query.from_(previous_step)
-        .select(*selected_columns, LiteralValue("NULL").as_("user_id"))
-        .union_all(Query.from_(right_table).select("name", LiteralValue("NULL").as_("created_at"), "user_id"))
-        .orderby("name", "created_at", "user_id")
-    )
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
 
