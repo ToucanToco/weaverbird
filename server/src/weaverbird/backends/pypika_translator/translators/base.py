@@ -377,12 +377,23 @@ class SQLTranslator(ABC):
             builder = (ctx.builder or builder).with_(ctx.selectable, table_name)
 
         if last_step is not None:
+            from weaverbird.pipeline.steps import AppendStep
+
             step_method = self._step_method(last_step.name)
-            from_table = FromTable(table_name=table_name, builder=builder, query_class=self.QUERY_CLS)
-            ctx = step_method(step=last_step, prev_step_table=from_table, builder=builder, columns=ctx.columns)
-            return QueryBuilderContext(
-                builder=ctx.selectable, columns=ctx.columns, table_name=table_name, last_step_unwrapped=True
-            )
+            if isinstance(last_step, AppendStep):
+                from_table = FromTable(table_name=table_name, builder=None, query_class=self.QUERY_CLS)
+                ctx = step_method(step=last_step, prev_step_table=from_table, builder=builder, columns=ctx.columns)
+                table_name = self._next_step_name()
+                assert ctx.builder is not None
+                builder = ctx.builder.with_(ctx.selectable, table_name)
+                return self._unwrap_append(builder=builder, columns=ctx.columns, table_name=table_name)
+            else:
+                from_table = FromTable(table_name=table_name, builder=builder, query_class=self.QUERY_CLS)
+                ctx = step_method(step=last_step, prev_step_table=from_table, builder=builder, columns=ctx.columns)
+                return QueryBuilderContext(
+                    builder=ctx.selectable, columns=ctx.columns, table_name=table_name, last_step_unwrapped=True
+                )
+
         else:
             return QueryBuilderContext(
                 builder=builder, columns=ctx.columns, table_name=table_name, last_step_unwrapped=False
@@ -601,6 +612,70 @@ class SQLTranslator(ABC):
             message = message or f"could not convert {pipeline} to pipeline: {exc}"
             raise NotImplementedError(message) from exc
 
+    def _unwrap_append(self, *, builder: "QueryBuilder", columns: list[str], table_name: str) -> QueryBuilderContext:
+        """This is a helper method allowing to unwrap append steps.
+
+        It is required because unwrapping an append step would be highly uneffective.
+        Since unwrapping a step make it extract columns from the last CTE at the root level,
+        unwrapping an append step would result in this form:
+
+        (
+            WITH
+                __s0_pipe1__ AS (SELECT a AS aa FROM a),
+                __s0_pipe2__ AS (SELECT b AS bb FROM b)
+            SELECT aa FROM __s0_pipe1__
+        )
+        UNION ALL
+        (SELECT bb FROM __s0_pipe2__)
+
+        This does not work, as every query needs to have the whole context. Here, the DB will error
+        on the second query, complaining that __s0_pipe2__ does not exist.
+
+        We could provide the builder with the entire context to every query, but it would result in
+        the following form:
+
+        (
+            WITH
+                __s0_pipe1__ AS (SELECT a AS aa FROM a),
+                __s0_pipe2__ AS (SELECT b AS bb FROM b)
+            SELECT aa FROM __s0_pipe1__
+        )
+        UNION ALL
+        (
+            WITH
+                __s0_pipe1__ AS (SELECT a AS aa FROM a),
+                __s0_pipe2__ AS (SELECT b AS bb FROM b)
+            SELECT bb FROM __s0_pipe2__
+        )
+
+        This would cause every step to be re-executed for every appended dataset, which would be
+        extremely costly.
+
+        Another solution would be to just provide the context of its own builder to every pipeline,
+        to have something like this:
+
+        (WITH __s0_pipe1__ AS (SELECT a AS aa FROM a) SELECT aa FROM __s0_pipe1__)
+        UNION ALL
+        (WITH __s0_pipe2__ AS (SELECT b AS bb FROM b) SELECT bb FROM __s0_pipe2__)
+
+        But this would not work either: if the append step is not in the last position, we would end
+        up with nested CTEs, which is not supported.
+
+        Thus, we chose to always treat the append step as if it was not in the last position in the
+        pipeline, meaning we generate a query as follows.
+
+        WITH __s0_pipe1__ AS (SELECT a AS aa FROM a),
+        WITH __s0_pipe2__ AS (SELECT b AS bb FROM b),
+        WITH __s1_pipe1__ AS ((SELECT aa, NULL FROM __s0_pipe1__) UNION ALL (SELECT NULL, bb FROM __s0_pipe2__)),
+        ...
+
+        In case the append step is in the last position in the pipeline, this method will simply
+        unwrap the result by selecting all columns returned by the step and applying the same ordering
+        as the step does to ensure result consistency
+        """
+        query = builder.from_(table_name).select(*columns).orderby(*columns)
+        return QueryBuilderContext(builder=query, columns=columns, table_name=table_name, last_step_unwrapped=True)
+
     def append(
         self: Self,
         *,
@@ -612,6 +687,7 @@ class SQLTranslator(ABC):
         pipelines = [self._pipeline_or_domain_name_or_reference_to_pipeline(pipeline) for pipeline in step.pipelines]
         tables: list[str] = []
         column_lists: list[list[str]] = []
+
         for pipeline in pipelines:
             pipeline_ctx = self.__class__(
                 tables_columns=self._tables_columns,
