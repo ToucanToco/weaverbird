@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, TypeVar
 from pypika import functions
 from pypika.dialects import RedshiftQuery
 from pypika.enums import Dialects
-from pypika.queries import QueryBuilder, Table
+from pypika.queries import QueryBuilder
 from pypika.terms import Term
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
@@ -12,6 +12,7 @@ from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp
 from weaverbird.backends.pypika_translator.translators.base import (
     DataTypeMapping,
     DateAddWithoutUnderscore,
+    FromTable,
     SQLTranslator,
     StepContext,
 )
@@ -58,19 +59,18 @@ class RedshiftTranslator(PostgreSQLTranslator):
         self: Self,
         *,
         builder: QueryBuilder,
-        prev_step_table: str,
+        prev_step_table: FromTable,
         columns: list[str],
         step: "ConcatenateStep",
     ) -> StepContext:
         # from step.columns = ["city", "age", "username"], step.separator = " -> "
         # create [Field("city"), " -> ", Field("age"), " -> ", Field("username")]
-        the_table = Table(prev_step_table)
-        tokens = [the_table[step.columns[0]]]
+        tokens = [prev_step_table[step.columns[0]]]
         for col in step.columns[1:]:
             tokens.append(step.separator)
-            tokens.append(the_table[col])
+            tokens.append(prev_step_table[col])
 
-        query: QueryBuilder = self.QUERY_CLS.from_(prev_step_table).select(
+        query = prev_step_table.select(
             *columns,
             self._recursive_concat(None, tokens).as_(step.new_column_name),
         )
