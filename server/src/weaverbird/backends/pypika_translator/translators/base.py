@@ -185,6 +185,19 @@ class FromTable:
             return self._builder.from_(self._pypika_table).select(*columns)
         return self._query_class.from_(self._pypika_table).select(*columns)
 
+    def update_builder_if_exists(self, new_builder: QueryBuilder) -> None:
+        """If this table object has a builder, set it to the new one.
+
+        This is used for combine steps: In case they are nested, and we want to unwrap the last one,
+        the step needs to select on the builder it has updated rather than on the alias for the
+        previous step's table.
+
+        Since this method only updates the builder if it exists, it only has an impact on
+        an unwrapped step, i.e. the last of a pipeline
+        """
+        if self._builder is not None:
+            self._builder = new_builder
+
 
 class CustomQuery(AliasedQuery):
     def get_sql(self, **kwargs: Any) -> str:
@@ -1349,6 +1362,7 @@ class SQLTranslator(ABC):
                 pass
             right_cols.append(Field(col, table=right_table, alias=alias))
 
+        prev_step_table.update_builder_if_exists(right_builder_ctx.builder)
         query = (
             prev_step_table.select(*left_cols, *right_cols)
             .join(right_table, self._get_join_type(step.type))
