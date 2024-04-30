@@ -1,5 +1,5 @@
 import operator
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from pypika import Table
 from pypika.functions import NullIf
@@ -8,6 +8,10 @@ from pypika.terms import Term
 from weaverbird.pipeline.formula_ast.eval import FormulaParser
 from weaverbird.pipeline.formula_ast.types import ColumnName, Expression, Operation, Operator
 from weaverbird.pipeline.formula_ast.utils import unquote_string
+
+if TYPE_CHECKING:
+    from weaverbird.backends.pypika_translator.translators.base import FromTable
+
 
 _OP_MAP = {
     Operator.ADD: operator.add,
@@ -38,7 +42,7 @@ def _eval_expression(expr: Expression, table: Table) -> Term:
     return Term.wrap_constant(expr)
 
 
-def formula_to_term(formula: Any, table: Table) -> Term:
+def formula_to_term(formula: Any, table: "FromTable") -> Term:
     try:
         return _eval_expression(FormulaParser(formula).parse(), table)
     except (
