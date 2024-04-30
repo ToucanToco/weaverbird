@@ -158,9 +158,12 @@ class QueryBuilderContext:
 class FromTable:
     """A class representing a table-like object that can be selected from"""
 
-    def __init__(self, *, table_name: str, builder: QueryBuilder | None, query_class: type[Query]) -> None:
+    def __init__(
+        self, *, table_name: str, builder: QueryBuilder | None, query_class: type[Query], schema: str | None = None
+    ) -> None:
         self._table_name = table_name
-        self._pypika_table = Table(self._table_name)
+        self._schema = schema
+        self._pypika_table = Table(self._table_name, schema=schema)
         self._builder = builder
         self._query_class = query_class
 
@@ -295,7 +298,9 @@ class SQLTranslator(ABC):
         columns = self._extract_columns_from_domain_step(step=domain_step)
         # If we have a reference, self._extract_columns_from_domain_step raises
         assert isinstance(domain_step.domain, str)
-        table = Table(domain_step.domain, schema=self._db_schema)
+        table = FromTable(
+            table_name=domain_step.domain, builder=None, query_class=self.QUERY_CLS, schema=self._db_schema
+        )
         step_method: Callable[..., StepContext] = getattr(self, second_step.name)
 
         # If we have a top step, ensure we can have at most source_rows_subset results
