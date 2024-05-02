@@ -130,7 +130,7 @@
         "Group": "Group 1",
         "variance": 11.5555555556,
         "standard deviation": 3.3993463424,
-        "median": 6.0,
+        "median": 7.0,
         "2-th 3-quantile": 10.0
       },
       {
@@ -141,7 +141,7 @@
         "Group": "Group 2",
         "variance": 22.8888888889,
         "standard deviation": 4.7842333648,
-        "median": 5.5,
+        "median": 10.0,
         "2-th 3-quantile": 11.0
       }
     ]

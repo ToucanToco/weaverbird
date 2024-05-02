@@ -19,6 +19,14 @@
             "label": "median",
             "nth": 1,
             "order": 2
+          },
+          {
+            "nth": 9,
+            "order": 10
+          },
+          {
+            "nth": 1,
+            "order": 4
           }
         ],
         "groupby_columns": [
@@ -74,6 +82,14 @@
         {
           "name": "median",
           "type": "number"
+        },
+        {
+          "name": "9-th 10-quantile",
+          "type": "number"
+        },
+        {
+          "name": "1-th 4-quantile",
+          "type": "number"
         }
       ],
       "pandas_version": "0.20.0"
@@ -81,7 +97,9 @@
     "data": [
       {
         "Group": "Group 1",
-        "median": 151.0
+        "median": 151.0,
+        "9-th 10-quantile": 216.0,
+        "1-th 4-quantile": 143.0
       }
     ]
   },
@@ -95,6 +113,14 @@
         {
           "name": "median",
           "type": "number"
+        },
+        {
+          "name": "9-th 10-quantile",
+          "type": "number"
+        },
+        {
+          "name": "1-th 4-quantile",
+          "type": "number"
         }
       ],
       "pandas_version": "0.20.0"
@@ -102,7 +128,9 @@
     "data": [
       {
         "Group": "Group 1",
-        "median": 151.0
+        "median": 151.0,
+        "9-th 10-quantile": 190.4,
+        "1-th 4-quantile": 148.0
       }
     ]
   }
