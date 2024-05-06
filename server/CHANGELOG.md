@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+- Pypika: Fixed a rare bug in the `append` step, where several different pipelines could have identical step names, causing the
+  generated query to be invalid.
+
 ## [0.43.0] - 2024-05-06
 
 ### Added
