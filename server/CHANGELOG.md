@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.43.0] - 2024-05-06
+
 ### Added
 
 - PyPika: Added optional `offset` and `limit` parameters to `translate_pipeline`.
@@ -10,6 +12,7 @@
 
 - Pandas: Fixed a bug in the `evolution` step, where a shift in DataFrame indices could happen, causing
   the delta to be assigned to the wrong row.
+- Mongo: The `statistics` step now returns the correct median for an uneven number of values
 
 ## [0.42.4] - 2024-04-18
 
