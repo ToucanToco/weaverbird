@@ -129,13 +129,7 @@ def test_get_query_str(base_translator: BaseTranslator):
 
     schema = Schema(DB_SCHEMA)
 
-    step_1_query = Query.from_(schema.users).select(*ALL_TABLES["users"])
-    expected = (
-        Query.with_(step_1_query, "__step_0_basetranslator__")
-        .from_("__step_0_basetranslator__")
-        .select(*ALL_TABLES["users"])
-        .get_sql()
-    )
+    expected = Query.from_(schema.users).select(*ALL_TABLES["users"]).get_sql()
 
     query = base_translator.get_query_str(steps=steps)
     assert query == expected
@@ -701,13 +695,7 @@ def test_no_extra_quotes_in_base_translator_with_entire_pipeline(base_translator
     pipeline = [steps.DomainStep(domain="users")]
 
     translated = base_translator.get_query_str(steps=pipeline)
-    assert (
-        translated
-        == (
-            'WITH __step_0_basetranslator__ AS (SELECT "name","pseudonyme","age","id","project_id" FROM "test_schema"."users") '  # noqa: E501
-            'SELECT "name","pseudonyme","age","id","project_id" FROM "__step_0_basetranslator__"'
-        )
-    )
+    assert translated == 'SELECT "name","pseudonyme","age","id","project_id" FROM "test_schema"."users"'
 
 
 def test_materialize_customsql_query_with_no_columns(base_translator: BaseTranslator):
@@ -717,9 +705,7 @@ def test_materialize_customsql_query_with_no_columns(base_translator: BaseTransl
     base_translator._tables_columns = {"toto": []}
 
     translated = base_translator.get_query_str(steps=pipeline)
-    assert translated == (
-        "WITH __step_0_basetranslator__ AS (SELECT titi, tata FROM toto) " 'SELECT * FROM "__step_0_basetranslator__"'
-    )
+    assert translated == "SELECT titi, tata FROM toto"
 
 
 def test_dateextract(base_translator: BaseTranslator, default_step_kwargs: dict[str, Any]):
