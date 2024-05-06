@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [0.26.13] - 2024-05-06
+
+- Mongo: The `statistics` step now returns the correct median for an uneven number of values
+
 ## [0.26.12] - 2024-04-24
 
 - Pandas: Fixed a bug in the `evolution` step, where a shift in DataFrame indices could happen, causing
