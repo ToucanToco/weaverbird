@@ -1,0 +1,24 @@
+exclude:
+- mongo
+- pandas
+- snowflake
+step:
+  pipeline:
+  - condition:
+      column: nullable_name
+      operator: eq
+      value: null
+    name: filter
+  - columns:
+    - name
+    name: select
+expected:
+  data:
+  - name: Superstrong beer
+  - name: "Cuv\xE9e des Trolls"
+  - name: Brasserie De Sutter Brin de Folie
+  schema:
+    fields:
+    - name: name
+      type: string
+    pandas_version: 1.4.0

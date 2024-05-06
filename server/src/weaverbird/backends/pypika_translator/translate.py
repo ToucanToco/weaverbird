@@ -12,6 +12,8 @@ def translate_pipeline(
     tables_columns: Mapping[str, Sequence[str]],
     db_schema: str | None = None,
     source_rows_subset: int | None = None,
+    offset: int | None = None,
+    limit: int | None = None,
 ) -> str:
     translator_cls = ALL_TRANSLATORS[sql_dialect]
     translator = translator_cls(
@@ -19,4 +21,4 @@ def translate_pipeline(
         db_schema=db_schema,
         source_rows_subset=source_rows_subset,
     )
-    return translator.get_query_str(steps=pipeline.steps)
+    return translator.get_query_str(steps=pipeline.steps, offset=offset, limit=limit)

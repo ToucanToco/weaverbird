@@ -2,11 +2,37 @@
 
 ## Unreleased
 
+### Added
+
+- PyPika: Added optional `offset` and `limit` parameters to `translate_pipeline`.
+
+### Fixed
+
+- Pandas: Fixed a bug in the `evolution` step, where a shift in DataFrame indices could happen, causing
+  the delta to be assigned to the wrong row.
+
+## [0.42.4] - 2024-04-18
+
+- Pandas: Rollup step: Fix rollup steps in case there is a single hierarchy level
+
+## [0.42.3] - 2024-04-18
+
+### Fixed
+
+- Pandas: Waterfall step: generate one parent and one child row even if labels are the same (instead of two parent rows)
+
+## [0.42.2] - 2024-03-12
+
+### Fixed
+
+- A `FilterStepWithVariables` can now contain an `InclusionConditionWithVariables`
+- Pypika translators: allow (de)selecting NULL in FilterStep with operators in / nin / eq / ne
+
 ## [0.42.1] - 2024-03-05
 
 ### Fixed
 
-- Google Biq Query: ToDate step now produces datetime columns, not timestamp
+- Google Big Query: ToDate step now produces datetime columns, not timestamp
 - Mongo: Fixed the `ifthenelse` step which generated "$and" clauses instead of "$or"
 - Mongo: Fixed the `evolution` step when several index columns are used. The generated pipeline now filters on all of them
   rather than just the last one.

@@ -5,6 +5,7 @@ from zoneinfo import ZoneInfo
 import pytest
 from pypika import AliasedQuery, Case, Field, Order, Query, Schema, Table, analytics, functions
 from pypika.enums import JoinType
+from pypika.queries import QueryBuilder
 from pypika.terms import LiteralValue, Term, ValueWrapper
 from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, SQLTranslator
 from weaverbird.backends.pypika_translator.translators.exceptions import (
@@ -751,3 +752,43 @@ def test_dateextract(base_translator: BaseTranslator, default_step_kwargs: dict[
     )
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
+
+
+_BASE_EXPECTED_QUERY = (
+    Query.with_(Query.from_(Schema(DB_SCHEMA).users).select(*ALL_TABLES["users"]), "__step_0_basetranslator__")
+    .from_("__step_0_basetranslator__")
+    .select(*ALL_TABLES["users"])
+)
+
+
+@pytest.mark.parametrize(
+    "offset,limit,expected",
+    [
+        (
+            None,
+            None,
+            _BASE_EXPECTED_QUERY,
+        ),
+        (
+            None,
+            15,
+            _BASE_EXPECTED_QUERY.limit(15),
+        ),
+        (
+            1,
+            None,
+            _BASE_EXPECTED_QUERY.offset(1),
+        ),
+        (
+            15,
+            42,
+            _BASE_EXPECTED_QUERY.offset(15).limit(42),
+        ),
+    ],
+)
+def test_base_materialization_with_offset_limit(
+    base_translator: BaseTranslator, offset: int | None, limit: int | None, expected: QueryBuilder
+) -> None:
+    steps = [DomainStep(domain="users")]
+    qb_context = base_translator.get_query_builder(steps=steps)
+    assert qb_context.materialize(offset=offset, limit=limit).get_sql() == expected.get_sql()
