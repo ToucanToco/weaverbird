@@ -4,7 +4,7 @@ import pytest
 from pypika import Query
 from pypika.queries import QueryBuilder
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
-from weaverbird.backends.pypika_translator.translators.base import FromTable, SQLTranslator
+from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, FromTable, SQLTranslator
 
 
 @pytest.fixture
@@ -15,29 +15,27 @@ def default_step_kwargs() -> dict[str, Any]:
     }
 
 
+class Dummy(SQLTranslator):
+    QUERY_CLS = Query
+    DIALECT = SQLDialect.MYSQL
+    DATA_TYPE_MAPPING = DataTypeMapping(
+        boolean="BOOLEAN",
+        date="DATE",
+        float="FLOAT",
+        integer="INTEGER",
+        text="TEXT",
+        datetime="DATETIME",
+        timestamp="TIMESTAMP",
+    )
+
+    @classmethod
+    def _interval_to_seconds(cls, value):
+        """Converts an INTERVAL SQL type to a duration in seconds"""
+
+
 @pytest.fixture
 def translator() -> SQLTranslator:
-    class DummyTranslator(SQLTranslator):
-        QUERY_CLS = Query
-        DIALECT = SQLDialect.MYSQL
-        known_instances = {}
-
-        def _id(self) -> str:
-            if id(self) in DummyTranslator.known_instances:
-                return DummyTranslator.known_instances[id(self)]
-            if len(DummyTranslator.known_instances.keys()) == 0:
-                DummyTranslator.known_instances[id(self)] = "dummy"
-                return "dummy"
-            else:
-                id_ = "dummy" + str(len(DummyTranslator.known_instances.keys()))
-                DummyTranslator.known_instances[id(self)] = id_
-                return id_
-
-        @classmethod
-        def _interval_to_seconds(cls, value):
-            """Converts an INTERVAL SQL type to a duration in seconds"""
-
-    return DummyTranslator(
+    return Dummy(
         tables_columns={
             "beers_tiny": [
                 "price_per_l",

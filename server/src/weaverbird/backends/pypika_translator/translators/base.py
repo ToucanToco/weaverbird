@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
-from functools import cache
 from typing import TYPE_CHECKING, Any, Literal, TypeVar, Union, cast, get_args
+from uuid import uuid4
 
 from dateutil import parser as dateutil_parser
 from pypika import (
@@ -251,20 +251,20 @@ class SQLTranslator(ABC):
         self._known_instances: dict[int, str] = known_instances or {}
         self._step_count = 0
         self._source_rows_subset = source_rows_subset
+        self.__id = uuid4().int
 
     def __init_subclass__(cls) -> None:
         ALL_TRANSLATORS[cls.DIALECT] = cls
 
-    @cache  # noqa: B019
     def _id(self: Self) -> str:
-        if id(self) in self._known_instances:
-            return self._known_instances[id(self)]
+        if self.__id in self._known_instances:
+            return self._known_instances[self.__id]
         if len(self._known_instances.keys()) == 0:
-            id_ = self._known_instances[id(self)] = self.__class__.__name__.lower()
+            id_ = self._known_instances[self.__id] = self.__class__.__name__.lower()
             return id_
         else:
             id_ = self.__class__.__name__.lower() + str(len(self._known_instances.keys()))
-            self._known_instances[id(self)] = id_
+            self._known_instances[self.__id] = id_
             return id_
 
     def _step_name(self: Self, idx: int) -> str:
