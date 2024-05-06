@@ -1,0 +1,49 @@
+exclude:
+- athena_pypika
+- bigquery_pypika
+- mysql_pypika
+- postgres_pypika
+- redshift_pypika
+- snowflake
+- snowflake_pypika
+step:
+  pipeline:
+  - column: Value
+    groupby_columns:
+    - Group
+    name: statistics
+    quantiles:
+    - label: median
+      nth: 1
+      order: 2
+    statistics: []
+input:
+  data:
+  - Group: Group 1
+    Value: 138.0
+  - Group: Group 1
+    Value: 148.0
+  - Group: Group 1
+    Value: 151.0
+  - Group: Group 1
+    Value: 152.0
+  - Group: Group 1
+    Value: 216.0
+  schema:
+    fields:
+    - name: Group
+      type: string
+    - name: Value
+      type: number
+    pandas_version: 1.4.0
+expected:
+  data:
+  - Group: Group 1
+    median: 151.0
+  schema:
+    fields:
+    - name: Group
+      type: string
+    - name: median
+      type: number
+    pandas_version: 1.4.0
