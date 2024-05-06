@@ -168,10 +168,6 @@ class FromTable:
         self._query_class = query_class
 
     @property
-    def _selectable(self) -> QueryBuilder | Table:
-        return self._builder if self._builder is not None else self._pypika_table
-
-    @property
     def name(self) -> str:
         return self._table_name
 
@@ -179,7 +175,7 @@ class FromTable:
         return self._pypika_table
 
     def __getitem__(self, item: Any) -> Field:
-        field = self._selectable.__getitem__(item)
+        field = self._pypika_table.__getitem__(item)
         assert isinstance(field, Field)
         return field
 

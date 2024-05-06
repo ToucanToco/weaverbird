@@ -6,25 +6,25 @@ step:
   pipeline:
   - columns:
     - name
+    - nullable_name
     name: select
   - condition:
-      column: name
-      operator: notmatches
-      value: beer
+      column: nullable_name
+      operator: eq
+      value: null
     name: filter
 expected:
   data:
-  - name: Ninkasi Ploploplop
-  - name: Brewdog Nanny State Alcoholvrij
-  - name: Ardwen Blonde
+  - name: Superstrong beer
+    nullable_name: null
   - name: "Cuv\xE9e des Trolls"
-  - name: Weihenstephan Hefe Weizen Alcoholarm
-  - name: Bellfield Lawless Village IPA
-  - name: Pauwel Kwak
+    nullable_name: null
   - name: Brasserie De Sutter Brin de Folie
-  - name: Brugse Zot blonde
+    nullable_name: null
   schema:
     fields:
     - name: name
+      type: string
+    - name: nullable_name
       type: string
     pandas_version: 1.4.0
