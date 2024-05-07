@@ -1,0 +1,99 @@
+exclude:
+- mongo
+- pandas
+- snowflake
+# tested in multi_pipeline_with_join_pypika_bigquery.yaml
+- bigquery_pypika
+step:
+  pipeline:
+  - name: text
+    new_column: root
+    text: root
+  - columns:
+    - root
+    name: select
+  - name: top
+    rank_on: root
+    limit: 2
+    sort: asc
+  - name: append
+    pipelines:
+    - - domain: beers_tiny
+        name: domain
+      - name: text
+        new_column: col1
+        text: pipe1
+      - columns:
+        - col1
+        name: select
+      - name: top
+        rank_on: col1
+        limit: 2
+        sort: asc
+    - - domain: beers_tiny
+        name: domain
+      - name: text
+        new_column: col2
+        text: pipe2
+      - name: top
+        rank_on: col2
+        limit: 2
+        sort: asc
+      - name: join
+        'on':
+        - - name
+          - name
+        - - beer_kind
+          - beer_kind
+        right_pipeline:
+        - domain: beers_tiny
+          name: domain
+        - name: text
+          new_column: col3
+          text: pipe3
+        - name: top
+          rank_on: col3
+          limit: 2
+          sort: asc
+        type: left
+      - columns:
+        - col2
+        - col3
+        name: select
+expected:
+  data:
+  - col1: null
+    col2: null
+    col3: null
+    root: root
+  - col1: null
+    col2: null
+    col3: null
+    root: root
+  - col1: pipe1
+    col2: null
+    col3: null
+    root: null
+  - col1: pipe1
+    col2: null
+    col3: null
+    root: null
+  - col1: null
+    col2: pipe2
+    col3: pipe3
+    root: null
+  - col1: null
+    col2: pipe2
+    col3: pipe3
+    root: null
+  schema:
+    fields:
+    - name: root
+      type: string
+    - name: col1
+      type: string
+    - name: col2
+      type: string
+    - name: col3
+      type: string
+    pandas_version: 1.4.0

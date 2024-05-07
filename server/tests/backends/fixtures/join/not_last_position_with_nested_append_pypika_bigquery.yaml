@@ -1,0 +1,280 @@
+# required because bigquery orders with NULLS FIRST by default, and this cannot be cahnged with pypika:
+# https://github.com/kayak/pypika/issues/797
+exclude:
+- mongo
+- pandas
+- snowflake
+- athena_pypika
+- mysql_pypika
+- postgres_pypika
+- redshift_pypika
+- snowflake_pypika
+step:
+  pipeline:
+  - name: text
+    new_column: root
+    text: root
+  - columns:
+    - root
+    - name
+    - beer_kind
+    name: select
+  - name: join
+    'on':
+    - - name
+      - name
+    - - beer_kind
+      - beer_kind
+    right_pipeline:
+    - domain: beers_tiny
+      name: domain
+    - name: text
+      new_column: col1
+      text: pipe1
+    - columns:
+      - col1
+      - name
+      - beer_kind
+      name: select
+    - name: append
+      pipelines:
+      - - domain: beers_tiny
+          name: domain
+        - name: text
+          new_column: col2
+          text: pipe2
+        - columns:
+          - col2
+          - name
+          - beer_kind
+          name: select
+      - - domain: beers_tiny
+          name: domain
+        - name: text
+          new_column: col3
+          text: pipe3
+        - columns:
+          - col3
+          - name
+          - beer_kind
+          name: select
+    type: left
+  - name: select
+    columns:
+    - beer_kind
+    - name
+    - col1
+    - col2
+    - col3
+    - root
+  - name: sort
+    columns:
+    - column: name
+      order: asc
+    - column: beer_kind
+      order: asc
+    - column: col1
+      order: asc
+    - column: col2
+      order: asc
+    - column: col3
+      order: asc
+    - column: root
+      order: asc
+expected:
+  data:
+  - beer_kind: Best-sellers
+    col1: null
+    col2: null
+    col3: pipe3
+    name: Ardwen Blonde
+    root: root
+  - beer_kind: Best-sellers
+    col1: null
+    col2: pipe2
+    col3: null
+    name: Ardwen Blonde
+    root: root
+  - beer_kind: Best-sellers
+    col1: pipe1
+    col2: null
+    col3: null
+    name: Ardwen Blonde
+    root: root
+  - beer_kind: India Pale Ale
+    col1: null
+    col2: null
+    col3: pipe3
+    name: Bellfield Lawless Village IPA
+    root: root
+  - beer_kind: India Pale Ale
+    col1: null
+    col2: pipe2
+    col3: null
+    name: Bellfield Lawless Village IPA
+    root: root
+  - beer_kind: India Pale Ale
+    col1: pipe1
+    col2: null
+    col3: null
+    name: Bellfield Lawless Village IPA
+    root: root
+  - beer_kind: Blonde
+    col1: null
+    col2: null
+    col3: pipe3
+    name: Brasserie De Sutter Brin de Folie
+    root: root
+  - beer_kind: Blonde
+    col1: null
+    col2: pipe2
+    col3: null
+    name: Brasserie De Sutter Brin de Folie
+    root: root
+  - beer_kind: Blonde
+    col1: pipe1
+    col2: null
+    col3: null
+    name: Brasserie De Sutter Brin de Folie
+    root: root
+  - beer_kind: Sans alcool
+    col1: null
+    col2: null
+    col3: pipe3
+    name: Brewdog Nanny State Alcoholvrij
+    root: root
+  - beer_kind: Sans alcool
+    col1: null
+    col2: pipe2
+    col3: null
+    name: Brewdog Nanny State Alcoholvrij
+    root: root
+  - beer_kind: Sans alcool
+    col1: pipe1
+    col2: null
+    col3: null
+    name: Brewdog Nanny State Alcoholvrij
+    root: root
+  - beer_kind: Blonde
+    col1: null
+    col2: null
+    col3: pipe3
+    name: Brugse Zot blonde
+    root: root
+  - beer_kind: Blonde
+    col1: null
+    col2: pipe2
+    col3: null
+    name: Brugse Zot blonde
+    root: root
+  - beer_kind: Blonde
+    col1: pipe1
+    col2: null
+    col3: null
+    name: Brugse Zot blonde
+    root: root
+  - beer_kind: Blonde
+    col1: null
+    col2: null
+    col3: pipe3
+    name: "Cuv\xE9e des Trolls"
+    root: root
+  - beer_kind: Blonde
+    col1: null
+    col2: pipe2
+    col3: null
+    name: "Cuv\xE9e des Trolls"
+    root: root
+  - beer_kind: Blonde
+    col1: pipe1
+    col2: null
+    col3: null
+    name: "Cuv\xE9e des Trolls"
+    root: root
+  - beer_kind: India Pale Ale
+    col1: null
+    col2: null
+    col3: pipe3
+    name: Ninkasi Ploploplop
+    root: root
+  - beer_kind: India Pale Ale
+    col1: null
+    col2: pipe2
+    col3: null
+    name: Ninkasi Ploploplop
+    root: root
+  - beer_kind: India Pale Ale
+    col1: pipe1
+    col2: null
+    col3: null
+    name: Ninkasi Ploploplop
+    root: root
+  - beer_kind: Belge blonde forte & Golden Ale
+    col1: null
+    col2: null
+    col3: pipe3
+    name: Pauwel Kwak
+    root: root
+  - beer_kind: Belge blonde forte & Golden Ale
+    col1: null
+    col2: pipe2
+    col3: null
+    name: Pauwel Kwak
+    root: root
+  - beer_kind: Belge blonde forte & Golden Ale
+    col1: pipe1
+    col2: null
+    col3: null
+    name: Pauwel Kwak
+    root: root
+  - beer_kind: Triple
+    col1: null
+    col2: null
+    col3: pipe3
+    name: Superstrong beer
+    root: root
+  - beer_kind: Triple
+    col1: null
+    col2: pipe2
+    col3: null
+    name: Superstrong beer
+    root: root
+  - beer_kind: Triple
+    col1: pipe1
+    col2: null
+    col3: null
+    name: Superstrong beer
+    root: root
+  - beer_kind: Blanche & Weizen
+    col1: null
+    col2: null
+    col3: pipe3
+    name: Weihenstephan Hefe Weizen Alcoholarm
+    root: root
+  - beer_kind: Blanche & Weizen
+    col1: null
+    col2: pipe2
+    col3: null
+    name: Weihenstephan Hefe Weizen Alcoholarm
+    root: root
+  - beer_kind: Blanche & Weizen
+    col1: pipe1
+    col2: null
+    col3: null
+    name: Weihenstephan Hefe Weizen Alcoholarm
+    root: root
+  schema:
+    fields:
+    - name: beer_kind
+      type: string
+    - name: name
+      type: string
+    - name: col1
+      type: string
+    - name: col2
+      type: string
+    - name: col3
+      type: string
+    - name: root
+      type: string
+    pandas_version: 1.4.0

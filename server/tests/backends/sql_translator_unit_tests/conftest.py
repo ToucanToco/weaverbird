@@ -4,12 +4,15 @@ import pytest
 from pypika import Query
 from pypika.queries import QueryBuilder
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
-from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, SQLTranslator
+from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, FromTable, SQLTranslator
 
 
 @pytest.fixture
 def default_step_kwargs() -> dict[str, Any]:
-    return {"builder": QueryBuilder(), "prev_step_table": "previous_with"}
+    return {
+        "builder": QueryBuilder(),
+        "prev_step_table": FromTable(table_name="previous_with", builder=None, query_class=Query),
+    }
 
 
 class Dummy(SQLTranslator):

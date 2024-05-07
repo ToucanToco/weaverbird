@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Added
+
+- Pypika: Whenever possible, the last step of a pipeline get executed at the root level rather than in a CTE.
+  This allows to have a consistent result order in case the pipeline ends with a sorting step (such as `sort` or `top`),
+  which was previously not guaranteed with CTEs
+
 ### Fixed
 
 - Pypika: Fixed a rare bug in the `append` step, where several different pipelines could have identical step names, causing the
