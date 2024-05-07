@@ -378,16 +378,16 @@ class SQLTranslator(ABC):
             builder = (ctx.builder or builder).with_(ctx.selectable, table_name)
 
         if last_step is not None:
-            from weaverbird.pipeline.steps import AppendStep
+            from weaverbird.pipeline.steps import AppendStep, JoinStep
 
             step_method = self._step_method(last_step.name)
-            if isinstance(last_step, AppendStep):
+            if isinstance(last_step, AppendStep | JoinStep):
                 from_table = FromTable(table_name=table_name, builder=None, query_class=self.QUERY_CLS)
                 ctx = step_method(step=last_step, prev_step_table=from_table, builder=builder, columns=ctx.columns)
                 table_name = self._next_step_name()
                 assert ctx.builder is not None
                 builder = ctx.builder.with_(ctx.selectable, table_name)
-                return self._unwrap_append(builder=builder, columns=ctx.columns, table_name=table_name)
+                return self._unwrap_combination_step(builder=builder, columns=ctx.columns, table_name=table_name)
             else:
                 from_table = FromTable(table_name=table_name, builder=builder, query_class=self.QUERY_CLS)
                 ctx = step_method(step=last_step, prev_step_table=from_table, builder=builder, columns=ctx.columns)
@@ -613,11 +613,13 @@ class SQLTranslator(ABC):
             message = message or f"could not convert {pipeline} to pipeline: {exc}"
             raise NotImplementedError(message) from exc
 
-    def _unwrap_append(self, *, builder: "QueryBuilder", columns: list[str], table_name: str) -> QueryBuilderContext:
-        """This is a helper method allowing to unwrap append steps.
+    def _unwrap_combination_step(
+        self, *, builder: "QueryBuilder", columns: list[str], table_name: str
+    ) -> QueryBuilderContext:
+        """This is a helper method allowing to unwrap combination steps.
 
-        It is required because unwrapping an append step would be highly uneffective.
-        Since unwrapping a step make it extract columns from the last CTE at the root level,
+        It is required because unwrapping an append step would be highly uneffective:
+        Since unwrapping a step makes it extract columns from the last CTE at the root level,
         unwrapping an append step would result in this form:
 
         (
@@ -672,7 +674,28 @@ class SQLTranslator(ABC):
 
         In case the append step is in the last position in the pipeline, this method will simply
         unwrap the result by selecting all columns returned by the step and applying the same ordering
-        as the step does to ensure result consistency
+        as the step does to ensure result consistency.
+
+        This is also needed for join steps, due to the following behaviour in pypika: In case the join
+        step is the last step of the pipeline, and it contains an append step, the following form
+        would be generated for the append step:
+        WITH __s1_pipe0__ AS (
+            (SELECT a AS aa, NULL as bb FROM __s0_pipe0__)
+            UNION ALL
+            (SELECT NULL AS aa, b AS bb FROM __s0_pipe1__)
+            ORDER BY aa, bb
+        )
+
+        However, when a top-level SELECT statement is made immediately after, the table name gets
+        prepended to the columns in the ORDER BY statement, resulting in this form:
+        WITH __s1_pipe0__ AS (
+            (SELECT a AS aa, NULL as bb FROM __s0_pipe0__)
+            UNION ALL
+            (SELECT NULL AS aa, b AS bb FROM __s0_pipe1__)
+            ORDER BY __s0_pipe0__.aa, __s0_pipe1__.bb
+        )
+
+        This is invalid SQL, as the tables are not part of a FROM statement.
         """
         query = builder.from_(table_name).select(*columns).orderby(*columns)
         return QueryBuilderContext(builder=query, columns=columns, table_name=table_name, last_step_unwrapped=True)

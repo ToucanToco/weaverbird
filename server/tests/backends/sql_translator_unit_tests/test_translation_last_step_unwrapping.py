@@ -201,8 +201,9 @@ def test_nested_combinations_join_at_root(translator: SQLTranslator) -> None:
         """__step_1_dummy3__ AS (SELECT "price_per_l","alcohol_degree","name","cost","beer_kind","volume_ml","brewing_date","nullable_name",CAST('pipe3' AS TEXT) "col3" FROM "__step_0_dummy3__") ,"""
         """__step_2_dummy3__ AS (SELECT "col3" FROM "__step_1_dummy3__") ,"""
         # union all step
-        """__step_3_dummy1__ AS ((SELECT "col1",NULL "col2",NULL "col3" FROM "__step_2_dummy1__") UNION ALL (SELECT NULL "col1","col2",NULL "col3" FROM "__step_2_dummy2__") UNION ALL (SELECT NULL "col1",NULL "col2","col3" FROM "__step_2_dummy3__") ORDER BY "__step_2_dummy1__"."col1","__step_2_dummy1__"."col2","__step_2_dummy1__"."col3") """
+        """__step_3_dummy1__ AS ((SELECT "col1",NULL "col2",NULL "col3" FROM "__step_2_dummy1__") UNION ALL (SELECT NULL "col1","col2",NULL "col3" FROM "__step_2_dummy2__") UNION ALL (SELECT NULL "col1",NULL "col2","col3" FROM "__step_2_dummy3__") ORDER BY "col1","col2","col3") ,"""
         ## end of join step pipeline append step
-        # Actual join, unwrapped because it is in the last position of the pipeline
-        'SELECT "__step_2_dummy__"."root","__step_3_dummy1__"."col1","__step_3_dummy1__"."col2","__step_3_dummy1__"."col3" FROM "__step_2_dummy__" LEFT JOIN "__step_3_dummy1__" ON "__step_2_dummy__"."name"="__step_3_dummy1__"."name" AND "__step_2_dummy__"."beer_kind"="__step_3_dummy1__"."beer_kind" ORDER BY "__step_2_dummy__"."name","__step_2_dummy__"."beer_kind"'
+        # Join step, should be in a CTE even if is the last step
+        """__step_3_dummy__ AS (SELECT "__step_2_dummy__"."root","__step_3_dummy1__"."col1","__step_3_dummy1__"."col2","__step_3_dummy1__"."col3" FROM "__step_2_dummy__" LEFT JOIN "__step_3_dummy1__" ON "__step_2_dummy__"."name"="__step_3_dummy1__"."name" AND "__step_2_dummy__"."beer_kind"="__step_3_dummy1__"."beer_kind" ORDER BY "__step_2_dummy__"."name","__step_2_dummy__"."beer_kind") """
+        'SELECT "root","col1","col2","col3" FROM "__step_3_dummy__" ORDER BY "root","col1","col2","col3"'
     )
