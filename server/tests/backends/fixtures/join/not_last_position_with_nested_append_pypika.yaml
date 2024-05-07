@@ -2,6 +2,8 @@ exclude:
 - mongo
 - pandas
 - snowflake
+# tested in not_last_position_with_nested_append_pypika_bigquery.yaml
+- bigquery_pypika
 step:
   pipeline:
   - name: text

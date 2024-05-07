@@ -1,9 +1,14 @@
+# required because bigquery orders with NULLS FIRST by default, and this cannot be cahnged with pypika:
+# https://github.com/kayak/pypika/issues/797
 exclude:
 - mongo
 - pandas
 - snowflake
-# tested in last_position_with_nested_append_pypika_bigquery.yaml
-- bigquery_pypika
+- athena_pypika
+- mysql_pypika
+- postgres_pypika
+- redshift_pypika
+- snowflake_pypika
 step:
   pipeline:
   - name: text
@@ -58,9 +63,9 @@ expected:
   data:
   - beer_kind: Best-sellers
     beer_kind_right: Best-sellers
-    col1: pipe1
+    col1: null
     col2: null
-    col3: null
+    col3: pipe3
     name: Ardwen Blonde
     name_right: Ardwen Blonde
     root: root
@@ -74,17 +79,17 @@ expected:
     root: root
   - beer_kind: Best-sellers
     beer_kind_right: Best-sellers
-    col1: null
+    col1: pipe1
     col2: null
-    col3: pipe3
+    col3: null
     name: Ardwen Blonde
     name_right: Ardwen Blonde
     root: root
   - beer_kind: India Pale Ale
     beer_kind_right: India Pale Ale
-    col1: pipe1
+    col1: null
     col2: null
-    col3: null
+    col3: pipe3
     name: Bellfield Lawless Village IPA
     name_right: Bellfield Lawless Village IPA
     root: root
@@ -98,17 +103,17 @@ expected:
     root: root
   - beer_kind: India Pale Ale
     beer_kind_right: India Pale Ale
-    col1: null
+    col1: pipe1
     col2: null
-    col3: pipe3
+    col3: null
     name: Bellfield Lawless Village IPA
     name_right: Bellfield Lawless Village IPA
     root: root
   - beer_kind: Blonde
     beer_kind_right: Blonde
-    col1: pipe1
+    col1: null
     col2: null
-    col3: null
+    col3: pipe3
     name: Brasserie De Sutter Brin de Folie
     name_right: Brasserie De Sutter Brin de Folie
     root: root
@@ -122,17 +127,17 @@ expected:
     root: root
   - beer_kind: Blonde
     beer_kind_right: Blonde
-    col1: null
+    col1: pipe1
     col2: null
-    col3: pipe3
+    col3: null
     name: Brasserie De Sutter Brin de Folie
     name_right: Brasserie De Sutter Brin de Folie
     root: root
   - beer_kind: Sans alcool
     beer_kind_right: Sans alcool
-    col1: pipe1
+    col1: null
     col2: null
-    col3: null
+    col3: pipe3
     name: Brewdog Nanny State Alcoholvrij
     name_right: Brewdog Nanny State Alcoholvrij
     root: root
@@ -146,17 +151,17 @@ expected:
     root: root
   - beer_kind: Sans alcool
     beer_kind_right: Sans alcool
-    col1: null
+    col1: pipe1
     col2: null
-    col3: pipe3
+    col3: null
     name: Brewdog Nanny State Alcoholvrij
     name_right: Brewdog Nanny State Alcoholvrij
     root: root
   - beer_kind: Blonde
     beer_kind_right: Blonde
-    col1: pipe1
+    col1: null
     col2: null
-    col3: null
+    col3: pipe3
     name: Brugse Zot blonde
     name_right: Brugse Zot blonde
     root: root
@@ -170,17 +175,17 @@ expected:
     root: root
   - beer_kind: Blonde
     beer_kind_right: Blonde
-    col1: null
+    col1: pipe1
     col2: null
-    col3: pipe3
+    col3: null
     name: Brugse Zot blonde
     name_right: Brugse Zot blonde
     root: root
   - beer_kind: Blonde
     beer_kind_right: Blonde
-    col1: pipe1
+    col1: null
     col2: null
-    col3: null
+    col3: pipe3
     name: "Cuv\xE9e des Trolls"
     name_right: "Cuv\xE9e des Trolls"
     root: root
@@ -194,17 +199,17 @@ expected:
     root: root
   - beer_kind: Blonde
     beer_kind_right: Blonde
-    col1: null
+    col1: pipe1
     col2: null
-    col3: pipe3
+    col3: null
     name: "Cuv\xE9e des Trolls"
     name_right: "Cuv\xE9e des Trolls"
     root: root
   - beer_kind: India Pale Ale
     beer_kind_right: India Pale Ale
-    col1: pipe1
+    col1: null
     col2: null
-    col3: null
+    col3: pipe3
     name: Ninkasi Ploploplop
     name_right: Ninkasi Ploploplop
     root: root
@@ -218,17 +223,17 @@ expected:
     root: root
   - beer_kind: India Pale Ale
     beer_kind_right: India Pale Ale
-    col1: null
+    col1: pipe1
     col2: null
-    col3: pipe3
+    col3: null
     name: Ninkasi Ploploplop
     name_right: Ninkasi Ploploplop
     root: root
   - beer_kind: Belge blonde forte & Golden Ale
     beer_kind_right: Belge blonde forte & Golden Ale
-    col1: pipe1
+    col1: null
     col2: null
-    col3: null
+    col3: pipe3
     name: Pauwel Kwak
     name_right: Pauwel Kwak
     root: root
@@ -242,17 +247,17 @@ expected:
     root: root
   - beer_kind: Belge blonde forte & Golden Ale
     beer_kind_right: Belge blonde forte & Golden Ale
-    col1: null
+    col1: pipe1
     col2: null
-    col3: pipe3
+    col3: null
     name: Pauwel Kwak
     name_right: Pauwel Kwak
     root: root
   - beer_kind: Triple
     beer_kind_right: Triple
-    col1: pipe1
+    col1: null
     col2: null
-    col3: null
+    col3: pipe3
     name: Superstrong beer
     name_right: Superstrong beer
     root: root
@@ -266,17 +271,17 @@ expected:
     root: root
   - beer_kind: Triple
     beer_kind_right: Triple
-    col1: null
+    col1: pipe1
     col2: null
-    col3: pipe3
+    col3: null
     name: Superstrong beer
     name_right: Superstrong beer
     root: root
   - beer_kind: Blanche & Weizen
     beer_kind_right: Blanche & Weizen
-    col1: pipe1
+    col1: null
     col2: null
-    col3: null
+    col3: pipe3
     name: Weihenstephan Hefe Weizen Alcoholarm
     name_right: Weihenstephan Hefe Weizen Alcoholarm
     root: root
@@ -290,9 +295,9 @@ expected:
     root: root
   - beer_kind: Blanche & Weizen
     beer_kind_right: Blanche & Weizen
-    col1: null
+    col1: pipe1
     col2: null
-    col3: pipe3
+    col3: null
     name: Weihenstephan Hefe Weizen Alcoholarm
     name_right: Weihenstephan Hefe Weizen Alcoholarm
     root: root

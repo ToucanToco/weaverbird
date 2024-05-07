@@ -1,9 +1,14 @@
+# required because bigquery orders with NULLS FIRST by default, and this cannot be cahnged with pypika:
+# https://github.com/kayak/pypika/issues/797
 exclude:
 - mongo
 - pandas
 - snowflake
-# tested in multi_pipeline_with_join_pypika_bigquery.yaml
-- bigquery_pypika
+- athena_pypika
+- mysql_pypika
+- postgres_pypika
+- redshift_pypika
+- snowflake_pypika
 step:
   pipeline:
   - name: text
@@ -63,13 +68,13 @@ step:
 expected:
   data:
   - col1: null
-    col2: null
-    col3: null
-    root: root
+    col2: pipe2
+    col3: pipe3
+    root: null
   - col1: null
-    col2: null
-    col3: null
-    root: root
+    col2: pipe2
+    col3: pipe3
+    root: null
   - col1: pipe1
     col2: null
     col3: null
@@ -79,13 +84,13 @@ expected:
     col3: null
     root: null
   - col1: null
-    col2: pipe2
-    col3: pipe3
-    root: null
+    col2: null
+    col3: null
+    root: root
   - col1: null
-    col2: pipe2
-    col3: pipe3
-    root: null
+    col2: null
+    col3: null
+    root: root
   schema:
     fields:
     - name: root
