@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.44.0] - 2024-05-07
+
 ### Added
 
 - Pypika: Whenever possible, the last step of a pipeline get executed at the root level rather than in a CTE.

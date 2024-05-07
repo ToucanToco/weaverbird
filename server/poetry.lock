@@ -3308,7 +3308,7 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 name = "werkzeug"
 version = "3.0.3"
 description = "The comprehensive WSGI web application library."
-optional = false
+optional = true
 python-versions = ">=3.8"
 files = [
     {file = "werkzeug-3.0.3-py3-none-any.whl", hash = "sha256:fc9645dc43e03e4d630d23143a04a7f947a9a3b5727cd535fdfe155a17cc48c8"},
