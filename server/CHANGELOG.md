@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## [0.44.1] - 2024-05-14
+
+### Fixed
+
+- Pypika: in case a pipeline contains a single CustomSQL step, it is now always wrapped in a CTE in order to allow for
+  proper applying of `OFFSET` and `LIMIT` in `materialize`.
+
 ## [0.44.0] - 2024-05-07
 
 ### Added
