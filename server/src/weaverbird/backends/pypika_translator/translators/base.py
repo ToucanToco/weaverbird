@@ -338,6 +338,11 @@ class SQLTranslator(ABC):
         assert steps[0].name == "domain" or steps[0].name == "customsql"
         self._step_count = 0
 
+        # A single custom SQL step must always be wrapped in a CTE, as we cannot apply offset and
+        # limit on it directly
+        if len(steps) == 1 and steps[0].name == "customsql":
+            unwrap_last_step = False
+
         if len(steps) > 1 and isinstance(steps[0], DomainStep) and isinstance(steps[1], FilterStep | TopStep):
             ctx = self._merge_first_steps(domain_step=steps[0], second_step=steps[1])
             remaining_steps = steps[2:]

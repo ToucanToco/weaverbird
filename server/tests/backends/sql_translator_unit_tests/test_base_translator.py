@@ -14,6 +14,7 @@ from weaverbird.backends.pypika_translator.translators.exceptions import (
 )
 from weaverbird.pipeline import conditions, steps
 from weaverbird.pipeline.pipeline import DomainStep
+from weaverbird.pipeline.steps.customsql import CustomSqlStep
 from weaverbird.pipeline.steps.utils.combination import Reference
 
 
@@ -705,7 +706,10 @@ def test_materialize_customsql_query_with_no_columns(base_translator: BaseTransl
     base_translator._tables_columns = {"toto": []}
 
     translated = base_translator.get_query_str(steps=pipeline)
-    assert translated == "SELECT titi, tata FROM toto"
+    assert (
+        translated
+        == 'WITH __step_0_basetranslator__ AS (SELECT titi, tata FROM toto) SELECT * FROM "__step_0_basetranslator__"'
+    )
 
 
 def test_dateextract(base_translator: BaseTranslator, default_step_kwargs: dict[str, Any]):
@@ -778,3 +782,17 @@ def test_base_materialization_with_offset_limit(
     steps = [DomainStep(domain="users")]
     qb_context = base_translator.get_query_builder(steps=steps)
     assert qb_context.materialize(offset=offset, limit=limit).get_sql() == expected.get_sql()
+
+
+@pytest.mark.parametrize("unwrap", (True, False))
+def test_base_materialization_with_offset_limit_and_unwrap_and_single_customsql(
+    base_translator: BaseTranslator, unwrap: bool
+) -> None:
+    # customsql requires exactly one table to be specified
+    base_translator._tables_columns = {"foo": ["bar", "baz"]}
+
+    steps = [CustomSqlStep(query="SELECT * FROM foo")]
+    assert (
+        base_translator.get_query_str(steps=steps, offset=5, limit=10)
+        == 'WITH __step_0_basetranslator__ AS (SELECT * FROM foo) SELECT "bar","baz" FROM "__step_0_basetranslator__" LIMIT 10 OFFSET 5'  # noqa: E501
+    )
