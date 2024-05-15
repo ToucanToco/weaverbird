@@ -10,15 +10,9 @@
   "step": {
     "pipeline": [
       {
-        "name": "ifthenelse",
-        "if": {
-          "column": "AGE",
-          "value": 20,
-          "operator": "gt"
-        },
-        "newColumn": "COND",
-        "then": "\"tin'tin\"",
-        "else": "some ' stuff with \" annoying 'quotes'"
+        "name": "formula",
+        "new_column": "FOOBAR",
+        "formula": "\"Ba'al\""
       }
     ]
   },
@@ -47,9 +41,9 @@
         "SCORE": 100
       },
       {
-        "NAME": "bar",
-        "AGE": 20,
-        "SCORE": 200
+        "NAME": "Azz",
+        "AGE": 21,
+        "SCORE": 100
       }
     ]
   },
@@ -69,7 +63,7 @@
           "type": "integer"
         },
         {
-          "name": "COND",
+          "name": "FOOBAR",
           "type": "string"
         }
       ],
@@ -80,13 +74,13 @@
         "NAME": "foo",
         "AGE": 42,
         "SCORE": 100,
-        "COND": "tin'tin"
+        "FOOBAR": "Ba'al"
       },
       {
-        "NAME": "bar",
-        "AGE": 20,
-        "SCORE": 200,
-        "COND": "some ' stuff with \" annoying 'quotes'"
+        "NAME": "Azz",
+        "AGE": 21,
+        "SCORE": 100,
+        "FOOBAR": "Ba'al"
       }
     ]
   }
