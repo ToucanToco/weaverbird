@@ -48,12 +48,10 @@ class FormulaParser:
     @staticmethod
     def sanitize_string(s: str) -> str:
         """Unquotes strings, escapes single quotes and wraps them in single quotes"""
-        # Removing outer quotes
-        unquoted = unquote_string(s)
-        # Escaping single quotes in the string
-        with_escaped_single_quotes = unquoted.replace("'", r"\'")
+        # Removing outer quotes and escaping inner quotes:
+        unquoted = unquote_string(s, escape_quotes=True)
         # Wrapping the entire thing in single quotes
-        return f"'{with_escaped_single_quotes}'"
+        return f"'{unquoted}'"
 
     def _iterate_tokens(self, tokens: Iterator[tokenize.TokenInfo]) -> Generator[str, None, None]:
         """This function iterates over tokens, sanitizes and yields them."""
@@ -169,10 +167,8 @@ class FormulaParser:
             # Constant: number, string literal or boolean
             case ast.Constant(value=value):
                 # bool is a subtype of int
-                if isinstance(value, int | float):
+                if isinstance(value, int | float | str):
                     return value
-                elif isinstance(value, str):
-                    return f"'{value}'"
                 else:
                     raise UnsupportedConstant(f"Unsupported constant '{expr}' of type {type(value)}")
             # Column name

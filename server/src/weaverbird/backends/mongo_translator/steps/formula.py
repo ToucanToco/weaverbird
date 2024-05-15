@@ -1,6 +1,5 @@
 from weaverbird.pipeline.formula_ast.eval import FormulaParser
 from weaverbird.pipeline.formula_ast.types import ColumnName, Expression, Operation, Operator
-from weaverbird.pipeline.formula_ast.utils import unquote_string
 from weaverbird.pipeline.steps import FormulaStep
 
 _MONGO_OPERATOR_MAP = {
@@ -41,9 +40,6 @@ def build_mongo_formula_tree(expr: Expression) -> dict | str | int | bool | floa
         return mongo_formula_for_operation(expr)
     elif isinstance(expr, ColumnName):
         return "$" + expr.name
-    elif isinstance(expr, str):
-        # We want unquoted strings
-        return unquote_string(expr)
     else:
         return expr
 
