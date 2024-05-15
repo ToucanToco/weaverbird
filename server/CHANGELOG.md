@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [0.44.2] - 2024-05-15
+
+### Fixed
+
+- Handle single quotes in formula and conditional steps
+
 ## [0.44.1] - 2024-05-14
 
 ### Fixed
