@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Formula: removed support for unquoted strings that are not valid column names
+
 ## [0.44.2] - 2024-05-15
 
 ### Fixed

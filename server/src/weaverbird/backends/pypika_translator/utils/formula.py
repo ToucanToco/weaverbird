@@ -7,7 +7,6 @@ from pypika.terms import Term
 
 from weaverbird.pipeline.formula_ast.eval import FormulaParser
 from weaverbird.pipeline.formula_ast.types import ColumnName, Expression, Operation, Operator
-from weaverbird.pipeline.formula_ast.utils import unquote_string
 
 if TYPE_CHECKING:
     from weaverbird.backends.pypika_translator.translators.base import FromTable
@@ -36,9 +35,6 @@ def _eval_expression(expr: Expression, table: Table) -> Term:
         return _eval_operation(expr, table)
     elif isinstance(expr, ColumnName):
         return table[expr.name]
-    elif isinstance(expr, str):
-        # unquoting
-        expr = unquote_string(expr)
     return Term.wrap_constant(expr)
 
 

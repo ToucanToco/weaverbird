@@ -17,8 +17,8 @@
           "operator": "gt"
         },
         "newColumn": "COND",
-        "then": "\"tin'tin\"",
-        "else": "some ' stuff with \" annoying 'quotes'"
+        "then": "'tintin'",
+        "else": "\"some ' stuff with \\\" annoying 'quotes'\""
       }
     ]
   },
@@ -80,7 +80,7 @@
         "NAME": "foo",
         "AGE": 42,
         "SCORE": 100,
-        "COND": "tin'tin"
+        "COND": "tintin"
       },
       {
         "NAME": "bar",

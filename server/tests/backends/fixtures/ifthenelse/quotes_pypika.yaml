@@ -19,7 +19,7 @@
         },
         "newColumn": "cond",
         "then": "'tintin'",
-        "else": "some ' stuff with \" annoying 'quotes'"
+        "else": "\"some ' stuff with \\\" annoying 'quotes'\""
       }
     ]
   },
