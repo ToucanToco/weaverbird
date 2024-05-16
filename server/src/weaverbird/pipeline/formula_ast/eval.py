@@ -3,8 +3,6 @@ import tokenize
 from collections.abc import Generator, Iterator
 from io import BytesIO
 
-from weaverbird.pipeline.formula_ast.utils import unquote_string
-
 from . import types
 
 
@@ -45,14 +43,6 @@ class FormulaParser:
         self._formula = formula
         self._columns: dict[str, str] = {}
 
-    @staticmethod
-    def sanitize_string(s: str) -> str:
-        """Unquotes strings, escapes single quotes and wraps them in single quotes"""
-        # Removing outer quotes and escaping inner quotes:
-        unquoted = unquote_string(s, escape_quotes=True)
-        # Wrapping the entire thing in single quotes
-        return f"'{unquoted}'"
-
     def _iterate_tokens(self, tokens: Iterator[tokenize.TokenInfo]) -> Generator[str, None, None]:
         """This function iterates over tokens, sanitizes and yields them."""
 
@@ -88,11 +78,8 @@ class FormulaParser:
             ):
                 # Those are whitespace tokens we don't care about, so not yielding them
                 continue
-            elif token.type == tokenize.STRING:
-                # In case we have a string literal, we sanitize it
-                yield self.sanitize_string(token.string)
             elif token.type == tokenize.OP and token.string == "[":
-                # Square brackets are delimiters for column names, so here we read everyhting until
+                # Square brackets are delimiters for column names, so here we read everything until
                 # the closing bracket
                 yield parse_col_name(token)
             else:
@@ -166,8 +153,7 @@ class FormulaParser:
                 return types.Operation(left=self._parse_expr(left), right=self._parse_expr(right), operator=operator)
             # Constant: number, string literal or boolean
             case ast.Constant(value=value):
-                # bool is a subtype of int
-                if isinstance(value, int | float | str):
+                if isinstance(value, bool | int | float | str):
                     return value
                 else:
                     raise UnsupportedConstant(f"Unsupported constant '{expr}' of type {type(value)}")

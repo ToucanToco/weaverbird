@@ -29,7 +29,16 @@ def test_formula(sample_df: DataFrame):
     assert_dataframes_equals(df_result, expected_result)
 
 
-@pytest.mark.parametrize("bad_expression", ["", 'print("hello")', "import re", "x = colA * 2"])
+@pytest.mark.parametrize("formula,constant", [("\"Some 'text'\"", "Some 'text'"), ("true", True), ("12.34", 12.34)])
+def test_formula_constant(sample_df: DataFrame, formula: str, constant):
+    step = FormulaStep(name="formula", new_column="z", formula=formula)
+    df_result = execute_formula(step, sample_df)
+
+    expected_result = sample_df.assign(z=[constant, constant])
+    assert_dataframes_equals(df_result, expected_result)
+
+
+@pytest.mark.parametrize("bad_expression", ["", 'print("hello")', "import re", "x = colA * 2", "invalid columns"])
 def test_bad_formula(sample_df: DataFrame, bad_expression):
     bad_step = FormulaStep(name="formula", new_column="z", formula=bad_expression)
     with pytest.raises(Exception):  # noqa: B017
