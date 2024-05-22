@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+- PyPika: `unpivot` steps are now always wrapped in a CTE, as they return a `pypika.LiteralValue`, which
+  does not support offset and limit.
+
 ## [0.45.0] - 2024-05-16
 
 ### Fixed
