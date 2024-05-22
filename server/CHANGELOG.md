@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Mongo: the `datefrom` step translator is more flexible and accepts custom date formats
+
 ## [0.45.0] - 2024-05-16
 
 ### Fixed
