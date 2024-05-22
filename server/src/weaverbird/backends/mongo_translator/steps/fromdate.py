@@ -49,7 +49,7 @@ _FULL_MONTH_REPLACE = {
 def _translate_date(step: FromdateStep, month_dict: MongoStep) -> list[MongoStep]:
     concat_separators = _extract_separators_from_date_format(step.format)
     concat_elements = []
-    for _, value in concat_separators.items():
+    for value in concat_separators.values():
         concat_elements.append(value["prefix"])
         concat_elements.append(value["name"])
         if value.get("suffix"):
@@ -97,7 +97,8 @@ _DATE_TAGS_MAPPING = {"%d": "$_vqbTempDay", "%B": "$_vqbTempMonth", "%b": "$_vqb
 _DATE_TAGS = ["%d", "%b", "%B", "%Y"]
 
 
-def _order_date_tag_from_format(date_format):
+def _order_date_tag_from_format(date_format) -> list[tuple[int, str]]:
+    """Extracts date tag position from date format"""
     ordered_tag_pos: list[tuple[int, str]] = []
     for tag in _DATE_TAGS:
         try:
@@ -108,9 +109,20 @@ def _order_date_tag_from_format(date_format):
 
 
 def _extract_separators_from_date_format(date_format: str) -> dict[int, Any]:
+    """
+    date_format can be customized by the end user. Mongo doesn't support %b and %B (until v7).
+    We have to extract each date elements to have access to their position and separators in order to recreate properly
+    the expected format into a concat step.
+    Example:
+    input: date_format = "Hi, %B is a wonderful month, especially the %d !"
+    output: {
+      0: { name: "$_vqbTempMonth", "prefix": "Hi, ", "suffix": "", position: 0 },
+      1: { name: "$_vqbTempDay", "prefix": " is a wonderful month, especially the ", "suffix": " !", position: 44 }
+    }
+    """
     index = 0
     ordered_tag_pos = _order_date_tag_from_format(date_format)
-    tag_separators = {}
+    tag_separators: dict[int, Any] = {}
     for position, tag in ordered_tag_pos:
         tag_separators[index] = {"name": _DATE_TAGS_MAPPING[tag], "position": position}
         index += 1
