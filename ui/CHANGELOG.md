@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [0.113.0] - 2024-05-23
+
+### Changed
+
+- Labeller: export step labeller function
+
 ## [0.112.1] - 2024-04-15
 
 - Bump luxon dependency for security reasons
