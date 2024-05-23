@@ -1565,6 +1565,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
+[0.113.0]: https://github.com/ToucanToco/weaverbird/compare/v0.112.1...v0.113.0
 [0.112.1]: https://github.com/ToucanToco/weaverbird/compare/v0.112.0...v0.112.1
 [0.112.0]: https://github.com/ToucanToco/weaverbird/compare/v0.111.3...v0.112.0
 [0.111.3]: https://github.com/ToucanToco/weaverbird/compare/v0.111.2...v0.111.3
