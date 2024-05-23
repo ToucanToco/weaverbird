@@ -41,6 +41,7 @@ export { transformValueToDateRange } from './components/DatePicker/transform-val
 export { dateRangeToString } from './lib/dates';
 export { isFilterComboAnd, isFilterComboOr } from './lib/steps';
 export { getPaginationContext } from './lib/dataset/pagination';
+export { labelWithReadeableVariables, humanReadableLabel } from './lib/labeller';
 
 // export directives
 export { resizable } from './directives/resizable/resizable';
