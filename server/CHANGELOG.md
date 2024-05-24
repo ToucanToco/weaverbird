@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## [0.45.1] - 2024-05-22
+
+### Fixed
+
+- PyPika: `unpivot` steps are now always wrapped in a CTE, as they return a `pypika.LiteralValue`, which
+  does not support offset and limit.
+
+- Mongo: the `datefrom` step translator is more flexible and accepts custom date formats
+
 ## [0.45.0] - 2024-05-16
 
 ### Fixed

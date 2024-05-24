@@ -15,6 +15,7 @@ from weaverbird.backends.pypika_translator.translators.exceptions import (
 from weaverbird.pipeline import conditions, steps
 from weaverbird.pipeline.pipeline import DomainStep
 from weaverbird.pipeline.steps.customsql import CustomSqlStep
+from weaverbird.pipeline.steps.unpivot import UnpivotStep
 from weaverbird.pipeline.steps.utils.combination import Reference
 
 
@@ -795,4 +796,25 @@ def test_base_materialization_with_offset_limit_and_unwrap_and_single_customsql(
     assert (
         base_translator.get_query_str(steps=steps, offset=5, limit=10)
         == 'WITH __step_0_basetranslator__ AS (SELECT * FROM foo) SELECT "bar","baz" FROM "__step_0_basetranslator__" LIMIT 10 OFFSET 5'  # noqa: E501
+    )
+
+
+@pytest.mark.parametrize("unwrap", (True, False))
+def test_unpivot_step_is_always_wrapped(base_translator: BaseTranslator, unwrap: bool) -> None:
+    # customsql requires exactly one table to be specified
+    base_translator._tables_columns = {"foo": ["bar", "baz"]}
+
+    steps = [
+        CustomSqlStep(query="SELECT * FROM foo"),
+        UnpivotStep(
+            unpivot_column_name="variable", value_column_name="value", keep=["bar"], unpivot=["baz"], dropna=True
+        ),
+    ]
+    assert (
+        base_translator.get_query_str(steps=steps, offset=5, limit=10)
+        == """WITH __step_0_basetranslator__ AS (SELECT * FROM foo) ,"""
+        """__step_0_basetranslator1__ AS (SELECT "bar","baz" FROM "__step_0_basetranslator__") ,"""
+        """__step_1_basetranslator1__ AS (SELECT "bar",CAST("baz" AS FLOAT) "baz" FROM "__step_0_basetranslator1__") ,"""  # noqa: E501
+        """__step_1_basetranslator__ AS (SELECT "bar","variable","value" FROM "__step_1_basetranslator1__"  t1 CROSS JOIN UNNEST(ARRAY['baz'], ARRAY["baz"]) t2 ("variable", "value")) """  # noqa: E501
+        """SELECT "bar","variable","value" FROM "__step_1_basetranslator__" ORDER BY "bar","variable","value" LIMIT 10 OFFSET 5"""  # noqa: E501
     )

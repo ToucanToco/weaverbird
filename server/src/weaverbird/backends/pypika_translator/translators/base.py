@@ -383,10 +383,12 @@ class SQLTranslator(ABC):
             builder = (ctx.builder or builder).with_(ctx.selectable, table_name)
 
         if last_step is not None:
-            from weaverbird.pipeline.steps import AppendStep, JoinStep
+            from weaverbird.pipeline.steps import AppendStep, JoinStep, UnpivotStep
 
             step_method = self._step_method(last_step.name)
-            if isinstance(last_step, AppendStep | JoinStep):
+            # Unpivot steps must always be wrapped in a CTE, as they return a LiteralValue rather
+            # than a query
+            if isinstance(last_step, AppendStep | JoinStep | UnpivotStep):
                 from_table = FromTable(table_name=table_name, builder=None, query_class=self.QUERY_CLS)
                 ctx = step_method(step=last_step, prev_step_table=from_table, builder=builder, columns=ctx.columns)
                 table_name = self._next_step_name()
