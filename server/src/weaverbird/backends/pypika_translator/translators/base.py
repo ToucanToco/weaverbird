@@ -468,7 +468,7 @@ class SQLTranslator(ABC):
         step: "AbsoluteValueStep",
     ) -> StepContext:
         col_field = prev_step_table[step.column]
-        query: "Selectable" = prev_step_table.select(*columns, functions.Abs(col_field).as_(step.new_column))
+        query: Selectable = prev_step_table.select(*columns, functions.Abs(col_field).as_(step.new_column))
         return StepContext(query, columns + [step.new_column])
 
     def aggregate(
@@ -571,7 +571,7 @@ class SQLTranslator(ABC):
             merged_query = _build_window_subquery()
         else:
             merged_query = prev_step_table.select(*step.on).groupby(*step.on)
-        query: "QueryBuilder"
+        query: QueryBuilder
         selected_col_names: list[str]
 
         if step.keep_original_granularity:
@@ -799,7 +799,7 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "CompareTextStep",
     ) -> StepContext:
-        query: "QueryBuilder" = prev_step_table.select(
+        query: QueryBuilder = prev_step_table.select(
             *columns,
             Case()
             .when(prev_step_table[step.str_col_1] == prev_step_table[step.str_col_2], True)
@@ -835,7 +835,7 @@ class SQLTranslator(ABC):
         step: "ConvertStep",
     ) -> StepContext:
         col_fields: list[Field] = [prev_step_table[col] for col in step.columns]
-        query: "QueryBuilder" = prev_step_table.select(
+        query: QueryBuilder = prev_step_table.select(
             *(c for c in columns if c not in step.columns),
             *(
                 functions.Cast(col_field, getattr(self.DATA_TYPE_MAPPING, step.data_type)).as_(col_field.name)
@@ -1037,7 +1037,7 @@ class SQLTranslator(ABC):
     # getattr(self, step_name)
     def _domain(self: Self, *, step: "DomainStep") -> StepContext:
         selected_cols = self._extract_columns_from_domain_step(step=step)
-        query: "QueryBuilder" = self.QUERY_CLS.from_(Table(step.domain, schema=self._db_schema)).select(*selected_cols)
+        query: QueryBuilder = self.QUERY_CLS.from_(Table(step.domain, schema=self._db_schema)).select(*selected_cols)
         if self._source_rows_subset:
             query = query.limit(self._source_rows_subset)
         return StepContext(query, selected_cols)
@@ -1050,7 +1050,7 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "DuplicateStep",
     ) -> StepContext:
-        query: "QueryBuilder" = prev_step_table.select(*columns, prev_step_table[step.column].as_(step.new_column_name))
+        query: QueryBuilder = prev_step_table.select(*columns, prev_step_table[step.column].as_(step.new_column_name))
         return StepContext(query, columns + [step.new_column_name])
 
     @classmethod
@@ -1075,7 +1075,7 @@ class SQLTranslator(ABC):
         )
         new_column = (as_seconds / DURATIONS_IN_SECOND[step.duration_in]).as_(step.new_column_name)
 
-        query: "QueryBuilder" = prev_step_table.select(*columns, new_column)
+        query: QueryBuilder = prev_step_table.select(*columns, new_column)
         return StepContext(query, columns + [step.new_column_name])
 
     @classmethod
@@ -1097,7 +1097,7 @@ class SQLTranslator(ABC):
         ).as_(step.date_col)
         right_table = Table("right_table")
         new_col = step.new_column if step.new_column else "evol"
-        query: "QueryBuilder" = (
+        query: QueryBuilder = (
             prev_step_table.select(
                 *(prev_step_table[col] for col in columns),
                 (
@@ -1131,7 +1131,7 @@ class SQLTranslator(ABC):
         columns: list[str],
         step: "FillnaStep",
     ) -> StepContext:
-        query: "QueryBuilder" = prev_step_table.select(
+        query: QueryBuilder = prev_step_table.select(
             *(c for c in columns if c not in step.columns),
             *(functions.Coalesce(prev_step_table[col_name], step.value).as_(col_name) for col_name in step.columns),
         )
@@ -1493,7 +1493,7 @@ class SQLTranslator(ABC):
         step: "LowercaseStep",
     ) -> StepContext:
         col_field: Field = prev_step_table[step.column]
-        query: "QueryBuilder" = prev_step_table.select(
+        query: QueryBuilder = prev_step_table.select(
             *(c for c in columns if c != step.column),
             functions.Lower(col_field).as_(step.column),
         )
@@ -1592,7 +1592,7 @@ class SQLTranslator(ABC):
 
         replaced_col = functions.Replace(col_field, step.old_str, step.new_str)
 
-        query: "QueryBuilder" = prev_step_table.select(
+        query: QueryBuilder = prev_step_table.select(
             *(c for c in columns if c != step.search_column),
             replaced_col.as_(step.search_column),
         )
@@ -1662,7 +1662,7 @@ class SQLTranslator(ABC):
         if self.SUPPORT_SPLIT_PART:
             col_field = prev_step_table[step.column]
             new_cols = [f"{step.column}_{i + 1}" for i in range(step.number_cols_to_keep)]
-            query: "QueryBuilder" = prev_step_table.select(
+            query: QueryBuilder = prev_step_table.select(
                 *columns,
                 *(
                     self._wrap_split_part(functions.SplitPart(col_field, step.delimiter, i + 1)).as_(new_cols[i])
@@ -1683,7 +1683,7 @@ class SQLTranslator(ABC):
     ) -> StepContext:
         step.new_column_name = f"{step.column}_substr" if step.new_column_name is None else step.new_column_name
         col_field = prev_step_table[step.column]
-        query: "QueryBuilder" = prev_step_table.select(
+        query: QueryBuilder = prev_step_table.select(
             *columns,
             functions.Substring(col_field, step.start_index, (step.end_index - step.start_index) + 1).as_(
                 step.new_column_name
@@ -1761,7 +1761,7 @@ class SQLTranslator(ABC):
         else:
             date_selection = self._cast_to_timestamp(col_field)
 
-        query: "QueryBuilder" = prev_step_table.select(
+        query: QueryBuilder = prev_step_table.select(
             *(c for c in columns if c != step.column),
             date_selection.as_(col_field.name),
         )
@@ -1787,7 +1787,7 @@ class SQLTranslator(ABC):
                     .orderby(rank_on_field, order=Order.desc if step.sort == "desc" else Order.asc)
                     .as_("row_number")
                 )
-                query: "QueryBuilder" = (
+                query: QueryBuilder = (
                     self.QUERY_CLS.from_(sub_query)
                     .select(*columns)
                     .where(Field("row_number") <= step.limit)
@@ -1900,7 +1900,7 @@ class SQLTranslator(ABC):
         step: "UppercaseStep",
     ) -> StepContext:
         col_field = prev_step_table[step.column]
-        query: "QueryBuilder" = prev_step_table.select(
+        query: QueryBuilder = prev_step_table.select(
             *(c for c in columns if c != step.column), functions.Upper(col_field).as_(step.column)
         )
         return StepContext(query, columns)
