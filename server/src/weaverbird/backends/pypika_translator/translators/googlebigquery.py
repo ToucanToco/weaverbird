@@ -160,7 +160,7 @@ class GoogleBigQueryTranslator(SQLTranslator):
                 )
 
         splitted_cols = list(gen_splitted_cols())
-        query: "QueryBuilder" = prev_step_table.select(*columns, *splitted_cols)
+        query: QueryBuilder = prev_step_table.select(*columns, *splitted_cols)
         return StepContext(query, columns + splitted_cols)
 
     @classmethod
@@ -238,7 +238,7 @@ class GoogleBigQueryTranslator(SQLTranslator):
         else:
             date_selection = functions.Cast(col_field, "DATETIME")
 
-        query: "QueryBuilder" = prev_step_table.select(
+        query: QueryBuilder = prev_step_table.select(
             *(c for c in columns if c != step.column),
             date_selection.as_(step.column),
         )
@@ -265,7 +265,7 @@ class GoogleBigQueryTranslator(SQLTranslator):
             "SECOND",
         )
         new_column = (as_seconds / DURATIONS_IN_SECOND[step.duration_in]).as_(step.new_column_name)
-        query: "QueryBuilder" = prev_step_table.select(*columns, new_column)
+        query: QueryBuilder = prev_step_table.select(*columns, new_column)
         return StepContext(query, columns + [step.new_column_name])
 
 

@@ -94,7 +94,7 @@ class MySQLTranslator(SQLTranslator):
                     .as_(new_cols[i])
                 )
 
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(*columns, *build_columns())
+        query: QueryBuilder = self.QUERY_CLS.from_(prev_step_table).select(*columns, *build_columns())
         return StepContext(query, columns + new_cols)
 
     @staticmethod
