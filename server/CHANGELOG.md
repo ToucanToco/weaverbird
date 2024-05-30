@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Pandas: fixed a regression on the `evolution` step introduced in v0.26.12: `_prev_date` columns are no longer created
+
 ## [0.45.1] - 2024-05-22
 
 ### Fixed

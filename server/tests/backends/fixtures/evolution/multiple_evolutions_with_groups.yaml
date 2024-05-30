@@ -1,0 +1,119 @@
+exclude:
+- athena_pypika
+- bigquery_pypika
+- mysql_pypika
+- postgres_pypika
+- redshift_pypika
+- snowflake_pypika
+step:
+  pipeline:
+  # step specified several times on purpose
+  - name: evolution
+    date_col: DATE
+    evolution_format: abs
+    evolution_type: vsLastMonth
+    value_col: VALUE
+    indexColumns:
+    - COLOR
+  - name: evolution
+    date_col: DATE
+    evolution_format: abs
+    evolution_type: vsLastMonth
+    value_col: VALUE
+    indexColumns:
+    - COLOR
+  - name: evolution
+    date_col: DATE
+    evolution_format: abs
+    evolution_type: vsLastMonth
+    value_col: VALUE
+    indexColumns:
+    - COLOR
+input:
+  schema:
+    fields:
+    - name: DATE
+      type: datetime
+    - name: VALUE
+      type: integer
+    - name: COLOR
+      type: string
+    pandas_version: 1.4.0
+  data:
+  - DATE: '2018-12-02'
+    VALUE: 0
+    COLOR: 'blue'
+  - DATE: '2019-01-03'
+    VALUE: 3
+    COLOR: 'blue'
+  - DATE: '2018-12-03'
+    VALUE: 7
+    COLOR: 'green'
+  - DATE: '2019-01-01'
+    VALUE: 2
+    COLOR: 'blue'
+  - DATE: '2018-12-01'
+    VALUE: -15
+    COLOR: 'green'
+  - DATE: '2019-01-02'
+    VALUE: 12
+    COLOR: 'blue'
+  - DATE: '2019-02-02'
+    VALUE: 8
+    COLOR: 'blue'
+  - DATE: '2019-02-03'
+    VALUE: 9
+    COLOR: 'blue'
+  - DATE: '2019-02-04'
+    VALUE: 6
+    COLOR: 'green'
+expected:
+  schema:
+    fields:
+    - name: DATE
+      type: datetime
+    - name: VALUE
+      type: integer
+    - name: COLOR
+      type: string
+    - name: VALUE_EVOL_ABS
+      type: number
+    pandas_version: 1.4.0
+  # values should be in the same order, and no new columns should appear
+  data:
+  - COLOR: blue
+    DATE: '2018-12-02'
+    VALUE: 0
+    VALUE_EVOL_ABS: null
+  - COLOR: blue
+    DATE: '2019-01-03'
+    VALUE: 3
+    VALUE_EVOL_ABS: null
+  - COLOR: green
+    DATE: '2018-12-03'
+    VALUE: 7
+    VALUE_EVOL_ABS: null
+  - COLOR: blue
+    DATE: '2019-01-01'
+    VALUE: 2
+    VALUE_EVOL_ABS: null
+  - COLOR: green
+    DATE: '2018-12-01'
+    VALUE: -15
+    VALUE_EVOL_ABS: null
+  - COLOR: blue
+    DATE: '2019-01-02'
+    VALUE: 12
+    VALUE_EVOL_ABS: 12.0
+  - COLOR: blue
+    DATE: '2019-02-02'
+    VALUE: 8
+    VALUE_EVOL_ABS: -4.0
+  - COLOR: blue
+    DATE: '2019-02-03'
+    VALUE: 9
+    VALUE_EVOL_ABS: 6.0
+  - COLOR: green
+    DATE: '2019-02-04'
+    VALUE: 6
+    VALUE_EVOL_ABS: null
