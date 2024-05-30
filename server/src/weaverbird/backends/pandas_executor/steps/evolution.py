@@ -30,8 +30,10 @@ def execute_evolution(
     if df.set_index(id_cols).index.duplicated().any():
         raise DuplicateError("Multiple rows for the same date. Did you forget indexColumns?")
 
+    # keeping only the groups, the date and the value columns in the offseted dataframe
+    df_offseted = df[id_cols + [step.value_col]]
     date_col_offseted = df[step.date_col] + OFFSETS[step.evolution_type]
-    df_offseted = df.assign(**{step.date_col: date_col_offseted})
+    df_offseted = df_offseted.assign(**{step.date_col: date_col_offseted})
     both = df.merge(df_offseted, on=id_cols, how="left", suffixes=(None, _PREV_DATE_COL_SUFFIX))
     prev_date_col = step.value_col + _PREV_DATE_COL_SUFFIX
     value_date, value_prev_date = both[step.value_col], both[prev_date_col]
