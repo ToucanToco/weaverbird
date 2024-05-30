@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Pandas: fixed a regression on the `evolution` step introduced in v0.26.12: `_prev_date` columns are no longer created
+
 ## [0.26.13] - 2024-05-06
 
 - Mongo: The `statistics` step now returns the correct median for an uneven number of values
