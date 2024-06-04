@@ -2,37 +2,64 @@ from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps.addmissingdates import AddMissingDatesStep, DatesGranularity
 
 
+def _get_current_columns() -> MongoStep:
+    # extracts column names from first row and format it as object will null values
+    return {
+        "$arrayToObject": {
+            "$map": {
+                "input": {"$objectToArray": {"$arrayElemAt": ["$_vqbArray", 0]}},
+                "as": "field",
+                "in": {"k": "$$field.k", "v": None},
+            }
+        }
+    }
+
+
 def _add_missing_dates_year(step: AddMissingDatesStep) -> list[MongoStep]:
     groups = step.groups or []
     # add missing dates by looping over the unique dates array and adding a given date
     # if it's not already present in the original dataset
     add_missing_years_as_dates: MongoStep = {
-        "$map": {
-            # loop over a sorted array of all years between min and max year
-            "input": {"$range": ["$_vqbMinYear", {"$add": ["$_vqbMaxYear", 1]}]},
-            # use a variable "currentYear" as cursor
-            "as": "currentYear",
-            # and apply the following expression to every "currentYear"
+        "$let": {
+            "vars": {"currentColumns": _get_current_columns()},
             "in": {
-                "$let": {
-                    # use a variable yearIndex that represents the index of the "currentYear"
-                    # cursor in the original array
-                    "vars": {
-                        "yearIndex": {"$indexOfArray": ["$_vqbArray._vqbYear", "$$currentYear"]},
-                    },
+                "$map": {
+                    # loop over a sorted array of all years between min and max year
+                    "input": {"$range": ["$_vqbMinYear", {"$add": ["$_vqbMaxYear", 1]}]},
+                    # use a variable "currentYear" as cursor
+                    "as": "currentYear",
+                    # and apply the following expression to every "currentYear"
                     "in": {
-                        "$cond": [
-                            # if "currentYear" is found in the original array
-                            {"$ne": ["$$yearIndex", -1]},
-                            # just get the original document in the original array
-                            {"$arrayElemAt": ["$_vqbArray", "$$yearIndex"]},
-                            # else add a new document with the missing date (we convert the year back to a date object)
-                            # and the group fields (every other field will be undefined)
-                            {
-                                **{col: f"$_id.{col}" for col in groups},
-                                step.dates_column: {"$dateFromParts": {"year": "$$currentYear"}},
+                        "$let": {
+                            # use a variable yearIndex that represents the index of the "currentYear"
+                            # cursor in the original array
+                            "vars": {
+                                "yearIndex": {
+                                    "$indexOfArray": ["$_vqbArray._vqbYear", "$$currentYear"]
+                                },
                             },
-                        ],
+                            "in": {
+                                "$cond": [
+                                    # if "currentYear" is found in the original array
+                                    {"$ne": ["$$yearIndex", -1]},
+                                    # just get the original document in the original array
+                                    {"$arrayElemAt": ["$_vqbArray", "$$yearIndex"]},
+                                    # else add a new document with the missing date (we convert the year back
+                                    # to a date object) and the group fields (every other field will be null)
+                                    {
+                                        "$mergeObjects": [
+                                            "$$currentColumns",
+                                            {
+                                                **{col: f"$_id.{col}" for col in groups},
+                                                step.dates_column: {
+                                                    "$dateFromParts": {"year": "$$currentYear"}
+                                                },
+                                            },
+                                        ]
+                                    },
+                                ],
+                            },
+                        }
                     },
                 }
             },
@@ -130,37 +157,49 @@ def _add_missing_dates_day_or_month(step: AddMissingDatesStep) -> list[MongoStep
     # add missing dates by looping over the unique dates array and adding a given date
     # if it's not already present in the original dataset
     add_missing_dates = {
-        "$map": {
-            # loop over unique dates array
-            "input": all_days_range
-            if step.dates_granularity == "day"
-            else unique_days_for_month_granularity,
-            # use a variable "date" as cursor
-            "as": "date",
-            # and apply the following expression to every "date"
+        "$let": {
+            "vars": {"currentColumns": _get_current_columns()},
             "in": {
-                "$let": {
-                    # use a variable dateIndex that represents the index
-                    # of the "date" cursor in the original array of documents
-                    "vars": {"dateIndex": {"$indexOfArray": ["$_vqbArray._vqbDay", "$$date"]}},
+                "$map": {
+                    # loop over unique dates array
+                    "input": all_days_range
+                    if step.dates_granularity == "day"
+                    else unique_days_for_month_granularity,
+                    # use a variable "date" as cursor
+                    "as": "date",
+                    # and apply the following expression to every "date"
                     "in": {
-                        "$cond": [
-                            # if "date" is found in the original array
-                            {"$ne": ["$$dateIndex", -1]},
-                            # just get the original document in the original array
-                            {"$arrayElemAt": ["$_vqbArray", "$$dateIndex"]},
-                            # else add a new document with the missing
-                            # date and the group fieldds (every other
-                            # field will be undefined)
-                            {
-                                **{col: f"$_id.{col}" for col in groups},
-                                step.dates_column: "$$date",
+                        "$let": {
+                            # use a variable dateIndex that represents the index
+                            # of the "date" cursor in the original array of documents
+                            "vars": {
+                                "dateIndex": {"$indexOfArray": ["$_vqbArray._vqbDay", "$$date"]}
                             },
-                        ],
+                            "in": {
+                                "$cond": [
+                                    # if "date" is found in the original array
+                                    {"$ne": ["$$dateIndex", -1]},
+                                    # just get the original document in the original array
+                                    {"$arrayElemAt": ["$_vqbArray", "$$dateIndex"]},
+                                    # else add a new document with the missing
+                                    # date and the group fieldds (every other
+                                    # field will be null)
+                                    {
+                                        "$mergeObjects": [
+                                            "$$currentColumns",
+                                            {
+                                                **{col: f"$_id.{col}" for col in groups},
+                                                step.dates_column: "$$date",
+                                            },
+                                        ]
+                                    },
+                                ],
+                            },
+                        },
                     },
-                },
+                }
             },
-        },
+        }
     }
 
     return [
