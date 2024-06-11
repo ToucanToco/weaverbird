@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Pypika: don't select column name if its already `ifthenelse` step alias, which was causing an invalid column overwrite 
+
 ## [0.45.3] - 2024-06-05
 
 ### Fixed
