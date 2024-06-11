@@ -1410,7 +1410,7 @@ class SQLTranslator(ABC):
         step: "IfthenelseStep",
     ) -> StepContext:
         query = prev_step_table.select(
-            *columns,
+            *(column for column in columns if column != step.new_column),
             self._build_ifthenelse_case(
                 if_=step.condition,
                 then_=step.then,
