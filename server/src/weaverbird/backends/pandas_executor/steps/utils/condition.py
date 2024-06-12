@@ -42,7 +42,15 @@ def apply_condition(condition: Condition, df: DataFrame) -> Series:
     if isinstance(condition, ComparisonCondition):
         return getattr(df[condition.column], condition.operator)(condition.value)
     elif isinstance(condition, InclusionCondition):
-        f = df[condition.column].isin(condition.value)
+        values = condition.value
+        serie = df[condition.column]
+
+        # In order to make "in" / "nin" works with dates:
+        if str(df[condition.column].dtype).startswith("datetime64"):
+            values = [_date_bound_condition_to_tz_aware_timestamp(v) for v in values]
+            serie = pd_to_datetime(serie, utc=True)
+
+        f = serie.isin(values)
         if condition.operator.startswith("n"):
             return ~f
         else:

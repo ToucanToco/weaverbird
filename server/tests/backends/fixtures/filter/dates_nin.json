@@ -1,0 +1,80 @@
+{
+  "exclude": [
+    "athena_pypika",
+    "bigquery_pypika",
+    "mysql_pypika",
+    "postgres_pypika",
+    "redshift_pypika",
+    "snowflake_pypika"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "filter",
+        "condition": {
+          "column": "CREATED",
+          "operator": "nin",
+          "value": ["2024-01-01T00:00:00.000Z"]
+        }
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "CREATED",
+          "type": "datetime"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "CREATED": "2023-01-01T00:00:00.000Z"
+      },
+      {
+        "NAME": "bar",
+        "AGE": 43,
+        "CREATED": "2024-01-01T00:00:00.000Z"
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        },
+        {
+          "name": "CREATED",
+          "type": "datetime",
+          "tz": "UTC"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "CREATED": "2023-01-01T00:00:00.000Z"
+      }
+    ]
+  }
+}
