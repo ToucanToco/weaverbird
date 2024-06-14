@@ -71,5 +71,4 @@ def test_bigquery_translator_pipeline(
     )
     expected = pd.read_json(json.dumps(pipeline_spec["expected"]), orient="table")
     result = bigquery_client.query(query).result().to_dataframe()
-
     assert_dataframes_equals(expected, result)
