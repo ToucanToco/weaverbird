@@ -56,7 +56,11 @@ def test_bigquery_translator_pipeline(
 ):
     pipeline_spec = get_spec_from_json_fixture(case_id, case_spec_file)
 
-    steps = [{"name": "domain", "domain": "beers_tiny"}] + pipeline_spec["step"]["pipeline"]
+    if pipeline_spec["step"]["pipeline"][0]["name"] == "customsql":
+        steps = pipeline_spec["step"]["pipeline"]
+    else:
+        steps = [{"name": "domain", "domain": "beers_tiny"}] + pipeline_spec["step"]["pipeline"]
+
     pipeline = PipelineWithVariables(steps=steps).render(available_variables, nosql_apply_parameters_to_query)
 
     query = translate_pipeline(
@@ -67,4 +71,5 @@ def test_bigquery_translator_pipeline(
     )
     expected = pd.read_json(json.dumps(pipeline_spec["expected"]), orient="table")
     result = bigquery_client.query(query).result().to_dataframe()
+
     assert_dataframes_equals(expected, result)

@@ -1,0 +1,90 @@
+exclude:
+  - pandas
+  - mongo
+  - athena_pypika
+  - mysql_pypika
+  - postgres_pypika
+  - redshift_pypika
+  - snowflake
+  - snowflake_pypika
+step:
+  pipeline:
+    - name: customsql
+    # Set brewing_date as DATETIME type
+      query: "SELECT `price_per_l`,`alcohol_degree`,`name`,`cost`,`beer_kind`,`volume_ml`,`nullable_name`, CAST(`brewing_date` AS DATETIME) AS `brewing_date` FROM `beers.beers_tiny` WHERE beer_kind = 'Blonde'"
+    # First day of previous month
+    - name: dateextract
+      column: brewing_date
+      dateInfo: [ "firstDayOfPreviousMonth" ]
+      newColumns: [ "prev_month_date" ]
+    # Previous ISO week
+    - name: dateextract
+      column: brewing_date
+      dateInfo: [ "previousIsoWeek" ]
+      newColumns: [ "prev_iso_week_date" ]
+    # First day of previous ISO week
+    - name: dateextract
+      column: brewing_date
+      dateInfo: [ "firstDayOfPreviousIsoWeek" ]
+      newColumns: [ "first_day_prev_iso_week_date" ]
+
+expected:
+  data:
+  - price_per_l: 0.070
+    alcohol_degree: 8.930645
+    name: Cuvée des Trolls
+    cost: 1.55
+    beer_kind: Blonde
+    volume_ml: 250.0
+    brewing_date: "2022-01-05 00:00:00+00:00"
+    nullable_name: ~
+    prev_month_date: "2021-12-01 00:00:00"
+    prev_iso_week_date: 52
+    first_day_prev_iso_week_date: "2021-12-27 00:00:00"
+  - price_per_l: 0.065
+    alcohol_degree: 7.747466
+    name: Brasserie De Sutter Brin de Folie
+    cost: 2.19
+    beer_kind: Blonde
+    volume_ml: 330.0
+    brewing_date: "2022-01-09 00:00:00+00:00"
+    nullable_name: ~
+    prev_month_date: "2021-12-01 00:00:00"
+    prev_iso_week_date: 52
+    first_day_prev_iso_week_date: "2021-12-27 00:00:00"
+  - price_per_l: 0.060
+    alcohol_degree: 8.749609
+    name: Brugse Zot blonde
+    cost: 1.79
+    beer_kind: Blonde
+    volume_ml: 330.0
+    brewing_date: "2022-01-10 00:00:00+00:00"
+    nullable_name: Brugse Zot blonde
+    prev_month_date: "2021-12-01 00:00:00"
+    prev_iso_week_date: 1
+    first_day_prev_iso_week_date: "2022-01-03 00:00:00"
+  schema:
+    fields:
+    - name: price_per_l
+      type: number
+    - name: alcohol_degree
+      type: number
+    - name: name
+      type: string
+    - name: cost
+      type: number
+    - name: beer_kind
+      type: string
+    - name: volume_ml
+      type: number
+    - name: nullable_name
+      type: string
+    - name: brewing_date
+      type: datetime
+    - name: prev_month_date
+      type: datetime
+    - name: prev_iso_week_date
+      type: number
+    - name: first_day_prev_iso_week_date
+      type: datetime
+    pandas_version: 1.4.0
