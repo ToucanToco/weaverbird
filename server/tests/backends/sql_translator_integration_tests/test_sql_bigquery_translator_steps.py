@@ -58,15 +58,17 @@ def test_bigquery_translator_pipeline(
 
     if pipeline_spec["step"]["pipeline"][0]["name"] == "customsql":
         steps = pipeline_spec["step"]["pipeline"]
+        table_columns = pipeline_spec["step"].get("table_columns", _BEERS_TABLE_COLUMNS)
     else:
         steps = [{"name": "domain", "domain": "beers_tiny"}] + pipeline_spec["step"]["pipeline"]
+        table_columns = _BEERS_TABLE_COLUMNS
 
     pipeline = PipelineWithVariables(steps=steps).render(available_variables, nosql_apply_parameters_to_query)
 
     query = translate_pipeline(
         sql_dialect=SQLDialect.GOOGLEBIGQUERY,
         pipeline=pipeline,
-        tables_columns={"beers_tiny": _BEERS_TABLE_COLUMNS},
+        tables_columns={"beers_tiny": table_columns},
         db_schema="beers",
     )
     expected = pd.read_json(json.dumps(pipeline_spec["expected"]), orient="table")
