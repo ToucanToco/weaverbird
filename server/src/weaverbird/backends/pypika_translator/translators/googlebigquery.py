@@ -87,7 +87,7 @@ class GoogleBigQueryQueryBuilder(QueryBuilder):
 
 class GoogleBigQueryDateAdd(Function):
     def __init__(self, *, target_column: Field, interval: Interval) -> None:
-        super().__init__("DATE_ADD", target_column, interval)
+        super().__init__("DATE_ADD", functions.Cast(target_column, "DATETIME"), interval)
 
 
 class GoogleBigQueryTranslator(SQLTranslator):

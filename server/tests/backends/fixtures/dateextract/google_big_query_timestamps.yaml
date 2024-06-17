@@ -1,0 +1,63 @@
+exclude:
+  - pandas
+  - mongo
+  - athena_pypika
+  - mysql_pypika
+  - postgres_pypika
+  - redshift_pypika
+  - snowflake
+  - snowflake_pypika
+step:
+  table_columns:
+    - name
+    - brewing_date
+  pipeline:
+    - name: customsql
+    # Set brewing_date as TIMESTAMP type
+      query: "SELECT `name`, CAST(`brewing_date` AS TIMESTAMP) AS `brewing_date` FROM `beers.beers_tiny` WHERE beer_kind = 'Blonde'"
+    # First day of previous month
+    - name: dateextract
+      column: brewing_date
+      dateInfo: [ "firstDayOfPreviousMonth" ]
+      newColumns: [ "prev_month_date" ]
+    # Previous ISO week
+    - name: dateextract
+      column: brewing_date
+      dateInfo: [ "previousIsoWeek" ]
+      newColumns: [ "prev_iso_week_date" ]
+    # First day of previous ISO week
+    - name: dateextract
+      column: brewing_date
+      dateInfo: [ "firstDayOfPreviousIsoWeek" ]
+      newColumns: [ "first_day_prev_iso_week_date" ]
+
+expected:
+  data:
+  - name: Cuvée des Trolls
+    brewing_date: "2022-01-05 00:00:00+00:00"
+    prev_month_date: "2021-12-01 00:00:00"
+    prev_iso_week_date: 52
+    first_day_prev_iso_week_date: "2021-12-27 00:00:00"
+  - name: Brasserie De Sutter Brin de Folie
+    brewing_date: "2022-01-09 00:00:00+00:00"
+    prev_month_date: "2021-12-01 00:00:00"
+    prev_iso_week_date: 52
+    first_day_prev_iso_week_date: "2021-12-27 00:00:00"
+  - name: Brugse Zot blonde
+    brewing_date: "2022-01-10 00:00:00+00:00"
+    prev_month_date: "2021-12-01 00:00:00"
+    prev_iso_week_date: 1
+    first_day_prev_iso_week_date: "2022-01-03 00:00:00"
+  schema:
+    fields:
+    - name: name
+      type: string
+    - name: brewing_date
+      type: datetime
+    - name: prev_month_date
+      type: datetime
+    - name: prev_iso_week_date
+      type: number
+    - name: first_day_prev_iso_week_date
+      type: datetime
+    pandas_version: 1.4.0

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+ - Pypika GoogleBigQuery: cast field as `DATETIME` in `DATE_ADD` method 
+
 ## [0.45.4] - 2024-06-12
 
 ### Fixed
