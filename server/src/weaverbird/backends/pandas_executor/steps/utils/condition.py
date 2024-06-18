@@ -1,3 +1,4 @@
+import logging
 from datetime import UTC, datetime
 
 from numpy.ma import logical_and, logical_or
@@ -74,6 +75,9 @@ def apply_condition(condition: Condition, df: DataFrame) -> Series:
         try:
             value = _date_bound_condition_to_tz_aware_timestamp(condition.value)
         except OutOfBoundsDatetime:
+            logging.getLogger(__name__).warning(
+                f"filtering dates {condition.operator} {condition.value} is out of bound: ignoring"
+            )
             # we're probably filtering dates using a too wide date range (eg: from year 1000 to 9999),
             # let's assume it should return all lines unfiltered (except the null ones)
             return df[condition.column].notnull()
