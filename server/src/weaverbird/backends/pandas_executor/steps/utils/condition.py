@@ -3,6 +3,7 @@ from datetime import UTC, datetime
 from numpy.ma import logical_and, logical_or
 from pandas import DataFrame, Series, Timestamp
 from pandas import to_datetime as pd_to_datetime
+from pandas.errors import OutOfBoundsDatetime
 from pandas.tseries.offsets import DateOffset
 
 from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relative_date
@@ -70,7 +71,12 @@ def apply_condition(condition: Condition, df: DataFrame) -> Series:
         else:
             raise NotImplementedError
 
-        value = _date_bound_condition_to_tz_aware_timestamp(condition.value)
+        try:
+            value = _date_bound_condition_to_tz_aware_timestamp(condition.value)
+        except OutOfBoundsDatetime:
+            # we're probably filtering dates using a too wide date range (eg: from year 1000 to 9999),
+            # let's assume it should return all lines unfiltered (except the null ones)
+            return df[condition.column].notnull()
 
         # Remove time info from the column to filter on. Using utc=True to ensure we have time-aware
         # objects. Since we're only using this for comparison, the input column is not modified,
