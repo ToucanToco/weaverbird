@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+ - Pandas: when filtering dates with from/until, filtering before 1677 and/or after 2262 now ignores the filter
+   instead of crashing.
+
 ## [0.45.5] - 2024-06-17
 
 ### Fixed
