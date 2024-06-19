@@ -383,9 +383,10 @@ class SQLTranslator(ABC):
             builder = (ctx.builder or builder).with_(ctx.selectable, table_name)
 
         if last_step is not None:
-            from weaverbird.pipeline.steps import AppendStep, JoinStep, UnpivotStep
+            from weaverbird.pipeline.steps import AggregateStep, AppendStep, JoinStep, UnpivotStep
 
             step_method = self._step_method(last_step.name)
+
             # Unpivot steps must always be wrapped in a CTE, as they return a LiteralValue rather
             # than a query
             if isinstance(last_step, AppendStep | JoinStep | UnpivotStep):
@@ -395,6 +396,17 @@ class SQLTranslator(ABC):
                 assert ctx.builder is not None
                 builder = ctx.builder.with_(ctx.selectable, table_name)
                 return self._unwrap_combination_step(builder=builder, columns=ctx.columns, table_name=table_name)
+
+            # Aggregate step without group-by and with granularity has to select from previous_step_table and from
+            # current_step in order to keep all fields. That's why step must always be wrapped in a CTE.
+            elif isinstance(last_step, AggregateStep) and not last_step.on and last_step.keep_original_granularity:
+                from_table = FromTable(table_name=table_name, builder=builder, query_class=self.QUERY_CLS)
+                ctx = step_method(step=last_step, prev_step_table=from_table, builder=builder, columns=ctx.columns)
+                table_name = self._next_step_name()
+                builder = builder.with_(ctx.selectable, table_name)
+                return QueryBuilderContext(
+                    builder=builder, columns=ctx.columns, table_name=table_name, last_step_unwrapped=False
+                )
             else:
                 from_table = FromTable(table_name=table_name, builder=builder, query_class=self.QUERY_CLS)
                 ctx = step_method(step=last_step, prev_step_table=from_table, builder=builder, columns=ctx.columns)
