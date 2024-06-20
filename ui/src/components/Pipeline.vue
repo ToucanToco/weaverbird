@@ -42,7 +42,7 @@
       </div>
       <div class="button-ai-preparation" @click="openAIModal">
         <MagicIcon />
-        <span class="button-ai-prepation__text">AI preparation</span>
+        <span class="button-ai-prepation__text">dj4ng0 preparation</span>
       </div>
     </div>
     <DeleteConfirmationModal
@@ -50,7 +50,12 @@
       @cancelDelete="closeDeleteConfirmationModal"
       @validateDelete="deleteSelectedSteps"
     />
-    <AIModal v-if="AIModalIsOpened" @generate="generatePipeline" @cancel="closeAIModal" />
+    <AIModal
+      v-if="AIModalIsOpened"
+      :firstStep="steps[0]"
+      @generate="generatePipeline"
+      @cancel="closeAIModal"
+    />
   </div>
 </template>
 
@@ -163,13 +168,17 @@ export default class PipelineComponent extends Vue {
     this.AIModalIsOpened = false;
   }
 
-  async generatePipeline(prompt: string): void {
+  async generatePipeline(newSteps: Pipeline): Promise<void> {
     console.log('GENRATE', prompt);
-    const resp = await fetch("/dj4ng0", {method: 'POST', body: JSON.stringify({'user_prompt': prompt})});
-      console.log('GENERATED', resp);
-      const newSteps = [this.steps[0], ...(await resp.json())];
-      console.log('NEW STEPS', newSteps);
-    this.updatePipeline({pipeline: newSteps})
+    // const resp = await fetch('/dj4ng0', {
+    //   method: 'POST',
+    //   body: JSON.stringify({ user_prompt: prompt }),
+    // });
+    // console.log('GENERATED', resp);
+    // const newSteps = [this.steps[0], ...(await resp.json())];
+    // console.log('NEW STEPS', newSteps);
+    this.AIModalIsOpened = false;
+    this.updatePipeline({ pipeline: newSteps });
   }
 
   deleteSelectedSteps(): void {

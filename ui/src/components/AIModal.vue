@@ -21,10 +21,47 @@
         <div class="vqb-modal__footer">
           <div
             class="vqb-modal__action vqb-modal__action--primary"
+            :class="{ 'vqb-modal__action--primary--loading': isLoading }"
             data-cy="weaverbird-cancel-delete"
             @click="generate"
           >
-            Generate
+            <svg
+              v-if="isLoading"
+              class="generate-loading"
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="17"
+              viewBox="0 0 50 50"
+              fill="none"
+            >
+              <circle
+                cx="25"
+                cy="25"
+                r="20"
+                stroke="#919CB2"
+                stroke-width="4"
+                stroke-linecap="round"
+                fill="none"
+              >
+                <animate
+                  attributeName="stroke-dasharray"
+                  from="1, 200"
+                  to="89, 200"
+                  dur="1s"
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="stroke-dashoffset"
+                  from="0"
+                  to="-124"
+                  dur="1s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+            </svg>
+
+            <span v-if="isLoading">Generate...</span>
+            <span v-else>Generate</span>
           </div>
         </div>
       </div>
@@ -34,10 +71,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { Component } from 'vue-property-decorator';
+import { Component, Prop } from 'vue-property-decorator';
 import FAIcon from '@/components/FAIcon.vue';
 // @ts-ignore
 import MagicIcon from './MagicIcon.vue';
+import { State } from 'pinia-class';
+import { VQBModule } from '@/store';
+import type { DataSet } from '@/lib/dataset';
 
 @Component({
   name: 'ai-modal',
@@ -52,14 +92,30 @@ import MagicIcon from './MagicIcon.vue';
  */
 export default class AIModal extends Vue {
   textareaValue: string = '';
+  isLoading: boolean = false;
+
+  @Prop({
+    type: Object,
+    default: () => {},
+  })
+  firstStep!: Record<string, any>;
+  @State(VQBModule) dataset!: DataSet;
 
   cancel(): void {
     /* istanbul ignore next */
     (this.$listeners as any).cancel(); // TODO: refactor (old functional logic)
   }
-  generate(): void {
+  async generate(): Promise<void> {
     /* istanbul ignore next */
-    (this.$listeners as any).generate(this.textareaValue); // TODO: refactor (old functional logic)
+    this.isLoading = true;
+    console.log('DATASET =>', this.dataset);
+    const resp = await fetch('/dj4ng0', {
+      method: 'POST',
+      body: JSON.stringify({ user_prompt: this.textareaValue }),
+    });
+    const newSteps = [this.firstStep, ...(await resp.json())];
+    this.isLoading = false;
+    (this.$listeners as any).generate(newSteps); // TODO: refactor (old functional logic)
   }
 }
 </script>
@@ -217,6 +273,10 @@ export default class AIModal extends Vue {
   border-radius: 4px;
   background: var(--Primary-50, #88b2a8);
 }
+.vqb-modal__action--primary--loading {
+  border-radius: 4px;
+  background: var(--Primary-20, #d0e8e1);
+}
 .vqb-modal__text-area {
   display: flex;
   height: 115px;
@@ -233,5 +293,9 @@ export default class AIModal extends Vue {
   font-style: normal;
   font-weight: 500;
   line-height: 150%; /* 21px */
+}
+.generate-loading {
+  width: 16px;
+  height: 16px;
 }
 </style>
