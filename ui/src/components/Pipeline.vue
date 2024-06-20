@@ -50,7 +50,7 @@
       @cancelDelete="closeDeleteConfirmationModal"
       @validateDelete="deleteSelectedSteps"
     />
-    <AIModal v-if="AIModalIsOpened" @cancel="closeAIModal" />
+    <AIModal v-if="AIModalIsOpened" @generate="generatePipeline" @cancel="closeAIModal" />
   </div>
 </template>
 
@@ -156,13 +156,15 @@ export default class PipelineComponent extends Vue {
   }
 
   openAIModal(): void {
-    console.log('openAIModal');
     this.AIModalIsOpened = true;
   }
 
   closeAIModal(): void {
-    console.log('CLOSE MODAL');
     this.AIModalIsOpened = false;
+  }
+
+  generatePipeline(prompt: string): void {
+    console.log('GENRATE', prompt);
   }
 
   deleteSelectedSteps(): void {

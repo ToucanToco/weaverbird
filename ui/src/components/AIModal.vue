@@ -1,33 +1,31 @@
 <template>
-  <div class="vqb-modal" data-cy="weaverbird-confirm-delete-modal">
+  <div class="vqb-modal">
     <div class="vqb-modal__backdrop" />
     <div class="vqb-modal__container">
       <div class="vqb-modal__body">
         <span class="vqb-modal__close" @click="cancel"><FAIcon icon="times" /></span>
         <div class="vqb-modal__header">
-          <div class="vqb-modal__title">Preparation assistant</div>
+          <div class="vqb-modal__title">
+            <MagicIcon />
+            <span class="vqb-modal__title__text">Preparation assistant</span>
+          </div>
         </div>
         <div class="vqb-modal__section">
           <div class="vqb-modal__text">What transformation do you need?</div>
-          <strong class="vqb-modal__text">
-            This action cannot be undone and may create conflicts with following steps if any.
-          </strong>
+          <textarea
+            class="vqb-modal__text-area"
+            v-model="textareaValue"
+            placeholder="Hey..."
+          ></textarea>
         </div>
         <div class="vqb-modal__footer">
           <div
-            class="vqb-modal__action vqb-modal__action--secondary"
-            data-cy="weaverbird-cancel-delete"
-            @click="cancel"
-          >
-            cancel
-          </div>
-          <!-- <div
             class="vqb-modal__action vqb-modal__action--primary"
-            data-cy="weaverbird-confirm-delete"
-            @click="validateDelete"
+            data-cy="weaverbird-cancel-delete"
+            @click="generate"
           >
-            confirm
-          </div> -->
+            Generate
+          </div>
         </div>
       </div>
     </div>
@@ -37,23 +35,32 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
+import FAIcon from '@/components/FAIcon.vue';
+// @ts-ignore
+import MagicIcon from './MagicIcon.vue';
 
 @Component({
   name: 'ai-modal',
+  components: {
+    MagicIcon,
+    FAIcon,
+  },
 })
 /**
  * @name AIModal
  * @description A modal asking for confirmation before deleting a step
  */
 export default class AIModal extends Vue {
+  textareaValue: string = '';
+
   cancel(): void {
     /* istanbul ignore next */
     (this.$listeners as any).cancel(); // TODO: refactor (old functional logic)
   }
-  // validateDelete(): void {
-  //   /* istanbul ignore next */
-  //   (this.$listeners as any).validateDelete(); // TODO: refactor (old functional logic)
-  // }
+  generate(): void {
+    /* istanbul ignore next */
+    (this.$listeners as any).generate(this.textareaValue); // TODO: refactor (old functional logic)
+  }
 }
 </script>
 
@@ -68,10 +75,11 @@ export default class AIModal extends Vue {
   right: 0;
   top: 0;
   z-index: 999;
+  align-items: center;
 }
 
 .vqb-modal__body {
-  width: 500px;
+  width: 520px;
 }
 
 .vqb-modal__backdrop {
@@ -101,20 +109,33 @@ export default class AIModal extends Vue {
 }
 
 .vqb-modal__close {
-  color: #4c4c4c;
-  font-size: 30px;
+  color: #252525;
+  font-size: 25px;
   position: absolute;
-  top: 15px;
-  right: 30px;
+  top: 10px;
+  right: 10px;
   cursor: pointer;
+
+  display: flex;
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  padding: 4px;
+  justify-content: center;
+  align-items: center;
+  flex: 1 0 0;
 }
 
 .vqb-modal__header {
-  background-color: #f5f5f5;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
   display: flex;
-  padding: 20px 30px;
+  padding: 16px 24px;
+  justify-content: space-between;
+  align-items: center;
+
+  border-radius: 4px 4px 0px 0px;
+  border-bottom: 1px solid var(--neutral-20, #d3d7e0);
+  background: #fff;
 }
 
 .vqb-modal__title {
@@ -123,32 +144,58 @@ export default class AIModal extends Vue {
   line-height: 20px;
   color: #4c4c4c;
   font-weight: 700;
+
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1 0 0;
+}
+
+.vqb-modal__title__text {
+  color: #252525;
+
+  /* title-18 */
+  font-family: Montserrat;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 120%; /* 21.6px */
 }
 
 .vqb-modal__section {
-  box-shadow: inset 0 -1px 0 0 #f5f5f5;
-  padding: 25px 30px;
+  display: flex;
+  padding: 24px;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  align-self: stretch;
 }
 
 .vqb-modal__text {
-  font-size: 14px;
-  letter-spacing: 0.25px;
-  line-height: 22px;
-  color: #4c4c4c;
-  font-weight: 400;
-}
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
 
-strong.vqb-modal__text {
-  display: block;
-  font-weight: 700;
+  color: #252525;
+  /* body-14 */
+  font-family: Montserrat;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%; /* 21px */
 }
 
 .vqb-modal__footer {
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
   display: flex;
-  justify-content: center;
-  padding: 30px;
+  height: 72px;
+  padding: 16px 24px;
+  justify-content: flex-end;
+  align-items: center;
+
+  border-radius: 0px 0px 4px 4px;
+  border-top: 1px solid var(--neutral-20, #d3d7e0);
+  background: var(--Colors-Light, #fdfdff);
 }
 
 .vqb-modal__action {
@@ -157,20 +204,34 @@ strong.vqb-modal__text {
   line-height: 20px;
   cursor: pointer;
   font-weight: 700;
-  padding: 10px 30px;
   text-transform: uppercase;
-}
 
-.vqb-modal__action--secondary {
-  background-color: #f5f5f5;
-  color: #a5a5a5;
-  margin-right: 20px;
-  border: none;
+  display: flex;
+  height: 40px;
+  padding: 12px 16px;
+  align-items: center;
+  gap: 4px;
 }
 
 .vqb-modal__action--primary {
-  background-color: #4c4c4c;
-  color: #fff;
-  border: none;
+  border-radius: 4px;
+  background: var(--Primary-50, #88b2a8);
+}
+.vqb-modal__text-area {
+  display: flex;
+  height: 115px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  align-self: stretch;
+
+  color: var(--neutral-50, #677692);
+
+  /* body-14 */
+  font-family: Montserrat;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%; /* 21px */
 }
 </style>
