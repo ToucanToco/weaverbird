@@ -961,13 +961,34 @@ def _get_wb_docs() -> str:
 _WEAVERBIRD_DOCS = _get_wb_docs()
 
 
-_PROMPT_DATA = f"""
+_PROMPT_DESCRIPTION_STEPS = f"""
 You have a dataset with columns:
-- date: DATETIME
-- product_id: INT
-- price: STRING
-- units_sold: INT
+- Transaction_date: STRING
+- Product: STRING
+- Price: FLOAT
+- Payment_Type: STRING
+- Name: STRING
+- City: STRING
+- State: STRING
+- Country: STRING
+- Account_Created: DATETIME
+- Last_Login: DATETIME
+- Latitude: FLOAT
+- Longitude: FLOAT
 
+You must describe with simple words the necessary steps to response to the client need:
+use the following steps in your answer:
+{_STEP_DESCS}
+
+Remove surrounding explanation and use "name" field as step name
+Be careful with columns data types.
+
+This is the client need:
+__CLIENT_NEED__
+"""
+
+
+_PROMPT_WEAVERBIRD_TRANSLATOR = f"""
 A weaverbird step is a json dict which translates to a transformation on a dataset.
 Here are the descriptions of available weaverbird steps :
 
@@ -975,17 +996,8 @@ Here are the descriptions of available weaverbird steps :
     {_WEAVERBIRD_DOCS}
 </WEAVERBIRD_DOCUMENTATION>
 
-Here are the available steps descriptions:
-<STEPS_DESCRIPTION>
-    {_STEP_DESCS}
-</STEPS_DESCRIPTION>
-
-This is the client need:
-__CLIENT_NEED__
-
-Think before give me a valid list of steps to solve the client issue.
-First, you must think on how to describe the necessary steps the client need.
-Then think on how to translate those steps into their JSON translation by using weaverbird documentation.
+You have to translate those steps description list into weaverbird steps:
+__STEPS_DESCRIPTIONS__
 
 Your output MUST be ONLY the configuration of the steps in JSON format, no surrounding text or explanations.
 """
@@ -995,20 +1007,29 @@ _MODEL_ID = "anthropic.claude-3-sonnet-20240229-v1:0"
 _BOTO3_BEDROCK = boto3.client("bedrock-runtime")
 
 
-def tada(user_prompt: str):
-    body = json.dumps(
+def build_ai_body(prompt: str):
+    return json.dumps(
         {
             "anthropic_version": "",
             "max_tokens": 2000,
-            "messages": [{"role": "user", "content": _PROMPT_DATA.replace("__CLIENT_NEED__", user_prompt)}],
-            "temperature": 0.8,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0.4,
             "top_p": 1,
             "system": "",
         }
     )
-    response = _BOTO3_BEDROCK.invoke_model(body=body, modelId=_MODEL_ID)
-    content = json.loads(response.get("body").read())["content"][0]["text"]
-    pipeline = Pipeline(steps=json.loads(content))
+
+
+def tada(user_prompt: str):
+    description_body = build_ai_body(_PROMPT_DESCRIPTION_STEPS.replace("__CLIENT_NEED__", user_prompt))
+    response = _BOTO3_BEDROCK.invoke_model(body=description_body, modelId=_MODEL_ID)
+    description_content = json.loads(response.get("body").read())["content"][0]["text"]
+
+    pipeline_body = build_ai_body(_PROMPT_DESCRIPTION_STEPS.replace("__STEPS_DESCRIPTIONS__", description_content))
+    response = _BOTO3_BEDROCK.invoke_model(body=pipeline_body, modelId=_MODEL_ID)
+    pipeline_content = json.loads(response.get("body").read())["content"][0]["text"]
+
+    pipeline = Pipeline(steps=json.loads(pipeline_content))
     return pipeline.model_dump(by_alias=True)["steps"]
 
 
