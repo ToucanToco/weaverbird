@@ -43,6 +43,7 @@ import geopandas as gpd
 import pandas as pd
 import psycopg
 import pymysql
+import requests
 import snowflake.connector
 from google.cloud import bigquery
 from google.oauth2.service_account import Credentials
@@ -950,8 +951,14 @@ _STEP_DESCS = [
 ]
 
 
-with open("../docs/_docs/tech/steps.md") as fd:
-    _WEAVERBIRD_DOCS = "\n".join(fd.read().split("\n")[5:])
+def _get_wb_docs() -> str:
+    resp = requests.get(
+        "https://raw.githubusercontent.com/ToucanToco/weaverbird/master/docs/_docs/tech/steps.md", timeout=2.0
+    )
+    return "\n".join(resp.text.split("\n")[5:])
+
+
+_WEAVERBIRD_DOCS = _get_wb_docs()
 
 
 _PROMPT_DATA = f"""
