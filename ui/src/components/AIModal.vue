@@ -8,7 +8,7 @@
           <div class="vqb-modal__title">Preparation assistant</div>
         </div>
         <div class="vqb-modal__section">
-          <div class="vqb-modal__text">Are you sure you want to delete this step?</div>
+          <div class="vqb-modal__text">What transformation do you need?</div>
           <strong class="vqb-modal__text">
             This action cannot be undone and may create conflicts with following steps if any.
           </strong>
@@ -21,13 +21,13 @@
           >
             cancel
           </div>
-          <div
+          <!-- <div
             class="vqb-modal__action vqb-modal__action--primary"
             data-cy="weaverbird-confirm-delete"
             @click="validateDelete"
           >
             confirm
-          </div>
+          </div> -->
         </div>
       </div>
     </div>

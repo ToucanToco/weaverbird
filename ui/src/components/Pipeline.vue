@@ -156,6 +156,7 @@ export default class PipelineComponent extends Vue {
   }
 
   openAIModal(): void {
+    console.log('openAIModal');
     this.AIModalIsOpened = true;
   }
 
