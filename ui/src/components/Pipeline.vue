@@ -36,16 +36,21 @@
       </div>
     </div>
     <div class="query-pipeline__tips-container" v-if="hasSupportedSteps">
-      <div class="query-pipeline__tips">
-        Interact with the widgets and table on the right to add steps
+      <div class="query-pipeline__tips">No steps added yet</div>
+      <div class="query-pipeline__tips-2">
+        Use the widgets on the right to add steps to the pipeline.
       </div>
-      <FAIcon icon="wand-magic-sparkles" class="query-pipeline__tips-icon" />
+      <div class="button-ai-preparation" @click="openAIModal">
+        <MagicIcon />
+        <span class="button-ai-prepation__text">AI preparation</span>
+      </div>
     </div>
     <DeleteConfirmationModal
       v-if="deleteConfirmationModalIsOpened"
       @cancelDelete="closeDeleteConfirmationModal"
       @validateDelete="deleteSelectedSteps"
     />
+    <AIModal v-if="AIModalIsOpened" @cancel="closeAIModal" />
   </div>
 </template>
 
@@ -65,6 +70,10 @@ import { VQBModule, type VQBActions } from '@/store';
 
 import DeleteConfirmationModal from './DeleteConfirmationModal.vue';
 import Step from './Step.vue';
+// @ts-ignore
+import MagicIcon from './MagicIcon.vue';
+// @ts-ignore
+import AIModal from './AIModal.vue';
 
 @Component({
   name: 'pipeline',
@@ -73,12 +82,15 @@ import Step from './Step.vue';
     Draggable,
     Step,
     FAIcon,
+    MagicIcon,
+    AIModal,
   },
 })
 export default class PipelineComponent extends Vue {
   // pipeline steps to delete based on their indexes
   selectedSteps: number[] = [];
   deleteConfirmationModalIsOpened = false;
+  AIModalIsOpened = false;
 
   @State(VQBModule) domains!: string[];
   @State(VQBModule) variableDelimiters!: VariableDelimiters;
@@ -141,6 +153,15 @@ export default class PipelineComponent extends Vue {
 
   closeDeleteConfirmationModal(): void {
     this.deleteConfirmationModalIsOpened = false;
+  }
+
+  openAIModal(): void {
+    this.AIModalIsOpened = true;
+  }
+
+  closeAIModal(): void {
+    console.log('CLOSE MODAL');
+    this.AIModalIsOpened = false;
   }
 
   deleteSelectedSteps(): void {
@@ -222,14 +243,40 @@ export default class PipelineComponent extends Vue {
   flex-direction: column;
   align-items: center;
   font-weight: lighter;
+  justify-content: center;
+  flex: 1 0 0;
+  gap: 16px;
+  margin-top: 100px;
 }
 
+// .query-pipeline__tips {
+//   font-size: 24px;
+//   color: rgb(154, 154, 154);
+//   margin-top: 120px;
+//   margin-bottom: 40px;
+//   text-align: center;
+// }
 .query-pipeline__tips {
-  font-size: 24px;
-  color: rgb(154, 154, 154);
-  margin-top: 120px;
-  margin-bottom: 40px;
+  color: #000;
   text-align: center;
+  /* title-16 */
+  font-family: Montserrat;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 120%; /* 19.2px */
+}
+
+.query-pipeline__tips-2 {
+  color: #000;
+  text-align: center;
+
+  /* body-14 */
+  font-family: Montserrat;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%; /* 21px */
 }
 
 .query-pipeline__delete-steps-container {
@@ -255,5 +302,34 @@ export default class PipelineComponent extends Vue {
 .query-pipeline__tips-icon {
   color: rgb(239, 239, 239);
   font-size: 64px;
+}
+
+.button-ai-preparation {
+  display: flex;
+  padding: 4px 8px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+
+  border-radius: 4px;
+  border: 1px solid #b933cf;
+  background: #fff;
+  cursor: pointer;
+}
+
+.button-ai-preparation-icon {
+  width: 15.273px;
+  height: 16px;
+}
+.button-ai-prepation__text {
+  color: var(--Dark, #252525);
+  text-align: center;
+
+  /* button-16 */
+  font-family: Montserrat;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 120%;
 }
 </style>
