@@ -28,7 +28,6 @@ Environment variables:
 - for postgresql, POSTGRESQL_CONNECTION_STRING
 """
 
-import ast
 import json
 import os
 from contextlib import suppress
@@ -981,11 +980,12 @@ __CLIENT_NEED__
 Think before give me a valid list of steps to solve the client issue.
 First, you must think on how to describe the necessary steps the client need.
 Then think on how to translate those steps into their JSON translation by using weaverbird documentation.
-Finally, give me only the configuration of the steps as a json output, no surrounding text or explanations.
+
+Your output MUST be ONLY the configuration of the steps in JSON format, no surrounding text or explanations.
 """
 
-
-_MODEL_ID = "anthropic.claude-3-haiku-20240307-v1:0"
+_MODEL_ID = "anthropic.claude-3-sonnet-20240229-v1:0"
+# _MODEL_ID = "anthropic.claude-3-haiku-20240307-v1:0"
 _BOTO3_BEDROCK = boto3.client("bedrock-runtime")
 
 
@@ -1004,17 +1004,14 @@ def tada(user_prompt: str):
         }
     )
     response = _BOTO3_BEDROCK.invoke_model(body=body, modelId=_MODEL_ID)
-    content = json.loads(response.get("body").read())["content"]
-    match = r.search(str(content))
-    if match is None:
-        print(f"DIDN'T MATCH: {content}")
-    # the good code
-    pipeline = json.loads(ast.literal_eval("'''" + match.group(1) + "'''"))
-    return pipeline
+    content = json.loads(response.get("body").read())["content"][0]["text"]
+    pipeline = Pipeline(steps=json.loads(content))
+    return pipeline.model_dump(by_alias=True)["steps"]
 
 
 @app.route("/dj4ng0", methods=["POST"])
 async def handle_dj4ng0_request() -> str:
+    print("Received /dj4ng0 request")
     req_params = await parse_request_json(request)
     resp = tada(req_params["user_prompt"])
     return resp
