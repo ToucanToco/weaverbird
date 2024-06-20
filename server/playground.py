@@ -28,6 +28,7 @@ Environment variables:
 - for postgresql, POSTGRESQL_CONNECTION_STRING
 """
 
+import ast
 import json
 import os
 from contextlib import suppress
@@ -43,6 +44,7 @@ import geopandas as gpd
 import pandas as pd
 import psycopg
 import pymysql
+import regex as re
 import snowflake.connector
 from google.cloud import bigquery
 from google.oauth2.service_account import Credentials
@@ -826,3 +828,193 @@ async def handle_static_files_request(filename=None):
     # disallowed MIME type (“application/octet-stream”).
     mimetype = "text/javascript" if filename.endswith(".cjs") else None
     return await send_file("static/" + filename, mimetype=mimetype)
+
+
+### AI
+
+_STEP_DESCS = [
+    {
+        "step": "Compute absolute value",
+        "description": "Create a new column that corresponds to the absolute value of the input column",
+    },
+    {"step": "Add Missing Dates", "description": "Add missing dates as new rows in a dates column"},
+    {"step": "Aggregate", "description": "You can use this step to perform aggregations on one or several columns"},
+    {"step": "Append", "description": "You can use this step to append on or several registered datasets to the"},
+    {"step": "Argmax", "description": "You can use this step to get row(s) matching the maximum value in a given"},
+    {"step": "Argmin", "description": "You can use this step to get row(s) matching the minimum value in a given"},
+    {
+        "step": "Compare Text Columns",
+        "description": "Compares 2 string columns and returns true if the string values are equal,",
+    },
+    {"step": "Concatenate columns", "description": "You can use this step to concatenate several text columns"},
+    {"step": "Convert columns data type", "description": "You can use this step to cast column data types"},
+    {
+        "step": "Cumulated sum",
+        "description": "This step allows to compute the cumulated sum of value column based on a",
+    },
+    {"step": "Custom step", "description": "You can use this step to write your own query"},
+    {
+        "step": "Extract date information",
+        "description": "Use this step if you need to extract date information from a date column (e",
+    },
+    {"step": "Delete column(s)", "description": "You can use this step to delete column(s)"},
+    {"step": "Geographical dissolve", "description": "You can use this step to geographically dissolve columns"},
+    {"step": "Duplicate column", "description": "You can use this step to dupicate a column"},
+    {
+        "step": "Compute Duration",
+        "description": "Compute the duration (in days, hours, minutes or seconds) between 2 dates in a",
+    },
+    {
+        "step": "Compute evolution",
+        "description": "You can use this step if you need to compute the row-by-row evolution of a value",
+    },
+    {
+        "step": "Fill null values",
+        "description": "You can use this step to fill null values in specified columns with a value of",
+    },
+    {"step": "Filter rows", "description": "You can use this step to filter rows based on one or several conditions"},
+    {"step": "Formula", "description": "You can use this step to create a column as a formula based on other columns"},
+    {
+        "step": "Convert date column to text",
+        "description": "You can use this step to cast a date column to a text column",
+    },
+    {
+        "step": "Geographical hierarchy",
+        "description": "You can use this step to set up a geographical hierarchy in your dataset",
+    },
+    {
+        "step": "If...Then...Else",
+        "description": "You can use this step to create a new column, which values will depend on a",
+    },
+    {"step": "Join", "description": "You can use this step to join a registered dataset to the current dataset, i"},
+    {
+        "step": "Keep column(s)",
+        "description": "You can use this step to keep a column(s), meaning that it will delete every",
+    },
+    {"step": "To lowercase", "description": "You can use this step to convert a text column to lowercase"},
+    {
+        "step": "Compute Moving Average",
+        "description": "Use this step to compute a moving average based on a value column, a reference",
+    },
+    {
+        "step": "Percentage",
+        "description": "Compute the percentage of total as the share of every row in the column total",
+    },
+    {"step": "Pivot column", "description": "You can use this step if you need to transform rows into columns"},
+    {"step": "Rank", "description": "This step allows to compute a rank column based on a value column that can be"},
+    {"step": "Rename column", "description": "You can use this step to rename a column"},
+    {"step": "Replace values", "description": "You can use this step to replace values in a column"},
+    {
+        "step": "Hierarchical rollup",
+        "description": "You can use this step if you need to compute aggregated data at every level of a",
+    },
+    {
+        "step": "Geographical simplification",
+        "description": "This step reduces the size of your data by making it less precise",
+    },
+    {"step": "Sort values", "description": "You can use this step to sort values based on one or several columns"},
+    {
+        "step": "Split column",
+        "description": "You can use this step to split a text column into several columns, based on a",
+    },
+    {
+        "step": "Column's Statistics",
+        "description": "You can use this step to compute main statistics, like median or quintiles, of a numeric column",  # noqa
+    },
+    {
+        "step": "Extract substring",
+        "description": "You can use this step to exctract a sustring of characters in a text column",
+    },
+    {
+        "step": "Add text column",
+        "description": "Use this step to add a text column where every value will be equal to the",
+    },
+    {"step": "Convert text column to date", "description": "You can use this step to cast a text column to date"},
+    {
+        "step": "Top N rows",
+        "description": "Use this step if you need to get the top N rows of your data based on value",
+    },
+    {
+        "step": "Add Total Rows",
+        "description": 'Use this step if you need to compute "Total" columns and append those rows to',
+    },
+    {"step": "Trim spaces", "description": "You can use this step to remove leading and trailing white spaces"},
+    {
+        "step": "Get unique groups/values",
+        "description": "You can use this step to get the values from a column or unique groups of values",
+    },
+    {"step": "Unpivot column", "description": "You can use this step if you need to transform columns into rows"},
+    {"step": "To uppercase", "description": "You can use this step to convert a text column to uppercase"},
+    {
+        "step": "Waterfall",
+        "description": "This step allows to generate a data structure useful to build waterfall charts",
+    },
+]
+
+
+with open("../docs/_docs/tech/steps.md") as fd:
+    _WEAVERBIRD_DOCS = "\n".join(fd.read().split("\n")[5:])
+
+
+_PROMPT_DATA = f"""
+You have a dataset with columns:
+- date: DATETIME
+- product_id: INT
+- price: STRING
+- units_sold: INT
+
+A weaverbird step is a json dict which translates to a transformation on a dataset.
+Here are the descriptions of available weaverbird steps :
+
+<WEAVERBIRD_DOCUMENTATION>
+    {_WEAVERBIRD_DOCS}
+</WEAVERBIRD_DOCUMENTATION>
+
+Here are the available steps descriptions:
+<STEPS_DESCRIPTION>
+    {_STEP_DESCS}
+</STEPS_DESCRIPTION>
+
+This is the client need:
+__CLIENT_NEED__
+
+Think before give me a valid list of steps to solve the client issue.
+First, you must think on how to describe the necessary steps the client need.
+Then think on how to translate those steps into their JSON translation by using weaverbird documentation.
+Finally, give me only the configuration of the steps as a json output, no surrounding text or explanations.
+"""
+
+
+_MODEL_ID = "anthropic.claude-3-haiku-20240307-v1:0"
+_BOTO3_BEDROCK = boto3.client("bedrock-runtime")
+
+
+r = re.compile("```json(.*)```")
+
+
+def tada(user_prompt: str):
+    body = json.dumps(
+        {
+            "anthropic_version": "",
+            "max_tokens": 2000,
+            "messages": [{"role": "user", "content": _PROMPT_DATA.replace("__CLIENT_NEED__", user_prompt)}],
+            "temperature": 0.8,
+            "top_p": 1,
+            "system": "",
+        }
+    )
+    response = _BOTO3_BEDROCK.invoke_model(body=body, modelId=_MODEL_ID)
+    content = json.loads(response.get("body").read())["content"]
+    match = r.search(str(content))
+    if match is None:
+        print(f"DIDN'T MATCH: {content}")
+    # the good code
+    pipeline = json.loads(ast.literal_eval("'''" + match.group(1) + "'''"))
+    return pipeline
+
+
+@app.route("/dj4ng0", methods=["POST"])
+async def handle_dj4ng0_request() -> str:
+    req_params = await parse_request_json(request)
+    resp = tada(req_params["user_prompt"])
+    return resp
