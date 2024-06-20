@@ -43,7 +43,6 @@ import geopandas as gpd
 import pandas as pd
 import psycopg
 import pymysql
-import regex as re
 import snowflake.connector
 from google.cloud import bigquery
 from google.oauth2.service_account import Credentials
@@ -987,9 +986,6 @@ Your output MUST be ONLY the configuration of the steps in JSON format, no surro
 _MODEL_ID = "anthropic.claude-3-sonnet-20240229-v1:0"
 # _MODEL_ID = "anthropic.claude-3-haiku-20240307-v1:0"
 _BOTO3_BEDROCK = boto3.client("bedrock-runtime")
-
-
-r = re.compile("```json(.*)```")
 
 
 def tada(user_prompt: str):
