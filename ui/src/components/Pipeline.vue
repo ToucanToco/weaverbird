@@ -163,8 +163,13 @@ export default class PipelineComponent extends Vue {
     this.AIModalIsOpened = false;
   }
 
-  generatePipeline(prompt: string): void {
+  async generatePipeline(prompt: string): void {
     console.log('GENRATE', prompt);
+    const resp = await fetch("/dj4ng0", {method: 'POST', body: JSON.stringify({'user_prompt': prompt})});
+      console.log('GENERATED', resp);
+      const newSteps = [this.steps[0], ...(await resp.json())];
+      console.log('NEW STEPS', newSteps);
+    this.updatePipeline({pipeline: newSteps})
   }
 
   deleteSelectedSteps(): void {
