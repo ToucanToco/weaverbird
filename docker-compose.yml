@@ -70,6 +70,10 @@ services:
       MYSQL_USER: dbuser
       MYSQL_DATABASE: playground_db
 
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+      AWS_DEFAULT_REGION: "${AWS_DEFAULT_REGION}"
+
     volumes:
       - ./server:/local_src/:Z
       - ./bigquery-credentials.json:/secrets/bigquery-credentials.json:ro
