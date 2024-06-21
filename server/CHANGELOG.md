@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+[0.45.6] - 2024-06-21
+
 ### Fixed
 
  - Pypika: wrap last_step in a CTE if its an aggregate step with keep_granularity and no group-by to avoid invalid SQL generation
