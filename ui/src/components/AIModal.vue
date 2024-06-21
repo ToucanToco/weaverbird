@@ -60,8 +60,8 @@
               </circle>
             </svg>
 
-            <span v-if="isLoading">Generate...</span>
-            <span v-else>Generate</span>
+            <span v-if="isLoading">Djenerating...</span>
+            <span v-else>Djenerate</span>
           </div>
         </div>
       </div>
