@@ -28,14 +28,17 @@ Environment variables:
 - for postgresql, POSTGRESQL_CONNECTION_STRING
 """
 
+import ast
 import json
 import os
+import re
 from contextlib import suppress
 from datetime import datetime
 from enum import Enum
 from functools import cache
 from glob import glob
 from os.path import basename, splitext
+from typing import Any
 
 import awswrangler as wr
 import boto3
@@ -999,7 +1002,7 @@ Here are the descriptions of available weaverbird steps :
 You have to translate those steps description list into weaverbird steps:
 __STEPS_DESCRIPTIONS__
 
-Your output MUST be ONLY the configuration of the steps in JSON format, no surrounding text or explanations.
+Your output MUST be ONLY the translation of the steps as a JSON array format. DO NOT print ANYTHING ELSE than JSON.
 """
 
 _MODEL_ID = "anthropic.claude-3-sonnet-20240229-v1:0"
@@ -1013,23 +1016,36 @@ def build_ai_body(prompt: str):
             "anthropic_version": "",
             "max_tokens": 2000,
             "messages": [{"role": "user", "content": prompt}],
-            "temperature": 0.4,
+            "temperature": 0.5,
             "top_p": 1,
             "system": "",
         }
     )
 
 
+def get_json(text: str) -> Any:
+    try:
+        return json.loads(text)
+    except Exception:
+        print(f"json loading failed, falling back on stupid eval: {text}")
+        match_ = re.compile(r"(\[.*\])").search(text)
+        return json.loads(ast.literal_eval("'''" + match_.group(1) + "'''"))
+
+
 def tada(user_prompt: str):
     description_body = build_ai_body(_PROMPT_DESCRIPTION_STEPS.replace("__CLIENT_NEED__", user_prompt))
     response = _BOTO3_BEDROCK.invoke_model(body=description_body, modelId=_MODEL_ID)
-    description_content = json.loads(response.get("body").read())["content"][0]["text"]
+    response_body = response.get("body").read()
+    print(f"response body first prompt: {response_body}\n\n\n")
+    description_content = json.loads(response_body)["content"][0]["text"]
 
-    pipeline_body = build_ai_body(_PROMPT_DESCRIPTION_STEPS.replace("__STEPS_DESCRIPTIONS__", description_content))
+    pipeline_body = build_ai_body(_PROMPT_WEAVERBIRD_TRANSLATOR.replace("__STEPS_DESCRIPTIONS__", description_content))
     response = _BOTO3_BEDROCK.invoke_model(body=pipeline_body, modelId=_MODEL_ID)
-    pipeline_content = json.loads(response.get("body").read())["content"][0]["text"]
-
-    pipeline = Pipeline(steps=json.loads(pipeline_content))
+    response_body = response.get("body").read()
+    print(f"response body second prompt: {response_body}\n\n\n")
+    pipeline_content = get_json(get_json(response_body)["content"][0]["text"])
+    print(f"PIPELINE CONTENT {pipeline_content}")
+    pipeline = Pipeline(steps=pipeline_content)
     return pipeline.model_dump(by_alias=True)["steps"]
 
 
