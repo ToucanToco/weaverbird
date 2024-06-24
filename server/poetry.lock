@@ -3179,13 +3179,13 @@ files = [
 
 [[package]]
 name = "toucan-connectors"
-version = "6.2.0"
+version = "6.3.0"
 description = "Toucan Toco Connectors"
 optional = false
 python-versions = "<3.13,>=3.11"
 files = [
-    {file = "toucan_connectors-6.2.0-py3-none-any.whl", hash = "sha256:80de8e61ae22404f0d44343340cdad20461c6cea963f1fe89584825c889b0032"},
-    {file = "toucan_connectors-6.2.0.tar.gz", hash = "sha256:14e2a6b786263d0bf2a2d09ba66ff792de84e71c79b5d63e0c6e16c917568783"},
+    {file = "toucan_connectors-6.3.0-py3-none-any.whl", hash = "sha256:0f61d3684a04ae6522211537713c158fd479564762e5da4586ce4773ec093b35"},
+    {file = "toucan_connectors-6.3.0.tar.gz", hash = "sha256:029f4934a38cdb3a81cc407ccdcb4fd5f47eff586cc447f84fa244928236845c"},
 ]
 
 [package.dependencies]
