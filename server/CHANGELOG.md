@@ -2,25 +2,29 @@
 
 ## Unreleased
 
-[0.45.6] - 2024-06-21
+### Fixed
+
+- Evolution: change from a negative to a positive value is now handled correctly with percentages
+
+## [0.45.6] - 2024-06-21
 
 ### Fixed
 
- - Pypika: wrap last_step in a CTE if its an aggregate step with keep_granularity and no group-by to avoid invalid SQL generation
- - Pandas: when filtering dates with from/until, filtering before 1677 and/or after 2262 now ignores the filter
-   instead of crashing.
+- Pypika: wrap last_step in a CTE if its an aggregate step with keep_granularity and no group-by to avoid invalid SQL generation
+- Pandas: when filtering dates with from/until, filtering before 1677 and/or after 2262 now ignores the filter
+  instead of crashing.
 
 ## [0.45.5] - 2024-06-17
 
 ### Fixed
 
- - Pypika GoogleBigQuery: cast field as `DATETIME` in `DATE_ADD` method 
+- Pypika GoogleBigQuery: cast field as `DATETIME` in `DATE_ADD` method
 
 ## [0.45.4] - 2024-06-12
 
 ### Fixed
 
-- Pypika: don't select column name if its already `ifthenelse` step alias, which was causing an invalid column overwrite 
+- Pypika: don't select column name if its already `ifthenelse` step alias, which was causing an invalid column overwrite
 
 ## [0.45.3] - 2024-06-05
 

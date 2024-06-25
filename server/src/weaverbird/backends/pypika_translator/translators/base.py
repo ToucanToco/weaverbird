@@ -1109,17 +1109,24 @@ class SQLTranslator(ABC):
         ).as_(step.date_col)
         right_table = Table("right_table")
         new_col = step.new_column if step.new_column else "evol"
+
         query: QueryBuilder = (
             prev_step_table.select(
                 *(prev_step_table[col] for col in columns),
                 (
                     prev_step_table[step.value_col] - right_table.field(step.value_col)
                     if step.evolution_format == "abs"
-                    else (
-                        functions.Cast(prev_step_table[step.value_col], self.DATA_TYPE_MAPPING.float)
-                        / functions.Cast(right_table.field(step.value_col), self.DATA_TYPE_MAPPING.float)
+                    # (value -  prev_value) / abs(prev_value) or NULL if prev_value == 0
+                    else Case()
+                    .when(
+                        functions.Cast(right_table.field(step.value_col), self.DATA_TYPE_MAPPING.float) == 0,
+                        LiteralValue("NULL"),
                     )
-                    - 1.0
+                    .else_(
+                        functions.Cast(prev_step_table[step.value_col], self.DATA_TYPE_MAPPING.float)
+                        - functions.Cast(right_table.field(step.value_col), self.DATA_TYPE_MAPPING.float)
+                    )
+                    / functions.Abs(functions.Cast(right_table.field(step.value_col), self.DATA_TYPE_MAPPING.float))
                 ).as_(new_col),
                 *[prev_step_table[col].as_(f"left_table_{col}") for col in step.index_columns],
             )

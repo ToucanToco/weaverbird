@@ -1,3 +1,4 @@
+import numpy as np
 from pandas import DataFrame, DateOffset, to_datetime
 
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
@@ -41,6 +42,6 @@ def execute_evolution(
     if step.evolution_format == "abs":
         evolution = value_date - value_prev_date
     else:
-        evolution = value_date / value_prev_date - 1
+        evolution = ((value_date - value_prev_date) / value_prev_date.abs()).replace(np.inf, None)
 
     return both.assign(**{new_column: evolution}).drop(columns=[prev_date_col])
