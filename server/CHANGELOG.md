@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.45.7] - 2024-06-25
+
 ### Fixed
 
 - Evolution: change from a negative to a positive value is now handled correctly with percentages
