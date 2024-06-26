@@ -13,16 +13,14 @@ from weaverbird.pipeline import PipelineWithVariables
 
 from tests.utils import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
 
-_HOST = "toucan-paris.crxviwjnhzks.eu-west-3.redshift.amazonaws.com"
-_CLUSTER = "toucan-paris"
-_USER = "awsuser"
-_DATABASE = "dev"
+_HOST = environ.get("REDSHIFT_HOST")
+_USER = environ.get("REDSHIFT_USER")
+_DATABASE = environ.get("REDSHIFT_DATABASE")
 _PASSWORD = environ.get("REDSHIFT_PASSWORD")
-_REGION = "eu-west-3"
-_PORT = 5439
+_PORT = int(environ.get("REDSHIFT_PORT"))
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def engine():
     engine = create_engine(
         url=URL.create(
