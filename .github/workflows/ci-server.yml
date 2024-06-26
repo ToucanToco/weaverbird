@@ -48,13 +48,21 @@ jobs:
 
     - name: Test
       env:
+        # Snowflake
         SNOWFLAKE_PASSWORD: '${{ secrets.SNOWFLAKE_PASSWORD }}'
+        # Redshift
+        REDSHIFT_USER: '${{ secrets.REDSHIFT_USER }}'
         REDSHIFT_PASSWORD: '${{ secrets.REDSHIFT_PASSWORD }}'
+        REDSHIFT_PORT: '${{ secrets.REDSHIFT_PORT }}'
+        REDSHIFT_HOST: '${{ secrets.REDSHIFT_HOST }}'
+        REDSHIFT_DATABASE: '${{ secrets.REDSHIFT_DATABASE }}'
+        # Athena
         ATHENA_OUTPUT: '${{ secrets.ATHENA_OUTPUT }}'
         ATHENA_DATABASE: '${{ secrets.ATHENA_DATABASE }}'
         ATHENA_ACCESS_KEY_ID: '${{ secrets.ATHENA_ACCESS_KEY_ID }}'
         ATHENA_SECRET_ACCESS_KEY: '${{ secrets.ATHENA_SECRET_ACCESS_KEY }}'
         ATHENA_REGION: '${{ secrets.ATHENA_REGION }}'
+        # GBQ
         GOOGLE_BIG_QUERY_CREDENTIALS: '${{ secrets.GOOGLE_BIG_QUERY_CREDENTIALS }}'
       run: make test && make test-serial
       timeout-minutes: 25
