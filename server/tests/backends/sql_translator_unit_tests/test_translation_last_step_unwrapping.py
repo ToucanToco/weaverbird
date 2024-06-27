@@ -1,4 +1,5 @@
 # ruff: noqa: E501
+import pytest
 from weaverbird.backends.pypika_translator.translators.base import SQLTranslator
 from weaverbird.pipeline.pipeline import Pipeline
 
@@ -29,6 +30,27 @@ def test_append_not_as_last_step(translator: SQLTranslator) -> None:
         ## End of the append step
         # select step
         'SELECT "a","b" FROM "__step_1_dummy__"'
+    )
+
+
+@pytest.mark.parametrize(
+    "limit,step_limit,expected_limit",
+    [
+        (50, 100, 50),
+        (50, 10, 10),
+        (None, 100, 100),
+    ],
+)
+def test_last_top_step_limit_overrides(limit, step_limit, expected_limit, translator: SQLTranslator) -> None:
+    pipeline = Pipeline(
+        steps=[
+            _DOMAIN_STEP,
+            {"name": "top", "groups": [], "rank_on": "cost", "sort": "desc", "limit": step_limit},
+        ]
+    )
+    assert translator.get_query_str(steps=pipeline.steps, limit=limit) == (
+        # Domain step
+        f'SELECT "price_per_l","alcohol_degree","name","cost","beer_kind","volume_ml","brewing_date","nullable_name" FROM "beers_tiny" ORDER BY "cost" DESC LIMIT {expected_limit}'  # noqa: S608
     )
 
 
