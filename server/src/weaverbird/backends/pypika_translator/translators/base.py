@@ -422,8 +422,7 @@ class SQLTranslator(ABC):
     def get_query_str(
         self: Self, *, steps: Sequence["PipelineStep"], offset: int | None = None, limit: int | None = None
     ) -> str:
-        # If a pipeline ends with a top step and limit is set, that limit will override the top step limit.
-        # It reset limit only if top step limit is under to keep performance benefits.
+        # If a pipeline ends with a top step and limit is set, it will override the top step's limit.
         if limit and isinstance(steps[-1], TopStep):
             if limit > steps[-1].limit:
                 limit = steps[-1].limit
