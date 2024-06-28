@@ -17,8 +17,4 @@ def test_escape_names(gbq_translator: GoogleBigQueryTranslator) -> None:
             FilterStep(condition={"column": "col1", "operator": "in", "value": ["pika", "l'alcool"]}),
         ]
     )
-    assert query == (
-        "WITH __step_0_googlebigquerytranslator__ AS ("
-        r"SELECT `col1`,`col2`,`col3` FROM `table` WHERE `col1` IN ('pika','l\'alcool')) "
-        "SELECT `col1`,`col2`,`col3` FROM `__step_0_googlebigquerytranslator__`"
-    )
+    assert query == r"SELECT `col1`,`col2`,`col3` FROM `table` WHERE `col1` IN ('pika','l\'alcool')"

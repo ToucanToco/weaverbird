@@ -5,6 +5,7 @@ from zoneinfo import ZoneInfo
 import pytest
 from pypika import AliasedQuery, Case, Field, Order, Query, Schema, Table, analytics, functions
 from pypika.enums import JoinType
+from pypika.queries import QueryBuilder
 from pypika.terms import LiteralValue, Term, ValueWrapper
 from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, SQLTranslator
 from weaverbird.backends.pypika_translator.translators.exceptions import (
@@ -13,6 +14,8 @@ from weaverbird.backends.pypika_translator.translators.exceptions import (
 )
 from weaverbird.pipeline import conditions, steps
 from weaverbird.pipeline.pipeline import DomainStep
+from weaverbird.pipeline.steps.customsql import CustomSqlStep
+from weaverbird.pipeline.steps.unpivot import UnpivotStep
 from weaverbird.pipeline.steps.utils.combination import Reference
 
 
@@ -128,13 +131,7 @@ def test_get_query_str(base_translator: BaseTranslator):
 
     schema = Schema(DB_SCHEMA)
 
-    step_1_query = Query.from_(schema.users).select(*ALL_TABLES["users"])
-    expected = (
-        Query.with_(step_1_query, "__step_0_basetranslator__")
-        .from_("__step_0_basetranslator__")
-        .select(*ALL_TABLES["users"])
-        .get_sql()
-    )
+    expected = Query.from_(schema.users).select(*ALL_TABLES["users"]).get_sql()
 
     query = base_translator.get_query_str(steps=steps)
     assert query == expected
@@ -700,13 +697,7 @@ def test_no_extra_quotes_in_base_translator_with_entire_pipeline(base_translator
     pipeline = [steps.DomainStep(domain="users")]
 
     translated = base_translator.get_query_str(steps=pipeline)
-    assert (
-        translated
-        == (
-            'WITH __step_0_basetranslator__ AS (SELECT "name","pseudonyme","age","id","project_id" FROM "test_schema"."users") '  # noqa: E501
-            'SELECT "name","pseudonyme","age","id","project_id" FROM "__step_0_basetranslator__"'
-        )
-    )
+    assert translated == 'SELECT "name","pseudonyme","age","id","project_id" FROM "test_schema"."users"'
 
 
 def test_materialize_customsql_query_with_no_columns(base_translator: BaseTranslator):
@@ -716,8 +707,9 @@ def test_materialize_customsql_query_with_no_columns(base_translator: BaseTransl
     base_translator._tables_columns = {"toto": []}
 
     translated = base_translator.get_query_str(steps=pipeline)
-    assert translated == (
-        "WITH __step_0_basetranslator__ AS (SELECT titi, tata FROM toto) " 'SELECT * FROM "__step_0_basetranslator__"'
+    assert (
+        translated
+        == 'WITH __step_0_basetranslator__ AS (SELECT titi, tata FROM toto) SELECT * FROM "__step_0_basetranslator__"'
     )
 
 
@@ -751,3 +743,78 @@ def test_dateextract(base_translator: BaseTranslator, default_step_kwargs: dict[
     )
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
+
+
+_BASE_EXPECTED_QUERY = (
+    Query.with_(Query.from_(Schema(DB_SCHEMA).users).select(*ALL_TABLES["users"]), "__step_0_basetranslator__")
+    .from_("__step_0_basetranslator__")
+    .select(*ALL_TABLES["users"])
+)
+
+
+@pytest.mark.parametrize(
+    "offset,limit,expected",
+    [
+        (
+            None,
+            None,
+            _BASE_EXPECTED_QUERY,
+        ),
+        (
+            None,
+            15,
+            _BASE_EXPECTED_QUERY.limit(15),
+        ),
+        (
+            1,
+            None,
+            _BASE_EXPECTED_QUERY.offset(1),
+        ),
+        (
+            15,
+            42,
+            _BASE_EXPECTED_QUERY.offset(15).limit(42),
+        ),
+    ],
+)
+def test_base_materialization_with_offset_limit(
+    base_translator: BaseTranslator, offset: int | None, limit: int | None, expected: QueryBuilder
+) -> None:
+    steps = [DomainStep(domain="users")]
+    qb_context = base_translator.get_query_builder(steps=steps)
+    assert qb_context.materialize(offset=offset, limit=limit).get_sql() == expected.get_sql()
+
+
+@pytest.mark.parametrize("unwrap", (True, False))
+def test_base_materialization_with_offset_limit_and_unwrap_and_single_customsql(
+    base_translator: BaseTranslator, unwrap: bool
+) -> None:
+    # customsql requires exactly one table to be specified
+    base_translator._tables_columns = {"foo": ["bar", "baz"]}
+
+    steps = [CustomSqlStep(query="SELECT * FROM foo")]
+    assert (
+        base_translator.get_query_str(steps=steps, offset=5, limit=10)
+        == 'WITH __step_0_basetranslator__ AS (SELECT * FROM foo) SELECT "bar","baz" FROM "__step_0_basetranslator__" LIMIT 10 OFFSET 5'  # noqa: E501
+    )
+
+
+@pytest.mark.parametrize("unwrap", (True, False))
+def test_unpivot_step_is_always_wrapped(base_translator: BaseTranslator, unwrap: bool) -> None:
+    # customsql requires exactly one table to be specified
+    base_translator._tables_columns = {"foo": ["bar", "baz"]}
+
+    steps = [
+        CustomSqlStep(query="SELECT * FROM foo"),
+        UnpivotStep(
+            unpivot_column_name="variable", value_column_name="value", keep=["bar"], unpivot=["baz"], dropna=True
+        ),
+    ]
+    assert (
+        base_translator.get_query_str(steps=steps, offset=5, limit=10)
+        == """WITH __step_0_basetranslator__ AS (SELECT * FROM foo) ,"""
+        """__step_0_basetranslator1__ AS (SELECT "bar","baz" FROM "__step_0_basetranslator__") ,"""
+        """__step_1_basetranslator1__ AS (SELECT "bar",CAST("baz" AS FLOAT) "baz" FROM "__step_0_basetranslator1__") ,"""  # noqa: E501
+        """__step_1_basetranslator__ AS (SELECT "bar","variable","value" FROM "__step_1_basetranslator1__"  t1 CROSS JOIN UNNEST(ARRAY['baz'], ARRAY["baz"]) t2 ("variable", "value")) """  # noqa: E501
+        """SELECT "bar","variable","value" FROM "__step_1_basetranslator__" ORDER BY "bar","variable","value" LIMIT 10 OFFSET 5"""  # noqa: E501
+    )

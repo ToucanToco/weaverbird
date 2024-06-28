@@ -27,7 +27,7 @@ def translate_evolution(step: EvolutionStep) -> list[MongoStep]:
                 "default": {
                     "$divide": [
                         {"$subtract": [f"${step.value_col}", "$_VQB_VALUE_PREV"]},
-                        "$_VQB_VALUE_PREV",
+                        {"$abs": "$_VQB_VALUE_PREV"},
                     ],
                 },
             },

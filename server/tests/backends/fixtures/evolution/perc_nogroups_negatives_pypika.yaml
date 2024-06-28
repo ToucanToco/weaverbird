@@ -1,0 +1,77 @@
+exclude:
+- mongo
+- pandas
+step:
+  pipeline:
+  - date_col: brewing_date
+    evolution_format: pct
+    evolution_type: vsLastDay
+    name: evolution
+    new_column: first_evol
+    value_col: alcohol_degree
+  # double veolution to apply the second one on some negative values
+  - date_col: brewing_date
+    evolution_format: pct
+    evolution_type: vsLastDay
+    name: evolution
+    new_column: alcoholevol
+    value_col: first_evol
+  - columns:
+    - brewing_date
+    - first_evol
+    - alcoholevol
+    - alcohol_degree
+    name: select
+expected:
+  schema:
+    fields:
+    - name: brewing_date
+      type: datetime
+    - name: first_evol
+      type: number
+    - name: alcoholevol
+      type: number
+    - name: alcohol_degree
+      type: number
+    pandas_version: 1.4.0
+  data:
+  - alcohol_degree: 13.5
+    alcoholevol: null
+    brewing_date: '2022-01-01'
+    first_evol: null
+  - alcohol_degree: 4.8773771626
+    alcoholevol: null
+    brewing_date: '2022-01-02'
+    first_evol: -0.6387128028
+  - alcohol_degree: 0.5699344978
+    alcoholevol: -0.3826986646
+    brewing_date: '2022-01-03'
+    first_evol: -0.8831473395
+  - alcohol_degree: 6.9941052632
+    alcoholevol: 13.7631821227
+    brewing_date: '2022-01-04'
+    first_evol: 11.2717703349
+  - alcohol_degree: 8.9306451613
+    alcoholevol: -0.9754358267
+    brewing_date: '2022-01-05'
+    first_evol: 0.2768817204
+  - alcohol_degree: 1.2437106918
+    alcoholevol: -4.108680292
+    brewing_date: '2022-01-06'
+    first_evol: -0.8607367475
+  - alcohol_degree: 4.7174096386
+    alcoholevol: 4.2449085696
+    brewing_date: '2022-01-07'
+    first_evol: 2.7930120482
+  - alcohol_degree: 12.9742721893
+    alcoholevol: -0.3733303588
+    brewing_date: '2022-01-08'
+    first_evol: 1.750295858
+  - alcohol_degree: 7.7474657534
+    alcoholevol: -1.2301664118
+    brewing_date: '2022-01-09'
+    first_evol: -0.4028593172
+  - alcohol_degree: 8.7496089385
+    alcoholevol: 1.3210825474
+    brewing_date: '2022-01-10'
+    first_evol: 0.1293510958

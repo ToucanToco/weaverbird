@@ -9,27 +9,56 @@ def _get_quantile(n: int, p: int) -> MongoStep:
     - the median is the first quantile of order 2.
     - the last decile is the 9-th quantile of order 10.
     """
+
     return {
-        "$avg": [
+        "$cond": [
+            # if
+            {
+                "$eq": [
+                    {
+                        "$mod": [
+                            {
+                                "$avg": [
+                                    {"$multiply": [{"$divide": ["$count", p]}, n]},
+                                    {"$subtract": [{"$multiply": [{"$divide": ["$count", p]}, n]}, 1]},
+                                ]
+                            },
+                            1,
+                        ]
+                    },
+                    0,
+                ]
+            },
+            # then
             {
                 "$arrayElemAt": [
                     "$data",
                     {
-                        "$trunc": {
-                            "$subtract": [{"$multiply": [{"$divide": ["$count", p]}, n]}, 1],
-                        },
+                        "$avg": [
+                            {"$multiply": [{"$divide": ["$count", p]}, n]},
+                            {"$subtract": [{"$multiply": [{"$divide": ["$count", p]}, n]}, 1]},
+                        ]
                     },
-                ],
+                ]
             },
+            # else
             {
-                "$arrayElemAt": [
-                    "$data",
+                "$avg": [
                     {
-                        "$trunc": {"$multiply": [{"$divide": ["$count", p]}, n]},
+                        "$arrayElemAt": [
+                            "$data",
+                            {"$trunc": {"$multiply": [{"$divide": ["$count", p]}, n]}},
+                        ]
                     },
-                ],
+                    {
+                        "$arrayElemAt": [
+                            "$data",
+                            {"$trunc": {"$subtract": [{"$multiply": [{"$divide": ["$count", p]}, n]}, 1]}},
+                        ]
+                    },
+                ]
             },
-        ],
+        ]
     }
 
 

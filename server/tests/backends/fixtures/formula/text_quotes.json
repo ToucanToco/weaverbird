@@ -1,0 +1,87 @@
+{
+  "exclude": [
+    "athena_pypika",
+    "bigquery_pypika",
+    "mysql_pypika",
+    "postgres_pypika",
+    "redshift_pypika",
+    "snowflake_pypika"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "formula",
+        "new_column": "FOOBAR",
+        "formula": "\"Ba'al\""
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "SCORE": 100
+      },
+      {
+        "NAME": "Azz",
+        "AGE": 21,
+        "SCORE": 100
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        },
+        {
+          "name": "FOOBAR",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "SCORE": 100,
+        "FOOBAR": "Ba'al"
+      },
+      {
+        "NAME": "Azz",
+        "AGE": 21,
+        "SCORE": 100,
+        "FOOBAR": "Ba'al"
+      }
+    ]
+  }
+}

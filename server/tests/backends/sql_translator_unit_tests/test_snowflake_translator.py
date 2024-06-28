@@ -178,10 +178,7 @@ def test_quoted_with_statement() -> None:
         pipeline=Pipeline(steps=steps),
         tables_columns={"beers_tiny": ["price_per_l", "test", "another-test"]},
     )
-    assert (
-        'WITH "__step_0_snowflaketranslator__" AS (SELECT "price_per_l","test","another-test" FROM "beers_tiny") '
-        'SELECT "price_per_l","test","another-test" FROM "__step_0_snowflaketranslator__"' in query
-    )
+    assert query == 'SELECT "price_per_l","test","another-test" FROM "beers_tiny"'
 
 
 def test_quoted_columns_with_special_chars() -> None:
@@ -194,8 +191,7 @@ def test_quoted_columns_with_special_chars() -> None:
         pipeline=Pipeline(steps=steps),
         tables_columns={"beers_tiny": ["price_per_l", "test", "another-test"]},
     )
-    assert (
-        'WITH "__step_0_snowflaketranslator__" AS (SELECT "price_per_l","test","another-test" FROM "beers_tiny") ,'
-        '"__step_1_snowflaketranslator__" AS (SELECT "price_per_l" "price-per-l","test","another-test" FROM "__step_0_snowflaketranslator__") '  # noqa: E501
-        'SELECT "price-per-l","test","another-test" FROM "__step_1_snowflaketranslator__"' in query
+    assert query == (
+        'WITH "__step_0_snowflaketranslator__" AS (SELECT "price_per_l","test","another-test" FROM "beers_tiny") '
+        'SELECT "price_per_l" "price-per-l","test","another-test" FROM "__step_0_snowflaketranslator__"'
     )

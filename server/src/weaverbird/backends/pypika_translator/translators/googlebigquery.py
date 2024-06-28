@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Any, Literal, TypeAlias, TypeVar
 
-from pypika import Field, Query, Table, functions
+from pypika import Field, Query, functions
 from pypika.enums import Dialects
 from pypika.queries import QueryBuilder, Selectable
 from pypika.terms import (
@@ -18,6 +18,7 @@ from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp
 from weaverbird.backends.pypika_translator.translators.base import (
     DataTypeMapping,
     DateFormatMapping,
+    FromTable,
     SQLTranslator,
     StepContext,
 )
@@ -86,7 +87,7 @@ class GoogleBigQueryQueryBuilder(QueryBuilder):
 
 class GoogleBigQueryDateAdd(Function):
     def __init__(self, *, target_column: Field, interval: Interval) -> None:
-        super().__init__("DATE_ADD", target_column, interval)
+        super().__init__("DATE_ADD", functions.Cast(target_column, "DATETIME"), interval)
 
 
 class GoogleBigQueryTranslator(SQLTranslator):
@@ -133,11 +134,11 @@ class GoogleBigQueryTranslator(SQLTranslator):
         self: Self,
         *,
         builder: "QueryBuilder",
-        prev_step_table: str,
+        prev_step_table: FromTable,
         columns: list[str],
         step: "SplitStep",
     ) -> StepContext:
-        col_field: Field = Table(prev_step_table)[step.column]
+        col_field = prev_step_table[step.column]
 
         safe_offset = CustomFunction("SAFE_OFFSET", ["index"])
 
@@ -159,7 +160,7 @@ class GoogleBigQueryTranslator(SQLTranslator):
                 )
 
         splitted_cols = list(gen_splitted_cols())
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(*columns, *splitted_cols)
+        query: QueryBuilder = prev_step_table.select(*columns, *splitted_cols)
         return StepContext(query, columns + splitted_cols)
 
     @classmethod
@@ -227,17 +228,17 @@ class GoogleBigQueryTranslator(SQLTranslator):
         self: Self,
         *,
         builder: "QueryBuilder",
-        prev_step_table: str,
+        prev_step_table: FromTable,
         columns: list[str],
         step: "ToDateStep",
     ) -> StepContext:
-        col_field = Table(prev_step_table)[step.column]
+        col_field = prev_step_table[step.column]
         if step.format is not None:
             date_selection = GBQParseDateTime(col_field, step.format)
         else:
             date_selection = functions.Cast(col_field, "DATETIME")
 
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(
+        query: QueryBuilder = prev_step_table.select(
             *(c for c in columns if c != step.column),
             date_selection.as_(step.column),
         )
@@ -252,20 +253,19 @@ class GoogleBigQueryTranslator(SQLTranslator):
         self: Self,
         *,
         builder: "QueryBuilder",
-        prev_step_table: str,
+        prev_step_table: FromTable,
         columns: list[str],
         step: "DurationStep",
     ) -> StepContext:
-        the_table = Table(prev_step_table)
         as_seconds = GBQTimestampDiff(
-            self._cast_to_timestamp(the_table[step.end_date_column]),
-            self._cast_to_timestamp(the_table[step.start_date_column]),
+            self._cast_to_timestamp(prev_step_table[step.end_date_column]),
+            self._cast_to_timestamp(prev_step_table[step.start_date_column]),
             # NOTE: for consistency with other backends, we're calculating the true duration
             # here. By  passing a lower unit, we'd lose information
             "SECOND",
         )
         new_column = (as_seconds / DURATIONS_IN_SECOND[step.duration_in]).as_(step.new_column_name)
-        query: "QueryBuilder" = self.QUERY_CLS.from_(prev_step_table).select(*columns, new_column)
+        query: QueryBuilder = prev_step_table.select(*columns, new_column)
         return StepContext(query, columns + [step.new_column_name])
 
 

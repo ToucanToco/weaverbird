@@ -1,0 +1,79 @@
+exclude:
+- athena_pypika
+- bigquery_pypika
+- mysql_pypika
+- postgres_pypika
+- redshift_pypika
+- snowflake_pypika
+step:
+  pipeline:
+  - date_col: DATE
+    evolution_format: pct
+    evolution_type: vsLastYear
+    name: evolution
+    new_column: EVOL
+    value_col: VALUE
+input:
+  schema:
+    fields:
+    - name: DATE
+      type: datetime
+    - name: VALUE
+      type: integer
+    pandas_version: 1.4.0
+  data:
+  # -2 -> 2 => +200%
+  - DATE: '2019-01-01'
+    VALUE: -2
+  # -5 -> -1 => +80%
+  - DATE: '2019-02-01'
+    VALUE: -5
+  # -1 -> -3 => -200%
+  - DATE: '2019-03-01'
+    VALUE: -1
+  # 0 -> 3 => null, (infinite evolution)
+  - DATE: '2019-04-01'
+    VALUE: 0
+  - DATE: '2020-01-01'
+    VALUE: 2
+  - DATE: '2020-02-01'
+    VALUE: -1
+  - DATE: '2020-03-01'
+    VALUE: -3
+  - DATE: '2020-04-01'
+    VALUE: 3
+expected:
+  schema:
+    fields:
+    - name: DATE
+      type: datetime
+    - name: VALUE
+      type: integer
+    - name: EVOL
+      type: number
+    pandas_version: 1.4.0
+  data:
+  - DATE: '2019-01-01'
+    EVOL: null
+    VALUE: -2
+  - DATE: '2019-02-01'
+    EVOL: null
+    VALUE: -5
+  - DATE: '2019-03-01'
+    EVOL: null
+    VALUE: -1
+  - DATE: '2019-04-01'
+    EVOL: null
+    VALUE: 0
+  - DATE: '2020-01-01'
+    EVOL: 2
+    VALUE: 2
+  - DATE: '2020-02-01'
+    EVOL: 0.8
+    VALUE: -1
+  - DATE: '2020-03-01'
+    EVOL: -2
+    VALUE: -3
+  - DATE: '2020-04-01'
+    EVOL: null
+    VALUE: 3

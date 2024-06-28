@@ -1,0 +1,46 @@
+exclude:
+- mongo
+- pandas
+step:
+  pipeline:
+    - columns:
+      - cost
+      - name
+      name: select
+    - name: ifthenelse
+      if:
+        column: cost
+        value: 2
+        operator: gt
+      newColumn: name
+      then: "'tintin'"
+      else: "'anime'"
+expected:
+  schema:
+    fields:
+    - name: name
+      type: string
+    - name: cost
+      type: number
+  data:
+    - cost: 2.8900001049
+      name: tintin
+    - cost: 2.8900001049
+      name: tintin
+    - cost: 2.2899999619
+      name: tintin
+    - cost: 2.0899999142
+      name: tintin
+    - cost: 1.5499999523
+      name: anime
+    - cost: 1.5900000334
+      name: anime
+    - cost: 2.4900000095
+      name: tintin
+    - cost: 1.6900000572
+      name: anime
+    - cost: 2.1900000572
+      name: tintin
+    - cost: 1.7899999619
+      name: anime
+  pandas_version: 1.4.0

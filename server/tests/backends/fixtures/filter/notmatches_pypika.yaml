@@ -4,14 +4,14 @@ exclude:
 - snowflake
 step:
   pipeline:
+  - columns:
+    - name
+    name: select
   - condition:
       column: name
       operator: notmatches
       value: beer
     name: filter
-  - columns:
-    - name
-    name: select
 expected:
   data:
   - name: Ninkasi Ploploplop

@@ -19,6 +19,7 @@ def execute_rollup(
     full_current_hierarchy = []
     all_results = []
     previous_level = None
+    parent_col_in_results = False
 
     for current_level in step.hierarchy:
         full_current_hierarchy.append(current_level)
@@ -37,14 +38,20 @@ def execute_rollup(
         results_for_this_level[label_col] = results_for_this_level[current_level]
         if previous_level is not None:
             results_for_this_level[parent_label_col] = results_for_this_level[previous_level]
+            parent_col_in_results = True
 
         all_results.append(results_for_this_level)
         previous_level = current_level
 
+    if parent_col_in_results:
+        extra_output_cols = [label_col, level_col, parent_label_col]
+    else:
+        extra_output_cols = [label_col, level_col]
+
     columns = (
         step.hierarchy[::-1]
         + (step.groupby or [])
-        + [label_col, level_col, parent_label_col]
+        + extra_output_cols
         + sum((agg.new_columns for agg in step.aggregations), start=[])
     )
 
