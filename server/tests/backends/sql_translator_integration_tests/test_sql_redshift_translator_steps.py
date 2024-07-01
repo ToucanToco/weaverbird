@@ -34,8 +34,11 @@ def _create_engine() -> Engine:
             password=_PASSWORD,
         )
     )
-    with engine.connect() as conn:
-        conn.execute("SELECT 1;").fetchall()
+    try:
+        with engine.connect() as conn:
+            conn.execute("SELECT 1;").fetchall()
+    except Exception as exc:
+        raise KeyError(f"EXCETPION {exc} WITH environ " + str(environ)) from exc
 
     return engine
 
