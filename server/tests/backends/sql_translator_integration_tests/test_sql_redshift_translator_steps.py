@@ -24,7 +24,7 @@ _PORT = 5439
 
 @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
 def _create_engine() -> Engine:
-    return create_engine(
+    engine = create_engine(
         url=URL.create(
             drivername="redshift+redshift_connector",
             host=_HOST,
@@ -34,6 +34,10 @@ def _create_engine() -> Engine:
             password=_PASSWORD,
         )
     )
+    with engine.connect() as conn:
+        conn.execute("SELECT 1;").fetchall()
+
+    return engine
 
 
 @pytest.fixture(scope="module")
