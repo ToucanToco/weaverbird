@@ -17,7 +17,7 @@ _HOST = environ.get("REDSHIFT_HOST")
 _USER = environ.get("REDSHIFT_USER")
 _DATABASE = environ.get("REDSHIFT_DATABASE")
 _PASSWORD = environ.get("REDSHIFT_PASSWORD")
-_PORT = int(environ.get("REDSHIFT_PORT"))
+_PORT = 5439
 
 
 @pytest.fixture(scope="module")
