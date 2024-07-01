@@ -5,7 +5,9 @@ from typing import Any
 import pandas as pd
 import pytest
 from sqlalchemy import create_engine
+from sqlalchemy.engine import Engine
 from sqlalchemy.engine.url import URL
+from tenacity import retry, stop_after_attempt, wait_fixed
 from toucan_connectors.common import nosql_apply_parameters_to_query
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import translate_pipeline
@@ -20,9 +22,9 @@ _PASSWORD = environ.get("REDSHIFT_PASSWORD")
 _PORT = 5439
 
 
-@pytest.fixture(scope="module")
-def engine():
-    engine = create_engine(
+@retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
+def _create_engine() -> Engine:
+    return create_engine(
         url=URL.create(
             drivername="redshift+redshift_connector",
             host=_HOST,
@@ -32,7 +34,11 @@ def engine():
             password=_PASSWORD,
         )
     )
-    return engine
+
+
+@pytest.fixture(scope="module")
+def engine():
+    return _create_engine()
 
 
 _BEERS_TABLE_COLUMNS = [
