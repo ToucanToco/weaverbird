@@ -15,10 +15,10 @@ from weaverbird.pipeline import PipelineWithVariables
 
 from tests.utils import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
 
-_HOST = environ.get("REDSHIFT_HOST")
-_USER = environ.get("REDSHIFT_USER")
-_DATABASE = environ.get("REDSHIFT_DATABASE")
-_PASSWORD = environ.get("REDSHIFT_PASSWORD")
+_HOST = environ["REDSHIFT_HOST"]
+_USER = environ["REDSHIFT_USER"]
+_DATABASE = environ["REDSHIFT_DATABASE"]
+_PASSWORD = environ["REDSHIFT_PASSWORD"]
 _PORT = 5439
 
 
