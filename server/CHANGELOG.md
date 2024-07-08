@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- Pypika: don't aggregate multiple times the same column.
 - Pypika: don't add custom limit when last pipeline step is a `top` step with a lower limit configured.
 
 ## [0.45.7] - 2024-06-25

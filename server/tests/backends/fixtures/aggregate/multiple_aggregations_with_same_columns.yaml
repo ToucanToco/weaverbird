@@ -1,0 +1,62 @@
+exclude:
+- mongo
+- pandas
+- snowflake
+
+step:
+  pipeline:
+  - name: top
+    rank_on: price_per_l
+    sort: desc
+    limit: 1
+  - name: aggregate
+    'on': []
+    aggregations:
+    - aggfunction: min
+      newcolumns:
+      - volume_ml_min
+      - price_per_l_min
+      columns:
+      - volume_ml
+      - price_per_l
+    - aggfunction: min
+      newcolumns:
+      - volume_ml_min
+      columns:
+      - volume_ml
+    keepOriginalGranularity: true
+expected:
+  schema:
+    fields:
+    - name: price_per_l
+      type: number
+    - name: alcohol_degree
+      type: number
+    - name: name
+      type: string
+    - name: cost
+      type: number
+    - name: beer_kind
+      type: string
+    - name: volume_ml
+      type: number
+    - name: brewing_date
+      type: datetime
+    - name: nullable_name
+      type: string
+    - name: volume_ml_min
+      type: number
+    - name: price_per_l_min
+      type: number
+    pandas_version: 1.4.0
+  data:
+  - price_per_l: 0.16
+    alcohol_degree: 13.5
+    name: Superstrong beer
+    cost: 2.89
+    beer_kind: Triple
+    volume_ml: 330
+    brewing_date: '2022-01-01 00:00:00'
+    nullable_name:
+    volume_ml_min: 330
+    price_per_l_min: 0.16

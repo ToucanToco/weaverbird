@@ -529,12 +529,17 @@ class SQLTranslator(ABC):
 
         # Handle aggregation and analytics functions in distinct subqueries
 
+        # Save which columns have already been aggregated to avoid ambiguous columns double selections
+        agg_col_names = []
+
         for step_index, aggregation in enumerate(step.aggregations):
             if agg_fn := self._get_aggregate_function(aggregation.agg_function):
                 for agg_column_name, new_column_name in zip(aggregation.columns, aggregation.new_columns, strict=True):
-                    column_field = prev_step_table[agg_column_name]
-                    new_agg_col = agg_fn(column_field).as_(new_column_name)
-                    agg_selected.append(new_agg_col)
+                    if new_column_name not in agg_col_names:
+                        column_field = prev_step_table[agg_column_name]
+                        new_agg_col = agg_fn(column_field).as_(new_column_name)
+                        agg_selected.append(new_agg_col)
+                        agg_col_names.append(new_column_name)
 
             elif window_fn := self._get_window_function(aggregation.agg_function):
                 agg_cols: list[Field] = []
@@ -549,6 +554,7 @@ class SQLTranslator(ABC):
                         .as_(aggregation.new_columns[window_index])
                     )
 
+                    agg_col_names.append(aggregation.new_columns[window_index])
                     window_selected.append((step_index, new_window_col))
                     agg_cols.append(new_window_col)
                 window_subquery_list.append(
@@ -559,6 +565,7 @@ class SQLTranslator(ABC):
                 raise NotImplementedError(
                     f"[{self.DIALECT}] Aggregation for {aggregation.agg_function!r} is not yet implemented"
                 )
+
         if window_subquery_list and agg_selected:
             window_table = Table("window_subquery")
             all_windows_subquery = _build_window_subquery()
@@ -592,19 +599,18 @@ class SQLTranslator(ABC):
         selected_col_names: list[str]
 
         if step.keep_original_granularity:
-            all_agg_col_names: list[str] = [x for agg in step.aggregations for x in agg.new_columns]
             if step.on:
                 query = (
                     prev_step_table.select(
                         *columns,
-                        *(Field(agg_col, table=merged_query) for agg_col in all_agg_col_names),
+                        *(Field(agg_col, table=merged_query) for agg_col in agg_col_names),
                     )
                     .left_join(merged_query)
                     .on_field(*step.on)
                 )
             else:
                 # If there is no `step.on` columns to join, just put the 2 subqueries side by side:
-                all_agg_col_names = [col for col in all_agg_col_names if col not in columns]
+                all_agg_col_names = [col for col in agg_col_names if col not in columns]
                 query = (
                     self.QUERY_CLS.from_(prev_step_table.name)
                     .from_(merged_query)
@@ -613,7 +619,7 @@ class SQLTranslator(ABC):
                         *(Field(agg_col, table=merged_query) for agg_col in all_agg_col_names),
                     )
                 )
-            selected_col_names = [*columns, *all_agg_col_names]
+            selected_col_names = [*columns, *agg_col_names]
             return StepContext(query.orderby(*step.on) if step.on else query, selected_col_names)
 
         else:
