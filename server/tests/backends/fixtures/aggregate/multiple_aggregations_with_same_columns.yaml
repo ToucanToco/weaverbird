@@ -19,11 +19,19 @@ step:
       columns:
       - volume_ml
       - price_per_l
+    # That aggregation (min volume_ml as volume_ml_min) has already been performed
+    # in the previous aggregation step. It will be ignored.
     - aggfunction: min
       newcolumns:
       - volume_ml_min
       columns:
       - volume_ml
+    #####
+    - aggfunction: max
+      newcolumns:
+        - volume_ml_max
+      columns:
+        - volume_ml
     keepOriginalGranularity: true
 expected:
   schema:
@@ -48,6 +56,8 @@ expected:
       type: number
     - name: price_per_l_min
       type: number
+    - name: volume_ml_max
+      type: number
     pandas_version: 1.4.0
   data:
   - price_per_l: 0.16
@@ -60,3 +70,4 @@ expected:
     nullable_name:
     volume_ml_min: 330
     price_per_l_min: 0.16
+    volume_ml_max: 330
