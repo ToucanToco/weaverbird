@@ -22,7 +22,7 @@ _PASSWORD = environ["REDSHIFT_PASSWORD"]
 _PORT = 5439
 
 
-@retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
+@retry(stop=stop_after_attempt(5), wait=wait_fixed(5))
 def _create_engine() -> Engine:
     engine = create_engine(
         url=URL.create(
