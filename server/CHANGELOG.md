@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Dependencies: loosened constraint on geopandas to allow versions <1 again.
+
 ## [0.45.8] - 2024-07-10
 
 ### Fixed
