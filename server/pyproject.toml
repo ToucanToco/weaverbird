@@ -18,7 +18,7 @@ pydantic = "^2.4.2"
 # Dependencies for extras
 ## Pandas
 pandas = {version = "^1.2.5", optional = true}
-geopandas = {version = ">=1.0.0,<1.1.0", optional = true}
+geopandas = {version = "<2", optional = true}
 ## PyPika
 PyPika = {version = "^0.48.9", optional = true}
 ## Playground
