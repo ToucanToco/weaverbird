@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.45.8] - 2024-07-10
+
 ### Fixed
 
 - Pypika: only execute the first found aggregation for a given new column name in the aggregate step.
