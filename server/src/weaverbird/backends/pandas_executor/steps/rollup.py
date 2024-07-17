@@ -55,6 +55,8 @@ def execute_rollup(
         + sum((agg.new_columns for agg in step.aggregations), start=[])
     )
 
-    df = concat(all_results)[columns]
+    # We have to reindex all df rows to allow next steps assignations and avoid
+    # "cannot reindex on an axis with duplicate labels" errors
+    df = concat(all_results).reset_index()[columns]
 
     return df

@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+- Pandas: force dataframe rows re-indexation at the end of rollup step to avoid a `cannot reindex` error if
+  the following step contains a column assignation.
+
 ## [0.45.9] - 2024-07-10
 
 ### Fixed
