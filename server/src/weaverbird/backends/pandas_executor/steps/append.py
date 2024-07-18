@@ -1,4 +1,5 @@
 from pandas import DataFrame
+from pandas import concat as pd_concat
 
 from weaverbird.backends.pandas_executor.steps.utils.combination import (
     resolve_pipeline_for_combination,
@@ -21,4 +22,4 @@ def execute_append(
         )
         for pipeline in step.pipelines
     ]
-    return df.append(other_dfs, ignore_index=True)
+    return pd_concat([df, *other_dfs], ignore_index=True)
