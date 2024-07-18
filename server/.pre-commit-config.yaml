@@ -9,7 +9,7 @@ repos:
   hooks:
   - id: system
     name: Lint with Ruff
-    entry: ruff
+    entry: ruff check
     types: [python]
     language: system
 

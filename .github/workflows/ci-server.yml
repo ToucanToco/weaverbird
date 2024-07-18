@@ -61,7 +61,6 @@ jobs:
         # Redshift
         REDSHIFT_USER: '${{ secrets.REDSHIFT_USER }}'
         REDSHIFT_PASSWORD: '${{ secrets.REDSHIFT_PASSWORD }}'
-        REDSHIFT_PORT: '${{ secrets.REDSHIFT_PORT }}'
         REDSHIFT_HOST: '${{ secrets.REDSHIFT_HOST }}'
         REDSHIFT_DATABASE: '${{ secrets.REDSHIFT_DATABASE }}'
         # Athena

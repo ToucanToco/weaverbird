@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "weaverbird"
-version = "0.45.7"
+version = "0.45.9"
 description = "A visual data pipeline builder with various backends"
 authors = ["Toucan Toco <dev@toucantoco.com>"]
 keywords = ["mongodb", "pandas", "sql", "data", "dataviz", "pipeline", "query", "builder"]
@@ -21,7 +21,7 @@ pandas = [
     {version = "^1.2.5", optional = true, python = "<3.12"},
     {version = "^2", optional = true, python = ">=3.12"},
 ]
-geopandas = {version = ">=0.12.2,<0.15.0", optional = true}
+geopandas = {version = "<2", optional = true}
 ## PyPika
 PyPika = {version = "^0.48.9", optional = true}
 ## Playground
@@ -52,8 +52,9 @@ psycopg2 = "^2.9.7"
 pymongo = ">=4.2.0"
 sqlalchemy-redshift = ">=0.8.11,<1"
 PyYAML = "^6.0"
-ruff = ">=0.2,<0.5"
+ruff = ">=0.5.0,<0.6"
 pre-commit = "^3.4.0"
+tenacity = "^8.4.2"
 
 [tool.poetry.extras]
 # Lib

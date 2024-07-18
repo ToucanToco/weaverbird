@@ -2,8 +2,17 @@
 
 ## Unreleased
 
+## [0.45.9] - 2024-07-10
+
 ### Fixed
 
+- Dependencies: loosened constraint on geopandas to allow versions <1 again.
+
+## [0.45.8] - 2024-07-10
+
+### Fixed
+
+- Pypika: only execute the first found aggregation for a given new column name in the aggregate step.
 - Pypika: don't add custom limit when last pipeline step is a `top` step with a lower limit configured.
 
 ## [0.45.7] - 2024-06-25
