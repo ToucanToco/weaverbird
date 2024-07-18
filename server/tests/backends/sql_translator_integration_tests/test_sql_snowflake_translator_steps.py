@@ -1,4 +1,5 @@
 import json
+from io import StringIO
 from os import environ
 from typing import Any
 
@@ -64,6 +65,6 @@ def test_snowflake_translator_pipeline(engine: Any, case_id: str, case_spec_file
         tables_columns={"beers_tiny": _BEERS_TABLE_COLUMNS},
         db_schema=None,
     )
-    expected = pd.read_json(json.dumps(pipeline_spec["expected"]), orient="table")
+    expected = pd.read_json(StringIO(json.dumps(pipeline_spec["expected"])), orient="table")
     result: pd.DataFrame = pd.read_sql(text(query), engine)
     assert_dataframes_equals(expected, result)

@@ -1,6 +1,7 @@
 import json
 import socket
 import uuid
+from io import StringIO
 
 import docker
 import pandas as pd
@@ -61,7 +62,7 @@ def _sanitize_df(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _sanitized_df_from_pandas_table(df_spec: dict) -> pd.DataFrame:
-    df = _sanitize_df(pd.read_json(json.dumps(df_spec), orient="table"))
+    df = _sanitize_df(pd.read_json(StringIO(json.dumps(df_spec)), orient="table"))
     bool_cols = [f["name"] for f in df_spec["schema"]["fields"] if f["type"] == "boolean"]
     # By default, pandas converts null bools to False. This enforces
     # use of nullable booleans
@@ -82,7 +83,9 @@ def test_mongo_translator_pipeline(mongo_database, case_id, case_spec_file_path,
         "join" in case_id or "append" in case_id
     ):  # needed for join & append steps tests as we need a != collection
         [
-            mongo_database[k].insert_many(pd.read_json(json.dumps(v), orient="table").to_dict(orient="records"))
+            mongo_database[k].insert_many(
+                pd.read_json(StringIO(json.dumps(v)), orient="table").to_dict(orient="records")
+            )
             for k, v in spec.get("other_inputs", {}).items()
         ]
 

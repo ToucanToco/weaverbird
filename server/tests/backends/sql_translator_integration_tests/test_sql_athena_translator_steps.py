@@ -1,4 +1,5 @@
 import json
+from io import StringIO
 from os import environ
 
 import awswrangler as wr
@@ -55,7 +56,7 @@ def test_athena_translator_pipeline(
         tables_columns={"beers_tiny": _BEERS_TABLE_COLUMNS},
         db_schema=None,
     )
-    expected = pd.read_json(json.dumps(pipeline_spec["expected"]), orient="table")
+    expected = pd.read_json(StringIO(json.dumps(pipeline_spec["expected"])), orient="table")
     result = wr.athena.read_sql_query(
         query, database=_DB, boto3_session=boto_session, s3_output=_OUTPUT, ctas_approach=False
     )

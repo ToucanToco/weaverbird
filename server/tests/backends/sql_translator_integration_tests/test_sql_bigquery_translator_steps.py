@@ -22,6 +22,7 @@ If the table "beers.beers_tiny" is expired, re-create it:
 """
 
 import json
+from io import StringIO
 from os import environ
 
 import pandas as pd
@@ -71,6 +72,6 @@ def test_bigquery_translator_pipeline(
         tables_columns={"beers_tiny": table_columns},
         db_schema="beers",
     )
-    expected = pd.read_json(json.dumps(pipeline_spec["expected"]), orient="table")
+    expected = pd.read_json(StringIO(json.dumps(pipeline_spec["expected"])), orient="table")
     result = bigquery_client.query(query).result().to_dataframe()
     assert_dataframes_equals(expected, result)
