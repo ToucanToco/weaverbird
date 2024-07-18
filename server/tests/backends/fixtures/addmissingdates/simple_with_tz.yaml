@@ -39,7 +39,7 @@ expected:
   schema:
     fields:
     - name: DATE
-      type: datetime
+      type: timestamp
     - name: AGE
       type: number
     - name: SCORE

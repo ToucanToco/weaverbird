@@ -43,62 +43,62 @@
     "data": [
       {
         "country": "France",
-        "date": "2018-01-01T00:00:00.000Z",
+        "date": "2018-01-01T00:00:00.000",
         "value": 75
       },
       {
         "country": "France",
-        "date": "2018-01-02T00:00:00.000Z",
+        "date": "2018-01-02T00:00:00.000",
         "value": 80
       },
       {
         "country": "France",
-        "date": "2018-01-03T00:00:00.000Z",
+        "date": "2018-01-03T00:00:00.000",
         "value": 82
       },
       {
         "country": "France",
-        "date": "2018-01-04T00:00:00.000Z",
+        "date": "2018-01-04T00:00:00.000",
         "value": 83
       },
       {
         "country": "France",
-        "date": "2018-01-05T00:00:00.000Z",
+        "date": "2018-01-05T00:00:00.000",
         "value": 80
       },
       {
         "country": "France",
-        "date": "2018-01-06T00:00:00.000Z",
+        "date": "2018-01-06T00:00:00.000",
         "value": 86
       },
       {
         "country": "USA",
-        "date": "2018-01-01T00:00:00.000Z",
+        "date": "2018-01-01T00:00:00.000",
         "value": 69
       },
       {
         "country": "USA",
-        "date": "2018-01-02T00:00:00.000Z",
+        "date": "2018-01-02T00:00:00.000",
         "value": 73
       },
       {
         "country": "USA",
-        "date": "2018-01-03T00:00:00.000Z",
+        "date": "2018-01-03T00:00:00.000",
         "value": 73
       },
       {
         "country": "USA",
-        "date": "2018-01-04T00:00:00.000Z",
+        "date": "2018-01-04T00:00:00.000",
         "value": 75
       },
       {
         "country": "USA",
-        "date": "2018-01-05T00:00:00.000Z",
+        "date": "2018-01-05T00:00:00.000",
         "value": 70
       },
       {
         "country": "USA",
-        "date": "2018-01-06T00:00:00.000Z",
+        "date": "2018-01-06T00:00:00.000",
         "value": 76
       }
     ]
@@ -128,73 +128,73 @@
     "data": [
       {
         "country": "France",
-        "date": "2018-01-01T00:00:00.000Z",
+        "date": "2018-01-01T00:00:00.000",
         "value": 75,
         "rolling_average": null
       },
       {
         "country": "France",
-        "date": "2018-01-02T00:00:00.000Z",
+        "date": "2018-01-02T00:00:00.000",
         "value": 80,
         "rolling_average": null
       },
       {
         "country": "France",
-        "date": "2018-01-03T00:00:00.000Z",
+        "date": "2018-01-03T00:00:00.000",
         "value": 82,
         "rolling_average": 79.0
       },
       {
         "country": "France",
-        "date": "2018-01-04T00:00:00.000Z",
+        "date": "2018-01-04T00:00:00.000",
         "value": 83,
         "rolling_average": 81.6667
       },
       {
         "country": "France",
-        "date": "2018-01-05T00:00:00.000Z",
+        "date": "2018-01-05T00:00:00.000",
         "value": 80,
         "rolling_average": 81.6667
       },
       {
         "country": "France",
-        "date": "2018-01-06T00:00:00.000Z",
+        "date": "2018-01-06T00:00:00.000",
         "value": 86,
         "rolling_average": 83.0
       },
       {
         "country": "USA",
-        "date": "2018-01-01T00:00:00.000Z",
+        "date": "2018-01-01T00:00:00.000",
         "value": 69,
         "rolling_average": null
       },
       {
         "country": "USA",
-        "date": "2018-01-02T00:00:00.000Z",
+        "date": "2018-01-02T00:00:00.000",
         "value": 73,
         "rolling_average": null
       },
       {
         "country": "USA",
-        "date": "2018-01-03T00:00:00.000Z",
+        "date": "2018-01-03T00:00:00.000",
         "value": 73,
         "rolling_average": 71.6667
       },
       {
         "country": "USA",
-        "date": "2018-01-04T00:00:00.000Z",
+        "date": "2018-01-04T00:00:00.000",
         "value": 75,
         "rolling_average": 73.6667
       },
       {
         "country": "USA",
-        "date": "2018-01-05T00:00:00.000Z",
+        "date": "2018-01-05T00:00:00.000",
         "value": 70,
         "rolling_average": 72.6667
       },
       {
         "country": "USA",
-        "date": "2018-01-06T00:00:00.000Z",
+        "date": "2018-01-06T00:00:00.000",
         "value": 76,
         "rolling_average": 73.6667
       }
