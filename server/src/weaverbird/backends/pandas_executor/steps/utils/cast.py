@@ -1,3 +1,5 @@
+from typing import Any
+
 from pandas import Series, to_datetime, to_numeric
 from pandas import concat as pd_concat
 
@@ -23,9 +25,14 @@ def cast_to_str(s: Series) -> Series:
 
 def cast_to_datetime(s: Series) -> Series:
     is_casting_timestamps = str(s.dtype).startswith("int")
+
+    # ValueError('cannot specify both format and unit')
+    extra_kwargs: dict[str, Any] = {"unit": "ms"} if is_casting_timestamps else {"format": "mixed", "unit": None}
     return to_datetime(
-        s, errors="coerce", unit="ms" if is_casting_timestamps else None
-    )  # cast errors will result in NaT values
+        s,
+        errors="coerce",  # cast errors will result in NaT values
+        **extra_kwargs,
+    )
 
 
 def cast_to_bool(s: Series) -> Series:
