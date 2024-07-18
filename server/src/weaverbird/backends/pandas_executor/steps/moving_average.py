@@ -16,5 +16,9 @@ def execute_moving_average(
         df_grouped = df.groupby(step.groups, dropna=False)
     else:
         df_grouped = df
-    serie = df_grouped.rolling(step.moving_window).mean()[step.value_column].reset_index(drop=True)
+    serie = (
+        df_grouped.rolling(step.moving_window)
+        .agg({step.value_column: "mean"})[step.value_column]
+        .reset_index(drop=True)
+    )
     return df.assign(**{new_column_name: serie})
