@@ -19,6 +19,6 @@ def execute_duration(
 ) -> DataFrame:
     start_date_series = to_datetime(df[step.start_date_column])
     end_date_series = to_datetime(df[step.end_date_column])
-    duration_serie_in_seconds = (end_date_series - start_date_series).astype("timedelta64[s]")
+    duration_serie_in_seconds = (end_date_series - start_date_series).astype("timedelta64[s]").dt.total_seconds()
     duration_serie_in_given_unit = duration_serie_in_seconds / DURATIONS_IN_SECOND[step.duration_in]
     return df.assign(**{step.new_column_name: duration_serie_in_given_unit})
