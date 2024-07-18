@@ -1,6 +1,7 @@
 from typing import Any
 
 from pandas import Series, to_datetime, to_numeric
+from pandas import __version__ as pd_version
 from pandas import concat as pd_concat
 
 
@@ -26,8 +27,14 @@ def cast_to_str(s: Series) -> Series:
 def cast_to_datetime(s: Series) -> Series:
     is_casting_timestamps = str(s.dtype).startswith("int")
 
-    # ValueError('cannot specify both format and unit')
-    extra_kwargs: dict[str, Any] = {"unit": "ms"} if is_casting_timestamps else {"format": "mixed", "unit": None}
+    extra_kwargs: dict[str, Any]
+    # in pandas 2, "format" can be "mixed", which means that pandas should figure out every format
+    # individually. In pandas 1, this is the default, and "mixed" is interpredted as an strftime string
+    if pd_version.startswith("2"):
+        # ValueError('cannot specify both format and unit')
+        extra_kwargs = {"unit": "ms"} if is_casting_timestamps else {"format": "mixed", "unit": None}
+    else:
+        extra_kwargs = {"unit": "ms" if is_casting_timestamps else None}
     return to_datetime(
         s,
         errors="coerce",  # cast errors will result in NaT values
