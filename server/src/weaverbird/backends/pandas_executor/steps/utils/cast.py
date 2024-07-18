@@ -1,4 +1,5 @@
 from pandas import Series, to_datetime, to_numeric
+from pandas import concat as pd_concat
 
 
 def cast_to_float(s: Series) -> Series:
@@ -13,7 +14,7 @@ def cast_to_int(s: Series) -> Series:
     # Pandas operate on NanoSecond Timestamp but we want to output MilliSecond Timestamps
     if str(s.dtype).startswith("datetime64"):
         s_integer = s_integer // 10**6
-    return s_integer.append(s_nan).sort_index()
+    return pd_concat([s_integer, s_nan]).sort_index()
 
 
 def cast_to_str(s: Series) -> Series:
