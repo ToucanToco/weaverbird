@@ -1,0 +1,181 @@
+exclude:
+- athena_pypika
+- bigquery_pypika
+- mysql_pypika
+- postgres_pypika
+- redshift_pypika
+- snowflake_pypika
+step:
+  pipeline:
+  - name: rollup
+    hierarchy:
+    - CREATED_AT
+    - CITY
+    aggregations:
+    - newcolumns:
+      - SUM_RETAIL_PRICE
+      aggfunction: sum
+      columns:
+      - RETAIL_PRICE
+    level_col: LEVEL
+    label_col: LABEL
+    parent_label_col: PARENT
+  - name: dateextract
+    column: CREATED_AT
+    dateInfo: [ "year" ]
+    newColumns: [ "LABEL_YEAR" ]
+  - name: select
+    columns:
+    - SUM_RETAIL_PRICE
+    - CREATED_AT
+    - LABEL_YEAR
+    - CITY
+input:
+  schema:
+    fields:
+    - name: PRODUCT_ID
+      type: integer
+    - name: RETAIL_PRICE
+      type: number
+    - name: QUANTITY
+      type: integer
+    - name: CITY
+      type: string
+    - name: STATE
+      type: string
+    - name: CREATED_AT
+      type: datetime
+    pandas_version: 0.20.0
+  data:
+  - PRODUCT_ID: 1
+    QUANTITY: 2
+    RETAIL_PRICE: 1
+    CITY: SF
+    STATE: CA
+    CREATED_AT: "1905-07-01"
+  - PRODUCT_ID: 1
+    QUANTITY: 2
+    RETAIL_PRICE: 2
+    CITY: SJ
+    STATE: CA
+    CREATED_AT: "1905-07-01"
+  - PRODUCT_ID: 2
+    QUANTITY: 5
+    RETAIL_PRICE: 4
+    CITY: SF
+    STATE: CA
+    CREATED_AT: "1905-07-01"
+  - PRODUCT_ID: 2
+    QUANTITY: 5
+    RETAIL_PRICE: 8
+    CITY: SJ
+    STATE: CA
+    CREATED_AT: "1905-07-01"
+  - PRODUCT_ID: 2
+    QUANTITY: 5
+    RETAIL_PRICE: 16
+    CITY: Miami
+    STATE: FL
+    CREATED_AT: "1941-01-01"
+  - PRODUCT_ID: 2
+    QUANTITY: 5
+    RETAIL_PRICE: 32
+    CITY: Orlando
+    STATE: FL
+    CREATED_AT: "1941-01-01"
+  - PRODUCT_ID: 2
+    QUANTITY: 5
+    RETAIL_PRICE: 64
+    CITY: SJ
+    STATE: PR
+    CREATED_AT: "1943-03-01"
+expected_sql:
+  schema:
+    fields:
+    - name: CITY
+      type: string
+    - name: SUM_RETAIL_PRICE
+      type: number
+    - name: CREATED_AT
+      type: datetime
+    - name: LABEL_YEAR
+      type: number
+    pandas_version: 0.20.0
+  data:
+  - CITY:
+    SUM_RETAIL_PRICE: 15
+    CREATED_AT: "1905-07-01"
+    LABEL_YEAR: 1905
+  - CITY:
+    SUM_RETAIL_PRICE: 48
+    CREATED_AT: "1941-01-01"
+    LABEL_YEAR: 1941
+  - CITY:
+    SUM_RETAIL_PRICE: 64
+    CREATED_AT: "1943-03-01"
+    LABEL_YEAR: 1943
+  - CITY: SF
+    SUM_RETAIL_PRICE: 5
+    CREATED_AT: "1905-07-01"
+    LABEL_YEAR: 1905
+  - CITY: SJ
+    SUM_RETAIL_PRICE: 10
+    CREATED_AT: "1905-07-01"
+    LABEL_YEAR: 1905
+  - CITY: Miami
+    SUM_RETAIL_PRICE: 16
+    CREATED_AT: "1941-01-01"
+    LABEL_YEAR: 1941
+  - CITY: Orlando
+    SUM_RETAIL_PRICE: 32
+    CREATED_AT: "1941-01-01"
+    LABEL_YEAR: 1941
+  - CITY: SJ
+    SUM_RETAIL_PRICE: 64
+    CREATED_AT: "1943-03-01"
+    LABEL_YEAR: 1943
+expected:
+  schema:
+    fields:
+    - name: CITY
+      type: string
+    - name: SUM_RETAIL_PRICE
+      type: number
+    - name: CREATED_AT
+      type: datetime
+    - name: LABEL_YEAR
+      type: number
+    pandas_version: 0.20.0
+  data:
+  - CITY:
+    SUM_RETAIL_PRICE: 15
+    CREATED_AT: "1905-07-01"
+    LABEL_YEAR: 1905
+  - CITY:
+    SUM_RETAIL_PRICE: 48
+    CREATED_AT: "1941-01-01"
+    LABEL_YEAR: 1941
+  - CITY:
+    SUM_RETAIL_PRICE: 64
+    CREATED_AT: "1943-03-01"
+    LABEL_YEAR: 1943
+  - CITY: SF
+    SUM_RETAIL_PRICE: 5
+    CREATED_AT: "1905-07-01"
+    LABEL_YEAR: 1905
+  - CITY: SJ
+    SUM_RETAIL_PRICE: 10
+    CREATED_AT: "1905-07-01"
+    LABEL_YEAR: 1905
+  - CITY: Miami
+    SUM_RETAIL_PRICE: 16
+    CREATED_AT: "1941-01-01"
+    LABEL_YEAR: 1941
+  - CITY: Orlando
+    SUM_RETAIL_PRICE: 32
+    CREATED_AT: "1941-01-01"
+    LABEL_YEAR: 1941
+  - CITY: SJ
+    SUM_RETAIL_PRICE: 64
+    CREATED_AT: "1943-03-01"
+    LABEL_YEAR: 1943
