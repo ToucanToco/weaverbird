@@ -29,6 +29,7 @@ import pandas as pd
 import pytest
 from google.cloud.bigquery import Client
 from google.oauth2 import service_account
+from pandas.api.types import is_datetime64_any_dtype
 from toucan_connectors.common import nosql_apply_parameters_to_query
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import translate_pipeline
@@ -49,6 +50,15 @@ credentials = service_account.Credentials.from_service_account_info(
 @pytest.fixture
 def bigquery_client() -> Client:
     return Client(credentials=credentials)
+
+
+def _sanitize_df(df: pd.DataFrame) -> pd.DataFrame:
+    # bigquery uses datetime64[ms] by default, whereas pandas.read_json uses ns precision, even when
+    # specifying date_unit="ms" (must be caused by orient="table")
+    for col in df.dtypes.keys():
+        if is_datetime64_any_dtype(df[col]):
+            df[col] = df[col].astype("datetime64[ns]")
+    return df
 
 
 @pytest.mark.parametrize("case_id, case_spec_file", retrieve_case("sql_translator", "bigquery_pypika"))
@@ -73,5 +83,6 @@ def test_bigquery_translator_pipeline(
         db_schema="beers",
     )
     expected = pd.read_json(StringIO(json.dumps(pipeline_spec["expected"])), orient="table")
-    result = bigquery_client.query(query).result().to_dataframe()
-    assert_dataframes_equals(expected, result)
+    result = bigquery_client.query(query).result().to_dataframe(date_dtype=None)
+    sanitized_result = _sanitize_df(result)
+    assert_dataframes_equals(expected, sanitized_result)
