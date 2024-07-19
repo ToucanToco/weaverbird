@@ -34,17 +34,17 @@ step:
 expected:
   data:
   - name: Cuvée des Trolls
-    brewing_date: "2022-01-05 00:00:00+00:00"
+    brewing_date: "2022-01-05 00:00:00"
     prev_month_date: "2021-12-01 00:00:00"
     prev_iso_week_date: 52
     first_day_prev_iso_week_date: "2021-12-27 00:00:00"
   - name: Brasserie De Sutter Brin de Folie
-    brewing_date: "2022-01-09 00:00:00+00:00"
+    brewing_date: "2022-01-09 00:00:00"
     prev_month_date: "2021-12-01 00:00:00"
     prev_iso_week_date: 52
     first_day_prev_iso_week_date: "2021-12-27 00:00:00"
   - name: Brugse Zot blonde
-    brewing_date: "2022-01-10 00:00:00+00:00"
+    brewing_date: "2022-01-10 00:00:00"
     prev_month_date: "2021-12-01 00:00:00"
     prev_iso_week_date: 1
     first_day_prev_iso_week_date: "2022-01-03 00:00:00"

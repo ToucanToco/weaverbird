@@ -55,8 +55,8 @@ def bigquery_client() -> Client:
 def _sanitize_df(df: pd.DataFrame) -> pd.DataFrame:
     # bigquery uses datetime64[ms] by default, whereas pandas.read_json uses ns precision, even when
     # specifying date_unit="ms" (must be caused by orient="table")
-    for col in df.dtypes.keys():
-        if is_datetime64_any_dtype(df[col]):
+    for col, dtype in df.dtypes.items():
+        if is_datetime64_any_dtype(df[col]) and getattr(dtype, "tz", None) is None:
             df[col] = df[col].astype("datetime64[ns]")
     return df
 
