@@ -3154,13 +3154,13 @@ files = [
 
 [[package]]
 name = "toucan-connectors"
-version = "6.3.1"
+version = "6.3.2"
 description = "Toucan Toco Connectors"
 optional = false
 python-versions = "<3.13,>=3.11"
 files = [
-    {file = "toucan_connectors-6.3.1-py3-none-any.whl", hash = "sha256:ebd232a5a87c7186703444333cca27692369afd2dae5126cdf9076e8838cfcab"},
-    {file = "toucan_connectors-6.3.1.tar.gz", hash = "sha256:b312f3e91a813cda253f5387fc52e471443da1647a9c095cec56b6a2ab7b64af"},
+    {file = "toucan_connectors-6.3.2-py3-none-any.whl", hash = "sha256:86ccf4f3ff195b729977c4829278da55495734fd67b655719084b9f41d081842"},
+    {file = "toucan_connectors-6.3.2.tar.gz", hash = "sha256:e631281abbbbdc34cf150d7f556ff6ba3806f5edd6af788673d8dba407912560"},
 ]
 
 [package.dependencies]
@@ -3185,7 +3185,7 @@ snowflake-connector-python = {version = ">=2.7.12,<4.0.0", optional = true, mark
 tenacity = ">=8.0.1,<9.0.0"
 
 [package.extras]
-all = ["PyJWT (>=1.5.3,<3)", "PyMySQL (>=1.1.1,<2.0.0)", "awswrangler (>=3.0.0,<4.0.0)", "clickhouse-driver (>=0.2.3,<1.0)", "cx-Oracle (>=8.3.0,<9.0.0)", "dataiku-api-client (>=9.0.1,<14.0.0)", "elasticsearch (>=7.11.0,<8)", "google-api-python-client (>=2,<3)", "google-cloud-bigquery[bqstorage,pandas] (>=3,<4)", "gspread (>=5.4,<7.0)", "hubspot-api-client (>=7.4,<10.0)", "lxml (>=4.6.5,<6.0.0)", "oauth2client (>=4.1.3,<5.0.0)", "oauthlib (==3.2.2)", "peakina (>=0.11,<0.13)", "psycopg2 (>=2.7.4,<3.0.0)", "pyarrow", "pyhdb (>=0.3.4,<1.0)", "pymongo (>=3.12.0)", "pyodbc (>=4,<6)", "python-graphql-client (>=0.4.3,<1.0)", "redshift-connector (>=2.0.907,<3.0.0)", "requests-oauthlib (==2.0.0)", "simplejson (>=3.17.6,<4.0.0)", "snowflake-connector-python (>=2.7.12,<4.0.0)", "tctc-odata (>=0.3,<1.0)", "xmltodict (>=0.13.0,<1.0)", "zeep (>=4.1.0,<5.0.0)"]
+all = ["PyJWT (>=1.5.3,<3)", "PyMySQL (>=1.1.1,<2.0.0)", "awswrangler (>=3.0.0,<4.0.0)", "clickhouse-driver (>=0.2.3,<1.0)", "cx-Oracle (>=8.3.0,<9.0.0)", "dataiku-api-client (>=9.0.1,<14.0.0)", "elasticsearch (>=7.11.0,<8)", "google-api-python-client (>=2,<3)", "google-cloud-bigquery[bqstorage,pandas] (>=3,<4)", "gspread (>=5.4,<7.0)", "hubspot-api-client (>=7.4,<10.0)", "lxml (>=4.6.5,<6.0.0)", "oauth2client (>=4.1.3,<5.0.0)", "oauthlib (==3.2.2)", "peakina (>=0.11)", "psycopg2 (>=2.7.4,<3.0.0)", "pyarrow", "pyhdb (>=0.3.4,<1.0)", "pymongo (>=3.12.0)", "pyodbc (>=4,<6)", "python-graphql-client (>=0.4.3,<1.0)", "redshift-connector (>=2.0.907,<3.0.0)", "requests-oauthlib (==2.0.0)", "simplejson (>=3.17.6,<4.0.0)", "snowflake-connector-python (>=2.7.12,<4.0.0)", "tctc-odata (>=0.3,<1.0)", "xmltodict (>=0.13.0,<1.0)", "zeep (>=4.1.0,<5.0.0)"]
 awsathena = ["awswrangler (>=3.0.0,<4.0.0)"]
 azure-mssql = ["pyodbc (>=4,<6)"]
 clickhouse = ["clickhouse-driver (>=0.2.3,<1.0)"]
