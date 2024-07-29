@@ -11,6 +11,7 @@ clean:
 
 .PHONY: install
 install:
+	# atm we're using poetry 1.2.2
 	poetry install --no-dev
 
 .PHONY: install-dev
