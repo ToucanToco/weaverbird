@@ -5,7 +5,9 @@ from typing import Any
 import pandas as pd
 import pytest
 from sqlalchemy import create_engine
+from sqlalchemy.engine import Engine
 from sqlalchemy.engine.url import URL
+from tenacity import retry, stop_after_attempt, wait_fixed
 from toucan_connectors.common import nosql_apply_parameters_to_query
 
 from tests.utils import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
@@ -13,17 +15,15 @@ from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import translate_pipeline
 from weaverbird.pipeline import PipelineWithVariables
 
-_HOST = "toucan-paris.crxviwjnhzks.eu-west-3.redshift.amazonaws.com"
-_CLUSTER = "toucan-paris"
-_USER = "awsuser"
-_DATABASE = "dev"
-_PASSWORD = environ.get("REDSHIFT_PASSWORD")
-_REGION = "eu-west-3"
+_HOST = "redshift-dev.981243877028.eu-west-3.redshift-serverless.amazonaws.com"
+_USER = "integrationtests_reader"
+_DATABASE = "weaverbird_integration_tests"
+_PASSWORD = environ["REDSHIFT_PASSWORD"]
 _PORT = 5439
 
 
-@pytest.fixture
-def engine():
+@retry(stop=stop_after_attempt(5), wait=wait_fixed(5))
+def _create_engine() -> Engine:
     engine = create_engine(
         url=URL.create(
             drivername="redshift+redshift_connector",
@@ -34,7 +34,15 @@ def engine():
             password=_PASSWORD,
         )
     )
+    with engine.connect() as conn:
+        conn.execute("SELECT 1;").fetchall()
+
     return engine
+
+
+@pytest.fixture(scope="module")
+def engine():
+    return _create_engine()
 
 
 _BEERS_TABLE_COLUMNS = [
@@ -49,7 +57,6 @@ _BEERS_TABLE_COLUMNS = [
 ]
 
 
-@pytest.skip("hangs ???", allow_module_level=True)
 @pytest.mark.parametrize(
     "case_id, case_spec_file", retrieve_case("sql_translator", "redshift_pypika")
 )
