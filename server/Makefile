@@ -11,7 +11,6 @@ clean:
 
 .PHONY: install
 install:
-	# atm we're using poetry 1.2.2
 	poetry install --no-dev
 
 .PHONY: install-dev
@@ -36,7 +35,7 @@ lint:
 
 .PHONY: test
 test:
-	python -m pytest -m "not serial" --junitxml=test-report.xml --cov=weaverbird --cov-report xml -s
+	python -m pytest -n 8 -m "not serial" --junitxml=test-report.xml --cov=weaverbird --cov-report xml -s
 
 .PHONY: serial
 test-serial:
