@@ -52,7 +52,7 @@ psycopg2 = "^2.9.4"
 pymongo = ">=4.2.0"
 redshift-connector = "^2.0.909"
 sqlalchemy-redshift = ">=0.8.11,<1"
-google-cloud-bigquery = {version = "^3.3.0", extras = ["pandas", "bqstorage"]}
+google-cloud-bigquery = {version = "^3.11.0", extras = ["pandas", "bqstorage"]}
 PyYAML = "^6.0"
 
 [tool.poetry.extras]
