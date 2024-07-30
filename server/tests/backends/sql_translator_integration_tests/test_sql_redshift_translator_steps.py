@@ -59,6 +59,7 @@ _BEERS_TABLE_COLUMNS = [
 
 @pytest.mark.parametrize("case_id, case_spec_file", retrieve_case("sql_translator", "redshift_pypika"))
 def test_redshift_translator_pipeline(engine: Any, case_id: str, case_spec_file: str, available_variables: dict):
+    # why ? :'(
     pipeline_spec = get_spec_from_json_fixture(case_id, case_spec_file)
 
     steps = [{"name": "domain", "domain": "beers_tiny"}] + pipeline_spec["step"]["pipeline"]
