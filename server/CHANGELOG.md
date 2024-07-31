@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.26.16] - 2024-07-31
+
 ### Changed
 
 - geopandas: bump dependency version (new version doesnt requires fiona which has a vulnerability)
