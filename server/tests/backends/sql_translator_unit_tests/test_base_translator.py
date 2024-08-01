@@ -339,6 +339,16 @@ def test_domain_with_wrong_domain_name(base_translator: BaseTranslator):
         base_translator._domain(step=step)
 
 
+def test_custom_sql_with_empty_table_columns():
+    base_translator = BaseTranslator(
+        tables_columns={"users": []},
+        db_schema=DB_SCHEMA,
+    )
+    pipeline_steps = [steps.CustomSqlStep(query="select * from users")]
+    with pytest.raises(UnknownTableColumns, match="Expected columns to be specified for exactly one table."):
+        base_translator.get_query_builder(steps=pipeline_steps)
+
+
 def test_domain_with_reference(base_translator: BaseTranslator):
     uid = "to be or not to be a query ?"
     type = "ref"

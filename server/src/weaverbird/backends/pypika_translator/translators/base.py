@@ -279,9 +279,10 @@ class SQLTranslator(ABC):
         if step.columns:
             return step.columns
         # In case there are several provided tables, we cannot figure out which columns to use
-        if len(self._tables_columns) != 1:
-            raise UnknownTableColumns("Expected columns to be specified for exactly one table")
-        return list(list(self._tables_columns.values())[0])
+        if len(self._tables_columns) == 1:
+            if columns := list(list(self._tables_columns.values())[0]):
+                return columns
+        raise UnknownTableColumns("Expected columns to be specified for exactly one table.")
 
     def _step_context_from_first_step(self, step: "DomainStep | CustomSqlStep") -> StepContext:
         if step.name == "domain":
