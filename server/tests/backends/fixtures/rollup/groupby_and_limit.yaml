@@ -1,0 +1,120 @@
+exclude:
+- athena_pypika
+- bigquery_pypika
+- mysql_pypika
+- postgres_pypika
+- redshift_pypika
+- snowflake_pypika
+step:
+  pipeline:
+  - name: rollup
+    parent_label_col: PARENT
+    label_col: LABEL
+    level_col: LEVEL
+    aggregations:
+    - aggfunction: sum
+      columns:
+      - RETAIL_PRICE
+      newcolumns:
+      - SUM_RETAIL_PRICE
+    groupby:
+    - PRODUCT_ID
+    hierarchy:
+    - STATE
+    - CITY
+  - name: top
+    rank_on: LABEL
+    limit: 3
+    sort: asc
+input:
+  data:
+  - CITY: SF
+    PRODUCT_ID: 1
+    QUANTITY: 2
+    RETAIL_PRICE: 1
+    STATE: CA
+  - CITY: SJ
+    PRODUCT_ID: 1
+    QUANTITY: 2
+    RETAIL_PRICE: 2
+    STATE: CA
+  - CITY: SF
+    PRODUCT_ID: 2
+    QUANTITY: 5
+    RETAIL_PRICE: 4
+    STATE: CA
+  - CITY: SJ
+    PRODUCT_ID: 2
+    QUANTITY: 5
+    RETAIL_PRICE: 8
+    STATE: CA
+  - CITY: Miami
+    PRODUCT_ID: 2
+    QUANTITY: 5
+    RETAIL_PRICE: 16
+    STATE: FL
+  - CITY: Orlando
+    PRODUCT_ID: 2
+    QUANTITY: 5
+    RETAIL_PRICE: 32
+    STATE: FL
+  - CITY: SJ
+    PRODUCT_ID: 2
+    QUANTITY: 5
+    RETAIL_PRICE: 64
+    STATE: PR
+  schema:
+    fields:
+    - name: PRODUCT_ID
+      type: integer
+    - name: RETAIL_PRICE
+      type: number
+    - name: QUANTITY
+      type: integer
+    - name: CITY
+      type: string
+    - name: STATE
+      type: string
+    pandas_version: 0.20.0
+expected:
+  # Limiting the data length on purpose here. All columns, including hierarchy and parent columns
+  # should appear for every record
+  data:
+  - CITY: null
+    LABEL: CA
+    LEVEL: STATE
+    PARENT: null
+    PRODUCT_ID: 1
+    STATE: CA
+    SUM_RETAIL_PRICE: 3
+  - CITY: null
+    LABEL: CA
+    LEVEL: STATE
+    PARENT: null
+    PRODUCT_ID: 2
+    STATE: CA
+    SUM_RETAIL_PRICE: 12
+  - CITY: null
+    LABEL: FL
+    LEVEL: STATE
+    PARENT: null
+    PRODUCT_ID: 2
+    STATE: FL
+    SUM_RETAIL_PRICE: 48
+  schema:
+    fields:
+    - name: STATE
+      type: string
+    - name: CITY
+      type: string
+    - name: PRODUCT_ID
+      type: integer
+    - name: LABEL
+      type: string
+    - name: LEVEL
+      type: string
+    - name: PARENT
+      type: string
+    - name: SUM_RETAIL_PRICE
+      type: number
+    pandas_version: 1.4.0
