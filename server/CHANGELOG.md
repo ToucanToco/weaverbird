@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.45.11] - 2024-08-05
+
 ### Fixed
 
 - Mongo: make the keys of all documents in the output of the rollup step consistent.
