@@ -44,7 +44,7 @@ def translate_rollup(step: RollupStep) -> list[MongoStep]:
         project: dict = {
             _ID_COLUMN: 0,
             # Setting all hierarchy columns to None here, to ensure they're present in all resulting
-            # documents. This is done first to allow it to be overridden
+            # documents. This is done first to allow them to be overridden
             **{col: None for col in step.hierarchy},
             **{k: f"${_ID_COLUMN}.{k}" for k in id.keys()},
             **{k: 1 for k in aggs.keys()},
