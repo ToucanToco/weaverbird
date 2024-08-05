@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Mongo: make the kkeys of all documents in the output of the rollup step consistent.
+- Mongo: make the keys of all documents in the output of the rollup step consistent.
 
 ## [0.45.10] - 2024-07-19
 
