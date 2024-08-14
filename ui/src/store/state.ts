@@ -14,6 +14,7 @@ export interface VQBState {
   // necessary methods to preview pipeline results and fetch available data collections
   backendService: BackendService;
   isRequestOnGoing: boolean;
+  ongoingRequestPromise: Promise<any> | undefined;
 
   isLoading: {
     dataset: boolean;
@@ -99,6 +100,7 @@ export function emptyState(): VQBState {
     backendMessages: [],
     isLoading: { dataset: false, uniqueValues: false },
     isRequestOnGoing: false,
+    ongoingRequestPromise: undefined,
     availableVariables: [],
     variables: {},
     variableDelimiters: undefined,

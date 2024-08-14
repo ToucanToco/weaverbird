@@ -250,6 +250,7 @@ const actions: PiniaActionAdaptor<VQBActions, VQBStore> = {
   },
   async updateDataset(): Promise<BackendResponse<DataSet> | undefined> {
     this.logBackendMessages({ backendMessages: [] });
+    let requestPromise;
     try {
       this.setLoading({ type: 'dataset', isLoading: true });
       this.toggleRequestOnGoing({ isRequestOnGoing: true });
@@ -264,13 +265,18 @@ const actions: PiniaActionAdaptor<VQBActions, VQBStore> = {
         });
         return;
       }
-      const response = await this.backendService.executePipeline(
+      requestPromise = this.ongoingRequestPromise = this.backendService.executePipeline(
         this.activePipeline,
         this.pipelines,
         this.pagesize,
         pageOffset(this.pagesize, this.pageNumber),
         this.previewSourceRowsSubset,
       );
+      const response = await requestPromise;
+      if (requestPromise !== this.ongoingRequestPromise) {
+        // If another request has started in between, discard the result
+        return;
+      }
       const translator = response.translator ?? 'mongo50'; // mongo50 is not send by backend
       this.setTranslator({ translator });
       const backendMessages = response.error || response.warning || [];
@@ -280,8 +286,19 @@ const actions: PiniaActionAdaptor<VQBActions, VQBStore> = {
           dataset: addLocalUniquesToDataset(response.data),
         });
       }
+
+      this.toggleRequestOnGoing({ isRequestOnGoing: false });
+      this.setLoading({ type: 'dataset', isLoading: false });
+
       return response;
     } catch (error) {
+      if (requestPromise) {
+        if (requestPromise !== this.ongoingRequestPromise) {
+          // If another request has started in between, discard the result
+          return;
+        }
+      }
+
       /* istanbul ignore next */
       const response = { error: [formatError(error)] };
       // Avoid spamming tests results with errors, but could be useful in production
@@ -293,11 +310,12 @@ const actions: PiniaActionAdaptor<VQBActions, VQBStore> = {
       this.logBackendMessages({
         backendMessages: response.error,
       });
-      /* istanbul ignore next */
-      throw error;
-    } finally {
+
       this.toggleRequestOnGoing({ isRequestOnGoing: false });
       this.setLoading({ type: 'dataset', isLoading: false });
+
+      /* istanbul ignore next */
+      throw error;
     }
   },
   // COLUMNS
