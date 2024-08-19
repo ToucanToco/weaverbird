@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [0.113.1] - 2024-08-19
+
+### Fixed
+
+- Discard outdated preview results (happens when previews are requested before the previous one is finished)
+
 ## [0.113.0] - 2024-05-23
 
 ### Changed
