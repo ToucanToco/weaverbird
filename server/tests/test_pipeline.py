@@ -7,6 +7,7 @@ import pytest
 from jinja2.nativetypes import NativeEnvironment
 from pydantic import BaseModel
 from toucan_connectors.common import nosql_apply_parameters_to_query
+
 from weaverbird.pipeline.conditions import ComparisonCondition
 from weaverbird.pipeline.pipeline import (
     Pipeline,

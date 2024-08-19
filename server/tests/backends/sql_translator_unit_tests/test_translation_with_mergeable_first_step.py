@@ -1,5 +1,6 @@
 # ruff:noqa: E501
 import pytest
+
 from weaverbird.backends.pypika_translator.translators.base import SQLTranslator
 from weaverbird.pipeline.pipeline import Pipeline, PipelineStep
 

@@ -1,5 +1,6 @@
 import pytest
 from pandas import DataFrame
+
 from weaverbird.backends.pandas_executor.steps.utils.cleaning import rename_duplicated_columns
 from weaverbird.utils.iter import combinations
 

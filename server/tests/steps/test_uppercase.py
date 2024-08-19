@@ -2,10 +2,10 @@ import random
 
 import numpy as np
 import pandas as pd
-from weaverbird.backends.pandas_executor.steps.uppercase import execute_uppercase
-from weaverbird.pipeline.steps import UppercaseStep
 
 from tests.utils import assert_dataframes_equals
+from weaverbird.backends.pandas_executor.steps.uppercase import execute_uppercase
+from weaverbird.pipeline.steps import UppercaseStep
 
 
 def test_simple_uppercase():

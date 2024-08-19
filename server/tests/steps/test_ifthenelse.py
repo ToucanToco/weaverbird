@@ -3,10 +3,10 @@ from typing import Any
 import pytest
 from pandas import NA, DataFrame
 from toucan_connectors.common import nosql_apply_parameters_to_query
-from weaverbird.backends.pandas_executor.steps.ifthenelse import execute_ifthenelse
-from weaverbird.pipeline.steps.ifthenelse import IfthenelseStep, IfThenElseStepWithVariables
 
 from tests.utils import assert_dataframes_equals
+from weaverbird.backends.pandas_executor.steps.ifthenelse import execute_ifthenelse
+from weaverbird.pipeline.steps.ifthenelse import IfthenelseStep, IfThenElseStepWithVariables
 
 
 @pytest.fixture

@@ -1,4 +1,5 @@
 from pandas import DataFrame
+
 from weaverbird.backends.pandas_executor.steps.delete import execute_delete
 from weaverbird.pipeline.steps import DeleteStep
 

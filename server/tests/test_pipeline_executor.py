@@ -11,14 +11,14 @@ from os import path
 import pandas as pd
 import pytest
 from pytest_mock import MockFixture
+
+from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.pipeline_executor import (
     PipelineExecutionFailure,
     execute_pipeline,
     preview_pipeline,
 )
 from weaverbird.pipeline import Pipeline
-
-from tests.utils import assert_dataframes_equals
 
 df_domain_a = pd.read_csv(path.join(path.dirname(__file__), "fixtures/domain_a.csv"))
 DOMAINS = {"domain_a": df_domain_a}

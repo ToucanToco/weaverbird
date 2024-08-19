@@ -7,6 +7,7 @@ from pypika import AliasedQuery, Case, Field, Order, Query, Schema, Table, analy
 from pypika.enums import JoinType
 from pypika.queries import QueryBuilder
 from pypika.terms import LiteralValue, Term, ValueWrapper
+
 from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, SQLTranslator
 from weaverbird.backends.pypika_translator.translators.exceptions import (
     ForbiddenSQLStep,

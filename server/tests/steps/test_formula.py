@@ -1,10 +1,10 @@
 import numpy as np
 import pytest
 from pandas import DataFrame
-from weaverbird.backends.pandas_executor.steps.formula import execute_formula
-from weaverbird.pipeline.steps import FormulaStep
 
 from tests.utils import assert_dataframes_equals
+from weaverbird.backends.pandas_executor.steps.formula import execute_formula
+from weaverbird.pipeline.steps import FormulaStep
 
 
 @pytest.fixture
