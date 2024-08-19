@@ -9,7 +9,6 @@ import { formatError } from '@/store/actions';
 import { currentPipeline, emptyState } from '@/store/state';
 
 import { buildState, buildStateWithOnePipeline, setupMockStore } from './utils';
-import { VQB_MODULE_NAME } from '@/store';
 
 describe('getter tests', () => {
   beforeEach(() => {
@@ -1040,8 +1039,6 @@ describe('action tests', () => {
       promise._reject = _rej;
       return promise;
     });
-    const setDatasetSpy = vi.spyOn(store, 'setDataset');
-
     const updateDataset1 = store.updateDataset();
     expect(store.isLoading.dataset).toBe(true);
     const executePipeline1 = executePipelineMock.mock.results[0].value;
