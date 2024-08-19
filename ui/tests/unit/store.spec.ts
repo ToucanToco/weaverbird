@@ -9,6 +9,7 @@ import { formatError } from '@/store/actions';
 import { currentPipeline, emptyState } from '@/store/state';
 
 import { buildState, buildStateWithOnePipeline, setupMockStore } from './utils';
+import { VQB_MODULE_NAME } from '@/store';
 
 describe('getter tests', () => {
   beforeEach(() => {
@@ -1013,6 +1014,122 @@ describe('action tests', () => {
       // call 7 :
       expect(setLoadingSpy).toHaveBeenCalledWith({ type: 'dataset', isLoading: false });
     });
+  });
+
+  it('updateDataset before previous update is done', async () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'GoT' },
+      { name: 'replace', searchColumn: 'characters', toReplace: [['Snow', 'Targaryen']] },
+      { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+    ];
+    const executePipelineMock = vi.fn();
+    const store = setupMockStore({
+      ...buildStateWithOnePipeline(pipeline),
+      backendService: {
+        executePipeline: executePipelineMock,
+      },
+    });
+
+    executePipelineMock.mockImplementation(() => {
+      let _res, _rej;
+      const promise = new Promise((res, rej) => {
+        _res = res;
+        _rej = rej;
+      });
+      promise._resolve = _res;
+      promise._reject = _rej;
+      return promise;
+    });
+    const setDatasetSpy = vi.spyOn(store, 'setDataset');
+
+    const updateDataset1 = store.updateDataset();
+    expect(store.isLoading.dataset).toBe(true);
+    const executePipeline1 = executePipelineMock.mock.results[0].value;
+
+    // Ask for a second preview
+    const updateDataset2 = store.updateDataset();
+    const executePipeline2 = executePipelineMock.mock.results[1].value;
+    expect(store.isLoading.dataset).toBe(true);
+
+    // The second preview arrives
+    const dummyDataset: DataSet = {
+      headers: [{ name: 'x' }, { name: 'y' }],
+      data: [
+        [1, 2],
+        [3, 4],
+      ],
+    };
+    executePipeline2._resolve({ data: dummyDataset });
+    await updateDataset2;
+    expect(store.isLoading.dataset).toBe(false);
+    expect(store.dataset.data).toEqual(dummyDataset.data);
+
+    // Then the first one, late
+    const outdatedDummyDataset: DataSet = {
+      headers: [{ name: 'x' }, { name: 'y' }],
+      data: [
+        [5, 6],
+        [7, 8],
+      ],
+    };
+    executePipeline1._resolve({ data: outdatedDummyDataset });
+    await updateDataset1;
+    expect(store.isLoading.dataset).toBe(false);
+    expect(store.dataset.data).toEqual(dummyDataset.data); // outdated data should have been discarded
+  });
+
+  it('updateDataset with error before previous update is done', async () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'GoT' },
+      { name: 'replace', searchColumn: 'characters', toReplace: [['Snow', 'Targaryen']] },
+      { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+    ];
+    const executePipelineMock = vi.fn();
+    const store = setupMockStore({
+      ...buildStateWithOnePipeline(pipeline),
+      backendService: {
+        executePipeline: executePipelineMock,
+      },
+    });
+
+    executePipelineMock.mockImplementation(() => {
+      let _res, _rej;
+      const promise = new Promise((res, rej) => {
+        _res = res;
+        _rej = rej;
+      });
+      promise._resolve = _res;
+      promise._reject = _rej;
+      return promise;
+    });
+
+    const updateDataset1 = store.updateDataset();
+    expect(store.isLoading.dataset).toBe(true);
+    const executePipeline1 = executePipelineMock.mock.results[0].value;
+
+    // Ask for a second preview
+    const updateDataset2 = store.updateDataset();
+    const executePipeline2 = executePipelineMock.mock.results[1].value;
+    expect(store.isLoading.dataset).toBe(true);
+
+    // The second preview arrives
+    const dummyDataset: DataSet = {
+      headers: [{ name: 'x' }, { name: 'y' }],
+      data: [
+        [1, 2],
+        [3, 4],
+      ],
+    };
+    executePipeline2._resolve({ data: dummyDataset });
+    await updateDataset2;
+    expect(store.isLoading.dataset).toBe(false);
+    expect(store.dataset.data).toEqual(dummyDataset.data);
+
+    // Then the first one errors, late
+    executePipeline1._reject({ error: 'Something wrong!' });
+    await updateDataset1;
+    expect(store.isLoading.dataset).toBe(false);
+    expect(store.dataset.data).toEqual(dummyDataset.data); // outdated error should have been discarded
   });
 
   describe('loadColumnUniqueValues', () => {
