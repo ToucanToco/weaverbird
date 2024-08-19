@@ -4,10 +4,10 @@ import geopandas as gpd
 import pandas as pd
 import pytest
 from toucan_connectors.common import nosql_apply_parameters_to_query
-from weaverbird.backends.pandas_executor import execute_pipeline
-from weaverbird.pipeline import PipelineWithVariables
 
 from tests.utils import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
+from weaverbird.backends.pandas_executor import execute_pipeline
+from weaverbird.pipeline import PipelineWithVariables
 
 test_cases = retrieve_case("pandas_executor", "pandas")
 

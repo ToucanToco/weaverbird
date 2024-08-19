@@ -3,11 +3,11 @@ from datetime import date, datetime, timedelta
 import numpy as np
 import pytest
 from pandas import DataFrame, to_datetime
+
+from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.evolution import execute_evolution
 from weaverbird.exceptions import DuplicateError
 from weaverbird.pipeline.steps import EvolutionStep
-
-from tests.utils import assert_dataframes_equals
 
 
 @pytest.fixture

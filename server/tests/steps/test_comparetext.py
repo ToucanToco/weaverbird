@@ -2,6 +2,7 @@ import random
 import string
 
 import pandas as pd
+
 from weaverbird.backends.pandas_executor.steps.comparetext import execute_comparetext
 from weaverbird.pipeline.steps.comparetext import CompareTextStep
 

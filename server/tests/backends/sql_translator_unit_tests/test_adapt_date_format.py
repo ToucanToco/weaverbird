@@ -1,4 +1,5 @@
 import pytest
+
 from weaverbird.backends.pypika_translator.translators import (
     AthenaTranslator,
     GoogleBigQueryTranslator,

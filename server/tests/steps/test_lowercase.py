@@ -1,10 +1,10 @@
 import pandas as pd
 import pytest
-from weaverbird.backends.pandas_executor.steps.lowercase import execute_lowercase
-from weaverbird.pipeline.steps import LowercaseStep
 
 from tests.steps.test_comparetext import random_string
 from tests.utils import assert_dataframes_equals
+from weaverbird.backends.pandas_executor.steps.lowercase import execute_lowercase
+from weaverbird.pipeline.steps import LowercaseStep
 
 
 @pytest.fixture()

@@ -3,10 +3,10 @@ import random
 import numpy as np
 import pandas as pd
 import pytest
-from weaverbird.backends.pandas_executor.steps.substring import execute_substring
-from weaverbird.pipeline.steps import SubstringStep
 
 from tests.utils import assert_dataframes_equals
+from weaverbird.backends.pandas_executor.steps.substring import execute_substring
+from weaverbird.pipeline.steps import SubstringStep
 
 
 @pytest.fixture()

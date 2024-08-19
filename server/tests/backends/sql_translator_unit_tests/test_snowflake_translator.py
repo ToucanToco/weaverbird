@@ -3,6 +3,7 @@ from typing import Any
 import pytest
 from pypika.functions import Cast, Extract
 from pypika.queries import Query, Table
+
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import translate_pipeline
 from weaverbird.backends.pypika_translator.translators.base import DateAddWithoutUnderscore

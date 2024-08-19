@@ -3,10 +3,10 @@ import random
 import numpy as np
 import pandas as pd
 import pytest
-from weaverbird.backends.pandas_executor.steps.sort import execute_sort
-from weaverbird.pipeline.steps.sort import ColumnSort, SortStep
 
 from tests.utils import assert_dataframes_equals
+from weaverbird.backends.pandas_executor.steps.sort import execute_sort
+from weaverbird.pipeline.steps.sort import ColumnSort, SortStep
 
 
 @pytest.fixture

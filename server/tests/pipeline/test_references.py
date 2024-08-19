@@ -1,4 +1,5 @@
 import pytest
+
 from weaverbird.pipeline.pipeline import (
     Pipeline,
     PipelineWithVariables,

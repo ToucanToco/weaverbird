@@ -3,6 +3,7 @@ from typing import Any
 import pytest
 from pypika import Field, Query, functions
 from pypika.terms import BasicCriterion, ValueWrapper
+
 from weaverbird.backends.pypika_translator.operators import RegexOp
 from weaverbird.backends.pypika_translator.translators.base import (
     DataTypeMapping,

@@ -1,5 +1,6 @@
 import pytest
 from pypika.queries import Table
+
 from weaverbird.backends.pypika_translator.translators.redshift import RedshiftTranslator
 
 

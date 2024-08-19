@@ -1,9 +1,9 @@
 import pytest
 from pandas import DataFrame
-from weaverbird.backends.pandas_executor.steps.trim import execute_trim
-from weaverbird.pipeline.steps import TrimStep
 
 from tests.utils import assert_dataframes_equals
+from weaverbird.backends.pandas_executor.steps.trim import execute_trim
+from weaverbird.pipeline.steps import TrimStep
 
 
 @pytest.fixture
