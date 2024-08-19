@@ -1059,7 +1059,7 @@ describe('action tests', () => {
         [3, 4],
       ],
     };
-    executePipeline2._resolve({data: dummyDataset});
+    executePipeline2._resolve({ data: dummyDataset });
     await updateDataset2;
     expect(store.isLoading.dataset).toBe(false);
     expect(store.dataset.data).toEqual(dummyDataset.data);
@@ -1072,7 +1072,7 @@ describe('action tests', () => {
         [7, 8],
       ],
     };
-    executePipeline1._resolve({data: outdatedDummyDataset});
+    executePipeline1._resolve({ data: outdatedDummyDataset });
     await updateDataset1;
     expect(store.isLoading.dataset).toBe(false);
     expect(store.dataset.data).toEqual(dummyDataset.data); // outdated data should have been discarded
@@ -1120,13 +1120,13 @@ describe('action tests', () => {
         [3, 4],
       ],
     };
-    executePipeline2._resolve({data: dummyDataset});
+    executePipeline2._resolve({ data: dummyDataset });
     await updateDataset2;
     expect(store.isLoading.dataset).toBe(false);
     expect(store.dataset.data).toEqual(dummyDataset.data);
 
     // Then the first one errors, late
-    executePipeline1._reject({error: "Something wrong!"});
+    executePipeline1._reject({ error: 'Something wrong!' });
     await updateDataset1;
     expect(store.isLoading.dataset).toBe(false);
     expect(store.dataset.data).toEqual(dummyDataset.data); // outdated error should have been discarded
