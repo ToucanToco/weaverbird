@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Evolution: Fix regression where the pipeline crashed if the date column was also in group columns
+
 ## [0.45.11] - 2024-08-05
 
 ### Fixed
