@@ -27,7 +27,7 @@ def execute_evolution(
     # datetime.date instances)
     df[step.date_col] = to_datetime(df[step.date_col])
 
-    id_cols = [step.date_col] + step.index_columns
+    id_cols = [step.date_col] + [c for c in step.index_columns if c != step.date_col]
     if df.set_index(id_cols).index.duplicated().any():
         raise DuplicateError("Multiple rows for the same date. Did you forget indexColumns?")
 
