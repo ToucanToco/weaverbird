@@ -49,7 +49,11 @@ def translate_evolution(step: EvolutionStep) -> list[MongoStep]:
             "$addFields": {
                 "_VQB_DATE_PREV": {
                     # NOTE: This requires mongo>=5.0
-                    "$dateSubtract": {"startDate": f"${step.date_col}", "unit": unit, "amount": 1}
+                    "$dateSubtract": {
+                        "startDate": f"${step.date_col}",
+                        "unit": unit,
+                        "amount": 1,
+                    }
                 }
             }
         },
@@ -85,6 +89,7 @@ def translate_evolution(step: EvolutionStep) -> list[MongoStep]:
                                 *(
                                     {"$eq": [f"${col}", f"$$item.{col}"]}
                                     for col in step.index_columns
+                                    if col != step.date_col
                                 ),
                             ],
                         },

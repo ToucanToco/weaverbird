@@ -78,9 +78,7 @@ allow_redefinition = true
 check_untyped_defs = true
 
 [tool.pytest.ini_options]
-env = [
-    "PYTHONPATH = ."
-]
+pythonpath = "."
 testpaths = "tests"
 markers = [
     "serial: marks tests as serial (deselect with '-m \"not serial\"')",
