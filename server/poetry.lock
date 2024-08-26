@@ -3166,13 +3166,13 @@ files = [
 
 [[package]]
 name = "toucan-connectors"
-version = "6.5.0"
+version = "6.6.0"
 description = "Toucan Toco Connectors"
 optional = false
 python-versions = "<3.13,>=3.11"
 files = [
-    {file = "toucan_connectors-6.5.0-py3-none-any.whl", hash = "sha256:26cf2db1d1d0c20b38c067ca85d844989a3e11d58a35f681ea9573e7e45dd08d"},
-    {file = "toucan_connectors-6.5.0.tar.gz", hash = "sha256:3d199cac3954d0cf89a776b21c4bae5315b80e4198322868e3bfad26601ba020"},
+    {file = "toucan_connectors-6.6.0-py3-none-any.whl", hash = "sha256:da8ed7cb3d36ab02191b694a6f96983d0df7140892e3f11e4bcc5d3e1f91b303"},
+    {file = "toucan_connectors-6.6.0.tar.gz", hash = "sha256:a0fc8dbfc546dc3e4e7123c26b80375169485be3cfbc0150a0c66bb3414fa599"},
 ]
 
 [package.dependencies]
@@ -3194,7 +3194,7 @@ python-slugify = ">=5.0.2"
 redshift-connector = {version = ">=2.0.907,<3.0.0", optional = true, markers = "extra == \"redshift\" or extra == \"all\""}
 requests = ">=2.28.0,<3.0.0"
 snowflake-connector-python = {version = ">=2.7.12,<4.0.0", optional = true, markers = "extra == \"snowflake\" or extra == \"all\""}
-tenacity = ">=8.0.1,<9.0.0"
+tenacity = ">=8.0.1,<10.0.0"
 
 [package.extras]
 all = ["PyJWT (>=1.5.3,<3)", "PyMySQL (>=1.1.1,<2.0.0)", "awswrangler (>=3.3.0,<4.0.0)", "clickhouse-driver (>=0.2.3,<1.0)", "cx-Oracle (>=8.3.0,<9.0.0)", "dataiku-api-client (>=9.0.1,<14.0.0)", "elasticsearch (>=7.11.0,<8)", "google-api-python-client (>=2,<3)", "google-cloud-bigquery[bqstorage,pandas] (>=3,<4)", "gspread (>=5.4,<7.0)", "hubspot-api-client (>=7.4,<10.0)", "lxml (>=4.6.5,<6.0.0)", "oauth2client (>=4.1.3,<5.0.0)", "oauthlib (==3.2.2)", "peakina (>=0.11)", "psycopg2 (>=2.7.4,<3.0.0)", "pyarrow", "pyhdb (>=0.3.4,<1.0)", "pymongo (>=3.12.0)", "pyodbc (>=4,<6)", "python-graphql-client (>=0.4.3,<1.0)", "redshift-connector (>=2.0.907,<3.0.0)", "requests-oauthlib (==2.0.0)", "simplejson (>=3.17.6,<4.0.0)", "snowflake-connector-python (>=2.7.12,<4.0.0)", "tctc-odata (>=0.3,<1.0)", "xmltodict (>=0.13.0,<1.0)", "zeep (>=4.1.0,<5.0.0)"]
