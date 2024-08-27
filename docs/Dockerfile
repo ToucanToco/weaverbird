@@ -1,4 +1,4 @@
-FROM ruby:2-alpine as builder
+FROM ruby:3-alpine as builder
 
 ENV LANGUAGE en_US.UTF-8
 ENV LANG en_US.UTF-8
