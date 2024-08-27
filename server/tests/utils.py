@@ -129,8 +129,11 @@ def get_spec_from_json_fixture(case_id: str, case_spec_file_path: str) -> dict:
             for k, v in dct.items():
                 if isinstance(v, str) and v.startswith("date:"):
                     dct[k] = _try_parse_dt_as_string(v)
-                elif isinstance(v, list) and all(isinstance(elem, str) for elem in v):
-                    dct[k] = [_try_parse_dt_as_string(elem) if elem.startswith("date:") else elem for elem in v]
+                elif isinstance(v, list) and all(isinstance(elem, str | None) for elem in v):
+                    dct[k] = [
+                        _try_parse_dt_as_string(elem) if elem is not None and elem.startswith("date:") else elem
+                        for elem in v
+                    ]
 
             return dct
 
