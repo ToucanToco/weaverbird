@@ -38,6 +38,16 @@
         "NAME": "FoO",
         "AGE": 42,
         "SCORE": 100
+      },
+      {
+        "NAME": "PEUT-ÊTRE QUE JE SUIS ACCENTUÉ",
+        "AGE": 12,
+        "SCORE": 1
+      },
+      {
+        "NAME": null,
+        "AGE": 1,
+        "SCORE": 12
       }
     ]
   },
@@ -64,6 +74,16 @@
         "NAME": "foo",
         "AGE": 42,
         "SCORE": 100
+      },
+      {
+        "NAME": "peut-être que je suis accentué",
+        "AGE": 12,
+        "SCORE": 1
+      },
+      {
+        "NAME": null,
+        "AGE": 1,
+        "SCORE": 12
       }
     ]
   }
