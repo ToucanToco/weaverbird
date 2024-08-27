@@ -4,7 +4,6 @@
 
 ### Fixed
 
-- Mongo: accents are now properly upper- and lowercased by the `lowercase` and `uppercase` steps
 - Pypika: dates and datetimes are now propertly supported in the `filter` step in the Athena dialect
 
 ## [0.45.12] - 2024-08-20
