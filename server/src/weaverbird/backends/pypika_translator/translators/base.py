@@ -1169,7 +1169,7 @@ class SQLTranslator(ABC):
 
     @classmethod
     def _cast_to_timestamp(cls, value: str | date | datetime | Field | Term) -> functions.Function:
-        return functions.Cast(value, "TIMESTAMP")
+        return functions.Cast(value, cls.DATA_TYPE_MAPPING.timestamp)
 
     def _get_single_condition_criterion(
         self: Self, condition: "SimpleCondition", prev_step_table: FromTable
@@ -1192,6 +1192,7 @@ class SQLTranslator(ABC):
 
                 if isinstance(condition.value, date | datetime):
                     condition_value = self._cast_to_timestamp(condition.value)
+                    column_field = self._cast_to_timestamp(column_field)
                 else:
                     condition_value = condition.value
 
@@ -1203,6 +1204,11 @@ class SQLTranslator(ABC):
                     self._cast_to_timestamp(elem) if isinstance(elem, date | datetime) else elem
                     for elem in condition.value
                 ]
+                # If we are comparing to timestamp-like values, convert the matched column to a
+                # timestamp as well, as some backends do not support DATETIME == TIMESTAMP
+                # comparisons
+                if all(isinstance(elem, date | datetime | None) for elem in condition.value):
+                    column_field = self._cast_to_timestamp(column_field)
                 if condition.operator == "in":
                     if None in condition.value:
                         # handle special case of having NULL amongst selected values
