@@ -112,6 +112,13 @@ def retrieve_case(directory, provider):
     return test_cases
 
 
+def _try_parse_dt_as_string(v: str) -> datetime.datetime:
+    try:
+        return datetime.datetime.strptime(v, "date: %Y-%m-%d %H:%M:%S%z")
+    except ValueError:  # Raised for strings without TZ info
+        return datetime.datetime.strptime(v, "date: %Y-%m-%d %H:%M:%S")
+
+
 def get_spec_from_json_fixture(case_id: str, case_spec_file_path: str) -> dict:
     spec = load_fixture_file(case_spec_file_path)
 
@@ -120,19 +127,24 @@ def get_spec_from_json_fixture(case_id: str, case_spec_file_path: str) -> dict:
 
         def _datetime_parser(dct: dict):
             for k, v in dct.items():
-                if isinstance(dct[k], str) and dct[k].startswith(
-                    "date:",
-                ):
-                    try:
-                        dct[k] = datetime.datetime.strptime(v, "date: %Y-%m-%d %H:%M:%S%z")
-                    except ValueError:  # Raised for strings without TZ info
-                        dct[k] = datetime.datetime.strptime(v, "date: %Y-%m-%d %H:%M:%S")
+                if isinstance(v, str) and v.startswith("date:"):
+                    dct[k] = _try_parse_dt_as_string(v)
+                elif isinstance(v, list) and all(isinstance(elem, str) for elem in v):
+                    dct[k] = [_try_parse_dt_as_string(elem) if elem.startswith("date:") else elem for elem in v]
+
             return dct
 
         # Sub-optimal but still fast enough for tests
-        spec = json.loads(json.dumps(spec), object_hook=_datetime_parser)
+        spec = json.loads(json_dumps(spec), object_hook=_datetime_parser)
 
     return spec
+
+
+def json_dumps(val: Any) -> str:
+    def json_default(x: Any) -> Any:
+        return x.isoformat() if isinstance(x, datetime.date | datetime.datetime) else x
+
+    return json.dumps(val, default=json_default)
 
 
 @contextlib.contextmanager

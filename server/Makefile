@@ -23,8 +23,8 @@ install-playground:
 
 .PHONY: format
 format:
-	poetry run $(ruff) --fix
 	poetry run $(format)
+	poetry run $(ruff) --fix
 
 .PHONY: lint
 lint:

@@ -1,0 +1,26 @@
+exclude:
+  - mongo
+  - pandas
+  - snowflake
+step:
+  pipeline:
+    - columns:
+        - name
+        - brewing_date
+      name: select
+    - condition:
+        column: brewing_date
+        operator: eq
+        value: "date: 2022-01-02 00:00:00Z"
+      name: filter
+expected:
+  data:
+    - name: Ninkasi Ploploplop
+      brewing_date: 2022-01-02 00:00:00Z
+  schema:
+    fields:
+      - name: name
+        type: string
+      - name: brewing_date
+        type: datetime
+    pandas_version: 1.4.0
