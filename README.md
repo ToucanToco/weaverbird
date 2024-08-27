@@ -79,24 +79,18 @@ generate the corresponding documentation in the `dist/docs` directory.
 
 ### Build and run the documentation website
 
-> The web documentation is powered by [Jekyll](https://jekyllrb.com).
-
-> You can find all the sources into the `docs` folder.
-
-> To build and locally launch the documentation you need Ruby and gem before starting, then:
+The web documentation is powered by [Jekyll](https://jekyllrb.com).
+All sources can be found in the `docs` folder.
+To build and run the documentation with docker:
 
 ```bash
-# install ruby
-sudo apt install ruby ruby-dev
-
-# install bundler
-gem install bundler
-
-# run jekyll and a local server with dependencies :
-cd docs
-bundle install
-bundle exec jekyll serve
+cd docs/
+docker buildx build -t weaverbird-jekyll .
+docker container run --rm -p 4000:4000 -v $PWD:/jekyll weaverbird-jekyll
 ```
+
+Once the docs are be built, they'll be available on `http://localhost:4000`. Any change to a `.md` source
+file will trigger a rebuild.
 
 #### Enrich it!
 
