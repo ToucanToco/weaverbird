@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.45.13] - 2024-08-28
+
 ### Fixed
 
 - Pypika: dates and datetimes are now propertly supported in the `filter` step in the Athena dialect
