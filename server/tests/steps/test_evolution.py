@@ -56,7 +56,9 @@ def test_evolution_absolute_with_dates(sample_dates_df: DataFrame):
     )
     df_result = execute_evolution(step, sample_dates_df)
 
-    expected_result = sample_dates_df.assign(VALUE_EVOL_ABS=[None, 2, -4, -2, None, 10])
+    expected_result = sample_dates_df.assign(
+        VALUE_EVOL_ABS=[None, 2, -4, -2, None, 10], DATE=to_datetime(sample_dates_df["DATE"])
+    )
     assert_dataframes_equals(df_result, expected_result)
 
 

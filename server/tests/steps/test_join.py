@@ -1,5 +1,6 @@
 import pytest
 from pandas import DataFrame
+from pandas import __version__ as pandas_version
 
 from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.join import execute_join
@@ -53,7 +54,40 @@ def test_join_left(
     assert_dataframes_equals(df_result, expected_result)
 
 
-def test_join_outer(
+@pytest.mark.skipif(not pandas_version.startswith("2"), reason="test disabled on pandas 1")
+def test_join_outer_pandas_2(
+    sample_df: DataFrame,
+    mock_domain_retriever: DomainRetriever,
+    mock_execute_pipeline: PipelineExecutor,
+):
+    step = JoinStep(
+        name="join",
+        right_pipeline=[{"name": "domain", "domain": "buzz"}],
+        on=[
+            ["NAME", "name"],
+        ],
+        type="left outer",
+    )
+    df_result = execute_join(
+        step,
+        sample_df,
+        domain_retriever=mock_domain_retriever,
+        execute_pipeline=mock_execute_pipeline,
+    )
+
+    expected_result = DataFrame(
+        {
+            "NAME": ["bar", None, "foo"],
+            "name": ["bar", "baz", None],
+            "AGE": [43, None, 42],
+            "score": [100, 200, None],
+        }
+    )
+    assert_dataframes_equals(df_result, expected_result)
+
+
+@pytest.mark.skipif(pandas_version.startswith("2"), reason="test disabled on pandas 2")
+def test_join_outer_pandas_1_5(
     sample_df: DataFrame,
     mock_domain_retriever: DomainRetriever,
     mock_execute_pipeline: PipelineExecutor,
