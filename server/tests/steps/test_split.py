@@ -3,10 +3,10 @@ import random
 import numpy as np
 import pandas as pd
 import pytest
-from weaverbird.backends.pandas_executor.steps.split import execute_split
-from weaverbird.pipeline.steps import SplitStep
 
 from tests.utils import assert_dataframes_equals
+from weaverbird.backends.pandas_executor.steps.split import execute_split
+from weaverbird.pipeline.steps import SplitStep
 
 
 @pytest.fixture()

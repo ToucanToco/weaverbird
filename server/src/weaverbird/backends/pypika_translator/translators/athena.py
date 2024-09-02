@@ -1,3 +1,5 @@
+from datetime import date, datetime
+
 from pypika import functions
 from pypika.dialects import Query
 from pypika.enums import Dialects
@@ -61,6 +63,14 @@ class AthenaTranslator(SQLTranslator):
     @classmethod
     def _interval_to_seconds(cls, value: Selectable) -> functions.Function:
         return ToMilliseconds(value) / 1000
+
+    @classmethod
+    def _cast_to_timestamp(cls, value: str | date | datetime | Field | Term) -> functions.Function:
+        if isinstance(value, date):
+            value = datetime(value.year, value.month, value.day)
+        if isinstance(value, datetime):
+            value = value.strftime("%Y-%m-%d %H:%M:%S%z")
+        return super()._cast_to_timestamp(value)
 
 
 SQLTranslator.register(AthenaTranslator)

@@ -43,14 +43,18 @@ def translate_rollup(step: RollupStep) -> list[MongoStep]:
 
         project: dict = {
             _ID_COLUMN: 0,
+            # Setting all hierarchy columns to None here, to ensure they're present in all resulting
+            # documents. This is done first to allow them to be overridden
+            **{col: None for col in step.hierarchy},
             **{k: f"${_ID_COLUMN}.{k}" for k in id.keys()},
             **{k: 1 for k in aggs.keys()},
             label_col: f"${_ID_COLUMN}.{elem}",
             level_col: elem,
         }
 
-        if idx > 0:
-            project[parent_label_col] = f"${_ID_COLUMN}.{step.hierarchy[idx - 1]}"
+        # In case we have a nested hierarchy, we always want the parent field to be present
+        if len(step.hierarchy) > 1:
+            project[parent_label_col] = f"${_ID_COLUMN}.{step.hierarchy[idx - 1]}" if idx > 0 else None
 
         add_fields_to_add_to_pipeline = [{"$addFields": add_fields}] if add_fields else []
 

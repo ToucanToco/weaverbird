@@ -3,10 +3,10 @@ from datetime import date, datetime, timedelta
 import pytest
 from pandas import DataFrame, to_datetime
 from pandas.core.arrays.integer import UInt32Dtype
-from weaverbird.backends.pandas_executor.steps.date_extract import execute_date_extract
-from weaverbird.pipeline.steps import DateExtractStep
 
 from tests.utils import assert_dataframes_equals
+from weaverbird.backends.pandas_executor.steps.date_extract import execute_date_extract
+from weaverbird.pipeline.steps import DateExtractStep
 
 
 @pytest.fixture

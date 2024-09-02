@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+## [0.45.13] - 2024-08-28
+
+### Fixed
+
+- Pypika: dates and datetimes are now propertly supported in the `filter` step in the Athena dialect
+
+## [0.45.12] - 2024-08-20
+
+### Fixed
+
+- Evolution: Fix regression where the pipeline crashed if the date column was also in group columns
+
+## [0.45.11] - 2024-08-05
+
+### Fixed
+
+- Mongo: make the keys of all documents in the output of the rollup step consistent.
+
 ## [0.45.10] - 2024-07-19
 
 ### Fixed

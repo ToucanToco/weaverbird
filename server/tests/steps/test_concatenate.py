@@ -1,4 +1,5 @@
 from pandas import DataFrame
+
 from weaverbird.backends.pandas_executor.steps.concatenate import execute_concatenate
 from weaverbird.pipeline.steps import ConcatenateStep
 

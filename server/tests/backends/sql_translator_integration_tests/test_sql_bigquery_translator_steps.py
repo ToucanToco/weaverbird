@@ -31,9 +31,6 @@ from google.cloud.bigquery import Client
 from google.oauth2 import service_account
 from pandas.api.types import is_datetime64_any_dtype
 from toucan_connectors.common import nosql_apply_parameters_to_query
-from weaverbird.backends.pypika_translator.dialects import SQLDialect
-from weaverbird.backends.pypika_translator.translate import translate_pipeline
-from weaverbird.pipeline import PipelineWithVariables
 
 from tests.utils import (
     _BEERS_TABLE_COLUMNS,
@@ -41,6 +38,9 @@ from tests.utils import (
     get_spec_from_json_fixture,
     retrieve_case,
 )
+from weaverbird.backends.pypika_translator.dialects import SQLDialect
+from weaverbird.backends.pypika_translator.translate import translate_pipeline
+from weaverbird.pipeline import PipelineWithVariables
 
 credentials = service_account.Credentials.from_service_account_info(
     info=json.loads(environ["GOOGLE_BIG_QUERY_CREDENTIALS"])

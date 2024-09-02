@@ -3,6 +3,7 @@ from typing import Any
 import pytest
 from pypika import Field, Query, functions
 from pypika.terms import BasicCriterion, ValueWrapper
+
 from weaverbird.backends.pypika_translator.operators import RegexOp
 from weaverbird.backends.pypika_translator.translators.base import (
     DataTypeMapping,
@@ -15,6 +16,15 @@ from weaverbird.pipeline import conditions, steps
 class FilterTranslator(SQLTranslator):
     DIALECT = "Filter"
     QUERY_CLS = Query
+    DATA_TYPE_MAPPING = DataTypeMapping(
+        boolean="BOOL",
+        date="DATE",
+        float="FLOAT",
+        integer="INTEGER",
+        text="TEXT",
+        datetime="DT",
+        timestamp="TS",
+    )
 
     @classmethod
     def _interval_to_seconds(cls, value):
@@ -103,9 +113,9 @@ def test_datebound_filter(filter_translator: FilterTranslator, op: str, default_
 
     value_str_time = dateutil_parser.parse(datetime).astimezone().strftime("%Y-%m-%d %H:%M:%S")
     if op == "from":
-        op_func = functions.Cast(Field(column), "TIMESTAMP") >= functions.Cast(value_str_time, "TIMESTAMP")
+        op_func = functions.Cast(Field(column), "TS") >= functions.Cast(value_str_time, "TS")
     else:
-        op_func = functions.Cast(Field(column), "TIMESTAMP") <= functions.Cast(value_str_time, "TIMESTAMP")
+        op_func = functions.Cast(Field(column), "TS") <= functions.Cast(value_str_time, "TS")
 
     step = steps.FilterStep(condition=condition)
     ctx = filter_translator.filter(step=step, columns=selected_columns, **default_step_kwargs)

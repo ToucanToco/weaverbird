@@ -9,6 +9,8 @@ import pytest
 from pandas import DataFrame, read_json
 from pandas.testing import assert_frame_equal
 from toucan_connectors.common import nosql_apply_parameters_to_query
+
+from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.filter import execute_filter
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
@@ -18,8 +20,6 @@ from weaverbird.pipeline.conditions import (
 from weaverbird.pipeline.dates import RelativeDateWithVariables
 from weaverbird.pipeline.steps import FilterStep
 from weaverbird.pipeline.steps.filter import FilterStepWithVariables
-
-from tests.utils import assert_dataframes_equals
 
 
 @pytest.fixture

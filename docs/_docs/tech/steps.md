@@ -2115,6 +2115,14 @@ Converts a date `column` into a string column based on a specified `format`.
 
 ### `lowercase` step
 
+<div class="panel panel-warning">
+  <div class="panel-heading">
+    ⚠️ Mongo's <code class="language-plaintext highlighter-rouge">$toLower</code> operator does not support accents.
+    If you have accents you need to lowercase with Mongo, use a <code class="language-plaintext highlighter-rouge">replacetext</code>
+    step after <code class="language-plaintext highlighter-rouge">lowercase</code>.
+  </div>
+</div>
+
 Converts a string `column` to lowercase.
 
 ```javascript
@@ -3811,6 +3819,14 @@ Unpivot a list of columns to rows.
 | Company 2 | USA     | REVENUES   | 3     |
 
 ### `uppercase` step
+
+<div class="panel panel-warning">
+  <div class="panel-heading">
+    ⚠️ Mongo's <code class="language-plaintext highlighter-rouge">$toUpper</code> operator does not support accents.
+    If you have accents you need to uppercase with Mongo, use a <code class="language-plaintext highlighter-rouge">replacetext</code>
+    step after <code class="language-plaintext highlighter-rouge">uppercase</code>.
+  </div>
+</div>
 
 Converts a string `column` to uppercase.
 

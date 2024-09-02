@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from typing import TYPE_CHECKING, Any, Literal, TypeVar, Union, cast, get_args
 from uuid import uuid4
 
@@ -1167,9 +1167,9 @@ class SQLTranslator(ABC):
         )
         return StepContext(query, columns)
 
-    @staticmethod
-    def _cast_to_timestamp(value: str | datetime | Field | Term) -> functions.Function:
-        return functions.Cast(value, "TIMESTAMP")
+    @classmethod
+    def _cast_to_timestamp(cls, value: str | date | datetime | Field | Term) -> functions.Function:
+        return functions.Cast(value, cls.DATA_TYPE_MAPPING.timestamp)
 
     def _get_single_condition_criterion(
         self: Self, condition: "SimpleCondition", prev_step_table: FromTable
@@ -1190,26 +1190,41 @@ class SQLTranslator(ABC):
                     elif condition.operator == "ne":
                         return column_field.isnotnull()
 
+                if isinstance(condition.value, date | datetime):
+                    condition_value = self._cast_to_timestamp(condition.value)
+                    column_field = self._cast_to_timestamp(column_field)
+                else:
+                    condition_value = condition.value
+
                 op = getattr(operator, condition.operator)
-                return op(column_field, condition.value)
+                return op(column_field, condition_value)
 
             case InclusionCondition():  # type:ignore[misc]
+                condition_value = [
+                    self._cast_to_timestamp(elem) if isinstance(elem, date | datetime) else elem
+                    for elem in condition.value
+                ]
+                # If we are comparing to timestamp-like values, convert the matched column to a
+                # timestamp as well, as some backends do not support DATETIME == TIMESTAMP
+                # comparisons
+                if all(isinstance(elem, date | datetime | None) for elem in condition.value):
+                    column_field = self._cast_to_timestamp(column_field)
                 if condition.operator == "in":
                     if None in condition.value:
                         # handle special case of having NULL amongst selected values
                         case_null = column_field.isnull()
-                        other_cases = column_field.isin([v for v in condition.value if v is not None])
+                        other_cases = column_field.isin([v for v in condition_value if v is not None])
                         return Criterion.any([case_null, other_cases])
                     else:
-                        return column_field.isin(condition.value)
+                        return column_field.isin(condition_value)
                 elif condition.operator == "nin":
-                    if None in condition.value:
+                    if None in condition_value:
                         # handle special case of having NULL amongst excluded values
                         case_null = column_field.isnotnull()
-                        other_cases = column_field.notin([v for v in condition.value if v is not None])
+                        other_cases = column_field.notin([v for v in condition_value if v is not None])
                         return Criterion.all([case_null, other_cases])
                     else:
-                        return column_field.notin(condition.value)
+                        return column_field.notin(condition_value)
 
             case MatchCondition():  # type:ignore[misc]
                 compliant_regex = _compliant_regex(condition.value, self.DIALECT)

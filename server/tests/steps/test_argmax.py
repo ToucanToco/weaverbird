@@ -1,5 +1,6 @@
 import numpy as np
 from pandas import DataFrame
+
 from weaverbird.backends.pandas_executor.steps.argmax import execute_argmax
 from weaverbird.pipeline.steps.argmax import ArgmaxStep
 
