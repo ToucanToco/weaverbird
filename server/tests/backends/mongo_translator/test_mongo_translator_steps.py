@@ -6,7 +6,7 @@ from io import StringIO
 import docker
 import pandas as pd
 import pytest
-from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
+from pandas.api.types import is_bool_dtype, is_datetime64_any_dtype, is_numeric_dtype
 from pymongo import MongoClient
 from toucan_connectors.common import nosql_apply_parameters_to_query
 
@@ -49,14 +49,22 @@ def mongo_database(mongo_server_port):
 
 def _sanitize_df(df: pd.DataFrame) -> pd.DataFrame:
     non_numeric_cols = [col for col, dtype in df.dtypes.items() if not is_numeric_dtype(dtype)]
-    # Ensure we have None for non-numeric columns such as datetiems or
+    # Ensure we have None for non-numeric columns such as datetimes or
     # strings, rather than NaT or NaN (for strings)
     for col in non_numeric_cols:
         if is_datetime64_any_dtype(df[col]):
             # Mongo client is not tz-aware, so we make the objects
             # naive here
             df[col] = df[col].dt.tz_localize(None)
-        df[col] = df[col].astype("object").where(pd.notna(df[col]), None)
+        # If we have at least one boolean, and only bools or nulls, convert the column to the boolean dtype
+        if (
+            not is_bool_dtype(df[col])
+            and any(isinstance(elem, bool) for elem in df[col])
+            and all(isinstance(elem, bool | None) for elem in df[col])
+        ):
+            df[col] = df[col].astype("boolean")
+        else:
+            df[col] = df[col].astype("object").where(pd.notna(df[col]), None)
 
     return df[sorted(df.columns)]  # order of columns may be different between pandas and mongo
 
