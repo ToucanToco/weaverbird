@@ -51,7 +51,7 @@ sqlalchemy-redshift = ">=0.8.11,<1"
 PyYAML = "^6.0"
 ruff = ">=0.5.0,<0.7"
 pre-commit = "^3.4.0"
-tenacity = "^8.4.2"
+tenacity = ">=8.4.2,<10.0.0"
 
 [tool.poetry.extras]
 # Lib
