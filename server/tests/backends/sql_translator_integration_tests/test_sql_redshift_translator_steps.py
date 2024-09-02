@@ -1,4 +1,5 @@
 import json
+from collections.abc import Iterable
 from io import StringIO
 from os import environ
 from typing import Any
@@ -6,7 +7,7 @@ from typing import Any
 import pandas as pd
 import pytest
 from sqlalchemy import create_engine
-from sqlalchemy.engine import Engine
+from sqlalchemy.engine import Connection, Engine
 from sqlalchemy.engine.url import URL
 from tenacity import retry, stop_after_attempt, wait_fixed
 from toucan_connectors.common import nosql_apply_parameters_to_query
@@ -42,8 +43,12 @@ def _create_engine() -> Engine:
 
 
 @pytest.fixture(scope="module")
-def engine():
-    return _create_engine()
+def engine() -> Iterable[Connection]:
+    conn = _create_engine().raw_connection()
+    try:
+        yield conn
+    finally:
+        conn.close()
 
 
 _BEERS_TABLE_COLUMNS = [
