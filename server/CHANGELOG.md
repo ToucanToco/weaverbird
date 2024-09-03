@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.46.0] - 2024-09-03
+
 ### Added
 
 - Weaverbird now supports Python 3.11 and 3.12
