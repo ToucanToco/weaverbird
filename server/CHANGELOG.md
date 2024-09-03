@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Mongo: `left` and `left outer` join step return the same translation
+
 ## [0.46.0] - 2024-09-03
 
 ### Added
