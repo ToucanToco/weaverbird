@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Mongo: The `join` step now has the same behavior for the `left` and `left outer` join methods
+
 ## [0.26.17] - 2024-08-20
 
 ### Fixed
