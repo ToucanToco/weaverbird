@@ -1,4 +1,6 @@
 import json
+from datetime import date
+from io import StringIO
 from os import environ
 
 import awswrangler as wr
@@ -40,6 +42,14 @@ _BEERS_TABLE_COLUMNS = [
 ]
 
 
+def _sanitize_df(df: pd.DataFrame) -> pd.DataFrame:
+    # Athena uses the native `date` type for DATE columns, whereas we need datetime64[ns]
+    for col in df.columns:
+        if all(isinstance(elem, date | None) for elem in df[col]):
+            df[col] = df[col].astype("datetime64[ns]")
+    return df
+
+
 @pytest.mark.parametrize("case_id, case_spec_file", retrieve_case("sql_translator", "athena_pypika"))
 def test_athena_translator_pipeline(
     boto_session: Session, case_id: str, case_spec_file: str, available_variables: dict
@@ -55,8 +65,9 @@ def test_athena_translator_pipeline(
         tables_columns={"beers_tiny": _BEERS_TABLE_COLUMNS},
         db_schema=None,
     )
-    expected = pd.read_json(json.dumps(pipeline_spec["expected"]), orient="table")
+    expected = pd.read_json(StringIO(json.dumps(pipeline_spec["expected"])), orient="table")
     result = wr.athena.read_sql_query(
         query, database=_DB, boto3_session=boto_session, s3_output=_OUTPUT, ctas_approach=False
     )
-    assert_dataframes_equals(expected, result)
+    sanitized_result = _sanitize_df(result)
+    assert_dataframes_equals(expected, sanitized_result)

@@ -6,7 +6,7 @@ expected:
   data:
   - beer_kind: Best-sellers
     beer_kind_right: Best-sellers
-    brewing_date: '2022-01-04T00:00:00.000Z'
+    brewing_date: '2022-01-04T00:00:00'
     concatenated: Ardwen Blonde -> Best-sellers
     name: Ardwen Blonde
     name_right: Ardwen Blonde
@@ -15,7 +15,7 @@ expected:
     price_per_l_right: 0.056
   - beer_kind: India Pale Ale
     beer_kind_right: India Pale Ale
-    brewing_date: '2022-01-07T00:00:00.000Z'
+    brewing_date: '2022-01-07T00:00:00'
     concatenated: Bellfield Lawless Village IPA -> India Pale Ale
     name: Bellfield Lawless Village IPA
     name_right: Bellfield Lawless Village IPA
@@ -24,7 +24,7 @@ expected:
     price_per_l_right: 0.045
   - beer_kind: Blonde
     beer_kind_right: Blonde
-    brewing_date: '2022-01-09T00:00:00.000Z'
+    brewing_date: '2022-01-09T00:00:00'
     concatenated: Brasserie De Sutter Brin de Folie -> Blonde
     name: Brasserie De Sutter Brin de Folie
     name_right: Brasserie De Sutter Brin de Folie
@@ -33,7 +33,7 @@ expected:
     price_per_l_right: 0.065
   - beer_kind: Sans alcool
     beer_kind_right: Sans alcool
-    brewing_date: '2022-01-03T00:00:00.000Z'
+    brewing_date: '2022-01-03T00:00:00'
     concatenated: Brewdog Nanny State Alcoholvrij -> Sans alcool
     name: Brewdog Nanny State Alcoholvrij
     name_right: Brewdog Nanny State Alcoholvrij
@@ -42,7 +42,7 @@ expected:
     price_per_l_right: 0.005
   - beer_kind: Blonde
     beer_kind_right: Blonde
-    brewing_date: '2022-01-10T00:00:00.000Z'
+    brewing_date: '2022-01-10T00:00:00'
     concatenated: Brugse Zot blonde -> Blonde
     name: Brugse Zot blonde
     name_right: Brugse Zot blonde
@@ -51,7 +51,7 @@ expected:
     price_per_l_right: 0.06
   - beer_kind: Blonde
     beer_kind_right: Blonde
-    brewing_date: '2022-01-05T00:00:00.000Z'
+    brewing_date: '2022-01-05T00:00:00'
     concatenated: "Cuv\xE9e des Trolls -> Blonde"
     name: "Cuv\xE9e des Trolls"
     name_right: "Cuv\xE9e des Trolls"
@@ -60,7 +60,7 @@ expected:
     price_per_l_right: 0.07
   - beer_kind: India Pale Ale
     beer_kind_right: India Pale Ale
-    brewing_date: '2022-01-02T00:00:00.000Z'
+    brewing_date: '2022-01-02T00:00:00'
     concatenated: Ninkasi Ploploplop -> India Pale Ale
     name: Ninkasi Ploploplop
     name_right: Ninkasi Ploploplop
@@ -69,7 +69,7 @@ expected:
     price_per_l_right: 0.054
   - beer_kind: Belge blonde forte & Golden Ale
     beer_kind_right: Belge blonde forte & Golden Ale
-    brewing_date: '2022-01-08T00:00:00.000Z'
+    brewing_date: '2022-01-08T00:00:00'
     concatenated: Pauwel Kwak -> Belge blonde forte & Golden Ale
     name: Pauwel Kwak
     name_right: Pauwel Kwak
@@ -78,7 +78,7 @@ expected:
     price_per_l_right: 0.084
   - beer_kind: Triple
     beer_kind_right: Triple
-    brewing_date: '2022-01-01T00:00:00.000Z'
+    brewing_date: '2022-01-01T00:00:00'
     concatenated: Superstrong beer -> Triple
     name: Superstrong beer
     name_right: Superstrong beer
@@ -87,7 +87,7 @@ expected:
     price_per_l_right: 0.16
   - beer_kind: Blanche & Weizen
     beer_kind_right: Blanche & Weizen
-    brewing_date: '2022-01-06T00:00:00.000Z'
+    brewing_date: '2022-01-06T00:00:00'
     concatenated: Weihenstephan Hefe Weizen Alcoholarm -> Blanche & Weizen
     name: Weihenstephan Hefe Weizen Alcoholarm
     name_right: Weihenstephan Hefe Weizen Alcoholarm

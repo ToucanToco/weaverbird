@@ -1,4 +1,5 @@
 import json
+from io import StringIO
 
 import geopandas as gpd
 import pandas as pd
@@ -16,7 +17,7 @@ def _load_df(spec: dict) -> pd.DataFrame:
     return (
         pd.DataFrame(gpd.read_file(json.dumps(spec["data"])))
         if spec.get("schema") == "geojson"
-        else pd.read_json(json.dumps(spec), orient="table")
+        else pd.read_json(StringIO(json.dumps(spec)), orient="table")
     )
 
 

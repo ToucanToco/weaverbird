@@ -5,7 +5,7 @@ exclude:
 expected:
   data:
   - alcohol_degree: null
-    brewing_date: '2022-01-09T00:00:00.000Z'
+    brewing_date: '2022-01-09'
     name: Brasserie De Sutter Brin de Folie
     price_per_l: null
   - alcohol_degree: null
@@ -13,7 +13,7 @@ expected:
     name: Brewdog Nanny State Alcoholvrij
     price_per_l: 0.005
   - alcohol_degree: null
-    brewing_date: '2022-01-10T00:00:00.000Z'
+    brewing_date: '2022-01-10'
     name: Brugse Zot blonde
     price_per_l: null
   - alcohol_degree: 12.9742721893
@@ -75,4 +75,3 @@ step:
             rank_on: brewing_date
             sort: desc
             limit: 2
-

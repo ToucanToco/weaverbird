@@ -22,6 +22,11 @@ jobs:
       fail-fast: true
       matrix:
         python-version: ['3.11']
+        pandas-version: ['<2','>=2']
+        # Pandas<2 is not supported on Python 3.12
+        exclude:
+          - python-version: '3.12'
+            pandas-version: '<2'
 
     defaults:
       run:
@@ -42,6 +47,9 @@ jobs:
 
     - name: Install dependencies
       run: make install-dev
+
+    - name: Install pandas ${{ matrix.pandas-version }}
+      run: pip install "pandas${{ matrix.pandas-version }}"
 
     - name: Lint
       run: make lint

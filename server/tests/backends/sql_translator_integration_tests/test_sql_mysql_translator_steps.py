@@ -1,5 +1,6 @@
 import json
 import time
+from io import StringIO
 from os import path
 from typing import Any
 
@@ -89,5 +90,5 @@ def test_sql_translator_pipeline(case_id: str, case_spec_file_path: str, engine:
     )
     # Execute request generated from Pipeline in Postgres and get the result
     result: pd.DataFrame = pd.read_sql(text(query), engine)
-    expected = pd.read_json(json.dumps(spec["expected"]), orient="table")
+    expected = pd.read_json(StringIO(json.dumps(spec["expected"])), orient="table")
     assert_dataframes_equals(expected, result)
