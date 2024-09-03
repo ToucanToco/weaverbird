@@ -2,13 +2,10 @@ import json
 from collections.abc import Iterable
 from io import StringIO
 from os import environ
-from typing import Any
 
 import pandas as pd
 import pytest
-from sqlalchemy import create_engine
-from sqlalchemy.engine import Connection, Engine
-from sqlalchemy.engine.url import URL
+import redshift_connector
 from tenacity import retry, stop_after_attempt, wait_fixed
 from toucan_connectors.common import nosql_apply_parameters_to_query
 
@@ -25,30 +22,14 @@ _PORT = 5439
 
 
 @retry(stop=stop_after_attempt(5), wait=wait_fixed(5))
-def _create_engine() -> Engine:
-    engine = create_engine(
-        url=URL.create(
-            drivername="redshift+redshift_connector",
-            host=_HOST,
-            port=_PORT,
-            database=_DATABASE,
-            username=_USER,
-            password=_PASSWORD,
-        )
-    )
-    with engine.connect() as conn:
-        conn.execute("SELECT 1;").fetchall()
-
-    return engine
+def _create_connection() -> redshift_connector.Connection:
+    return redshift_connector.connect(user=_USER, password=_PASSWORD, host=_HOST, database=_DATABASE, port=_PORT)
 
 
 @pytest.fixture(scope="module")
-def engine() -> Iterable[Connection]:
-    conn = _create_engine().raw_connection()
-    try:
+def cursor() -> Iterable[redshift_connector.Cursor]:
+    with _create_connection().cursor() as conn:
         yield conn
-    finally:
-        conn.close()
 
 
 _BEERS_TABLE_COLUMNS = [
@@ -64,7 +45,9 @@ _BEERS_TABLE_COLUMNS = [
 
 
 @pytest.mark.parametrize("case_id, case_spec_file", retrieve_case("sql_translator", "redshift_pypika"))
-def test_redshift_translator_pipeline(engine: Any, case_id: str, case_spec_file: str, available_variables: dict):
+def test_redshift_translator_pipeline(
+    cursor: redshift_connector.Cursor, case_id: str, case_spec_file: str, available_variables: dict
+):
     pipeline_spec = get_spec_from_json_fixture(case_id, case_spec_file)
 
     steps = [{"name": "domain", "domain": "beers_tiny"}] + pipeline_spec["step"]["pipeline"]
@@ -77,5 +60,6 @@ def test_redshift_translator_pipeline(engine: Any, case_id: str, case_spec_file:
         db_schema=None,
     )
     expected = pd.read_json(StringIO(json.dumps(pipeline_spec["expected"])), orient="table")
-    result: pd.DataFrame = pd.read_sql(query, engine)
+    cursor.execute(query)
+    result: pd.DataFrame = cursor.fetch_dataframe()
     assert_dataframes_equals(expected, result)

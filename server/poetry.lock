@@ -2834,12 +2834,12 @@ quart = ">=0.15"
 
 [[package]]
 name = "redshift-connector"
-version = "2.0.913"
+version = "2.1.3"
 description = "Redshift interface library"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "redshift_connector-2.0.913-py3-none-any.whl", hash = "sha256:bd70395c5b7ec9fcae9565daff6bcb88c7d3ea6182dafba2bac6138f68d00582"},
+    {file = "redshift_connector-2.1.3-py3-none-any.whl", hash = "sha256:be168c5294ed0bc626e2edb09230ff117ca752b9d0a85923d8356ba8fe5f208d"},
 ]
 
 [package.dependencies]
@@ -3508,4 +3508,4 @@ pypika = ["PyPika"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11, <3.13"
-content-hash = "7e97988f8fc6b6b7689e4a9aee4a73f07cd916a1d31032da68cb0163f278f8fc"
+content-hash = "014676c86155c842796b046fc80532e3a1cd521c0dc0d4421c9570bfafc1bf54"
