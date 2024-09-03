@@ -8,6 +8,7 @@ import pandas as pd
 import psycopg2
 import pytest
 from sqlalchemy import create_engine, text
+from sqlalchemy.engine.base import OptionEngine
 from toucan_connectors.common import nosql_apply_parameters_to_query
 
 from tests.utils import (
@@ -67,7 +68,9 @@ def postgres_container():
 # Translation from Pipeline json to SQL query
 @pytest.mark.serial
 @pytest.mark.parametrize("case_id, case_spec_file_path", retrieve_case("sql_translator", "postgres_pypika"))
-def test_sql_translator_pipeline(case_id: str, case_spec_file_path: str, engine: Any, available_variables: dict):
+def test_sql_translator_pipeline(
+    case_id: str, case_spec_file_path: str, engine: OptionEngine, available_variables: dict
+):
     spec = get_spec_from_json_fixture(case_id, case_spec_file_path)
 
     steps = spec["step"]["pipeline"]
@@ -82,6 +85,7 @@ def test_sql_translator_pipeline(case_id: str, case_spec_file_path: str, engine:
         db_schema=None,
     )
     # Execute request generated from Pipeline in Postgres and get the result
-    result: pd.DataFrame = pd.read_sql(text(query), engine)
+    with engine.connect() as conn:
+        result: pd.DataFrame = pd.read_sql(text(query), conn)
     expected = pd.read_json(StringIO(json.dumps(spec["expected"])), orient="table")
     assert_dataframes_equals(expected, result)
