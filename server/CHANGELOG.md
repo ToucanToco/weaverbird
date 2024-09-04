@@ -2,9 +2,9 @@
 
 ## Unreleased
 
-### Fixed
+### Changed
 
-- Mongo: `left` and `left outer` join step return the same translation
+- Mongo: The `join` step now has the same behavior for the `left` and `left outer` join methods
 
 ## [0.46.0] - 2024-09-03
 
