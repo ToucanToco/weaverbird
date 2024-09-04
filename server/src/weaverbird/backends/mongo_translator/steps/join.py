@@ -52,9 +52,10 @@ def translate_join(step: JoinStep) -> list[MongoStep]:
             }
         }
     )
+
     if step.type == "inner":
         mongo_pipeline.append({"$unwind": "$_vqbJoinKey"})
-    elif step.type == "left":
+    elif step.type == "left" or step.type == "left outer":
         mongo_pipeline.append({"$unwind": {"path": "$_vqbJoinKey", "preserveNullAndEmptyArrays": True}})
     else:
         mongo_pipeline.append({"$match": {"_vqbJoinKey": {"$eq": []}}})

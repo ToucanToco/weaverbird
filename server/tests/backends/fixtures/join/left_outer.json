@@ -57,14 +57,14 @@
     },
     "data": [
       {
-        "NAME": "foo",
+        "NAME": "full data",
         "AGE": 42,
         "SCORE": 100
       },
       {
-        "NAME": "fla",
-        "AGE": 42,
-        "SCORE": 100
+        "NAME": "ok - with null value",
+        "AGE": 1,
+        "SCORE": 1
       }
     ]
   },
@@ -85,8 +85,12 @@
       },
       "data": [
         {
-          "NAME": "foo",
+          "NAME": "full data",
           "X": 12
+        },
+        {
+          "NAME": "ko - must be missing",
+          "X": 360
         }
       ]
     }
@@ -105,15 +109,26 @@
         {
           "name": "SCORE",
           "type": "integer"
+        },
+        {
+          "name": "X",
+          "type": "string"
         }
       ],
       "pandas_version": "0.20.0"
     },
     "data": [
       {
-        "NAME": "fla",
-        "AGE": 42.0,
-        "SCORE": 100.0
+        "NAME": "full data",
+        "AGE": 42,
+        "SCORE": 100,
+        "X": 12
+      },
+      {
+        "NAME": "ok - with null value",
+        "AGE": 1,
+        "SCORE": 1,
+        "X": null
       }
     ]
   }
