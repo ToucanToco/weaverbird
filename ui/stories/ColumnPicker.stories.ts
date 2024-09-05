@@ -1,5 +1,5 @@
-import type { Meta, StoryFn } from '@storybook/vue';
 import { action } from '@storybook/addon-actions';
+import type { Meta, StoryFn } from '@storybook/vue';
 import { createPinia, PiniaVuePlugin } from 'pinia';
 import Vue from 'vue';
 

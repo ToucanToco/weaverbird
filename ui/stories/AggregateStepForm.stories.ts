@@ -1,7 +1,7 @@
+import { action } from '@storybook/addon-actions';
 import type { Meta, StoryObj } from '@storybook/vue';
 import { createPinia, PiniaVuePlugin } from 'pinia';
 import Vue from 'vue';
-import { action } from '@storybook/addon-actions';
 
 import AggregateStepForm from '@/components/stepforms/AggregateStepForm.vue';
 import { setupVQBStore } from '@/store';

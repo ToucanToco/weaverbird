@@ -1,5 +1,5 @@
-import type { Meta, StoryFn, StoryObj } from '@storybook/vue';
 import { action } from '@storybook/addon-actions';
+import type { Meta, StoryObj } from '@storybook/vue';
 
 import Autocomplete from '@/components/stepforms/widgets/Autocomplete.vue';
 
