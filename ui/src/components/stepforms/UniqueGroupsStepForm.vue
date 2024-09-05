@@ -15,6 +15,7 @@
       placeholder="Add columns"
       data-path=".on"
       :errors="errors"
+      :allowCustom="true"
     />
     <StepFormButtonbar />
   </div>

@@ -17,6 +17,7 @@
       :variable-delimiters="variableDelimiters"
       :trusted-variable-delimiters="trustedVariableDelimiters"
       :errors="errors"
+      :allowCustom="true"
     />
     <ColumnPicker
       class="columnToPivotInput"
@@ -40,6 +41,7 @@
       :variable-delimiters="variableDelimiters"
       :trusted-variable-delimiters="trustedVariableDelimiters"
       :errors="errors"
+      :allowCustom="true"
     />
     <AutocompleteWidget
       class="aggregationFunctionInput"

@@ -15,6 +15,7 @@
       placeholder="Select column(s)"
       data-path=".columns"
       :errors="errors"
+      :allowCustom="true"
     />
     <AutocompleteWidget
       class="typeInput"

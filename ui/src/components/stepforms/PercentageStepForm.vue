@@ -22,6 +22,7 @@
       placeholder="Add columns"
       data-path=".group"
       :errors="errors"
+      :allowCustom="true"
     />
     <InputTextWidget
       class="newColumnNameInput"

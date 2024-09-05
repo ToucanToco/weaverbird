@@ -54,6 +54,7 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :trusted-variable-delimiters="trustedVariableDelimiters"
+      :allowCustom="true"
     />
     <InputTextWidget
       class="newColumnInput"
