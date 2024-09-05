@@ -86,11 +86,7 @@ export default class AddTotalRowsStepForm extends BaseStepForm<AddTotalRowsStep>
   }
 
   get aggregations() {
-    if (this.editedStep.aggregations.length) {
-      return this.editedStep.aggregations;
-    } else {
-      return [this.defaultAggregation];
-    }
+    return this.editedStep.aggregations;
   }
 
   set aggregations(newval) {
