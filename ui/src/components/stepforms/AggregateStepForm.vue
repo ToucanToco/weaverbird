@@ -18,6 +18,7 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :trusted-variable-delimiters="trustedVariableDelimiters"
+      :allowCustom="true"
     />
     <ListWidget
       addFieldName="Add aggregation"
@@ -58,6 +59,7 @@ import { suffixAggregationsColumns } from './utils';
 import AggregationWidget from './widgets/Aggregation.vue';
 import ListWidget from './widgets/List.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
+import { AllowCustom } from 'stories/Autocomplete.stories';
 
 @Component({
   name: 'aggregate-step-form',
