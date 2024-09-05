@@ -5,7 +5,6 @@ vi.mock('@/lib/helpers');
 import AddTotalRowsStepForm from '@/components/stepforms/AddTotalRowsStepForm.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import { setAggregationsNewColumnsInStep } from '@/lib/helpers';
 
 import { BasicStepFormTestRunner } from './utils';
