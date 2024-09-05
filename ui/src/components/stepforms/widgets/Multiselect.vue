@@ -15,7 +15,7 @@
       <Multiselect
         class="widget-multiselect__multiselect"
         :class="{ 'widget-multiselect__multiselect--with-example': withExample }"
-        v-model="editedValue"
+        :value="editedValue"
         :options="options"
         :placeholder="placeholder"
         :trackBy="trackBy"
@@ -25,6 +25,8 @@
         :closeOnSelect="false"
         openDirection="bottom"
         :customLabel="customLabel"
+        @input="onInput"
+        @tag="onTag"
       >
         <!-- If you want to use those templates you should provide a 'label' and 'example' key in the options-->
         <template v-if="withExample" slot="option" slot-scope="props">
@@ -116,6 +118,11 @@ export default class MultiselectWidget extends FormWidget {
   @Prop({ type: Boolean, default: false })
   withExample!: boolean;
 
+  // Allow to type options that are not on the list.
+  // Won't work for objects options.
+  @Prop({ type: Boolean, default: false })
+  allowCustom!: boolean;
+
   @Prop()
   availableVariables?: VariablesBucket;
 
@@ -126,6 +133,16 @@ export default class MultiselectWidget extends FormWidget {
   trustedVariableDelimiters!: VariableDelimiters;
 
   editedValue: string[] | object[] = [];
+
+  onInput(newValue: string[] | object[]) {
+    this.editedValue = newValue;
+  }
+  onTag(v: string) {
+    if (!this.allowCustom) {
+      return;
+    }
+    this.editedValue = [...(this.editedValue as string[]), v];
+  }
 
   /**
    * Are the props set up to handle object options?
