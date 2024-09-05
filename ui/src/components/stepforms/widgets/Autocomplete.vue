@@ -25,6 +25,7 @@
         openDirection="bottom"
         @input="updateValue"
         @search-change="onSearchChange"
+        ref="multiSelect"
       >
         <!-- If you want to use those templates, you should provide a 'label' key in the options -->
         <template v-if="options[0] && options[0].label" #singleLabel="props">
@@ -48,7 +49,7 @@
         <template #afterList v-if="allowCustom">
           <li
             class="multiselect__element"
-            @click="updateValue(searchValue)"
+            @click="onSelectCustom"
             v-if="searchValue && !isSearchValueInOptions"
           >
             <span class="multiselect__option"
@@ -139,6 +140,11 @@ export default class AutocompleteWidget extends FormWidget {
 
   get isSearchValueInOptions(): boolean {
     return this.options.includes(this.searchValue);
+  }
+
+  onSelectCustom() {
+    this.updateValue(this.searchValue);
+    (this.$refs.multiSelect as Multiselect).deactivate();
   }
 }
 </script>
