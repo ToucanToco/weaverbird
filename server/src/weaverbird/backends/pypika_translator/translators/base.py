@@ -200,7 +200,11 @@ class FromTable:
 
 class CustomQuery(AliasedQuery):
     def get_sql(self, **kwargs: Any) -> str:
-        return cast(str, self.query)
+        """
+        In case a custom query has comments on its last line, we don't want this to ignore the code we'll add after.
+        So we add a new line.
+        """
+        return cast(str, self.query) + "\n"
 
 
 class DateTrunc(Function):
