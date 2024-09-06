@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [0.47.1] - 2024-09-06
+
+### Fixed
+
+- SQL: Custom SQL queries that ends with comments are wrapped correctly
+
 ## [0.47.0] - 2024-09-04
 
 ### Changed
