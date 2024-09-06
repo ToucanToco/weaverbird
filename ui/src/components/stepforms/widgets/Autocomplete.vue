@@ -24,12 +24,14 @@
         :maxHeight="maxHeight"
         openDirection="bottom"
         @input="updateValue"
+        @search-change="onSearchChange"
+        ref="multiSelect"
       >
         <!-- If you want to use those templates, you should provide a 'label' key in the options -->
-        <template v-if="options[0] && options[0].label" slot="singleLabel" slot-scope="props">
+        <template v-if="options[0] && options[0].label" #singleLabel="props">
           <span class="option__title">{{ props.option.label }}</span>
         </template>
-        <template v-if="options[0] && options[0].label" slot="option" slot-scope="props">
+        <template v-if="options[0] && options[0].label" #option="props">
           <div
             class="option__container"
             :class="{
@@ -43,6 +45,19 @@
                 you should provide a 'example' key in the options -->
             <div v-if="withExample" class="option__example">{{ props.option.example }}</div>
           </div>
+        </template>
+        <template #afterList v-if="allowCustom">
+          <li
+            class="multiselect__element"
+            @click="onSelectCustom"
+            v-if="searchValue && !isSearchValueInOptions"
+          >
+            <span class="multiselect__option"
+              ><span
+                >Use <em>{{ searchValue }}</em></span
+              ></span
+            >
+          </li>
         </template>
       </multiselect>
     </VariableInput>
@@ -105,12 +120,31 @@ export default class AutocompleteWidget extends FormWidget {
   @Prop({ type: Number, default: undefined })
   maxHeight!: number;
 
+  // Allow typing a value which is not on the list.
+  // Won't work for object options.
+  @Prop({ type: Boolean, default: false })
+  allowCustom!: boolean;
+
   updateValue(newValue?: string | object) {
     this.$emit('input', newValue);
   }
 
   onOptionClick(e: Event, disabled?: boolean) {
     if (disabled) e.stopPropagation();
+  }
+
+  searchValue: string = '';
+  onSearchChange(v: string) {
+    this.searchValue = v;
+  }
+
+  get isSearchValueInOptions(): boolean {
+    return this.options.includes(this.searchValue);
+  }
+
+  onSelectCustom() {
+    this.updateValue(this.searchValue);
+    (this.$refs.multiSelect as Multiselect).deactivate();
   }
 }
 </script>

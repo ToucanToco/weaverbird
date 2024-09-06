@@ -87,4 +87,21 @@ describe('Widget Autocomplete', () => {
     expect(wrapper.find('.option__title').exists()).toBeTruthy();
     expect(wrapper.find('.option__title').attributes('title')).toEqual('foo');
   });
+
+  describe('with allowCustom', () => {
+    it('should be able to type a custom value', async () => {
+      const wrapper = mount(AutocompleteWidget, {
+        propsData: {
+          options: ['label', 'value'],
+          allowCustom: true,
+        },
+      });
+      wrapper.find('input.multiselect__input').setValue('custom');
+      await wrapper.vm.$nextTick();
+      const customOption = wrapper.findAll('.multiselect__option').at(2);
+      expect(customOption.text()).toEqual('Use custom');
+      customOption.element.click();
+      expect(wrapper.emitted('input')).toEqual([['custom']]);
+    });
+  });
 });

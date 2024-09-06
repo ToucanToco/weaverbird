@@ -15,6 +15,7 @@
       placeholder="Add columns"
       data-path=".hierarchy"
       :errors="errors"
+      :allowCustom="true"
     />
     <ListWidget
       class="aggregationsInput"
@@ -35,6 +36,7 @@
       placeholder="Add columns"
       data-path=".groupby"
       :errors="errors"
+      :allowCustom="true"
     />
     <InputTextWidget
       class="labelColumnInput"

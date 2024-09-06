@@ -18,6 +18,7 @@
       placeholder="Add columns"
       data-path=".groupByColumn"
       :errors="errors"
+      :allowCustom="true"
     />
     <div class="statistic-section-header" @click="isBasicStatisticsOpen = !isBasicStatisticsOpen">
       Basic Statistics ({{ basicStatisticsCheckedCount }})

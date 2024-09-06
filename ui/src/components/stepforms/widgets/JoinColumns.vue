@@ -10,6 +10,7 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :trusted-variable-delimiters="trustedVariableDelimiters"
+      :allowCustom="true"
     />
     <!-- defaults to a simple text input if we don't have any column names -->
     <AutocompleteWidget

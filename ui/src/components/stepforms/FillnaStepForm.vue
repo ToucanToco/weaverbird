@@ -14,6 +14,7 @@
       placeholder="Select columns"
       data-path=".columns"
       :errors="errors"
+      :allowCustom="true"
     />
     <InputTextWidget
       class="valueInput"

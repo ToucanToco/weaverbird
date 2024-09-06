@@ -12,6 +12,7 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :trusted-variable-delimiters="trustedVariableDelimiters"
+      :allowCustom="true"
     />
     <AutocompleteWidget
       class="aggregationFunctionInput"
