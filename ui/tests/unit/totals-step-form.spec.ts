@@ -5,7 +5,6 @@ vi.mock('@/lib/helpers');
 import AddTotalRowsStepForm from '@/components/stepforms/AddTotalRowsStepForm.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import { setAggregationsNewColumnsInStep } from '@/lib/helpers';
 
 import { BasicStepFormTestRunner } from './utils';
@@ -101,12 +100,9 @@ describe('Add Total Rows Step Form', () => {
       ]);
     });
 
-    it('should have expected default aggregation parameters', () => {
+    it('should have no default aggregation', () => {
       const wrapper = runner.mount();
-      const autocompleteWrapper = wrapper.findAll(AutocompleteWidget);
-      const multiselectWrappers = wrapper.findAll(MultiselectWidget);
-      expect(autocompleteWrapper.at(1).props().value).toEqual('sum');
-      expect(multiselectWrappers.at(0).props().value).toEqual([]);
+      expect(wrapper.find('.widget-aggregation__container').exists()).toBe(false);
     });
   });
 
