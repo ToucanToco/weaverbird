@@ -86,17 +86,13 @@ def test_get_query_builder_raises_error(base_translator: BaseTranslator):
 def test_get_query_builder_with_custom_query(base_translator: BaseTranslator):
     pipeline_steps = [steps.CustomSqlStep(query="SELECT 1")]
 
-    step_1_query = Query.select(1)
-    expected = (
-        Query.with_(step_1_query, "__step_0_basetranslator__")
-        .from_("__step_0_basetranslator__")
-        .select(*ALL_TABLES["users"])
-    )
-
     # Ensuring we have columns for exactly one table
     base_translator._tables_columns = {"users": ALL_TABLES["users"]}
     ctx = base_translator.get_query_builder(steps=pipeline_steps)
-    assert ctx.materialize().get_sql() == expected.get_sql()
+    assert (
+        ctx.materialize().get_sql() == """WITH __step_0_basetranslator__ AS (SELECT 1\n"""
+        ''') SELECT "name","pseudonyme","age","id","project_id" FROM "__step_0_basetranslator__"'''
+    )
 
 
 def test_get_query_builder_more_than_one_step(base_translator: BaseTranslator):
@@ -710,7 +706,33 @@ def test_materialize_customsql_query_with_no_columns(base_translator: BaseTransl
     translated = base_translator.get_query_str(steps=pipeline)
     assert (
         translated
-        == 'WITH __step_0_basetranslator__ AS (SELECT titi, tata FROM toto) SELECT * FROM "__step_0_basetranslator__"'
+        == 'WITH __step_0_basetranslator__ AS (SELECT titi, tata FROM toto\n) SELECT * FROM "__step_0_basetranslator__"'
+    )
+
+
+def test_materialize_customsql_query_with_comments_on_last_line(base_translator: BaseTranslator):
+    """
+    Having comments on the last line should not break the encapsulation of the custom query in parentheses
+    """
+    pipeline = [
+        steps.CustomSqlStep(
+            query="""SELECT titi, tata\n"""
+            """FROM toto\n"""
+            """WHERE stuff = machin\n"""
+            """ -- AND some future condition"""
+        )
+    ]
+
+    # For CustomSQL, we must have exactly one table
+    base_translator._tables_columns = {"toto": []}
+
+    translated = base_translator.get_query_str(steps=pipeline)
+    assert (
+        translated == """WITH __step_0_basetranslator__ AS (SELECT titi, tata\n"""
+        """FROM toto\n"""
+        """WHERE stuff = machin\n"""
+        """ -- AND some future condition\n"""
+        """) SELECT * FROM \"__step_0_basetranslator__\""""
     )
 
 
@@ -796,7 +818,7 @@ def test_base_materialization_with_offset_limit_and_unwrap_and_single_customsql(
     steps = [CustomSqlStep(query="SELECT * FROM foo")]
     assert (
         base_translator.get_query_str(steps=steps, offset=5, limit=10)
-        == 'WITH __step_0_basetranslator__ AS (SELECT * FROM foo) SELECT "bar","baz" FROM "__step_0_basetranslator__" LIMIT 10 OFFSET 5'  # noqa: E501
+        == 'WITH __step_0_basetranslator__ AS (SELECT * FROM foo\n) SELECT "bar","baz" FROM "__step_0_basetranslator__" LIMIT 10 OFFSET 5'  # noqa: E501
     )
 
 
@@ -813,7 +835,7 @@ def test_unpivot_step_is_always_wrapped(base_translator: BaseTranslator, unwrap:
     ]
     assert (
         base_translator.get_query_str(steps=steps, offset=5, limit=10)
-        == """WITH __step_0_basetranslator__ AS (SELECT * FROM foo) ,"""
+        == """WITH __step_0_basetranslator__ AS (SELECT * FROM foo\n) ,"""
         """__step_0_basetranslator1__ AS (SELECT "bar","baz" FROM "__step_0_basetranslator__") ,"""
         """__step_1_basetranslator1__ AS (SELECT "bar",CAST("baz" AS FLOAT) "baz" FROM "__step_0_basetranslator1__") ,"""  # noqa: E501
         """__step_1_basetranslator__ AS (SELECT "bar","variable","value" FROM "__step_1_basetranslator1__"  t1 CROSS JOIN UNNEST(ARRAY['baz'], ARRAY["baz"]) t2 ("variable", "value")) """  # noqa: E501
