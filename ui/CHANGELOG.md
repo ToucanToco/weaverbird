@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## [0.114.0] - 2024-09-06
+
+### Added
+
+- Allow to type custom column names in step forms #2229
+
+### Changed
+
+- When creating a new AddTotal step, the form does not contain an empty (invalid) aggregation
+
 ## [0.113.1] - 2024-08-19
 
 ### Fixed
@@ -20,7 +30,7 @@
 
 ## [0.112.0] - 2024-04-09
 
-- ActionMenu: remove deprecated Custom and Custom Sql step from action menu 
+- ActionMenu: remove deprecated Custom and Custom Sql step from action menu
 
 ## [0.111.3] - 2024-03-11
 
@@ -1571,6 +1581,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
+[0.114.0]: https://github.com/ToucanToco/weaverbird/compare/v0.113.0...v0.114.0
 [0.113.0]: https://github.com/ToucanToco/weaverbird/compare/v0.112.1...v0.113.0
 [0.112.1]: https://github.com/ToucanToco/weaverbird/compare/v0.112.0...v0.112.1
 [0.112.0]: https://github.com/ToucanToco/weaverbird/compare/v0.111.3...v0.112.0
