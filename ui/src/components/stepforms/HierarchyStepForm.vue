@@ -22,6 +22,7 @@
       :automatic-new-field="false"
       data-path=".hierarchy"
       :errors="errors"
+      :componentProps="{ allowCustom: true }"
     />
     <CheckboxWidget label="Include null values in results" v-model="editedStep.includeNulls" />
     <StepFormButtonbar />
