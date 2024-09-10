@@ -9,6 +9,7 @@
       placeholder="Enter a column"
       :data-path="`${dataPath}[0]`"
       :errors="errors"
+      :allowCustom="true"
     />
     <AutocompleteWidget
       class="sortOrderInput"

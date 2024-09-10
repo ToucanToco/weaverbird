@@ -15,6 +15,7 @@
         placeholder="Column"
         :data-path="`${dataPath}.column`"
         :errors="errors"
+        :allowCustom="true"
       />
     </div>
     <div
