@@ -14,9 +14,6 @@
       data-path=".valueColumn"
       :syncWithSelectedColumn="false"
       :errors="errors"
-      :available-variables="availableVariables"
-      :variable-delimiters="variableDelimiters"
-      :trusted-variable-delimiters="trustedVariableDelimiters"
       :columnNames="columnNames"
       :selectedColumns="selectedColumns"
       @setSelectedColumns="setSelectedColumns"
@@ -96,9 +93,6 @@
       placeholder="Add columns"
       data-path=".groupby"
       :errors="errors"
-      :available-variables="availableVariables"
-      :variable-delimiters="variableDelimiters"
-      :trusted-variable-delimiters="trustedVariableDelimiters"
       :allowCustom="true"
     />
     <AutocompleteWidget
