@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [0.114.1] - 2024-09-10
+
+### Fixed
+
+- Allow to type custom column names in filter's columns #2234
+
 ## [0.114.0] - 2024-09-06
 
 ### Added
@@ -1581,6 +1587,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
+[0.114.1]: https://github.com/ToucanToco/weaverbird/compare/v0.114.0...v0.114.1
 [0.114.0]: https://github.com/ToucanToco/weaverbird/compare/v0.113.0...v0.114.0
 [0.113.0]: https://github.com/ToucanToco/weaverbird/compare/v0.112.1...v0.113.0
 [0.112.1]: https://github.com/ToucanToco/weaverbird/compare/v0.112.0...v0.112.1
