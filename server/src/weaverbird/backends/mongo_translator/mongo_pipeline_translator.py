@@ -3,6 +3,7 @@ from typing import Any
 from weaverbird.backends.mongo_translator.steps import mongo_step_translator
 from weaverbird.pipeline import Pipeline, PipelineStep
 from weaverbird.pipeline.pipeline import PipelineWithVariables
+from weaverbird.exceptions import PipelineFailure
 
 
 def translate_pipeline(
@@ -17,12 +18,14 @@ def translate_pipeline(
     return mongo_pipeline
 
 
-class PipelineTranslationFailure(Exception):
-    """Raised when a error happens during the translation of the pipeline"""
+class PipelineTranslationFailure(PipelineFailure):
+    """Raised when an error happens during the translation of the pipeline"""
 
     def __init__(self, step: PipelineStep, index: int, original_exception: Exception):
+        super(PipelineTranslationFailure, self).__init__(
+            step_name=step.name,
+            index=index,
+            original_exception=original_exception
+        )
         self.step = step
         self.index = index
-        self.original_exception = original_exception
-        self.message = f"Step #{index + 1} ({step.name}) failed: {original_exception}"
-        self.details = {"index": index, "message": self.message}

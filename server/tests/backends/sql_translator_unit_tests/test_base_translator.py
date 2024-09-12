@@ -19,6 +19,8 @@ from weaverbird.pipeline.steps.customsql import CustomSqlStep
 from weaverbird.pipeline.steps.unpivot import UnpivotStep
 from weaverbird.pipeline.steps.utils.combination import Reference
 
+from weaverbird.exceptions import PipelineFailure
+
 
 class BaseTranslator(SQLTranslator):
     DIALECT = "Base"
@@ -78,9 +80,13 @@ class ErrorStep:
 
 def test_get_query_builder_raises_error(base_translator: BaseTranslator):
     pipeline_steps = [DomainStep(domain="users"), ErrorStep()]
-
-    with pytest.raises(NotImplementedError):
+    with pytest.raises(PipelineFailure) as exc_info:
         base_translator.get_query_builder(steps=pipeline_steps)
+    assert exc_info.value.message == "Step #2 (custom step) failed: [Base] step custom step is not implemented"
+    assert exc_info.value.details == {
+        'index': 1,
+        'message': 'Step #2 (custom step) failed: [Base] step custom step is not implemented'
+    }
 
 
 def test_get_query_builder_with_custom_query(base_translator: BaseTranslator):
