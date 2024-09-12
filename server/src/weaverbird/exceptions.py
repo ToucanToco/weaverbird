@@ -1,3 +1,6 @@
+from typing import Any
+
+
 class WeaverbirdError(Exception):
     """Base class for weaverbird exceptions"""
 
@@ -26,14 +29,14 @@ class PipelineFailure(WeaverbirdError):
     """Raised when an error happens on the pipeline"""
 
     def __init__(self, original_exception: Exception, step_name: str | None = None, index: int | None = None):
-        self.details = {}
+        self.details: dict[str, Any] = {}
         if step_name and index:
             self.message = f"Step #{index + 1} ({step_name}) failed: {original_exception}"
             self.details["index"] = index
         else:
             self.message = f"Internal failure: {original_exception}"
         self.details["message"] = self.message
-        super(PipelineFailure, self).__init__(self.message, self.details)
+        super().__init__(self.message, self.details)
 
 
 class PipelineTranslationFailure(PipelineFailure):

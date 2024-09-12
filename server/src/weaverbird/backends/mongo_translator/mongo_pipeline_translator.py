@@ -1,9 +1,9 @@
 from typing import Any
 
 from weaverbird.backends.mongo_translator.steps import mongo_step_translator
+from weaverbird.exceptions import PipelineFailure
 from weaverbird.pipeline import Pipeline, PipelineStep
 from weaverbird.pipeline.pipeline import PipelineWithVariables
-from weaverbird.exceptions import PipelineFailure
 
 
 def translate_pipeline(
@@ -22,10 +22,6 @@ class PipelineTranslationFailure(PipelineFailure):
     """Raised when an error happens during the translation of the pipeline"""
 
     def __init__(self, step: PipelineStep, index: int, original_exception: Exception):
-        super(PipelineTranslationFailure, self).__init__(
-            step_name=step.name,
-            index=index,
-            original_exception=original_exception
-        )
+        super().__init__(step_name=step.name, index=index, original_exception=original_exception)
         self.step = step
         self.index = index

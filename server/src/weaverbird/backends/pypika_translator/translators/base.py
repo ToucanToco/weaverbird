@@ -34,7 +34,6 @@ from pypika.terms import (
 )
 from pypika.utils import format_quotes
 
-from weaverbird.exceptions import PipelineTranslationFailure
 from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relative_date
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
@@ -44,6 +43,7 @@ from weaverbird.backends.pypika_translator.translators.exceptions import (
     UnknownTableColumns,
 )
 from weaverbird.backends.pypika_translator.utils.formula import formula_to_term
+from weaverbird.exceptions import PipelineTranslationFailure
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
     DateBoundCondition,
@@ -400,6 +400,7 @@ class SQLTranslator(ABC):
 
             if last_step is not None:
                 from weaverbird.pipeline.steps import AggregateStep, AppendStep, JoinStep, UnpivotStep
+
                 step_name = last_step.name
                 step_method = self._step_method(last_step.name)
 
@@ -435,7 +436,7 @@ class SQLTranslator(ABC):
                     builder=builder, columns=ctx.columns, table_name=table_name, last_step_unwrapped=False
                 )
         except Exception as exc:
-            raise PipelineTranslationFailure(step_name=step_name, index=step_index, original_exception=exc)
+            raise PipelineTranslationFailure(step_name=step_name, index=step_index, original_exception=exc) from exc
 
     def get_query_str(
         self: Self, *, steps: Sequence["PipelineStep"], offset: int | None = None, limit: int | None = None

@@ -13,13 +13,12 @@ from weaverbird.backends.pypika_translator.translators.exceptions import (
     ForbiddenSQLStep,
     UnknownTableColumns,
 )
+from weaverbird.exceptions import PipelineFailure
 from weaverbird.pipeline import conditions, steps
 from weaverbird.pipeline.pipeline import DomainStep
 from weaverbird.pipeline.steps.customsql import CustomSqlStep
 from weaverbird.pipeline.steps.unpivot import UnpivotStep
 from weaverbird.pipeline.steps.utils.combination import Reference
-
-from weaverbird.exceptions import PipelineFailure
 
 
 class BaseTranslator(SQLTranslator):
@@ -84,8 +83,8 @@ def test_get_query_builder_raises_error(base_translator: BaseTranslator):
         base_translator.get_query_builder(steps=pipeline_steps)
     assert exc_info.value.message == "Step #2 (custom step) failed: [Base] step custom step is not implemented"
     assert exc_info.value.details == {
-        'index': 1,
-        'message': 'Step #2 (custom step) failed: [Base] step custom step is not implemented'
+        "index": 1,
+        "message": "Step #2 (custom step) failed: [Base] step custom step is not implemented",
     }
 
 
