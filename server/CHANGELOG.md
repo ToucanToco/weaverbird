@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-- Evolution: add a global `PipelineFailure` exception to make easier to catch translation and execution errors from supported backends. Moreover, Pypika backends can also raise a `PipelineTranslationFailure` which specify the error, the step name and the step index. 
+* Error management improvement: 
+  - Add a global `PipelineFailure` exception to make easier to catch translation and execution errors from supported backends.
+  - Now, on error, Pypika backends raise a `PipelineTranslationFailure` which specify the error, and also the step name and the step index if known. 
 
 ## [0.47.1] - 2024-09-06
 
