@@ -340,103 +340,93 @@ class SQLTranslator(ABC):
         query_builder: QueryBuilder | None = None,
         unwrap_last_step: bool = False,
     ) -> QueryBuilderContext:
-        try:
-            step_index = 1
-            step_name = None
+        if len(steps) <= 0:
+            raise ValueError("No steps provided")
+        assert (
+            steps[0].name == "domain" or steps[0].name == "customsql"
+        ), "First step must be one of domain or customsql step"
+        self._step_count = 0
 
-            if len(steps) < 0:
-                ValueError("No steps provided")
+        # A single custom SQL step must always be wrapped in a CTE, as we cannot apply offset and
+        # limit on it directly
+        if len(steps) == 1 and steps[0].name == "customsql":
+            unwrap_last_step = False
 
-            step_name = steps[0].name
-            assert steps[0].name == "domain" or steps[0].name == "customsql"
-            self._step_count = 0
+        if len(steps) > 1 and isinstance(steps[0], DomainStep) and isinstance(steps[1], FilterStep | TopStep):
+            ctx = self._merge_first_steps(domain_step=steps[0], second_step=steps[1])
+            remaining_steps = steps[2:]
+        else:
+            ctx = self._step_context_from_first_step(steps[0])
+            remaining_steps = steps[1:]
 
-            # A single custom SQL step must always be wrapped in a CTE, as we cannot apply offset and
-            # limit on it directly
-            if len(steps) == 1 and steps[0].name == "customsql":
-                unwrap_last_step = False
-
-            if len(steps) > 1 and isinstance(steps[0], DomainStep) and isinstance(steps[1], FilterStep | TopStep):
-                ctx = self._merge_first_steps(domain_step=steps[0], second_step=steps[1])
-                remaining_steps = steps[2:]
-                step_index = 2
-            else:
-                ctx = self._step_context_from_first_step(steps[0])
-                remaining_steps = steps[1:]
-
-            table_name = self._next_step_name()
-            if not remaining_steps:
-                if unwrap_last_step:
-                    # if we want to unwrap the last step, we return the query as-is, without a CTE
-                    return QueryBuilderContext(
-                        builder=ctx.selectable, columns=ctx.columns, table_name=table_name, last_step_unwrapped=True
-                    )
-                else:
-                    # otherwise, we wrap it in a CTE
-                    builder = (query_builder if query_builder is not None else self.QUERY_CLS).with_(
-                        ctx.selectable, table_name
-                    )
-                    return QueryBuilderContext(
-                        builder=builder, columns=ctx.columns, table_name=table_name, last_step_unwrapped=False
-                    )
-
-            builder = (query_builder if query_builder is not None else self.QUERY_CLS).with_(ctx.selectable, table_name)
-
-            # In case we want to unwrap, the last step will be treated differently
+        table_name = self._next_step_name()
+        if not remaining_steps:
             if unwrap_last_step:
-                last_step = remaining_steps[-1]
-                remaining_steps = remaining_steps[:-1]
+                # if we want to unwrap the last step, we return the query as-is, without a CTE
+                return QueryBuilderContext(
+                    builder=ctx.selectable, columns=ctx.columns, table_name=table_name, last_step_unwrapped=True
+                )
             else:
-                last_step = None
-
-            for step in remaining_steps:
-                step_name = step.name
-                step_method = self._step_method(step.name)
-                from_table = FromTable(table_name=table_name, builder=None, query_class=self.QUERY_CLS)
-                ctx = step_method(step=step, prev_step_table=from_table, builder=builder, columns=ctx.columns)
-                table_name = self._next_step_name()
-                builder = (ctx.builder or builder).with_(ctx.selectable, table_name)
-                step_index += 1
-
-            if last_step is not None:
-                from weaverbird.pipeline.steps import AggregateStep, AppendStep, JoinStep, UnpivotStep
-
-                step_name = last_step.name
-                step_method = self._step_method(last_step.name)
-
-                # Unpivot steps must always be wrapped in a CTE, as they return a LiteralValue rather
-                # than a query
-                if isinstance(last_step, AppendStep | JoinStep | UnpivotStep):
-                    from_table = FromTable(table_name=table_name, builder=None, query_class=self.QUERY_CLS)
-                    ctx = step_method(step=last_step, prev_step_table=from_table, builder=builder, columns=ctx.columns)
-                    table_name = self._next_step_name()
-                    assert ctx.builder is not None
-                    builder = ctx.builder.with_(ctx.selectable, table_name)
-                    return self._unwrap_combination_step(builder=builder, columns=ctx.columns, table_name=table_name)
-
-                # Aggregate step without group-by and with granularity has to select from previous_step_table and from
-                # current_step in order to keep all fields. That's why step must always be wrapped in a CTE.
-                elif isinstance(last_step, AggregateStep) and not last_step.on and last_step.keep_original_granularity:
-                    from_table = FromTable(table_name=table_name, builder=builder, query_class=self.QUERY_CLS)
-                    ctx = step_method(step=last_step, prev_step_table=from_table, builder=builder, columns=ctx.columns)
-                    table_name = self._next_step_name()
-                    builder = builder.with_(ctx.selectable, table_name)
-                    return QueryBuilderContext(
-                        builder=builder, columns=ctx.columns, table_name=table_name, last_step_unwrapped=False
-                    )
-                else:
-                    from_table = FromTable(table_name=table_name, builder=builder, query_class=self.QUERY_CLS)
-                    ctx = step_method(step=last_step, prev_step_table=from_table, builder=builder, columns=ctx.columns)
-                    return QueryBuilderContext(
-                        builder=ctx.selectable, columns=ctx.columns, table_name=table_name, last_step_unwrapped=True
-                    )
-
-            else:
+                # otherwise, we wrap it in a CTE
+                builder = (query_builder if query_builder is not None else self.QUERY_CLS).with_(
+                    ctx.selectable, table_name
+                )
                 return QueryBuilderContext(
                     builder=builder, columns=ctx.columns, table_name=table_name, last_step_unwrapped=False
                 )
-        except Exception as exc:
-            raise PipelineTranslationFailure(step_name=step_name, index=step_index, original_exception=exc) from exc
+
+        builder = (query_builder if query_builder is not None else self.QUERY_CLS).with_(ctx.selectable, table_name)
+
+        # In case we want to unwrap, the last step will be treated differently
+        if unwrap_last_step:
+            last_step = remaining_steps[-1]
+            remaining_steps = remaining_steps[:-1]
+        else:
+            last_step = None
+
+        for step in remaining_steps:
+            step_method = self._step_method(step.name)
+            from_table = FromTable(table_name=table_name, builder=None, query_class=self.QUERY_CLS)
+            ctx = step_method(step=step, prev_step_table=from_table, builder=builder, columns=ctx.columns)
+            table_name = self._next_step_name()
+            builder = (ctx.builder or builder).with_(ctx.selectable, table_name)
+
+        if last_step is not None:
+            from weaverbird.pipeline.steps import AggregateStep, AppendStep, JoinStep, UnpivotStep
+
+            step_method = self._step_method(last_step.name)
+
+            # Unpivot steps must always be wrapped in a CTE, as they return a LiteralValue rather
+            # than a query
+            if isinstance(last_step, AppendStep | JoinStep | UnpivotStep):
+                from_table = FromTable(table_name=table_name, builder=None, query_class=self.QUERY_CLS)
+                ctx = step_method(step=last_step, prev_step_table=from_table, builder=builder, columns=ctx.columns)
+                table_name = self._next_step_name()
+                assert ctx.builder is not None
+                builder = ctx.builder.with_(ctx.selectable, table_name)
+                return self._unwrap_combination_step(builder=builder, columns=ctx.columns, table_name=table_name)
+
+            # Aggregate step without group-by and with granularity has to select from previous_step_table and from
+            # current_step in order to keep all fields. That's why step must always be wrapped in a CTE.
+            elif isinstance(last_step, AggregateStep) and not last_step.on and last_step.keep_original_granularity:
+                from_table = FromTable(table_name=table_name, builder=builder, query_class=self.QUERY_CLS)
+                ctx = step_method(step=last_step, prev_step_table=from_table, builder=builder, columns=ctx.columns)
+                table_name = self._next_step_name()
+                builder = builder.with_(ctx.selectable, table_name)
+                return QueryBuilderContext(
+                    builder=builder, columns=ctx.columns, table_name=table_name, last_step_unwrapped=False
+                )
+            else:
+                from_table = FromTable(table_name=table_name, builder=builder, query_class=self.QUERY_CLS)
+                ctx = step_method(step=last_step, prev_step_table=from_table, builder=builder, columns=ctx.columns)
+                return QueryBuilderContext(
+                    builder=ctx.selectable, columns=ctx.columns, table_name=table_name, last_step_unwrapped=True
+                )
+
+        else:
+            return QueryBuilderContext(
+                builder=builder, columns=ctx.columns, table_name=table_name, last_step_unwrapped=False
+            )
 
     def get_query_str(
         self: Self, *, steps: Sequence["PipelineStep"], offset: int | None = None, limit: int | None = None
@@ -446,11 +436,25 @@ class SQLTranslator(ABC):
             if limit > steps[-1].limit:
                 limit = steps[-1].limit
 
-        # This method is used by translate_pipeline. We are at the top level here, not in a nested
-        # builder, so we want to unwrap the last step
-        return (
-            self.get_query_builder(steps=steps, unwrap_last_step=True).materialize(offset=offset, limit=limit).get_sql()
-        )
+        try:
+            # This method is used by translate_pipeline. We are at the top level here, not in a nested
+            # builder, so we want to unwrap the last step
+            return (
+                self.get_query_builder(steps=steps, unwrap_last_step=True)
+                .materialize(offset=offset, limit=limit)
+                .get_sql()
+            )
+        except NotImplementedError:
+            # That error is intentional. Some pypika steps aren't implemented, and it must raise the built-in
+            # not implemented python exception
+            raise
+        except Exception as exc:
+            step_name = None
+            if self._step_count:
+                step_name = steps[self._step_count].name
+            raise PipelineTranslationFailure(
+                step_name=step_name, index=self._step_count, original_exception=exc
+            ) from exc
 
     # All other methods implement step from https://weaverbird.toucantoco.com/docs/steps/,
     # the name of the method being the name of the step and the kwargs the rest of the params

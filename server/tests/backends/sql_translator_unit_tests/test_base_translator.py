@@ -7,6 +7,7 @@ from pypika import AliasedQuery, Case, Field, Order, Query, Schema, Table, analy
 from pypika.enums import JoinType
 from pypika.queries import QueryBuilder
 from pypika.terms import LiteralValue, Term, ValueWrapper
+from pytest_mock import MockFixture
 
 from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, SQLTranslator
 from weaverbird.backends.pypika_translator.translators.exceptions import (
@@ -15,7 +16,7 @@ from weaverbird.backends.pypika_translator.translators.exceptions import (
 )
 from weaverbird.exceptions import PipelineFailure
 from weaverbird.pipeline import conditions, steps
-from weaverbird.pipeline.pipeline import DomainStep
+from weaverbird.pipeline.pipeline import DomainStep, RenameStep
 from weaverbird.pipeline.steps.customsql import CustomSqlStep
 from weaverbird.pipeline.steps.unpivot import UnpivotStep
 from weaverbird.pipeline.steps.utils.combination import Reference
@@ -77,14 +78,31 @@ class ErrorStep:
     name = "custom step"
 
 
-def test_get_query_builder_raises_error(base_translator: BaseTranslator):
+def test_get_query_builder_raises_not_implemented_error(base_translator: BaseTranslator):
     pipeline_steps = [DomainStep(domain="users"), ErrorStep()]
-    with pytest.raises(PipelineFailure) as exc_info:
+    with pytest.raises(NotImplementedError):
         base_translator.get_query_builder(steps=pipeline_steps)
-    assert exc_info.value.message == "Step #2 (custom step) failed: [Base] step custom step is not implemented"
+
+
+def test_get_query_builder_raises_translation_global_error(base_translator: BaseTranslator):
+    pipeline_steps = []
+    with pytest.raises(PipelineFailure) as exc_info:
+        base_translator.get_query_str(steps=pipeline_steps)
+    assert exc_info.value.message == "Internal failure: No steps provided"
+    assert exc_info.value.details == {
+        "message": "Internal failure: No steps provided",
+    }
+
+
+def test_get_query_builder_raises_translation_step_error(base_translator: BaseTranslator, mocker: MockFixture):
+    mocker.patch.object(base_translator, "_step_method", side_effect=ValueError("something went wrong"))
+    pipeline_steps = [DomainStep(domain="users"), RenameStep(to_rename=[("col1", "newCol1")])]
+    with pytest.raises(PipelineFailure) as exc_info:
+        base_translator.get_query_str(steps=pipeline_steps)
+    assert exc_info.value.message == "Step #2 (rename) failed: something went wrong"
     assert exc_info.value.details == {
         "index": 1,
-        "message": "Step #2 (custom step) failed: [Base] step custom step is not implemented",
+        "message": "Step #2 (rename) failed: something went wrong",
     }
 
 
