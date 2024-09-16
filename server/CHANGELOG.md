@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [0.48.0] - 2024-09-16
+
+### Changed
+
 * Error management improvement:
   - A `PipelineFailure` exception was added to make it easier to catch translation and execution errors from supported backends. It is the parent exception to both `PipelineTranslationFailure` and `PipelineExecutionFailure`
   - On error, Pypika backends now raise a `PipelineTranslationFailure` which specifies the error, the step name and the step index if known.
