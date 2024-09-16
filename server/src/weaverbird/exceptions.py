@@ -28,11 +28,18 @@ class MissingTableNameError(WeaverbirdError):
 class PipelineFailure(WeaverbirdError):
     """Raised when an error happens on the pipeline"""
 
-    def __init__(self, original_exception: Exception, step_name: str | None = None, index: int | None = None):
+    def __init__(
+        self,
+        original_exception: Exception,
+        step_name: str | None = None,
+        step_config: dict[str, Any] | None = None,
+        index: int | None = None,
+    ):
         self.details: dict[str, Any] = {}
         if step_name and index:
             self.message = f"Step #{index + 1} ({step_name}) failed: {original_exception}"
             self.details["index"] = index
+            self.details["step_config"] = step_config
         else:
             self.message = f"Internal failure: {original_exception}"
         self.details["message"] = self.message

@@ -449,12 +449,13 @@ class SQLTranslator(ABC):
             # not implemented python exception
             raise
         except Exception as exc:
-            step_name = None
+            step_info = {}
             if self._step_count:
-                step_name = steps[self._step_count].name
-            raise PipelineTranslationFailure(
-                step_name=step_name, index=self._step_count, original_exception=exc
-            ) from exc
+                step_info = {
+                    "step_name": steps[self._step_count].name,
+                    "step_config": steps[self._step_count].model_dump(),
+                }
+            raise PipelineTranslationFailure(index=self._step_count, original_exception=exc, **step_info) from exc
 
     # All other methods implement step from https://weaverbird.toucantoco.com/docs/steps/,
     # the name of the method being the name of the step and the kwargs the rest of the params

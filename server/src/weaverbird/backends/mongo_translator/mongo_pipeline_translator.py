@@ -22,6 +22,8 @@ class PipelineTranslationFailure(PipelineFailure):
     """Raised when an error happens during the translation of the pipeline"""
 
     def __init__(self, step: PipelineStep, index: int, original_exception: Exception):
-        super().__init__(step_name=step.name, index=index, original_exception=original_exception)
+        super().__init__(
+            step_name=step.name, step_config=step.model_dump(), index=index, original_exception=original_exception
+        )
         self.step = step
         self.index = index
