@@ -38,7 +38,12 @@ from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relat
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.operators import FromDateOp, RegexOp, ToDateOp
 from weaverbird.backends.pypika_translator.translators import ALL_TRANSLATORS
+from weaverbird.backends.pypika_translator.translators.exceptions import (
+    ForbiddenSQLStep,
+    UnknownTableColumns,
+)
 from weaverbird.backends.pypika_translator.utils.formula import formula_to_term
+from weaverbird.exceptions import PipelineTranslationFailure
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
     DateBoundCondition,
@@ -52,8 +57,6 @@ from weaverbird.pipeline.steps import ConvertStep, DomainStep, FilterStep, TopSt
 from weaverbird.pipeline.steps.date_extract import DATE_INFO
 from weaverbird.pipeline.steps.duration import DURATIONS_IN_SECOND
 from weaverbird.pipeline.steps.utils.combination import PipelineOrDomainNameOrReference, Reference
-
-from .exceptions import ForbiddenSQLStep, UnknownTableColumns
 
 Self = TypeVar("Self", bound="SQLTranslator")
 
@@ -337,9 +340,11 @@ class SQLTranslator(ABC):
         query_builder: QueryBuilder | None = None,
         unwrap_last_step: bool = False,
     ) -> QueryBuilderContext:
-        if len(steps) < 0:
-            ValueError("No steps provided")
-        assert steps[0].name == "domain" or steps[0].name == "customsql"
+        if len(steps) <= 0:
+            raise ValueError("No steps provided")
+        assert (
+            steps[0].name == "domain" or steps[0].name == "customsql"
+        ), f"First step must be one of domain or customsql step, got '{steps[0].name}'"
         self._step_count = 0
 
         # A single custom SQL step must always be wrapped in a CTE, as we cannot apply offset and
@@ -431,11 +436,26 @@ class SQLTranslator(ABC):
             if limit > steps[-1].limit:
                 limit = steps[-1].limit
 
-        # This method is used by translate_pipeline. We are at the top level here, not in a nested
-        # builder, so we want to unwrap the last step
-        return (
-            self.get_query_builder(steps=steps, unwrap_last_step=True).materialize(offset=offset, limit=limit).get_sql()
-        )
+        try:
+            # This method is used by translate_pipeline. We are at the top level here, not in a nested
+            # builder, so we want to unwrap the last step
+            return (
+                self.get_query_builder(steps=steps, unwrap_last_step=True)
+                .materialize(offset=offset, limit=limit)
+                .get_sql()
+            )
+        except NotImplementedError:
+            # That error is intentional. Some pypika steps aren't implemented, and it must raise the built-in
+            # not implemented python exception
+            raise
+        except Exception as exc:
+            step_info = {}
+            if self._step_count:
+                step_info = {
+                    "step_name": steps[self._step_count].name,
+                    "step_config": steps[self._step_count].model_dump(),
+                }
+            raise PipelineTranslationFailure(index=self._step_count, original_exception=exc, **step_info) from exc
 
     # All other methods implement step from https://weaverbird.toucantoco.com/docs/steps/,
     # the name of the method being the name of the step and the kwargs the rest of the params
