@@ -1,0 +1,48 @@
+exclude:
+- bigquery_pypika
+- mysql_pypika
+- postgres_pypika
+- redshift_pypika
+- snowflake_pypika
+- mongo
+- pandas
+step:
+  pipeline:
+  - name: ifthenelse
+    condition:
+      column: alcohol_degree
+      operator: lt
+      value: 0
+    then: "-[price_per_l]"
+    else_value: "[price_per_l]"
+    new_column: price_per_l
+
+  - name: formula
+    new_column: other_kpi
+    formula: alcohol_degree - price_per_l
+
+  - name: select
+    columns:
+      - price_per_l
+      - other_kpi
+
+  - name: top
+    limit: 3
+    rank_on: other_kpi
+    sort: asc
+
+
+expected:
+  schema:
+    fields:
+    - name: price_per_l
+      type: number
+    - name: other_kpi
+      type: number
+  data:
+  - price_per_l: 0.005
+    other_kpi: 0.564934
+  - price_per_l: 0.005
+    other_kpi: 1.238711
+  - price_per_l: 0.045
+    other_kpi: 4.672410
