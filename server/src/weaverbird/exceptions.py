@@ -43,6 +43,7 @@ class PipelineFailure(WeaverbirdError):
         else:
             self.message = f"Internal failure: {original_exception}"
         self.details["message"] = self.message
+        self.original_exception = original_exception
         super().__init__(self.message, self.details)
 
 

@@ -105,6 +105,7 @@ def test_get_query_builder_raises_translation_step_error(base_translator: BaseTr
         "message": "Step #2 (rename) failed: something went wrong",
         "step_config": {"name": "rename", "to_rename": [("col1", "newCol1")]},
     }
+    assert isinstance(exc_info.value.original_exception, ValueError)
 
 
 def test_get_query_builder_with_custom_query(base_translator: BaseTranslator):
