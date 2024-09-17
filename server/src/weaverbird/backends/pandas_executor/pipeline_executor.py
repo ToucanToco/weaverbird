@@ -11,6 +11,7 @@ from weaverbird.backends.pandas_executor.types import (
     PipelineExecutionReport,
     StepExecutionReport,
 )
+from weaverbird.exceptions import PipelineFailure
 from weaverbird.pipeline import Pipeline, PipelineStep
 from weaverbird.utils import StopWatch, convert_size
 
@@ -103,12 +104,12 @@ def preview_pipeline(pipeline: Pipeline, domain_retriever: DomainRetriever, limi
     )
 
 
-class PipelineExecutionFailure(Exception):
-    """Raised when a error happens during the execution of the pipeline"""
+class PipelineExecutionFailure(PipelineFailure):
+    """Raised when an error happens during the execution of the pipeline"""
 
     def __init__(self, step: PipelineStep, index: int, original_exception: Exception):
+        super().__init__(
+            step_name=step.name, step_config=step.model_dump(), index=index, original_exception=original_exception
+        )
         self.step = step
         self.index = index
-        self.original_exception = original_exception
-        self.message = f"Step #{index + 1} ({step.name}) failed: {original_exception}"
-        self.details = {"index": index, "message": self.message}
