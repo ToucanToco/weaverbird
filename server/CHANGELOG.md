@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- Error management: add original_exception attribute to `PipelineFailure` exception
 - Pypika: `ifthenelse` step returns a unique list of column names to avoid a `QueryFailed : AMBIGUOUS_NAME` error when the step column result column already exists.
 
 ## [0.48.0] - 2024-09-16
