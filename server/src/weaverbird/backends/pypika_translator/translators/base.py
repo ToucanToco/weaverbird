@@ -1468,7 +1468,7 @@ class SQLTranslator(ABC):
                 case_=Case(),
             ).as_(step.new_column),
         )
-        return StepContext(query, list(set(columns + [step.new_column])))
+        return StepContext(query, columns + [step.new_column] if step.new_column not in columns else columns)
 
     @staticmethod
     def _get_join_type(join_type: Literal["left", "inner", "left outer"]) -> JoinType:
