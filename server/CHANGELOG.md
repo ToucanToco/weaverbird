@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.48.1] - 2024-09-18
+
 ### Fixed
 
 - Error management: add original_exception attribute to `PipelineFailure` exception
