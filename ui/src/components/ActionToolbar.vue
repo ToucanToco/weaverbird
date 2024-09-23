@@ -67,7 +67,7 @@ export default class ActionToolbar extends Vue {
   get featureFlagsAllowedButtons(): ButtonDef[] {
     return CATEGORY_BUTTONS.filter((d) => {
       if (!d.featureFlag) {
-        return true;
+        return !!d.enable;
       } else {
         return !this.featureFlags ? false : this.featureFlags[d.featureFlag] === 'enable';
       }

@@ -415,8 +415,7 @@ The step should also be found in the search bar.
 #### In the action bar
 
 Actions are defined in `ui/src/components/constants.ts`.
-Add to `ACTION_CATEGORIES` an object with the `name` of your new step and its
-action `label` into the adequate category.
+Add to `ACTION_CATEGORIES` a relation between step `name` and action `label` into the adequate category.
 
 ### In columns contextual menus
 
@@ -439,9 +438,9 @@ its contextual menu. To achieve this, add your action directly in the template o
 
 #### In the search bar
 
-Searchable actions are defined in the `SEARCH_ACTION` constant in `ui/src/components/constants.ts`.
+Searchable actions are defined in the `ACTION_CATEGORIES` constant in `ui/src/components/constants.ts`.
 All actions from `ACTION_CATEGORIES` are imported. You should add in `type: 'Others actions'`
-any action not defined in `ACTION_CATEGORIES`, such as contextual ones.
+any action not defined in other category, such as contextual ones.
 
 ## Adding documentation
 

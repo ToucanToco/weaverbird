@@ -21,6 +21,16 @@ import DateRangeInput from './components/stepforms/widgets/DateComponents/DateRa
 import NewDateInput from './components/stepforms/widgets/DateComponents/NewDateInput.vue';
 import Vqb from './components/Vqb.vue';
 
+// export steps constants to be able to migrate dataviewer
+export {
+  STEP_LABELS,
+  ACTION_CATEGORIES,
+  CATEGORY_BUTTONS,
+  COLUMN_MAIN_ACTIONS,
+  COLUMN_OTHER_ACTIONS,
+  COLUMN_TYPES,
+} from './components/constants';
+
 export {
   // All-in-one component
   Vqb,

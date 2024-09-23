@@ -22,7 +22,12 @@
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 
-import { ACTION_CATEGORIES, POPOVER_ALIGN } from '@/components/constants';
+import {
+  ACTION_CATEGORIES,
+  PipelineStepCategory,
+  POPOVER_ALIGN,
+  STEP_LABELS,
+} from '@/components/constants';
 import FAIcon from '@/components/FAIcon.vue';
 import type * as S from '@/lib/steps';
 import { Action, Getter, State } from 'pinia-class';
@@ -60,7 +65,7 @@ export default class ActionToolbarButton extends Vue {
   @Prop({
     type: String,
   })
-  category!: string;
+  category!: PipelineStepCategory;
 
   @Getter(VQBModule) computedActiveStepIndex!: number;
   @Getter(VQBModule) isEditingStep!: boolean;
@@ -106,7 +111,7 @@ export default class ActionToolbarButton extends Vue {
 
   // Filter out unsupported steps
   get items() {
-    return ACTION_CATEGORIES[this.category];
+    return ACTION_CATEGORIES[this.category].map((name) => ({ name, label: STEP_LABELS[name] }));
   }
 }
 </script>

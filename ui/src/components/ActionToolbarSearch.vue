@@ -38,7 +38,7 @@ import type { PipelineStepName } from '@/lib/steps';
 
 import { State, Getter } from 'pinia-class';
 import { VQBModule } from '@/store';
-import { SEARCH_ACTION } from './constants';
+import { ACTION_CATEGORIES, CATEGORY_BUTTONS, STEP_LABELS } from './constants';
 import Popover from './Popover.vue';
 
 @Component({
@@ -68,9 +68,14 @@ export default class SearchActions extends Vue {
   }
 
   get actionOptions() {
-    return SEARCH_ACTION.map((e) => ({
-      ...e,
-      actions: e.actions.filter((a) => !this.unsupportedSteps.includes(a.name)),
+    return CATEGORY_BUTTONS.map((button) => ({
+      type: button.label,
+      actions: ACTION_CATEGORIES[button.category]
+        .map((name) => ({
+          name,
+          label: STEP_LABELS[name],
+        }))
+        .filter((a) => !this.unsupportedSteps.includes(a.name)),
     }));
   }
 
