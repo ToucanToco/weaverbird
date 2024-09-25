@@ -46,8 +46,6 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-import { Getter } from 'pinia-class';
 
 import InputTextWidget from './InputText.vue';
 
@@ -80,7 +78,8 @@ export default class JoinColumns extends Vue {
   @Prop()
   trustedVariableDelimiters?: VariableDelimiters;
 
-  @Getter(VQBModule) columnNames!: string[];
+  @Prop({ default: () => [] })
+  columnNames!: string[];
 
   @Prop()
   rightColumnNames?: string[] | null; // because initializing to undefined won't make it reactive

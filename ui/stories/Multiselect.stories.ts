@@ -1,25 +1,21 @@
 import type { Meta, StoryFn } from '@storybook/vue';
-import { createPinia, PiniaVuePlugin } from 'pinia';
-import Vue from 'vue';
 
 import Multiselect from '@/components/stepforms/widgets/Multiselect.vue';
 import type { ColumnTypeMapping } from '@/lib/dataset';
 import type { FilterCondition } from '@/lib/steps';
 import type { AvailableVariable, VariableDelimiters } from '@/lib/variables';
 
-Vue.use(PiniaVuePlugin);
-
 export default {
   component: Multiselect,
 } as Meta<typeof Multiselect>;
 
 export const Default: StoryFn<typeof Multiselect> = () => ({
-  pinia: createPinia(),
   template: `
     <div style="margin: 30px; overflow: auto">
       <Multiselect
         :filterTree="filterTree"
         :columnTypes="columnTypes"
+        :options="['name', 'status', 'age']"
         @filterTreeUpdated="updateFilterTree"
       />
       <pre style="margin-top: 30px;">{{ filterTreeStringify }}</pre>
@@ -69,11 +65,11 @@ export const Default: StoryFn<typeof Multiselect> = () => ({
 });
 
 export const WithVariables: StoryFn<typeof Multiselect> = () => ({
-  pinia: createPinia(),
   template: `
     <div>
       <Multiselect
         :filter-tree="filterTree"
+        :options="['name', 'status', 'age']"
         @filterTreeUpdated="updateFilterTree"
         :available-variables="availableVariables"
         :variableDelimiters="variableDelimiters"

@@ -1,29 +1,24 @@
-import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { PiniaVuePlugin } from 'pinia';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import ReplaceWidget from '@/components/stepforms/widgets/Replace.vue';
 
 const localVue = createLocalVue();
-localVue.use(PiniaVuePlugin);
-const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 describe('Widget ReplaceWidget', () => {
   it('should instantiate', () => {
-    const wrapper = shallowMount(ReplaceWidget, { pinia, localVue, sync: false });
+    const wrapper = shallowMount(ReplaceWidget, { localVue, sync: false });
     expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should have exactly two InputTextWidget components', () => {
-    const wrapper = shallowMount(ReplaceWidget, { pinia, localVue, sync: false });
+    const wrapper = shallowMount(ReplaceWidget, { localVue, sync: false });
     const widgetWrappers = wrapper.findAll('inputtextwidget-stub');
     expect(widgetWrappers.length).toEqual(2);
   });
 
   it('should pass down the properties to the input components', () => {
     const wrapper = shallowMount(ReplaceWidget, {
-      pinia,
       localVue,
       sync: false,
       propsData: {
@@ -37,7 +32,6 @@ describe('Widget ReplaceWidget', () => {
 
   it('should emit value on created if values are empty', () => {
     const wrapper = shallowMount(ReplaceWidget, {
-      pinia,
       localVue,
       sync: false,
     });
@@ -49,7 +43,6 @@ describe('Widget ReplaceWidget', () => {
       propsData: {
         value: ['lolilol', 'yolo'],
       },
-      pinia,
       localVue,
       sync: false,
     });
@@ -61,7 +54,6 @@ describe('Widget ReplaceWidget', () => {
       propsData: {
         value: ['yolo', 'bim'],
       },
-      pinia,
       localVue,
       sync: false,
     });
@@ -74,7 +66,6 @@ describe('Widget ReplaceWidget', () => {
       propsData: {
         value: ['yolo', 'bim'],
       },
-      pinia,
       localVue,
       sync: false,
     });

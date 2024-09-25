@@ -18,6 +18,7 @@
           :errors="errors"
           :multi-variable="multiVariable"
           :columnTypes="columnTypes"
+          @setSelectedColumns="$emit('setSelectColumns', $event)"
         />
       </template>
     </ConditionsEditor>

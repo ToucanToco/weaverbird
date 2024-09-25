@@ -31,8 +31,6 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import type { TotalDimension } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-import { Getter } from 'pinia-class';
 
 import InputTextWidget from './InputText.vue';
 
@@ -65,7 +63,8 @@ export default class TotalDimensionsWidget extends Vue {
   @Prop()
   trustedVariableDelimiters?: VariableDelimiters;
 
-  @Getter(VQBModule) columnNames!: string[];
+  @Prop({ default: () => [] })
+  columnNames!: string[];
 
   get totalColumn() {
     return this.value.totalColumn;
