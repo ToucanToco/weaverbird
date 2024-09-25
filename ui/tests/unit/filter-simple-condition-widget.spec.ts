@@ -1,6 +1,6 @@
 import type { Wrapper } from '@vue/test-utils';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';

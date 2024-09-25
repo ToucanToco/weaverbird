@@ -43,85 +43,17 @@ describe('Query Builder', () => {
     expect(wrapper.find('Pipeline-stub').exists()).toBeFalsy();
   });
 
-  it('should instantiate a AggregateStepForm component', () => {
+  it('should instantiate a step form component', () => {
     setupMockStore(buildStateWithOnePipeline([], { currentStepFormName: 'aggregate' }));
     wrapper = shallowMount(QueryBuilder, {
       pinia,
       localVue,
     });
-    const form = wrapper.find('aggregatestepform-stub');
-    expect(form.exists()).toBeTruthy();
-  });
-
-  it('should instantiate a FormRenameStep component', () => {
-    setupMockStore(buildStateWithOnePipeline([], { currentStepFormName: 'rename' }));
-    wrapper = shallowMount(QueryBuilder, {
-      pinia,
-      localVue,
-    });
-    const form = wrapper.find('renamestepform-stub');
-    expect(form.exists()).toBeTruthy();
-  });
-
-  it('should instantiate a DeleteColumnStep component', () => {
-    setupMockStore(buildStateWithOnePipeline([], { currentStepFormName: 'delete' }));
-    wrapper = shallowMount(QueryBuilder, {
-      pinia,
-      localVue,
-    });
-    const form = wrapper.find('deletestepform-stub');
-    expect(form.exists()).toBeTruthy();
-  });
-
-  it('should instantiate a FillnaStep component', () => {
-    setupMockStore(buildStateWithOnePipeline([], { currentStepFormName: 'fillna' }));
-    wrapper = shallowMount(QueryBuilder, {
-      pinia,
-      localVue,
-    });
-    const form = wrapper.find('fillnastepform-stub');
-    expect(form.exists()).toBeTruthy();
-  });
-
-  it('should instantiate a DomainStep component', () => {
-    setupMockStore(buildStateWithOnePipeline([], { currentStepFormName: 'domain' }));
-    wrapper = shallowMount(QueryBuilder, {
-      pinia,
-      localVue,
-    });
-    const form = wrapper.find('domainstepform-stub');
+    const form = wrapper.find('stepform-stub');
     expect(form.exists()).toBeTruthy();
   });
 
   describe('save step', () => {
-    describe('when editing domain step', () => {
-      beforeEach(async () => {
-        store = setupMockStore(
-          buildStateWithOnePipeline([{ name: 'domain', domain: 'foo' }], {
-            currentStepFormName: 'domain',
-            stepFormInitialValue: { name: 'domain', domain: 'foo' },
-          }),
-        );
-        wrapper = shallowMount(QueryBuilder, {
-          pinia,
-          localVue,
-          stubs: {
-            transition: true,
-          },
-        });
-        await localVue.nextTick();
-      });
-
-      it('should update the pipeline', () => {
-        wrapper.find('domainstepform-stub').vm.$emit('formSaved', {
-          name: 'domain',
-          domain: 'bar',
-        });
-        expect(store.isEditingStep).toBeFalsy();
-        expect(store.pipeline).toEqual([{ name: 'domain', domain: 'bar' }]);
-      });
-    });
-
     describe('when editing a step', () => {
       beforeEach(async () => {
         store = setupMockStore(
@@ -173,7 +105,7 @@ describe('Query Builder', () => {
 
       it('should set pipeline when form is saved', async () => {
         wrapper
-          .find('renamestepform-stub')
+          .find('stepform-stub')
           .vm.$emit('formSaved', { name: 'rename', oldname: 'columnA', newname: 'columnAA' });
         expect(store.isEditingStep).toBeFalsy();
         expect(store.pipeline).toEqual([
@@ -184,7 +116,7 @@ describe('Query Builder', () => {
 
       it('should compute the right computedActiveStepIndex', () => {
         expect(store.computedActiveStepIndex).toEqual(0);
-        wrapper.find('renamestepform-stub').vm.$emit('formSaved', {
+        wrapper.find('stepform-stub').vm.$emit('formSaved', {
           name: 'rename',
           oldname: 'columnA',
           newname: 'columnAA',
@@ -208,7 +140,7 @@ describe('Query Builder', () => {
       },
     });
     await localVue.nextTick();
-    wrapper.find('renamestepform-stub').vm.$emit('back');
+    wrapper.find('stepform-stub').vm.$emit('back');
     expect(store.isEditingStep).toBeFalsy();
     expect(store.pipeline).toEqual([{ name: 'domain', domain: 'foo' }]);
   });

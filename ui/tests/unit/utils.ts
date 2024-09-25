@@ -1,10 +1,11 @@
 import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import { type Pinia, type Store, PiniaVuePlugin } from 'pinia';
-import { beforeEach, describe, expect, it, test, vi } from 'vitest';
+import { describe, expect, it, test, vi } from 'vitest';
 import type { VueConstructor } from 'vue';
 
 import type BaseStepForm from '@/components/stepforms/StepForm.vue';
+import StoreStepFormComponent from '@/components/stepforms/StoreStepFormComponent.vue';
 import type { Pipeline } from '@/lib/steps';
 import type { ValidationError } from '@/lib/translators/base';
 import { setupVQBStore, useVQBStore } from '@/store';
@@ -266,15 +267,17 @@ export class BasicStepFormTestRunner {
     it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {
       setupMockStore(initialState);
       const initialStepIndex = this.store.selectedStepIndex;
-      const wrapper = mount(this.componentType, {
+      // selectedStepIndex is only available with store component
+      const wrapper = mount(StoreStepFormComponent, {
         pinia: this.pinia,
         localVue: this.vue,
+        propsData: { name: this.stepname },
         sync: false,
       });
       wrapper.find('.step-edit-form__back-button').trigger('click');
       expect(this.store.selectedStepIndex).toEqual(initialStepIndex);
 
-      wrapper.setProps({ isStepCreation: false });
+      wrapper.setProps({ initialStepValue: {} });
       wrapper.find('.step-edit-form__back-button').trigger('click');
       expect(this.store.selectedStepIndex).toEqual(initialStepIndex + 1);
     });
