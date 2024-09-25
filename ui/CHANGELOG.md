@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Stepform: remove store dependency from step form component
+
 ## [0.114.1] - 2024-09-10
 
 ### Fixed
