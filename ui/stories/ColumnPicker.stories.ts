@@ -1,39 +1,38 @@
-import { action } from '@storybook/addon-actions';
-import type { Meta, StoryFn } from '@storybook/vue';
-import { createPinia, PiniaVuePlugin } from 'pinia';
-import Vue from 'vue';
+import type { Meta, StoryObj } from '@storybook/vue';
 
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import { setupVQBStore } from '@/store';
-
-Vue.use(PiniaVuePlugin);
 
 export default {
   component: ColumnPicker,
-} as Meta<typeof ColumnPicker>;
+} as Meta<ColumnPicker>;
 
-export const Empty: StoryFn<typeof ColumnPicker> = () => ({
-  pinia: createPinia(),
-
-  components: {
-    ColumnPicker,
-  },
-
-  template: `
-    <ColumnPicker
-      v-bind="$props"
+export const Default: StoryObj<ColumnPicker> = {
+  render: (args, { argTypes }) => ({
+    components: { ColumnPicker },
+    props: Object.keys(argTypes),
+    template: `<ColumnPicker 
+      v-bind="$props" 
+      :value="value" 
+      :selectedColumns="selectedColumns" 
       @input="onInput"
-    />
-  `,
-
-  created: function () {
-    setupVQBStore({
-      backendMessages: [],
-      dataset: { headers: [{ name: 'label' }, { name: 'value' }], data: [] },
-    });
+      @setSelectedColumns="onSetSelectedColumns"
+    />`,
+    data(): { value?: string; selectedColumns: string[] } {
+      return {
+        value: undefined,
+        selectedColumns: [],
+      };
+    },
+    methods: {
+      onInput(value) {
+        this.value = value;
+      },
+      onSetSelectedColumns({ column }) {
+        this.selectedColumns = [column];
+      },
+    },
+  }),
+  args: {
+    columnNames: ['label', 'value'],
   },
-
-  methods: {
-    onInput: action('input'),
-  },
-});
+};

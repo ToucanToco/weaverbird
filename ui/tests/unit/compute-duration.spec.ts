@@ -61,14 +61,11 @@ describe('Compute Duration Step Form', () => {
   });
 
   it('should make the focus on the column added after validation', () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'start' }, { name: 'end' }],
-        data: [],
+    const wrapper = runner.mount({
+      propsData: {
+        columnTypes: { start: 'string', end: 'string' },
       },
-    };
-    const wrapper = runner.mount(initialState);
-    const store = runner.getStore();
+    });
     wrapper.setData({
       editedStep: {
         name: 'duration',
@@ -79,18 +76,15 @@ describe('Compute Duration Step Form', () => {
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(store.selectedColumns).toEqual(['test']);
+    expect(wrapper.emitted().setSelectedColumns).toEqual([[{ column: 'test' }]]);
   });
 
   it('should not change the column focus if validation fails', () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'start' }, { name: 'end' }],
-        data: [],
+    const wrapper = runner.mount({
+      propsData: {
+        columnTypes: { start: 'string', end: 'string' },
+        selectedColumns: ['start'],
       },
-      selectedColumns: ['start'],
-    };
-    const wrapper = runner.mount(initialState, {
       data: {
         editedStep: {
           name: 'duration',
@@ -101,20 +95,17 @@ describe('Compute Duration Step Form', () => {
         },
       },
     });
-    const store = runner.getStore();
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(store.selectedColumns).toEqual(['start']);
+    expect(wrapper.emitted().setSelectedColumns).toBeUndefined();
   });
 
   describe('Warning', () => {
     it('should report a warning when newColumnName is an already existing column name', async () => {
-      const initialState = {
-        dataset: {
-          headers: [{ name: 'foo' }, { name: 'strat' }, { name: 'end' }],
-          data: [],
+      const wrapper = runner.shallowMount({
+        propsData: {
+          columnTypes: { foo: 'string', start: 'string', end: 'string' },
         },
-      };
-      const wrapper = runner.shallowMount(initialState);
+      });
       wrapper.setData({
         editedStep: {
           name: 'duration',
@@ -131,13 +122,11 @@ describe('Compute Duration Step Form', () => {
     });
 
     it('should not report any warning if newColumnName is not an already existing column name', async () => {
-      const initialState = {
-        dataset: {
-          headers: [{ name: 'foo' }, { name: 'strat' }, { name: 'end' }],
-          data: [],
+      const wrapper = runner.shallowMount({
+        propsData: {
+          columnTypes: { foo: 'string', start: 'string', end: 'string' },
         },
-      };
-      const wrapper = runner.shallowMount(initialState);
+      });
       wrapper.setData({
         editedStep: {
           name: 'duration',

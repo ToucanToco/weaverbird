@@ -3,204 +3,141 @@ import type { PipelineStepName } from '@/lib/steps';
 export type ButtonDef = Readonly<{
   icon: string;
   label: string;
-  category: string;
+  category: PipelineStepCategory;
   enable: boolean;
   featureFlag?: string;
 }>;
 
-export type ActionCategories = {
-  add: ActionCategory[];
-  compute: ActionCategory[];
-  filter: ActionCategory[];
-  text: ActionCategory[];
-  date: ActionCategory[];
-  reshape: ActionCategory[];
-  combine: ActionCategory[];
-  geo: ActionCategory[];
-  [key: string]: ActionCategory[];
-};
+export type PipelineStepCategory =
+  | 'add'
+  | 'filter'
+  | 'aggregate'
+  | 'compute'
+  | 'text'
+  | 'date'
+  | 'reshape'
+  | 'combine'
+  | 'geo'
+  | 'other_actions';
 
-export type ActionCategory = {
-  name: PipelineStepName;
-  label: string;
-  defaults?: { [prop: string]: any };
-};
+export type ActionCategories = Record<PipelineStepCategory, PipelineStepName[]>;
 
-export type groupActions = {
-  type: string;
-  actions: ActionCategory[];
+export const STEP_LABELS: Record<PipelineStepName, string> = {
+  text: 'Add text column',
+  ifthenelse: 'Add conditional column',
+  delete: 'Delete columns',
+  select: 'Keep columns',
+  filter: 'Filter rows',
+  top: 'Top N rows',
+  argmax: 'Argmax',
+  argmin: 'Argmin',
+  aggregate: 'Group by',
+  totals: 'Add total rows',
+  rollup: 'Hierarchical rollup',
+  uniquegroups: 'Get unique groups/values',
+  formula: 'Add formula column',
+  evolution: 'Compute evolution',
+  cumsum: 'Cumulated sum',
+  percentage: 'Percentage of total',
+  rank: 'Rank',
+  movingaverage: 'Moving average',
+  statistics: 'Compute Statistics',
+  absolutevalue: 'Absolute value',
+  concatenate: 'Concatenate',
+  split: 'Split column',
+  substring: 'Extract substring',
+  lowercase: 'To lowercase',
+  uppercase: 'To uppercase',
+  comparetext: 'Compare text columns',
+  trim: 'Trim spaces',
+  replacetext: 'Replace text',
+  todate: 'Convert text to date',
+  fromdate: 'Convert date to text',
+  dateextract: 'Extract date information',
+  addmissingdates: 'Add missing dates',
+  duration: 'Compute duration',
+  pivot: 'Pivot',
+  unpivot: 'Unpivot',
+  waterfall: 'Waterfall',
+  append: 'Append datasets',
+  join: 'Join datasets',
+  dissolve: 'Geographic dissolve',
+  hierarchy: 'Geographic hierarchy',
+  simplify: 'Geographic simplify',
+  duplicate: 'Duplicate column',
+  custom: 'Custom step',
+  customsql: 'Custom step',
+  convert: 'Convert column data type',
+  fillna: 'Fill null values',
+  domain: '',
+  rename: 'Rename column',
+  sort: 'Sort values',
+  replace: 'Replace values',
 };
 
 export const ACTION_CATEGORIES: ActionCategories = {
-  add: [
-    { name: 'text', label: 'Add text column' },
-    { name: 'formula', label: 'Add formula column' },
-    { name: 'ifthenelse', label: 'Add conditional column' },
-  ],
-  filter: [
-    { name: 'delete', label: 'Delete columns' },
-    { name: 'select', label: 'Keep columns' },
-    { name: 'filter', label: 'Filter rows' },
-    { name: 'top', label: 'Top N rows' },
-    { name: 'argmax', label: 'Argmax' },
-    { name: 'argmin', label: 'Argmin' },
-  ],
-  aggregate: [
-    { name: 'aggregate', label: 'Group by' },
-    { name: 'totals', label: 'Add total rows' },
-    { name: 'rollup', label: 'Hierarchical rollup' },
-    { name: 'uniquegroups', label: 'Get unique groups/values' },
-  ],
+  add: ['text', 'formula', 'ifthenelse'],
+  filter: ['delete', 'select', 'filter', 'top', 'argmax', 'argmin'],
+  aggregate: ['aggregate', 'totals', 'rollup', 'uniquegroups'],
   compute: [
-    { name: 'formula', label: 'Formula' },
-    { name: 'evolution', label: 'Compute evolution' },
-    { name: 'cumsum', label: 'Cumulated sum' },
-    { name: 'percentage', label: 'Percentage of total' },
-    { name: 'rank', label: 'Rank' },
-    { name: 'movingaverage', label: 'Moving average' },
-    { name: 'statistics', label: 'Statistics' },
-    { name: 'absolutevalue', label: 'Absolute value' },
+    'formula',
+    'evolution',
+    'cumsum',
+    'percentage',
+    'rank',
+    'movingaverage',
+    'statistics',
+    'absolutevalue',
   ],
   text: [
-    { name: 'text', label: 'Add text column' },
-    { name: 'concatenate', label: 'Concatenate' },
-    { name: 'split', label: 'Split column' },
-    { name: 'substring', label: 'Extract substring' },
-    { name: 'lowercase', label: 'To lowercase' },
-    { name: 'uppercase', label: 'To uppercase' },
-    { name: 'comparetext', label: 'Compare text columns' },
-    { name: 'trim', label: 'Trim spaces' },
-    { name: 'replacetext', label: 'Replace text' },
+    'text',
+    'concatenate',
+    'split',
+    'substring',
+    'lowercase',
+    'uppercase',
+    'comparetext',
+    'trim',
+    'replacetext',
   ],
-  date: [
-    { name: 'todate', label: 'Convert text to date' },
-    { name: 'fromdate', label: 'Convert date to text' },
-    { name: 'dateextract', label: 'Extract date information' },
-    { name: 'addmissingdates', label: 'Add missing dates' },
-    { name: 'duration', label: 'Compute duration' },
-  ],
-  reshape: [
-    { name: 'pivot', label: 'Pivot' },
-    { name: 'unpivot', label: 'Unpivot' },
-    { name: 'waterfall', label: 'Waterfall' },
-  ],
-  combine: [
-    { name: 'append', label: 'Append datasets' },
-    { name: 'join', label: 'Join datasets' },
-  ],
-  geo: [
-    { name: 'dissolve', label: 'Geographic dissolve' },
-    { name: 'hierarchy', label: 'Geographic hierarchy' },
-    { name: 'simplify', label: 'Geographic simplify' },
-  ],
+  date: ['todate', 'fromdate', 'dateextract', 'addmissingdates', 'duration'],
+  reshape: ['pivot', 'unpivot', 'waterfall'],
+  combine: ['append', 'join'],
+  geo: ['dissolve', 'hierarchy', 'simplify'],
+  other_actions: ['convert', 'duplicate', 'fillna', 'rename', 'replace', 'sort'],
 };
 
-export const SEARCH_ACTION: groupActions[] = [
-  {
-    type: 'add',
-    actions: [...ACTION_CATEGORIES.add],
-  },
-  {
-    type: 'aggregate',
-    actions: [...ACTION_CATEGORIES.aggregate],
-  },
-  {
-    type: 'filter',
-    actions: [...ACTION_CATEGORIES.filter],
-  },
-  {
-    type: 'compute',
-    actions: [...ACTION_CATEGORIES.compute],
-  },
-  {
-    type: 'text',
-    actions: [...ACTION_CATEGORIES.text],
-  },
-  {
-    type: 'date',
-    actions: [...ACTION_CATEGORIES.date],
-  },
-  {
-    type: 'reshape',
-    actions: [...ACTION_CATEGORIES.reshape],
-  },
-  {
-    type: 'combine',
-    actions: [...ACTION_CATEGORIES.combine],
-  },
-  {
-    type: 'geo',
-    actions: [...ACTION_CATEGORIES.geo],
-  },
-  {
-    type: 'Others actions',
-    actions: [
-      { name: 'convert', label: 'Convert column data type' },
-      { name: 'duplicate', label: 'Duplicate column' },
-      { name: 'fillna', label: 'Fill null values' },
-      { name: 'rename', label: 'Rename column' },
-      { name: 'replace', label: 'Replace values' },
-      { name: 'sort', label: 'Sort values' },
-    ],
-  },
+export const CATEGORY_BUTTONS: ButtonDef[] = [
+  { category: 'add', enable: true, icon: 'plus', label: 'Add' },
+  { category: 'filter', enable: true, icon: 'filter', label: 'Filter' },
+  { category: 'aggregate', enable: true, icon: 'code-branch', label: 'Aggregate' },
+  { category: 'compute', enable: true, icon: 'calculator', label: 'Compute' },
+  { category: 'text', enable: true, icon: 'font', label: 'Text' },
+  { category: 'date', enable: true, icon: 'calendar', label: 'Date' },
+  { category: 'reshape', enable: true, icon: 'draw-polygon', label: 'Reshape' },
+  { category: 'combine', enable: true, icon: 'object-group', label: 'Combine' },
+  { category: 'geo', enable: true, icon: 'map-marked-alt', label: 'Geo' },
+  { category: 'other_actions', enable: false, icon: '', label: 'Others actions' },
 ];
 
-export const CATEGORY_BUTTONS: ButtonDef[] = [
-  {
-    category: 'add',
-    enable: true,
-    icon: 'plus',
-    label: 'Add',
-  },
-  {
-    category: 'filter',
-    enable: true,
-    icon: 'filter',
-    label: 'Filter',
-  },
-  {
-    category: 'aggregate',
-    enable: true,
-    icon: 'code-branch',
-    label: 'Aggregate',
-  },
-  {
-    category: 'compute',
-    enable: true,
-    icon: 'calculator',
-    label: 'Compute',
-  },
-  {
-    category: 'text',
-    enable: true,
-    icon: 'font',
-    label: 'Text',
-  },
-  {
-    category: 'date',
-    enable: true,
-    icon: 'calendar',
-    label: 'Date',
-  },
-  {
-    category: 'reshape',
-    enable: true,
-    icon: 'draw-polygon',
-    label: 'Reshape',
-  },
-  {
-    category: 'combine',
-    enable: true,
-    icon: 'object-group',
-    label: 'Combine',
-  },
-  {
-    category: 'geo',
-    enable: true,
-    icon: 'map-marked-alt',
-    label: 'Geo',
-  },
+export const COLUMN_MAIN_ACTIONS: PipelineStepName[] = ['rename', 'duplicate', 'delete'];
+export const COLUMN_OTHER_ACTIONS: PipelineStepName[] = [
+  'filter',
+  'top',
+  'fillna',
+  'replace',
+  'sort',
+  'trim',
+  'uniquegroups',
+  'statistics',
 ];
+export const COLUMN_TYPES = {
+  integer: { icon: '123', label: 'Integer' },
+  float: { icon: '1.2', label: 'Float' },
+  text: { icon: 'ABC', label: 'Text' },
+  date: { icon: 'calendar-alt', label: 'Date' },
+  boolean: { icon: 'check', label: 'Boolean' },
+};
 
 export const POPOVER_ALIGN = {
   CENTER: 'center',

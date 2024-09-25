@@ -1,24 +1,18 @@
-import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { PiniaVuePlugin } from 'pinia';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import CumSumWidget from '@/components/stepforms/widgets/CumSum.vue';
 
-import { setupMockStore } from './utils';
-
 const localVue = createLocalVue();
-localVue.use(PiniaVuePlugin);
-const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 describe('Widget CumSumWidget', () => {
   it('should instantiate', () => {
-    const wrapper = shallowMount(CumSumWidget, { pinia, localVue, sync: false });
+    const wrapper = shallowMount(CumSumWidget, { localVue, sync: false });
     expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should have exactly 1 ColumnPicker and 1 InputTextWidget components', () => {
-    const wrapper = shallowMount(CumSumWidget, { pinia, localVue, sync: false });
+    const wrapper = shallowMount(CumSumWidget, { localVue, sync: false });
     const columnPickerWrappers = wrapper.findAll('ColumnPicker-stub');
     const inputTextWidgetWrappers = wrapper.findAll('InputTextWidget-stub');
     expect(columnPickerWrappers.length).toEqual(1);
@@ -27,7 +21,6 @@ describe('Widget CumSumWidget', () => {
 
   it('should pass down the properties to the input components', () => {
     const wrapper = shallowMount(CumSumWidget, {
-      pinia,
       localVue,
       sync: false,
       propsData: {
@@ -42,7 +35,6 @@ describe('Widget CumSumWidget', () => {
 
   it('should emit value on created if values are empty', () => {
     const wrapper = shallowMount(CumSumWidget, {
-      pinia,
       localVue,
       sync: false,
     });
@@ -54,7 +46,6 @@ describe('Widget CumSumWidget', () => {
       propsData: {
         value: ['lolilol', 'yolo'],
       },
-      pinia,
       localVue,
       sync: false,
     });
@@ -66,7 +57,6 @@ describe('Widget CumSumWidget', () => {
       propsData: {
         value: ['yolo', 'bim'],
       },
-      pinia,
       localVue,
       sync: false,
     });
@@ -79,7 +69,6 @@ describe('Widget CumSumWidget', () => {
       propsData: {
         value: ['yolo', 'bim'],
       },
-      pinia,
       localVue,
       sync: false,
     });
@@ -89,10 +78,8 @@ describe('Widget CumSumWidget', () => {
 
   describe('Warning', () => {
     it('should report a warning when newColumn is an already existing column name', () => {
-      setupMockStore({ dataset: { headers: [{ name: 'columnA' }], data: [] } });
       const wrapper = shallowMount(CumSumWidget, {
-        propsData: { value: ['yolo', 'columnA'] },
-        pinia,
+        propsData: { value: ['yolo', 'columnA'], columnNames: ['columnA'] },
         localVue,
         sync: false,
       });
@@ -102,10 +89,8 @@ describe('Widget CumSumWidget', () => {
     });
 
     it('should not report any warning if newColumn is not an already existing column name', () => {
-      setupMockStore({ dataset: { headers: [{ name: 'columnA' }], data: [] } });
       const wrapper = shallowMount(CumSumWidget, {
-        propsData: { value: ['yolo', 'columnB'] },
-        pinia,
+        propsData: { value: ['yolo', 'columnB'], columnNames: ['columnA'] },
         localVue,
         sync: false,
       });

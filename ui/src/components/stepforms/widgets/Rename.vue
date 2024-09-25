@@ -11,6 +11,9 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :trusted-variable-delimiters="trustedVariableDelimiters"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="$emit('setSelectedColumns', $event)"
     />
     <InputTextWidget
       class="newColumn"
@@ -32,8 +35,6 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-import { Getter } from 'pinia-class';
 
 import InputTextWidget from './InputText.vue';
 
@@ -66,7 +67,11 @@ export default class RenameWidget extends Vue {
   @Prop()
   trustedVariableDelimiters?: VariableDelimiters;
 
-  @Getter(VQBModule) columnNames!: string[];
+  @Prop({ default: () => [] })
+  selectedColumns!: string[];
+
+  @Prop({ default: () => [] })
+  columnNames!: string[];
 
   created() {
     if (isEqual(this.value, ['', ''])) {

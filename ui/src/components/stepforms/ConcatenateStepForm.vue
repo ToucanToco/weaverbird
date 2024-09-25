@@ -20,6 +20,9 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :trusted-variable-delimiters="trustedVariableDelimiters"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <InputTextWidget
       class="separator"
@@ -49,9 +52,6 @@ import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
 import type { ConcatenateStep, PipelineStepName } from '@/lib/steps';
-import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-import { State } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -65,11 +65,6 @@ import BaseStepForm from './StepForm.vue';
 })
 export default class ConcatenateStepForm extends BaseStepForm<ConcatenateStep> {
   stepname: PipelineStepName = 'concatenate';
-
-  @State(VQBModule) availableVariables?: VariablesBucket;
-
-  @State(VQBModule) variableDelimiters?: VariableDelimiters;
-  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,

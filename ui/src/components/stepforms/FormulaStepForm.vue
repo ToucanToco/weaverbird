@@ -39,9 +39,6 @@ import { Prop } from 'vue-property-decorator';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { escapeForUseInRegExp } from '@/lib/helpers';
 import type { Formula, FormulaStep, PipelineStepName } from '@/lib/steps';
-import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-import { State } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -53,11 +50,6 @@ import BaseStepForm from './StepForm.vue';
 })
 export default class FormulaStepForm extends BaseStepForm<FormulaStep> {
   stepname: PipelineStepName = 'formula';
-
-  @State(VQBModule) availableVariables?: VariablesBucket;
-
-  @State(VQBModule) variableDelimiters?: VariableDelimiters;
-  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'formula', newColumn: '', formula: '' }) })
   declare initialStepValue: FormulaStep;

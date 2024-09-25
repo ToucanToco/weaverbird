@@ -61,13 +61,11 @@ import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import type { ColumnTypeMapping } from '@/lib/dataset';
 import {
   keepCurrentValueIfArrayType,
-  keepCurrentValueIfCompatibleDate,
   keepCurrentValueIfCompatibleRelativeDate,
   keepCurrentValueIfCompatibleType,
 } from '@/lib/helpers';
 import type { FilterSimpleCondition } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { useVQBStore } from '@/store';
 
 import InputDateWidget from './InputDate.vue';
 import MultiInputTextWidget from './MultiInputText.vue';
@@ -136,6 +134,7 @@ export default defineComponent({
 
   emits: {
     input: (_val: FilterSimpleCondition) => true,
+    setSelectedColumns: (_: { column: string }) => true,
   },
 
   props: {
@@ -188,27 +187,10 @@ export default defineComponent({
   },
 
   computed: {
-    store() {
-      return useVQBStore();
-    },
-    columnNamesFromStore(): string[] {
-      return this.store.columnNames;
-    },
-
-    featureFlags(): Record<string, any> {
-      return this.store.featureFlags ?? {};
-    },
-
     // Column names can be provided either in the store or via a prop
     // The prop takes priority over the store
     columnNames() {
-      if (this.columnNamesProp && this.columnNamesProp.length > 0) {
-        return this.columnNamesProp;
-      } else if (this.columnNamesFromStore && this.columnNamesFromStore.length > 0) {
-        return this.columnNamesFromStore;
-      } else {
-        return [];
-      }
+      return this.columnNamesProp ?? [];
     },
 
     availableVariablesForInputWidget(): VariablesBucket | undefined {
@@ -307,7 +289,7 @@ export default defineComponent({
     updateStepColumn(newValue: string) {
       const updatedValue = { ...this.value };
       updatedValue.column = newValue;
-      this.store.setSelectedColumns({ column: updatedValue.column });
+      this.$emit('setSelectedColumns', { column: updatedValue.column });
       this.$emit('input', updatedValue);
     },
   },

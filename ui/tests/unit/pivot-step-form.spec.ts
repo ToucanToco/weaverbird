@@ -36,11 +36,8 @@ describe('Pivot Step Form', () => {
     },
     {
       testlabel: 'index and columnToPivot column names overlap',
-      store: {
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [],
-        },
+      props: {
+        columnTypes: { columnA: 'string', columnB: 'string', columnC: 'string' },
       },
       data: {
         editedStep: {
@@ -60,11 +57,8 @@ describe('Pivot Step Form', () => {
     },
     {
       testlabel: 'index and valueColumn column names overlap',
-      store: {
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [],
-        },
+      props: {
+        columnTypes: { columnA: 'string', columnB: 'string', columnC: 'string' },
       },
       data: {
         editedStep: {
@@ -84,11 +78,8 @@ describe('Pivot Step Form', () => {
     },
     {
       testlabel: 'columnToPivot and valueColumn are equal',
-      store: {
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [],
-        },
+      props: {
+        columnTypes: { columnA: 'string', columnB: 'string', columnC: 'string' },
       },
       data: {
         editedStep: {
@@ -109,7 +100,7 @@ describe('Pivot Step Form', () => {
   ]);
 
   it('should pass down props to widgets', async () => {
-    const wrapper = runner.shallowMount(undefined, {
+    const wrapper = runner.shallowMount({
       data: {
         editedStep: {
           name: 'pivot',
@@ -127,24 +118,20 @@ describe('Pivot Step Form', () => {
   });
 
   it('should instantiate indexInput widget multiselect with column names', () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
+    const wrapper = runner.shallowMount({
+      propsData: {
+        columnTypes: { columnA: 'string', columnB: 'string', columnC: 'string' },
       },
-    };
-    const wrapper = runner.shallowMount(initialState);
+    });
     expect(wrapper.find('.indexInput').attributes('options')).toEqual('columnA,columnB,columnC');
   });
 
   it('should instantiate valueColumnInput widget autocomplete with column names', () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
+    const wrapper = runner.shallowMount({
+      propsData: {
+        columnTypes: { columnA: 'string', columnB: 'string', columnC: 'string' },
       },
-    };
-    const wrapper = runner.shallowMount(initialState);
+    });
     expect(wrapper.find('.valueColumnInput').attributes('options')).toEqual(
       'columnA,columnB,columnC',
     );
@@ -158,16 +145,13 @@ describe('Pivot Step Form', () => {
   });
 
   it('should update step when selectedColumn is changed', async () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
+    const wrapper = runner.shallowMount({
+      propsData: {
+        columnTypes: { columnA: 'string', columnB: 'string', columnC: 'string' },
       },
-    };
-    const wrapper = runner.shallowMount(initialState);
-    const store = runner.getStore();
+    });
     expect(wrapper.vm.$data.editedStep.columnToPivot).toEqual('');
-    store.toggleColumnSelection({ column: 'columnB' });
+    wrapper.setProps({ selectedColumns: ['columnB'] });
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.$data.editedStep.columnToPivot).toEqual('columnB');
   });

@@ -1,40 +1,32 @@
 import type { Meta, StoryObj } from '@storybook/vue';
-import { createPinia, PiniaVuePlugin } from 'pinia';
-import Vue from 'vue';
 
 import JoinStepForm from '@/components/stepforms/JoinStepForm.vue';
-import { setupVQBStore } from '@/store';
 
 export default {
   component: JoinStepForm,
 } as Meta<JoinStepForm>;
-
-Vue.use(PiniaVuePlugin);
 
 export const Default: StoryObj<JoinStepForm> = {
   render: (args, { argTypes }) => ({
     components: { JoinStepForm },
     props: Object.keys(argTypes),
     template: '<JoinStepForm v-bind="$props" />',
-    pinia: createPinia(),
-    created: function () {
-      setupVQBStore({
-        backendMessages: [],
-        dataset: { headers: [], data: [] },
-        availableDomains: [
-          { name: 'Dataset 1', uid: '1' },
-          { name: 'Dataset 2', uid: '2' },
-          { name: 'Dataset 3', uid: '3' },
-        ],
-        unjoinableDomains: [
-          { name: 'Dataset 1', uid: '1' },
-          { name: 'Dataset 2', uid: '2' },
-        ],
-      });
-    },
   }),
   args: {
     initialStepValue: { name: 'join', rightPipeline: '', type: 'left', on: [['', '']] },
+    availableDomains: [
+      { name: 'Dataset 1', uid: '1' },
+      { name: 'Dataset 2', uid: '2' },
+      { name: 'Dataset 3', uid: '3' },
+    ],
+    unjoinableDomains: [
+      { name: 'Dataset 1', uid: '1' },
+      { name: 'Dataset 2', uid: '2' },
+    ],
+    columnTypes: {
+      name: 'string',
+    },
+    getColumnNamesFromPipeline: () => Promise.resolve(['name', 'other']),
   },
 };
 
@@ -43,29 +35,26 @@ export const Edition: StoryObj<JoinStepForm> = {
     components: { JoinStepForm },
     props: Object.keys(argTypes),
     template: '<JoinStepForm v-bind="$props" />',
-    pinia: createPinia(),
-    created: function () {
-      setupVQBStore({
-        backendMessages: [],
-        dataset: { headers: [], data: [] },
-        availableDomains: [
-          { name: 'Dataset 1', uid: '1' },
-          { name: 'Dataset 2', uid: '2' },
-          { name: 'Dataset 3', uid: '3' },
-        ],
-        unjoinableDomains: [
-          { name: 'Dataset 1', uid: '1' },
-          { name: 'Dataset 2', uid: '2' },
-        ],
-      });
-    },
   }),
   args: {
     initialStepValue: {
       name: 'join',
-      rightPipeline: { type: 'ref', uid: '2' },
+      rightPipeline: { type: 'ref', uid: '3' },
       type: 'left',
       on: [['name', 'name']],
     },
+    availableDomains: [
+      { name: 'Dataset 1', uid: '1' },
+      { name: 'Dataset 2', uid: '2' },
+      { name: 'Dataset 3', uid: '3' },
+    ],
+    unjoinableDomains: [
+      { name: 'Dataset 1', uid: '1' },
+      { name: 'Dataset 2', uid: '2' },
+    ],
+    columnTypes: {
+      name: 'string',
+    },
+    getColumnNamesFromPipeline: () => Promise.resolve(['name', 'other']),
   },
 };

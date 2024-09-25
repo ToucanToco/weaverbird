@@ -39,29 +39,20 @@ describe('Append Step Form', () => {
     },
   });
 
-  runner.testCancel({
-    currentPipelineName: 'default_pipeline',
-    pipelines: {
-      default_pipeline: [
-        { name: 'domain', domain: 'foo' },
-        { name: 'rename', toRename: [['foo', 'bar']] },
-      ],
-    },
-    selectedStepIndex: 1,
-  });
+  runner.testCancel();
 
   runner.testResetSelectedIndex();
 
   it('should instantiate a multiselect widget with proper options from the store', () => {
-    const initialState = {
-      currentPipelineName: 'my_dataset',
-      availableDomains: [
-        { name: 'dataset1', uid: '1' },
-        { name: 'dataset2', uid: '2' },
-      ],
-      unjoinableDomains: [{ name: 'dataset2', uid: '2' }],
-    };
-    const wrapper = runner.shallowMount(initialState);
+    const wrapper = runner.shallowMount({
+      propsData: {
+        availableDomains: [
+          { name: 'dataset1', uid: '1' },
+          { name: 'dataset2', uid: '2' },
+        ],
+        unjoinableDomains: [{ name: 'dataset2', uid: '2' }],
+      },
+    });
     const widgetMultiselect = wrapper.find('multiselectwidget-stub');
     expect(widgetMultiselect.props('options')).toEqual([
       { trackBy: { type: 'ref', uid: '1' }, label: 'dataset1' },
@@ -77,15 +68,14 @@ describe('Append Step Form', () => {
   });
 
   it('should handle dataset references', async () => {
-    const initialState = {
-      currentPipelineName: 'my_dataset',
-      availableDomains: [
-        { name: 'dataset1', uid: '1' },
-        { name: 'dataset2', uid: '2' },
-      ],
-      unjoinableDomains: [],
-    };
-    const wrapper = runner.shallowMount(initialState, {
+    const wrapper = runner.shallowMount({
+      propsData: {
+        availableDomains: [
+          { name: 'dataset1', uid: '1' },
+          { name: 'dataset2', uid: '2' },
+        ],
+        unjoinableDomains: [],
+      },
       data: {
         editedStep: {
           name: 'append',

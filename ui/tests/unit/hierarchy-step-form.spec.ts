@@ -18,13 +18,8 @@ describe('Hierarchy Step Form', () => {
 
   runner.testValidate({
     testlabel: 'submitted data is valid',
-    store: {
-      dataset: {
-        headers: [{ name: 'columnA' }],
-        data: [],
-      },
-    },
     props: {
+      columnTypes: { columnA: 'string' },
       initialStepValue: {
         name: 'hierarchy',
         hierarchyLevelColumn: 'type',

@@ -14,14 +14,11 @@ describe('To Uppercase Step Form', () => {
   });
 
   it('should display step column on edition', () => {
-    const wrapper = runner.shallowMount(
-      {},
-      {
-        propsData: {
-          initialStepValue: { name: 'uppercase', column: 'foo' },
-        },
+    const wrapper = runner.shallowMount({
+      propsData: {
+        initialStepValue: { name: 'uppercase', column: 'foo' },
       },
-    );
+    });
     const columnPicker = wrapper.find('columnpicker-stub');
     expect(columnPicker.attributes('value')).toEqual('foo');
   });

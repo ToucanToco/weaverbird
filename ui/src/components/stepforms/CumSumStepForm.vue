@@ -19,6 +19,9 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :trusted-variable-delimiters="trustedVariableDelimiters"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
       unstyled-items
     />
     <ColumnPicker
@@ -29,6 +32,9 @@
       data-path=".referenceColumn"
       :syncWithSelectedColumn="false"
       :errors="errors"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <MultiselectWidget
       class="groupbyInput"
@@ -53,9 +59,6 @@ import { Prop } from 'vue-property-decorator';
 
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import type { CumSumStep, PipelineStepName } from '@/lib/steps';
-import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-import { State } from 'pinia-class';
 
 import ColumnPicker from './ColumnPicker.vue';
 import BaseStepForm from './StepForm.vue';
@@ -74,11 +77,6 @@ import MultiselectWidget from './widgets/Multiselect.vue';
 })
 export default class CumSumStepForm extends BaseStepForm<CumSumStep> {
   stepname: PipelineStepName = 'cumsum';
-
-  @State(VQBModule) availableVariables?: VariablesBucket;
-
-  @State(VQBModule) variableDelimiters?: VariableDelimiters;
-  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,

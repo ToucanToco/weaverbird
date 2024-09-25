@@ -17,9 +17,20 @@ import FilterEditor from './components/FilterEditor.vue';
 import Pagination from './components/Pagination.vue';
 import PipelineSelector from './components/PipelineSelector.vue';
 import QueryBuilder from './components/QueryBuilder.vue';
+import StepFormComponent from './components/stepforms/StepFormComponent.vue';
 import DateRangeInput from './components/stepforms/widgets/DateComponents/DateRangeInput.vue';
 import NewDateInput from './components/stepforms/widgets/DateComponents/NewDateInput.vue';
 import Vqb from './components/Vqb.vue';
+
+// export steps constants to be able to migrate dataviewer
+export {
+  STEP_LABELS,
+  ACTION_CATEGORIES,
+  CATEGORY_BUTTONS,
+  COLUMN_MAIN_ACTIONS,
+  COLUMN_OTHER_ACTIONS,
+  COLUMN_TYPES,
+} from './components/constants';
 
 export {
   // All-in-one component
@@ -33,6 +44,7 @@ export {
   NewDateInput,
   DateRangeInput,
   Pagination,
+  StepFormComponent,
 };
 
 // export helpers/utils

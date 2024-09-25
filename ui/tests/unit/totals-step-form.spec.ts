@@ -24,7 +24,7 @@ describe('Add Total Rows Step Form', () => {
 
   describe('ListWidget "totalDimensions"', () => {
     it('should pass down the "totalDimensions" prop to the first ListWidget value prop', async () => {
-      const wrapper = runner.shallowMount(undefined, {
+      const wrapper = runner.shallowMount({
         data: {
           editedStep: {
             name: 'totals',
@@ -40,7 +40,7 @@ describe('Add Total Rows Step Form', () => {
     });
 
     it('should get the right data "totalDimensions" when editedStep.totals is empty', async () => {
-      const wrapper = runner.shallowMount(undefined, {
+      const wrapper = runner.shallowMount({
         data: {
           editedStep: {
             name: 'totals',
@@ -56,7 +56,7 @@ describe('Add Total Rows Step Form', () => {
     });
 
     it('should update the edited step when one of the subcomponents emits an updated value', () => {
-      const wrapper = runner.shallowMount(undefined, {
+      const wrapper = runner.shallowMount({
         data: {
           editedStep: {
             name: 'totals',
@@ -85,7 +85,7 @@ describe('Add Total Rows Step Form', () => {
 
   describe('ListWidget "aggregations"', () => {
     it('should pass down the "aggregations" prop to the ListWidget value prop', async () => {
-      const wrapper = runner.shallowMount(undefined, {
+      const wrapper = runner.shallowMount({
         data: {
           editedStep: {
             name: 'totals',
@@ -108,19 +108,17 @@ describe('Add Total Rows Step Form', () => {
 
   describe('MultiselectWidget', () => {
     it('should instantiate an MultiselectWidget widget with proper options from the store', () => {
-      const initialState = {
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [],
+      const wrapper = runner.shallowMount({
+        propsData: {
+          columnTypes: { columnA: 'string', columnB: 'string', columnC: 'string' },
         },
-      };
-      const wrapper = runner.shallowMount(initialState);
+      });
       const widgetMultiselect = wrapper.find('multiselectwidget-stub');
       expect(widgetMultiselect.attributes('options')).toEqual('columnA,columnB,columnC');
     });
 
     it('should pass down the "groups" prop to the MultiselectWidget value prop', async () => {
-      const wrapper = runner.shallowMount(undefined, {
+      const wrapper = runner.shallowMount({
         data: {
           editedStep: {
             name: 'totals',
@@ -241,7 +239,7 @@ describe('Add Total Rows Step Form', () => {
         { columns: ['bar', 'test'], newcolumns: ['', ''], aggfunction: 'avg' },
       ],
     };
-    const wrapper = runner.mount(undefined, { data: { editedStep } });
+    const wrapper = runner.mount({ data: { editedStep } });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(setAggregationsNewColumnsInStep).toHaveBeenCalled();
     expect(setAggregationsNewColumnsInStep).toHaveBeenCalledWith(editedStep);

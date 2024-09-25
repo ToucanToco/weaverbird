@@ -16,10 +16,9 @@ describe('Filter Step Form', () => {
   runner.testValidationErrors([
     {
       testlabel: 'submitted data is not valid',
-      store: {
-        dataset: {
-          headers: [{ name: 'foo', type: 'string' }],
-          data: [[null]],
+      props: {
+        propsData: {
+          columnTypes: { foo: 'string' },
         },
       },
       data: {
@@ -36,13 +35,8 @@ describe('Filter Step Form', () => {
   ]);
 
   runner.testValidate({
-    store: {
-      dataset: {
-        headers: [{ name: 'foo', type: 'string' }],
-        data: [[null]],
-      },
-    },
     props: {
+      columnTypes: { foo: 'string' },
       initialStepValue: {
         name: 'filter',
         condition: {
@@ -62,22 +56,17 @@ describe('Filter Step Form', () => {
     let wrapper: Wrapper<FilterStepForm>;
 
     beforeEach(async () => {
-      wrapper = runner.shallowMount(
-        {
-          dataset: {
-            headers: [{ name: 'foo', type: 'string' }],
-            data: [[null]],
+      wrapper = runner.shallowMount({
+        propsData: {
+          columnTypes: { foo: 'string' },
+        },
+        data: {
+          editedStep: {
+            name: 'filter',
+            condition: { column: 'foo', value: 'bar', operator: 'gt' },
           },
         },
-        {
-          data: {
-            editedStep: {
-              name: 'filter',
-              condition: { column: 'foo', value: 'bar', operator: 'gt' },
-            },
-          },
-        },
-      );
+      });
       await wrapper.vm.$nextTick();
     });
 
@@ -97,7 +86,7 @@ describe('Filter Step Form', () => {
   });
 
   it('should update editedStep with the new filter tree', () => {
-    const wrapper = runner.shallowMount(undefined, {
+    const wrapper = runner.shallowMount({
       data: {
         editedStep: {
           name: 'filter',
@@ -123,47 +112,29 @@ describe('Filter Step Form', () => {
   });
 
   it('should use selected column at creation', () => {
-    const initialState = {
-      dataset: {
-        headers: [
-          { name: 'foo', type: 'string' },
-          { name: 'bar', type: 'string' },
-        ],
-        data: [[null]],
+    const wrapper = runner.mount({
+      propsData: {
+        columnTypes: { foo: 'string', bar: 'string' },
+        selectedColumns: ['bar'],
       },
-      selectedColumns: ['bar'],
-    };
-    const wrapper = runner.mount(initialState);
+    });
     expect(wrapper.vm.$data.editedStep.condition.column).toEqual('bar');
   });
 
   it('should have no default column if no selected column', () => {
-    const initialState = {
-      dataset: {
-        headers: [
-          { name: 'foo', type: 'string' },
-          { name: 'bar', type: 'string' },
-        ],
-        data: [[null]],
+    const wrapper = runner.mount({
+      propsData: {
+        columnTypes: { foo: 'string', bar: 'string' },
       },
-    };
-    const wrapper = runner.mount(initialState);
+    });
     expect(wrapper.vm.$data.editedStep.condition.column).toEqual('');
   });
 
   it('should not use selected column on edition', () => {
-    const initialState = {
-      dataset: {
-        headers: [
-          { name: 'foo', type: 'string' },
-          { name: 'bar', type: 'string' },
-        ],
-        data: [[null]],
-      },
-      selectedColumns: ['bar'],
-    };
-    const wrapper = runner.mount(initialState, {
+    const wrapper = runner.mount({
       propsData: {
+        columnTypes: { foo: 'string', bar: 'string' },
+        selectedColumns: ['bar'],
         isStepCreation: false,
         initialStepValue: {
           name: 'filter',
@@ -178,14 +149,9 @@ describe('Filter Step Form', () => {
   });
 
   it('should not raise errors with undefined or empty value', () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'columnA', type: 'boolean' }],
-        data: [[null]],
-      },
-    };
-    const wrapper = runner.mount(initialState, {
+    const wrapper = runner.mount({
       propsData: {
+        columnTypes: { columnA: 'boolean' },
         initialStepValue: {
           name: 'filter',
           condition: { column: 'columnA', operator: 'eq', value: '' },
@@ -194,15 +160,13 @@ describe('Filter Step Form', () => {
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).toBeNull();
-    expect(wrapper.emitted()).toEqual({
-      formSaved: [
-        [
-          {
-            name: 'filter',
-            condition: { column: 'columnA', operator: 'eq', value: '' },
-          },
-        ],
+    expect(wrapper.emitted().formSaved).toEqual([
+      [
+        {
+          name: 'filter',
+          condition: { column: 'columnA', operator: 'eq', value: '' },
+        },
       ],
-    });
+    ]);
   });
 });

@@ -22,6 +22,9 @@
       :variable-delimiters="variableDelimiters"
       :trusted-variable-delimiters="trustedVariableDelimiters"
       unstyled-items
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <StepFormButtonbar />
   </div>
@@ -34,9 +37,6 @@ import { Prop } from 'vue-property-decorator';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
 import RenameWidget from '@/components/stepforms/widgets/Rename.vue';
 import type { PipelineStepName, RenameStep } from '@/lib/steps';
-import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-import { State } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -48,11 +48,6 @@ import BaseStepForm from './StepForm.vue';
 })
 export default class RenameStepForm extends BaseStepForm<RenameStep> {
   stepname: PipelineStepName = 'rename';
-
-  @State(VQBModule) availableVariables?: VariablesBucket;
-
-  @State(VQBModule) variableDelimiters?: VariableDelimiters;
-  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'rename', toRename: [['', '']] }) })
   declare initialStepValue: RenameStep;

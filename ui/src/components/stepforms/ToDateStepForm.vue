@@ -14,6 +14,9 @@
       placeholder="Add column"
       data-path=".column"
       :errors="errors"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <!-- Format options are not supported in Mongo 3.6 -->
     <AutocompleteWidget
@@ -51,8 +54,6 @@ import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import type { PipelineStepName, ToDateStep } from '@/lib/steps';
-import { VQBModule } from '@/store';
-import { State } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -75,8 +76,6 @@ export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
 
   @Prop({ type: Object, default: () => ({ name: 'todate', column: '', format: undefined }) })
   declare initialStepValue: ToDateStep;
-
-  @State(VQBModule) translator!: string;
 
   readonly title: string = 'Convert Column From Text to Date';
   readonly formatOptions: FormatOption[] = [

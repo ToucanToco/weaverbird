@@ -47,23 +47,12 @@ describe('Unpivot Step Form', () => {
     },
   );
 
-  runner.testCancel({
-    currentPipelineName: 'default_pipeline',
-    pipelines: {
-      default_pipeline: [
-        { name: 'domain', domain: 'foo' },
-        { name: 'rename', toRename: [['foo', 'bar']] },
-        { name: 'rename', toRename: [['baz', 'spam']] },
-        { name: 'rename', toRename: [['tic', 'tac']] },
-      ],
-    },
-    selectedStepIndex: 2,
-  });
+  runner.testCancel();
 
   runner.testResetSelectedIndex();
 
   it('should pass down props to widgets', async () => {
-    const wrapper = runner.shallowMount(undefined, {
+    const wrapper = runner.shallowMount({
       data: {
         editedStep: {
           name: 'unpivot',
@@ -83,13 +72,11 @@ describe('Unpivot Step Form', () => {
   });
 
   it('should instantiate an autocomplete widget with proper options from the store', () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
+    const wrapper = runner.shallowMount({
+      propsData: {
+        columnTypes: { columnA: 'string', columnB: 'string', columnC: 'string' },
       },
-    };
-    const wrapper = runner.shallowMount(initialState);
+    });
     expect(wrapper.find('.keepColumnInput').attributes('options')).toEqual(
       'columnA,columnB,columnC',
     );

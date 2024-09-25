@@ -17,19 +17,17 @@ describe('Cumsum Step Form', () => {
 
   describe('MultiselectWidgets', () => {
     it('should instantiate a MultiselectWidget widget with proper options from the store', () => {
-      const initialState = {
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [],
+      const wrapper = runner.shallowMount({
+        propsData: {
+          columnTypes: { columnA: 'string', columnB: 'string', columnC: 'string' },
         },
-      };
-      const wrapper = runner.shallowMount(initialState);
+      });
       const widgetMultiselect = wrapper.find('multiselectwidget-stub');
       expect(widgetMultiselect.attributes('options')).toEqual('columnA,columnB,columnC');
     });
 
     it('should pass down the props to the MultiselectWidget value prop', async () => {
-      const wrapper = runner.shallowMount(undefined, {
+      const wrapper = runner.shallowMount({
         data: {
           editedStep: {
             name: 'cumsum',
@@ -74,13 +72,8 @@ describe('Cumsum Step Form', () => {
 
     runner.testValidate({
       testlabel: 'submitted data is valid',
-      store: {
-        dataset: {
-          headers: [{ name: 'columnA' }],
-          data: [],
-        },
-      },
       props: {
+        columnTypes: { columnA: 'string' },
         initialStepValue: {
           name: 'cumsum',
           toCumSum: [['myValues', 'myNewColumn']],
@@ -95,19 +88,16 @@ describe('Cumsum Step Form', () => {
   runner.testResetSelectedIndex();
 
   it('should convert editedStep from old configurations to new configuration', async () => {
-    const wrapper = runner.shallowMount(
-      {},
-      {
-        propsData: {
-          initialStepValue: {
-            name: 'cumsum',
-            valueColumn: 'foo',
-            newColumn: 'bar',
-            referenceColumn: 'toto',
-          },
+    const wrapper = runner.shallowMount({
+      propsData: {
+        initialStepValue: {
+          name: 'cumsum',
+          valueColumn: 'foo',
+          newColumn: 'bar',
+          referenceColumn: 'toto',
         },
       },
-    );
+    });
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.$data.editedStep.toCumSum).toBeDefined();
     expect(wrapper.vm.$data.editedStep.toCumSum).toEqual([['foo', 'bar']]);
@@ -118,18 +108,15 @@ describe('Cumsum Step Form', () => {
   });
 
   it('should pass down "toCumSum" to ListWidget', async () => {
-    const wrapper = runner.shallowMount(
-      {},
-      {
-        data: {
-          editedStep: {
-            name: 'cumsum',
-            toCumSum: [['foo', 'bar']],
-            referenceColumn: 'toto',
-          },
+    const wrapper = runner.shallowMount({
+      data: {
+        editedStep: {
+          name: 'cumsum',
+          toCumSum: [['foo', 'bar']],
+          referenceColumn: 'toto',
         },
       },
-    );
+    });
     await wrapper.vm.$nextTick();
     expect(wrapper.find('listwidget-stub').props().value).toEqual([['foo', 'bar']]);
   });

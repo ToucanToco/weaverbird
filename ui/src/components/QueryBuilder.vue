@@ -1,13 +1,12 @@
 <template>
   <div class="query-builder" data-cy="weaverbird-query-builder" v-if="pipeline">
     <transition v-if="isEditingStep" name="slide-right" mode="out-in">
-      <component
+      <StepForm
         key="stepForm"
-        :is="formComponent"
         ref="step"
+        :name="currentStepFormName"
         :initialStepValue="stepFormInitialValue"
         :stepFormDefaults="stepFormDefaults"
-        :isStepCreation="isStepCreation"
         :backendError="backendError"
         @back="closeStepForm"
         @formSaved="saveStep"
@@ -44,11 +43,12 @@ import { Action, Getter, State } from 'pinia-class';
 import { VQBModule, type VQBActions } from '@/store';
 
 import { version } from '../../package.json';
-import StepFormsComponents from './stepforms';
+import StoreStepFormComponent from './stepforms/StoreStepFormComponent.vue';
 
 @Component({
   name: 'query-builder',
   components: {
+    StepForm: StoreStepFormComponent,
     Pipeline: PipelineComponent,
     FAIcon,
   },
@@ -74,10 +74,6 @@ export default class QueryBuilder extends Vue {
 
   get isStepCreation() {
     return this.stepFormInitialValue === undefined;
-  }
-
-  get formComponent() {
-    return StepFormsComponents[this.currentStepFormName];
   }
 
   get backendError(): string | undefined {

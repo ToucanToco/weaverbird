@@ -1,24 +1,18 @@
-import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { PiniaVuePlugin } from 'pinia';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import JoinColumns from '@/components/stepforms/widgets/JoinColumns.vue';
 
-import { setupMockStore } from './utils';
-
 const localVue = createLocalVue();
-localVue.use(PiniaVuePlugin);
-const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 describe('Widget JoinColumnsWidget', () => {
   it('should instantiate', () => {
-    const wrapper = shallowMount(JoinColumns, { pinia, localVue });
+    const wrapper = shallowMount(JoinColumns, { localVue });
     expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should have exactly 2 input components', () => {
-    const wrapper = shallowMount(JoinColumns, { pinia, localVue });
+    const wrapper = shallowMount(JoinColumns, { localVue });
     const rightComponentWrappers = wrapper.findAll('.rightOn');
     const leftComponentWrappers = wrapper.findAll('.leftOn');
     expect(rightComponentWrappers.length).toEqual(1);
@@ -26,13 +20,12 @@ describe('Widget JoinColumnsWidget', () => {
   });
 
   it('should suggest the columns of the actual dataset in the left widget', () => {
-    setupMockStore({
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
+    const wrapper = shallowMount(JoinColumns, {
+      localVue,
+      propsData: {
+        columnNames: ['columnA', 'columnB', 'columnC'],
       },
     });
-    const wrapper = shallowMount(JoinColumns, { pinia, localVue });
     const leftWidgetWrapper = wrapper.find('.leftOn');
     expect(leftWidgetWrapper.props().options).toEqual(['columnA', 'columnB', 'columnC']);
   });
@@ -42,7 +35,6 @@ describe('Widget JoinColumnsWidget', () => {
       propsData: {
         value: ['toto', 'tata'],
       },
-      pinia,
       localVue,
       sync: false,
     });
@@ -55,7 +47,6 @@ describe('Widget JoinColumnsWidget', () => {
       propsData: {
         value: ['toto', 'tata'],
       },
-      pinia,
       localVue,
       sync: false,
     });
@@ -68,7 +59,6 @@ describe('Widget JoinColumnsWidget', () => {
       propsData: {
         rightColumnNames: ['meow', 'plop'],
       },
-      pinia,
       localVue,
       sync: false,
     });
@@ -78,7 +68,7 @@ describe('Widget JoinColumnsWidget', () => {
   });
 
   it('should let user freely input if right dataset column names are not provided', () => {
-    const wrapper = shallowMount(JoinColumns, { pinia, localVue, sync: false });
+    const wrapper = shallowMount(JoinColumns, { localVue, sync: false });
     const rightWidgetWrapper = wrapper.find('.rightOn');
     expect(rightWidgetWrapper.is('InputTextWidget-stub')).toBe(true);
   });
@@ -88,7 +78,6 @@ describe('Widget JoinColumnsWidget', () => {
       propsData: {
         value: ['toto', 'tata'],
       },
-      pinia,
       localVue,
       sync: false,
     });
@@ -105,7 +94,6 @@ describe('Widget JoinColumnsWidget', () => {
       propsData: {
         value: ['toto', 'tata'],
       },
-      pinia,
       localVue,
       sync: false,
     });
@@ -122,7 +110,6 @@ describe('Widget JoinColumnsWidget', () => {
       propsData: {
         value: ['toto', ''],
       },
-      pinia,
       localVue,
       sync: false,
     });

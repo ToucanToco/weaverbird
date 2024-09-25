@@ -44,7 +44,7 @@ describe('Moving Average Step Form', () => {
   runner.testResetSelectedIndex();
 
   it('should pass down the properties to the input components', async () => {
-    const wrapper = runner.shallowMount(undefined, {
+    const wrapper = runner.shallowMount({
       data: {
         editedStep: {
           name: 'movingaverage',
@@ -69,42 +69,36 @@ describe('Moving Average Step Form', () => {
       const compiled = _.template(s);
       return compiled(context);
     }
-    const wrapper = runner.mount(
-      {
+    const wrapper = runner.mount({
+      propsData: {
+        initialStepValue: {
+          name: 'movingaverage',
+          valueColumn: 'foo',
+          columnToSort: 'bar',
+          movingWindow: '<%= movedWidow %>',
+          groups: ['test'],
+          newColumnName: 'toto',
+        },
         variables: {
           movedWidow: 42,
         },
         interpolateFunc: interpolate,
       },
-      {
-        propsData: {
-          initialStepValue: {
-            name: 'movingaverage',
-            valueColumn: 'foo',
-            columnToSort: 'bar',
-            movingWindow: '<%= movedWidow %>',
-            groups: ['test'],
-            newColumnName: 'toto',
-          },
-        },
-      },
-    );
+    });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.$data.errors).toBeNull();
-    expect(wrapper.emitted()).toEqual({
-      formSaved: [
-        [
-          {
-            name: 'movingaverage',
-            valueColumn: 'foo',
-            columnToSort: 'bar',
-            movingWindow: '<%= movedWidow %>',
-            groups: ['test'],
-            newColumnName: 'toto',
-          },
-        ],
+    expect(wrapper.emitted().formSaved).toEqual([
+      [
+        {
+          name: 'movingaverage',
+          valueColumn: 'foo',
+          columnToSort: 'bar',
+          movingWindow: '<%= movedWidow %>',
+          groups: ['test'],
+          newColumnName: 'toto',
+        },
       ],
-    });
+    ]);
   });
 });

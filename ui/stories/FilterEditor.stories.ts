@@ -1,20 +1,15 @@
 import type { Meta, StoryFn } from '@storybook/vue';
-import { createPinia, PiniaVuePlugin } from 'pinia';
-import Vue from 'vue';
 
 import FilterEditor from '@/components/FilterEditor.vue';
 import type { ColumnTypeMapping } from '@/lib/dataset';
 import type { FilterCondition } from '@/lib/steps';
 import type { AvailableVariable, VariableDelimiters } from '@/lib/variables';
 
-Vue.use(PiniaVuePlugin);
-
 export default {
   component: FilterEditor,
 } as Meta<typeof FilterEditor>;
 
 export const Default: StoryFn<typeof FilterEditor> = () => ({
-  pinia: createPinia(),
   template: `
     <div style="margin: 30px; overflow: auto">
       <FilterEditor
@@ -69,7 +64,6 @@ export const Default: StoryFn<typeof FilterEditor> = () => ({
 });
 
 export const WithVariables: StoryFn<typeof FilterEditor> = () => ({
-  pinia: createPinia(),
   template: `
     <div>
       <FilterEditor

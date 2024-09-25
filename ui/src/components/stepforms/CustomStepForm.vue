@@ -23,8 +23,6 @@ import { Prop } from 'vue-property-decorator';
 
 import type { CustomStep, PipelineStepName } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
-import { VQBModule } from '@/store';
-import { State } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 import CodeEditorWidget from './widgets/CodeEditorWidget.vue';
@@ -36,7 +34,6 @@ import CodeEditorWidget from './widgets/CodeEditorWidget.vue';
 export default class CustomStepForm extends BaseStepForm<CustomStep> {
   stepname: PipelineStepName = 'custom';
 
-  @State(VQBModule) translator!: string;
   @Prop({
     type: Object,
     default: () => ({ name: 'custom', query: '[{"$match": {"domain": "test"}}]' }),

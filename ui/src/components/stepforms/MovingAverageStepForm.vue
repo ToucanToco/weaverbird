@@ -17,6 +17,9 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :trusted-variable-delimiters="trustedVariableDelimiters"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <ColumnPicker
       class="columnToSortInput"
@@ -29,6 +32,9 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :trusted-variable-delimiters="trustedVariableDelimiters"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <InputTextWidget
       class="movingWindowInput"
@@ -74,9 +80,6 @@ import { Prop } from 'vue-property-decorator';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import type { MovingAverageStep, PipelineStepName } from '@/lib/steps';
-import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-import { State } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
@@ -91,11 +94,6 @@ import MultiselectWidget from './widgets/Multiselect.vue';
 })
 export default class MovingAverageStepForm extends BaseStepForm<MovingAverageStep> {
   stepname: PipelineStepName = 'movingaverage';
-
-  @State(VQBModule) availableVariables?: VariablesBucket;
-
-  @State(VQBModule) variableDelimiters?: VariableDelimiters;
-  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,

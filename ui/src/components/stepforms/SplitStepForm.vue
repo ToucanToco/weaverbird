@@ -16,6 +16,9 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :trusted-variable-delimiters="trustedVariableDelimiters"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <InputTextWidget
       class="delimiter"
@@ -45,9 +48,6 @@ import { Prop } from 'vue-property-decorator';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import type { PipelineStepName, SplitStep } from '@/lib/steps';
-import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-import { State } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -60,11 +60,6 @@ import BaseStepForm from './StepForm.vue';
 })
 export default class SplitStepForm extends BaseStepForm<SplitStep> {
   stepname: PipelineStepName = 'split';
-
-  @State(VQBModule) availableVariables?: VariablesBucket;
-
-  @State(VQBModule) variableDelimiters?: VariableDelimiters;
-  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,

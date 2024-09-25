@@ -18,19 +18,17 @@ describe('Cumsum Step Form', () => {
 
   describe('MultiselectWidget', () => {
     it('should instantiate a MultiselectWidget widget with proper options from the store', () => {
-      const initialState = {
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [],
+      const wrapper = runner.shallowMount({
+        propsData: {
+          columnTypes: { columnA: 'string', columnB: 'string', columnC: 'string' },
         },
-      };
-      const wrapper = runner.shallowMount(initialState);
+      });
       const widgetMultiselect = wrapper.find('multiselectwidget-stub');
       expect(widgetMultiselect.attributes('options')).toEqual('columnA,columnB,columnC');
     });
 
     it('should pass down the props to the MultiselectWidget value prop', async () => {
-      const wrapper = runner.shallowMount(undefined, {
+      const wrapper = runner.shallowMount({
         data: {
           editedStep: {
             name: 'rank',
@@ -77,11 +75,8 @@ describe('Cumsum Step Form', () => {
       },
       {
         testlabel: 'existing column name',
-        store: {
-          dataset: {
-            headers: [{ name: 'columnA' }],
-            data: [],
-          },
+        props: {
+          columnTypes: { columnA: 'string' },
         },
         data: {
           editedStep: {
@@ -98,13 +93,8 @@ describe('Cumsum Step Form', () => {
 
     runner.testValidate({
       testlabel: 'submitted data is valid',
-      store: {
-        dataset: {
-          headers: [{ name: 'columnA' }],
-          data: [],
-        },
-      },
       props: {
+        columnTypes: { columnA: 'string' },
         initialStepValue: {
           name: 'rank',
           valueCol: 'VALUE',

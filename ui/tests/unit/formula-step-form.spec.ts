@@ -49,13 +49,11 @@ describe('Formula Step Form', () => {
   runner.testValidate({
     testlabel: 'submitted formula contains variables',
     props: {
-      initialStepValue: { name: 'formula', formula: '<%= some_var %>', newColumn: 'foo' },
-    },
-    store: {
       variableDelimiters: {
         start: '<%=',
         end: '%>',
       },
+      initialStepValue: { name: 'formula', formula: '<%= some_var %>', newColumn: 'foo' },
     },
   });
 
@@ -63,12 +61,9 @@ describe('Formula Step Form', () => {
   runner.testResetSelectedIndex();
 
   it('should pass down properties', async () => {
-    const wrapper = runner.shallowMount(
-      {},
-      {
-        data: { editedStep: { name: 'formula', formula: 'ColumnA * 2', newColumn: 'foo' } },
-      },
-    );
+    const wrapper = runner.shallowMount({
+      data: { editedStep: { name: 'formula', formula: 'ColumnA * 2', newColumn: 'foo' } },
+    });
     await wrapper.vm.$nextTick();
     expect(wrapper.find('.newColumnInput').props('value')).toEqual('foo');
     expect(wrapper.find('.formulaInput').props('value')).toEqual('ColumnA * 2');
@@ -76,13 +71,10 @@ describe('Formula Step Form', () => {
 
   describe('Warning', () => {
     it('should report a warning when newColumn is an already existing column name', async () => {
-      const initialState = {
-        dataset: {
-          headers: [{ name: 'columnA' }],
-          data: [],
+      const wrapper = runner.shallowMount({
+        propsData: {
+          columnTypes: { columnA: 'string' },
         },
-      };
-      const wrapper = runner.shallowMount(initialState, {
         data: { editedStep: { formula: '', newColumn: 'columnA' } },
       });
       await wrapper.vm.$nextTick();
@@ -92,13 +84,10 @@ describe('Formula Step Form', () => {
     });
 
     it('should not report any warning if newColumn is not an already existing column name', async () => {
-      const initialState = {
-        dataset: {
-          headers: [{ name: 'columnA' }],
-          data: [],
+      const wrapper = runner.shallowMount({
+        propsData: {
+          columnTypes: { columnA: 'string' },
         },
-      };
-      const wrapper = runner.shallowMount(initialState, {
         data: { editedStep: { formula: '', newColumn: 'columnB' } },
       });
       await wrapper.vm.$nextTick();
@@ -107,17 +96,13 @@ describe('Formula Step Form', () => {
   });
 
   it('should make the focus on the column modified after validation', () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
+    const wrapper = runner.mount({
+      propsData: {
+        columnTypes: { columnA: 'string', columnB: 'string', columnC: 'string' },
       },
-    };
-    const wrapper = runner.mount(initialState, {
       data: { editedStep: { name: 'formula', formula: 'ColumnA * 2', newColumn: 'foo' } },
     });
-    const store = runner.getStore();
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(store.selectedColumns).toEqual(['foo']);
+    expect(wrapper.emitted().setSelectedColumns).toEqual([[{ column: 'foo' }]]);
   });
 });

@@ -21,6 +21,9 @@
             @input="updateChildValue($event, index)"
             :data-path="`${dataPath}.${index}`"
             :errors="errors"
+            :columnNames="columnNames"
+            :selectedColumns="selectedColumns"
+            @setSelectedColumns="$emit('setSelectedColumns', $event)"
           />
         </div>
         <div class="widget-list__icon" v-if="child.isRemovable" @click="removeChild(index)">
@@ -115,6 +118,12 @@ export default class ListWidget extends FormWidget {
   // Remove gray box and padding around list elements
   @Prop({ type: Boolean, default: false })
   unstyledItems!: boolean;
+
+  @Prop({ type: Array, default: () => [] })
+  columnNames!: string[];
+
+  @Prop({ type: Array, default: () => [] })
+  selectedColumns!: string[];
 
   get children() {
     const valueCopy = [...this.value];

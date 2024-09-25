@@ -9,14 +9,15 @@ import schemaFactory from '@/components/stepforms/schemas';
 import { addAjvKeywords, ajvErrorsToValidationError } from '@/components/stepforms/schemas/utils';
 import StepFormButtonbar from '@/components/stepforms/StepFormButtonbar.vue';
 import StepFormHeader from '@/components/stepforms/StepFormHeader.vue';
-import type { Pipeline, PipelineStep } from '@/lib/steps';
+import type { PipelineStep, ReferenceToExternalQuery } from '@/lib/steps';
 import { PipelineInterpolator } from '@/lib/templating';
 import type { InterpolateFunction, ScopeContext } from '@/lib/templating';
 import type { ValidationError } from '@/lib/translators/base';
-import { Action, Getter, State } from 'pinia-class';
-import { VQBModule, type VQBActions } from '@/store';
 
 import { version } from '../../../package.json';
+
+import { VariableDelimiters, VariablesBucket } from '@/types';
+import { ColumnTypeMapping } from '@/lib/dataset';
 
 /**
  * ValidatorProxy emulates the interpolate + ajv-validation combo.
@@ -51,11 +52,6 @@ function componentProxyBoundOn(self: Vue) {
  * Simple abstract base class for all step forms. `BaseStepForm` implements some
  * default basic 'submit' / 'back' event callbacks and map some of the props /
  * getters / state and actions from the store that you'll most of the time
- * need in your concrete step form implementation:
- * - `@State(VQBModule) selectedStepIndex`
- * - `@Getter(VQBModule) pipeline`
- * - `@Action(VQBModule) selectStep`
- * - `@Action(VQBModule) setSelectedColumns`.
  *
  * This class provides a default `mounted()` hook that is used to bind the `Ajv`
  * validator that will be used on submit. It provides 2 default callbacks:
@@ -87,6 +83,9 @@ function componentProxyBoundOn(self: Vue) {
 export default class BaseStepForm<StepType> extends Vue {
   version = version; // display the current version of the package
 
+  @Prop({ type: String, default: 'pandas' })
+  translator!: string;
+
   @Prop({ type: Boolean, default: true })
   isStepCreation!: boolean;
 
@@ -99,17 +98,37 @@ export default class BaseStepForm<StepType> extends Vue {
   @Prop({ type: String, default: undefined })
   backendError?: string;
 
-  @State(VQBModule) interpolateFunc!: InterpolateFunction;
-  @State(VQBModule) selectedStepIndex!: number;
-  @State(VQBModule) variables!: ScopeContext;
+  @Prop({ type: Object, default: () => ({}) })
+  columnTypes!: ColumnTypeMapping;
 
-  @Action(VQBModule) selectStep!: VQBActions['selectStep'];
-  @Action(VQBModule) setSelectedColumns!: VQBActions['setSelectedColumns'];
+  @Prop({ type: Array, default: () => [] })
+  selectedColumns!: string[];
 
-  @Getter(VQBModule) columnNames!: string[];
-  @Getter(VQBModule) computedActiveStepIndex!: number;
-  @Getter(VQBModule) pipeline!: Pipeline;
-  @State(VQBModule) selectedColumns!: string[];
+  @Prop()
+  availableVariables?: VariablesBucket;
+
+  @Prop()
+  variableDelimiters?: VariableDelimiters;
+
+  @Prop()
+  trustedVariableDelimiters?: VariableDelimiters;
+
+  @Prop({ type: Object, default: () => ({}) })
+  variables!: ScopeContext;
+
+  @Prop({ type: Array, default: () => [] })
+  availableDomains!: { name: string; uid: string }[];
+
+  @Prop({ type: Array, default: () => [] })
+  unjoinableDomains!: { name: string; uid: string }[];
+
+  @Prop({ type: Function, default: (e: any) => e })
+  interpolateFunc!: InterpolateFunction;
+
+  @Prop({ type: Function, default: () => Promise.resolve([]) })
+  getColumnNamesFromPipeline!: (
+    pipelineNameOrDomain: string | ReferenceToExternalQuery,
+  ) => Promise<string[] | undefined>;
 
   readonly selectedColumnAttrName: string | null = null;
   readonly title: string = '';
@@ -140,6 +159,10 @@ export default class BaseStepForm<StepType> extends Vue {
         this.submit();
       }
     }) as EventListener);
+  }
+
+  get columnNames(): string[] {
+    return Object.keys(this.columnTypes);
   }
 
   /**
@@ -197,6 +220,11 @@ export default class BaseStepForm<StepType> extends Vue {
     // the new selected column.
   }
 
+  setSelectedColumns({ column }: { column: string | undefined }) {
+    // we emit the selected columns because behaviour is different if we use store or props
+    this.$emit('setSelectedColumns', { column });
+  }
+
   /**
    * `validate` calls `Ajv`. If there are some errors, return them, otherwise
    * return `null`.
@@ -215,8 +243,6 @@ export default class BaseStepForm<StepType> extends Vue {
    */
   cancelEdition() {
     this.$emit('back');
-    const idx = this.isStepCreation ? this.computedActiveStepIndex : this.selectedStepIndex + 1;
-    this.selectStep({ index: idx });
   }
 
   /**

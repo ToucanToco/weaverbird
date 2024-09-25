@@ -15,6 +15,7 @@
       :trusted-variable-delimiters="trustedVariableDelimiters"
       :columnTypes="columnTypes"
       @filterTreeUpdated="updateFilterTree"
+      @setSelectedColumns="setSelectedColumns"
     />
     <StepFormButtonbar />
   </div>
@@ -25,16 +26,12 @@ import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
 import FilterEditor from '@/components/FilterEditor.vue';
-import type { ColumnTypeMapping } from '@/lib/dataset';
 import type {
   FilterCondition,
   FilterSimpleCondition,
   FilterStep,
   PipelineStepName,
 } from '@/lib/steps';
-import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-import { State, Getter } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -55,12 +52,6 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
     }),
   })
   declare initialStepValue: FilterStep;
-
-  @State(VQBModule) availableVariables?: VariablesBucket;
-  @State(VQBModule) variableDelimiters?: VariableDelimiters;
-  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
-
-  @Getter(VQBModule) columnTypes!: ColumnTypeMapping;
 
   readonly title: string = 'Filter';
 

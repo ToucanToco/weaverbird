@@ -36,11 +36,7 @@ import { Prop } from 'vue-property-decorator';
 
 import IfThenElseWidget from '@/components/stepforms/widgets/IfThenElseWidget.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import type { ColumnTypeMapping } from '@/lib/dataset';
 import type { IfThenElseStep, PipelineStepName } from '@/lib/steps';
-import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-import { State, Getter } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -53,12 +49,6 @@ import BaseStepForm from './StepForm.vue';
 })
 export default class IfThenElseStepForm extends BaseStepForm<IfThenElseStep> {
   stepname: PipelineStepName = 'ifthenelse';
-
-  @State(VQBModule) availableVariables?: VariablesBucket;
-  @State(VQBModule) variableDelimiters?: VariableDelimiters;
-  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
-
-  @Getter(VQBModule) columnTypes!: ColumnTypeMapping;
 
   @Prop({
     type: Object,

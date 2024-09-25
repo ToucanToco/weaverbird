@@ -28,8 +28,6 @@ import { Prop } from 'vue-property-decorator';
 
 import type { AppendStep, PipelineStepName, ReferenceToExternalQuery } from '@/lib/steps';
 import { isReferenceToExternalQuery } from '@/lib/steps';
-import { State } from 'pinia-class';
-import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
@@ -52,9 +50,6 @@ export default class AppendStepForm extends BaseStepForm<AppendStep> {
 
   @Prop({ type: Object, default: () => ({ name: 'append', pipelines: [] }) })
   declare initialStepValue: AppendStep;
-
-  @State(VQBModule) availableDomains!: { name: string; uid: string }[];
-  @State(VQBModule) unjoinableDomains!: { name: string; uid: string }[];
 
   readonly title: string = 'Append datasets';
 

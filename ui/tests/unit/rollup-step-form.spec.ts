@@ -21,20 +21,18 @@ describe('Rollup Step Form', () => {
 
   describe('MultiselectWidgets', () => {
     it('should instantiate a MultiselectWidget widget with proper options from the store', () => {
-      const initialState = {
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [],
+      const wrapper = runner.shallowMount({
+        propsData: {
+          columnTypes: { columnA: 'string', columnB: 'string', columnC: 'string' },
         },
-      };
-      const wrapper = runner.shallowMount(initialState);
+      });
       const widgetMultiselects = wrapper.findAll('multiselectwidget-stub');
       expect(widgetMultiselects.at(0).attributes('options')).toEqual('columnA,columnB,columnC');
       expect(widgetMultiselects.at(1).attributes('options')).toEqual('columnA,columnB,columnC');
     });
 
     it('should pass down the props to the MultiselectWidget value prop', async () => {
-      const wrapper = runner.shallowMount(undefined, {
+      const wrapper = runner.shallowMount({
         data: {
           editedStep: {
             name: 'rollup',
@@ -59,7 +57,7 @@ describe('Rollup Step Form', () => {
     });
 
     it('should pass down the "aggregations" prop to the ListWidget value prop', async () => {
-      const wrapper = runner.shallowMount(undefined, {
+      const wrapper = runner.shallowMount({
         data: {
           editedStep: {
             name: 'rollup',
@@ -262,7 +260,7 @@ describe('Rollup Step Form', () => {
           { columns: ['bar', 'test'], newcolumns: [''], aggfunction: 'avg' },
         ],
       };
-      const wrapper = runner.mount(undefined, { data: { editedStep } });
+      const wrapper = runner.mount({ data: { editedStep } });
       wrapper.find('.widget-form-action__button--validate').trigger('click');
       expect(setAggregationsNewColumnsInStep).toHaveBeenCalled();
       expect(setAggregationsNewColumnsInStep).toHaveBeenCalledWith(editedStep);
@@ -273,22 +271,19 @@ describe('Rollup Step Form', () => {
   runner.testResetSelectedIndex();
 
   it('should convert editedStep from old configurations to new configuration', async () => {
-    const wrapper = runner.shallowMount(
-      {},
-      {
-        propsData: {
-          initialStepValue: {
-            name: 'rollup',
-            hierarchy: ['foo'],
-            aggregations: [
-              { column: 'foo', newcolumn: 'foo', aggregation: 'sum' },
-              { column: 'bar', newcolumn: 'bar', aggregation: 'sum' },
-              { columns: ['foo', 'bar'], newcolumns: ['foo', 'bar'], aggregation: 'sum' },
-            ],
-          },
+    const wrapper = runner.shallowMount({
+      propsData: {
+        initialStepValue: {
+          name: 'rollup',
+          hierarchy: ['foo'],
+          aggregations: [
+            { column: 'foo', newcolumn: 'foo', aggregation: 'sum' },
+            { column: 'bar', newcolumn: 'bar', aggregation: 'sum' },
+            { columns: ['foo', 'bar'], newcolumns: ['foo', 'bar'], aggregation: 'sum' },
+          ],
         },
       },
-    );
+    });
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.$data.editedStep.aggregations).toEqual([
       { columns: ['foo'], newcolumns: ['foo'], aggregation: 'sum' },

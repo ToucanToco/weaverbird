@@ -21,8 +21,6 @@ import { Component, Prop, Watch } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { Action, Getter, State } from 'pinia-class';
-import { VQBModule, type VQBActions } from '@/store';
 
 @Component({ components: { AutocompleteWidget } })
 export default class ColumnPicker extends Vue {
@@ -55,9 +53,11 @@ export default class ColumnPicker extends Vue {
   @Prop({ default: true })
   syncWithSelectedColumn!: boolean;
 
-  @Action(VQBModule) setSelectedColumns!: VQBActions['setSelectedColumns'];
-  @State(VQBModule) selectedColumns!: string[];
-  @Getter(VQBModule) columnNames!: string[];
+  @Prop({ default: () => [] })
+  selectedColumns!: string[];
+
+  @Prop({ default: () => [] })
+  columnNames!: string[];
 
   created() {
     if (this.syncWithSelectedColumn && this.selectedColumns[0] && !this.value) {
@@ -79,7 +79,7 @@ export default class ColumnPicker extends Vue {
   valueChanged(newColumn: string) {
     this.$emit('input', newColumn);
     if (this.syncWithSelectedColumn) {
-      this.setSelectedColumns({ column: newColumn });
+      this.$emit('setSelectedColumns', { column: newColumn });
     }
   }
 }

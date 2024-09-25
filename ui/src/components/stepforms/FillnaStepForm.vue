@@ -33,11 +33,8 @@ import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import type { ColumnTypeMapping } from '@/lib/dataset';
 import { castFromString } from '@/lib/helpers';
 import type { FillnaStep, PipelineStepName } from '@/lib/steps';
-import { VQBModule } from '@/store';
-import { Getter } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
@@ -57,8 +54,6 @@ export default class FillnaStepForm extends BaseStepForm<FillnaStep> {
     default: () => ({ name: 'fillna', column: undefined, value: '', columns: [] }),
   })
   declare initialStepValue: FillnaStep;
-
-  @Getter(VQBModule) columnTypes!: ColumnTypeMapping;
 
   readonly title: string = 'Fill null values';
 

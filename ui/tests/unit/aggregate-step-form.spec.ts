@@ -17,19 +17,15 @@ describe('Aggregate Step Form', () => {
 
   describe('MultiselectWidget', () => {
     it('should instantiate an MultiselectWidget widget with proper options from the store', () => {
-      const initialState = {
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [],
-        },
-      };
-      const wrapper = runner.shallowMount(initialState);
+      const wrapper = runner.shallowMount({
+        propsData: { columnTypes: { columnA: 'string', columnB: 'string', columnC: 'string' } },
+      });
       const widgetMultiselect = wrapper.find('multiselectwidget-stub');
       expect(widgetMultiselect.attributes('options')).toEqual('columnA,columnB,columnC');
     });
 
     it('keepOriginalGranularity should be set properly if defined in inititalStepValue', async () => {
-      const wrapper = runner.shallowMount(undefined, {
+      const wrapper = runner.shallowMount({
         propsData: {
           initialStepValue: {
             name: 'aggregate',
@@ -44,7 +40,7 @@ describe('Aggregate Step Form', () => {
     });
 
     it('keepOriginalGranularity should be set to false if undefined in inititalValue', async () => {
-      const wrapper = runner.shallowMount(undefined, {
+      const wrapper = runner.shallowMount({
         propsData: {
           initialStepValue: {
             name: 'aggregate',
@@ -59,7 +55,7 @@ describe('Aggregate Step Form', () => {
     });
 
     it('should pass down the "on" prop to the MultiselectWidget value prop', async () => {
-      const wrapper = runner.shallowMount(undefined, {
+      const wrapper = runner.shallowMount({
         data: {
           editedStep: {
             name: 'aggregate',
@@ -73,18 +69,16 @@ describe('Aggregate Step Form', () => {
     });
 
     it('should call the setColumnMutation on input', async () => {
-      const wrapper = runner.mount(undefined, {
-        data: {
-          editedStep: {
-            name: 'aggregate',
-            on: ['foo'],
-            aggregations: [],
-          },
+      const wrapper = runner.mount();
+      wrapper.setData({
+        editedStep: {
+          name: 'aggregate',
+          on: ['foo'],
+          aggregations: [],
         },
       });
-      const store = runner.getStore();
       await wrapper.vm.$nextTick();
-      expect(store.selectedColumns).toEqual(['foo']);
+      expect(wrapper.emitted().setSelectedColumns).toEqual([[{ column: 'foo' }]]);
     });
   });
 
@@ -96,7 +90,7 @@ describe('Aggregate Step Form', () => {
     });
 
     it('should pass down the "aggregations" prop to the ListWidget value prop', async () => {
-      const wrapper = runner.shallowMount(undefined, {
+      const wrapper = runner.shallowMount({
         data: {
           editedStep: {
             name: 'aggregate',
@@ -194,7 +188,7 @@ describe('Aggregate Step Form', () => {
   });
 
   it('should keep the same column name as newcolumn if only one aggregation is performed', () => {
-    const wrapper = runner.mount(undefined, {
+    const wrapper = runner.mount({
       data: {
         editedStep: {
           name: 'aggregate',
@@ -209,7 +203,7 @@ describe('Aggregate Step Form', () => {
   });
 
   it('should set newcolumn cleverly if several aggregations are performed on the same column', () => {
-    const wrapper = runner.mount(undefined, {
+    const wrapper = runner.mount({
       data: {
         editedStep: {
           name: 'aggregate',
@@ -230,7 +224,7 @@ describe('Aggregate Step Form', () => {
   });
 
   it('should set newcolumn cleverly if the an aggregation is perform on an id column', () => {
-    const wrapper = runner.mount(undefined, {
+    const wrapper = runner.mount({
       data: {
         editedStep: {
           name: 'aggregate',
@@ -245,7 +239,7 @@ describe('Aggregate Step Form', () => {
   });
 
   it('should set newcolumn cleverly if we keep the original granularity', () => {
-    const wrapper = runner.mount(undefined, {
+    const wrapper = runner.mount({
       data: {
         editedStep: {
           name: 'aggregate',
@@ -264,33 +258,27 @@ describe('Aggregate Step Form', () => {
   runner.testResetSelectedIndex();
 
   it('should change the column focus after input in multiselect', async () => {
-    const initialState = { selectedColumns: [] };
-    const wrapper = runner.mount(initialState, {
-      data: { editedStep: { name: 'aggregate', on: ['foo'], aggregations: [] } },
-    });
-    const store = runner.getStore();
+    const wrapper = runner.mount({ propsData: { selectedColumns: [] } });
+    wrapper.setData({ editedStep: { name: 'aggregate', on: ['foo'], aggregations: [] } });
     wrapper.find(MultiselectWidget).trigger('input');
     await wrapper.vm.$nextTick();
-    expect(store.selectedColumns).toEqual(['foo']);
+    expect(wrapper.emitted().setSelectedColumns).toEqual([[{ column: 'foo' }]]);
   });
 
   it('should convert editedStep from old configurations to new configuration', async () => {
-    const wrapper = runner.shallowMount(
-      {},
-      {
-        propsData: {
-          initialStepValue: {
-            name: 'aggregate',
-            on: ['index'],
-            aggregations: [
-              { column: 'foo', newcolumn: 'foo', aggregation: 'sum' },
-              { column: 'bar', newcolumn: 'bar', aggregation: 'sum' },
-              { columns: ['foo', 'bar'], newcolumns: ['foo', 'bar'], aggregation: 'sum' },
-            ],
-          },
+    const wrapper = runner.shallowMount({
+      propsData: {
+        initialStepValue: {
+          name: 'aggregate',
+          on: ['index'],
+          aggregations: [
+            { column: 'foo', newcolumn: 'foo', aggregation: 'sum' },
+            { column: 'bar', newcolumn: 'bar', aggregation: 'sum' },
+            { columns: ['foo', 'bar'], newcolumns: ['foo', 'bar'], aggregation: 'sum' },
+          ],
         },
       },
-    );
+    });
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.$data.editedStep.aggregations).toEqual([
       { columns: ['foo'], newcolumns: ['foo'], aggregation: 'sum' },

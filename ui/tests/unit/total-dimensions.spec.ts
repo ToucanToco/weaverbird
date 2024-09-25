@@ -1,24 +1,18 @@
-import { createTestingPinia } from '@pinia/testing';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { PiniaVuePlugin } from 'pinia';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import TotalDimensions from '@/components/stepforms/widgets/TotalDimensions.vue';
 
-import { setupMockStore } from './utils';
-
 const localVue = createLocalVue();
-localVue.use(PiniaVuePlugin);
-const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
 describe('Widget AggregationWidget', () => {
   it('should instantiate', () => {
-    const wrapper = shallowMount(TotalDimensions, { pinia, localVue });
+    const wrapper = shallowMount(TotalDimensions, { localVue });
     expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should have exactly 2 input components', () => {
-    const wrapper = shallowMount(TotalDimensions, { pinia, localVue });
+    const wrapper = shallowMount(TotalDimensions, { localVue });
     const autocompleteWrappers = wrapper.findAll('autocompletewidget-stub');
     expect(autocompleteWrappers.length).toEqual(1);
     const inputtextWrappers = wrapper.findAll('inputtextwidget-stub');
@@ -26,13 +20,12 @@ describe('Widget AggregationWidget', () => {
   });
 
   it('should instantiate a widgetAutocomplete widget with proper options from the store', () => {
-    setupMockStore({
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
+    const wrapper = shallowMount(TotalDimensions, {
+      localVue,
+      propsData: {
+        columnNames: ['columnA', 'columnB', 'columnC'],
       },
     });
-    const wrapper = shallowMount(TotalDimensions, { pinia, localVue });
     const autocompleteWrapper = wrapper.find('autocompletewidget-stub');
     expect(autocompleteWrapper.attributes('options')).toEqual('columnA,columnB,columnC');
   });
@@ -42,7 +35,6 @@ describe('Widget AggregationWidget', () => {
       propsData: {
         value: { totalColumn: 'toto', totalRowsLabel: 'tata' },
       },
-      pinia,
       localVue,
       sync: false,
     });
@@ -55,7 +47,6 @@ describe('Widget AggregationWidget', () => {
       propsData: {
         value: { totalColumn: 'toto', totalRowsLabel: 'tata' },
       },
-      pinia,
       localVue,
       sync: false,
     });
@@ -68,7 +59,6 @@ describe('Widget AggregationWidget', () => {
       propsData: {
         value: { totalColumn: 'toto', totalRowsLabel: 'tata' },
       },
-      pinia,
       localVue,
       sync: false,
     });
@@ -85,7 +75,6 @@ describe('Widget AggregationWidget', () => {
       propsData: {
         value: { totalColumn: 'toto', totalRowsLabel: 'tata' },
       },
-      pinia,
       localVue,
       sync: false,
     });

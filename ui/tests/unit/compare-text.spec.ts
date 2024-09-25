@@ -57,14 +57,11 @@ describe('Compute Text Columns Step Form', () => {
   });
 
   it('should make the focus on the column added after validation', () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'start' }, { name: 'end' }],
-        data: [],
+    const wrapper = runner.mount({
+      propsData: {
+        columnTypes: { start: 'string', end: 'string' },
       },
-    };
-    const wrapper = runner.mount(initialState);
-    const store = runner.getStore();
+    });
     wrapper.setData({
       editedStep: {
         name: 'comparetext',
@@ -74,18 +71,15 @@ describe('Compute Text Columns Step Form', () => {
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(store.selectedColumns).toEqual(['NEW']);
+    expect(wrapper.emitted().setSelectedColumns).toEqual([[{ column: 'NEW' }]]);
   });
 
   it('should not change the column focus if validation fails', () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'C1' }, { name: 'C2' }],
-        data: [],
+    const wrapper = runner.mount({
+      propsData: {
+        columnTypes: { C1: 'string', C2: 'string' },
+        selectedColumns: ['C1'],
       },
-      selectedColumns: ['C1'],
-    };
-    const wrapper = runner.mount(initialState, {
       data: {
         editedStep: {
           name: 'comparetext',
@@ -95,20 +89,17 @@ describe('Compute Text Columns Step Form', () => {
         },
       },
     });
-    const store = runner.getStore();
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(store.selectedColumns).toEqual(['C1']);
+    expect(wrapper.emitted().setSelectedColumns).toBeUndefined();
   });
 
   describe('Warning', () => {
     it('should report a warning when newColumnName is an already existing column name', async () => {
-      const initialState = {
-        dataset: {
-          headers: [{ name: 'NEW' }, { name: 'C1' }, { name: 'C2' }],
-          data: [],
+      const wrapper = runner.shallowMount({
+        propsData: {
+          columnTypes: { NEW: 'string', C1: 'string', C2: 'string' },
         },
-      };
-      const wrapper = runner.shallowMount(initialState);
+      });
       wrapper.setData({
         editedStep: {
           name: 'comparetext',
@@ -124,13 +115,11 @@ describe('Compute Text Columns Step Form', () => {
     });
 
     it('should not report any warning if newColumnName is not an already existing column name', async () => {
-      const initialState = {
-        dataset: {
-          headers: [{ name: 'NEW' }, { name: 'C1' }, { name: 'C2' }],
-          data: [],
+      const wrapper = runner.shallowMount({
+        propsData: {
+          columnTypes: { NEW: 'string', C1: 'string', C2: 'string' },
         },
-      };
-      const wrapper = runner.shallowMount(initialState);
+      });
       wrapper.setData({
         editedStep: {
           name: 'comparetext',

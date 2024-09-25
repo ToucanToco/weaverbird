@@ -26,6 +26,9 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :trusted-variable-delimiters="trustedVariableDelimiters"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <AutocompleteWidget
       class="sortOrderInput"
@@ -61,9 +64,6 @@ import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import type { PipelineStepName, TopStep } from '@/lib/steps';
-import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-import { State } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
@@ -79,11 +79,6 @@ import MultiselectWidget from './widgets/Multiselect.vue';
 })
 export default class TopStepForm extends BaseStepForm<TopStep> {
   stepname: PipelineStepName = 'top';
-
-  @State(VQBModule) availableVariables?: VariablesBucket;
-
-  @State(VQBModule) variableDelimiters?: VariableDelimiters;
-  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'top', rankOn: '', sort: 'desc' }) })
   declare initialStepValue: TopStep;

@@ -21,11 +21,8 @@ describe('Percentage Step Form', () => {
     },
     {
       testlabel: 'existing column name',
-      store: {
-        dataset: {
-          headers: [{ name: 'bar' }],
-          data: [],
-        },
+      props: {
+        columnTypes: { bar: 'string' },
       },
       data: { editedStep: { name: 'percentage', column: 'foo', newColumnName: 'bar' } },
       errors: [{ keyword: 'columnNameAlreadyUsed', dataPath: '.newColumnName' }],
@@ -43,7 +40,7 @@ describe('Percentage Step Form', () => {
   runner.testResetSelectedIndex();
 
   it('should pass down the properties to the input components', async () => {
-    const wrapper = runner.shallowMount(undefined, {
+    const wrapper = runner.shallowMount({
       data: {
         editedStep: { name: 'percentage', column: 'foo', group: ['test'] },
       },
@@ -53,16 +50,13 @@ describe('Percentage Step Form', () => {
   });
 
   it('should update step when selectedColumn is changed', async () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
+    const wrapper = runner.shallowMount({
+      propsData: {
+        columnTypes: { columnA: 'string', columnB: 'string', columnC: 'string' },
       },
-    };
-    const wrapper = runner.shallowMount(initialState);
-    const store = runner.getStore();
+    });
     expect(wrapper.vm.$data.editedStep.column).toEqual('');
-    store.toggleColumnSelection({ column: 'columnB' });
+    wrapper.setProps({ selectedColumns: ['columnB'] });
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.$data.editedStep.column).toEqual('columnB');
   });

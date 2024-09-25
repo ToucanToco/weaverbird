@@ -23,6 +23,9 @@
       data-path=".hierarchy"
       :errors="errors"
       :componentProps="{ allowCustom: true }"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <CheckboxWidget label="Include null values in results" v-model="editedStep.includeNulls" />
     <StepFormButtonbar />

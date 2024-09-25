@@ -40,6 +40,9 @@
       data-path=".on"
       :errors="errors"
       unstyled-items
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <StepFormButtonbar />
   </div>
@@ -59,8 +62,6 @@ import {
   type PipelineStepName,
   type ReferenceToExternalQuery,
 } from '@/lib/steps';
-import { Action, State } from 'pinia-class';
-import { VQBModule, type VQBActions } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 import Multiselect from './widgets/Multiselect.vue';
@@ -90,9 +91,6 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
     default: () => ({ name: 'join', rightPipeline: '', type: joinTypes[0], on: [['', '']] }),
   })
   declare initialStepValue: JoinStep;
-
-  @State(VQBModule) availableDomains!: { name: string; uid: string }[];
-  @State(VQBModule) unjoinableDomains!: { name: string; uid: string }[];
 
   readonly title: string = 'Join datasets';
   joinColumns = JoinColumns;
@@ -145,8 +143,6 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
   }
 
   rightColumnNames: string[] | null | undefined = null;
-
-  @Action(VQBModule) getColumnNamesFromPipeline!: VQBActions['getColumnNamesFromPipeline'];
 
   async updateRightColumnNames(pipelineNameOrDomain: string | ReferenceToExternalQuery) {
     this.rightColumnNames = await this.getColumnNamesFromPipeline(pipelineNameOrDomain);
