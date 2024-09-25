@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.115.0] - 2024-09-25
+
 ### Changed
 
 - Stepform: remove store dependency from step form component
@@ -1591,6 +1593,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
+[0.115.0]: https://github.com/ToucanToco/weaverbird/compare/v0.114.1...v0.115.0
 [0.114.1]: https://github.com/ToucanToco/weaverbird/compare/v0.114.0...v0.114.1
 [0.114.0]: https://github.com/ToucanToco/weaverbird/compare/v0.113.0...v0.114.0
 [0.113.0]: https://github.com/ToucanToco/weaverbird/compare/v0.112.1...v0.113.0
