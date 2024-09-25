@@ -14,14 +14,11 @@ describe('To Lowercase Step Form', () => {
   });
 
   it('should display step column on edition', () => {
-    const wrapper = runner.shallowMount(
-      {},
-      {
-        propsData: {
-          initialStepValue: { name: 'lowercase', column: 'foo' },
-        },
+    const wrapper = runner.shallowMount({
+      propsData: {
+        initialStepValue: { name: 'lowercase', column: 'foo' },
       },
-    );
+    });
     const columnPicker = wrapper.find('columnpicker-stub');
     expect(columnPicker.attributes('value')).toEqual('foo');
   });

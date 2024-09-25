@@ -35,7 +35,7 @@ describe('Split Step Form', () => {
   runner.testResetSelectedIndex();
 
   it('should pass down the properties to the input components', async () => {
-    const wrapper = runner.shallowMount(undefined, {
+    const wrapper = runner.shallowMount({
       data: {
         editedStep: { name: 'split', column: 'foo', delimiter: '-', numberColsToKeep: 3 },
       },

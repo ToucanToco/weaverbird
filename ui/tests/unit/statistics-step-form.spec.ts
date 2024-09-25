@@ -35,40 +35,22 @@ describe('statistics Step Form', () => {
     },
   });
 
-  runner.testCancel({
-    currentPipelineName: 'default_pipeline',
-    pipelines: {
-      default_pipeline: [
-        { name: 'domain', domain: 'foo' },
-        {
+  runner.testCancel();
+
+  runner.testResetSelectedIndex();
+
+  it('should pass down the parameters properly to widgets', async () => {
+    const wrapper = runner.shallowMount({
+      data: {
+        editedStep: {
           name: 'statistics',
           column: 'jjg',
           groupbyColumns: ['plop'],
           statistics: ['average'],
           quantiles: [{ label: 'median', nth: 1, order: 2 }],
         },
-      ],
-    },
-    selectedStepIndex: 1,
-  });
-
-  runner.testResetSelectedIndex();
-
-  it('should pass down the parameters properly to widgets', async () => {
-    const wrapper = runner.shallowMount(
-      {},
-      {
-        data: {
-          editedStep: {
-            name: 'statistics',
-            column: 'jjg',
-            groupbyColumns: ['plop'],
-            statistics: ['average'],
-            quantiles: [{ label: 'median', nth: 1, order: 2 }],
-          },
-        },
       },
-    );
+    });
     await wrapper.vm.$nextTick();
     expect(wrapper.find('ColumnPicker-stub').props('value')).toEqual('jjg');
     expect(wrapper.find('MultiselectWidget-stub').props('value')).toEqual(['plop']);
@@ -87,20 +69,17 @@ describe('statistics Step Form', () => {
   });
 
   it('should open and close section correcly', async () => {
-    const wrapper = runner.shallowMount(
-      {},
-      {
-        data: {
-          editedStep: {
-            name: 'statistics',
-            column: 'jjg',
-            groupbyColumns: ['plop'],
-            statistics: ['average'],
-            quantiles: [{ label: 'median', nth: 1, order: 2 }],
-          },
+    const wrapper = runner.shallowMount({
+      data: {
+        editedStep: {
+          name: 'statistics',
+          column: 'jjg',
+          groupbyColumns: ['plop'],
+          statistics: ['average'],
+          quantiles: [{ label: 'median', nth: 1, order: 2 }],
         },
       },
-    );
+    });
     await wrapper.vm.$nextTick();
     const basicSection: any = wrapper.findAll('.statistic-section-header').at(0);
     const advancedSection: any = wrapper.findAll('.statistic-section-header').at(1);
@@ -124,20 +103,17 @@ describe('statistics Step Form', () => {
   });
 
   it('should toogle quantiles and statistics correlty', async () => {
-    const wrapper = runner.shallowMount(
-      {},
-      {
-        data: {
-          editedStep: {
-            name: 'statistics',
-            column: 'jjg',
-            groupbyColumns: ['plop'],
-            statistics: ['average'],
-            quantiles: [{ label: 'median', nth: 1, order: 2 }],
-          },
+    const wrapper = runner.shallowMount({
+      data: {
+        editedStep: {
+          name: 'statistics',
+          column: 'jjg',
+          groupbyColumns: ['plop'],
+          statistics: ['average'],
+          quantiles: [{ label: 'median', nth: 1, order: 2 }],
         },
       },
-    );
+    });
     await wrapper.vm.$nextTick();
 
     wrapper.findAll('Checkbox-stub').at(0).vm.$emit('input', true); // checking count

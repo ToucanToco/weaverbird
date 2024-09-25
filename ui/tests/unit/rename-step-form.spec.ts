@@ -25,16 +25,8 @@ describe('Rename Step Form', () => {
 
   runner.testValidate({
     testlabel: 'submitted data is valid',
-    store: {
-      dataset: {
-        headers: [
-          { name: 'foo', type: 'string' },
-          { name: 'hello', type: 'string' },
-        ],
-        data: [],
-      },
-    },
     props: {
+      columnTypes: { toto: 'string', foo: 'string' },
       initialStepValue: { name: 'rename', toRename: [['foo', 'bar']] },
     },
   });
@@ -44,15 +36,10 @@ describe('Rename Step Form', () => {
   runner.testResetSelectedIndex();
 
   it('should update editedStep at creation depending on the selected column', async () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'toto' }, { name: 'foo' }],
-        data: [],
-      },
-      selectedColumns: ['toto'],
-    };
-    const wrapper = runner.shallowMount(initialState, {
+    const wrapper = runner.shallowMount({
       propsData: {
+        columnTypes: { toto: 'string', foo: 'string' },
+        selectedColumns: ['toto'],
         initialStepValue: {
           name: 'rename',
           toRename: [['', '']],
@@ -64,16 +51,11 @@ describe('Rename Step Form', () => {
   });
 
   it('should return an error if trying to set a null column', async () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'toto' }, { name: 'foo' }],
-        data: [],
-      },
-      selectedColumns: [null],
-    };
     try {
-      const wrapper = runner.shallowMount(initialState, {
+      const wrapper = runner.shallowMount({
         propsData: {
+          columnTypes: { toto: 'string', foo: 'string' },
+          selectedColumns: [null],
           initialStepValue: {
             name: 'rename',
             toRename: [['', '']],
@@ -87,35 +69,29 @@ describe('Rename Step Form', () => {
   });
 
   it('should convert editedStep from old configurations to new configuration', async () => {
-    const wrapper = runner.shallowMount(
-      {},
-      {
-        propsData: {
-          initialStepValue: {
-            name: 'rename',
-            oldname: 'foo',
-            newname: 'bar',
-          },
+    const wrapper = runner.shallowMount({
+      propsData: {
+        initialStepValue: {
+          name: 'rename',
+          oldname: 'foo',
+          newname: 'bar',
         },
       },
-    );
+    });
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.$data.editedStep.toRename).toBeDefined();
     expect(wrapper.vm.$data.editedStep.toRename).toEqual([['foo', 'bar']]);
   });
 
   it('should pass down "toRename" to ListWidget', async () => {
-    const wrapper = runner.shallowMount(
-      {},
-      {
-        data: {
-          editedStep: {
-            name: 'rename',
-            toRename: [['foo', 'bar']],
-          },
+    const wrapper = runner.shallowMount({
+      data: {
+        editedStep: {
+          name: 'rename',
+          toRename: [['foo', 'bar']],
         },
       },
-    );
+    });
     await wrapper.vm.$nextTick();
     expect(wrapper.find('listwidget-stub').props().value).toEqual([['foo', 'bar']]);
   });
@@ -129,13 +105,10 @@ describe('Rename Step Form', () => {
   });
 
   it('should make the focus on the last column modified at submit', () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'toto' }, { name: 'foo' }],
-        data: [],
+    const wrapper = runner.mount({
+      propsData: {
+        columnTypes: { toto: 'string', foo: 'string' },
       },
-    };
-    const wrapper = runner.mount(initialState, {
       data: {
         editedStep: {
           name: 'rename',
@@ -146,20 +119,16 @@ describe('Rename Step Form', () => {
         },
       },
     });
-    const store = runner.getStore();
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(store.selectedColumns).toEqual(['bar']);
+    expect(wrapper.emitted().setSelectedColumns).toEqual([[{ column: 'bar' }]]);
   });
 
   it('should not change the column focus if validation fails', () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'toto' }, { name: 'foo' }],
-        data: [],
+    const wrapper = runner.mount({
+      propsData: {
+        columnTypes: { toto: 'string', foo: 'string' },
+        selectedColumns: ['toto'],
       },
-      selectedColumns: ['toto'],
-    };
-    const wrapper = runner.mount(initialState, {
       data: {
         editedStep: {
           name: 'rename',
@@ -170,8 +139,7 @@ describe('Rename Step Form', () => {
         },
       },
     });
-    const store = runner.getStore();
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(store.selectedColumns).toEqual(['toto']);
+    expect(wrapper.emitted().setSelectedColumns).toBeUndefined();
   });
 });

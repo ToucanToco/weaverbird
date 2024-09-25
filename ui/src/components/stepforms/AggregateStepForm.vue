@@ -33,6 +33,9 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :trusted-variable-delimiters="trustedVariableDelimiters"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <CheckboxWidget
       class="keepOriginalGranularityCheckbox"
@@ -49,10 +52,6 @@ import { Prop } from 'vue-property-decorator';
 
 import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 import type { AggregateStep, Aggregation, PipelineStepName } from '@/lib/steps';
-import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-
-import { State } from 'pinia-class';
-import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 import { suffixAggregationsColumns } from './utils';
@@ -70,11 +69,6 @@ import MultiselectWidget from './widgets/Multiselect.vue';
 })
 export default class AggregateStepForm extends BaseStepForm<AggregateStep> {
   stepname: PipelineStepName = 'aggregate';
-
-  @State(VQBModule) availableVariables?: VariablesBucket;
-
-  @State(VQBModule) variableDelimiters?: VariableDelimiters;
-  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,

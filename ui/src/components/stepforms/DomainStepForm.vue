@@ -23,8 +23,6 @@ import { Prop } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import type { DomainStep, PipelineStepName } from '@/lib/steps';
-import { VQBModule } from '@/store';
-import { Getter } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -46,7 +44,9 @@ export default class DomainStepForm extends BaseStepForm<DomainStep> {
   })
   declare initialStepValue: DomainStep;
 
-  @Getter(VQBModule) availableDatasetNames!: string[];
+  get availableDatasetNames() {
+    return this.availableDomains.map((d) => d.name);
+  }
 
   readonly title: string = 'Select a dataset';
 }

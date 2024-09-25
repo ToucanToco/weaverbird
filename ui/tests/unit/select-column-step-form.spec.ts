@@ -31,37 +31,29 @@ describe('Select Column Step Form', () => {
   runner.testResetSelectedIndex();
 
   it('should instantiate a multiselect widget with proper options from the store', () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
+    const wrapper = runner.shallowMount({
+      propsData: {
+        columnTypes: { columnA: 'string', columnB: 'string', columnC: 'string' },
       },
-    };
-    const wrapper = runner.shallowMount(initialState);
+    });
     const widgetAutocomplete = wrapper.find('multiselectwidget-stub');
 
     expect(widgetAutocomplete.attributes('options')).toEqual('columnA,columnB,columnC');
   });
 
   it('should update selectedColumn when column is changed', async () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
-      },
-      selectedColumns: ['columnA'],
-    };
-    const wrapper = runner.mount(initialState, {
+    const wrapper = runner.mount({
       propsData: {
+        columnTypes: { columnA: 'string', columnB: 'string', columnC: 'string' },
+        selectedColumns: ['columnA'],
         initialValue: {
           columns: ['columnA'],
         },
       },
     });
-    const store = runner.getStore();
     wrapper.setData({ editedStep: { columns: ['columnB'] } });
     wrapper.find(MultiselectWidget).trigger('input');
     await wrapper.vm.$nextTick();
-    expect(store.selectedColumns).toEqual(['columnB']);
+    expect(wrapper.emitted().setSelectedColumns).toEqual([[{ column: 'columnB' }]]);
   });
 });

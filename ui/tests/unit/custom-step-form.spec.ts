@@ -26,6 +26,7 @@ describe('Custom Step Form', () => {
     {
       testlabel: 'submitted query is not json', // only for translator: mongo40 (which is default translator)
       props: {
+        translator: 'mongo40',
         initialStepValue: {
           name: 'custom',
           query: 'a',

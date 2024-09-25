@@ -31,15 +31,15 @@ describe('join Step Form', () => {
 
   describe('right dataset', () => {
     it('should instantiate an autocomplete widget with proper options from the store', () => {
-      const initialState = {
-        currentPipelineName: 'my_dataset',
-        availableDomains: [
-          { name: 'dataset1', uid: '1' },
-          { name: 'dataset2', uid: '2' },
-        ],
-        unjoinableDomains: [{ name: 'dataset2', uid: '2' }],
-      };
-      const wrapper = runner.shallowMount(initialState);
+      const wrapper = runner.shallowMount({
+        propsData: {
+          availableDomains: [
+            { name: 'dataset1', uid: '1' },
+            { name: 'dataset2', uid: '2' },
+          ],
+          unjoinableDomains: [{ name: 'dataset2', uid: '2' }],
+        },
+      });
       const widgetMultiselect = wrapper.find('autocompletewidget-stub');
       expect(widgetMultiselect.props('options')).toEqual([
         { trackBy: { type: 'ref', uid: '1' }, label: 'dataset1' },
@@ -57,15 +57,14 @@ describe('join Step Form', () => {
   });
 
   it('should handle dataset references', async () => {
-    const initialState = {
-      currentPipelineName: 'my_dataset',
-      availableDomains: [
-        { name: 'dataset1', uid: '1' },
-        { name: 'dataset2', uid: '2' },
-      ],
-      unjoinableDomains: [],
-    };
-    const wrapper = runner.shallowMount(initialState, {
+    const wrapper = runner.shallowMount({
+      propsData: {
+        availableDomains: [
+          { name: 'dataset1', uid: '1' },
+          { name: 'dataset2', uid: '2' },
+        ],
+        unjoinableDomains: [],
+      },
       data: {
         editedStep: {
           name: 'join',
@@ -84,7 +83,7 @@ describe('join Step Form', () => {
 
   describe('column names', () => {
     it('should pass down the "joinColumns" prop to the ListWidget value prop', async () => {
-      const wrapper = runner.shallowMount(undefined, {
+      const wrapper = runner.shallowMount({
         data: {
           editedStep: {
             name: 'join',
@@ -99,7 +98,7 @@ describe('join Step Form', () => {
     });
 
     it('should get the right data "on" when editedStep.on is empty', async () => {
-      const wrapper = runner.shallowMount(undefined, {
+      const wrapper = runner.shallowMount({
         data: {
           editedStep: {
             name: 'join',
@@ -114,7 +113,7 @@ describe('join Step Form', () => {
     });
 
     it('should update the edited step when one of the subcomponents emits an updated value', () => {
-      const wrapper = runner.shallowMount(undefined, {
+      const wrapper = runner.shallowMount({
         data: {
           editedStep: {
             name: 'join',
@@ -129,7 +128,7 @@ describe('join Step Form', () => {
     });
 
     it('should fetch the right dataset columns when editing an existing step', () => {
-      runner.shallowMount(undefined, {
+      runner.shallowMount({
         propsData: {
           initialStepValue: {
             name: 'join',

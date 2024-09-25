@@ -52,9 +52,6 @@ import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import { generateNewColumnName } from '@/lib/helpers';
 import type { PipelineStepName, UnpivotStep } from '@/lib/steps';
-import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-import { State } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -68,11 +65,6 @@ import BaseStepForm from './StepForm.vue';
 export default class UnpivotStepForm extends BaseStepForm<UnpivotStep> {
   stepname: PipelineStepName = 'unpivot';
 
-  @State(VQBModule) availableVariables?: VariablesBucket;
-
-  @State(VQBModule) variableDelimiters?: VariableDelimiters;
-  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
-
   @Prop({
     type: Object,
     default: () => ({
@@ -85,7 +77,6 @@ export default class UnpivotStepForm extends BaseStepForm<UnpivotStep> {
     }),
   })
   declare initialStepValue: UnpivotStep;
-  @State(VQBModule) translator!: string;
 
   readonly title: string = 'Unpivot columns';
   readonly checkboxLabel: string = 'Drop null values';

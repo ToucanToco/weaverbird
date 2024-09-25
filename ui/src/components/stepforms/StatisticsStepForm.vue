@@ -9,6 +9,9 @@
       data-path=".column"
       :errors="errors"
       :types="['integer', 'float']"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <MultiselectWidget
       class="groupbyColumnsInput"

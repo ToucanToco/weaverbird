@@ -27,6 +27,9 @@
       :automatic-new-field="false"
       data-path=".aggregations"
       :errors="errors"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <MultiselectWidget
       class="groupbyColumnsInput"

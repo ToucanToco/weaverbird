@@ -16,6 +16,9 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :trusted-variable-delimiters="trustedVariableDelimiters"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <AutocompleteWidget
       class="datesGranularityInput"
@@ -49,9 +52,6 @@ import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import type { AddMissingDatesStep, PipelineStepName } from '@/lib/steps';
-import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { State } from 'pinia-class';
-import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -67,11 +67,6 @@ type DateGranularity = 'day' | 'month' | 'year';
 })
 export default class AddMissingDatesStepForm extends BaseStepForm<AddMissingDatesStep> {
   stepname: PipelineStepName = 'addmissingdates';
-
-  @State(VQBModule) availableVariables?: VariablesBucket;
-
-  @State(VQBModule) variableDelimiters?: VariableDelimiters;
-  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,

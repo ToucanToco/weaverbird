@@ -16,6 +16,9 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :trusted-variable-delimiters="trustedVariableDelimiters"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <MultiselectWidget
       class="groupbyColumnsInput"
@@ -40,9 +43,6 @@ import { Prop } from 'vue-property-decorator';
 
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import type { ArgminStep, PipelineStepName } from '@/lib/steps';
-import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-import { State } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
@@ -56,11 +56,6 @@ import MultiselectWidget from './widgets/Multiselect.vue';
 })
 export default class ArgminStepForm extends BaseStepForm<ArgminStep> {
   stepname: PipelineStepName = 'argmin';
-
-  @State(VQBModule) availableVariables?: VariablesBucket;
-
-  @State(VQBModule) variableDelimiters?: VariableDelimiters;
-  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'argmin', column: '' }) })
   declare initialStepValue: ArgminStep;

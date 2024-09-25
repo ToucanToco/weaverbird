@@ -15,16 +15,8 @@ describe('Replace Step Form', () => {
   });
   runner.testValidate({
     testlabel: 'submitted data is valid',
-    store: {
-      dataset: {
-        headers: [
-          { name: 'foo', type: 'string' },
-          { name: 'bar', type: 'string' },
-        ],
-        data: [],
-      },
-    },
     props: {
+      columnTypes: { foo: 'string', bar: 'string' },
       initialStepValue: { name: 'replace', searchColumn: 'foo', toReplace: [['hello', 'hi']] },
     },
   });
@@ -33,63 +25,51 @@ describe('Replace Step Form', () => {
   runner.testResetSelectedIndex();
 
   it('should pass down "searchColumn" to ColumnPicker', async () => {
-    const wrapper = runner.shallowMount(
-      {},
-      {
-        data: {
-          editedStep: {
-            name: 'replace',
-            searchColumn: 'test',
-            toReplace: [['foo', 'bar']],
-          },
+    const wrapper = runner.shallowMount({
+      data: {
+        editedStep: {
+          name: 'replace',
+          searchColumn: 'test',
+          toReplace: [['foo', 'bar']],
         },
       },
-    );
+    });
     await wrapper.vm.$nextTick();
     expect(wrapper.find('columnpicker-stub').attributes().value).toEqual('test');
   });
 
   it('should pass down "toReplace" to ListWidget', async () => {
-    const wrapper = runner.shallowMount(
-      {},
-      {
-        data: {
-          editedStep: {
-            name: 'replace',
-            searchColumn: 'test',
-            toReplace: [['foo', 'bar']],
-          },
+    const wrapper = runner.shallowMount({
+      data: {
+        editedStep: {
+          name: 'replace',
+          searchColumn: 'test',
+          toReplace: [['foo', 'bar']],
         },
       },
-    );
+    });
     await wrapper.vm.$nextTick();
     expect(wrapper.find('listwidget-stub').props().value).toEqual([['foo', 'bar']]);
   });
 
   it('should pass down the default "toReplace" to ListWidget', () => {
-    const wrapper = runner.shallowMount(
-      {},
-      {
-        data: {
-          editedStep: {
-            name: 'replace',
-            searchColumn: 'test',
-            toReplace: [],
-          },
+    const wrapper = runner.shallowMount({
+      data: {
+        editedStep: {
+          name: 'replace',
+          searchColumn: 'test',
+          toReplace: [],
         },
       },
-    );
+    });
     expect(wrapper.find('listwidget-stub').props().value).toEqual([[]]);
   });
 
   it('should convert input value to integer when the column data type is integer', () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'columnA', type: 'integer' }],
-        data: [[null]],
+    const wrapper = runner.mount({
+      propsData: {
+        columnTypes: { columnA: 'integer' },
       },
-    };
-    const wrapper = runner.mount(initialState, {
       data: {
         editedStep: {
           name: 'replace',
@@ -100,19 +80,16 @@ describe('Replace Step Form', () => {
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).toBeNull();
-    expect(wrapper.emitted()).toEqual({
-      formSaved: [[{ name: 'replace', searchColumn: 'columnA', toReplace: [[0, 42]] }]],
-    });
+    expect(wrapper.emitted().formSaved).toEqual([
+      [{ name: 'replace', searchColumn: 'columnA', toReplace: [[0, 42]] }],
+    ]);
   });
 
   it('should convert input value to float when the column data type is float', () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'columnA', type: 'float' }],
-        data: [[null]],
+    const wrapper = runner.mount({
+      propsData: {
+        columnTypes: { columnA: 'float' },
       },
-    };
-    const wrapper = runner.mount(initialState, {
       data: {
         editedStep: {
           name: 'replace',
@@ -123,19 +100,16 @@ describe('Replace Step Form', () => {
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).toBeNull();
-    expect(wrapper.emitted()).toEqual({
-      formSaved: [[{ name: 'replace', searchColumn: 'columnA', toReplace: [[0, 42.3]] }]],
-    });
+    expect(wrapper.emitted().formSaved).toEqual([
+      [{ name: 'replace', searchColumn: 'columnA', toReplace: [[0, 42.3]] }],
+    ]);
   });
 
   it('should convert input value to boolean when the column data type is boolean', () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'columnA', type: 'boolean' }],
-        data: [[null]],
+    const wrapper = runner.mount({
+      propsData: {
+        columnTypes: { columnA: 'boolean' },
       },
-    };
-    const wrapper = runner.mount(initialState, {
       data: {
         editedStep: {
           name: 'replace',
@@ -146,8 +120,8 @@ describe('Replace Step Form', () => {
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).toBeNull();
-    expect(wrapper.emitted()).toEqual({
-      formSaved: [[{ name: 'replace', searchColumn: 'columnA', toReplace: [[false, true]] }]],
-    });
+    expect(wrapper.emitted().formSaved).toEqual([
+      [{ name: 'replace', searchColumn: 'columnA', toReplace: [[false, true]] }],
+    ]);
   });
 });

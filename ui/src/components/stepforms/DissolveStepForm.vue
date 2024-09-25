@@ -32,6 +32,9 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :trusted-variable-delimiters="trustedVariableDelimiters"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <CheckboxWidget
       class="keepNullsCheckbox"
@@ -47,9 +50,6 @@ import { Prop } from 'vue-property-decorator';
 
 import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 import type { Aggregation, DissolveStep, PipelineStepName } from '@/lib/steps';
-import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-import { State } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 import { suffixAggregationsColumns } from './utils';
@@ -67,11 +67,6 @@ import MultiselectWidget from './widgets/Multiselect.vue';
 })
 export default class DissolveStepForm extends BaseStepForm<DissolveStep> {
   stepname: PipelineStepName = 'dissolve';
-
-  @State(VQBModule) availableVariables?: VariablesBucket;
-
-  @State(VQBModule) variableDelimiters?: VariableDelimiters;
-  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,

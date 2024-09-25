@@ -17,6 +17,9 @@
       data-path=".totalDimensions"
       :errors="errors"
       unstyled-items
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <ListWidget
       class="aggregationsInput"
@@ -28,6 +31,9 @@
       :automatic-new-field="false"
       data-path=".aggregations"
       :errors="errors"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <MultiselectWidget
       class="groupsInput"

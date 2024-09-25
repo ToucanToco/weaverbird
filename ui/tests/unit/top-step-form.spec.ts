@@ -38,7 +38,7 @@ describe('Top Step Form', () => {
   runner.testResetSelectedIndex();
 
   it('should pass down default properties to the input components', async () => {
-    const wrapper = runner.shallowMount(undefined, {
+    const wrapper = runner.shallowMount({
       data: {
         editedStep: { name: 'top', rankOn: 'foo', limit: 3 },
       },
@@ -50,7 +50,7 @@ describe('Top Step Form', () => {
   });
 
   it('should pass down the properties to the input components', async () => {
-    const wrapper = runner.shallowMount(undefined, {
+    const wrapper = runner.shallowMount({
       data: {
         editedStep: { name: 'top', rankOn: 'foo', sort: 'asc', limit: 10, groups: ['test'] },
       },
@@ -66,32 +66,26 @@ describe('Top Step Form', () => {
       const compiled = _.template(s);
       return compiled(context);
     }
-    const wrapper = runner.mount(
-      {
+    const wrapper = runner.mount({
+      propsData: {
         variables: {
           leemeat: 42,
         },
         interpolateFunc: interpolate,
-      },
-      {
-        propsData: {
-          initialStepValue: {
-            name: 'top',
-            rankOn: 'foo',
-            sort: 'asc',
-            limit: '<%= leemeat %>',
-            groups: ['test'],
-          },
+        initialStepValue: {
+          name: 'top',
+          rankOn: 'foo',
+          sort: 'asc',
+          limit: '<%= leemeat %>',
+          groups: ['test'],
         },
       },
-    );
+    });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.$data.errors).toBeNull();
-    expect(wrapper.emitted()).toEqual({
-      formSaved: [
-        [{ name: 'top', rankOn: 'foo', sort: 'asc', limit: '<%= leemeat %>', groups: ['test'] }],
-      ],
-    });
+    expect(wrapper.emitted().formSaved).toEqual([
+      [{ name: 'top', rankOn: 'foo', sort: 'asc', limit: '<%= leemeat %>', groups: ['test'] }],
+    ]);
   });
 });

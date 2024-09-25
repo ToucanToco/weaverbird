@@ -30,7 +30,14 @@ describe('Domain Step Form', () => {
   runner.testCancel();
 
   it('should instantiate an autocomplete widget with proper options from the store', () => {
-    const wrapper = runner.shallowMount({ domains: ['foo', 'bar'] });
+    const wrapper = runner.shallowMount({
+      propsData: {
+        availableDomains: [
+          { name: 'bar', uid: 'bar' },
+          { name: 'foo', uid: 'foo' },
+        ],
+      },
+    });
     const widgetAutocomplete = wrapper.find('autocompletewidget-stub');
 
     expect(widgetAutocomplete.attributes('options')).toEqual('bar,foo');

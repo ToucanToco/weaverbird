@@ -1,16 +1,11 @@
 import { action } from '@storybook/addon-actions';
 import type { Meta, StoryObj } from '@storybook/vue';
-import { createPinia, PiniaVuePlugin } from 'pinia';
-import Vue from 'vue';
 
 import AddTotalRowsStepForm from '@/components/stepforms/AddTotalRowsStepForm.vue';
-import { setupVQBStore } from '@/store';
 
 export default {
   component: AddTotalRowsStepForm,
 } as Meta<AddTotalRowsStepForm>;
-
-Vue.use(PiniaVuePlugin);
 
 export const Empty: StoryObj<AddTotalRowsStepForm> = {
   render: (args, { argTypes }) => ({
@@ -20,18 +15,12 @@ export const Empty: StoryObj<AddTotalRowsStepForm> = {
     methods: {
       onFormSaved: action('formSaved'),
     },
-    pinia: createPinia(),
-    created: function () {
-      setupVQBStore({
-        backendMessages: [],
-        dataset: {
-          headers: [
-            { name: 'label', type: 'string' },
-            { name: 'value', type: 'string' },
-          ],
-          data: [],
-        },
-      });
-    },
   }),
+  args: {
+    columnTypes: { 'column A': 'string', 'column B': 'string', 'column C': 'string' },
+    interpolateFunc: (a: any) => a,
+    availableDomains: [],
+    unjoinableDomains: [],
+    getColumnNamesFromPipeline: () => Promise.resolve([]),
+  },
 };

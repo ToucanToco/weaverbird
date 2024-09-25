@@ -17,11 +17,8 @@ describe('Concatenate Step Form', () => {
   runner.testValidationErrors([
     {
       testlabel: 'submitted data is not valid',
-      store: {
-        dataset: {
-          headers: [{ name: 'foo', type: 'string' }],
-          data: [[null]],
-        },
+      props: {
+        columnTypes: { foo: 'string' },
       },
       errors: [
         { dataPath: '.columns.0', keyword: 'minLength' },
@@ -32,16 +29,8 @@ describe('Concatenate Step Form', () => {
 
   runner.testValidate({
     testlabel: 'submitted data is valid',
-    store: {
-      dataset: {
-        headers: [
-          { name: 'foo', type: 'string' },
-          { name: 'bar', type: 'string' },
-        ],
-        data: [[null], [null]],
-      },
-    },
     props: {
+      columnTypes: { foo: 'string', bar: 'string' },
       initialStepValue: {
         name: 'concatenate',
         columns: ['foo', 'bar'],
@@ -51,48 +40,31 @@ describe('Concatenate Step Form', () => {
     },
   });
 
-  runner.testCancel({
-    currentPipelineName: 'default_pipeline',
-    pipelines: {
-      default_pipeline: [
-        { name: 'domain', domain: 'foo' },
-        { name: 'rename', toRename: [['foo', 'bar']] },
-        { name: 'rename', toRename: [['baz', 'spam']] },
-        { name: 'rename', toRename: [['tic', 'tac']] },
-      ],
-    },
-    selectedStepIndex: 2,
-  });
+  runner.testCancel();
 
   runner.testResetSelectedIndex();
 
   describe('ListWidget', () => {
     it('should pass down the "toConcatenate" prop to the ListWidget value prop', async () => {
-      const wrapper = runner.shallowMount(
-        {},
-        {
-          data: {
-            editedStep: {
-              name: 'concatenate',
-              columns: ['foo', 'bar'],
-              separator: '-',
-              newColumnName: 'new',
-            },
+      const wrapper = runner.shallowMount({
+        data: {
+          editedStep: {
+            name: 'concatenate',
+            columns: ['foo', 'bar'],
+            separator: '-',
+            newColumnName: 'new',
           },
         },
-      );
+      });
       await wrapper.vm.$nextTick();
       expect(wrapper.find('listwidget-stub').props().value).toEqual(['foo', 'bar']);
     });
   });
 
   it('should not sync selected columns on edition', async () => {
-    const initialState = {
-      selectedStepIndex: 1,
-      selectedColumns: ['spam'],
-    };
-    const wrapper = runner.mount(initialState, {
+    const wrapper = runner.mount({
       propsData: {
+        selectedColumns: ['spam'],
         initialStepValue: {
           name: 'concatenate',
           columns: ['foo', 'bar'],
@@ -102,9 +74,7 @@ describe('Concatenate Step Form', () => {
         isStepCreation: false,
       },
     });
-    const store = runner.getStore();
     await wrapper.vm.$nextTick();
-    expect(store.selectedStepIndex).toEqual(1);
     const columnPickers = wrapper.findAll(ColumnPicker);
     expect(columnPickers.length).toEqual(2);
     const [picker1, picker2] = columnPickers.wrappers;

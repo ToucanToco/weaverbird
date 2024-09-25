@@ -27,51 +27,34 @@ describe('Delete Column Step Form', () => {
     },
   });
 
-  runner.testCancel({
-    currentPipelineName: 'default_pipeline',
-    pipelines: {
-      default_pipeline: [
-        { name: 'domain', domain: 'foo' },
-        { name: 'rename', toRename: [['foo', 'bar']] },
-      ],
-    },
-    selectedStepIndex: 1,
-  });
+  runner.testCancel();
 
   runner.testResetSelectedIndex();
 
   it('should instantiate a multiselect widget with proper options from the store', () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
+    const wrapper = runner.shallowMount({
+      propsData: {
+        columnTypes: { columnA: 'string', columnB: 'string', columnC: 'string' },
       },
-    };
-    const wrapper = runner.shallowMount(initialState);
+    });
     const widgetAutocomplete = wrapper.find('multiselectwidget-stub');
 
     expect(widgetAutocomplete.attributes('options')).toEqual('columnA,columnB,columnC');
   });
 
   it('should update selectedColumn when column is changed', async () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
-      },
-      selectedColumns: ['columnA'],
-    };
-    const wrapper = runner.mount(initialState, {
+    const wrapper = runner.mount({
       propsData: {
+        columnTypes: { columnA: 'string', columnB: 'string', columnC: 'string' },
+        selectedColumns: ['columnA'],
         initialValue: {
           columns: ['columnA'],
         },
       },
       data: { editedStep: { columns: ['columnB'] } },
     });
-    const store = runner.getStore();
     wrapper.find(MultiselectWidget).trigger('input');
     await wrapper.vm.$nextTick();
-    expect(store.selectedColumns).toEqual(['columnB']);
+    expect(wrapper.emitted().setSelectedColumns).toEqual([[{ column: 'columnB' }]]);
   });
 });

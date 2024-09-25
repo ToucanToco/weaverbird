@@ -13,6 +13,9 @@
       placeholder="Enter a column"
       data-path=".column"
       :errors="errors"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <InputTextWidget
       v-model="editedStep.oldStr"
@@ -36,11 +39,7 @@ import { Prop } from 'vue-property-decorator';
 
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import type { ColumnTypeMapping } from '@/lib/dataset';
 import type { PipelineStepName, ReplaceTextStep } from '@/lib/steps';
-import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { State, Getter } from 'pinia-class';
-import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -54,17 +53,11 @@ import BaseStepForm from './StepForm.vue';
 export default class ReplaceTextStepForm extends BaseStepForm<ReplaceTextStep> {
   stepname: PipelineStepName = 'replacetext';
 
-  @State(VQBModule) availableVariables?: VariablesBucket;
-
-  @State(VQBModule) variableDelimiters?: VariableDelimiters;
-
   @Prop({
     type: Object,
     default: () => ({ name: 'replacetext', searchColumn: '', oldStr: '', newStr: '' }),
   })
   declare initialStepValue: ReplaceTextStep;
-
-  @Getter(VQBModule) columnTypes!: ColumnTypeMapping;
 
   readonly title: string = 'Replace text';
 

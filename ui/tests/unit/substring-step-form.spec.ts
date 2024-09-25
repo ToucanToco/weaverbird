@@ -20,11 +20,8 @@ describe('Substring Step Form', () => {
     },
     {
       testlabel: 'existing column name',
-      store: {
-        dataset: {
-          headers: [{ name: 'bar' }],
-          data: [],
-        },
+      props: {
+        columnTypes: { bar: 'string' },
       },
       data: {
         editedStep: {
@@ -55,7 +52,7 @@ describe('Substring Step Form', () => {
   runner.testResetSelectedIndex();
 
   it('should pass down the properties to the input components', async () => {
-    const wrapper = runner.shallowMount(undefined, {
+    const wrapper = runner.shallowMount({
       data: {
         editedStep: { name: 'Substring', column: 'foo', startIndex: 1, endIndex: 3 },
       },

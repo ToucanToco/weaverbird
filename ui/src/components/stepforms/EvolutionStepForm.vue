@@ -14,6 +14,9 @@
       data-path=".dateCol"
       :syncWithSelectedColumn="false"
       :errors="errors"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <ColumnPicker
       class="valueColumnInput"
@@ -26,6 +29,9 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :trusted-variable-delimiters="trustedVariableDelimiters"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <AutocompleteWidget
       class="evolutionType"
@@ -76,9 +82,6 @@ import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue'
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import type { EvolutionStep, PipelineStepName } from '@/lib/steps';
-import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-import { State } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -103,11 +106,6 @@ type EvolutionType = {
 })
 export default class EvolutionStepForm extends BaseStepForm<EvolutionStep> {
   stepname: PipelineStepName = 'evolution';
-
-  @State(VQBModule) availableVariables?: VariablesBucket;
-
-  @State(VQBModule) variableDelimiters?: VariableDelimiters;
-  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,

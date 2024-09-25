@@ -45,7 +45,7 @@ describe('Add missing dates Step Form', () => {
   ]);
 
   it('should pass down props to widgets', async () => {
-    const wrapper = runner.shallowMount(undefined, {
+    const wrapper = runner.shallowMount({
       data: {
         editedStep: {
           name: 'addmissingdates',

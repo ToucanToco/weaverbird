@@ -15,6 +15,9 @@
       :automatic-new-field="false"
       data-path=".columns"
       :errors="errors"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
 
     <StepFormButtonbar />

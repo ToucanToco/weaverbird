@@ -15,16 +15,8 @@ describe('Replace Text Step Form', () => {
   });
   runner.testValidate({
     testlabel: 'submitted data is valid',
-    store: {
-      dataset: {
-        headers: [
-          { name: 'foo', type: 'string' },
-          { name: 'bar', type: 'string' },
-        ],
-        data: [],
-      },
-    },
     props: {
+      columnTypes: { toto: 'string', foo: 'string' },
       initialStepValue: { name: 'replacetext', searchColumn: 'foo', oldStr: 'old', newStr: 'new' },
     },
   });
@@ -33,54 +25,45 @@ describe('Replace Text Step Form', () => {
   runner.testResetSelectedIndex();
 
   it('should pass down "searchColumn" to ColumnPicker', async () => {
-    const wrapper = runner.shallowMount(
-      {},
-      {
-        data: {
-          editedStep: {
-            name: 'replacetext',
-            searchColumn: 'test',
-            oldStr: 'old',
-            newStr: 'new',
-          },
+    const wrapper = runner.shallowMount({
+      data: {
+        editedStep: {
+          name: 'replacetext',
+          searchColumn: 'test',
+          oldStr: 'old',
+          newStr: 'new',
         },
       },
-    );
+    });
     await wrapper.vm.$nextTick();
     expect(wrapper.find('columnpicker-stub').attributes().value).toEqual('test');
   });
 
   it('should pass down "oldStr" to TextInputWidget', async () => {
-    const wrapper = runner.shallowMount(
-      {},
-      {
-        data: {
-          editedStep: {
-            name: 'replacetext',
-            searchColumn: 'test',
-            oldStr: 'coucou',
-          },
+    const wrapper = runner.shallowMount({
+      data: {
+        editedStep: {
+          name: 'replacetext',
+          searchColumn: 'test',
+          oldStr: 'coucou',
         },
       },
-    );
+    });
     await wrapper.vm.$nextTick();
     expect(wrapper.find('inputtextwidget-stub').props().value).toEqual('coucou');
   });
 
   it('should pass down "newStr" to TextInputWidget', async () => {
-    const wrapper = runner.shallowMount(
-      {},
-      {
-        data: {
-          editedStep: {
-            name: 'replacetext',
-            searchColumn: 'test',
-            oldStr: 'coucou',
-            newStr: 'hello',
-          },
+    const wrapper = runner.shallowMount({
+      data: {
+        editedStep: {
+          name: 'replacetext',
+          searchColumn: 'test',
+          oldStr: 'coucou',
+          newStr: 'hello',
         },
       },
-    );
+    });
     await wrapper.vm.$nextTick();
     expect(wrapper.findAll('inputtextwidget-stub').at(1).props().value).toEqual('hello');
   });

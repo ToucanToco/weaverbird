@@ -17,6 +17,9 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :trusted-variable-delimiters="trustedVariableDelimiters"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <AutocompleteWidget
       class="orderInput"
@@ -64,9 +67,6 @@ import { Prop } from 'vue-property-decorator';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import type { PipelineStepName, RankStep } from '@/lib/steps';
-import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-import { State } from 'pinia-class';
 
 import ColumnPicker from './ColumnPicker.vue';
 import BaseStepForm from './StepForm.vue';
@@ -83,11 +83,6 @@ import MultiselectWidget from './widgets/Multiselect.vue';
 })
 export default class RankStepForm extends BaseStepForm<RankStep> {
   stepname: PipelineStepName = 'rank';
-
-  @State(VQBModule) availableVariables?: VariablesBucket;
-
-  @State(VQBModule) variableDelimiters?: VariableDelimiters;
-  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,

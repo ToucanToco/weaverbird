@@ -15,19 +15,17 @@ describe('Dissolve Step Form', () => {
 
   describe('MultiselectWidget', () => {
     it('should instantiate an MultiselectWidget widget with proper options from the store', () => {
-      const initialState = {
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [],
+      const wrapper = runner.shallowMount({
+        propsData: {
+          columnTypes: { columnA: 'string', columnB: 'string', columnC: 'string' },
         },
-      };
-      const wrapper = runner.shallowMount(initialState);
+      });
       const widgetMultiselect = wrapper.find('multiselectwidget-stub');
       expect(widgetMultiselect.attributes('options')).toEqual('columnA,columnB,columnC');
     });
 
     it('includeNulls should be set properly if defined in inititalStepValue', async () => {
-      const wrapper = runner.shallowMount(undefined, {
+      const wrapper = runner.shallowMount({
         propsData: {
           initialStepValue: {
             name: 'dissolve',
@@ -42,7 +40,7 @@ describe('Dissolve Step Form', () => {
     });
 
     it('should pass down the "on" prop to the MultiselectWidget value prop', async () => {
-      const wrapper = runner.shallowMount(undefined, {
+      const wrapper = runner.shallowMount({
         data: {
           editedStep: {
             name: 'dissolve',
@@ -64,7 +62,7 @@ describe('Dissolve Step Form', () => {
     });
 
     it('should pass down the "aggregations" prop to the ListWidget value prop', async () => {
-      const wrapper = runner.shallowMount(undefined, {
+      const wrapper = runner.shallowMount({
         data: {
           editedStep: {
             name: 'dissolve',
@@ -154,7 +152,7 @@ describe('Dissolve Step Form', () => {
   });
 
   it('should keep the same column name as newcolumn if only one aggregation is performed', () => {
-    const wrapper = runner.mount(undefined, {
+    const wrapper = runner.mount({
       data: {
         editedStep: {
           name: 'dissolve',
@@ -169,7 +167,7 @@ describe('Dissolve Step Form', () => {
   });
 
   it('should set newcolumn cleverly if several aggregations are performed on the same column', () => {
-    const wrapper = runner.mount(undefined, {
+    const wrapper = runner.mount({
       data: {
         editedStep: {
           name: 'dissolve',
@@ -190,7 +188,7 @@ describe('Dissolve Step Form', () => {
   });
 
   it('should set newcolumn cleverly if the an aggregation is perform on an id column', () => {
-    const wrapper = runner.mount(undefined, {
+    const wrapper = runner.mount({
       data: {
         editedStep: {
           name: 'dissolve',

@@ -40,16 +40,8 @@ describe('DateExtract Step Form', () => {
 
   runner.testValidate({
     testlabel: 'submitted data is valid',
-    store: {
-      dataset: {
-        headers: [
-          { name: 'foo', type: 'date' },
-          { name: 'bar', type: 'string' },
-        ],
-        data: [[null], [null]],
-      },
-    },
     props: {
+      columnTypes: { foo: 'date', bar: 'string' },
       initialStepValue: {
         name: 'dateextract',
         column: 'foo',
@@ -59,35 +51,21 @@ describe('DateExtract Step Form', () => {
     },
   });
 
-  runner.testCancel({
-    currentPipelineName: 'default_pipeline',
-    pipelines: {
-      default_pipeline: [
-        { name: 'domain', domain: 'foo' },
-        { name: 'rename', toRename: [['foo', 'bar']] },
-        { name: 'rename', toRename: [['baz', 'spam']] },
-        { name: 'rename', toRename: [['tic', 'tac']] },
-      ],
-    },
-    selectedStepIndex: 2,
-  });
+  runner.testCancel();
 
   runner.testResetSelectedIndex();
 
   it('should pass down the right value to Multiselect', async () => {
-    const wrapper = runner.shallowMount(
-      {},
-      {
-        data: {
-          editedStep: {
-            name: 'dateextract',
-            column: 'foo',
-            dateInfo: ['year', 'month', 'day'],
-            newColumns: ['foo_year', 'foo_month', 'foo_day'],
-          },
+    const wrapper = runner.shallowMount({
+      data: {
+        editedStep: {
+          name: 'dateextract',
+          column: 'foo',
+          dateInfo: ['year', 'month', 'day'],
+          newColumns: ['foo_year', 'foo_month', 'foo_day'],
         },
       },
-    );
+    });
     await wrapper.vm.$nextTick();
     expect(wrapper.find('multiselectwidget-stub').props('value')).toEqual([
       { info: 'year', label: 'year' },
@@ -109,19 +87,16 @@ describe('DateExtract Step Form', () => {
   });
 
   it('should convert editedStep from old configurations to new configuration', () => {
-    const wrapper = runner.shallowMount(
-      {},
-      {
-        propsData: {
-          initialStepValue: {
-            name: 'dateextract',
-            column: 'foo',
-            operation: 'day',
-            newColumnName: 'bar',
-          },
+    const wrapper = runner.shallowMount({
+      propsData: {
+        initialStepValue: {
+          name: 'dateextract',
+          column: 'foo',
+          operation: 'day',
+          newColumnName: 'bar',
         },
       },
-    );
+    });
     expect(wrapper.vm.$data.editedStep.dateInfo).toEqual(['day']);
     expect(wrapper.vm.$data.editedStep.newColumns).toEqual(['bar']);
     expect(wrapper.vm.$data.editedStep.operation).toBeUndefined();
@@ -129,8 +104,10 @@ describe('DateExtract Step Form', () => {
   });
 
   it('should set newColumns automatically at submit', () => {
-    const initialState = { dataset: { headers: [{ name: 'foo_day', type: 'number' }] } };
-    const wrapper = runner.mount(initialState, {
+    const wrapper = runner.mount({
+      propsData: {
+        columnTypes: { foo_day: 'number' },
+      },
       data: {
         editedStep: {
           name: 'dateextract',

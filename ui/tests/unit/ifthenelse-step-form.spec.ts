@@ -17,11 +17,8 @@ describe('If...Then...Else Step Form', () => {
   runner.testValidationErrors([
     {
       testlabel: 'submitted data is not valid',
-      store: {
-        dataset: {
-          headers: [{ name: 'foo', type: 'string' }],
-          data: [[null]],
-        },
+      props: {
+        columnTypes: { foo: 'string' },
       },
       data: {
         editedStep: {
@@ -70,13 +67,8 @@ describe('If...Then...Else Step Form', () => {
   ]);
 
   runner.testValidate({
-    store: {
-      dataset: {
-        headers: [{ name: 'foo', type: 'string' }],
-        data: [[null]],
-      },
-    },
     props: {
+      columnTypes: { foo: 'string' },
       initialStepValue: {
         name: 'ifthenelse',
         newColumn: 'new',
@@ -92,13 +84,11 @@ describe('If...Then...Else Step Form', () => {
 
   describe('Warning new column name', () => {
     it('should report a warning when newColumn is an already existing column name', async () => {
-      const initialState = {
-        dataset: {
-          headers: [{ name: 'columnA' }],
-          data: [],
+      const wrapper = runner.shallowMount({
+        propsData: {
+          columnTypes: { columnA: 'string' },
         },
-      };
-      const wrapper = runner.shallowMount(initialState);
+      });
       wrapper.setData({
         editedStep: {
           name: 'ifthenelse',
@@ -115,13 +105,11 @@ describe('If...Then...Else Step Form', () => {
     });
 
     it('should not report any warning if newColumn is not an already existing column name', async () => {
-      const initialState = {
-        dataset: {
-          headers: [{ name: 'columnA' }],
-          data: [],
+      const wrapper = runner.shallowMount({
+        propsData: {
+          columnTypes: { columnA: 'string' },
         },
-      };
-      const wrapper = runner.shallowMount(initialState);
+      });
       wrapper.setData({
         editedStep: {
           name: 'ifthenelse',
@@ -138,9 +126,8 @@ describe('If...Then...Else Step Form', () => {
 
   it('should pass the column types to the IfThenElse widget', () => {
     const wrapper = runner.shallowMount({
-      dataset: {
-        headers: [{ name: 'foo', type: 'string' }],
-        data: [],
+      propsData: {
+        columnTypes: { foo: 'string' },
       },
     });
     expect(wrapper.find('IfThenElseWidget-stub').props().columnTypes).toStrictEqual({
@@ -149,7 +136,7 @@ describe('If...Then...Else Step Form', () => {
   });
 
   it('should update editedStep with the if...then...else object', () => {
-    const wrapper = runner.shallowMount(undefined, {
+    const wrapper = runner.shallowMount({
       data: {
         editedStep: {
           name: 'ifthenelse',

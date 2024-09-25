@@ -38,12 +38,6 @@ describe('Evolution Step Form', () => {
     },
     {
       testlabel: 'existing column name',
-      store: {
-        dataset: {
-          headers: [{ name: 'foo' }],
-          data: [],
-        },
-      },
       data: {
         editedStep: {
           name: 'evolution',
@@ -54,12 +48,15 @@ describe('Evolution Step Form', () => {
           newColumn: 'foo',
         },
       },
+      props: {
+        columnTypes: { foo: 'string' },
+      },
       errors: [{ keyword: 'columnNameAlreadyUsed', dataPath: '.newColumn' }],
     },
   ]);
 
   it('should pass down props to widgets', async () => {
-    const wrapper = runner.shallowMount(undefined, {
+    const wrapper = runner.shallowMount({
       data: {
         editedStep: {
           name: 'evolution',
@@ -82,7 +79,7 @@ describe('Evolution Step Form', () => {
   });
 
   it('should pass set evolutionFormat properly', async () => {
-    const wrapper = runner.shallowMount(undefined, {
+    const wrapper = runner.shallowMount({
       data: {
         editedStep: {
           name: 'evolution',
@@ -101,7 +98,7 @@ describe('Evolution Step Form', () => {
   });
 
   it('should pass set evolutionType properly', async () => {
-    const wrapper = runner.shallowMount(undefined, {
+    const wrapper = runner.shallowMount({
       data: {
         editedStep: {
           name: 'evolution',

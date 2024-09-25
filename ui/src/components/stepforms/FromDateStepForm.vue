@@ -14,6 +14,9 @@
       placeholder="Add columns"
       data-path=".column"
       :errors="errors"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <AutocompleteWidget
       name="Date format:"
@@ -49,8 +52,6 @@ import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import type { FromDateStep, PipelineStepName } from '@/lib/steps';
-import { VQBModule } from '@/store';
-import { State } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -73,8 +74,6 @@ export default class FromDateStepForm extends BaseStepForm<FromDateStep> {
 
   @Prop({ type: Object, default: () => ({ name: 'fromdate', column: '', format: '%Y-%m-%d' }) })
   declare initialStepValue: FromDateStep;
-
-  @State(VQBModule) translator!: string;
 
   readonly title: string = 'Convert Column From Date to Text';
   readonly formatOptions: FormatOption[] = [

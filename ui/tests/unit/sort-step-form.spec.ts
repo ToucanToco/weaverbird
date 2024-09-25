@@ -40,24 +40,15 @@ describe('Sort Step Form', () => {
     },
   );
 
-  runner.testCancel({
-    currentPipelineName: 'default_pipeline',
-    pipelines: {
-      default_pipeline: [
-        { name: 'domain', domain: 'foo' },
-        { name: 'rename', toRename: [['foo', 'bar']] },
-        { name: 'rename', toRename: [['baz', 'spam']] },
-        { name: 'rename', toRename: [['tic', 'tac']] },
-      ],
-    },
-    selectedStepIndex: 2,
-  });
+  runner.testCancel();
 
   runner.testResetSelectedIndex();
 
   it('should suggest the selected column as the column to be sorted', function () {
     const wrapper = runner.shallowMount({
-      selectedColumns: ['selectedColumn'],
+      propsData: {
+        selectedColumns: ['selectedColumn'],
+      },
     });
     expect(wrapper.find('listwidget-stub').props().value).toEqual([
       { column: 'selectedColumn', order: 'asc' },
@@ -70,34 +61,29 @@ describe('Sort Step Form', () => {
   });
 
   it('should not suggest a column to be sorted if the step has already been edited', function () {
-    const wrapper = runner.shallowMount(
-      { selectedColumns: ['selectedColumn'] },
-      {
-        propsData: {
-          initialStepValue: {
-            name: 'sort',
-            columns: [{ column: 'amazing', order: 'desc' }],
-          },
+    const wrapper = runner.shallowMount({
+      propsData: {
+        selectedColumns: ['selectedColumn'],
+        initialStepValue: {
+          name: 'sort',
+          columns: [{ column: 'amazing', order: 'desc' }],
         },
       },
-    );
+    });
     expect(wrapper.find('listwidget-stub').props().value).toEqual([
       { column: 'amazing', order: 'desc' },
     ]);
   });
 
   it('should pass right sort props to widgetList sort column', async () => {
-    const wrapper = runner.shallowMount(
-      {},
-      {
-        data: {
-          editedStep: {
-            name: 'sort',
-            columns: [{ column: 'amazing', order: 'desc' }],
-          },
+    const wrapper = runner.shallowMount({
+      data: {
+        editedStep: {
+          name: 'sort',
+          columns: [{ column: 'amazing', order: 'desc' }],
         },
       },
-    );
+    });
     await wrapper.vm.$nextTick();
     expect(wrapper.find('listwidget-stub').props().value).toEqual([
       { column: 'amazing', order: 'desc' },
@@ -105,17 +91,14 @@ describe('Sort Step Form', () => {
   });
 
   it('should update the editedStep when the list is updated', async () => {
-    const wrapper = runner.shallowMount(
-      {},
-      {
-        data: {
-          editedStep: {
-            name: 'sort',
-            columns: [{ column: 'amazing', order: 'desc' }],
-          },
+    const wrapper = runner.shallowMount({
+      data: {
+        editedStep: {
+          name: 'sort',
+          columns: [{ column: 'amazing', order: 'desc' }],
         },
       },
-    );
+    });
     wrapper.find('listwidget-stub').vm.$emit('input', [{ column: 'amazing', order: 'desc' }]);
     expect(wrapper.vm.$data.editedStep.columns).toEqual([{ column: 'amazing', order: 'desc' }]);
   });

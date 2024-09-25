@@ -17,11 +17,8 @@ describe('Fillna Step Form', () => {
   runner.testValidationErrors([
     {
       testlabel: 'submitted data is not valid',
-      store: {
-        dataset: {
-          headers: [{ name: 'columnA' }],
-          data: [[null]],
-        },
+      props: {
+        columnTypes: { columnA: 'string' },
       },
       data: {
         editedStep: { name: 'fillna', columns: ['columnA'], value: { foo: 'bar' } },
@@ -33,11 +30,8 @@ describe('Fillna Step Form', () => {
   runner.testValidationErrors([
     {
       testlabel: 'should NOT have fewer than 1 items',
-      store: {
-        dataset: {
-          headers: [{ name: 'columnA' }],
-          data: [[null]],
-        },
+      props: {
+        columnTypes: { columnA: 'string' },
       },
       data: {
         editedStep: { name: 'fillna', columns: [], value: 'bar' },
@@ -47,13 +41,8 @@ describe('Fillna Step Form', () => {
   ]);
 
   runner.testValidate({
-    store: {
-      dataset: {
-        headers: [{ name: 'foo' }],
-        data: [[null]],
-      },
-    },
     props: {
+      columnTypes: { foo: 'string' },
       initialStepValue: { name: 'fillna', columns: ['foo', 'toto'], value: 'bar' },
     },
   });
@@ -62,15 +51,10 @@ describe('Fillna Step Form', () => {
   runner.testResetSelectedIndex();
 
   it('should update editedStep at creation depending on the selected column', async () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'toto' }, { name: 'foo' }],
-        data: [],
-      },
-      selectedColumns: ['toto'],
-    };
-    const wrapper = runner.shallowMount(initialState, {
+    const wrapper = runner.shallowMount({
       propsData: {
+        columnTypes: { toto: 'string', foo: 'string' },
+        selectedColumns: ['toto'],
         initialStepValue: {
           name: 'fillna',
           columns: [''],
@@ -82,16 +66,11 @@ describe('Fillna Step Form', () => {
   });
 
   it('should return an error if trying to set a null column', async () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'toto' }, { name: 'foo' }],
-        data: [],
-      },
-      selectedColumns: [null],
-    };
     try {
-      const wrapper = runner.shallowMount(initialState, {
+      const wrapper = runner.shallowMount({
         propsData: {
+          selectedColumns: [null],
+          columnTypes: { toto: 'string', foo: 'string' },
           initialStepValue: {
             name: 'fillna',
             columns: [''],
@@ -105,18 +84,15 @@ describe('Fillna Step Form', () => {
   });
 
   it('should convert editedStep from old configurations to new configuration', async () => {
-    const wrapper = runner.shallowMount(
-      {},
-      {
-        propsData: {
-          initialStepValue: {
-            name: 'fillna',
-            column: 'hello',
-            value: 0,
-          },
+    const wrapper = runner.shallowMount({
+      propsData: {
+        initialStepValue: {
+          name: 'fillna',
+          column: 'hello',
+          value: 0,
         },
       },
-    );
+    });
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.$data.editedStep.column).toBeUndefined;
     expect(wrapper.vm.$data.editedStep.columns).toBeDefined;
@@ -137,92 +113,67 @@ describe('Fillna Step Form', () => {
   });
 
   it('should convert input value to integer when the column data type is integer', () => {
-    const wrapper = runner.mount(
-      {
-        dataset: {
-          headers: [{ name: 'columnA', type: 'integer' }],
-          data: [[null]],
-        },
+    const wrapper = runner.mount({
+      propsData: {
+        columnTypes: { columnA: 'integer' },
       },
-      {
-        data: {
-          editedStep: { name: 'fillna', columns: ['columnA'], value: '42' },
-        },
+      data: {
+        editedStep: { name: 'fillna', columns: ['columnA'], value: '42' },
       },
-    );
+    });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).toBeNull();
-    expect(wrapper.emitted()).toEqual({
-      formSaved: [[{ name: 'fillna', columns: ['columnA'], value: 42 }]],
-    });
+    expect(wrapper.emitted().formSaved).toEqual([
+      [{ name: 'fillna', columns: ['columnA'], value: 42 }],
+    ]);
   });
 
   it('should convert input value to float when the column data type is float', () => {
-    const wrapper = runner.mount(
-      {
-        dataset: {
-          headers: [{ name: 'columnA', type: 'float' }],
-          data: [[null]],
-        },
+    const wrapper = runner.mount({
+      propsData: {
+        columnTypes: { columnA: 'float' },
       },
-      {
-        data: {
-          editedStep: { name: 'fillna', columns: ['columnA'], value: '42.3' },
-        },
+      data: {
+        editedStep: { name: 'fillna', columns: ['columnA'], value: '42.3' },
       },
-    );
+    });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).toBeNull();
-    expect(wrapper.emitted()).toEqual({
-      formSaved: [[{ name: 'fillna', columns: ['columnA'], value: 42.3 }]],
-    });
+    expect(wrapper.emitted().formSaved).toEqual([
+      [{ name: 'fillna', columns: ['columnA'], value: 42.3 }],
+    ]);
   });
 
   it('should convert input value to boolean when the column data type is boolean', () => {
-    const wrapper = runner.mount(
-      {
-        dataset: {
-          headers: [{ name: 'columnA', type: 'boolean' }],
-          data: [[null]],
-        },
+    const wrapper = runner.mount({
+      propsData: {
+        columnTypes: { columnA: 'boolean' },
       },
-      {
-        data: {
-          editedStep: { name: 'fillna', columns: ['columnA'], value: 'true' },
-        },
+      data: {
+        editedStep: { name: 'fillna', columns: ['columnA'], value: 'true' },
       },
-    );
-    wrapper.find('.widget-form-action__button--validate').trigger('click');
-    wrapper.setData({ editedStep: { name: 'fillna', columns: ['columnA'], value: 'false' } });
+    });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).toBeNull();
-    expect(wrapper.emitted()).toEqual({
-      formSaved: [
-        [{ name: 'fillna', columns: ['columnA'], value: true }],
-        [{ name: 'fillna', columns: ['columnA'], value: false }],
-      ],
-    });
+    expect(wrapper.emitted().formSaved).toEqual([
+      [{ name: 'fillna', column: undefined, columns: ['columnA'], value: true }],
+    ]);
   });
 
   it('should accept templatable values', () => {
-    const wrapper = runner.mount(
-      {
-        dataset: {
-          headers: [{ name: 'foo', type: 'integer' }],
-          data: [[null]],
-        },
+    const wrapper = runner.mount({
+      propsData: {
+        columnTypes: { foo: 'integer' },
         variables: {
           foo: 'bla',
         },
       },
-      {
-        data: { editedStep: { name: 'fillna', columns: ['foo'], value: '<%= foo %>' } },
-      },
-    );
+      data: { editedStep: { name: 'fillna', columns: ['foo'], value: '<%= foo %>' } },
+    });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).toBeNull();
-    expect(wrapper.emitted()).toEqual({
-      formSaved: [[{ name: 'fillna', columns: ['foo'], value: '<%= foo %>' }]],
-    });
+    expect(wrapper.emitted().formSaved).toEqual([
+      [{ name: 'fillna', columns: ['foo'], value: '<%= foo %>' }],
+    ]);
   });
 });

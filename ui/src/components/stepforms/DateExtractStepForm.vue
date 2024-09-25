@@ -14,6 +14,9 @@
       placeholder="Pick a column"
       data-path=".column"
       :errors="errors"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <MultiselectWidget
       class="dateInfoInput"
@@ -35,7 +38,7 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
+import ColumnPicker from './ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import { generateNewColumnName } from '@/lib/helpers';

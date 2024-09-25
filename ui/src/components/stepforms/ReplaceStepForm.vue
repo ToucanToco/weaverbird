@@ -13,6 +13,9 @@
       placeholder="Enter a column"
       data-path=".searchColumn"
       :errors="errors"
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <ListWidget
       addFieldName="Add a value to replace"
@@ -28,6 +31,9 @@
       :variable-delimiters="variableDelimiters"
       :trusted-variable-delimiters="trustedVariableDelimiters"
       unstyled-items
+      :columnNames="columnNames"
+      :selectedColumns="selectedColumns"
+      @setSelectedColumns="setSelectedColumns"
     />
     <StepFormButtonbar />
   </div>
@@ -40,12 +46,8 @@ import { Prop } from 'vue-property-decorator';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
 import ReplaceWidget from '@/components/stepforms/widgets/Replace.vue';
-import type { ColumnTypeMapping } from '@/lib/dataset';
 import { castFromString } from '@/lib/helpers';
 import type { PipelineStepName, ReplaceStep } from '@/lib/steps';
-import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-import { State, Getter } from 'pinia-class';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -59,15 +61,8 @@ import BaseStepForm from './StepForm.vue';
 export default class ReplaceStepForm extends BaseStepForm<ReplaceStep> {
   stepname: PipelineStepName = 'replace';
 
-  @State(VQBModule) availableVariables?: VariablesBucket;
-
-  @State(VQBModule) variableDelimiters?: VariableDelimiters;
-  @State(VQBModule) trustedVariableDelimiters?: VariableDelimiters;
-
   @Prop({ type: Object, default: () => ({ name: 'replace', searchColumn: '', toReplace: [[]] }) })
   declare initialStepValue: ReplaceStep;
-
-  @Getter(VQBModule) columnTypes!: ColumnTypeMapping;
 
   readonly title: string = 'Replace values';
   replaceWidget = ReplaceWidget;
