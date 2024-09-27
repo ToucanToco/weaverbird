@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [0.115.1] - 2024-09-27
+
+### Fixed
+
+- Stepform: enable to preselect column and use default config values
+
 ## [0.115.0] - 2024-09-25
 
 ### Changed
@@ -1593,6 +1599,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
+[0.115.1]: https://github.com/ToucanToco/weaverbird/compare/v0.115.0...v0.115.1
 [0.115.0]: https://github.com/ToucanToco/weaverbird/compare/v0.114.1...v0.115.0
 [0.114.1]: https://github.com/ToucanToco/weaverbird/compare/v0.114.0...v0.114.1
 [0.114.0]: https://github.com/ToucanToco/weaverbird/compare/v0.113.0...v0.114.0
