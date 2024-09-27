@@ -5,6 +5,7 @@
     ref="step"
     :translator="translator"
     :initialStepValue="initialStepValue"
+    :stepFormDefaults="stepFormDefaults"
     :isStepCreation="isStepCreation"
     :columnTypes="columnTypes"
     :backendError="backendError"

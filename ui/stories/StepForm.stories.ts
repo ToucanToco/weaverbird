@@ -105,3 +105,98 @@ export const Default: StoryObj<StepFormComponent> = {
     },
   },
 };
+
+export const Edition: StoryObj<StepFormComponent> = {
+  render: (args, { argTypes }) => ({
+    components: { StepFormComponent },
+    props: Object.keys(argTypes),
+    template: '<StepFormComponent v-bind="$props" @formSaved="onFormSaved" @back="onBack" />',
+    methods: {
+      onFormSaved: action('formSaved'),
+      onBack: action('back'),
+    },
+  }),
+  args: {
+    name: 'text',
+    availableDomains: [{ name: 'other_domain', uid: 'other_domain' }],
+    unjoinableDomains: [],
+    columnTypes: { a: 'string', b: 'boolean' },
+    availableVariables: SAMPLE_VARIABLES,
+    variableDelimiters: { start: '<%=', end: '%>' },
+    trustedVariableDelimiters: { start: '{{', end: '}}' },
+    variables: VARIABLES,
+    initialStepValue: {
+      text: 'Text value',
+      newColumn: 'a'
+    },
+    interpolateFunc: (a) => a,
+    getColumnNamesFromPipeline: () => Promise.resolve(['c', 'd']),
+  },
+  argTypes: {
+    name: {
+      disable: true,
+    },
+  },
+};
+
+export const WithDefaults: StoryObj<StepFormComponent> = {
+  render: (args, { argTypes }) => ({
+    components: { StepFormComponent },
+    props: Object.keys(argTypes),
+    template: '<StepFormComponent v-bind="$props" @formSaved="onFormSaved" @back="onBack" />',
+    methods: {
+      onFormSaved: action('formSaved'),
+      onBack: action('back'),
+    },
+  }),
+  args: {
+    name: 'text',
+    availableDomains: [{ name: 'other_domain', uid: 'other_domain' }],
+    unjoinableDomains: [],
+    columnTypes: { a: 'string', b: 'boolean' },
+    availableVariables: SAMPLE_VARIABLES,
+    variableDelimiters: { start: '<%=', end: '%>' },
+    trustedVariableDelimiters: { start: '{{', end: '}}' },
+    stepFormDefaults: {
+      newColumn: 'd'
+    },
+    variables: VARIABLES,
+    interpolateFunc: (a) => a,
+    getColumnNamesFromPipeline: () => Promise.resolve(['c', 'd']),
+  },
+  argTypes: {
+    name: {
+      disable: true,
+    },
+  },
+};
+
+export const WithPreselectedColumn: StoryObj<StepFormComponent> = {
+  render: (args, { argTypes }) => ({
+    components: { StepFormComponent },
+    props: Object.keys(argTypes),
+    template: '<StepFormComponent v-bind="$props" @formSaved="onFormSaved" @back="onBack" />',
+    methods: {
+      onFormSaved: action('formSaved'),
+      onBack: action('back'),
+    },
+  }),
+  args: {
+    name: 'filter',
+    availableDomains: [{ name: 'other_domain', uid: 'other_domain' }],
+    unjoinableDomains: [],
+    columnTypes: { a: 'string', b: 'boolean' },
+    availableVariables: SAMPLE_VARIABLES,
+    variableDelimiters: { start: '<%=', end: '%>' },
+    trustedVariableDelimiters: { start: '{{', end: '}}' },
+    selectedColumn: 'a',
+    variables: VARIABLES,
+    interpolateFunc: (a) => a,
+    getColumnNamesFromPipeline: () => Promise.resolve(['c', 'd']),
+  },
+  argTypes: {
+    name: {
+      disable: true,
+    },
+  },
+};
