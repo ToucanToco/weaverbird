@@ -127,7 +127,7 @@ export const Edition: StoryObj<StepFormComponent> = {
     variables: VARIABLES,
     initialStepValue: {
       text: 'Text value',
-      newColumn: 'a'
+      newColumn: 'a',
     },
     interpolateFunc: (a) => a,
     getColumnNamesFromPipeline: () => Promise.resolve(['c', 'd']),
@@ -158,7 +158,7 @@ export const WithDefaults: StoryObj<StepFormComponent> = {
     variableDelimiters: { start: '<%=', end: '%>' },
     trustedVariableDelimiters: { start: '{{', end: '}}' },
     stepFormDefaults: {
-      newColumn: 'd'
+      newColumn: 'd',
     },
     variables: VARIABLES,
     interpolateFunc: (a) => a,
