@@ -5,6 +5,7 @@
     ref="step"
     :translator="translator"
     :initialStepValue="initialStepValue"
+    :stepFormDefaults="stepFormDefaults"
     :isStepCreation="isStepCreation"
     :columnTypes="columnTypes"
     :backendError="backendError"
@@ -89,6 +90,10 @@ export default class StepFormComponent extends Vue {
     pipelineNameOrDomain: string | ReferenceToExternalQuery,
   ) => Promise<string[] | undefined>;
 
+  // some complex steps use selectedColumns to preselect column (rename, filter...)
+  @Prop({})
+  selectedColumn?: string;
+
   get isStepCreation() {
     return this.initialStepValue === undefined;
   }
@@ -105,7 +110,7 @@ export default class StepFormComponent extends Vue {
     this.$emit('formSaved', step);
   }
 
-  selectedColumns: string[] = [];
+  selectedColumns: string[] = this.selectedColumn ? [this.selectedColumn] : [];
 
   setSelectedColumns({ column }: { column: string | undefined }) {
     if (!!column && column !== this.selectedColumns[0]) {
