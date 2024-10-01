@@ -18,9 +18,6 @@
       :automatic-new-field="false"
       data-path=".toRename"
       :errors="errors"
-      :available-variables="availableVariables"
-      :variable-delimiters="variableDelimiters"
-      :trusted-variable-delimiters="trustedVariableDelimiters"
       unstyled-items
       :columnNames="columnNames"
       :selectedColumns="selectedColumns"

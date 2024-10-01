@@ -9,9 +9,6 @@
       placeholder="Select columns"
       :data-path="`${dataPath}.columns`"
       :errors="errors"
-      :available-variables="availableVariables"
-      :variable-delimiters="variableDelimiters"
-      :trusted-variable-delimiters="trustedVariableDelimiters"
       :allowCustom="true"
     />
     <AutocompleteWidget

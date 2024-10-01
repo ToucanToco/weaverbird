@@ -14,9 +14,6 @@
       data-path=".newColumn"
       :errors="errors"
       :warning="duplicateColumnName"
-      :available-variables="availableVariables"
-      :variable-delimiters="variableDelimiters"
-      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
     <InputTextWidget
       class="textInput"
