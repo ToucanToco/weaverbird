@@ -3,8 +3,6 @@
     "mongo",
     "pandas",
     "snowflake",
-    # TODO: GBQ handles NULL comparisons differently from
-    # "bigquery_pypika"
   ],
   "step": {
     "pipeline": [
@@ -12,7 +10,6 @@
         "name": "ifthenelse",
         "if": {
           "column": "nullable_name",
-          # "value": "",
           "operator": "isnull"
         },
         "newColumn": "new_nullable_name",

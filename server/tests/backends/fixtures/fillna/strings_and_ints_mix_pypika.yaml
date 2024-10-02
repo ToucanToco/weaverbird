@@ -1,0 +1,50 @@
+exclude:
+- mongo
+- pandas
+- snowflake
+step:
+  pipeline:
+  - name: select
+    columns:
+      - nullable_name
+  - name: ifthenelse
+    newColumn: nullable_int_col
+    if:
+      column: nullable_name
+      operator: isnull
+    then: 'null'
+    else: 1
+  - name: fillna
+    columns:
+    - nullable_int_col
+    # 0 as a string
+    value: "0"
+expected:
+  data:
+    - nullable_name: null
+      nullable_int_col: 0
+    - nullable_name: Ninkasi Ploploplop
+      nullable_int_col: 1
+    - nullable_name: Brewdog Nanny State Alcoholvrij
+      nullable_int_col: 1
+    - nullable_name: Ardwen Blonde
+      nullable_int_col: 1
+    - nullable_name: null
+      nullable_int_col: 0
+    - nullable_name: Weihenstephan Hefe Weizen Alcoholarm
+      nullable_int_col: 1
+    - nullable_name: Bellfield Lawless Village IPA
+      nullable_int_col: 1
+    - nullable_name: Pauwel Kwak
+      nullable_int_col: 1
+    - nullable_name: null
+      nullable_int_col: 0
+    - nullable_name: Brugse Zot blonde
+      nullable_int_col: 1
+  schema:
+    fields:
+      - name: nullable_name
+        type: string
+      - name: nullable_int_col
+        type: number
+    pandas_version: 1.4.0
