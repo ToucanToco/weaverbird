@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.115.2] - 2024-10-08
+
 ### Fixed
 
 - Declare `./dist/style.css` export
@@ -1603,6 +1605,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
+[0.115.2]: https://github.com/ToucanToco/weaverbird/compare/v0.115.1...v0.115.2
 [0.115.1]: https://github.com/ToucanToco/weaverbird/compare/v0.115.0...v0.115.1
 [0.115.0]: https://github.com/ToucanToco/weaverbird/compare/v0.114.1...v0.115.0
 [0.114.1]: https://github.com/ToucanToco/weaverbird/compare/v0.114.0...v0.114.1
