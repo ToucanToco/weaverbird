@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Declare `./dist/style.css` export
+
 ## [0.115.1] - 2024-09-27
 
 ### Fixed

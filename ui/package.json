@@ -31,7 +31,8 @@
         "default": "./dist/weaverbird.js"
       },
       "require": "./dist/weaverbird.umd.cjs"
-    }
+    },
+    "./dist/style.css": "./dist/style.css"
   },
   "types": "./dist/types/types.d.ts",
   "scripts": {
