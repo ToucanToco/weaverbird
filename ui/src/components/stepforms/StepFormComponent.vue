@@ -120,7 +120,7 @@ export default class StepFormComponent extends Vue {
 
   @Watch('selectedColumn')
   onSelectedColumnChanged() {
-    this.setSelectedColumns({ column: this.selectedColumn })
+    this.setSelectedColumns({ column: this.selectedColumn });
   }
 }
 </script>
