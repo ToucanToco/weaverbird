@@ -1,6 +1,6 @@
 <template>
   <component
-    key="stepForm"
+    :key="`${name}__${selectedColumn}`"
     :is="formComponent"
     ref="step"
     :translator="translator"
@@ -25,7 +25,7 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import { Component, Prop } from 'vue-property-decorator';
+import { Component, Prop, Watch } from 'vue-property-decorator';
 import type { PipelineStep, PipelineStepName, ReferenceToExternalQuery } from '@/lib/steps';
 import StepFormsComponents from './index';
 import { VariableDelimiters, VariablesBucket } from '@/types';
@@ -116,6 +116,11 @@ export default class StepFormComponent extends Vue {
     if (!!column && column !== this.selectedColumns[0]) {
       this.selectedColumns = [column];
     }
+  }
+
+  @Watch('selectedColumn')
+  onSelectedColumnChanged() {
+    this.setSelectedColumns({ column: this.selectedColumn });
   }
 }
 </script>
