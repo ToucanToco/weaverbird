@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [0.115.3] - 2024-10-10
+
+### Fixed
+
+- StepformComponent: add reactivity for preselected column
+
 ## [0.115.2] - 2024-10-08
 
 ### Fixed
@@ -1605,6 +1611,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
+[0.115.3]: https://github.com/ToucanToco/weaverbird/compare/v0.115.2...v0.115.3
 [0.115.2]: https://github.com/ToucanToco/weaverbird/compare/v0.115.1...v0.115.2
 [0.115.1]: https://github.com/ToucanToco/weaverbird/compare/v0.115.0...v0.115.1
 [0.115.0]: https://github.com/ToucanToco/weaverbird/compare/v0.114.1...v0.115.0
