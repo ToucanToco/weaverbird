@@ -8,9 +8,6 @@
       :syncWithSelectedColumn="false"
       :data-path="`${dataPath}[0]`"
       :errors="errors"
-      :available-variables="availableVariables"
-      :variable-delimiters="variableDelimiters"
-      :trusted-variable-delimiters="trustedVariableDelimiters"
       :columnNames="columnNames"
       :selectedColumns="selectedColumns"
       @setSelectedColumns="$emit('setSelectedColumns', $event)"
@@ -22,9 +19,6 @@
       :data-path="`${dataPath}[1]`"
       :warning="duplicateColumnName"
       :errors="errors"
-      :available-variables="availableVariables"
-      :variable-delimiters="variableDelimiters"
-      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
   </div>
 </template>
@@ -57,15 +51,6 @@ export default class RenameWidget extends Vue {
 
   @Prop({ type: Array, default: () => [] })
   errors!: ErrorObject[];
-
-  @Prop()
-  availableVariables?: VariablesBucket;
-
-  @Prop()
-  variableDelimiters?: VariableDelimiters;
-
-  @Prop()
-  trustedVariableDelimiters?: VariableDelimiters;
 
   @Prop({ default: () => [] })
   selectedColumns!: string[];
