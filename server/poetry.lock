@@ -2593,23 +2593,23 @@ testing = ["coverage (>=6.2)", "hypothesis (>=5.7.1)"]
 
 [[package]]
 name = "pytest-benchmark"
-version = "4.0.0"
+version = "5.1.0"
 description = "A ``pytest`` fixture for benchmarking code. It will group the tests into rounds that are calibrated to the chosen timer."
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.9"
 files = [
-    {file = "pytest-benchmark-4.0.0.tar.gz", hash = "sha256:fb0785b83efe599a6a956361c0691ae1dbb5318018561af10f3e915caa0048d1"},
-    {file = "pytest_benchmark-4.0.0-py3-none-any.whl", hash = "sha256:fdb7db64e31c8b277dff9850d2a2556d8b60bcb0ea6524e36e28ffd7c87f71d6"},
+    {file = "pytest-benchmark-5.1.0.tar.gz", hash = "sha256:9ea661cdc292e8231f7cd4c10b0319e56a2118e2c09d9f50e1b3d150d2aca105"},
+    {file = "pytest_benchmark-5.1.0-py3-none-any.whl", hash = "sha256:922de2dfa3033c227c96da942d1878191afa135a29485fb942e85dff1c592c89"},
 ]
 
 [package.dependencies]
 py-cpuinfo = "*"
-pytest = ">=3.8"
+pytest = ">=8.1"
 
 [package.extras]
 aspect = ["aspectlib"]
 elasticsearch = ["elasticsearch"]
-histogram = ["pygal", "pygaljs"]
+histogram = ["pygal", "pygaljs", "setuptools"]
 
 [[package]]
 name = "pytest-cov"
@@ -3394,7 +3394,7 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 name = "werkzeug"
 version = "3.0.6"
 description = "The comprehensive WSGI web application library."
-optional = false
+optional = true
 python-versions = ">=3.8"
 files = [
     {file = "werkzeug-3.0.6-py3-none-any.whl", hash = "sha256:1bc0c2310d2fbb07b1dd1105eba2f7af72f322e1e455f2f93c993bee8c8a5f17"},
@@ -3517,4 +3517,4 @@ pypika = ["PyPika"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11, <3.13"
-content-hash = "6dc3e8737b0f7d83376b14be3c9c1eb9e3fd96c778b91d2384abab6cb9511f0c"
+content-hash = "d7675c04df88b28d2ebc437b0aa212f2c50f00207b0c298ba03e9bfb8d6bd2e0"
