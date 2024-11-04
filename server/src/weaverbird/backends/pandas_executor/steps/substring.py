@@ -3,6 +3,8 @@ from pandas import DataFrame
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps import SubstringStep
 
+from .utils.cast import cast_to_str
+
 
 def execute_substring(
     step: SubstringStep,
@@ -24,8 +26,8 @@ def execute_substring(
 
     # there is no way to get the full string with a x[start:end] when end is negative.
     if end_index == 0:
-        serie = df[step.column].str[start_index:]
+        serie = cast_to_str(df[step.column]).str[start_index:]
     else:
-        serie = df[step.column].str[start_index:end_index]
+        serie = cast_to_str(df[step.column]).str[start_index:end_index]
 
     return df.assign(**{new_column_name: serie})

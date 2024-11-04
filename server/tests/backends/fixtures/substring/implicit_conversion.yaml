@@ -1,0 +1,53 @@
+exclude:
+- athena_pypika
+- bigquery_pypika
+- mysql_pypika
+- postgres_pypika
+- redshift_pypika
+- snowflake_pypika
+step:
+  pipeline:
+  - name: substring
+    column: DATE
+    start_index: 2
+    end_index: 4
+input:
+  schema:
+    fields:
+    - name: DATE
+      type: datetime
+    pandas_version: 1.4.0
+  data:
+    - DATE: '2018-12-02'
+    - DATE: '2019-01-03'
+    - DATE: '2018-12-03'
+    - DATE: '2019-01-01'
+    - DATE: '2018-12-01'
+    - DATE: '2019-01-02'
+    - DATE: '2019-02-02'
+    - DATE: '2019-02-03'
+expected:
+  schema:
+    fields:
+    - name: DATE
+      type: datetime
+    - name: DATE_SUBSTR
+      type: string
+    pandas_version: 1.4.0
+  data:
+    - DATE: '2018-12-02'
+      DATE_SUBSTR: '018'
+    - DATE: '2019-01-03'
+      DATE_SUBSTR: '019'
+    - DATE: '2018-12-03'
+      DATE_SUBSTR: '018'
+    - DATE: '2019-01-01'
+      DATE_SUBSTR: '019'
+    - DATE: '2018-12-01'
+      DATE_SUBSTR: '018'
+    - DATE: '2019-01-02'
+      DATE_SUBSTR: '019'
+    - DATE: '2019-02-02'
+      DATE_SUBSTR: '019'
+    - DATE: '2019-02-03'
+      DATE_SUBSTR: '019'
