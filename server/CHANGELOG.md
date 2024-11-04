@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.48.2] - 2024-11-04
+
 ### Fixed
 
 - Pandas: the `substring` step now implicitly converts the target column to a string before extracting the substring
