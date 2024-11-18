@@ -2811,13 +2811,13 @@ files = [
 
 [[package]]
 name = "quart"
-version = "0.19.8"
+version = "0.19.9"
 description = "A Python ASGI web microframework with the same API as Flask"
 optional = true
 python-versions = ">=3.8"
 files = [
-    {file = "quart-0.19.8-py3-none-any.whl", hash = "sha256:34eeb559014f4e72e093d034cfe203b1a6262e9d3504f826f293090e230609f2"},
-    {file = "quart-0.19.8.tar.gz", hash = "sha256:ef567d0be7677c99890d5c6ff30e679699fe7e5fca1a90fa3b6974edd8421794"},
+    {file = "quart-0.19.9-py3-none-any.whl", hash = "sha256:8acb8b299c72b66ee9e506ae141498bbbfcc250b5298fbdb712e97f3d7e4082f"},
+    {file = "quart-0.19.9.tar.gz", hash = "sha256:30a61a0d7bae1ee13e6e99dc14c929b3c945e372b9445d92d21db053e91e95a5"},
 ]
 
 [package.dependencies]
