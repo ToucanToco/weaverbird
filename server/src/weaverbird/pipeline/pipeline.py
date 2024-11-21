@@ -462,6 +462,9 @@ class PipelineWithVariables(Pipeline):
         return Pipeline(steps=steps_rendered)
 
 
+PipelineWithVariables.model_rebuild()
+
+
 class ReferenceUnresolved(Exception):
     """
     Raised when a mandatory reference is not resolved
