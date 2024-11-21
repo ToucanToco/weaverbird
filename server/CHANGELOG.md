@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.48.3] - 2024-11-21
+
 ### Fixed
 
 - Compatibility with pydantic 2.10
