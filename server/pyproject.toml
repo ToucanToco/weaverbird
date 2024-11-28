@@ -4,10 +4,19 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "weaverbird"
-version = "0.48.3"
+version = "0.48.4"
 description = "A visual data pipeline builder with various backends"
 authors = ["Toucan Toco <dev@toucantoco.com>"]
-keywords = ["mongodb", "pandas", "sql", "data", "dataviz", "pipeline", "query", "builder"]
+keywords = [
+    "builder",
+    "data",
+    "dataviz",
+    "mongodb",
+    "pandas",
+    "pipeline",
+    "query",
+    "sql",
+]
 license = "BSD-3-Clause"
 readme = "README.md"
 
@@ -18,19 +27,26 @@ pydantic = "^2.4.2"
 # Dependencies for extras
 ## Pandas
 pandas = [
-    {version = "^1.2.5", optional = true, python = "<3.12"},
-    {version = "^2", optional = true, python = ">=3.12"},
+    { version = "^1.2.5", optional = true, python = "<3.12" },
+    { version = "^2", optional = true, python = ">=3.12" },
 ]
-geopandas = {version = "<2", optional = true}
+geopandas = { version = "<2", optional = true }
 ## PyPika
-PyPika = {version = "^0.48.9", optional = true}
+PyPika = { version = "^0.48.9", optional = true }
 ## Playground
-quart = {version = ">=0.17,<0.20", optional = true}
-Quart-CORS = {version = ">=0.5,<0.8", optional = true}
-hypercorn = {version = ">=0.13,<0.18", optional = true}
-pymongo = {version = ">=4.2.0", optional = true, extras = ["srv", "tls"]}
-psycopg = {optional = true, version = "^3.0.15"}
-toucan-connectors = {version = "^6.3.0", optional = true, extras = ["google_big_query", "mongo", "Redshift", "snowflake", "awsathena", "mysql"]}
+quart = { version = ">=0.17,<0.20", optional = true }
+Quart-CORS = { version = ">=0.5,<0.8", optional = true }
+hypercorn = { version = ">=0.13,<0.18", optional = true }
+pymongo = { version = ">=4.2.0", optional = true, extras = ["srv", "tls"] }
+psycopg = { optional = true, version = "^3.0.15" }
+toucan-connectors = { version = "^6.3.0", optional = true, extras = [
+    "awsathena",
+    "google_big_query",
+    "mongo",
+    "mysql",
+    "Redshift",
+    "snowflake",
+] }
 python-dateutil = "^2.8.2"
 
 [tool.poetry.group.dev.dependencies]
@@ -38,7 +54,14 @@ pytest-cov = ">=4.1,<7.0"
 pytest-mock = "^3.11.1"
 pytest-asyncio = ">=0.21,<0.25"
 # required so we can use nosql_apply_parameters_to_query during tests
-toucan-connectors = {version = "^6.3.0", extras = ["google_big_query", "mongo", "Redshift", "snowflake", "awsathena", "mysql"]}
+toucan-connectors = { version = "^6.3.0", extras = [
+    "awsathena",
+    "google_big_query",
+    "mongo",
+    "mysql",
+    "Redshift",
+    "snowflake",
+] }
 pytest-benchmark = ">=4,<6"
 snowflake-sqlalchemy = "^1.6.1"
 types-python-dateutil = "^2.8.19"
@@ -62,7 +85,15 @@ pandas = ["pandas", "geopandas"]
 pypika = ["pypika"]
 all = ["pandas", "geopandas", "pypika"]
 # playground
-playground = ["quart", "Quart-CORS", "hypercorn", "pymongo", "pandas", "psycopg", "toucan-connectors"]
+playground = [
+    "hypercorn",
+    "pandas",
+    "psycopg",
+    "pymongo",
+    "quart",
+    "Quart-CORS",
+    "toucan-connectors",
+]
 
 [tool.mypy]
 files = "src/"
@@ -76,9 +107,7 @@ check_untyped_defs = true
 [tool.pytest.ini_options]
 pythonpath = "."
 testpaths = "tests"
-markers = [
-    "serial: marks tests as serial (deselect with '-m \"not serial\"')",
-]
+markers = ["serial: marks tests as serial (deselect with '-m \"not serial\"')"]
 
 [tool.ruff]
 # a bit longer to allow for some lines which black would not wrap
@@ -91,11 +120,11 @@ target-version = "py311"
 [tool.ruff.lint]
 select = ["E", "F", "UP", "N", "C", "B", "I001", "S"]
 ignore = [
-       "S101", # allow use of assert
-       "C901", # do not check complexity
-       "S311", # allow use of `random` module (non-cyptographic)
-       "N815", # allow mixed case (pydantic models)
-       "N818", # allow exceptions that do not end with the `Error` suffix
+    "S101", # allow use of assert
+    "C901", # do not check complexity
+    "S311", # allow use of `random` module (non-cyptographic)
+    "N815", # allow mixed case (pydantic models)
+    "N818", # allow exceptions that do not end with the `Error` suffix
 ]
 
 
@@ -110,4 +139,8 @@ classmethod-decorators = [
     "pydantic.root_validator",
 ]
 # Allow a few extra names
-ignore-names = ["PipelineTranslationFailure", "REGEXP_LIKE_Translator", "REGEXP_CONTAINS_Translator"]
+ignore-names = [
+    "PipelineTranslationFailure",
+    "REGEXP_LIKE_Translator",
+    "REGEXP_CONTAINS_Translator",
+]
