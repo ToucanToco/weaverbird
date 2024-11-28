@@ -1,0 +1,156 @@
+exclude:
+- athena_pypika
+- bigquery_pypika
+- mysql_pypika
+- postgres_pypika
+- redshift_pypika
+- snowflake_pypika
+step:
+  pipeline:
+  - name: join
+    type: left
+    'on': [[id, id]]
+    right_pipeline:
+      - name: domain
+        domain: joined
+  - name: ifthenelse
+    new_column: new_col
+    if:
+      column: new_value
+      operator: isnull
+    else: '[new_value]'
+    then: '[value]'
+other_inputs:
+  joined:
+    schema:
+      fields:
+        - name: new_value
+          type: string
+        - name: id
+          type: integer
+      pandas_version: 1.4.0
+    data:
+      - new_value: A
+        id: 1
+      - new_value: A
+        id: 2
+      - new_value: A
+        id: 3
+      - new_value: A
+        id: 4
+      - new_value: A
+        id: 5
+      - new_value: A
+        id: 6
+      - new_value: A
+        id: 7
+      - new_value: A
+        id: 8
+      - new_value: A
+        id: 9
+input:
+  schema:
+    fields:
+    - name: value
+      type: string
+    - name: id
+      type: integer
+    pandas_version: 1.4.0
+  data:
+  - id: 1
+    value: BA
+  - id: 2
+    value: BA
+  - id: 3
+    value: BA
+  - id: 4
+    value: BA
+  - id: 5
+    value: BA
+  - id: 6
+    value: BA
+  - id: 7
+    value: BA
+  - id: 8
+    value: BA
+  - id: 9
+    value: BA
+  - id: 10
+    value: B
+  - id: 11
+    value: B
+  - id: 12
+    value: B
+  - id: 13
+    value: B
+  - id: 14
+    value: B
+expected:
+  schema:
+    fields:
+    - name: value
+      type: string
+    - name: new_value
+      type: string
+    - name: id
+      type: integer
+    - name: new_col
+      type: string
+    pandas_version: 0.20.0
+  data:
+  - new_value: A
+    id: 1
+    value: BA
+    new_col: A
+  - new_value: A
+    id: 2
+    value: BA
+    new_col: A
+  - new_value: A
+    id: 3
+    value: BA
+    new_col: A
+  - new_value: A
+    id: 4
+    value: BA
+    new_col: A
+  - new_value: A
+    id: 5
+    value: BA
+    new_col: A
+  - new_value: A
+    id: 6
+    value: BA
+    new_col: A
+  - new_value: A
+    id: 7
+    value: BA
+    new_col: A
+  - new_value: A
+    id: 8
+    value: BA
+    new_col: A
+  - new_value: A
+    id: 9
+    value: BA
+    new_col: A
+  - new_value: null
+    id: 10
+    value: B
+    new_col: B
+  - new_value: null
+    id: 11
+    value: B
+    new_col: B
+  - new_value: null
+    id: 12
+    value: B
+    new_col: B
+  - new_value: null
+    id: 13
+    value: B
+    new_col: B
+  - new_value: null
+    id: 14
+    value: B
+    new_col: B
