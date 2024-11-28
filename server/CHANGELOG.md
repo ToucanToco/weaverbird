@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Mongo: the `isnull` and `notnull` operators now behave correctly in case of a missing field in the `ifthenelse` step
+
 ## [0.48.3] - 2024-11-21
 
 ### Fixed

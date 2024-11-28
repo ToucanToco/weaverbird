@@ -90,12 +90,9 @@ def test_mongo_translator_pipeline(mongo_database, case_id, case_spec_file_path,
     if "other_inputs" in spec and (
         "join" in case_id or "append" in case_id
     ):  # needed for join & append steps tests as we need a != collection
-        [
-            mongo_database[k].insert_many(
-                pd.read_json(StringIO(json.dumps(v)), orient="table").to_dict(orient="records")
-            )
-            for k, v in spec.get("other_inputs", {}).items()
-        ]
+        for collection_name, raw_df in spec["other_inputs"].items():
+            df = pd.read_json(StringIO(json.dumps(raw_df)), orient="table")
+            mongo_database[collection_name].insert_many(df.to_dict(orient="records"))
 
     # create query
     steps = spec["step"]["pipeline"]
