@@ -1,9 +1,9 @@
 from datetime import date, datetime
+from typing import Any
 
-from pypika import functions
-from pypika.dialects import Query
+from pypika import Query, functions
 from pypika.enums import Dialects
-from pypika.queries import Selectable
+from pypika.queries import QueryBuilder, Selectable
 from pypika.terms import Case, CustomFunction, Field, Term
 
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
@@ -20,9 +20,30 @@ class ToMilliseconds(functions.Function):
         super().__init__("TO_MILLISECONDS", field)
 
 
+class AthenaQueryBuilder(QueryBuilder):
+    def __init__(self, **kwargs: Any) -> None:
+        super().__init__(dialect=SQLDialect.ATHENA, **kwargs)
+
+    # Does the same as the parent class, but with OFFSET before LIMIT
+    def _apply_pagination(self, querystring: str) -> str:
+        if self._offset:
+            querystring += self._offset_sql()
+
+        if self._limit is not None:
+            querystring += self._limit_sql()
+
+        return querystring
+
+
+class AthenaQuery(Query):
+    @classmethod
+    def _builder(cls, **kwargs: Any) -> AthenaQueryBuilder:
+        return AthenaQueryBuilder(**kwargs)
+
+
 class AthenaTranslator(SQLTranslator):
     DIALECT = SQLDialect.ATHENA
-    QUERY_CLS = Query
+    QUERY_CLS = AthenaQuery
     SUPPORT_ROW_NUMBER = True
     SUPPORT_SPLIT_PART = True
     SUPPORT_UNPIVOT = False
