@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+- Pypika: source_rows_subset now takes precedence over limit in case it is specified and smaller than the limit
+- Pypika: The Athena translator now puts OFFSET and LIMIT in the correct order
+
 ## [0.48.4] - 2024-11-28
 
 ### Fixed
