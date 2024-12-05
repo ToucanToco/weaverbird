@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.48.5] - 2024-12-05
+
 ### Fixed
 
 - Pypika: source_rows_subset now takes precedence over limit in case it is specified and smaller than the limit
