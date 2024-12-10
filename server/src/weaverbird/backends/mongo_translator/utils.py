@@ -60,7 +60,8 @@ def build_cond_expression(
 
     else:
         if cond.operator == "notnull" or cond.operator == "isnull":
-            return {operator_mapping[cond.operator]: [f"${cond.column}", None]}
+            # $ifNull allows to replace missing values with NULL
+            return {operator_mapping[cond.operator]: [{"$ifNull": [f"${cond.column}", None]}, None]}
 
         else:
             cond_expression = {operator_mapping[cond.operator]: [f"${cond.column}", cond.value]}

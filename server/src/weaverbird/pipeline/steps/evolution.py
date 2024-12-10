@@ -21,4 +21,4 @@ class EvolutionStep(BaseStep):
 
 
 class EvolutionStepWithVariable(EvolutionStep, StepWithVariablesMixin):
-    index_columns: TemplatedVariable | list[TemplatedVariable] = Field(default_factory=list)
+    index_columns: TemplatedVariable | list[TemplatedVariable] = Field(default_factory=list)  # type:ignore[arg-type]

@@ -436,6 +436,10 @@ class SQLTranslator(ABC):
             if limit > steps[-1].limit:
                 limit = steps[-1].limit
 
+        # If we have both a source rows subset and a limit, we want to apply the smallest limit of both
+        if self._source_rows_subset and limit:
+            limit = min(limit, self._source_rows_subset)
+
         try:
             # This method is used by translate_pipeline. We are at the top level here, not in a nested
             # builder, so we want to unwrap the last step

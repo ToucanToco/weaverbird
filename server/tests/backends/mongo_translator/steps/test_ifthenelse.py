@@ -12,7 +12,29 @@ def test_ifthenelse_basic():
             then=1,
             else_value=2,
         )
-    ) == [{"$addFields": {"foobar": {"$cond": {"if": {"$eq": ["$foo", 1]}, "then": 1, "else": 2}}}}]
+    ) == [
+        {
+            "$addFields": {
+                "foobar": {
+                    "$cond": {
+                        "if": {"$eq": ["$foo", 1]},
+                        "then": {
+                            "$ifNull": [
+                                1,
+                                None,
+                            ]
+                        },
+                        "else": {
+                            "$ifNull": [
+                                2,
+                                None,
+                            ]
+                        },
+                    }
+                }
+            }
+        }
+    ]
 
 
 def test_ifthenelse_formulas():
@@ -29,12 +51,17 @@ def test_ifthenelse_formulas():
                 "foobar": {
                     "$cond": {
                         "if": {"$eq": ["$foo", 1]},
-                        "then": {"$multiply": ["$foo", 2]},
+                        "then": {"$ifNull": [{"$multiply": ["$foo", 2]}, None]},
                         "else": {
-                            "$cond": [
-                                {"$in": [{"$add": ["$foo", 1]}, [0, None]]},
+                            "$ifNull": [
+                                {
+                                    "$cond": [
+                                        {"$in": [{"$add": ["$foo", 1]}, [0, None]]},
+                                        None,
+                                        {"$divide": ["$foo", {"$add": ["$foo", 1]}]},
+                                    ]
+                                },
                                 None,
-                                {"$divide": ["$foo", {"$add": ["$foo", 1]}]},
                             ]
                         },
                     },
@@ -62,25 +89,40 @@ def test_ifthenelse_nested_else():
                 "foobar": {
                     "$cond": {
                         "if": {"$eq": ["$foo", 1]},
-                        "then": {"$multiply": ["$foo", 2]},
+                        "then": {"$ifNull": [{"$multiply": ["$foo", 2]}, None]},
                         "else": {
-                            "$cond": {
-                                "if": {"$gt": ["$foo", 2]},
-                                "then": {
-                                    "$cond": [
-                                        {"$in": [2, [0, None]]},
-                                        None,
-                                        {"$mod": ["$foo", 2]},
-                                    ]
+                            "$ifNull": [
+                                {
+                                    "$cond": {
+                                        "if": {"$gt": ["$foo", 2]},
+                                        "then": {
+                                            "$ifNull": [
+                                                {
+                                                    "$cond": [
+                                                        {"$in": [2, [0, None]]},
+                                                        None,
+                                                        {"$mod": ["$foo", 2]},
+                                                    ]
+                                                },
+                                                None,
+                                            ]
+                                        },
+                                        "else": {
+                                            "$ifNull": [
+                                                {
+                                                    "$cond": [
+                                                        {"$in": [3, [0, None]]},
+                                                        None,
+                                                        {"$mod": ["$foo", 3]},
+                                                    ]
+                                                },
+                                                None,
+                                            ],
+                                        },
+                                    }
                                 },
-                                "else": {
-                                    "$cond": [
-                                        {"$in": [3, [0, None]]},
-                                        None,
-                                        {"$mod": ["$foo", 3]},
-                                    ]
-                                },
-                            }
+                                None,
+                            ]
                         },
                     }
                 }

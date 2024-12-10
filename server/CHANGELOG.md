@@ -6,6 +6,25 @@
 
 - Pypika: `replace` doesn't replace substring value even if it is matching the value to replace.
 
+## [0.48.5] - 2024-12-05
+
+### Fixed
+
+- Pypika: source_rows_subset now takes precedence over limit in case it is specified and smaller than the limit
+- Pypika: The Athena translator now puts OFFSET and LIMIT in the correct order
+
+## [0.48.4] - 2024-11-28
+
+### Fixed
+
+- Mongo: the `isnull` and `notnull` operators now behave correctly in case of a missing field in the `ifthenelse` step
+
+## [0.48.3] - 2024-11-21
+
+### Fixed
+
+- Compatibility with pydantic 2.10
+
 ## [0.48.2] - 2024-11-04
 
 ### Fixed
