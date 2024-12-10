@@ -1681,12 +1681,11 @@ class SQLTranslator(ABC):
         step: "ReplaceStep",
     ) -> StepContext:
         col_field = prev_step_table[step.search_column]
-        sorted_replaces = sorted(step.to_replace, key=lambda tup: tup[0], reverse=True)
         # Do a nested `replace` to replace many values on the same column
         replaced_col = col_field
 
         case_ = Case()
-        for old_name, new_name in sorted_replaces:
+        for old_name, new_name in step.to_replace:
             case_ = case_.when(col_field == old_name, functions.Replace(replaced_col, old_name, new_name)).else_(
                 col_field
             )
