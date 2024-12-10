@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Pypika: `replace` doesn't replace substring value even if it is matching the value to replace.
+
 ## [0.48.2] - 2024-11-04
 
 ### Fixed
