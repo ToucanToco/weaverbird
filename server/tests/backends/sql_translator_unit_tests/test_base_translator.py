@@ -499,7 +499,8 @@ def test_replace(base_translator: BaseTranslator, default_step_kwargs: dict[str,
     ctx = base_translator.replace(step=step, columns=selected_columns, **default_step_kwargs)
 
     expected_query = Query.from_(previous_step).select(
-        Field("pseudonyme"), functions.Replace(Field(column), find, replace_with).as_("name")
+        Field("pseudonyme"),
+        Case().when(Field(column) == find, replace_with).else_(Field(column)).as_("name"),
     )
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()

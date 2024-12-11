@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Pypika: the `replace` step now replaces whole values rather than substrings, as intended.
+
 ## [0.48.5] - 2024-12-05
 
 ### Fixed
