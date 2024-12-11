@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Pypika: `replace` doesn't replace substring value even if it is matching the value to replace.
+- Pypika: the `replace` step now replaces whole values rather than substrings, as intended.
 
 ## [0.48.5] - 2024-12-05
 

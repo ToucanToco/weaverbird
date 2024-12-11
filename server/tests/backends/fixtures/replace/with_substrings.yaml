@@ -1,0 +1,47 @@
+---
+exclude:
+- mongo
+- pandas
+- snowflake
+step:
+  pipeline:
+  - name: select
+    columns:
+      - name
+      - beer_kind
+  - name: replace
+    search_column: beer_kind
+    to_replace:
+    - - Ale
+      - "Superior"
+    - - India Pale Ale
+      - "Greatest"
+expected:
+  schema:
+    fields:
+    - name: name
+      type: string
+    - name: beer_kind
+      type: string
+    pandas_version: 1.4.0
+  data:
+  - name: Superstrong beer
+    beer_kind: Triple
+  - name: Ninkasi Ploploplop
+    beer_kind: Greatest
+  - name: Brewdog Nanny State Alcoholvrij
+    beer_kind: Sans alcool
+  - name: Ardwen Blonde
+    beer_kind: Best-sellers
+  - name: Cuvée des Trolls
+    beer_kind: Blonde
+  - name: Weihenstephan Hefe Weizen Alcoholarm
+    beer_kind: Blanche & Weizen
+  - name: Bellfield Lawless Village IPA
+    beer_kind: Greatest
+  - name: Pauwel Kwak
+    beer_kind: Belge blonde forte & Golden Ale
+  - name: Brasserie De Sutter Brin de Folie
+    beer_kind: Blonde
+  - name: Brugse Zot blonde
+    beer_kind: Blonde

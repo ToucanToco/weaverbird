@@ -1681,17 +1681,12 @@ class SQLTranslator(ABC):
         step: "ReplaceStep",
     ) -> StepContext:
         col_field = prev_step_table[step.search_column]
-        # Do a nested `replace` to replace many values on the same column
-        replaced_col = col_field
 
         case_ = Case()
-        for old_name, new_name in step.to_replace:
-            case_ = case_.when(col_field == old_name, functions.Replace(replaced_col, old_name, new_name)).else_(
-                col_field
-            )
+        for old_value, new_value in step.to_replace:
+            case_ = case_.when(col_field == old_value, new_value).else_(col_field)
 
         query = prev_step_table.select(*(c for c in columns if c != step.search_column), case_.as_(step.search_column))
-
         return StepContext(query, columns)
 
     def select(
