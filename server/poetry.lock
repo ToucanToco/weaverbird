@@ -3243,13 +3243,13 @@ secure-local-storage = ["keyring (>=23.1.0,<26.0.0)"]
 
 [[package]]
 name = "snowflake-sqlalchemy"
-version = "1.7.1"
+version = "1.7.2"
 description = "Snowflake SQLAlchemy Dialect"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "snowflake_sqlalchemy-1.7.1-py3-none-any.whl", hash = "sha256:eecb63e6830e7fec2a0fc5c583c0e9903fe1b2ea40bcac974e03932cd24662f2"},
-    {file = "snowflake_sqlalchemy-1.7.1.tar.gz", hash = "sha256:a06b78d8b83ca74318e6fbb2982b9fbd9ce99e202f502c1f6af7ba69d05da1f5"},
+    {file = "snowflake_sqlalchemy-1.7.2-py3-none-any.whl", hash = "sha256:db4e5350e469adbbda034d6bd1c948c5a3e88994405483ee9a76caf18cbe9958"},
+    {file = "snowflake_sqlalchemy-1.7.2.tar.gz", hash = "sha256:083f9113ce5b7e9fb21ca6d748aee210117f6f2bd767f08415471796fc42ad37"},
 ]
 
 [package.dependencies]
@@ -3257,7 +3257,7 @@ snowflake-connector-python = "<4.0.0"
 sqlalchemy = ">=1.4.19"
 
 [package.extras]
-development = ["mock", "numpy", "pre-commit", "pytest", "pytest-cov", "pytest-rerunfailures", "pytest-timeout", "pytz", "syrupy (==4.6.1)"]
+development = ["mock", "numpy", "pre-commit", "pytest", "pytest-cov", "pytest-rerunfailures", "pytest-timeout", "pytz", "setuptools", "syrupy (==4.6.1)"]
 pandas = ["snowflake-connector-python[pandas]"]
 
 [[package]]
