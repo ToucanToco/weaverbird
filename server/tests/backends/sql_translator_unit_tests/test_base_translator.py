@@ -198,9 +198,8 @@ def test_aggregate(base_translator: BaseTranslator, agg_type: str, default_step_
 
     agg_func = base_translator._get_aggregate_function(agg_type)
     field = Field(agg_field)
-    expected_query = (
-        Query.from_(previous_step).groupby(field).orderby(agg_field).select(field, agg_func(field).as_(new_column))
-    )
+    agged = agg_func(field) if agg_func is not functions.Count else functions.Count("*")
+    expected_query = Query.from_(previous_step).groupby(field).orderby(agg_field).select(field, agged.as_(new_column))
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
@@ -223,7 +222,8 @@ def test_aggregate_with_original_granularity(
 
     agg_func = base_translator._get_aggregate_function(agg_type)
     field = Field(agg_field)
-    agg_query = Query.from_(previous_step).groupby(field).select(field, agg_func(field).as_(new_column))
+    agged = agg_func(field) if agg_func is not functions.Count else functions.Count("*")
+    agg_query = Query.from_(previous_step).groupby(field).select(field, agged.as_(new_column))
 
     expected_query = (
         Query.from_(previous_step)
