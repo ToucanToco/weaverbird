@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Pandas & Pypika: the `count` aggregation of the aggregate step now properly counts nulls
+
 ## [0.48.6] - 2024-12-11
 
 ### Fixed

@@ -1,0 +1,41 @@
+exclude:
+  - mongo
+  - pandas
+  - snowflake
+step:
+  pipeline:
+  - aggregations:
+    - aggfunction: count
+      columns:
+      - nullable_name
+      newcolumns:
+      - nullable_name_count
+    keepOriginalGranularity: false
+    name: aggregate
+    'on':
+    - nullable_name
+expected:
+  data:
+    - nullable_name: Ardwen Blonde
+      nullable_name_count: 1
+    - nullable_name: Bellfield Lawless Village IPA
+      nullable_name_count: 1
+    - nullable_name: Brewdog Nanny State Alcoholvrij
+      nullable_name_count: 1
+    - nullable_name: Brugse Zot blonde
+      nullable_name_count: 1
+    - nullable_name: Ninkasi Ploploplop
+      nullable_name_count: 1
+    - nullable_name: Pauwel Kwak
+      nullable_name_count: 1
+    - nullable_name: Weihenstephan Hefe Weizen Alcoholarm
+      nullable_name_count: 1
+    - nullable_name: null
+      nullable_name_count: 3
+  schema:
+    fields:
+    - name: nullable_name
+      type: string
+    - name: nullable_name_count
+      type: integer
+    pandas_version: 1.4.0

@@ -565,7 +565,11 @@ class SQLTranslator(ABC):
                 for agg_column_name, new_column_name in zip(aggregation.columns, aggregation.new_columns, strict=True):
                     if new_column_name not in agg_col_names:
                         column_field = prev_step_table[agg_column_name]
-                        new_agg_col = agg_fn(column_field).as_(new_column_name)
+                        # Count("column") ignores NULL values, whereas COUNT(*) takes them into account
+                        if agg_fn is functions.Count:
+                            new_agg_col = agg_fn("*").as_(new_column_name)
+                        else:
+                            new_agg_col = agg_fn(column_field).as_(new_column_name)
                         agg_selected.append(new_agg_col)
                         agg_col_names.append(new_column_name)
 
