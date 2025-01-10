@@ -1,6 +1,6 @@
 from typing import Any, Literal
 
-from pandas import DataFrame, concat
+from pandas import DataFrame, Series, concat
 
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps import AggregateStep
@@ -10,15 +10,20 @@ AggregateFn = Literal[
     "sum",
     "min",
     "max",
-    "count",
     "count distinct",
     "first",
     "last",
     "count distinct including empty",
 ]
 
+
+def _count(series: Series) -> int:
+    return series.size
+
+
 functions_aliases = {
     "avg": "mean",
+    "count": _count,
     "count distinct": "nunique",
     "count distinct including empty": len,
 }
@@ -33,8 +38,8 @@ def get_aggregate_fn(agg_function: str) -> Any:
 def execute_aggregate(
     step: AggregateStep,
     df: DataFrame,
-    domain_retriever: DomainRetriever = None,
-    execute_pipeline: PipelineExecutor = None,
+    domain_retriever: DomainRetriever | None = None,
+    execute_pipeline: PipelineExecutor | None = None,
 ) -> DataFrame:
     group_by_columns = step.on
 

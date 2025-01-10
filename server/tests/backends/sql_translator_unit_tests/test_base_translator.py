@@ -3,13 +3,13 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 import pytest
-from pypika import AliasedQuery, Case, Field, Order, Query, Schema, Table, analytics, functions
+from pypika import AliasedQuery, Case, Field, Query, Schema, Table, analytics, functions
 from pypika.enums import JoinType
 from pypika.queries import QueryBuilder
 from pypika.terms import LiteralValue, Term, ValueWrapper
 from pytest_mock import MockFixture
 
-from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, SQLTranslator
+from weaverbird.backends.pypika_translator.translators.base import DataTypeMapping, Order, SQLTranslator
 from weaverbird.backends.pypika_translator.translators.exceptions import (
     ForbiddenSQLStep,
     UnknownTableColumns,
@@ -198,8 +198,12 @@ def test_aggregate(base_translator: BaseTranslator, agg_type: str, default_step_
 
     agg_func = base_translator._get_aggregate_function(agg_type)
     field = Field(agg_field)
+    agged = agg_func(field) if agg_func is not functions.Count else functions.Count("*")
     expected_query = (
-        Query.from_(previous_step).groupby(field).orderby(agg_field).select(field, agg_func(field).as_(new_column))
+        Query.from_(previous_step)
+        .groupby(field)
+        .orderby(agg_field, order=Order.ASC_NULLS_LAST)
+        .select(field, agged.as_(new_column))
     )
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
@@ -223,7 +227,8 @@ def test_aggregate_with_original_granularity(
 
     agg_func = base_translator._get_aggregate_function(agg_type)
     field = Field(agg_field)
-    agg_query = Query.from_(previous_step).groupby(field).select(field, agg_func(field).as_(new_column))
+    agged = agg_func(field) if agg_func is not functions.Count else functions.Count("*")
+    agg_query = Query.from_(previous_step).groupby(field).select(field, agged.as_(new_column))
 
     expected_query = (
         Query.from_(previous_step)
@@ -231,7 +236,7 @@ def test_aggregate_with_original_granularity(
         .left_join(agg_query)
         .on_field(agg_field)
         .select(*original_select)
-        .orderby(agg_field)
+        .orderby(agg_field, order=Order.ASC_NULLS_LAST)
     )
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
@@ -544,7 +549,7 @@ def test_sort(base_translator: BaseTranslator, default_step_kwargs: dict[str, An
     step = steps.SortStep(columns=columns)
     ctx = base_translator.sort(step=step, columns=selected_columns, **default_step_kwargs)
 
-    expected_query = Query.from_(previous_step).select(*selected_columns).orderby(Field("name"), order=Order.asc)
+    expected_query = Query.from_(previous_step).select(*selected_columns).orderby(Field("name"), order=Order.ASC)
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
@@ -623,7 +628,12 @@ def test_uniquegroups(base_translator: BaseTranslator, default_step_kwargs: dict
     step = steps.UniqueGroupsStep(on=columns)
     ctx = base_translator.uniquegroups(step=step, columns=selected_columns, **default_step_kwargs)
 
-    expected_query = Query.from_(previous_step).select(Field(column)).groupby(Field(column)).orderby(Field(column))
+    expected_query = (
+        Query.from_(previous_step)
+        .select(Field(column))
+        .groupby(Field(column))
+        .orderby(Field(column), order=Order.ASC_NULLS_LAST)
+    )
 
     assert ctx.selectable.get_sql() == expected_query.get_sql()
 
