@@ -1,0 +1,47 @@
+exclude:
+- athena_pypika
+- bigquery_pypika
+- mysql_pypika
+- postgres_pypika
+- redshift_pypika
+- snowflake_pypika
+step:
+  pipeline:
+  - aggregations:
+    - aggfunction: count
+      columns:
+      - VALUE
+      newcolumns:
+      - VALUE_COUNT
+    keepOriginalGranularity: false
+    name: aggregate
+    'on':
+    - VALUE
+input:
+  data:
+  - VALUE: one
+  - VALUE: two
+  - VALUE: null
+  - VALUE: one
+  - VALUE: null
+  - VALUE: one
+  schema:
+    fields:
+    - name: VALUE
+      type: string
+    pandas_version: 1.4.0
+expected:
+  data:
+  - VALUE: one
+    VALUE_COUNT: 3
+  - VALUE: two
+    VALUE_COUNT: 1
+  - VALUE: null
+    VALUE_COUNT: 2
+  schema:
+    fields:
+    - name: VALUE
+      type: string
+    - name: VALUE_COUNT
+      type: integer
+    pandas_version: 1.4.0
