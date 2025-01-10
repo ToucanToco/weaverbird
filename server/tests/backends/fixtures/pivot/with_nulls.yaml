@@ -1,0 +1,68 @@
+exclude:
+- athena_pypika
+- bigquery_pypika
+- mysql_pypika
+- postgres_pypika
+- redshift_pypika
+- snowflake_pypika
+step:
+  pipeline:
+  - name: pivot
+    index:
+    - LABEL
+    - TYPE
+    column_to_pivot: ALPHA
+    value_column: COST
+    agg_function: sum
+input:
+  schema:
+    fields:
+    - name: LABEL
+      type: integer
+    - name: TYPE
+      type: string
+    - name: COST
+      type: integer
+    - name: ALPHA
+      type: string
+    pandas_version: 0.20.0
+  data:
+  - LABEL: 1
+    TYPE: PARENT
+    COST: 5
+    ALPHA: ALPHA
+  - LABEL: 2
+    TYPE: PARENT
+    COST: 100
+    ALPHA: ALPHA
+  - LABEL: 1
+    TYPE:
+    COST: 2
+    ALPHA: ALPHA
+  - LABEL: 2
+    TYPE:
+    COST: 28
+    ALPHA: ALPHA
+expected:
+  schema:
+    fields:
+    - name: LABEL
+      type: integer
+    - name: TYPE
+      type: string
+    - name: ALPHA
+      type: integer
+    pandas_version: 0.20.0
+  data:
+    - LABEL: 1
+      TYPE: PARENT
+      ALPHA: 5
+    - LABEL: 1
+      TYPE:
+      ALPHA: 2
+    - LABEL: 2
+      TYPE: PARENT
+      ALPHA: 100
+    - LABEL: 2
+      TYPE:
+      ALPHA: 28

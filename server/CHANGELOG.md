@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- Pandas: the `pivot` step now keeps null values in index columns and handle them as any other values.
 - Pandas & Pypika: the `count` aggregation of the aggregate step now properly counts nulls
 
 ## [0.48.6] - 2024-12-11

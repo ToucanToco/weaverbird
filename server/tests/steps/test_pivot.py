@@ -72,7 +72,7 @@ def test_benchmark_pivot(benchmark):
 
     step = PivotStep(
         name="pivot",
-        index=["group"],
+        index=["id"],
         column_to_pivot="group",
         value_column="value",
         agg_function="avg",
