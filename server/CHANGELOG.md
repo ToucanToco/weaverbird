@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.48.7] - 2025-01-10
+
 ### Fixed
 
 - Pandas: the `pivot` step now keeps null values in index columns and handle them as any other values.
