@@ -2990,12 +2990,12 @@ quart = ">=0.15"
 
 [[package]]
 name = "redshift-connector"
-version = "2.1.4"
+version = "2.1.5"
 description = "Redshift interface library"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "redshift_connector-2.1.4-py3-none-any.whl", hash = "sha256:1d16743e1e9891ddbe5f04238ebe12e16c2626342cefaa46588fdaf007749a52"},
+    {file = "redshift_connector-2.1.5-py3-none-any.whl", hash = "sha256:a90e5644a1d8f58f9d6d62c6ee000bb7788dcbfb9c9b3b4e114d66ccbfc82478"},
 ]
 
 [package.dependencies]
