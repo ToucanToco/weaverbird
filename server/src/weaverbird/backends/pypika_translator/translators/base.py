@@ -348,9 +348,9 @@ class SQLTranslator(ABC):
     ) -> QueryBuilderContext:
         if len(steps) <= 0:
             raise ValueError("No steps provided")
-        assert (
-            steps[0].name == "domain" or steps[0].name == "customsql"
-        ), f"First step must be one of domain or customsql step, got '{steps[0].name}'"
+        assert steps[0].name == "domain" or steps[0].name == "customsql", (
+            f"First step must be one of domain or customsql step, got '{steps[0].name}'"
+        )
         self._step_count = 0
 
         # A single custom SQL step must always be wrapped in a CTE, as we cannot apply offset and

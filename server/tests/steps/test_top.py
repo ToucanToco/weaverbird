@@ -13,7 +13,7 @@ from weaverbird.pipeline.steps import TopStep
 def sample_df():
     return DataFrame(
         {
-            "Label": [f"Label {i+1}" for i in range(6)],
+            "Label": [f"Label {i + 1}" for i in range(6)],
             "Group": ["Group 1"] * 3 + ["Group 2"] * 3,
             "Value": [13, 7, 20, 1, 10, 5],
         }

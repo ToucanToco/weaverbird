@@ -179,7 +179,7 @@ MONTH_NUMBER_TO_NAMES = {
 
 MONTH_REPLACEMENT_STEP: MongoStep = {
     "$addFields": {
-        "_vqbTempMonth" "$switch": {
+        "_vqbTempMonth$switch": {
             "branches": [
                 {
                     "case": {"$in": month_names},

@@ -8,7 +8,7 @@ def translate_percentage(step: PercentageStep) -> list[MongoStep]:
             "$group": {
                 "_id": {g: f"${g}" for g in step.group} if step.group else None,
                 "_vqbAppArray": {"$push": "$$ROOT"},
-                "_vqbTotalDenum": {"$sum": f"${step.column }"},
+                "_vqbTotalDenum": {"$sum": f"${step.column}"},
             },
         },
         {"$unwind": "$_vqbAppArray"},

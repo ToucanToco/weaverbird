@@ -29,7 +29,7 @@ con_params = {
     "port": 5432,
     "database": "pg_db",
 }
-connection_string = f'postgresql://{con_params["user"]}:{con_params["password"]}@{con_params["host"]}:{con_params["port"]}/{con_params["database"]}'
+connection_string = f"postgresql://{con_params['user']}:{con_params['password']}@{con_params['host']}:{con_params['port']}/{con_params['database']}"
 
 
 @pytest.fixture(scope="module")
