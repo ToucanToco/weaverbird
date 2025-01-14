@@ -29,7 +29,7 @@ _CON_PARAMS = {
     "port": 3306,
     "database": "mysql_db",
 }
-_CONNECTION_STRING = f'mysql+pymysql://{_CON_PARAMS["user"]}:{_CON_PARAMS["password"]}@{_CON_PARAMS["host"]}:{_CON_PARAMS["port"]}/{_CON_PARAMS["database"]}'
+_CONNECTION_STRING = f"mysql+pymysql://{_CON_PARAMS['user']}:{_CON_PARAMS['password']}@{_CON_PARAMS['host']}:{_CON_PARAMS['port']}/{_CON_PARAMS['database']}"
 
 
 @pytest.fixture(scope="module")

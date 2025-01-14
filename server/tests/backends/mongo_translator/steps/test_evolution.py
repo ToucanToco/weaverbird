@@ -65,7 +65,7 @@ def test_translate_evolution() -> None:
                 "bar_EVOL_ABS": {
                     "$cond": [
                         {"$eq": ["$_VQB_VALUE_PREV", "Error"]},
-                        "Error: More than one previous " "date found for the specified " "index columns",
+                        "Error: More than one previous date found for the specified index columns",
                         {"$subtract": ["$bar", "$_VQB_VALUE_PREV"]},
                     ]
                 }
