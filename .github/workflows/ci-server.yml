@@ -40,16 +40,15 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install poetry
+    - name: Install uv
       run: |
-        pip install poetry
-        poetry config virtualenvs.create false
+        curl -LsSf https://astral.sh/uv/0.5.20/install.sh | sh
 
     - name: Install dependencies
-      run: make install-dev
+      run: make install
 
     - name: Install pandas ${{ matrix.pandas-version }}
-      run: pip install "pandas${{ matrix.pandas-version }}"
+      run: uv pip install "pandas${{ matrix.pandas-version }}"
 
     - name: Lint
       run: make lint

@@ -10,52 +10,48 @@ clean:
 
 .PHONY: install
 install:
-	poetry install --no-dev -E all
+	uv sync --all-extras
 
 .PHONY: install-dev
 install-dev:
-	poetry install -E all
+	uv sync --all-extras
 	pre-commit install
-
-.PHONY: install-playground
-install-playground:
-	poetry install -E playground
 
 .PHONY: format
 format:
-	poetry run $(format)
-	poetry run $(ruff) --fix
+	uv run $(format)
+	uv run $(ruff) --fix
 
 .PHONY: lint
 lint:
-	$(ruff)
-	$(format) --check
-	mypy
+	uv run $(ruff)
+	uv run $(format) --check
+	uv run mypy
 
 .PHONY: test
 test:
-	python -m pytest -n 8 -m "not serial" --junitxml=test-report.xml --cov=weaverbird --cov-report xml -s
+	uv run pytest -n 8 -m "not serial" --junitxml=test-report.xml --cov=weaverbird --cov-report xml -s
 
 .PHONY: serial
 test-serial:
-	python -m pytest -m serial
+	uv run pytest -m serial
 
 .PHONY: all
 all: test lint
 
 .PHONY: build
 build:
-	poetry build
+	uv build
 
 .PHONY: upload
 upload:
-	poetry publish --build
+	uv publish --build
 
 .PHONY: start_docker_playground
-start_docker_playground:
-	docker-compose down
-	docker-compose up -d weaverbird mongodb
+start-docker-playground:
+	docker compose down
+	docker compose up -d weaverbird mongodb
 
 .PHONY: stop_docker_playground
-stop_docker_playground:
-	docker-compose down
+stop-docker-playground:
+	docker compose down

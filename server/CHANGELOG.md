@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Switched from `poetry` to `uv` for package management
+
 ## [0.48.7] - 2025-01-10
 
 ### Fixed
