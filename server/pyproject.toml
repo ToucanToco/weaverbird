@@ -32,11 +32,11 @@ pandas = [
 ]
 playground = [
     "quart<0.21,>=0.17",
-    "Quart-CORS<0.8,>=0.5",
+    "Quart-CORS>=0.5,<0.9",
     "hypercorn<0.18,>=0.13",
     "pymongo>=4.2.0",
     "psycopg<4.0.0,>=3.0.15",
-    "toucan-connectors[Redshift,awsathena,google_big_query,mongo,mysql,snowflake]<7.0.0,>=6.3.0",
+    "toucan-connectors[Redshift,awsathena,google_big_query,mongo,mysql,snowflake]>=6.3.0,<8.0.0",
 ]
 pypika = ["pypika>=0.48.9"]
 all = [
@@ -51,7 +51,7 @@ dev = [
     "pytest-cov<7.0,>=4.1",
     "pytest-mock<4.0.0,>=3.11.1",
     "pytest-asyncio<0.26,>=0.21",
-    "toucan-connectors[Redshift,awsathena,google_big_query,mongo,mysql,snowflake]<7.0.0,>=6.3.0",
+    "toucan-connectors[Redshift,awsathena,google_big_query,mongo,mysql,snowflake]>=6.3.0,<8.0.0",
     "pytest-benchmark<6,>=4",
     "snowflake-sqlalchemy<2.0.0,>=1.6.1",
     "types-python-dateutil<3.0.0,>=2.8.19",
