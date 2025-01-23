@@ -49,7 +49,6 @@ describe('Substring Step Form', () => {
   });
 
   runner.testCancel();
-  
 
   it('should pass down the properties to the input components', async () => {
     const wrapper = runner.shallowMount({

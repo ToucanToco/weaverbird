@@ -29,8 +29,6 @@ describe('Delete Column Step Form', () => {
 
   runner.testCancel();
 
-  
-
   it('should instantiate a multiselect widget with proper options from the store', () => {
     const wrapper = runner.shallowMount({
       propsData: {

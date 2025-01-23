@@ -49,8 +49,6 @@ describe('Unpivot Step Form', () => {
 
   runner.testCancel();
 
-  
-
   it('should pass down props to widgets', async () => {
     const wrapper = runner.shallowMount({
       data: {

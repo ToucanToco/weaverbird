@@ -50,7 +50,6 @@ describe('Filter Step Form', () => {
   });
 
   runner.testCancel();
-  
 
   describe('FilterEditor', () => {
     let wrapper: Wrapper<FilterStepForm>;

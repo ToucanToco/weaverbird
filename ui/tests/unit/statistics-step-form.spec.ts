@@ -37,8 +37,6 @@ describe('statistics Step Form', () => {
 
   runner.testCancel();
 
-  
-
   it('should pass down the parameters properly to widgets', async () => {
     const wrapper = runner.shallowMount({
       data: {

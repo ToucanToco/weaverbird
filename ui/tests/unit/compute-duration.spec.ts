@@ -40,7 +40,6 @@ describe('Compute Duration Step Form', () => {
   });
 
   runner.testCancel();
-  
 
   it('should pass down properties', async () => {
     const wrapper = runner.shallowMount();

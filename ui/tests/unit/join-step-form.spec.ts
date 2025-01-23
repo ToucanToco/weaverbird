@@ -27,7 +27,6 @@ describe('join Step Form', () => {
   });
 
   runner.testCancel();
-  
 
   describe('right dataset', () => {
     it('should instantiate an autocomplete widget with proper options from the store', () => {
