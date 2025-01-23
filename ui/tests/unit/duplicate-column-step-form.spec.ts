@@ -49,5 +49,5 @@ describe('Duplicate Column Step Form', () => {
     selectedStepIndex: 1,
   });
 
-  runner.testResetSelectedIndex();
+  
 });

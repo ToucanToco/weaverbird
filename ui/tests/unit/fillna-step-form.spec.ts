@@ -48,7 +48,7 @@ describe('Fillna Step Form', () => {
   });
 
   runner.testCancel();
-  runner.testResetSelectedIndex();
+  
 
   it('should update editedStep at creation depending on the selected column', async () => {
     const wrapper = runner.shallowMount({

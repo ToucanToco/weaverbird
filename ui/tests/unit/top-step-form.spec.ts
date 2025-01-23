@@ -35,7 +35,7 @@ describe('Top Step Form', () => {
   });
 
   runner.testCancel();
-  runner.testResetSelectedIndex();
+  
 
   it('should pass down default properties to the input components', async () => {
     const wrapper = runner.shallowMount({

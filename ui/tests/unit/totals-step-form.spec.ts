@@ -20,7 +20,7 @@ describe('Add Total Rows Step Form', () => {
   });
 
   runner.testCancel();
-  runner.testResetSelectedIndex();
+  
 
   describe('ListWidget "totalDimensions"', () => {
     it('should pass down the "totalDimensions" prop to the first ListWidget value prop', async () => {

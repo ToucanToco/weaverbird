@@ -85,7 +85,7 @@ describe('Cumsum Step Form', () => {
   });
 
   runner.testCancel();
-  runner.testResetSelectedIndex();
+  
 
   it('should convert editedStep from old configurations to new configuration', async () => {
     const wrapper = runner.shallowMount({

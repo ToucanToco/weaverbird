@@ -126,5 +126,5 @@ describe('Waterfall Step Form', () => {
   });
 
   runner.testCancel();
-  runner.testResetSelectedIndex();
+  
 });

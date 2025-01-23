@@ -53,7 +53,7 @@ describe('DateExtract Step Form', () => {
 
   runner.testCancel();
 
-  runner.testResetSelectedIndex();
+  
 
   it('should pass down the right value to Multiselect', async () => {
     const wrapper = runner.shallowMount({

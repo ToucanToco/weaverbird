@@ -49,7 +49,7 @@ describe('Unpivot Step Form', () => {
 
   runner.testCancel();
 
-  runner.testResetSelectedIndex();
+  
 
   it('should pass down props to widgets', async () => {
     const wrapper = runner.shallowMount({

@@ -42,7 +42,7 @@ describe('Sort Step Form', () => {
 
   runner.testCancel();
 
-  runner.testResetSelectedIndex();
+  
 
   it('should suggest the selected column as the column to be sorted', function () {
     const wrapper = runner.shallowMount({

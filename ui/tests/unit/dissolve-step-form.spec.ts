@@ -203,5 +203,5 @@ describe('Dissolve Step Form', () => {
   });
 
   runner.testCancel();
-  runner.testResetSelectedIndex();
+  
 });

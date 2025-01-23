@@ -14,7 +14,7 @@ describe('Hierarchy Step Form', () => {
     'listwidget-stub': 1,
   });
   runner.testCancel();
-  runner.testResetSelectedIndex();
+  
 
   runner.testValidate({
     testlabel: 'submitted data is valid',

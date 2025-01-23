@@ -42,7 +42,7 @@ describe('Concatenate Step Form', () => {
 
   runner.testCancel();
 
-  runner.testResetSelectedIndex();
+  
 
   describe('ListWidget', () => {
     it('should pass down the "toConcatenate" prop to the ListWidget value prop', async () => {

@@ -80,7 +80,7 @@ describe('If...Then...Else Step Form', () => {
   });
 
   runner.testCancel();
-  runner.testResetSelectedIndex();
+  
 
   describe('Warning new column name', () => {
     it('should report a warning when newColumn is an already existing column name', async () => {

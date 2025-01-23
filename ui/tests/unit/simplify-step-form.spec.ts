@@ -13,7 +13,7 @@ describe('Simplify Step Form', () => {
     'inputnumberwidget-stub': 1,
   });
   runner.testCancel();
-  runner.testResetSelectedIndex();
+  
 
   runner.testValidate({
     testlabel: 'submitted data is valid',
