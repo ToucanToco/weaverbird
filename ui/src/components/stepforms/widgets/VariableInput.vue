@@ -13,6 +13,7 @@
       </div>
     </div>
     <VariableInputBase
+      :isVariable="isVariable"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :trusted-variable-delimiters="trustedVariableDelimiters"
