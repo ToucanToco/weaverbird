@@ -17,6 +17,9 @@
       <input
         ref="input"
         class="widget-input-date"
+        :class="{
+          'widget-input--with-variables': availableVariables,
+        }"
         :placeholder="placeholder"
         type="date"
         :value="parsedValue"
@@ -121,5 +124,10 @@ export default class InputDateWidget extends FormWidget {
   &:hover {
     color: $active-color;
   }
+}
+
+.widget-input--with-variables {
+  padding-right: 35px;
+  text-overflow: ellipsis;
 }
 </style>

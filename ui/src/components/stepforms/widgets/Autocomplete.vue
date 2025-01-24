@@ -15,7 +15,10 @@
     >
       <multiselect
         :value="value"
-        :class="{ 'widget-autocomplete__multiselect--with-example': withExample }"
+        :class="{
+          'widget-autocomplete__multiselect--with-example': withExample,
+          'multiselect--with-variables': availableVariables,
+        }"
         :options="options"
         :placeholder="placeholder"
         :allow-empty="false"
@@ -203,6 +206,10 @@ export default class AutocompleteWidget extends FormWidget {
 .widget-autocomplete__container .multiselect__content-wrapper {
   min-width: 100%;
   width: auto;
+}
+
+.multiselect--with-variables .multiselect__single {
+  padding-right: 28px;
 }
 
 .multiselect__single,

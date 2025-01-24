@@ -12,7 +12,10 @@
     >
       <multiselect
         class="widget-multiinputtext__multiselect"
-        :class="{ 'widget-multiinputtext__multiselect--big': isMultiselectBig }"
+        :class="{
+          'widget-multiinputtext__multiselect--big': isMultiselectBig,
+          'multiselect--with-variables': availableVariables,
+        }"
         :value="value"
         @input="updateValue"
         :options="options"
@@ -185,6 +188,11 @@ export default class MultiInputTextWidget extends Vue {
   line-height: 20px;
   padding-left: 5px;
 }
+
+.multiselect--with-variables .multiselect__single {
+  padding-right: 28px;
+}
+
 .multiselect__single {
   background-color: transparent;
   color: $base-color-light;

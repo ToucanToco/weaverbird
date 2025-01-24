@@ -88,6 +88,7 @@ export default class InputNumberWidget extends FormWidget {
     return {
       'widget-input-number': true,
       'widget-input-number--focused': this.isFocused,
+      'widget-input--with-variables': !!this.availableVariables,
     };
   }
 
@@ -140,5 +141,10 @@ export default class InputNumberWidget extends FormWidget {
   &:hover {
     color: $active-color;
   }
+}
+
+.widget-input--with-variables {
+  padding-right: 35px;
+  text-overflow: ellipsis;
 }
 </style>

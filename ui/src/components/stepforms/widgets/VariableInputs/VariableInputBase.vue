@@ -12,6 +12,7 @@
         class="widget-variable__toggle"
         :class="{
           'widget-variable__toggle--choosing': isChoosingVariable,
+          'widget-variable__toggle--hidden': isVariable,
           'widget-variable__toggle--parent-arrow': hasArrow,
         }"
         @click.stop="startChoosingVariable"
@@ -80,6 +81,9 @@ export default class VariableInputBase extends Vue {
 
   @Prop({ default: false })
   hasArrow!: boolean;
+
+  @Prop({ default: false })
+  isVariable!: boolean;
 
   isChoosingVariable = false;
 
@@ -208,8 +212,6 @@ export default class VariableInputBase extends Vue {
 }
 
 .widget-variable__toggle {
-  opacity: 0;
-  visibility: hidden;
   display: block;
   position: absolute;
   top: 0;
@@ -229,10 +231,12 @@ export default class VariableInputBase extends Vue {
 
   &:hover,
   &.widget-variable__toggle--choosing {
-    opacity: 1;
-    visibility: visible;
     background: $active-color;
     color: #eaeff5;
+  }
+
+  &.widget-variable__toggle--hidden {
+    display: none;
   }
 
   &.widget-variable__toggle--parent-arrow {

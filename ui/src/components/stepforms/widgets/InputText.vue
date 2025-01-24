@@ -17,6 +17,9 @@
       <input
         ref="input"
         class="widget-input-text"
+        :class="{
+          'widget-input--with-variables': availableVariables,
+        }"
         data-cy="weaverbird-input-text"
         :placeholder="placeholder"
         type="text"
@@ -115,5 +118,10 @@ export default class InputTextWidget extends FormWidget {
   &:hover {
     color: $active-color;
   }
+}
+
+.widget-input--with-variables {
+  padding-right: 35px;
+  text-overflow: ellipsis;
 }
 </style>
