@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [0.115.4] - 2024-01-24
+
+### Changed
+
+- Form: always display variable button
+
 ## [0.115.3] - 2024-10-10
 
 ### Fixed
@@ -1611,6 +1617,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 - Initial version, showtime!
 
+[0.115.4]: https://github.com/ToucanToco/weaverbird/compare/v0.115.3...v0.115.4
 [0.115.3]: https://github.com/ToucanToco/weaverbird/compare/v0.115.2...v0.115.3
 [0.115.2]: https://github.com/ToucanToco/weaverbird/compare/v0.115.1...v0.115.2
 [0.115.1]: https://github.com/ToucanToco/weaverbird/compare/v0.115.0...v0.115.1
