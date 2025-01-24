@@ -15,10 +15,10 @@
     >
       <multiselect
         :value="value"
-        :class="{ 
-          'widget-autocomplete__multiselect--with-example': withExample, 
-          'multiselect--with-variables': availableVariables
-          }"
+        :class="{
+          'widget-autocomplete__multiselect--with-example': withExample,
+          'multiselect--with-variables': availableVariables,
+        }"
         :options="options"
         :placeholder="placeholder"
         :allow-empty="false"

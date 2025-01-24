@@ -18,7 +18,7 @@
         ref="input"
         class="widget-input-date"
         :class="{
-          'widget-input--with-variables': availableVariables
+          'widget-input--with-variables': availableVariables,
         }"
         :placeholder="placeholder"
         type="date"

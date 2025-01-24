@@ -88,7 +88,7 @@ export default class InputNumberWidget extends FormWidget {
     return {
       'widget-input-number': true,
       'widget-input-number--focused': this.isFocused,
-      'widget-input--with-variables': !!this.availableVariables
+      'widget-input--with-variables': !!this.availableVariables,
     };
   }
 

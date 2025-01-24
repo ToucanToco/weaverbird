@@ -18,7 +18,7 @@
         ref="input"
         class="widget-input-text"
         :class="{
-          'widget-input--with-variables': availableVariables
+          'widget-input--with-variables': availableVariables,
         }"
         data-cy="weaverbird-input-text"
         :placeholder="placeholder"

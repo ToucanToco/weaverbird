@@ -12,9 +12,9 @@
     >
       <multiselect
         class="widget-multiinputtext__multiselect"
-        :class="{ 
-          'widget-multiinputtext__multiselect--big': isMultiselectBig, 
-          'multiselect--with-variables': availableVariables 
+        :class="{
+          'widget-multiinputtext__multiselect--big': isMultiselectBig,
+          'multiselect--with-variables': availableVariables,
         }"
         :value="value"
         @input="updateValue"
