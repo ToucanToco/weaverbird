@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+- The `aggregate` step now raises a `ValidationError` on instantiation rather than a custom Exception in case it
+  contains duplicate columns
+
 ### Changed
 
 - Switched from `poetry` to `uv` for package management

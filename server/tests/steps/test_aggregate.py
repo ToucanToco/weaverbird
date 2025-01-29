@@ -1,9 +1,9 @@
 import numpy as np
 import pytest
 from pandas import DataFrame
+from pydantic import ValidationError
 
 from weaverbird.backends.pandas_executor.steps import execute_aggregate
-from weaverbird.exceptions import DuplicateColumnError
 from weaverbird.pipeline.steps import AggregateStep
 from weaverbird.pipeline.steps.aggregate import Aggregation
 
@@ -38,7 +38,7 @@ def test_duplicate_aggregation_columns():
             "Value1": [13, 7, 20],
         }
     )
-    with pytest.raises(DuplicateColumnError):
+    with pytest.raises(ValidationError):
         step = AggregateStep(
             name="aggregate",
             on=["Group"],

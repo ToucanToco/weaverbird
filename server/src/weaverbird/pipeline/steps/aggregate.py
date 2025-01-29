@@ -5,7 +5,6 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMixin
-from weaverbird.pipeline.steps.utils.validation import validate_unique_columns
 from weaverbird.pipeline.types import ColumnName, TemplatedVariable
 
 AggregateFn = Literal[
@@ -27,10 +26,11 @@ class Aggregation(BaseModel):
     columns: list[ColumnName]
     model_config = ConfigDict(populate_by_name=True)
 
-    @field_validator("columns", mode="before")
+    @field_validator("columns", mode="after")
     @classmethod
-    def validate_unique_columns(cls, value):
-        return validate_unique_columns(value)
+    def validate_unique_columns(cls, columns: list[ColumnName]) -> list[ColumnName]:
+        assert len(set(columns)) == len(columns), "aggregation columns are not unique"
+        return columns
 
     @model_validator(mode="before")
     @classmethod

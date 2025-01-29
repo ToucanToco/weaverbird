@@ -2143,8 +2143,8 @@ requires-dist = [
     { name = "pypika", marker = "extra == 'pypika'", specifier = ">=0.48.9" },
     { name = "python-dateutil", specifier = ">=2.8.2,<3.0.0" },
     { name = "quart", marker = "extra == 'playground'", specifier = ">=0.17,<0.21" },
-    { name = "quart-cors", marker = "extra == 'playground'", specifier = ">=0.5,<0.8" },
-    { name = "toucan-connectors", extras = ["redshift", "awsathena", "google-big-query", "mongo", "mysql", "snowflake"], marker = "extra == 'playground'", specifier = ">=6.3.0,<7.0.0" },
+    { name = "quart-cors", marker = "extra == 'playground'", specifier = ">=0.5,<0.9" },
+    { name = "toucan-connectors", extras = ["redshift", "awsathena", "google-big-query", "mongo", "mysql", "snowflake"], marker = "extra == 'playground'", specifier = ">=6.3.0,<8.0.0" },
 ]
 
 [package.metadata.requires-dev]
@@ -2167,7 +2167,7 @@ dev = [
     { name = "snowflake-sqlalchemy", specifier = ">=1.6.1,<2.0.0" },
     { name = "sqlalchemy", specifier = ">=2,<3" },
     { name = "tenacity", specifier = ">=8.4.2,<10.0.0" },
-    { name = "toucan-connectors", extras = ["redshift", "awsathena", "google-big-query", "mongo", "mysql", "snowflake"], specifier = ">=6.3.0,<7.0.0" },
+    { name = "toucan-connectors", extras = ["redshift", "awsathena", "google-big-query", "mongo", "mysql", "snowflake"], specifier = ">=6.3.0,<8.0.0" },
     { name = "types-python-dateutil", specifier = ">=2.8.19,<3.0.0" },
 ]
 
