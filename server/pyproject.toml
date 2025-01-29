@@ -3,7 +3,7 @@ authors = [{ name = "Toucan Toco", email = "dev@toucantoco.com" }]
 license = { text = "BSD-3-Clause" }
 requires-python = "<3.13,>=3.11"
 name = "weaverbird"
-version = "0.48.7"
+version = "0.49.0"
 description = "A visual data pipeline builder with various backends"
 keywords = [
     "builder",
@@ -18,6 +18,10 @@ keywords = [
 readme = "README.md"
 
 dependencies = ["pydantic<3.0.0,>=2.4.2", "python-dateutil<3.0.0,>=2.8.2"]
+
+[tool.setuptools]
+# FIXME: temporary workaround until https://github.com/pypa/setuptools/issues/4759 is fixed
+license-files = []
 
 [tool.uv]
 package = true
