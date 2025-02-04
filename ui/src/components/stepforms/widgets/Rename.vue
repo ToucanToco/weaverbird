@@ -29,84 +29,91 @@
   </div>
 </template>
 <script lang="ts">
+import { defineComponent, PropType } from 'vue';
 import type { ErrorObject } from 'ajv';
 import isEqual from 'lodash/isEqual';
-import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 import InputTextWidget from './InputText.vue';
 
-@Component({
+export default defineComponent({
   name: 'rename-widget',
   components: {
     ColumnPicker,
     InputTextWidget,
   },
-})
-export default class RenameWidget extends Vue {
-  @Prop({
-    type: Array,
-    default: () => ['', ''],
-  })
-  value!: string[];
-
-  @Prop({ type: String, default: null })
-  dataPath!: string;
-
-  @Prop({ type: Array, default: () => [] })
-  errors!: ErrorObject[];
-
-  @Prop()
-  availableVariables?: VariablesBucket;
-
-  @Prop()
-  variableDelimiters?: VariableDelimiters;
-
-  @Prop()
-  trustedVariableDelimiters?: VariableDelimiters;
-
-  @Prop({ default: () => [] })
-  selectedColumns!: string[];
-
-  @Prop({ default: () => [] })
-  columnNames!: string[];
-
+  props: {
+    value: {
+      type: Array as PropType<string[]>,
+      default: () => ['', ''],
+    },
+    dataPath: {
+      type: String as PropType<string | null>,
+      default: null,
+    },
+    errors: {
+      type: Array as PropType<ErrorObject[]>,
+      default: () => [],
+    },
+    availableVariables: {
+      type: Object as PropType<VariablesBucket | undefined>,
+      default: undefined,
+    },
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+    trustedVariableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+    selectedColumns: {
+      type: Array as PropType<string[]>,
+      default: () => [],
+    },
+    columnNames: {
+      type: Array as PropType<string[]>,
+      default: () => [],
+    },
+  },
   created() {
     if (isEqual(this.value, ['', ''])) {
       this.update(this.value);
     }
-  }
-
-  get columnToRename() {
-    return this.value[0];
-  }
-
-  set columnToRename(newColumnName) {
-    this.update([newColumnName, this.newColumnToRename]);
-  }
-
-  get duplicateColumnName() {
-    if (this.columnNames.includes(this.newColumnToRename)) {
-      return `A column name "${this.newColumnToRename}" already exists. You will overwrite it.`;
-    } else {
-      return null;
-    }
-  }
-
-  get newColumnToRename() {
-    return this.value[1];
-  }
-
-  set newColumnToRename(newColumnName) {
-    this.update([this.columnToRename, newColumnName]);
-  }
-
-  update(newValues: string[]) {
-    this.$emit('input', newValues);
-  }
-}
+  },
+  computed: {
+    columnToRename: {
+      get() {
+        return this.value[0];
+      },
+      set(newColumnName: string) {
+        this.update([newColumnName, this.newColumnToRename]);
+      },
+    },
+    duplicateColumnName() {
+      if (this.columnNames.includes(this.newColumnToRename)) {
+        return `A column name "${this.newColumnToRename}" already exists. You will overwrite it.`;
+      } else {
+        return null;
+      }
+    },
+    newColumnToRename: {
+      get() {
+        return this.value[1];
+      },
+      set(newColumnName: string) {
+        this.update([this.columnToRename, newColumnName]);
+      },
+    },
+  },
+  methods: {
+    update(newValues: string[]) {
+      this.$emit('input', newValues);
+    },
+  },
+});
 </script>
 <style lang="scss" scoped>
 .widget-to-rename__container {

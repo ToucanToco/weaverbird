@@ -34,41 +34,65 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import type { AddTextColumnStep, PipelineStepName } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 
-@Component({
+export default defineComponent({
   name: 'text-step-form',
+
   components: {
     InputTextWidget,
   },
-})
-export default class AddTextColumnStepForm extends BaseStepForm<AddTextColumnStep> {
-  stepname: PipelineStepName = 'text';
 
-  @Prop({ type: Object, default: () => ({ name: 'text', newColumn: '', text: '' }) })
-  declare initialStepValue: AddTextColumnStep;
+  extends: BaseStepForm,
 
-  readonly title: string = 'Add Text Column';
+  props: {
+    initialStepValue: {
+      type: Object as PropType<AddTextColumnStep>,
+      default: () => ({
+        name: 'text',
+        newColumn: '',
+        text: ''
+      }),
+    },
+  },
 
-  get duplicateColumnName() {
-    if (this.columnNames.includes(this.editedStep.newColumn)) {
-      return `A column name "${this.editedStep.newColumn}" already exists. You will overwrite it.`;
-    } else {
-      return null;
-    }
-  }
+  data(): {
+    stepname: PipelineStepName;
+    title: string;
+    editedStep: AddTextColumnStep;
+  } {
+    return {
+      stepname: 'text',
+      title: 'Add Text Column',
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      },
+    };
+  },
 
-  submit() {
-    this.$$super.submit();
-    if (this.errors === null) {
-      this.setSelectedColumns({ column: this.editedStep.newColumn });
-    }
-  }
-}
+  computed: {
+    duplicateColumnName(): string | null {
+      if (this.columnNames.includes(this.editedStep.newColumn)) {
+        return `A column name "${this.editedStep.newColumn}" already exists. You will overwrite it.`;
+      } else {
+        return null;
+      }
+    },
+  },
+
+  methods: {
+    submit() {
+      this.$$super.submit();
+      if (this.errors === null) {
+        this.setSelectedColumns({ column: this.editedStep.newColumn });
+      }
+    },
+  },
+});
 </script>

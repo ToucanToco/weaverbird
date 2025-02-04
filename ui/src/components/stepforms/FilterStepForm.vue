@@ -22,8 +22,7 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import FilterEditor from '@/components/FilterEditor.vue';
 import type {
@@ -32,29 +31,33 @@ import type {
   FilterStep,
   PipelineStepName,
 } from '@/lib/steps';
-
 import BaseStepForm from './StepForm.vue';
 
-@Component({
+export default defineComponent({
   name: 'filter-step-form',
   components: {
     FilterEditor,
   },
-})
-export default class FilterStepForm extends BaseStepForm<FilterStep> {
-  stepname: PipelineStepName = 'filter';
-
-  @Prop({
-    type: Object,
-    default: () => ({
-      name: 'filter',
-      condition: { column: '', value: '', operator: 'eq' },
-    }),
-  })
-  declare initialStepValue: FilterStep;
-
-  readonly title: string = 'Filter';
-
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<FilterStep>,
+      default: () => ({
+        name: 'filter',
+        condition: { column: '', value: '', operator: 'eq' },
+      }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'filter' as PipelineStepName,
+      title: 'Filter' as string,
+      editedStep: {
+        name: 'filter' as const,
+        condition: { ...this.initialStepValue.condition },
+      },
+    };
+  },
   created() {
     // On creation, if a column is selected, use it to set "column" property of
     // the filter step
@@ -71,19 +74,19 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
         condition: { ...this.initialStepValue.condition },
       };
     }
-  }
-
-  submit() {
-    this.$$super.submit();
-  }
-
-  updateFilterTree(newFilterTree: FilterCondition) {
-    this.editedStep = {
-      name: 'filter',
-      condition: newFilterTree,
-    };
-  }
-}
+  },
+  methods: {
+    submit() {
+      this.$$super.submit();
+    },
+    updateFilterTree(newFilterTree: FilterCondition) {
+      this.editedStep = {
+        name: 'filter',
+        condition: newFilterTree,
+      };
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>

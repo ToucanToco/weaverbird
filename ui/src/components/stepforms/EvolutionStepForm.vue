@@ -74,15 +74,13 @@
   </div>
 </template>
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import type { EvolutionStep, PipelineStepName } from '@/lib/steps';
-
 import BaseStepForm from './StepForm.vue';
 
 type EvolutionFormat = {
@@ -95,7 +93,7 @@ type EvolutionType = {
   label: string;
 };
 
-@Component({
+export default defineComponent({
   name: 'evolution-step-form',
   components: {
     ColumnPicker,
@@ -103,51 +101,55 @@ type EvolutionType = {
     InputTextWidget,
     MultiselectWidget,
   },
-})
-export default class EvolutionStepForm extends BaseStepForm<EvolutionStep> {
-  stepname: PipelineStepName = 'evolution';
-
-  @Prop({
-    type: Object,
-    default: () => ({
-      name: 'evolution',
-      dateCol: '',
-      valueCol: '',
-      evolutionType: 'vsLastYear',
-      evolutionFormat: 'abs',
-      indexColumns: [],
-    }),
-  })
-  declare initialStepValue: EvolutionStep;
-
-  readonly title: string = 'Compute evolution';
-  readonly evolutionFormats: EvolutionFormat[] = [
-    { evolutionFormat: 'abs', label: 'absolute value' },
-    { evolutionFormat: 'pct', label: 'percentage' },
-  ];
-  readonly evolutionTypes: EvolutionType[] = [
-    { evolutionType: 'vsLastYear', label: 'last year' },
-    { evolutionType: 'vsLastMonth', label: 'last month' },
-    { evolutionType: 'vsLastWeek', label: 'last week' },
-    { evolutionType: 'vsLastDay', label: 'last day' },
-  ];
-
-  get evolutionFormat(): EvolutionFormat {
-    return this.evolutionFormats.filter(
-      (d) => d.evolutionFormat === this.editedStep.evolutionFormat,
-    )[0];
-  }
-
-  set evolutionFormat(input: EvolutionFormat) {
-    this.editedStep.evolutionFormat = input.evolutionFormat;
-  }
-
-  get evolutionType(): EvolutionType {
-    return this.evolutionTypes.filter((d) => d.evolutionType === this.editedStep.evolutionType)[0];
-  }
-
-  set evolutionType(input: EvolutionType) {
-    this.editedStep.evolutionType = input.evolutionType;
-  }
-}
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<EvolutionStep>,
+      default: () => ({
+        name: 'evolution',
+        dateCol: '',
+        valueCol: '',
+        evolutionType: 'vsLastYear',
+        evolutionFormat: 'abs',
+        indexColumns: [],
+      }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'evolution' as PipelineStepName,
+      title: 'Compute evolution' as string,
+      evolutionFormats: [
+        { evolutionFormat: 'abs', label: 'absolute value' },
+        { evolutionFormat: 'pct', label: 'percentage' },
+      ] as EvolutionFormat[],
+      evolutionTypes: [
+        { evolutionType: 'vsLastYear', label: 'last year' },
+        { evolutionType: 'vsLastMonth', label: 'last month' },
+        { evolutionType: 'vsLastWeek', label: 'last week' },
+        { evolutionType: 'vsLastDay', label: 'last day' },
+      ] as EvolutionType[],
+    };
+  },
+  computed: {
+    evolutionFormat: {
+      get(): EvolutionFormat {
+        return this.evolutionFormats.filter(
+          (d) => d.evolutionFormat === this.editedStep.evolutionFormat,
+        )[0];
+      },
+      set(input: EvolutionFormat) {
+        this.editedStep.evolutionFormat = input.evolutionFormat;
+      },
+    },
+    evolutionType: {
+      get(): EvolutionType {
+        return this.evolutionTypes.filter((d) => d.evolutionType === this.editedStep.evolutionType)[0];
+      },
+      set(input: EvolutionType) {
+        this.editedStep.evolutionType = input.evolutionType;
+      },
+    },
+  },
+});
 </script>

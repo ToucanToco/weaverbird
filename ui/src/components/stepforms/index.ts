@@ -1,6 +1,3 @@
-import type { VueConstructor } from 'vue';
-
-import type StepForm from '@/components/stepforms/StepForm.vue';
 import type { PipelineStepName } from '@/lib/steps';
 
 import AbsoluteValueStepForm from './AbsoluteValueStepForm.vue';
@@ -55,7 +52,7 @@ import UnpivotStepForm from './UnpivotStepForm.vue';
 import WaterfallStepForm from './WaterfallStepForm.vue';
 
 // Map components with their step name
-const StepFormsComponents: { [K in PipelineStepName]: VueConstructor<StepForm> } = {
+const StepFormsComponents = {
   absolutevalue: AbsoluteValueStepForm,
   addmissingdates: AddMissingDatesStepForm,
   text: AddTextColumnStepForm,
@@ -106,6 +103,6 @@ const StepFormsComponents: { [K in PipelineStepName]: VueConstructor<StepForm> }
   uniquegroups: UniqueGroupsStepForm,
   unpivot: UnpivotStepForm,
   waterfall: WaterfallStepForm,
-};
+} satisfies { [K in PipelineStepName]: any };
 
 export default StepFormsComponents;

@@ -22,37 +22,46 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
-import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import type { PipelineStepName, ToLowerStep } from '@/lib/steps';
-
+import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import BaseStepForm from './StepForm.vue';
 
-@Component({
+export default defineComponent({
   name: 'tolower-step-form',
   components: {
     ColumnPicker,
   },
-})
-export default class ToLowerStepForm extends BaseStepForm<ToLowerStep> {
-  stepname: PipelineStepName = 'lowercase';
-
-  @Prop({ type: Object, default: () => ({ name: 'lowercase', column: '' }) })
-  declare initialStepValue: ToLowerStep;
-
-  readonly title: string = 'Convert column to lowercase';
-
-  get stepSelectedColumn() {
-    return this.editedStep.column;
-  }
-
-  set stepSelectedColumn(colname: string | null) {
-    if (colname === null) {
-      throw new Error('should not try to set null on "column" field');
-    }
-    this.editedStep.column = colname;
-  }
-}
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<ToLowerStep>,
+      default: () => ({ name: 'lowercase', column: '' }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'lowercase' as PipelineStepName,
+      title: 'Convert column to lowercase' as string,
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      },
+    };
+  },
+  computed: {
+    stepSelectedColumn: {
+      get(): string {
+        return this.editedStep.column;
+      },
+      set(colname: string | null) {
+        if (colname === null) {
+          throw new Error('should not try to set null on "column" field');
+        }
+        this.editedStep.column = colname;
+      },
+    },
+  },
+});
 </script>

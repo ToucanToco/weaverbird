@@ -18,8 +18,7 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import type { CustomStep, PipelineStepName } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
@@ -27,31 +26,36 @@ import { getTranslator } from '@/lib/translators';
 import BaseStepForm from './StepForm.vue';
 import CodeEditorWidget from './widgets/CodeEditorWidget.vue';
 
-@Component({
+export default defineComponent({
   name: 'custom-step-form',
   components: { CodeEditorWidget },
-})
-export default class CustomStepForm extends BaseStepForm<CustomStep> {
-  stepname: PipelineStepName = 'custom';
-
-  @Prop({
-    type: Object,
-    default: () => ({ name: 'custom', query: '[{"$match": {"domain": "test"}}]' }),
-  })
-  declare initialStepValue: CustomStep;
-
-  readonly title: string = 'Custom step';
-  get name() {
-    return `Write a custom ${getTranslator(this.translator).constructor.label} query`;
-  }
-
-  validate() {
-    const errors = this.$$super.validate();
-    if (errors !== null) {
-      return errors;
-    }
-    const translatorErrors = getTranslator(this.translator).validate({ ...this.editedStep });
-    return translatorErrors;
-  }
-}
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<CustomStep>,
+      default: () => ({ name: 'custom', query: '[{"$match": {"domain": "test"}}]' }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'custom' as PipelineStepName,
+      title: 'Custom step',
+    };
+  },
+  computed: {
+    name() {
+      return `Write a custom ${getTranslator(this.translator).constructor.label} query`;
+    },
+  },
+  methods: {
+    validate() {
+      const errors = this.$$super.validate();
+      if (errors !== null) {
+        return errors;
+      }
+      const translatorErrors = getTranslator(this.translator).validate({ ...this.editedStep });
+      return translatorErrors;
+    },
+  },
+});
 </script>

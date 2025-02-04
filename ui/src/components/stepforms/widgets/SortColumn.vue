@@ -23,65 +23,70 @@
   </fieldset>
 </template>
 <script lang="ts">
+import { defineComponent, PropType } from 'vue';
 import type { ErrorObject } from 'ajv';
-import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import type { SortColumnType } from '@/lib/steps';
 
 import AutocompleteWidget from './Autocomplete.vue';
 
-@Component({
+export default defineComponent({
   name: 'sort-column-widget',
   components: {
     AutocompleteWidget,
   },
-})
-export default class SortColumnWidget extends Vue {
-  @Prop({
-    type: Object,
-    default: () => ({
-      column: '',
-      order: 'asc',
-    }),
-  })
-  value!: SortColumnType;
-
-  @Prop({ type: String, default: null })
-  dataPath!: string;
-
-  @Prop({ type: Array, default: () => [] })
-  errors!: ErrorObject[];
-
-  @Prop({ default: () => [] })
-  columnNames!: string[];
-
-  get sortColumn() {
-    return this.value.column;
-  }
-
-  set sortColumn(newValue) {
-    this.$emit('setSelectedColumns', { column: newValue });
-    this.update({
-      column: newValue,
-      order: this.sortOrder,
-    });
-  }
-
-  get sortOrder() {
-    return this.value.order;
-  }
-
-  set sortOrder(newValue) {
-    this.update({
-      column: this.sortColumn,
-      order: newValue,
-    });
-  }
-
-  update(newValue: SortColumnType) {
-    this.$emit('input', newValue);
-  }
-}
+  props: {
+    value: {
+      type: Object as PropType<SortColumnType>,
+      default: () => ({
+        column: '',
+        order: 'asc',
+      }),
+    },
+    dataPath: {
+      type: String as PropType<string | null>,
+      default: null,
+    },
+    errors: {
+      type: Array as PropType<ErrorObject[]>,
+      default: () => [],
+    },
+    columnNames: {
+      type: Array as PropType<string[]>,
+      default: () => [],
+    },
+  },
+  computed: {
+    sortColumn: {
+      get() {
+        return this.value.column;
+      },
+      set(newValue: string) {
+        this.$emit('setSelectedColumns', { column: newValue });
+        this.update({
+          column: newValue,
+          order: this.sortOrder,
+        });
+      },
+    },
+    sortOrder: {
+      get() {
+        return this.value.order;
+      },
+      set(newValue: string) {
+        this.update({
+          column: this.sortColumn,
+          order: newValue,
+        });
+      },
+    },
+  },
+  methods: {
+    update(newValue: SortColumnType) {
+      this.$emit('input', newValue);
+    },
+  },
+});
 </script>
 <style scoped>
 .widget-sort__container {

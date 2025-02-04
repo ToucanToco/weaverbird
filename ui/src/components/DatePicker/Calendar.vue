@@ -21,7 +21,7 @@
 import _isEmpty from 'lodash/isEmpty';
 import _isEqual from 'lodash/isEqual';
 // @ts-ignore
-import DatePicker from 'v-calendar/lib/components/date-picker.umd';
+import DatePicker from 'v-calendar/src/components/DatePicker.vue';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import { clampRange, isDateRange } from '@/lib/dates';

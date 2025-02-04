@@ -74,18 +74,17 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, PropType, watch } from 'vue';
 import { Multiselect } from 'vue-multiselect';
-import { Component, Prop, Watch } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
 import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';
 import { extractVariableIdentifier } from '@/lib/variables';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-
 import FormWidget from './FormWidget.vue';
 import MultiVariableInput from './MultiVariableInput.vue';
 
-@Component({
+export default defineComponent({
   name: 'multiselect-widget',
   components: {
     Multiselect,
@@ -93,140 +92,128 @@ import MultiVariableInput from './MultiVariableInput.vue';
     MultiVariableInput,
     FAIcon,
   },
-})
-export default class MultiselectWidget extends FormWidget {
-  editedAdvancedVariable = '';
-
-  @Prop({ type: String, default: '' })
-  name!: string;
-
-  @Prop({ type: String, default: '' })
-  placeholder!: string;
-
-  @Prop({ type: Array, default: () => [] })
-  value!: string[] | object[];
-
-  @Prop({ type: Array, default: () => [] })
-  options!: (string | object)[];
-
-  @Prop({ type: String, default: undefined })
-  trackBy!: string;
-
-  @Prop({ type: String, default: undefined })
-  label!: string;
-
-  @Prop({ type: Boolean, default: false })
-  withExample!: boolean;
-
-  // Allow to type options that are not on the list.
-  // Won't work for objects options.
-  @Prop({ type: Boolean, default: false })
-  allowCustom!: boolean;
-
-  @Prop()
-  availableVariables?: VariablesBucket;
-
-  @Prop({ default: undefined })
-  variableDelimiters!: VariableDelimiters;
-
-  @Prop({ default: undefined })
-  trustedVariableDelimiters!: VariableDelimiters;
-
-  editedValue: string[] | object[] = [];
-
-  onInput(newValue: string[] | object[]) {
-    this.editedValue = newValue;
-  }
-  onTag(v: string) {
-    if (!this.allowCustom) {
-      return;
-    }
-    this.editedValue = [...(this.editedValue as string[]), v];
-  }
-
-  /**
-   * Are the props set up to handle object options?
-   */
-  get isObjectValue() {
-    return this.label != null && this.trackBy != null;
-  }
-
-  /**
-   * Convert object initial values as string initial values
-   *
-   * This is useful because MultiVariableInput cannot handle object values
-   */
-  get stringValue(): string[] {
-    if (this.isObjectValue) {
-      return this.value.map(this.customLabel);
-    }
-    return [...this.value];
-  }
-
-  /**
-   * Initialize the edited value
-   */
-  @Watch('value', { immediate: true })
-  updateEditedValue(newValue: string[] | object[]) {
-    this.editedValue = newValue;
-  }
-
-  /**
-   * Emits an input event each time editedValue moves or a variable is choosen.
-   * This event's payload is the value as objects or strings.
-   */
-  @Watch('editedValue')
-  updateStringValue(newValue: string[] | object[], oldValue: string[] | object[]) {
-    const newValues = newValue.map(this.customLabel).join(' ');
-    const oldValues = oldValue ? oldValue.map(this.customLabel).join(' ') : '';
-    // Prevent an infinite loop of emitting and receiving.
-    if (newValues !== oldValues) {
-      this.$emit('input', newValue);
-    }
-  }
-
-  /**
-   * Verify if we need to use regular template or variable one
-   **/
-  isVariable(value: string | object) {
-    const identifier = extractVariableIdentifier(
-      this.customLabel(value),
-      this.variableDelimiters,
-      this.trustedVariableDelimiters,
-    );
-    return identifier != null;
-  }
-
-  /**
-   * Returns the option's label field if possible,
-   * return the whole option otherwise
-   */
-  customLabel(option: string | object): string {
-    if (typeof option === 'object' && this.isObjectValue) {
-      return option[this.label];
-    } else {
-      return option;
-    }
-  }
-
-  /*
-  Select the advanced variable to edit
-  */
-  editAdvancedVariable(value: string) {
-    this.editedAdvancedVariable = value;
-  }
-
-  /*
-  Reset the advanced variable to edit
-  */
-  resetEditedAdvancedVariable() {
-    this.editedAdvancedVariable = '';
-  }
-
-  onOptionClick(e: Event, disabled?: boolean) {
-    if (disabled) e.stopPropagation();
-  }
-}
+  extends: FormWidget,
+  props: {
+    name: {
+      type: String as PropType<string>,
+      default: '',
+    },
+    placeholder: {
+      type: String as PropType<string>,
+      default: '',
+    },
+    value: {
+      type: Array as PropType<string[] | object[]>,
+      default: () => [],
+    },
+    options: {
+      type: Array as PropType<(string | object)[]>,
+      default: () => [],
+    },
+    trackBy: {
+      type: String as PropType<string | undefined>,
+      default: undefined,
+    },
+    label: {
+      type: String as PropType<string | undefined>,
+      default: undefined,
+    },
+    withExample: {
+      type: Boolean as PropType<boolean>,
+      default: false,
+    },
+    allowCustom: {
+      type: Boolean as PropType<boolean>,
+      default: false,
+    },
+    availableVariables: {
+      type: Object as PropType<VariablesBucket | undefined>,
+      default: undefined,
+    },
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+    trustedVariableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+    maxHeight: {
+      type: Number as PropType<number | undefined>,
+      default: undefined,
+    },
+  },
+  data() {
+    return {
+      editedAdvancedVariable: '',
+      editedValue: [] as string[] | object[],
+    };
+  },
+  computed: {
+    isObjectValue(): boolean {
+      return this.label != null && this.trackBy != null;
+    },
+    stringValue(): string[] {
+      if (this.isObjectValue) {
+        return this.value.map(this.customLabel);
+      }
+      return [...this.value];
+    },
+  },
+  watch: {
+    value: {
+      immediate: true,
+      handler(newValue: string[] | object[]) {
+        this.editedValue = newValue;
+      },
+    },
+    editedValue: {
+      handler(newValue: string[] | object[], oldValue: string[] | object[]) {
+        const newValues = newValue.map(this.customLabel).join(' ');
+        const oldValues = oldValue ? oldValue.map(this.customLabel).join(' ') : '';
+        // Prevent an infinite loop of emitting and receiving.
+        if (newValues !== oldValues) {
+          this.$emit('input', newValue);
+        }
+      },
+    },
+  },
+  methods: {
+    onInput(newValue: string[] | object[]) {
+      this.editedValue = newValue;
+    },
+    onTag(v: string) {
+      if (!this.allowCustom) {
+        return;
+      }
+      this.editedValue = [...(this.editedValue as string[]), v];
+    },
+    isVariable(value: string | object) {
+      const identifier = extractVariableIdentifier(
+        this.customLabel(value),
+        this.variableDelimiters,
+        this.trustedVariableDelimiters,
+      );
+      return identifier != null;
+    },
+    customLabel(option: string | object): string {
+      if (typeof option === 'object' && this.isObjectValue) {
+        return option[this.label];
+      } else {
+        return option as string;
+      }
+    },
+    editAdvancedVariable(value: string) {
+      this.editedAdvancedVariable = value;
+    },
+    resetEditedAdvancedVariable() {
+      this.editedAdvancedVariable = '';
+    },
+    onOptionClick(e: Event, disabled?: boolean) {
+      if (disabled) e.stopPropagation();
+    },
+  },
+});
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

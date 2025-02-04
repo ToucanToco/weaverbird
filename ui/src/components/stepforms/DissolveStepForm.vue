@@ -45,50 +45,51 @@
   </div>
 </template>
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 import type { Aggregation, DissolveStep, PipelineStepName } from '@/lib/steps';
-
 import BaseStepForm from './StepForm.vue';
 import { suffixAggregationsColumns } from './utils';
 import AggregationWidget from './widgets/Aggregation.vue';
 import ListWidget from './widgets/List.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
-@Component({
+export default defineComponent({
   name: 'dissolve-step-form',
   components: {
     CheckboxWidget,
     ListWidget,
     MultiselectWidget,
   },
-})
-export default class DissolveStepForm extends BaseStepForm<DissolveStep> {
-  stepname: PipelineStepName = 'dissolve';
-
-  @Prop({
-    type: Object,
-    default: () => ({ name: 'dissolve', groups: [], includeNulls: false, aggregations: [] }),
-  })
-  declare initialStepValue: DissolveStep;
-
-  readonly title: string = 'Dissolve';
-  widgetAggregation = AggregationWidget;
-
-  get defaultAggregation() {
-    const agg: Aggregation = {
-      columns: [],
-      newcolumns: [],
-      aggfunction: 'sum',
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<DissolveStep>,
+      default: () => ({ name: 'dissolve', groups: [], includeNulls: false, aggregations: [] }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'dissolve' as PipelineStepName,
+      title: 'Dissolve' as string,
+      widgetAggregation: AggregationWidget,
     };
-    return agg;
-  }
-
-  submit() {
-    suffixAggregationsColumns(this.editedStep);
-    this.$$super.submit();
-  }
-}
+  },
+  computed: {
+    defaultAggregation(): Aggregation {
+      return {
+        columns: [],
+        newcolumns: [],
+        aggfunction: 'sum',
+      };
+    },
+  },
+  methods: {
+    submit() {
+      suffixAggregationsColumns(this.editedStep);
+      this.$$super.submit();
+    },
+  },
+});
 </script>

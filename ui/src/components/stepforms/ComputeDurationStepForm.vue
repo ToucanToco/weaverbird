@@ -58,58 +58,59 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import type { ComputeDurationStep, PipelineStepName } from '@/lib/steps';
-
 import BaseStepForm from './StepForm.vue';
 
 type DurationUnit = 'days' | 'hours' | 'minutes' | 'seconds';
 
-@Component({
-  vqbstep: 'duration',
+export default defineComponent({
   name: 'duration-step-form',
   components: {
     AutocompleteWidget,
     ColumnPicker,
     InputTextWidget,
   },
-})
-export default class ComputeDurationStepForm extends BaseStepForm<ComputeDurationStep> {
-  stepname: PipelineStepName = 'duration';
-
-  @Prop({
-    type: Object,
-    default: () => ({
-      name: 'duration',
-      newColumnName: '',
-      startDateColumn: '',
-      endDateColumn: '',
-      durationIn: 'days',
-    }),
-  })
-  declare initialStepValue: ComputeDurationStep;
-
-  readonly title: string = 'Compute Duration';
-  readonly durationUnits: DurationUnit[] = ['days', 'hours', 'minutes', 'seconds'];
-
-  get duplicateColumnName() {
-    if (this.columnNames.includes(this.editedStep.newColumnName)) {
-      return `A column name "${this.editedStep.newColumnName}" already exists. You will overwrite it.`;
-    } else {
-      return null;
-    }
-  }
-
-  submit() {
-    this.$$super.submit();
-    if (this.errors === null) {
-      this.setSelectedColumns({ column: this.editedStep.newColumnName });
-    }
-  }
-}
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<ComputeDurationStep>,
+      default: () => ({
+        name: 'duration',
+        newColumnName: '',
+        startDateColumn: '',
+        endDateColumn: '',
+        durationIn: 'days',
+      }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'duration' as PipelineStepName,
+      title: 'Compute Duration' as string,
+      durationUnits: ['days', 'hours', 'minutes', 'seconds'] as DurationUnit[],
+    };
+  },
+  computed: {
+    duplicateColumnName() {
+      if (this.columnNames.includes(this.editedStep.newColumnName)) {
+        return `A column name "${this.editedStep.newColumnName}" already exists. You will overwrite it.`;
+      } else {
+        return null;
+      }
+    },
+  },
+  methods: {
+    submit() {
+      this.$$super.submit();
+      if (this.errors === null) {
+        this.setSelectedColumns({ column: this.editedStep.newColumnName });
+      }
+    },
+  },
+});
 </script>

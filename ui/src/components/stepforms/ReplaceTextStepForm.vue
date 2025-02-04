@@ -34,43 +34,50 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
+import BaseStepForm from './StepForm.vue';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import type { PipelineStepName, ReplaceTextStep } from '@/lib/steps';
 
-import BaseStepForm from './StepForm.vue';
-
-@Component({
+export default defineComponent({
   name: 'replacetext-step-form',
   components: {
     ColumnPicker,
     InputTextWidget,
   },
-})
-export default class ReplaceTextStepForm extends BaseStepForm<ReplaceTextStep> {
-  stepname: PipelineStepName = 'replacetext';
-
-  @Prop({
-    type: Object,
-    default: () => ({ name: 'replacetext', searchColumn: '', oldStr: '', newStr: '' }),
-  })
-  declare initialStepValue: ReplaceTextStep;
-
-  readonly title: string = 'Replace text';
-
-  get stepSelectedColumn() {
-    return this.editedStep.searchColumn;
-  }
-
-  set stepSelectedColumn(colname: string) {
-    this.editedStep.searchColumn = colname;
-  }
-
-  submit() {
-    this.$$super.submit();
-  }
-}
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<ReplaceTextStep>,
+      default: () => ({ name: 'replacetext', searchColumn: '', oldStr: '', newStr: '' }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'replacetext' as PipelineStepName,
+      title: 'Replace text' as string,
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      },
+    };
+  },
+  computed: {
+    stepSelectedColumn: {
+      get() {
+        return this.editedStep.searchColumn;
+      },
+      set(colname: string) {
+        this.editedStep.searchColumn = colname;
+      },
+    },
+  },
+  methods: {
+    submit() {
+      this.$$super.submit();
+    },
+  },
+});
 </script>

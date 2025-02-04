@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import VariableInputBase from '@/components/stepforms/widgets/VariableInputs/VariableInputBase.vue';
 import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';
@@ -39,71 +39,63 @@ import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
  * This component wraps an input of any type and allow replacing its value by a variable chosen from a list or an
  * expression.
  */
-@Component({
+export default defineComponent({
   name: 'variable-input',
   components: {
     VariableTag,
     VariableInputBase,
   },
-})
-export default class VariableInput extends Vue {
-  editedAdvancedVariable = '';
-
-  @Prop()
-  value!: any;
-
-  @Prop()
-  availableVariables?: VariablesBucket;
-
-  @Prop({ default: undefined })
-  variableDelimiters!: VariableDelimiters;
-
-  @Prop({ default: undefined })
-  trustedVariableDelimiters!: VariableDelimiters;
-
-  @Prop({ default: false })
-  hasArrow?: boolean; //move variable-chooser button to the left if parent has an expand arrow
-
-  /**
-   * Verify if we need to display the slot or the variableTag
-   */
-  get isVariable() {
-    const identifier = extractVariableIdentifier(
-      this.value,
-      this.variableDelimiters,
-      this.trustedVariableDelimiters,
-    );
-    return identifier != null;
-  }
-
-  /**
-   * Wraps the chosen variable with delimiters and emits it
-   */
-  chooseVariable(value: string) {
-    this.$emit('input', value);
-  }
-
-  /**
-   * Remove any previously chosen variable
-   */
-  dismissVariable() {
-    this.$emit('input', undefined);
-  }
-
-  /*
-  Select the advanced variable to edit
-  */
-  editAdvancedVariable(value: string) {
-    this.editedAdvancedVariable = value;
-  }
-
-  /*
-  Reset the advanced variable to edit
-  */
-  resetEditedAdvancedVariable() {
-    this.editedAdvancedVariable = '';
-  }
-}
+  props: {
+    value: {
+      required: true,
+    },
+    availableVariables: {
+      type: Object as PropType<VariablesBucket | undefined>,
+      default: undefined,
+    },
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters>,
+      default: undefined,
+    },
+    trustedVariableDelimiters: {
+      type: Object as PropType<VariableDelimiters>,
+      default: undefined,
+    },
+    hasArrow: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  data() {
+    return {
+      editedAdvancedVariable: '',
+    };
+  },
+  computed: {
+    isVariable() {
+      const identifier = extractVariableIdentifier(
+        this.value,
+        this.variableDelimiters,
+        this.trustedVariableDelimiters,
+      );
+      return identifier != null;
+    },
+  },
+  methods: {
+    chooseVariable(value: string) {
+      this.$emit('input', value);
+    },
+    dismissVariable() {
+      this.$emit('input', undefined);
+    },
+    editAdvancedVariable(value: string) {
+      this.editedAdvancedVariable = value;
+    },
+    resetEditedAdvancedVariable() {
+      this.editedAdvancedVariable = '';
+    },
+  },
+});
 </script>
 
 <style scoped lang="scss">

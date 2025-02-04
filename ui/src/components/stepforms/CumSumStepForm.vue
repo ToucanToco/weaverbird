@@ -54,38 +54,60 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent } from 'vue';
 
-import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
+import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import type { CumSumStep, PipelineStepName } from '@/lib/steps';
 
-import ColumnPicker from './ColumnPicker.vue';
 import BaseStepForm from './StepForm.vue';
 import CumSumWidget from './widgets/CumSum.vue';
 import ListWidget from './widgets/List.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
-@Component({
+export default defineComponent({
   name: 'cumsum-step-form',
+
   components: {
     ColumnPicker,
-    InputTextWidget,
     ListWidget,
     MultiselectWidget,
   },
-})
-export default class CumSumStepForm extends BaseStepForm<CumSumStep> {
-  stepname: PipelineStepName = 'cumsum';
 
-  @Prop({
-    type: Object,
-    default: () => ({ name: 'cumsum', toCumSum: [['', '']], referenceColumn: '' }),
-  })
-  declare initialStepValue: CumSumStep;
+  extends: BaseStepForm,
 
-  readonly title: string = 'Compute cumulated sum';
-  cumSumWidget = CumSumWidget;
+  props: {
+    initialStepValue: {
+      type: Object as () => CumSumStep,
+      default: () => ({
+        name: 'cumsum',
+        toCumSum: [],
+        referenceColumn: '',
+      }),
+    },
+  },
+
+  data() {
+    return {
+      stepname: 'cumsum' as PipelineStepName,
+      title: 'Cumulated sum' as const,
+      cumSumWidget: CumSumWidget,
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      } as CumSumStep,
+    };
+  },
+
+  computed: {
+    toCumSum: {
+      get() {
+        return this.editedStep.toCumSum;
+      },
+      set(newval) {
+        this.editedStep.toCumSum = [...newval];
+      },
+    },
+  },
 
   created() {
     /** Overload the definition of editedStep in BaseStepForm to guarantee retro-compatibility,
@@ -103,14 +125,6 @@ export default class CumSumStepForm extends BaseStepForm<CumSumStep> {
         (this.editedStep as CumSumStep).toCumSum[0][1] = newColumn;
       }
     }
-  }
-
-  get toCumSum() {
-    return this.editedStep.toCumSum;
-  }
-
-  set toCumSum(newval) {
-    this.editedStep.toCumSum = [...newval];
-  }
-}
+  },
+});
 </script>

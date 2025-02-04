@@ -57,18 +57,16 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
-import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
-import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import type { PipelineStepName, TopStep } from '@/lib/steps';
-
+import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import BaseStepForm from './StepForm.vue';
+import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
+import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
-@Component({
+export default defineComponent({
   name: 'top-step-form',
   components: {
     ColumnPicker,
@@ -76,24 +74,35 @@ import MultiselectWidget from './widgets/Multiselect.vue';
     InputTextWidget,
     MultiselectWidget,
   },
-})
-export default class TopStepForm extends BaseStepForm<TopStep> {
-  stepname: PipelineStepName = 'top';
-
-  @Prop({ type: Object, default: () => ({ name: 'top', rankOn: '', sort: 'desc' }) })
-  declare initialStepValue: TopStep;
-
-  readonly title: string = 'Top N rows';
-
-  get stepSelectedColumn() {
-    return this.editedStep.rankOn;
-  }
-
-  set stepSelectedColumn(colname: string | null) {
-    if (colname === null) {
-      throw new Error('should not try to set null on top "rankOn" field');
-    }
-    this.editedStep.rankOn = colname;
-  }
-}
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<TopStep>,
+      default: () => ({ name: 'top', rankOn: '', sort: 'desc' }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'top' as PipelineStepName,
+      title: 'Top N rows' as string,
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      },
+    };
+  },
+  computed: {
+    stepSelectedColumn: {
+      get(): string {
+        return this.editedStep.rankOn;
+      },
+      set(colname: string | null) {
+        if (colname === null) {
+          throw new Error('should not try to set null on top "rankOn" field');
+        }
+        this.editedStep.rankOn = colname;
+      },
+    },
+  },
+});
 </script>

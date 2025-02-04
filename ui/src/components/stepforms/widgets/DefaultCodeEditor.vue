@@ -9,24 +9,21 @@
   />
 </template>
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
-@Component({
+export default defineComponent({
   name: 'DefaultCodeEditor',
-})
-export default class DefaultCodeEditor extends Vue {
-  @Prop({
-    type: String,
-    required: true,
-  })
-  value!: string;
-
-  @Prop({
-    type: String,
-    default: '',
-  })
-  placeholder!: string;
-}
+  props: {
+    value: {
+      type: String as PropType<string>,
+      required: true,
+    },
+    placeholder: {
+      type: String as PropType<string>,
+      default: '',
+    },
+  },
+});
 </script>
 <style scoped>
 textarea {

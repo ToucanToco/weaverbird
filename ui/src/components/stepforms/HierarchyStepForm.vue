@@ -32,18 +32,16 @@
   </div>
 </template>
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
-
-import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
-import type { HierarchyStep, PipelineStepName } from '@/lib/steps';
+import { defineComponent, PropType } from 'vue';
 
 import BaseStepForm from './StepForm.vue';
 import AutocompleteWidget from './widgets/Autocomplete.vue';
+import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 import InputTextWidget from './widgets/InputText.vue';
 import ListWidget from './widgets/List.vue';
+import type { HierarchyStep, PipelineStepName } from '@/lib/steps';
 
-@Component({
+export default defineComponent({
   name: 'hierarchy-step-form',
   components: {
     AutocompleteWidget,
@@ -51,26 +49,33 @@ import ListWidget from './widgets/List.vue';
     InputTextWidget,
     ListWidget,
   },
-})
-export default class HierarchyStepForm extends BaseStepForm<HierarchyStep> {
-  stepname: PipelineStepName = 'hierarchy';
-
-  @Prop({
-    type: Object,
-    default: () => ({
-      name: 'hierarchy',
-      hierarchyLevelColumn: 'hierarchy_level',
-      hierarchy: [],
-      includeNulls: false,
-    }),
-  })
-  declare initialStepValue: HierarchyStep;
-
-  readonly title: string = 'Aggregate geographical data by hierarchy';
-  widgetAutocomplete = AutocompleteWidget;
-
-  submit() {
-    this.$$super.submit();
-  }
-}
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<HierarchyStep>,
+      default: () => ({
+        name: 'hierarchy',
+        hierarchyLevelColumn: 'hierarchy_level',
+        hierarchy: [],
+        includeNulls: false,
+      }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'hierarchy' as PipelineStepName,
+      title: 'Aggregate geographical data by hierarchy' as string,
+      widgetAutocomplete: AutocompleteWidget,
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      },
+    };
+  },
+  methods: {
+    submit() {
+      this.$$super.submit();
+    },
+  },
+});
 </script>

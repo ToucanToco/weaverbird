@@ -45,8 +45,7 @@
   </div>
 </template>
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
@@ -57,28 +56,43 @@ import BaseStepForm from './StepForm.vue';
 
 type DateGranularity = 'day' | 'month' | 'year';
 
-@Component({
+export default defineComponent({
   name: 'add-missing-dates-step-form',
+
   components: {
     ColumnPicker,
     AutocompleteWidget,
     MultiselectWidget,
   },
-})
-export default class AddMissingDatesStepForm extends BaseStepForm<AddMissingDatesStep> {
-  stepname: PipelineStepName = 'addmissingdates';
 
-  @Prop({
-    type: Object,
-    default: () => ({
-      name: 'addmissingdates',
-      datesColumn: '',
-      datesGranularity: 'day',
-    }),
-  })
-  declare initialStepValue: AddMissingDatesStep;
+  extends: BaseStepForm,
 
-  readonly title: string = 'Add Missing Dates';
-  readonly datesGranularities: DateGranularity[] = ['day', 'month', 'year'];
-}
+  props: {
+    initialStepValue: {
+      type: Object as PropType<AddMissingDatesStep>,
+      default: () => ({
+        name: 'addmissingdates',
+        datesColumn: '',
+        datesGranularity: 'day',
+      }),
+    },
+  },
+
+  data(): {
+    stepname: PipelineStepName;
+    title: string;
+    datesGranularities: DateGranularity[];
+    editedStep: AddMissingDatesStep;
+  } {
+    return {
+      stepname: 'addmissingdates',
+      title: 'Add Missing Dates',
+      datesGranularities: ['day', 'month', 'year'],
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      },
+    };
+  },
+});
 </script>

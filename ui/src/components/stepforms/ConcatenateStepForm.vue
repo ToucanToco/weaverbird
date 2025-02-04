@@ -45,38 +45,64 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
+import type { ConcatenateStep, PipelineStepName } from '@/lib/steps';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
-import type { ConcatenateStep, PipelineStepName } from '@/lib/steps';
-
 import BaseStepForm from './StepForm.vue';
 
-@Component({
+export default defineComponent({
   name: 'concatenate-step-form',
   components: {
     ColumnPicker,
     InputTextWidget,
     ListWidget,
   },
-})
-export default class ConcatenateStepForm extends BaseStepForm<ConcatenateStep> {
-  stepname: PipelineStepName = 'concatenate';
-
-  @Prop({
-    type: Object,
-    default: () => ({ name: 'concatenate', columns: [''], separator: '', newColumnName: '' }),
-  })
-  declare initialStepValue: ConcatenateStep;
-
-  readonly title: string = 'Concatenate columns';
-  columnPicker = ColumnPicker;
-
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<ConcatenateStep>,
+      default: () => ({
+        name: 'concatenate',
+        columns: [''],
+        separator: '',
+        newColumnName: ''
+      }),
+    },
+  },
+  data(): {
+    stepname: PipelineStepName;
+    title: string;
+    columnPicker: typeof ColumnPicker;
+    editedStep: ConcatenateStep;
+  } {
+    return {
+      stepname: 'concatenate',
+      title: 'Concatenate columns',
+      columnPicker: ColumnPicker,
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      },
+    };
+  },
+  computed: {
+    toConcatenate: {
+      get(): string[] {
+        if (this.editedStep.columns.length) {
+          return this.editedStep.columns;
+        } else {
+          return [''];
+        }
+      },
+      set(newval: string[]) {
+        this.editedStep.columns = [...newval];
+      },
+    },
+  },
   mounted() {
-    // If a column is selected, use it to set the first "column" property
     if (this.isStepCreation && this.selectedColumns[0]) {
       this.editedStep = {
         name: 'concatenate' as 'concatenate',
@@ -85,21 +111,8 @@ export default class ConcatenateStepForm extends BaseStepForm<ConcatenateStep> {
         newColumnName: '',
       };
     } else {
-      // Otherwise, fallback on the default initial value
       this.editedStep = { ...this.initialStepValue };
     }
-  }
-
-  get toConcatenate() {
-    if (this.editedStep.columns.length) {
-      return this.editedStep.columns;
-    } else {
-      return [''];
-    }
-  }
-
-  set toConcatenate(newval) {
-    this.editedStep.columns = [...newval];
-  }
-}
+  },
+});
 </script>

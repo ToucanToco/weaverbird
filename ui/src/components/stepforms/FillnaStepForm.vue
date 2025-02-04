@@ -29,63 +29,65 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
-import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { castFromString } from '@/lib/helpers';
 import type { FillnaStep, PipelineStepName } from '@/lib/steps';
-
+import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
-@Component({
+export default defineComponent({
   name: 'fillna-step-form',
   components: {
     InputTextWidget,
     MultiselectWidget,
   },
-})
-export default class FillnaStepForm extends BaseStepForm<FillnaStep> {
-  stepname: PipelineStepName = 'fillna';
-
-  @Prop({
-    type: Object,
-    default: () => ({ name: 'fillna', column: undefined, value: '', columns: [] }),
-  })
-  declare initialStepValue: FillnaStep;
-
-  readonly title: string = 'Fill null values';
-
-  /** Overload the definition of editedStep in BaseStepForm to guarantee retrocompatibility,
-   *  as we have to manage historical configurations where only one column at a time could be
-   * filled */
-  editedStep = {
-    ...this.initialStepValue,
-    ...this.stepFormDefaults,
-    columns: this.initialStepValue.column
-      ? [this.initialStepValue.column]
-      : this.initialStepValue.columns,
-    column: undefined,
-  };
-
-  get stepSelectedColumn() {
-    return null;
-  }
-
-  set stepSelectedColumn(colname: string | null) {
-    if (colname === null) {
-      throw new Error('should not try to set null on fillna "column" field');
-    }
-    this.editedStep.columns = [colname];
-  }
-
-  submit() {
-    const type = this.columnTypes[this.editedStep.columns[0]];
-    if (type !== undefined) {
-      this.editedStep.value = castFromString(this.editedStep.value as string, type);
-    }
-    this.$$super.submit();
-  }
-}
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<FillnaStep>,
+      default: () => ({ name: 'fillna', column: undefined, value: '', columns: [] }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'fillna' as PipelineStepName,
+      title: 'Fill null values' as string,
+      /** Overload the definition of editedStep in BaseStepForm to guarantee retrocompatibility,
+       *  as we have to manage historical configurations where only one column at a time could be
+       * filled */
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+        columns: this.initialStepValue.column
+          ? [this.initialStepValue.column]
+          : this.initialStepValue.columns,
+        column: undefined,
+      },
+    };
+  },
+  computed: {
+    stepSelectedColumn: {
+      get() {
+        return null;
+      },
+      set(colname: string | null) {
+        if (colname === null) {
+          throw new Error('should not try to set null on fillna "column" field');
+        }
+        this.editedStep.columns = [colname];
+      },
+    },
+  },
+  methods: {
+    submit() {
+      const type = this.columnTypes[this.editedStep.columns[0]];
+      if (type !== undefined) {
+        this.editedStep.value = castFromString(this.editedStep.value as string, type);
+      }
+      this.$$super.submit();
+    },
+  },
+});
 </script>

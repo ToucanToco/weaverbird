@@ -109,10 +109,9 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, PropType } from 'vue';
 import Ajv from 'ajv';
 import _intersection from 'lodash/intersection';
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
@@ -123,8 +122,9 @@ import type { PipelineStepName, Quantile, Statistics, StatisticsStep } from '@/l
 
 import BaseStepForm from './StepForm.vue';
 
-@Component({
+export default defineComponent({
   name: 'statistics-step-form',
+
   components: {
     ColumnPicker,
     Checkbox,
@@ -132,173 +132,182 @@ import BaseStepForm from './StepForm.vue';
     MultiselectWidget,
     FAIcon,
   },
-})
-export default class StatisticsStepForm extends BaseStepForm<StatisticsStep> {
-  stepname: PipelineStepName = 'statistics';
 
-  @Prop({
-    type: Object,
-    default: (): StatisticsStep => ({
-      name: 'statistics',
-      column: '',
-      groupbyColumns: [],
-      statistics: [],
-      quantiles: [],
-    }),
-  })
-  declare initialStepValue: StatisticsStep;
+  extends: BaseStepForm,
 
-  customQuantilesForm: any = {
-    nth: '',
-    order: '',
-  };
-
-  readonly title: string = 'Compute statistics';
-
-  // statistics repartition between advanced and basic:
-  readonly statistics = ['count', 'average', 'min', 'max'];
-  readonly quantiles: Quantile[] = [
-    {
-      label: 'median',
-      nth: 1,
-      order: 2,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<StatisticsStep>,
+      default: () => ({
+        name: 'statistics',
+        column: '',
+        groupbyColumns: [],
+        statistics: [],
+        quantiles: [],
+      }),
     },
-  ];
-  readonly advancedStatistics = ['standard deviation', 'variance'];
-  readonly advancedQuantiles: Quantile[] = [
-    {
-      label: 'first quartile',
-      nth: 1,
-      order: 4,
-    },
-    {
-      label: 'last quartile',
-      nth: 3,
-      order: 4,
-    },
-    {
-      label: 'first decile',
-      nth: 1,
-      order: 10,
-    },
-    {
-      label: 'last decile',
-      nth: 9,
-      order: 10,
-    },
-    {
-      label: 'first centile',
-      nth: 1,
-      order: 100,
-    },
-    {
-      label: 'last centile',
-      nth: 99,
-      order: 100,
-    },
-  ];
+  },
 
-  // the step is dived in 3 sections
-  isBasicStatisticsOpen = true;
-  isAdvancedStatisticsOpen = false;
-  isCustomQuantileOpen = false;
-
-  get customQuantiles(): Quantile[] {
-    return this.editedStep.quantiles.filter(({ label }) => {
-      return label === undefined;
-    });
-  }
-
-  get basicStatisticsCheckedCount() {
-    const statisticsCount = _intersection(this.editedStep.statistics, this.statistics).length;
-    const quantileCount = _intersection(
-      this.editedStep.quantiles.map(({ label }) => label),
-      this.quantiles.map(({ label }) => label),
-    ).length;
-    return statisticsCount + quantileCount;
-  }
-
-  get advancedStatisticsCheckedCount() {
-    const statisticsCount = _intersection(
-      this.editedStep.statistics,
-      this.advancedStatistics,
-    ).length;
-    const quantileCount = _intersection(
-      this.editedStep.quantiles.map(({ label }) => label),
-      this.advancedQuantiles.map(({ label }) => label),
-    ).length;
-    return statisticsCount + quantileCount;
-  }
-
-  get customQuantilesCheckedCount() {
-    return this.customQuantiles.length;
-  }
-
-  // utils to manipulate quantiles and statistics:
-  isStatisticChecked(statistic: Statistics): boolean {
-    return this.editedStep.statistics.includes(statistic);
-  }
-
-  isQuantileChecked(quantile: Quantile): boolean {
-    return (
-      this.editedStep.quantiles.filter(
-        ({ label, nth, order }) =>
-          label === quantile.label && nth === quantile.nth && order === quantile.order,
-      ).length > 0
-    );
-  }
-
-  toogleStatistic(statistic: Statistics) {
-    if (this.isStatisticChecked(statistic)) {
-      this.editedStep.statistics = this.editedStep.statistics.filter((s) => s !== statistic);
-    } else {
-      this.editedStep.statistics.push(statistic);
-    }
-  }
-
-  toogleQuantile(quantile: Quantile) {
-    // parse quantile
-    quantile = {
-      nth: quantile.nth,
-      order: quantile.order,
-      label: quantile.label,
-    };
-    if (this.isQuantileChecked(quantile)) {
-      // remove quantile from selected one
-      this.editedStep.quantiles = this.editedStep.quantiles.filter(
-        ({ label, nth, order }) =>
-          label !== quantile.label || nth !== quantile.nth || order !== quantile.order,
-      );
-    } else {
-      // compile schema errors
-      const validator = new Ajv({ allErrors: true, strictSchema: false }).compile({
-        type: 'object',
-        required: ['nth', 'order'],
-        properties: {
-          label: { type: 'string' },
-          nth: {
-            type: 'number',
-            minimum: 1,
-          },
-          order: { type: 'number', minimum: (quantile.nth || 0) + 1 },
+  data() {
+    return {
+      stepname: 'statistics' as PipelineStepName,
+      title: 'Compute statistics' as const,
+      customQuantilesForm: {
+        nth: '',
+        order: '',
+      },
+      // statistics repartition between advanced and basic:
+      statistics: ['count', 'average', 'min', 'max'] as Statistics[],
+      quantiles: [
+        {
+          label: 'median',
+          nth: 1,
+          order: 2,
         },
+      ] as Quantile[],
+      advancedStatistics: ['standard deviation', 'variance'] as Statistics[],
+      advancedQuantiles: [
+        {
+          label: 'first quartile',
+          nth: 1,
+          order: 4,
+        },
+        {
+          label: 'last quartile',
+          nth: 3,
+          order: 4,
+        },
+        {
+          label: 'first decile',
+          nth: 1,
+          order: 10,
+        },
+        {
+          label: 'last decile',
+          nth: 9,
+          order: 10,
+        },
+        {
+          label: 'first centile',
+          nth: 1,
+          order: 100,
+        },
+        {
+          label: 'last centile',
+          nth: 99,
+          order: 100,
+        },
+      ] as Quantile[],
+      // the step is divided in 3 sections
+      isBasicStatisticsOpen: true,
+      isAdvancedStatisticsOpen: false,
+      isCustomQuantileOpen: false,
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      } as StatisticsStep,
+    };
+  },
+
+  computed: {
+    customQuantiles(): Quantile[] {
+      return this.editedStep.quantiles.filter(({ label }) => {
+        return label === undefined;
       });
+    },
 
-      const isValide = validator(quantile);
-      this.errors = validator.errors;
+    basicStatisticsCheckedCount(): number {
+      const statisticsCount = _intersection(this.editedStep.statistics, this.statistics).length;
+      const quantileCount = _intersection(
+        this.editedStep.quantiles.map(({ label }) => label),
+        this.quantiles.map(({ label }) => label),
+      ).length;
+      return statisticsCount + quantileCount;
+    },
 
-      if (isValide) {
-        // add quantile into selected one
-        this.editedStep.quantiles.push(quantile);
-        // reinit customQuantilesForm
-        this.customQuantilesForm = {
-          nth: '',
-          order: '',
-        };
+    advancedStatisticsCheckedCount(): number {
+      const statisticsCount = _intersection(
+        this.editedStep.statistics,
+        this.advancedStatistics,
+      ).length;
+      const quantileCount = _intersection(
+        this.editedStep.quantiles.map(({ label }) => label),
+        this.advancedQuantiles.map(({ label }) => label),
+      ).length;
+      return statisticsCount + quantileCount;
+    },
+
+    customQuantilesCheckedCount(): number {
+      return this.customQuantiles.length;
+    },
+  },
+
+  methods: {
+    isStatisticChecked(statistic: Statistics): boolean {
+      return this.editedStep.statistics.includes(statistic);
+    },
+
+    isQuantileChecked(quantile: Quantile): boolean {
+      return (
+        this.editedStep.quantiles.filter(
+          ({ label, nth, order }) =>
+            label === quantile.label && nth === quantile.nth && order === quantile.order,
+        ).length > 0
+      );
+    },
+
+    toogleStatistic(statistic: Statistics) {
+      if (this.isStatisticChecked(statistic)) {
+        this.editedStep.statistics = this.editedStep.statistics.filter((s) => s !== statistic);
+      } else {
+        this.editedStep.statistics.push(statistic);
       }
-    }
-  }
-}
+    },
+
+    toogleQuantile(quantile: Quantile) {
+      // parse quantile
+      quantile = {
+        nth: quantile.nth,
+        order: quantile.order,
+        label: quantile.label,
+      };
+      if (this.isQuantileChecked(quantile)) {
+        // remove quantile from selected one
+        this.editedStep.quantiles = this.editedStep.quantiles.filter(
+          ({ label, nth, order }) =>
+            label !== quantile.label || nth !== quantile.nth || order !== quantile.order,
+        );
+      } else {
+        // compile schema errors
+        const validator = new Ajv({ allErrors: true, strictSchema: false }).compile({
+          type: 'object',
+          required: ['nth', 'order'],
+          properties: {
+            label: { type: 'string' },
+            nth: {
+              type: 'number',
+              minimum: 1,
+            },
+            order: { type: 'number', minimum: (quantile.nth || 0) + 1 },
+          },
+        });
+
+        const isValide = validator(quantile);
+        this.errors = validator.errors;
+
+        if (isValide) {
+          // add quantile into selected one
+          this.editedStep.quantiles.push(quantile);
+          // reinit customQuantilesForm
+          this.customQuantilesForm = {
+            nth: '',
+            order: '',
+          };
+        }
+      }
+    },
+  },
+});
 </script>
 <style lang="scss" scoped>
 @import '../../styles/_variables';

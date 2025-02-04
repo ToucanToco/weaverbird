@@ -68,12 +68,12 @@
           >
             <Calendar
               v-if="isFixedTabSelected"
-              v-model="currentTabValue"
+              v-model="currentTabValue as Date | undefined"
               :availableDates="bounds"
             />
             <RelativeDateForm
               v-else
-              v-model="currentTabValue"
+              v-model="currentTabValue as RelativeDate | undefined"
               :availableVariables="relativeAvailableVariables"
               :variableDelimiters="variableDelimiters"
               :trusted-variable-delimiters="trustedVariableDelimiters"
@@ -110,7 +110,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import { POPOVER_ALIGN } from '@/components/constants';
 import Calendar from '@/components/DatePicker/Calendar.vue';
@@ -119,11 +119,11 @@ import Popover from '@/components/Popover.vue';
 import AdvancedVariableModal from '@/components/stepforms/widgets/VariableInputs/AdvancedVariableModal.vue';
 import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';
 import Tabs from '@/components/Tabs.vue';
+import type { CustomDate, DateRange, RelativeDate } from '@/lib/dates';
 import { dateToString, isRelativeDate, relativeDateToString } from '@/lib/dates';
-import type { CustomDate, DateRange } from '@/lib/dates';
 import { sendAnalytics } from '@/lib/send-analytics';
-import { extractVariableIdentifier, isTrustedVariable } from '@/lib/variables';
 import type { AvailableVariable, VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { extractVariableIdentifier, isTrustedVariable } from '@/lib/variables';
 
 import CustomVariableList from './CustomVariableList.vue';
 import RelativeDateForm from './RelativeDateForm.vue';
@@ -131,8 +131,9 @@ import RelativeDateForm from './RelativeDateForm.vue';
  * This component allow to select a variable or to switch between tabs and select a date on a Fixed (Calendar) or Relative way (RelativeDateForm),
  * each tab value is keeped in memory to avoid user to loose data when switching between tabs
  */
-@Component({
+export default defineComponent({
   name: 'new-date-input',
+
   components: {
     CustomVariableList,
     Popover,
@@ -143,214 +144,192 @@ import RelativeDateForm from './RelativeDateForm.vue';
     AdvancedVariableModal,
     VariableTag,
   },
-})
-export default class NewDateInput extends Vue {
-  @Prop({ default: '' })
-  value!: string | CustomDate;
 
-  @Prop({ default: () => [] })
-  availableVariables!: VariablesBucket;
+  props: {
+    value: {
+      type: [String, Object, Date] as PropType<string | CustomDate>,
+      default: '',
+    },
+    availableVariables: {
+      type: Array as PropType<VariablesBucket>,
+      default: () => [],
+    },
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters>,
+      default: () => ({ start: '', end: '' }),
+    },
+    trustedVariableDelimiters: {
+      type: Object as PropType<VariableDelimiters>,
+      default: undefined,
+    },
+    enableCustom: {
+      type: Boolean,
+      default: true,
+    },
+    bounds: {
+      type: Object as PropType<DateRange>,
+      default: () => ({ start: undefined, end: undefined }),
+    },
+  },
 
-  @Prop({ default: () => ({ start: '', end: '' }) })
-  variableDelimiters!: VariableDelimiters;
+  data() {
+    return {
+      isEditorOpened: false,
+      isEditingCustomVariable: false, // force to expand custom part of editor
+      alignLeft: POPOVER_ALIGN.LEFT as string,
+      selectedTab: 'Relative',
+      isAdvancedVariableModalOpened: false,
+      // keep each tab value in memory to enable to switch between tabs without loosing content
+      tabsValues: {
+        Fixed: undefined, // Date should be empty on init because we can have bounds so a defined date could be out of bounds
+        Relative: { date: '', quantity: 1, duration: 'year', operator: 'until' },
+      } as Record<string, CustomDate | undefined>,
+    };
+  },
 
-  @Prop({ default: undefined })
-  trustedVariableDelimiters!: VariableDelimiters;
+  computed: {
+    tabs(): string[] {
+      return ['Relative', 'Fixed'];
+    },
 
-  @Prop({ default: true })
-  enableCustom!: boolean;
+    relativeAvailableVariables(): VariablesBucket {
+      return this.availableVariables.filter((v) => v.value instanceof Date);
+    },
 
-  @Prop({ default: () => ({ start: undefined, end: undefined }) })
-  bounds!: DateRange;
+    currentTabValue: {
+      get(): RelativeDate | Date | undefined {
+        return this.tabsValues[this.selectedTab];
+      },
+      set(value: RelativeDate | Date | undefined) {
+        this.tabsValues[this.selectedTab] = value;
+      },
+    },
 
-  isEditorOpened = false;
-  isEditingCustomVariable = false; // force to expand custom part of editor
-  alignLeft: string = POPOVER_ALIGN.LEFT;
-  selectedTab = 'Relative';
-
-  get tabs(): string[] {
-    return ['Relative', 'Fixed'];
-  }
-
-  get relativeAvailableVariables(): VariablesBucket {
-    return this.availableVariables.filter((v) => v.value instanceof Date);
-  }
-
-  // keep each tab value in memory to enable to switch between tabs without loosing content
-  tabsValues: Record<string, CustomDate | undefined> = {
-    Fixed: undefined, // Date should be empty on init because we can have bounds so a defined date could be out of bounds, moreover, we would have no disabled button otherwise
-    Relative: { date: '', quantity: 1, duration: 'year', operator: 'until' },
-  };
-
-  get currentTabValue(): CustomDate | undefined {
-    return this.tabsValues[this.selectedTab];
-  }
-
-  set currentTabValue(value: CustomDate | undefined) {
-    this.tabsValues[this.selectedTab] = value;
-  }
-
-  get variable(): AvailableVariable | undefined {
-    if (typeof this.value !== 'string') return undefined;
-    const identifier = extractVariableIdentifier(
-      this.value,
-      this.variableDelimiters,
-      this.trustedVariableDelimiters,
-    );
-    return this.availableVariables.find((v) => v.identifier === identifier);
-  }
-
-  get advancedVariable(): string | undefined {
-    if (typeof this.value !== 'string') return undefined;
-    const identifier = extractVariableIdentifier(
-      this.value,
-      this.variableDelimiters,
-      this.trustedVariableDelimiters,
-    );
-    return identifier && !this.variable ? this.value : undefined;
-  }
-
-  get selectedVariables(): string {
-    // needed to select the custom button in CustomVariableList
-    if (this.isCustom) {
-      return 'custom';
-    } else {
-      return this.variable?.identifier ?? '';
-    }
-  }
-
-  get hasVariables(): boolean {
-    return this.availableVariables.length > 0;
-  }
-
-  get hasCustomValue(): boolean {
-    // value is custom if not undefined and not a preset variable
-    return (this.value && !this.variable && !this.advancedVariable) as boolean;
-  }
-
-  get isCustom(): boolean {
-    return this.hasCustomValue || this.isEditingCustomVariable;
-  }
-
-  get isFixedTabSelected(): boolean {
-    return this.selectedTab === 'Fixed';
-  }
-
-  get label(): string {
-    if (this.value instanceof Date) {
-      return dateToString(this.value);
-    } else if (isRelativeDate(this.value)) {
-      return relativeDateToString(
+    variable(): AvailableVariable | undefined {
+      if (typeof this.value !== 'string') return undefined;
+      const identifier = extractVariableIdentifier(
         this.value,
-        this.relativeAvailableVariables,
         this.variableDelimiters,
         this.trustedVariableDelimiters,
       );
-    } else {
-      return 'Select a date';
-    }
-  }
+      return this.availableVariables.find((v) => v.identifier === identifier);
+    },
 
-  get hasInvalidTabValue(): boolean {
-    if (this.isFixedTabSelected) {
-      return !(this.currentTabValue instanceof Date);
-    } else {
-      return !isRelativeDate(this.currentTabValue) || !this.currentTabValue.date;
-    }
-  }
+    advancedVariable(): string | undefined {
+      if (typeof this.value !== 'string') return undefined;
+      const identifier = extractVariableIdentifier(
+        this.value,
+        this.variableDelimiters,
+        this.trustedVariableDelimiters,
+      );
+      return identifier && !this.variable ? this.value : undefined;
+    },
 
-  created() {
-    this.initTabs();
-  }
-
-  // init tabs by selecting correct tab and value based on prop value
-  initTabs(): void {
-    if (this.value instanceof Date) {
-      this.tabsValues.Fixed = this.value;
-      this.selectTab('Fixed');
-    } else if (isRelativeDate(this.value)) {
-      this.tabsValues.Relative = this.value;
-      this.selectTab('Relative');
-    }
-  }
-
-  openEditor(): void {
-    this.isEditorOpened = true;
-  }
-
-  closeEditor(): void {
-    this.isEditorOpened = false;
-    this.isEditingCustomVariable = false;
-  }
-
-  setVariableDelimiters(value: string): string {
-    const retrieveVariableDelimiters = (
-      variableIdentifier: string,
-    ): VariableDelimiters | undefined => {
-      const variable = this.availableVariables.find((v) => v.identifier === variableIdentifier);
-      if (!variable) {
-        return; // if variable is unfound we don't want to display any delimiters
-      } else if (isTrustedVariable(variable)) {
-        return this.trustedVariableDelimiters;
+    selectedVariables(): string {
+      // needed to select the custom button in CustomVariableList
+      if (this.isCustom) {
+        return 'custom';
+      } else {
+        return this.variable?.identifier ?? '';
       }
-      return this.variableDelimiters;
-    };
+    },
 
-    const delimiters = retrieveVariableDelimiters(value);
-    if (!delimiters) return value;
-    return `${delimiters.start}${value}${delimiters.end}`;
-  }
+    hasVariables(): boolean {
+      return this.availableVariables.length > 0;
+    },
 
-  selectVariable(value: string): void {
-    const variableWithDelimiters = this.setVariableDelimiters(value);
-    this.$emit('input', variableWithDelimiters);
-    this.closeEditor();
-    sendAnalytics({ name: 'Date input - Select variable', value });
-  }
+    hasCustomValue(): boolean {
+      // value is custom if not undefined and not a preset variable
+      return (this.value && !this.variable && !this.advancedVariable) as boolean;
+    },
 
-  editCustomVariable(): void {
-    this.isEditingCustomVariable = true;
-  }
+    isCustom(): boolean {
+      return this.hasCustomValue || this.isEditingCustomVariable;
+    },
 
-  saveCustomVariable(): void {
-    this.$emit('input', this.currentTabValue);
-    if (isRelativeDate(this.currentTabValue)) {
-      sendAnalytics({ name: 'Date input - Select relative date', value: this.currentTabValue });
-    }
-    this.closeEditor();
-  }
+    isFixedTabSelected(): boolean {
+      return this.selectedTab === 'Fixed';
+    },
 
-  selectTab(tab: string): void {
-    this.selectedTab = tab;
-  }
+    hasInvalidTabValue(): boolean {
+      if (this.isFixedTabSelected) {
+        return !this.currentTabValue;
+      }
+      return !isRelativeDate(this.currentTabValue) || !this.currentTabValue.date;
+    },
 
-  resetValue(): void {
-    this.$emit('input', undefined);
-    this.closeEditor();
-  }
+    label(): string {
+      if (this.value instanceof Date) {
+        return dateToString(this.value);
+      } else if (isRelativeDate(this.value)) {
+        return relativeDateToString(
+          this.value,
+          this.relativeAvailableVariables,
+          this.variableDelimiters,
+          this.trustedVariableDelimiters,
+        );
+      } else {
+        return 'Select a date';
+      }
+    },
+  },
 
-  // Advanced variable
-  isAdvancedVariableModalOpened = false;
+  methods: {
+    openEditor() {
+      this.isEditorOpened = true;
+      this.isEditingCustomVariable = false;
+    },
 
-  openAdvancedVariableModal() {
-    this.closeEditor();
-    this.isAdvancedVariableModalOpened = true;
-  }
+    closeEditor() {
+      this.isEditorOpened = false;
+      this.isEditingCustomVariable = false;
+    },
 
-  closeAdvancedVariableModal() {
-    this.isAdvancedVariableModalOpened = false;
-  }
+    resetValue() {
+      this.$emit('input', undefined);
+    },
 
-  /**
-   * Emit the choosen advanced variable and close the modal
-   */
-  chooseAdvancedVariable(variableIdentifier: string) {
-    const variableWithDelimiters = `${this.variableDelimiters.start} ${variableIdentifier} ${this.variableDelimiters.end}`;
-    this.$emit('input', variableWithDelimiters);
-    this.closeAdvancedVariableModal();
-    sendAnalytics({ name: 'Date input - Select advanced variable', value: variableIdentifier });
-  }
-}
+    selectTab(tab: string) {
+      this.selectedTab = tab;
+    },
+
+    selectVariable(variableIdentifier: string) {
+      const variable = this.availableVariables.find((v) => v.identifier === variableIdentifier);
+      const attendedVariableDelimiters = isTrustedVariable(variable)
+        ? this.trustedVariableDelimiters
+        : this.variableDelimiters;
+      const value = `${attendedVariableDelimiters.start}${variableIdentifier}${attendedVariableDelimiters.end}`;
+      this.$emit('input', value);
+      this.closeEditor();
+    },
+
+    editCustomVariable() {
+      this.isEditingCustomVariable = true;
+    },
+
+    saveCustomVariable() {
+      if (!this.hasInvalidTabValue) {
+        this.$emit('input', this.currentTabValue);
+        this.closeEditor();
+      }
+    },
+
+    openAdvancedVariableModal() {
+      this.isAdvancedVariableModalOpened = true;
+    },
+
+    closeAdvancedVariableModal() {
+      this.isAdvancedVariableModalOpened = false;
+    },
+
+    chooseAdvancedVariable(value: string) {
+      this.$emit('input', value);
+      this.closeAdvancedVariableModal();
+      this.closeEditor();
+      sendAnalytics('variableInput');
+    },
+  },
+});
 </script>
 
 <style scoped lang="scss">

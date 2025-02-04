@@ -59,18 +59,16 @@
   </div>
 </template>
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import MultiInputTextWidget from '@/components/stepforms/widgets/MultiInputText.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import type { PipelineStepName, PivotStep } from '@/lib/steps';
-
 import BaseStepForm from './StepForm.vue';
 
-@Component({
+export default defineComponent({
   name: 'pivot-step-form',
   components: {
     ColumnPicker,
@@ -78,68 +76,73 @@ import BaseStepForm from './StepForm.vue';
     MultiInputTextWidget,
     MultiselectWidget,
   },
-})
-export default class PivotStepForm extends BaseStepForm<PivotStep> {
-  stepname: PipelineStepName = 'pivot';
-
-  @Prop({
-    type: Object,
-    default: () => ({
-      name: 'pivot',
-      index: [],
-      columnToPivot: '',
-      valueColumn: '',
-      aggFunction: 'sum',
-    }),
-  })
-  declare initialStepValue: PivotStep;
-
-  readonly title: string = 'Pivot column';
-  aggregationFunctions: PivotStep['aggFunction'][] = ['sum', 'avg', 'count', 'min', 'max'];
-
-  get stepSelectedColumn() {
-    return this.editedStep.columnToPivot;
-  }
-
-  set stepSelectedColumn(colname: string | null) {
-    if (colname === null) {
-      throw new Error('should not try to set null on percentage "value column" field');
-    }
-    if (colname !== null) {
-      this.editedStep.columnToPivot = colname;
-    }
-  }
-
-  validate() {
-    const errors = this.$$super.validate();
-    if (errors !== null) {
-      return errors;
-    }
-    if (
-      this.editedStep.columnToPivot === this.editedStep.valueColumn ||
-      this.editedStep.index.includes(this.editedStep.columnToPivot)
-    ) {
-      return [
-        {
-          params: [],
-          schemaPath: '.columnToPivot',
-          keyword: 'columnNameConflict',
-          dataPath: '.columnToPivot',
-          message: `Column name ${this.editedStep.columnToPivot} is used at least twice but should be unique`,
-        },
-      ];
-    } else if (this.editedStep.index.includes(this.editedStep.valueColumn)) {
-      return [
-        {
-          params: [],
-          schemaPath: '.valueColumn',
-          keyword: 'columnNameConflict',
-          dataPath: '.valueColumn',
-          message: `Column name ${this.editedStep.valueColumn} is used at least twice but should be unique`,
-        },
-      ];
-    }
-    return null;
-  }
-}
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<PivotStep>,
+      default: () => ({
+        name: 'pivot',
+        index: [],
+        columnToPivot: '',
+        valueColumn: '',
+        aggFunction: 'sum',
+      }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'pivot' as PipelineStepName,
+      title: 'Pivot column' as string,
+      aggregationFunctions: ['sum', 'avg', 'count', 'min', 'max'] as PivotStep['aggFunction'][],
+    };
+  },
+  computed: {
+    stepSelectedColumn: {
+      get(): string {
+        return this.editedStep.columnToPivot;
+      },
+      set(colname: string | null) {
+        if (colname === null) {
+          throw new Error('should not try to set null on percentage "value column" field');
+        }
+        if (colname !== null) {
+          this.editedStep.columnToPivot = colname;
+        }
+      },
+    },
+  },
+  methods: {
+    validate() {
+      const errors = this.$$super.validate();
+      if (errors !== null) {
+        return errors;
+      }
+      if (
+        this.editedStep.columnToPivot === this.editedStep.valueColumn ||
+        this.editedStep.index.includes(this.editedStep.columnToPivot)
+      ) {
+        return [
+          {
+            params: [],
+            schemaPath: '.columnToPivot',
+            keyword: 'columnNameConflict',
+            dataPath: '.columnToPivot',
+            message: `Column name ${this.editedStep.columnToPivot} is used at least twice but should be unique`,
+          },
+        ];
+      } else if (this.editedStep.index.includes(this.editedStep.valueColumn)) {
+        return [
+          {
+            params: [],
+            schemaPath: '.valueColumn',
+            keyword: 'columnNameConflict',
+            dataPath: '.valueColumn',
+            message: `Column name ${this.editedStep.valueColumn} is used at least twice but should be unique`,
+          },
+        ];
+      }
+      return null;
+    },
+  },
+});
 </script>

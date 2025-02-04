@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import VariableList from '@/components/stepforms/widgets/VariableInputs/VariableList.vue';
 import VariableListOption from '@/components/stepforms/widgets/VariableInputs/VariableListOption.vue';
@@ -33,41 +33,55 @@ import type { VariablesBucket } from '@/lib/variables';
 /**
  * This component list all the available variables to use as value in DateInputs
  */
-@Component({
+export default defineComponent({
   name: 'custom-variable-list',
-  components: { VariableList, VariableListOption },
-})
-export default class CustomVariableList extends Vue {
-  @Prop({ default: () => '' })
-  selectedVariables!: string;
 
-  @Prop({ default: () => [] })
-  availableVariables!: VariablesBucket;
+  components: {
+    VariableList,
+    VariableListOption
+  },
 
-  @Prop({ default: true })
-  enableCustom!: boolean;
+  props: {
+    selectedVariables: {
+      type: String,
+      default: '',
+    },
+    availableVariables: {
+      type: Array as PropType<VariablesBucket>,
+      default: () => [],
+    },
+    enableCustom: {
+      type: Boolean,
+      default: true,
+    },
+    enableAdvancedVariable: {
+      type: Boolean,
+      default: true,
+    },
+    customLabel: {
+      type: String,
+      default: 'Custom',
+    },
+    showOnlyLabel: {
+      type: Boolean,
+      default: true,
+    },
+  },
 
-  @Prop({ default: () => true })
-  enableAdvancedVariable!: boolean;
+  methods: {
+    chooseVariable(variableIdentifier: string) {
+      this.$emit('input', variableIdentifier);
+    },
 
-  @Prop({ default: () => 'Custom', type: String })
-  customLabel!: string;
+    selectCustomVariable() {
+      this.$emit('selectCustomVariable');
+    },
 
-  @Prop({ default: true })
-  showOnlyLabel!: boolean;
-
-  chooseVariable(variableIdentifier: string) {
-    this.$emit('input', variableIdentifier);
-  }
-
-  selectCustomVariable() {
-    this.$emit('selectCustomVariable');
-  }
-
-  addAdvancedVariable() {
-    this.$emit('addAdvancedVariable');
-  }
-}
+    addAdvancedVariable() {
+      this.$emit('addAdvancedVariable');
+    },
+  },
+});
 </script>
 
 <style scoped lang="scss">

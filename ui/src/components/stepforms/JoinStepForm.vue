@@ -49,11 +49,10 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
-import JoinStepFormSchema from '@/components/stepforms/schemas/join';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
+import JoinStepFormSchema from '@/components/stepforms/schemas/join';
 import JoinColumns from '@/components/stepforms/widgets/JoinColumns.vue';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
 import {
@@ -62,9 +61,7 @@ import {
   type PipelineStepName,
   type ReferenceToExternalQuery,
 } from '@/lib/steps';
-
 import BaseStepForm from './StepForm.vue';
-import Multiselect from './widgets/Multiselect.vue';
 
 const joinTypes = JoinStepFormSchema.properties.type.enum as JoinStep['type'][];
 
@@ -75,83 +72,84 @@ interface DropdownOption {
   tooltip?: string;
 }
 
-@Component({
+export default defineComponent({
   name: 'join-step-form',
   components: {
     AutocompleteWidget,
     ListWidget,
-    Multiselect,
   },
-})
-export default class JoinStepForm extends BaseStepForm<JoinStep> {
-  stepname: PipelineStepName = 'join';
-
-  @Prop({
-    type: Object,
-    default: () => ({ name: 'join', rightPipeline: '', type: joinTypes[0], on: [['', '']] }),
-  })
-  declare initialStepValue: JoinStep;
-
-  readonly title: string = 'Join datasets';
-  joinColumns = JoinColumns;
-  joinTypes: JoinStep['type'][] = joinTypes;
-
-  get rightPipeline(): DropdownOption {
-    const domain = this.editedStep.rightPipeline;
-    if (isReferenceToExternalQuery(domain)) {
-      return {
-        label: this.availableDomains.find((d) => d.uid === domain.uid)?.name ?? domain.uid,
-        trackBy: domain,
-      };
-    } else {
-      return {
-        label: this.editedStep.rightPipeline as string,
-        trackBy: this.editedStep.rightPipeline as string,
-      };
-    }
-  }
-
-  set rightPipeline(value: DropdownOption) {
-    /* istanbul ignore next */
-    this.editedStep.rightPipeline = value.trackBy;
-  }
-
-  get on() {
-    if (this.editedStep.on.length) {
-      return this.editedStep.on;
-    } else {
-      return [[]];
-    }
-  }
-
-  set on(newval) {
-    this.editedStep.on = [...newval];
-  }
-
-  get options(): object[] {
-    return this.availableDomains.map((d) => {
-      const isDisabled = !!this.unjoinableDomains.find((domain) => domain.uid === d.uid);
-      return {
-        label: d.name,
-        trackBy: { type: 'ref', uid: d.uid },
-        ...(isDisabled && {
-          disabled: true,
-          tooltip: 'This dataset cannot be combined with the actual one',
-        }),
-      };
-    });
-  }
-
-  rightColumnNames: string[] | null | undefined = null;
-
-  async updateRightColumnNames(pipelineNameOrDomain: string | ReferenceToExternalQuery) {
-    this.rightColumnNames = await this.getColumnNamesFromPipeline(pipelineNameOrDomain);
-  }
-
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<JoinStep>,
+      default: () => ({ name: 'join', rightPipeline: '', type: joinTypes[0], on: [['', '']] }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'join' as PipelineStepName,
+      title: 'Join datasets',
+      joinColumns: JoinColumns,
+      joinTypes: joinTypes,
+      rightColumnNames: null as string[] | null | undefined,
+    };
+  },
+  computed: {
+    rightPipeline: {
+      get(): DropdownOption {
+        const domain = this.editedStep.rightPipeline;
+        if (isReferenceToExternalQuery(domain)) {
+          return {
+            label: this.availableDomains.find((d) => d.uid === domain.uid)?.name ?? domain.uid,
+            trackBy: domain,
+          };
+        } else {
+          return {
+            label: this.editedStep.rightPipeline as string,
+            trackBy: this.editedStep.rightPipeline as string,
+          };
+        }
+      },
+      set(value: DropdownOption) {
+        /* istanbul ignore next */
+        this.editedStep.rightPipeline = value.trackBy;
+      }
+    },
+    on: {
+      get() {
+        if (this.editedStep.on.length) {
+          return this.editedStep.on;
+        } else {
+          return [[]];
+        }
+      },
+      set(newval) {
+        this.editedStep.on = [...newval];
+      }
+    },
+    options(): object[] {
+      return this.availableDomains.map((d) => {
+        const isDisabled = !!this.unjoinableDomains.find((domain) => domain.uid === d.uid);
+        return {
+          label: d.name,
+          trackBy: { type: 'ref', uid: d.uid },
+          ...(isDisabled && {
+            disabled: true,
+            tooltip: 'This dataset cannot be combined with the actual one',
+          }),
+        };
+      });
+    },
+  },
+  methods: {
+    async updateRightColumnNames(pipelineNameOrDomain: string | ReferenceToExternalQuery) {
+      this.rightColumnNames = await this.getColumnNamesFromPipeline(pipelineNameOrDomain);
+    },
+  },
   created() {
     if (this.rightPipeline.trackBy) {
       this.updateRightColumnNames(this.rightPipeline.trackBy);
     }
-  }
-}
+  },
+});
 </script>

@@ -30,39 +30,48 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
+import type { DuplicateColumnStep, PipelineStepName } from '@/lib/steps';
+import BaseStepForm from './StepForm.vue';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import type { DuplicateColumnStep, PipelineStepName } from '@/lib/steps';
 
-import BaseStepForm from './StepForm.vue';
-
-@Component({
+export default defineComponent({
   name: 'duplicate-step-form',
   components: {
     ColumnPicker,
     InputTextWidget,
   },
-})
-export default class DuplicateColumnForm extends BaseStepForm<DuplicateColumnStep> {
-  stepname: PipelineStepName = 'duplicate';
-
-  @Prop({ type: Object, default: () => ({ name: 'duplicate', column: '', newColumnName: '' }) })
-  declare initialStepValue: DuplicateColumnStep;
-
-  readonly title: string = 'Duplicate column';
-
-  get stepSelectedColumn() {
-    return this.editedStep.column;
-  }
-
-  set stepSelectedColumn(colname: string | null) {
-    if (colname === null) {
-      throw new Error('should not try to set null on duplicate "column" field');
-    }
-    this.editedStep.column = colname;
-  }
-}
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<DuplicateColumnStep>,
+      default: () => ({ name: 'duplicate', column: '', newColumnName: '' }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'duplicate' as PipelineStepName,
+      title: 'Duplicate column' as string,
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      },
+    };
+  },
+  computed: {
+    stepSelectedColumn: {
+      get() {
+        return this.editedStep.column;
+      },
+      set(colname: string | null) {
+        if (colname === null) {
+          throw new Error('should not try to set null on duplicate "column" field');
+        }
+        this.editedStep.column = colname;
+      },
+    },
+  },
+});
 </script>

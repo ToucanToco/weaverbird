@@ -31,29 +31,47 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
+import type { ConvertStep, PipelineStepName } from '@/lib/steps';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
-import type { ConvertStep, PipelineStepName } from '@/lib/steps';
-
 import BaseStepForm from './StepForm.vue';
 
-@Component({
+type DataType = 'integer' | 'float' | 'text' | 'date' | 'boolean';
+
+export default defineComponent({
   name: 'convert-step-form',
   components: {
     AutocompleteWidget,
     MultiselectWidget,
   },
-})
-export default class ConvertStepForm extends BaseStepForm<ConvertStep> {
-  stepname: PipelineStepName = 'convert';
-
-  @Prop({ type: Object, default: () => ({ name: 'convert', columns: [], dataType: '' }) })
-  declare initialStepValue: ConvertStep;
-
-  readonly title: string = 'Convert Columns Data Types';
-  dataTypes = ['integer', 'float', 'text', 'date', 'boolean'];
-}
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<ConvertStep>,
+      default: () => ({
+        name: 'convert',
+        columns: [],
+        dataType: ''
+      }),
+    },
+  },
+  data(): {
+    stepname: PipelineStepName;
+    title: string;
+    dataTypes: DataType[];
+    editedStep: ConvertStep;
+  } {
+    return {
+      stepname: 'convert',
+      title: 'Convert Columns Data Types',
+      dataTypes: ['integer', 'float', 'text', 'date', 'boolean'],
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      },
+    };
+  },
+});
 </script>
