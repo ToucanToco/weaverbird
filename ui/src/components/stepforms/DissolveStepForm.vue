@@ -65,8 +65,8 @@ export default defineComponent({
   extends: BaseStepForm,
   props: {
     initialStepValue: {
-      type: Object as PropType<DissolveStep>,
-      default: () => ({ name: 'dissolve', groups: [], includeNulls: false, aggregations: [] }),
+      type: Object as PropType<Partial<DissolveStep>>,
+      default: (): Partial<DissolveStep> => ({ name: 'dissolve', groups: [], includeNulls: false, aggregations: [] }),
     },
   },
   data() {

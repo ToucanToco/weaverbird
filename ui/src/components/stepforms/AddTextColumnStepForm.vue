@@ -53,7 +53,7 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<AddTextColumnStep>,
-      default: () => ({
+      default: (): AddTextColumnStep => ({
         name: 'text',
         newColumn: '',
         text: ''

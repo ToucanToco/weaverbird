@@ -47,7 +47,11 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<DuplicateColumnStep>,
-      default: () => ({ name: 'duplicate', column: '', newColumnName: '' }),
+      default: (): DuplicateColumnStep => ({
+        name: 'duplicate',
+        column: '',
+        newColumnName: '',
+      }),
     },
   },
   data() {

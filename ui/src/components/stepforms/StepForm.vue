@@ -37,23 +37,23 @@ export default defineComponent({
 
   props: {
     translator: {
-      type: String,
+      type: String as PropType<string>,
       default: 'pandas',
     },
     isStepCreation: {
-      type: Boolean,
+      type: Boolean as PropType<boolean>,
       default: true,
     },
     initialStepValue: {
-      type: Object,
+      type: Object as PropType<Partial<PipelineStep>>,
       default: null,
     },
     stepFormDefaults: {
-      type: Object,
+      type: Object as PropType<Partial<PipelineStep>>,
       default: undefined,
     },
     backendError: {
-      type: String,
+      type: String as PropType<string>,
       default: undefined,
     },
     columnTypes: {
@@ -168,7 +168,7 @@ export default defineComponent({
     },
 
     validate() {
-      const ret = this.validator({ ...this.editedStep });
+      const ret = this.validator({ ...this.editedStep } as PipelineStep);
       if (ret === false) {
         return this.validator.errors;
       }

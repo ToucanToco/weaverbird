@@ -34,7 +34,7 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<DomainStep>,
-      default: () => ({
+      default: (): DomainStep => ({
         name: 'domain',
         domain: '',
       }),

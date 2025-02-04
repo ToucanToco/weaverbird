@@ -68,12 +68,12 @@
           >
             <Calendar
               v-if="isFixedTabSelected"
-              v-model="currentTabValue as Date | undefined"
+              v-model="currentTabValue"
               :availableDates="bounds"
             />
             <RelativeDateForm
               v-else
-              v-model="currentTabValue as RelativeDate | undefined"
+              v-model="currentTabValue"
               :availableVariables="relativeAvailableVariables"
               :variableDelimiters="variableDelimiters"
               :trusted-variable-delimiters="trustedVariableDelimiters"

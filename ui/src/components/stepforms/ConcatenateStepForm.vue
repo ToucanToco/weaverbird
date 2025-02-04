@@ -64,11 +64,11 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<ConcatenateStep>,
-      default: () => ({
+      default: (): ConcatenateStep => ({
         name: 'concatenate',
         columns: [''],
         separator: '',
-        newColumnName: ''
+        newColumnName: '',
       }),
     },
   },

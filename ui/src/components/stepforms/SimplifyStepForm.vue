@@ -32,8 +32,8 @@ export default defineComponent({
   extends: BaseStepForm,
   props: {
     initialStepValue: {
-      type: Object as PropType<SimplifyStep>,
-      default: () => ({
+      type: Object as PropType<Partial<SimplifyStep>>,
+      default: (): Partial<SimplifyStep> => ({
         name: 'simplify',
         tolerance: 1,
       }),

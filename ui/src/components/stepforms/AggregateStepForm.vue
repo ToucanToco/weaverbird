@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, type PropType } from 'vue';
 
 import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 import type { AggregateStep, Aggregation, PipelineStepName } from '@/lib/steps';
@@ -71,8 +71,8 @@ export default defineComponent({
 
   props: {
     initialStepValue: {
-      type: Object as () => AggregateStep,
-      default: () => ({
+      type: Object as PropType<AggregateStep>,
+      default: (): AggregateStep => ({
         name: 'aggregate',
         on: [],
         aggregations: [],

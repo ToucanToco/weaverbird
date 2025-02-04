@@ -78,8 +78,8 @@ export default defineComponent({
   extends: BaseStepForm,
   props: {
     initialStepValue: {
-      type: Object as PropType<ComputeDurationStep>,
-      default: () => ({
+      type: Object as PropType<Partial<ComputeDurationStep>>,
+      default: (): Partial<ComputeDurationStep> => ({
         name: 'duration',
         newColumnName: '',
         startDateColumn: '',

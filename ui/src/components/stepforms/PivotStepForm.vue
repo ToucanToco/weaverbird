@@ -80,7 +80,7 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<PivotStep>,
-      default: () => ({
+      default: (): PivotStep => ({
         name: 'pivot',
         index: [],
         columnToPivot: '',

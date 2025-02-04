@@ -50,10 +50,11 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<ConvertStep>,
-      default: () => ({
+      default: (): ConvertStep => ({
         name: 'convert',
         columns: [],
-        dataType: ''
+        //@ts-expect-error We do not provide a default value for dataType
+        dataType: '',
       }),
     },
   },

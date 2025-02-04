@@ -42,9 +42,13 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<FilterStep>,
-      default: () => ({
+      default: (): FilterStep => ({
         name: 'filter',
-        condition: { column: '', value: '', operator: 'eq' },
+        condition: {
+          column: '',
+          operator: 'eq',
+          value: '',
+        },
       }),
     },
   },

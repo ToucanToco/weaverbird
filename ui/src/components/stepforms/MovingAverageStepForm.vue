@@ -97,11 +97,10 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<MovingAverageStep>,
-      default: () => ({
+      default: (): Partial<MovingAverageStep> => ({
         name: 'movingaverage',
         valueColumn: '',
         columnToSort: '',
-        movingWindow: null,
       }),
     },
   },

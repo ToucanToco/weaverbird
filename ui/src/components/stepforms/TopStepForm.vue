@@ -77,8 +77,8 @@ export default defineComponent({
   extends: BaseStepForm,
   props: {
     initialStepValue: {
-      type: Object as PropType<TopStep>,
-      default: () => ({ name: 'top', rankOn: '', sort: 'desc' }),
+      type: Object as PropType<Partial<TopStep>>,
+      default: (): Partial<TopStep> => ({ name: 'top', rankOn: '', sort: 'desc' }),
     },
   },
   data() {

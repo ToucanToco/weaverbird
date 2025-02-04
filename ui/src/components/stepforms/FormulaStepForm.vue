@@ -49,7 +49,11 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<FormulaStep>,
-      default: () => ({ name: 'formula', newColumn: '', formula: '' }),
+      default: (): FormulaStep => ({
+        name: 'formula',
+        newColumn: '',
+        formula: '',
+      }),
     },
   },
   data() {

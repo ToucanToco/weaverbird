@@ -47,7 +47,9 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<FillnaStep>,
-      default: () => ({ name: 'fillna', column: undefined, value: '', columns: [] }),
+      default: (): FillnaStep => ({
+        name: 'fillna', column: undefined, value: '', columns: []
+      }),
     },
   },
   data() {

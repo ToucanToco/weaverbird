@@ -82,7 +82,12 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<JoinStep>,
-      default: () => ({ name: 'join', rightPipeline: '', type: joinTypes[0], on: [['', '']] }),
+      default: (): JoinStep => ({
+        name: 'join',
+        rightPipeline: '',
+        type: joinTypes[0],
+        on: [['', '']],
+      }),
     },
   },
   data() {

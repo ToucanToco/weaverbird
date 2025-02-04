@@ -71,8 +71,8 @@ export default defineComponent({
   extends: BaseStepForm,
   props: {
     initialStepValue: {
-      type: Object as PropType<ToDateStep>,
-      default: () => ({ name: 'todate', column: '', format: undefined }),
+      type: Object as PropType<Partial<ToDateStep>>,
+      default: (): Partial<ToDateStep> => ({ name: 'todate', column: '', format: undefined }),
     },
   },
   data() {

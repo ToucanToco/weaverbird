@@ -67,7 +67,7 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<CompareTextStep>,
-      default: () => ({
+      default: (): CompareTextStep => ({
         name: 'comparetext',
         newColumnName: '',
         strCol1: '',

@@ -70,7 +70,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, type PropType } from 'vue';
 
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { setAggregationsNewColumnsInStep } from '@/lib/helpers';
@@ -94,11 +94,11 @@ export default defineComponent({
 
   props: {
     initialStepValue: {
-      type: Object as () => RollupStep,
-      default: () => ({
+      type: Object as PropType<Partial<RollupStep>>,
+      default: (): Partial<RollupStep> => ({
         name: 'rollup',
         hierarchy: [],
-        aggregations: []
+        aggregations: [],
       }),
     },
   },

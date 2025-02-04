@@ -137,8 +137,8 @@ export default defineComponent({
 
   props: {
     initialStepValue: {
-      type: Object as PropType<StatisticsStep>,
-      default: () => ({
+      type: Object as PropType<Partial<StatisticsStep>>,
+      default: (): Partial<StatisticsStep> => ({
         name: 'statistics',
         column: '',
         groupbyColumns: [],

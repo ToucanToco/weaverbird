@@ -53,7 +53,7 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<HierarchyStep>,
-      default: () => ({
+      default: (): HierarchyStep => ({
         name: 'hierarchy',
         hierarchyLevelColumn: 'hierarchy_level',
         hierarchy: [],

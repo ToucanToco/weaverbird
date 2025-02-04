@@ -42,7 +42,7 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<SortStep>,
-      default: () => ({ name: 'sort', columns: [{ column: '', order: 'asc' }] }),
+      default: (): SortStep => ({ name: 'sort', columns: [{ column: '', order: 'asc' }] }),
     },
   },
   data() {

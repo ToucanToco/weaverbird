@@ -58,8 +58,8 @@ export default defineComponent({
   extends: BaseStepForm,
   props: {
     initialStepValue: {
-      type: Object as PropType<ReplaceStep>,
-      default: () => ({ name: 'replace', searchColumn: '', toReplace: [[]] }),
+      type: Object as PropType<Partial<ReplaceStep>>,
+      default: (): Partial<ReplaceStep> => ({ name: 'replace', searchColumn: '', toReplace: [[]] }),
     },
   },
   data() {

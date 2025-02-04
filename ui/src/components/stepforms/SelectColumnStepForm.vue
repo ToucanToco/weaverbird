@@ -36,8 +36,8 @@ export default defineComponent({
   extends: BaseStepForm,
   props: {
     initialStepValue: {
-      type: Object as PropType<SelectStep>,
-      default: () => ({ name: 'select', columns: [] }),
+      type: Object as PropType<Partial<SelectStep>>,
+      default: (): Partial<SelectStep> => ({ name: 'select', columns: [] }),
     },
   },
   data() {

@@ -70,8 +70,8 @@ export default defineComponent({
   extends: BaseStepForm,
   props: {
     initialStepValue: {
-      type: Object as PropType<AddTotalRowsStep>,
-      default: () => ({
+      type: Object as PropType<Partial<AddTotalRowsStep>>,
+      default: (): Partial<AddTotalRowsStep> => ({
         name: 'totals',
         totalDimensions: [],
         aggregations: []

@@ -45,8 +45,8 @@ export default defineComponent({
   extends: BaseStepForm,
   props: {
     initialStepValue: {
-      type: Object as PropType<AppendStep>,
-      default: () => ({
+      type: Object as PropType<Partial<AppendStep>>,
+      default: (): Partial<AppendStep> => ({
         name: 'append',
         pipelines: []
       }),

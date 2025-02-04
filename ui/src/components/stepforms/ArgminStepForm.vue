@@ -59,9 +59,10 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<ArgminStep>,
-      default: () => ({
+      default: (): ArgminStep => ({
         name: 'argmin',
-        column: ''
+        column: '',
+        groups: [],
       }),
     },
   },

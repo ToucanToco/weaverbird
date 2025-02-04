@@ -63,9 +63,9 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<PercentageStep>,
-      default: () => ({
+      default: (): PercentageStep => ({
         name: 'percentage',
-        column: ''
+        column: '',
       }),
     },
   },

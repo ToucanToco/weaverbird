@@ -105,7 +105,7 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<EvolutionStep>,
-      default: () => ({
+      default: (): EvolutionStep => ({
         name: 'evolution',
         dateCol: '',
         valueCol: '',

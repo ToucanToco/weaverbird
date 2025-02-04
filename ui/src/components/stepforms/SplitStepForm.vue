@@ -59,7 +59,7 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<SplitStep>,
-      default: () => ({ name: 'split', column: '', delimiter: '' }),
+      default: (): SplitStep => ({ name: 'split', column: '', delimiter: '' }),
     },
   },
   data() {

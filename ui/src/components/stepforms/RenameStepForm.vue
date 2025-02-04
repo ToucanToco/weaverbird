@@ -47,7 +47,10 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<RenameStep>,
-      default: () => ({ name: 'rename', toRename: [['', '']] }),
+      default: (): Partial<RenameStep> => ({
+        name: 'rename',
+        toRename: [['', '']],
+      }),
     },
   },
   data() {

@@ -36,8 +36,8 @@ export default defineComponent({
   extends: BaseStepForm,
   props: {
     initialStepValue: {
-      type: Object as PropType<DeleteStep>,
-      default: () => ({ name: 'delete', columns: [] }),
+      type: Object as PropType<Partial<DeleteStep>>,
+      default: (): Partial<DeleteStep> => ({ name: 'delete', columns: [] }),
     },
   },
   data() {

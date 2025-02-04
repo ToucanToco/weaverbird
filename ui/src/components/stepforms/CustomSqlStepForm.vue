@@ -42,8 +42,8 @@ export default defineComponent({
 
   props: {
     initialStepValue: {
-      type: Object as PropType<CustomSqlStep>,
-      default: () => ({
+      type: Object as PropType<Partial<CustomSqlStep>>,
+      default: (): Partial<CustomSqlStep> => ({
         name: 'customsql',
         query: 'SELECT * FROM ##PREVIOUS_STEP##'
       }),

@@ -59,9 +59,10 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<ArgmaxStep>,
-      default: () => ({
+      default: (): ArgmaxStep => ({
         name: 'argmax',
-        column: ''
+        column: '',
+        groups: [],
       }),
     },
   },

@@ -33,7 +33,10 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<CustomStep>,
-      default: () => ({ name: 'custom', query: '[{"$match": {"domain": "test"}}]' }),
+      default: (): CustomStep => ({
+        name: 'custom',
+        query: '',
+      }),
     },
   },
   data() {

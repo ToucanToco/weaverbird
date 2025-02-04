@@ -70,7 +70,7 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<AddMissingDatesStep>,
-      default: () => ({
+      default: (): AddMissingDatesStep => ({
         name: 'addmissingdates',
         datesColumn: '',
         datesGranularity: 'day',

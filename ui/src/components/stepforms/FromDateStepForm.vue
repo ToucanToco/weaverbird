@@ -70,7 +70,11 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<FromDateStep>,
-      default: () => ({ name: 'fromdate', column: '', format: '%Y-%m-%d' }),
+      default: (): FromDateStep => ({
+        name: 'fromdate',
+        column: '',
+        format: '%Y-%m-%d',
+      }),
     },
   },
   data() {
