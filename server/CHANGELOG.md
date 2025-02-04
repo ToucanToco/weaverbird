@@ -1,8 +1,15 @@
 # Changelog (weaverbird python package)
 
-## [0.49.0] - 2025-01-29
 
 ## Unreleased
+
+## [0.50.0] - 2025-02-03
+
+### Changed
+
+- Added support for Python 3.13
+
+## [0.49.0] - 2025-01-29
 
 ### Fixed
 
