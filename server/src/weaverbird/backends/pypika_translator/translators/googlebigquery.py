@@ -142,6 +142,8 @@ class GoogleBigQueryTranslator(SQLTranslator):
 
         safe_offset = CustomFunction("SAFE_OFFSET", ["index"])
 
+        splitted_cols_aliases = []
+
         # Sub-optimal, could do that in two sub_queries, one for splitting to a temp array col, and
         # another one to select eveything needed from the array col rather than splitting N times
         def gen_splitted_cols():
@@ -155,13 +157,13 @@ class GoogleBigQueryTranslator(SQLTranslator):
                 #
                 # The IfNull is required because other backends use SPLIT_PART, which will return an
                 # empty string rather than NULL
-                yield functions.IfNull(LiteralValue(f"{split_str}[{safe_offset_str}]"), "").as_(
-                    f"{step.column}_{i + 1}"
-                )
+                splitted_col_alias = f"{step.column}_{i + 1}"
+                splitted_cols_aliases.append(splitted_col_alias)
+                yield functions.IfNull(LiteralValue(f"{split_str}[{safe_offset_str}]"), "").as_(splitted_col_alias)
 
         splitted_cols = list(gen_splitted_cols())
         query: QueryBuilder = prev_step_table.select(*columns, *splitted_cols)
-        return StepContext(query, columns + splitted_cols)
+        return StepContext(query, columns + splitted_cols_aliases)
 
     @classmethod
     def _date_trunc(cls, date_part: str, target_column: Field) -> Term:

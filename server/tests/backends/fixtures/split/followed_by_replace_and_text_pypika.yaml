@@ -1,0 +1,55 @@
+exclude:
+  - mongo
+  - pandas
+  - snowflake
+step:
+  pipeline:
+    - name: convert
+      columns:
+      - brewing_date
+      dataType: text
+    - name: split
+      column: brewing_date
+      delimiter: '-'
+      numberColsToKeep: 2
+    - name: replace
+      searchColumn: brewing_date_2
+      toReplace:
+        - - '01'
+          - 'HELLO'
+    - name: text
+      newColumn: 'bye'
+      text: 'bye'
+    - name: select
+      columns:
+        - brewing_date_2
+        - bye
+expected:
+  schema:
+    pandas_version: 1.5.0
+    fields:
+      - name: brewing_date_2
+        type: string
+      - name: bye
+        type: string
+  data:
+    - brewing_date_2: 'HELLO'
+      bye: 'bye'
+    - brewing_date_2: 'HELLO'
+      bye: 'bye'
+    - brewing_date_2: 'HELLO'
+      bye: 'bye'
+    - brewing_date_2: 'HELLO'
+      bye: 'bye'
+    - brewing_date_2: 'HELLO'
+      bye: 'bye'
+    - brewing_date_2: 'HELLO'
+      bye: 'bye'
+    - brewing_date_2: 'HELLO'
+      bye: 'bye'
+    - brewing_date_2: 'HELLO'
+      bye: 'bye'
+    - brewing_date_2: 'HELLO'
+      bye: 'bye'
+    - brewing_date_2: 'HELLO'
+      bye: 'bye'

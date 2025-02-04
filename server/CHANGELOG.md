@@ -1,7 +1,10 @@
 # Changelog (weaverbird python package)
 
-
 ## Unreleased
+
+### Fixed
+
+- Pypika: The split step can now be followed by other steps for Google Big Query
 
 ## [0.50.0] - 2025-02-03
 
