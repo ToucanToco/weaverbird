@@ -1,0 +1,53 @@
+exclude:
+  - mongo
+  - pandas
+  - snowflake
+step:
+  pipeline:
+    - name: convert
+      columns:
+      - brewing_date
+      dataType: text
+    - name: split
+      column: brewing_date
+      delimiter: '-'
+      numberColsToKeep: 2
+    - name: rename
+      toRename:
+      - - brewing_date_1
+        - renamed_column_1
+      - - brewing_date_2
+        - renamed_column_2
+    - name: select
+      columns:
+        - renamed_column_1
+        - renamed_column_2
+expected:
+  schema:
+    pandas_version: 1.5.0
+    fields:
+      - name: renamed_column_1
+        type: string
+      - name: renamed_column_2
+        type: string
+  data:
+    - renamed_column_1: '2022'
+      renamed_column_2: '01'
+    - renamed_column_1: '2022'
+      renamed_column_2: '01'
+    - renamed_column_1: '2022'
+      renamed_column_2: '01'
+    - renamed_column_1: '2022'
+      renamed_column_2: '01'
+    - renamed_column_1: '2022'
+      renamed_column_2: '01'
+    - renamed_column_1: '2022'
+      renamed_column_2: '01'
+    - renamed_column_1: '2022'
+      renamed_column_2: '01'
+    - renamed_column_1: '2022'
+      renamed_column_2: '01'
+    - renamed_column_1: '2022'
+      renamed_column_2: '01'
+    - renamed_column_1: '2022'
+      renamed_column_2: '01'
