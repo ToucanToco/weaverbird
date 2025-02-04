@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.50.1] - 2025-02-04
+
 ### Fixed
 
 - Pypika: The split step can now be followed by other steps for Google Big Query
