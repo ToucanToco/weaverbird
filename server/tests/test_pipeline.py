@@ -8,7 +8,7 @@ from jinja2.nativetypes import NativeEnvironment
 from pydantic import BaseModel
 from toucan_connectors.common import nosql_apply_parameters_to_query
 
-from weaverbird.pipeline.conditions import ComparisonCondition
+from weaverbird.pipeline.conditions import ComparisonCondition, InclusionCondition
 from weaverbird.pipeline.pipeline import (
     Pipeline,
     PipelineStep,
@@ -629,3 +629,30 @@ def test_pipeline_with_refs_variables_and_date_validity():
             },
         ]
     )
+
+
+@pytest.mark.parametrize(
+    "steps,expected_steps",
+    [
+        (
+            [
+                DomainStep(domain="domain__beers"),
+                FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=[])),
+                TextStep(name="text", text="var_two", new_column="var_two"),
+                FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=["__VOID__"])),
+                FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=["__VOID__", "colA"])),
+            ],
+            [
+                DomainStep(domain="domain__beers"),
+                FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=[])),
+                TextStep(name="text", text="var_two", new_column="var_two"),
+                FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=["colA"])),
+            ],
+        )
+    ],
+)
+def test_keep_condition_if_empty_list_from_filter_steps(
+    steps: list[PipelineStep | PipelineStepWithVariables],
+    expected_steps: list[PipelineStep | PipelineStepWithVariables],
+):
+    assert remove_void_conditions_from_filter_steps(steps) == expected_steps
