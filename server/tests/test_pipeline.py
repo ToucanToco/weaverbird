@@ -637,15 +637,17 @@ def test_pipeline_with_refs_variables_and_date_validity():
         (
             [
                 DomainStep(domain="domain__beers"),
-                FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=[])),
+                FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value="__VOID__")),
                 TextStep(name="text", text="var_two", new_column="var_two"),
+                FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=[])),
                 FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=["__VOID__"])),
                 FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=["__VOID__", "colA"])),
             ],
             [
                 DomainStep(domain="domain__beers"),
-                FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=[])),
                 TextStep(name="text", text="var_two", new_column="var_two"),
+                FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=[])),
+                FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=[])),
                 FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=["colA"])),
             ],
         )

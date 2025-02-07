@@ -20,7 +20,7 @@ class ComparisonCondition(BaseCondition):
 class InclusionCondition(BaseCondition):
     column: ColumnName
     operator: Literal["in", "nin"]
-    value: list[Any]
+    value: list[Any] | Literal["__VOID__"]
 
 
 class InclusionConditionWithVariables(BaseCondition):
