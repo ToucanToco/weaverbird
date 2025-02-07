@@ -257,7 +257,9 @@ def _remove_void_from_condition(condition: Condition) -> Condition | None:
         if condition.column == VOID_REPR or condition.value == VOID_REPR:
             return None
     elif isinstance(condition, InclusionCondition):
-        # We don't want to remove the condition if the list of values is empty
+        # [] aka *empty list* means we want an empty list.
+        # [__VOID__] means we don't want to filter.
+        # If there are other values in the list, we only want to ignore those __VOID__
         if len(condition.value) > 0:
             condition_values = [v for v in condition.value if v != VOID_REPR]
             if len(condition_values) == 0:
