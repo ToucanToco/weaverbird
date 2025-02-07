@@ -257,12 +257,12 @@ def _remove_void_from_condition(condition: Condition) -> Condition | None:
         if condition.column == VOID_REPR or condition.value == VOID_REPR:
             return None
     elif isinstance(condition, InclusionCondition):
-        # We dont want to remove the condition if the list of values is empty
+        # We don't want to remove the condition if the list of values is empty
         if len(condition.value) > 0:
             condition_values = [v for v in condition.value if v != VOID_REPR]
             if len(condition_values) == 0:
                 return None
-            condition.value = condition_values
+            return condition.model_copy(update={"value": condition_values})
 
     return condition
 
