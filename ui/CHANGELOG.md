@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Form: clicking on variables button `{}` sends `Variables button clicked` mixpanel event.
+
 ## [0.115.4] - 2024-01-24
 
 ### Changed
