@@ -48,6 +48,7 @@ import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 import AdvancedVariableModal from './AdvancedVariableModal.vue';
 import VariableChooser from './VariableChooser.vue';
+import { sendAnalytics } from '@/lib/send-analytics';
 
 /**
  * This component wraps an input of any type and allow modifing its value by one or multiple variables chosen from a list or an
@@ -128,6 +129,7 @@ export default class VariableInputBase extends Vue {
 
   startChoosingVariable() {
     this.isChoosingVariable = true;
+    sendAnalytics({ name: 'Variables button clicked' });
   }
 
   stopChoosingVariable() {
