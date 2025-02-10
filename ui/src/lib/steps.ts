@@ -301,9 +301,11 @@ type FilterConditionEquality = {
   operator: 'eq' | 'ne' | 'isnull' | 'notnull' | 'matches' | 'notmatches';
 };
 
+// Inclusion condition value can be a string because it can be set with a frontend template
+// like "<%= ... %>"
 export type FilterConditionInclusion = {
   column: string;
-  value: any[];
+  value: any[] | string;
   operator: 'in' | 'nin';
 };
 
