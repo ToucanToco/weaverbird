@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [0.115.5] - 2025-02-11
+
+### Fixed
+
+- InclusionCondition: value type can now be also a string 
+
 ## [0.115.4] - 2024-01-24
 
 ### Changed
