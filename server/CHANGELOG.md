@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- The `remove_void_conditions_from_filter_steps` function does not remove `InclusionCondition` with an empty list of values anymore. 
+
 ## [0.50.1] - 2025-02-04
 
 ### Fixed
