@@ -1,13 +1,16 @@
 import type { Wrapper } from '@vue/test-utils';
 import { shallowMount } from '@vue/test-utils';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, SpyInstance, vi } from 'vitest';
 
 import VariableInputBase from '@/components/stepforms/widgets/VariableInputs/VariableInputBase.vue';
+import * as sendAnalyticsUtils from '@/lib/send-analytics';
 
 describe('Variable Input', () => {
   let wrapper: Wrapper<VariableInputBase>;
+  let sendAnalyticsSpy: SpyInstance;
 
   beforeEach(() => {
+    sendAnalyticsSpy = vi.spyOn(sendAnalyticsUtils, 'sendAnalytics');
     wrapper = shallowMount(VariableInputBase, {
       sync: false,
       propsData: {
@@ -142,6 +145,10 @@ describe('Variable Input', () => {
 
       it('should display the slot click handler', () => {
         expect(wrapper.find('.widget-variable__click-handler').exists()).toBe(true);
+      });
+
+      it('should send analytics event', () => {
+        expect(sendAnalyticsSpy).toHaveBeenCalledWith({ name: 'Variables button clicked' });
       });
 
       describe('when closing the popover', () => {
