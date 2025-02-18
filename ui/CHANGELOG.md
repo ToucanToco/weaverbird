@@ -4,6 +4,10 @@
 
 ## [0.115.5] - 2025-02-11
 
+### Changed
+
+- Form: clicking on variables button `{}` sends `Variables button clicked` mixpanel event.
+
 ### Fixed
 
 - InclusionCondition: value type can now be also a string 
