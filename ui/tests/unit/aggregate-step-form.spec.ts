@@ -255,7 +255,6 @@ describe('Aggregate Step Form', () => {
   });
 
   runner.testCancel();
-  runner.testResetSelectedIndex();
 
   it('should change the column focus after input in multiselect', async () => {
     const wrapper = runner.mount({ propsData: { selectedColumns: [] } });

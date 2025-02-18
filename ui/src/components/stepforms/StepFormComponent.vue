@@ -32,9 +32,6 @@ import { VariableDelimiters, VariablesBucket } from '@/types';
 import { InterpolateFunction, ScopeContext } from '@/lib/templating';
 import { ColumnTypeMapping } from '@/lib/dataset';
 
-/*
-  StepComponent to use outside of QueryBuilder context, it do not need pinia store to handle selectedColumns 
-*/
 @Component({
   name: 'step-from-component',
 })

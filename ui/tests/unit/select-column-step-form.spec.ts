@@ -28,7 +28,6 @@ describe('Select Column Step Form', () => {
   });
 
   runner.testCancel();
-  runner.testResetSelectedIndex();
 
   it('should instantiate a multiselect widget with proper options from the store', () => {
     const wrapper = runner.shallowMount({

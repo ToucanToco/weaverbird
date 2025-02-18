@@ -10,8 +10,6 @@
     - emit `blur` and `focus` event
     - a placeholder `property`
 
-  An example of code editor customization can be found in the playground.
-
   Optionally:
    - You can add a defaultConfig value to define the default config to use
 */
