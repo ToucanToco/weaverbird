@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.51.1] - 2025-02-19
+
 ### Fixed
 
 - PyPika: When used with `indexColumns`, the `evolution` step no longer creates `left_table_<col>` columns
