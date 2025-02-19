@@ -1,10 +1,11 @@
 {
-  "exclude": [
-    "mongo",
-    "pandas"
-  ],
+  "exclude": ["mongo", "pandas"],
   "step": {
     "pipeline": [
+      {
+        "name": "select",
+        "columns": ["brewing_date", "alcohol_degree", "volume_ml"]
+      },
       {
         "name": "evolution",
         "date_col": "brewing_date",
@@ -13,13 +14,6 @@
         "evolution_format": "pct",
         "new_column": "alcoholevol",
         "index_columns": ["volume_ml"]
-      },
-      {
-        "name": "select",
-        "columns": [
-          "brewing_date",
-          "alcoholevol"
-        ]
       }
     ]
   },
@@ -31,6 +25,14 @@
           "type": "datetime"
         },
         {
+          "name": "alcohol_degree",
+          "type": "number"
+        },
+        {
+          "name": "volume_ml",
+          "type": "number"
+        },
+        {
           "name": "alcoholevol",
           "type": "number"
         }
@@ -40,42 +42,62 @@
     "data": [
       {
         "brewing_date": "2022-01-01",
+        "alcohol_degree": 13.5,
+        "volume_ml": 330,
         "alcoholevol": null
       },
       {
         "brewing_date": "2022-01-02",
+        "alcohol_degree": 4.877377,
+        "volume_ml": 330,
         "alcoholevol": -0.638713
       },
       {
         "brewing_date": "2022-01-03",
+        "alcohol_degree": 0.569934,
+        "volume_ml": 330,
         "alcoholevol": -0.883147
       },
       {
         "brewing_date": "2022-01-04",
-        "alcoholevol": 11.271770
+        "alcohol_degree": 6.994105,
+        "volume_ml": 330,
+        "alcoholevol": 11.27177
       },
       {
         "brewing_date": "2022-01-05",
+        "alcohol_degree": 8.930645,
+        "volume_ml": 250,
         "alcoholevol": null
       },
       {
         "brewing_date": "2022-01-06",
+        "alcohol_degree": 1.243711,
+        "volume_ml": 500,
         "alcoholevol": null
       },
       {
         "brewing_date": "2022-01-07",
+        "alcohol_degree": 4.71741,
+        "volume_ml": 330,
         "alcoholevol": null
       },
       {
         "brewing_date": "2022-01-08",
+        "alcohol_degree": 12.974272,
+        "volume_ml": 330,
         "alcoholevol": 1.750296
       },
       {
         "brewing_date": "2022-01-09",
+        "alcohol_degree": 7.747466,
+        "volume_ml": 330,
         "alcoholevol": -0.402859
       },
       {
         "brewing_date": "2022-01-10",
+        "alcohol_degree": 8.749609,
+        "volume_ml": 330,
         "alcoholevol": 0.129351
       }
     ]

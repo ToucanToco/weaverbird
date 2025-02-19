@@ -1179,7 +1179,6 @@ class SQLTranslator(ABC):
                     )
                     / functions.Abs(functions.Cast(right_table.field(step.value_col), self.DATA_TYPE_MAPPING.float))
                 ).as_(new_col),
-                *[prev_step_table[col].as_(f"left_table_{col}") for col in step.index_columns],
             )
             .left_join(
                 prev_step_table.select(
