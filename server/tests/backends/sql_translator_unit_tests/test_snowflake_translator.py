@@ -77,7 +77,6 @@ def test_evolution_perc_groups_day(
         .select(
             *[prev_table.field(col) for col in selected_columns],
             (prev_table.field(step.value_col) - right_table.field(step.value_col)).as_(step.new_column),
-            *[prev_table.field(col).as_(f"left_table_{col}") for col in step.index_columns],
         )
         .left_join(
             Query.from_(previous_step)

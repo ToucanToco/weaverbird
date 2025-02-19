@@ -2,11 +2,15 @@
 
 ## Unreleased
 
+### Fixed
+
+- PyPika: When used with `indexColumns`, the `evolution` step no longer creates `left_table_<col>` columns
+
 ## [0.51.0] - 2025-02-11
 
 ### Fixed
 
-- The `remove_void_conditions_from_filter_steps` function does not remove `InclusionCondition` with an empty list of values anymore. 
+- The `remove_void_conditions_from_filter_steps` function does not remove `InclusionCondition` with an empty list of values anymore.
 
 ## [0.50.1] - 2025-02-04
 
