@@ -632,29 +632,28 @@ def test_pipeline_with_refs_variables_and_date_validity():
 
 
 @pytest.mark.parametrize(
-    "steps,expected_steps",
+    "step,expected_step",
     [
+        (DomainStep(domain="domain__beers"), DomainStep(domain="domain__beers")),
+        (FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value="__VOID__")), None),
         (
-            [
-                DomainStep(domain="domain__beers"),
-                FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value="__VOID__")),
-                TextStep(name="text", text="var_two", new_column="var_two"),
-                FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=[])),
-                FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=["__VOID__"])),
-                FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=["__VOID__", "colA"])),
-            ],
-            [
-                DomainStep(domain="domain__beers"),
-                TextStep(name="text", text="var_two", new_column="var_two"),
-                FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=[])),
-                FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=[])),
-                FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=["colA"])),
-            ],
-        )
+            TextStep(name="text", text="var_two", new_column="var_two"),
+            TextStep(name="text", text="var_two", new_column="var_two"),
+        ),
+        (
+            FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=[])),
+            FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=[])),
+        ),
+        (FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=["__VOID__"])), None),
+        (
+            FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=["__VOID__", "colA"])),
+            FilterStep(condition=InclusionCondition(column="beer_kind", operator="in", value=["colA"])),
+        ),
     ],
 )
 def test_keep_condition_if_empty_list_from_filter_steps(
-    steps: list[PipelineStep | PipelineStepWithVariables],
-    expected_steps: list[PipelineStep | PipelineStepWithVariables],
+    step: PipelineStep | PipelineStepWithVariables,
+    expected_step: PipelineStep | PipelineStepWithVariables | None,
 ):
-    assert remove_void_conditions_from_filter_steps(steps) == expected_steps
+    expected_steps = [expected_step] if expected_step is not None else []
+    assert remove_void_conditions_from_filter_steps([step]) == expected_steps
