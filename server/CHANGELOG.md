@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.51.2] - 2025-02-20
+
 ### Fixed
 
 - The `remove_void_conditions_from_filter_steps` will remove `InclusionCondition` with if the list of values is exactly `["__VOID__"]`.
