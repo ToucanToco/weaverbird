@@ -252,12 +252,12 @@ def _remove_void_from_condition(condition: Condition) -> Condition | None:
 
     """
     if isinstance(condition, ConditionComboAnd | ConditionComboOr):
-        condition = _remove_void_from_combo_condition(condition)
+        return _remove_void_from_combo_condition(condition)
     elif isinstance(condition, ComparisonCondition | MatchCondition | DateBoundCondition):
         if condition.column == VOID_REPR or condition.value == VOID_REPR:
             return None
     elif isinstance(condition, InclusionCondition):
-        if condition.value == VOID_REPR:
+        if condition.value == VOID_REPR or condition.value == [VOID_REPR]:
             return None
         condition_values = [v for v in condition.value if v != VOID_REPR]
         return condition.model_copy(update={"value": condition_values})
