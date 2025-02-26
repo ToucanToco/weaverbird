@@ -15,6 +15,9 @@
       placeholder="Add columns to keep"
       data-path=".keep"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
       :allowCustom="true"
     />
     <MultiselectWidget
@@ -26,6 +29,9 @@
       placeholder="Add columns to unpivot"
       data-path=".unpivot"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
       :allowCustom="true"
     />
     <CheckboxWidget
