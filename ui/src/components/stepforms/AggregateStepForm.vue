@@ -15,6 +15,9 @@
       placeholder="Add columns"
       data-path=".on"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
       :allowCustom="true"
     />
     <ListWidget

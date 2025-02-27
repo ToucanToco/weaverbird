@@ -22,6 +22,9 @@
       :data-path="`${dataPath}[1]`"
       :warning="duplicateColumnName"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
+      :trusted-variable-delimiters="trustedVariableDelimiters"
     />
   </div>
 </template>
