@@ -30,74 +30,83 @@
   </div>
 </template>
 <script lang="ts">
+import { defineComponent, PropType } from 'vue';
+import { mapGetters, mapState } from 'pinia';
 import { Multiselect } from 'vue-multiselect';
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
 import type { PipelineStepName } from '@/lib/steps';
 
-import { State, Getter } from 'pinia-class';
 import { VQBModule } from '@/store';
 import { ACTION_CATEGORIES, CATEGORY_BUTTONS, STEP_LABELS } from './constants';
 import Popover from './Popover.vue';
 
-@Component({
+export default defineComponent({
   name: 'action-toolbar-search',
+  
   components: {
     Popover,
     Multiselect,
     FAIcon,
   },
-})
-export default class SearchActions extends Vue {
-  @State(VQBModule) translator!: string;
-  @Getter(VQBModule) unsupportedSteps!: PipelineStepName[];
-
-  @Prop({
-    type: Boolean,
-    default: () => false,
-  })
-  isActive!: boolean;
-
-  @Watch('isActive')
-  async onIsActiveChanged() {
-    if (this.isActive) {
-      await this.$nextTick();
-      this.focusSearchBar();
+  
+  props: {
+    isActive: {
+      type: Boolean,
+      default: false
     }
-  }
-
-  get actionOptions() {
-    return CATEGORY_BUTTONS.map((button) => ({
-      type: button.label,
-      actions: ACTION_CATEGORIES[button.category]
-        .map((name) => ({
-          name,
-          label: STEP_LABELS[name],
-        }))
-        .filter((a) => !this.unsupportedSteps.includes(a.name)),
-    }));
-  }
-
+  },
+  
+  computed: {
+    ...mapState(VQBModule, [
+      'translator'
+    ]),
+    
+    ...mapGetters(VQBModule, [
+      'unsupportedSteps'
+    ]),
+    
+    actionOptions() {
+      return CATEGORY_BUTTONS.map((button) => ({
+        type: button.label,
+        actions: ACTION_CATEGORIES[button.category]
+          .map((name) => ({
+            name,
+            label: STEP_LABELS[name],
+          }))
+          .filter((a) => !this.unsupportedSteps.includes(a.name)),
+      }));
+    }
+  },
+  
+  watch: {
+    isActive: {
+      async handler(newVal) {
+        if (newVal) {
+          await this.$nextTick();
+          this.focusSearchBar();
+        }
+      }
+    }
+  },
+  
   mounted() {
     if (this.isActive) {
       this.focusSearchBar();
     }
+  },
+  
+  methods: {
+    focusSearchBar() {
+      (this.$refs.searchComponent.$el as HTMLElement).focus();
+    },
+    
+    actionClicked(actionName: { name: PipelineStepName }) {
+      this.$emit('actionClicked', actionName.name);
+      this.$emit('closed');
+    }
   }
-
-  $refs!: {
-    searchComponent: Multiselect;
-  };
-
-  focusSearchBar() {
-    (this.$refs.searchComponent.$el as HTMLElement).focus();
-  }
-
-  actionClicked(actionName: { name: PipelineStepName }) {
-    this.$emit('actionClicked', actionName.name);
-    this.$emit('closed');
-  }
-}
+});
 </script>
 <style lang="scss">
 @import '../styles/_variables';

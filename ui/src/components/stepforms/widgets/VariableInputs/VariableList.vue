@@ -33,34 +33,45 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import type { VariablesBucket, VariablesCategory } from '@/lib/variables';
 
 import VariableListOption from './VariableListOption.vue';
+
 /**
  * This component list all the available variables to use as value in VariableInputs
  */
-@Component({
+export default defineComponent({
   name: 'variable-list',
-  components: { VariableListOption },
-})
-export default class VariableList extends Vue {
-  @Prop({ default: false })
-  isMultiple!: boolean;
-
-  @Prop({ default: () => '' })
-  selectedVariables!: string | string[];
-
-  @Prop({ default: () => [] })
-  availableVariables!: VariablesBucket;
-
-  @Prop({ default: () => true })
-  enableAdvancedVariable!: boolean;
-
-  @Prop({ default: false })
-  showOnlyLabel!: boolean;
-
+  
+  components: { 
+    VariableListOption 
+  },
+  
+  props: {
+    isMultiple: {
+      type: Boolean,
+      default: false
+    },
+    selectedVariables: {
+      type: [String, Array] as PropType<string | string[]>,
+      default: () => ''
+    },
+    availableVariables: {
+      type: Array as PropType<VariablesBucket>,
+      default: () => []
+    },
+    enableAdvancedVariable: {
+      type: Boolean,
+      default: true
+    },
+    showOnlyLabel: {
+      type: Boolean,
+      default: false
+    }
+  },
+  
   /* istanbul ignore next */
   created() {
     if (this.isMultiple && !Array.isArray(this.selectedVariables)) {
@@ -68,54 +79,58 @@ export default class VariableList extends Vue {
     } else if (!this.isMultiple && Array.isArray(this.selectedVariables)) {
       throw new Error('selectedVariables should be a string');
     }
-  }
+  },
+  
+  computed: {
+    /**
+     * Group variables by category to easily choose among them
+     *
+     * https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_groupby
+     */
+    variablesByCategory(): VariablesCategory[] {
+      return this.availableVariables.reduce((categories: VariablesCategory[], variable) => {
+        const varCategoryLabel = variable.category;
+        const category = categories.find((c) => c.label === varCategoryLabel);
+        if (category !== undefined) {
+          category.variables.push(variable);
+        } else {
+          categories.push({
+            label: varCategoryLabel,
+            variables: [variable],
+          });
+        }
+        return categories;
+      }, []);
+    }
+  },
+  
+  methods: {
+    /**
+     * Toggle value in array if necessary
+     */
+    toggleVariable(variableIdentifier: string): string[] | string {
+      if (!Array.isArray(this.selectedVariables)) return variableIdentifier;
 
-  /**
-   * Group variables by category to easily choose among them
-   *
-   * https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_groupby
-   */
-  get variablesByCategory(): VariablesCategory[] {
-    return this.availableVariables.reduce((categories: VariablesCategory[], variable) => {
-      const varCategoryLabel = variable.category;
-      const category = categories.find((c) => c.label === varCategoryLabel);
-      if (category !== undefined) {
-        category.variables.push(variable);
+      if (this.selectedVariables.indexOf(variableIdentifier) !== -1) {
+        return this.selectedVariables.filter((v) => v !== variableIdentifier);
       } else {
-        categories.push({
-          label: varCategoryLabel,
-          variables: [variable],
-        });
+        return [...this.selectedVariables, variableIdentifier];
       }
-      return categories;
-    }, []);
-  }
-
-  /**
-   * Toggle value in array if necessary
-   */
-  toggleVariable(variableIdentifier: string): string[] | string {
-    if (!Array.isArray(this.selectedVariables)) return variableIdentifier;
-
-    if (this.selectedVariables.indexOf(variableIdentifier) !== -1) {
-      return this.selectedVariables.filter((v) => v !== variableIdentifier);
-    } else {
-      return [...this.selectedVariables, variableIdentifier];
+    },
+    
+    /**
+     * Emit the choosen variable
+     */
+    chooseVariable(variableIdentifier: string) {
+      const value = this.toggleVariable(variableIdentifier);
+      this.$emit('input', value);
+    },
+    
+    addAdvancedVariable() {
+      this.$emit('addAdvancedVariable');
     }
   }
-
-  /**
-   * Emit the choosen variable
-   */
-  chooseVariable(variableIdentifier: string) {
-    const value = this.toggleVariable(variableIdentifier);
-    this.$emit('input', value);
-  }
-
-  addAdvancedVariable() {
-    this.$emit('addAdvancedVariable');
-  }
-}
+});
 </script>
 
 <style scoped lang="scss">

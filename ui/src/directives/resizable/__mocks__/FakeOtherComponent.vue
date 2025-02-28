@@ -5,15 +5,15 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Component } from 'vue-property-decorator';
+import { defineComponent } from 'vue';
 
 import resizable from '@/directives/resizable/resizable';
-@Component({
+
+export default defineComponent({
   name: 'FakeOtherComponent',
+  
   directives: {
     resizable,
-  },
-})
-export default class FakeOtherComponent extends Vue {}
+  }
+});
 </script>

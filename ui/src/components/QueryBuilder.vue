@@ -33,76 +33,89 @@
   <div class="query-builder query-builder--no-pipeline" v-else>Select a pipeline...</div>
 </template>
 <script lang="ts">
-import Vue from 'vue';
-import { Component } from 'vue-property-decorator';
+import { defineComponent } from 'vue';
+import { mapActions, mapGetters, mapState } from 'pinia';
 
 import FAIcon from '@/components/FAIcon.vue';
 import PipelineComponent from '@/components/Pipeline.vue';
 import type { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
-import { Action, Getter, State } from 'pinia-class';
-import { VQBModule, type VQBActions } from '@/store';
+import { VQBModule } from '@/store';
 
 import { version } from '../../package.json';
 import StoreStepFormComponent from './stepforms/StoreStepFormComponent.vue';
 
-@Component({
+export default defineComponent({
   name: 'query-builder',
+  
   components: {
     StepForm: StoreStepFormComponent,
     Pipeline: PipelineComponent,
     FAIcon,
   },
-})
-export default class QueryBuilder extends Vue {
-  version = version; // display the current version of the package
-  editedStepBackendError: string | undefined = undefined;
-
-  @State(VQBModule) currentStepFormName!: PipelineStepName;
-  @State(VQBModule) stepFormInitialValue!: object;
-  @State(VQBModule) stepFormDefaults!: object;
-
-  @Getter(VQBModule) computedActiveStepIndex!: number;
-  @Getter(VQBModule) isEditingStep!: boolean;
-  @Getter(VQBModule) pipeline!: Pipeline;
-
-  @Action(VQBModule) closeStepForm!: VQBActions['closeStepForm'];
-  @Action(VQBModule) openStepForm!: VQBActions['openStepForm'];
-  @Action(VQBModule) resetStepFormInitialValue!: VQBActions['resetStepFormInitialValue'];
-  @Action(VQBModule) selectStep!: VQBActions['selectStep'];
-  @Action(VQBModule) setPipeline!: VQBActions['setPipeline'];
-  @Getter(VQBModule) stepErrors!: (index: number) => string | undefined;
-
-  get isStepCreation() {
-    return this.stepFormInitialValue === undefined;
-  }
-
-  get backendError(): string | undefined {
-    return this.isStepCreation ? undefined : this.editedStepBackendError;
-  }
-
-  editStep(params: PipelineStep, index: number) {
-    // save the selected edited step error to avoid store to be refreshed with new data and lose it when entering the step form
-    this.editedStepBackendError = this.stepErrors(index);
-    this.openStepForm({ stepName: params.name, initialValue: params });
-    const prevIndex = Math.max(index - 1, 0);
-    this.selectStep({ index: prevIndex });
-  }
-
-  saveStep(step: PipelineStep) {
-    const newPipeline: Pipeline = [...this.pipeline];
-    const index = step.name === 'domain' ? 0 : this.computedActiveStepIndex + 1;
-    if (this.isStepCreation) {
-      newPipeline.splice(index, 0, step);
-    } else {
-      newPipeline.splice(index, 1, step);
+  
+  data() {
+    return {
+      version: version, // display the current version of the package
+      editedStepBackendError: undefined as string | undefined
+    };
+  },
+  
+  computed: {
+    ...mapState(VQBModule, [
+      'currentStepFormName',
+      'stepFormInitialValue',
+      'stepFormDefaults'
+    ]),
+    
+    ...mapGetters(VQBModule, [
+      'computedActiveStepIndex',
+      'isEditingStep',
+      'pipeline',
+      'stepErrors'
+    ]),
+    
+    isStepCreation() {
+      return this.stepFormInitialValue === undefined;
+    },
+    
+    backendError(): string | undefined {
+      return this.isStepCreation ? undefined : this.editedStepBackendError;
     }
-    this.setPipeline({ pipeline: newPipeline });
-    this.selectStep({ index });
-    this.closeStepForm();
-    // Reset value from DataViewer
-    this.resetStepFormInitialValue();
+  },
+  
+  methods: {
+    ...mapActions(VQBModule, [
+      'closeStepForm',
+      'openStepForm',
+      'resetStepFormInitialValue',
+      'selectStep',
+      'setPipeline'
+    ]),
+    
+    editStep(params: PipelineStep, index: number) {
+      // save the selected edited step error to avoid store to be refreshed with new data and lose it when entering the step form
+      this.editedStepBackendError = this.stepErrors(index);
+      this.openStepForm({ stepName: params.name, initialValue: params });
+      const prevIndex = Math.max(index - 1, 0);
+      this.selectStep({ index: prevIndex });
+    },
+    
+    saveStep(step: PipelineStep) {
+      const newPipeline: Pipeline = [...this.pipeline];
+      const index = step.name === 'domain' ? 0 : this.computedActiveStepIndex + 1;
+      if (this.isStepCreation) {
+        newPipeline.splice(index, 0, step);
+      } else {
+        newPipeline.splice(index, 1, step);
+      }
+      this.setPipeline({ pipeline: newPipeline });
+      this.selectStep({ index });
+      this.closeStepForm();
+      // Reset value from DataViewer
+      this.resetStepFormInitialValue();
+    }
   }
-}
+});
 </script>
 <style lang="scss" scoped>
 @import '../styles/_variables';

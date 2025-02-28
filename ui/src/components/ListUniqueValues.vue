@@ -36,14 +36,13 @@
 <script lang="ts">
 import _difference from 'lodash/difference';
 import _union from 'lodash/union';
-import { Component, Prop, Vue } from 'vue-property-decorator';
-
-import type { ColumnValueStat } from '@/lib/dataset/helpers';
-import type { FilterConditionInclusion } from '@/lib/steps';
-import { Action, State } from 'pinia-class';
-import { VQBModule, type VQBActions } from '@/store';
+import { defineComponent, PropType } from 'vue';
 
 import CheckboxWidget from './stepforms/widgets/Checkbox.vue';
+import type { ColumnValueStat } from '@/lib/dataset/helpers';
+import type { FilterConditionInclusion } from '@/lib/steps';
+import { mapActions, mapState } from 'pinia';
+import { VQBModule } from '@/store';
 
 /**
   Edit a `filter` object of the form:
@@ -53,112 +52,118 @@ import CheckboxWidget from './stepforms/widgets/Checkbox.vue';
     value: ['France', 'UK', 'Spain']
   }
  */
-@Component({
+export default defineComponent({
   name: 'list-unique-values',
-  components: { CheckboxWidget },
-})
-export default class ListUniqueValues extends Vue {
-  @Prop({
-    type: String,
-    required: true,
-  })
-  columnName!: string;
-
-  @Prop({
-    type: Array,
-    required: true,
-  })
-  options!: ColumnValueStat[];
-
-  @Prop({
-    type: Object,
-    required: true,
-  })
-  filter!: Omit<FilterConditionInclusion, 'column'>;
-
-  @Prop({
-    type: Boolean,
-    required: true,
-  })
-  loaded!: boolean;
-
-  @State(VQBModule) isLoading!: { dataset: boolean; uniqueValues: boolean };
-  @Action(VQBModule) loadColumnUniqueValues!: VQBActions['loadColumnUniqueValues'];
-
-  search = '';
-
-  isChecked(option: ColumnValueStat): boolean {
-    if (this.filter.operator == 'in') {
-      return this.filter.value.includes(option.value);
-    } else {
-      return !this.filter.value.includes(option.value);
+  
+  components: { 
+    CheckboxWidget 
+  },
+  
+  props: {
+    columnName: {
+      type: String,
+      required: true
+    },
+    options: {
+      type: Array as PropType<ColumnValueStat[]>,
+      required: true
+    },
+    filter: {
+      type: Object as PropType<Omit<FilterConditionInclusion, 'column'>>,
+      required: true
+    },
+    loaded: {
+      type: Boolean,
+      required: true
+    }
+  },
+  
+  data() {
+    return {
+      search: ''
+    };
+  },
+  
+  computed: {
+    ...mapState(VQBModule, ['isLoading']),
+    
+    searchedOptions(): ColumnValueStat[] {
+      return this.options.filter((option) => this.searchFunction(option.value, this.search));
+    }
+  },
+  
+  methods: {
+    ...mapActions(VQBModule, ['loadColumnUniqueValues']),
+    
+    isChecked(option: ColumnValueStat): boolean {
+      if (this.filter.operator == 'in') {
+        return this.filter.value.includes(option.value);
+      } else {
+        return !this.filter.value.includes(option.value);
+      }
+    },
+    
+    selectAll() {
+      if (this.search === '') {
+        this.$emit('input', {
+          column: this.columnName,
+          operator: 'nin',
+          value: [],
+        } as FilterConditionInclusion);
+      } else {
+        this.$emit('input', {
+          column: this.columnName,
+          operator: this.filter.operator,
+          value: (this.filter.operator === 'in' ? _union : _difference)(
+            this.filter.value,
+            this.searchedOptions.map((option) => option.value),
+          ),
+        } as FilterConditionInclusion);
+      }
+    },
+    
+    clearAll() {
+      if (this.search === '') {
+        this.$emit('input', {
+          column: this.columnName,
+          operator: 'in',
+          value: [],
+        } as FilterConditionInclusion);
+      } else {
+        this.$emit('input', {
+          column: this.columnName,
+          operator: this.filter.operator,
+          value: (this.filter.operator === 'in' ? _difference : _union)(
+            this.filter.value,
+            this.searchedOptions.map((option) => option.value),
+          ),
+        } as FilterConditionInclusion);
+      }
+    },
+    
+    toggleCheck(option: ColumnValueStat) {
+      const newFilter = { ...this.filter, column: this.columnName };
+      if (newFilter.value.includes(option.value)) {
+        newFilter.value.splice(newFilter.value.indexOf(option.value), 1);
+      } else {
+        newFilter.value.push(option.value);
+      }
+      this.$emit('input', newFilter);
+    },
+    
+    stringify(value: any): string {
+      return JSON.stringify(value).replace(/^"/, '').replace(/"$/, ''); // remove `"` introduce by JSON.stringify around strings;
+    },
+    
+    searchFunction(value: any, search: string) {
+      return this.stringify(value).toLowerCase().includes(search.toLowerCase());
+    },
+    
+    loadAllValues() {
+      this.$emit('loadAllValues');
     }
   }
-
-  selectAll() {
-    if (this.search === '') {
-      this.$emit('input', {
-        column: this.columnName,
-        operator: 'nin',
-        value: [],
-      } as FilterConditionInclusion);
-    } else {
-      this.$emit('input', {
-        column: this.columnName,
-        operator: this.filter.operator,
-        value: (this.filter.operator === 'in' ? _union : _difference)(
-          this.filter.value,
-          this.searchedOptions.map((option) => option.value),
-        ),
-      } as FilterConditionInclusion);
-    }
-  }
-
-  clearAll() {
-    if (this.search === '') {
-      this.$emit('input', {
-        column: this.columnName,
-        operator: 'in',
-        value: [],
-      } as FilterConditionInclusion);
-    } else {
-      this.$emit('input', {
-        column: this.columnName,
-        operator: this.filter.operator,
-        value: (this.filter.operator === 'in' ? _difference : _union)(
-          this.filter.value,
-          this.searchedOptions.map((option) => option.value),
-        ),
-      } as FilterConditionInclusion);
-    }
-  }
-
-  toggleCheck(option: ColumnValueStat) {
-    const newFilter = { ...this.filter, column: this.columnName };
-    if (newFilter.value.includes(option.value)) {
-      newFilter.value.splice(newFilter.value.indexOf(option.value), 1);
-    } else {
-      newFilter.value.push(option.value);
-    }
-    this.$emit('input', newFilter);
-  }
-
-  get searchedOptions(): ColumnValueStat[] {
-    return this.options.filter((option) => this.searchFunction(option.value, this.search));
-  }
-
-  stringify(value: any): string {
-    return JSON.stringify(value).replace(/^"/, '').replace(/"$/, ''); // remove `"` introduce by JSON.stringify around strings;
-  }
-
-  searchFunction(value: any, search: string) {
-    return this.stringify(value).toLowerCase().includes(search.toLowerCase());
-  }
-
-  loadAllValues() {
-    this.$emit('loadAllValues');
-  }
-}
+});
 </script>
 <style lang="scss" scoped>
 @import '../styles/_variables.scss';

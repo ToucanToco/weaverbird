@@ -19,50 +19,67 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from '@/components/Popover.vue';
 import type { VariablesBucket } from '@/lib/variables';
 
 import VariableList from './VariableList.vue';
+
 /**
  * This component list all the available variables to use as value in VariableInputs
  */
-@Component({
+export default defineComponent({
   name: 'variable-chooser',
-  components: { Popover, VariableList },
-})
-export default class VariableChooser extends Vue {
-  @Prop({ default: false })
-  isMultiple!: boolean;
-
-  @Prop({ default: () => '' })
-  selectedVariables!: string | string[];
-
-  @Prop({ default: () => [] })
-  availableVariables!: VariablesBucket;
-
-  @Prop({ default: false })
-  isOpened!: boolean;
-
-  alignLeft: string = POPOVER_ALIGN.LEFT;
-
-  close() {
-    this.$emit('closed');
+  
+  components: { 
+    Popover, 
+    VariableList 
+  },
+  
+  props: {
+    isMultiple: {
+      type: Boolean,
+      default: false
+    },
+    selectedVariables: {
+      type: [String, Array] as PropType<string | string[]>,
+      default: () => ''
+    },
+    availableVariables: {
+      type: Array as PropType<VariablesBucket>,
+      default: () => []
+    },
+    isOpened: {
+      type: Boolean,
+      default: false
+    }
+  },
+  
+  data() {
+    return {
+      alignLeft: POPOVER_ALIGN.LEFT
+    };
+  },
+  
+  methods: {
+    close() {
+      this.$emit('closed');
+    },
+    
+    /**
+     * Emit the choosen variable(s)
+     */
+    chooseVariable(selectedVariables: string | string[]) {
+      this.$emit('input', selectedVariables);
+    },
+    
+    addAdvancedVariable() {
+      this.$emit('addAdvancedVariable');
+    }
   }
-
-  /**
-   * Emit the choosen variable(s)
-   */
-  chooseVariable(selectedVariables: string | string[]) {
-    this.$emit('input', selectedVariables);
-  }
-
-  addAdvancedVariable() {
-    this.$emit('addAdvancedVariable');
-  }
-}
+});
 </script>
 
 <style scoped lang="scss">

@@ -16,71 +16,94 @@
 
 <script lang="ts">
 import type { ErrorObject } from 'ajv';
-import Vue from 'vue';
-import { Component, Prop, Watch } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
-@Component({ components: { AutocompleteWidget } })
-export default class ColumnPicker extends Vue {
-  @Prop({ type: String, default: 'column' })
-  name!: string;
-
-  @Prop({ type: String, default: 'Enter a column' })
-  placeholder!: string;
-
-  @Prop({ type: Array, default: () => [] })
-  errors!: ErrorObject[];
-
-  @Prop({ default: null })
-  dataPath!: string;
-
-  @Prop({ default: null })
-  value!: string;
-
-  @Prop()
-  availableVariables?: VariablesBucket;
-
-  @Prop()
-  variableDelimiters?: VariableDelimiters;
-
-  @Prop()
-  trustedVariableDelimiters?: VariableDelimiters;
-
-  // Whether the column data of ColumnPicker should react to a change of
-  // selected column
-  @Prop({ default: true })
-  syncWithSelectedColumn!: boolean;
-
-  @Prop({ default: () => [] })
-  selectedColumns!: string[];
-
-  @Prop({ default: () => [] })
-  columnNames!: string[];
-
+export default defineComponent({
+  name: 'column-picker',
+  
+  components: { 
+    AutocompleteWidget 
+  },
+  
+  props: {
+    name: {
+      type: String,
+      default: 'column'
+    },
+    placeholder: {
+      type: String,
+      default: 'Enter a column'
+    },
+    errors: {
+      type: Array as PropType<ErrorObject[]>,
+      default: () => []
+    },
+    dataPath: {
+      type: String,
+      default: null
+    },
+    value: {
+      type: String,
+      default: null
+    },
+    availableVariables: {
+      type: Array as PropType<VariablesBucket>,
+      default: undefined
+    },
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters>,
+      default: undefined
+    },
+    trustedVariableDelimiters: {
+      type: Object as PropType<VariableDelimiters>,
+      default: undefined
+    },
+    // Whether the column data of ColumnPicker should react to a change of
+    // selected column
+    syncWithSelectedColumn: {
+      type: Boolean,
+      default: true
+    },
+    selectedColumns: {
+      type: Array as PropType<string[]>,
+      default: () => []
+    },
+    columnNames: {
+      type: Array as PropType<string[]>,
+      default: () => []
+    }
+  },
+  
   created() {
     if (this.syncWithSelectedColumn && this.selectedColumns[0] && !this.value) {
       this.$emit('input', this.selectedColumns[0]);
     }
-  }
-
-  @Watch('selectedColumns')
-  onSelectedColumnsChanged() {
-    if (
-      this.syncWithSelectedColumn &&
-      this.selectedColumns[0] &&
-      this.selectedColumns[0] !== this.value
-    ) {
-      this.$emit('input', this.selectedColumns[0]);
+  },
+  
+  watch: {
+    selectedColumns: {
+      handler() {
+        if (
+          this.syncWithSelectedColumn &&
+          this.selectedColumns[0] &&
+          this.selectedColumns[0] !== this.value
+        ) {
+          this.$emit('input', this.selectedColumns[0]);
+        }
+      }
+    }
+  },
+  
+  methods: {
+    valueChanged(newColumn: string) {
+      this.$emit('input', newColumn);
+      if (this.syncWithSelectedColumn) {
+        this.$emit('setSelectedColumns', { column: newColumn });
+      }
     }
   }
-
-  valueChanged(newColumn: string) {
-    this.$emit('input', newColumn);
-    if (this.syncWithSelectedColumn) {
-      this.$emit('setSelectedColumns', { column: newColumn });
-    }
-  }
-}
+});
 </script>

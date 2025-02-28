@@ -21,45 +21,54 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
-@Component({
+export default defineComponent({
   name: 'tabs',
-})
-export default class Tabs extends Vue {
-  @Prop({ default: () => [] })
-  tabs!: string[];
-
-  @Prop({ default: () => [] })
-  disabledTabs!: string[];
-
-  @Prop({ default: undefined })
-  selectedTab!: string;
-
-  @Prop({ default: () => (tab: string) => `${tab}` })
-  formatTab!: Function;
-
-  @Prop({ default: false })
-  compactMode!: boolean;
-
+  
+  props: {
+    tabs: {
+      type: Array as PropType<string[]>,
+      default: () => []
+    },
+    disabledTabs: {
+      type: Array as PropType<string[]>,
+      default: () => []
+    },
+    selectedTab: {
+      type: String,
+      default: undefined
+    },
+    formatTab: {
+      type: Function as PropType<(tab: string) => string>,
+      default: (tab: string) => `${tab}`
+    },
+    compactMode: {
+      type: Boolean,
+      default: false
+    }
+  },
+  
   created() {
     // select first available tab if necessary
     const availableTabs = this.tabs.filter((t) => this.disabledTabs.indexOf(t) === -1);
     const tabIsUnavailable =
       this.selectedTab == null || availableTabs.indexOf(this.selectedTab) === -1;
     if (tabIsUnavailable) this.selectTab(availableTabs[0]);
-  }
-
-  selectTab(tab: string): void {
-    if (!this.isTabDisabled(tab)) {
-      this.$emit('tabSelected', tab);
+  },
+  
+  methods: {
+    selectTab(tab: string): void {
+      if (!this.isTabDisabled(tab)) {
+        this.$emit('tabSelected', tab);
+      }
+    },
+    
+    isTabDisabled(tab: string): boolean {
+      return this.disabledTabs.indexOf(tab) !== -1;
     }
   }
-
-  isTabDisabled(tab: string): boolean {
-    return this.disabledTabs.indexOf(tab) !== -1;
-  }
-}
+});
 </script>
 
 <style lang="scss" scoped>

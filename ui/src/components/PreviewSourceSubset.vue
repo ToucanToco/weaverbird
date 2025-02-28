@@ -23,49 +23,61 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Component, Watch } from 'vue-property-decorator';
+import { defineComponent } from 'vue';
+import { useVQBStore, VQBModule, type VQBActions } from '@/store';
 
 import FAIcon from '@/components/FAIcon.vue';
-import { Action, Getter } from 'pinia-class';
-import { VQBModule, type VQBActions } from '@/store';
 
-@Component({
+export default defineComponent({
   name: 'PreviewSourceSubset',
+  
   components: {
     FAIcon,
   },
-})
-export default class PreviewSourceSubset extends Vue {
-  rowsSubsetInput: number | string | undefined = this.lastSuccessfulPreviewRowsSubset;
-
-  @Getter(VQBModule, 'previewSourceRowsSubset') previewSourceRowsSubset?:
-    | number
-    | 'unlimited'
-    | undefined;
-
-  @Action(VQBModule) updateDataset!: VQBActions['updateDataset'];
-  @Action(VQBModule) setPreviewSourceRowsSubset!: VQBActions['setPreviewSourceRowsSubset'];
-
-  get lastSuccessfulPreviewRowsSubset() {
-    return this.previewSourceRowsSubset == 'unlimited'
+  
+  data() {
+    const store = useVQBStore();
+    const initialValue = store.previewSourceRowsSubset === 'unlimited' 
       ? 100000000 // we don't support 'unlimited' value (yet ?), use an arbitrary number instead
-      : this.previewSourceRowsSubset;
+      : store.previewSourceRowsSubset;
+    
+    return {
+      rowsSubsetInput: initialValue as number | string | undefined
+    };
+  },
+  
+  computed: {
+    previewSourceRowsSubset(): number | 'unlimited' | undefined {
+      return useVQBStore().previewSourceRowsSubset;
+    },
+    
+    lastSuccessfulPreviewRowsSubset() {
+      return this.previewSourceRowsSubset === 'unlimited'
+        ? 100000000 // we don't support 'unlimited' value (yet ?), use an arbitrary number instead
+        : this.previewSourceRowsSubset;
+    }
+  },
+  
+  watch: {
+    lastSuccessfulPreviewRowsSubset: {
+      handler() {
+        this.rowsSubsetInput = this.lastSuccessfulPreviewRowsSubset;
+      },
+      immediate: true
+    }
+  },
+  
+  methods: {
+    refreshPreview() {
+      const store = useVQBStore();
+      store.setPreviewSourceRowsSubset({
+        previewSourceRowsSubset:
+          typeof this.rowsSubsetInput === 'number' ? this.rowsSubsetInput : undefined,
+      });
+      store.updateDataset();
+    }
   }
-
-  @Watch('lastSuccessfulPreviewRowsSubset', { immediate: true })
-  updateRowsSubset() {
-    this.rowsSubsetInput = this.lastSuccessfulPreviewRowsSubset;
-  }
-
-  refreshPreview() {
-    this.setPreviewSourceRowsSubset({
-      previewSourceRowsSubset:
-        typeof this.rowsSubsetInput === 'number' ? this.rowsSubsetInput : undefined,
-    });
-    this.updateDataset();
-  }
-}
+});
 </script>
 
 <style lang="scss" scoped>

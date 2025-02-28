@@ -1,23 +1,22 @@
-<script lang="ts">
-import Vue from 'vue';
-import { Component, Prop } from 'vue-property-decorator';
-
-import type { FAIconName } from '@/assets/FA-ICONS';
-
-@Component({
-  name: 'FA-icon',
-})
-export default class FAIcon extends Vue {
-  @Prop({
-    type: String,
-    default: '',
-  })
-  icon!: FAIconName;
-}
-</script>
-
 <template>
   <div>
     <div class="fa-icon" :icon="icon" />
   </div>
 </template>
+
+<script lang="ts">
+import { defineComponent, PropType } from 'vue';
+
+import type { FAIconName } from '@/assets/FA-ICONS';
+
+export default defineComponent({
+  name: 'FA-icon',
+  
+  props: {
+    icon: {
+      type: String as PropType<FAIconName>,
+      default: ''
+    }
+  }
+});
+</script>

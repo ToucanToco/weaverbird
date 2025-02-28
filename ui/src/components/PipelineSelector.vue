@@ -10,23 +10,32 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Component } from 'vue-property-decorator';
+import { defineComponent } from 'vue';
+import { mapActions, mapGetters, mapState } from 'pinia';
 
-import { Action, Getter, State } from 'pinia-class';
-import { VQBModule, type VQBActions } from '@/store';
+import { VQBModule } from '@/store';
 
-@Component({
+export default defineComponent({
   name: 'PipelineSelector',
-})
-export default class Vqb extends Vue {
-  @State(VQBModule) currentPipelineName?: string;
-  @Getter(VQBModule) pipelinesNames!: string[];
-
-  @Action(VQBModule) selectPipeline!: VQBActions['selectPipeline'];
-
-  selectPipelineByName(pipelineName: string) {
-    this.selectPipeline({ name: pipelineName });
+  
+  computed: {
+    ...mapState(VQBModule, [
+      'currentPipelineName'
+    ]),
+    
+    ...mapGetters(VQBModule, [
+      'pipelinesNames'
+    ])
+  },
+  
+  methods: {
+    ...mapActions(VQBModule, [
+      'selectPipeline'
+    ]),
+    
+    selectPipelineByName(pipelineName: string) {
+      this.selectPipeline({ name: pipelineName });
+    }
   }
-}
+});
 </script>

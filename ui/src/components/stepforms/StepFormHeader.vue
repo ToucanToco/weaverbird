@@ -26,34 +26,43 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Component, Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import FAIcon from '@/components/FAIcon.vue';
-@Component({
+
+export default defineComponent({
   name: 'step-form-header',
+  
   components: {
     FAIcon,
   },
-})
-export default class StepFormHeader extends Vue {
-  @Prop()
-  backendError!: string | undefined;
-
-  @Prop({ default: '' })
-  version!: string;
-
-  @Prop({ default: '' })
-  title!: string;
-
-  @Prop({ default: '' })
-  stepName!: string;
-
-  cancelEdition(): void {
-    /* istanbul ignore next */
-    (this.$parent as any).cancelEdition(); // TODO: refactor (old functional logic)
+  
+  props: {
+    backendError: {
+      type: String,
+      default: undefined
+    },
+    version: {
+      type: String,
+      default: ''
+    },
+    title: {
+      type: String,
+      default: ''
+    },
+    stepName: {
+      type: String,
+      default: ''
+    }
+  },
+  
+  methods: {
+    cancelEdition(): void {
+      /* istanbul ignore next */
+      (this.$parent as any).cancelEdition(); // TODO: refactor (old functional logic)
+    }
   }
-}
+});
 </script>
 
 <style lang="scss" scoped>

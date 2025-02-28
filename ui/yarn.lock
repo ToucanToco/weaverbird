@@ -9739,11 +9739,6 @@ pify@^4.0.1:
   resolved "https://registry.yarnpkg.com/pify/-/pify-4.0.1.tgz#4b2cd25c50d598735c50292224fd8c6df41e3231"
   integrity sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==
 
-pinia-class@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/pinia-class/-/pinia-class-0.0.3.tgz#c344434f6cf007e5c0cd02e5a1e66c19d540bf11"
-  integrity sha512-7l1ZB6c50v5aDaSZRauK1CVaUL0ZrOC2Z1xwX03AZCGKnV+EzZmmQ3fm19LgaXhD9oGExb6eezJ8hZDu86s8vw==
-
 pinia@^2.0.29:
   version "2.0.29"
   resolved "https://registry.yarnpkg.com/pinia/-/pinia-2.0.29.tgz#b7e672980fdb14e03839e8139ce55ca97843679d"

@@ -51,8 +51,8 @@
 
 <script lang="ts">
 import _xor from 'lodash/xor';
-import Vue from 'vue';
-import { Component } from 'vue-property-decorator';
+import { defineComponent } from 'vue';
+import { mapActions, mapGetters, mapState } from 'pinia';
 import Draggable from 'vuedraggable';
 
 import FAIcon from '@/components/FAIcon.vue';
@@ -60,146 +60,160 @@ import { copyToClipboard, pasteFromClipboard } from '@/lib/clipboard';
 import type { DomainStep, Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
 import { isPipelineStep } from '@/lib/steps';
 import type { VariableDelimiters } from '@/lib/variables';
-import { Action, Getter, State } from 'pinia-class';
-import { VQBModule, type VQBActions } from '@/store';
+import { VQBModule } from '@/store';
 
 import DeleteConfirmationModal from './DeleteConfirmationModal.vue';
 import Step from './Step.vue';
 
-@Component({
+export default defineComponent({
   name: 'pipeline',
+  
   components: {
     DeleteConfirmationModal,
     Draggable,
     Step,
     FAIcon,
   },
-})
-export default class PipelineComponent extends Vue {
-  // pipeline steps to delete based on their indexes
-  selectedSteps: number[] = [];
-  deleteConfirmationModalIsOpened = false;
-
-  @State(VQBModule) domains!: string[];
-  @State(VQBModule) variableDelimiters!: VariableDelimiters;
-  @State(VQBModule) trustedVariableDelimiters!: VariableDelimiters;
-
-  @Getter(VQBModule, 'computedActiveStepIndex') activeStepIndex!: number;
-  @Getter(VQBModule) domainStep!: DomainStep;
-  @Getter(VQBModule, 'pipeline') steps!: Pipeline;
-  @Getter(VQBModule, 'isPipelineEmpty') onlyDomainStepIsPresent!: boolean;
-  @Getter(VQBModule, 'isStepDisabled') isDisabled!: (index: number) => boolean;
-  @Getter(VQBModule) supportedSteps!: PipelineStepName[];
-
-  @Action(VQBModule) selectStep!: VQBActions['selectStep'];
-  @Action(VQBModule) deleteSteps!: VQBActions['deleteSteps'];
-  @Action(VQBModule) addSteps!: VQBActions['addSteps'];
-  @Action(VQBModule) setPipeline!: VQBActions['setPipeline'];
-
-  get hasSupportedSteps(): boolean {
-    return this.supportedSteps.filter((step) => step !== 'domain').length > 0;
-  }
-
-  get arrangedSteps(): Pipeline {
-    return this.steps;
-  }
-
-  set arrangedSteps(pipeline: Pipeline) {
-    this.updatePipeline({ pipeline });
-  }
-
-  get isDeletingSteps(): boolean {
-    return this.selectedSteps.length > 0;
-  }
-
+  
+  data() {
+    return {
+      // pipeline steps to delete based on their indexes
+      selectedSteps: [] as number[],
+      deleteConfirmationModalIsOpened: false
+    };
+  },
+  
+  computed: {
+    ...mapState(VQBModule, [
+      'domains',
+      'variableDelimiters',
+      'trustedVariableDelimiters'
+    ]),
+    
+    ...mapGetters(VQBModule, {
+      activeStepIndex: 'computedActiveStepIndex',
+      domainStep: 'domainStep',
+      steps: 'pipeline',
+      onlyDomainStepIsPresent: 'isPipelineEmpty',
+      isDisabled: 'isStepDisabled',
+      supportedSteps: 'supportedSteps'
+    }),
+    
+    hasSupportedSteps(): boolean {
+      return this.supportedSteps.filter((step: PipelineStepName) => step !== 'domain').length > 0;
+    },
+    
+    arrangedSteps: {
+      get(): Pipeline {
+        return this.steps;
+      },
+      set(pipeline: Pipeline) {
+        this.updatePipeline({ pipeline });
+      }
+    },
+    
+    isDeletingSteps(): boolean {
+      return this.selectedSteps.length > 0;
+    }
+  },
+  
   created() {
     /* istanbul ignore next */
     document.addEventListener('keydown', this.keyDownEventHandler);
-  }
-
-  destroyed() {
+  },
+  
+  beforeDestroy() {
     /* istanbul ignore next */
     document.removeEventListener('keydown', this.keyDownEventHandler);
-  }
-
-  editStep(step: PipelineStep, index: number) {
-    this.$emit('editStep', step, index);
-  }
-
-  toDelete({ index }: { index: number }): boolean {
-    return this.selectedSteps.indexOf(index) !== -1;
-  }
-
-  toggleStepToDelete({ index }: { index: number }): void {
-    // toggle step to delete using its index in pipeline
-    this.selectedSteps = _xor(this.selectedSteps, [index]);
-  }
-
-  openDeleteConfirmationModal(): void {
-    this.deleteConfirmationModalIsOpened = true;
-  }
-
-  closeDeleteConfirmationModal(): void {
-    this.deleteConfirmationModalIsOpened = false;
-  }
-
-  deleteSelectedSteps(): void {
-    this.deleteSteps({ indexes: this.selectedSteps });
-    // clean steps to delete
-    this.selectedSteps = [];
-    this.closeDeleteConfirmationModal();
-  }
-
-  updatePipeline({ pipeline }: { pipeline: Pipeline }): void {
-    // keep active step content in memory to retrieve new index
-    const selectedStepContent = JSON.stringify(this.steps[this.activeStepIndex]);
-    // update pipeline
-    this.setPipeline({ pipeline });
-    // update index of active step based on old content
-    const newActiveStepIndex = this.steps.findIndex(
-      (step: PipelineStep) => JSON.stringify(step) === selectedStepContent,
-    );
-    this.selectStep({ index: newActiveStepIndex });
-  }
-
-  keyDownEventHandler(event: KeyboardEvent): void {
-    const isPasting: boolean = event.key == 'v' && (event.ctrlKey || event.metaKey);
-    const isCopying: boolean = event.key == 'c' && (event.ctrlKey || event.metaKey);
-    const isDeleting: boolean = event.key === 'Backspace';
-    const isNotFocusingAnyInput = document.activeElement === document.body;
-
-    if (isCopying) {
-      this.copySelectedSteps();
-    } else if (isPasting) {
-      this.pasteSelectedSteps();
-    } else if (isDeleting && isNotFocusingAnyInput) {
-      this.openDeleteConfirmationModal();
+  },
+  
+  methods: {
+    ...mapActions(VQBModule, [
+      'selectStep',
+      'deleteSteps',
+      'addSteps',
+      'setPipeline'
+    ]),
+    
+    editStep(step: PipelineStep, index: number) {
+      this.$emit('editStep', step, index);
+    },
+    
+    toDelete({ index }: { index: number }): boolean {
+      return this.selectedSteps.indexOf(index) !== -1;
+    },
+    
+    toggleStepToDelete({ index }: { index: number }): void {
+      // toggle step to delete using its index in pipeline
+      this.selectedSteps = _xor(this.selectedSteps, [index]);
+    },
+    
+    openDeleteConfirmationModal(): void {
+      this.deleteConfirmationModalIsOpened = true;
+    },
+    
+    closeDeleteConfirmationModal(): void {
+      this.deleteConfirmationModalIsOpened = false;
+    },
+    
+    deleteSelectedSteps(): void {
+      this.deleteSteps({ indexes: this.selectedSteps });
+      // clean steps to delete
+      this.selectedSteps = [];
+      this.closeDeleteConfirmationModal();
+    },
+    
+    updatePipeline({ pipeline }: { pipeline: Pipeline }): void {
+      // keep active step content in memory to retrieve new index
+      const selectedStepContent = JSON.stringify(this.steps[this.activeStepIndex]);
+      // update pipeline
+      this.setPipeline({ pipeline });
+      // update index of active step based on old content
+      const newActiveStepIndex = this.steps.findIndex(
+        (step: PipelineStep) => JSON.stringify(step) === selectedStepContent,
+      );
+      this.selectStep({ index: newActiveStepIndex });
+    },
+    
+    keyDownEventHandler(event: KeyboardEvent): void {
+      const isPasting: boolean = event.key == 'v' && (event.ctrlKey || event.metaKey);
+      const isCopying: boolean = event.key == 'c' && (event.ctrlKey || event.metaKey);
+      const isDeleting: boolean = event.key === 'Backspace';
+      const isNotFocusingAnyInput = document.activeElement === document.body;
+  
+      if (isCopying) {
+        this.copySelectedSteps();
+      } else if (isPasting) {
+        this.pasteSelectedSteps();
+      } else if (isDeleting && isNotFocusingAnyInput) {
+        this.openDeleteConfirmationModal();
+      }
+    },
+    
+    async copySelectedSteps(): Promise<void> {
+      // make sure we have selected steps to copy
+      if (!this.selectedSteps.length) return;
+      // retrieve content of selected steps based on indexes
+      const selectedStepsContent: Pipeline = this.steps.filter(
+        (_, i: number) => this.selectedSteps.indexOf(i) !== -1,
+      );
+      // copy selected steps content to clipboard
+      await copyToClipboard(JSON.stringify(selectedStepsContent));
+    },
+    
+    async pasteSelectedSteps(): Promise<void> {
+      // retrieve data from clipboard
+      const stepsFromClipBoard: string = await pasteFromClipboard();
+      // parse steps string
+      const parsedSteps: any = JSON.parse(stepsFromClipBoard) ?? [];
+      // verify is steps object are well formatted
+      if (Array.isArray(parsedSteps) && parsedSteps.every((step) => isPipelineStep(step))) {
+        // add new steps to pipeline
+        this.addSteps({ steps: parsedSteps });
+      }
     }
   }
-
-  async copySelectedSteps(): Promise<void> {
-    // make sure we have selected steps to copy
-    if (!this.selectedSteps.length) return;
-    // retrieve content of selected steps based on indexes
-    const selectedStepsContent: Pipeline = this.steps.filter(
-      (_, i: number) => this.selectedSteps.indexOf(i) !== -1,
-    );
-    // copy selected steps content to clipboard
-    await copyToClipboard(JSON.stringify(selectedStepsContent));
-  }
-
-  async pasteSelectedSteps(): Promise<void> {
-    // retrieve data from clipboard
-    const stepsFromClipBoard: string = await pasteFromClipboard();
-    // parse steps string
-    const parsedSteps: any = JSON.parse(stepsFromClipBoard) ?? [];
-    // verify is steps object are well formatted
-    if (Array.isArray(parsedSteps) && parsedSteps.every((step) => isPipelineStep(step))) {
-      // add new steps to pipeline
-      this.addSteps({ steps: parsedSteps });
-    }
-  }
-}
+});
 </script>
 
 <style lang="scss" scoped>

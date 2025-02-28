@@ -17,24 +17,29 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Component, Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
-@Component({
+export default defineComponent({
   name: 'action-menu-option',
-})
-export default class ActionMenuOption extends Vue {
-  @Prop({})
-  label!: string;
-
-  @Prop({})
-  isDisabled!: boolean;
-
-  onActionClicked() {
-    if (this.isDisabled) return;
-    this.$emit('actionClicked');
+  
+  props: {
+    label: {
+      type: String,
+      required: true
+    },
+    isDisabled: {
+      type: Boolean,
+      default: false
+    }
+  },
+  
+  methods: {
+    onActionClicked() {
+      if (this.isDisabled) return;
+      this.$emit('actionClicked');
+    }
   }
-}
+});
 </script>
 <style lang="scss">
 @import '../styles/_variables';

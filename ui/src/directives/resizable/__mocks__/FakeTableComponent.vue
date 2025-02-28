@@ -14,36 +14,36 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import type { PropType } from 'vue';
-import { Component, Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import resizable from '@/directives/resizable/resizable';
 import type { ResizableTableOptions } from '@/directives/resizable/ResizableTable';
-@Component({
+
+export default defineComponent({
   name: 'FakeTableComponent',
+  
   directives: {
     resizable,
   },
-})
-export default class FakeTableComponent extends Vue {
-  @Prop({
-    type: Object,
-    default: undefined,
-  })
-  options?: PropType<ResizableTableOptions>;
-
-  @Prop({
-    type: Array,
-    default: () => [{ Col1: '1', Col2: '2', Col3: '3' }],
-  })
-  rows?: Array<{ [name: string]: string }>;
-
-  get columnNames(): string[] {
-    return this.rows ? Object.keys(this.rows[0]) : [];
+  
+  props: {
+    options: {
+      type: Object as PropType<ResizableTableOptions>,
+      default: undefined
+    },
+    rows: {
+      type: Array as PropType<Array<{ [name: string]: string }>>,
+      default: () => [{ Col1: '1', Col2: '2', Col3: '3' }]
+    }
+  },
+  
+  computed: {
+    columnNames(): string[] {
+      return this.rows ? Object.keys(this.rows[0]) : [];
+    },
+    directiveOptions(): any {
+      return { columns: this.columnNames, ...this.options };
+    }
   }
-  get directiveOptions(): any {
-    return { columns: this.columnNames, ...this.options };
-  }
-}
+});
 </script>

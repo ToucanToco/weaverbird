@@ -63,8 +63,8 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from 'vue';
-import { Component, Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
+import { useVQBStore, VQBModule } from '@/store';
 
 import FAIcon from '@/components/FAIcon.vue';
 import {
@@ -74,147 +74,178 @@ import {
 } from '@/lib/labeller';
 import type { PipelineStep, Reference } from '@/lib/steps';
 import type { VariableDelimiters } from '@/lib/variables';
-import { State, Getter } from 'pinia-class';
-import { VQBModule } from '@/store';
 
 import PreviewSourceSubset from './PreviewSourceSubset.vue';
 
-@Component({
+export default defineComponent({
   name: 'step',
+  
   components: {
     FAIcon,
     PreviewSourceSubset,
   },
-})
-export default class Step extends Vue {
-  @State(VQBModule) availableDomains!: { name: string; uid: string }[];
-  @State(VQBModule) customRetrieveDomainName?: (domain: Reference) => string;
-
-  @Prop(Boolean)
-  readonly isFirst!: boolean;
-
-  @Prop(Boolean)
-  readonly isLast!: boolean;
-
-  @Prop(Boolean)
-  readonly isActive!: boolean;
-
-  @Prop(Boolean)
-  readonly isLastActive!: boolean;
-
-  @Prop(Boolean)
-  readonly isDisabled!: boolean;
-
-  @Prop(Boolean)
-  readonly toDelete!: boolean;
-
-  @Prop({ type: Boolean, default: true })
-  readonly isEditable?: boolean;
-
-  @Prop()
-  step!: PipelineStep;
-
-  @Prop()
-  variableDelimiters!: VariableDelimiters;
-
-  @Prop()
-  trustedVariableDelimiters!: VariableDelimiters;
-
-  @Prop()
-  readonly indexInPipeline!: number;
-
-  isEditingPreviewSourceSubset = false;
-
-  @Getter(VQBModule) stepConfig!: (index: number) => PipelineStep;
-
-  @Getter(VQBModule) stepErrors!: (index: number) => string | undefined;
-
-  @Getter(VQBModule, 'previewSourceRowsSubset') previewSourceRowsSubset?:
-    | number
-    | 'unlimited'
-    | undefined;
-
-  get stepName(): string {
-    // enable to retrieve the related name of a query referenced behind an uid
-    return humanReadableLabel(this.step, (domain: Reference) => {
-      const customDomainName = this.customRetrieveDomainName?.(domain);
-      return customDomainName ?? retrieveDomainName(domain, this.availableDomains);
-    });
-  }
-
-  get canConfigurePreviewSourceSubset(): boolean {
-    return Boolean(this.isFirst && this.previewSourceRowsSubset);
-  }
-
-  get errorMessage(): string | undefined {
-    return this.stepErrors(this.indexInPipeline);
-  }
-
-  get stepTitle(): string {
-    const replaceDelimiters = { start: '', end: '' };
-    return labelWithReadeableVariables(
-      this.stepName,
-      this.variableDelimiters,
-      replaceDelimiters,
-      this.trustedVariableDelimiters,
-    );
-  }
-
-  get stepLabel(): string {
-    const replaceDelimiters = { start: '<em>', end: '</em>' };
-    return labelWithReadeableVariables(
-      this.stepName,
-      this.variableDelimiters,
-      replaceDelimiters,
-      this.trustedVariableDelimiters,
-    );
-  }
-
-  get classContainer() {
+  
+  props: {
+    isFirst: {
+      type: Boolean,
+      required: true
+    },
+    isLast: {
+      type: Boolean,
+      required: true
+    },
+    isActive: {
+      type: Boolean,
+      required: true
+    },
+    isLastActive: {
+      type: Boolean,
+      required: true
+    },
+    isDisabled: {
+      type: Boolean,
+      required: true
+    },
+    toDelete: {
+      type: Boolean,
+      required: true
+    },
+    isEditable: {
+      type: Boolean,
+      default: true
+    },
+    step: {
+      type: Object as PropType<PipelineStep>,
+      required: true
+    },
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters>,
+      required: true
+    },
+    trustedVariableDelimiters: {
+      type: Object as PropType<VariableDelimiters>,
+      required: true
+    },
+    indexInPipeline: {
+      type: Number,
+      required: true
+    }
+  },
+  
+  data() {
     return {
-      'query-pipeline-step__container': true,
-      'query-pipeline-step__container--togglable': !this.isFirst,
-      'query-pipeline-step__container--draggable': !this.isFirst,
-      'query-pipeline-step__container--to-delete': this.toDelete,
-      'query-pipeline-step__container--active': this.isActive,
-      'query-pipeline-step__container--last-active': this.isLastActive,
-      'query-pipeline-step__container--disabled': this.isDisabled,
-      'query-pipeline-step__container--errors': this.errorMessage && !this.isDisabled,
-      'query-pipeline-step__container--preview-source-subset':
-        this.canConfigurePreviewSourceSubset && this.isEditingPreviewSourceSubset,
+      isEditingPreviewSourceSubset: false
     };
+  },
+  
+  computed: {
+    // Access store state
+    availableDomains(): { name: string; uid: string }[] {
+      return useVQBStore().availableDomains;
+    },
+    
+    customRetrieveDomainName(): ((domain: Reference) => string) | undefined {
+      return useVQBStore().customRetrieveDomainName;
+    },
+    
+    // Access store getters
+    stepConfig(): (index: number) => PipelineStep {
+      return useVQBStore().stepConfig;
+    },
+    
+    stepErrors(): (index: number) => string | undefined {
+      return useVQBStore().stepErrors;
+    },
+    
+    previewSourceRowsSubset(): number | 'unlimited' | undefined {
+      return useVQBStore().previewSourceRowsSubset;
+    },
+    
+    // Component computed properties
+    stepName(): string {
+      // enable to retrieve the related name of a query referenced behind an uid
+      return humanReadableLabel(this.step, (domain: Reference) => {
+        const customDomainName = this.customRetrieveDomainName?.(domain);
+        return customDomainName ?? retrieveDomainName(domain, this.availableDomains);
+      });
+    },
+    
+    canConfigurePreviewSourceSubset(): boolean {
+      return Boolean(this.isFirst && this.previewSourceRowsSubset);
+    },
+    
+    errorMessage(): string | undefined {
+      return this.stepErrors(this.indexInPipeline);
+    },
+    
+    stepTitle(): string {
+      const replaceDelimiters = { start: '', end: '' };
+      return labelWithReadeableVariables(
+        this.stepName,
+        this.variableDelimiters,
+        replaceDelimiters,
+        this.trustedVariableDelimiters,
+      );
+    },
+    
+    stepLabel(): string {
+      const replaceDelimiters = { start: '<em>', end: '</em>' };
+      return labelWithReadeableVariables(
+        this.stepName,
+        this.variableDelimiters,
+        replaceDelimiters,
+        this.trustedVariableDelimiters,
+      );
+    },
+    
+    classContainer() {
+      return {
+        'query-pipeline-step__container': true,
+        'query-pipeline-step__container--togglable': !this.isFirst,
+        'query-pipeline-step__container--draggable': !this.isFirst,
+        'query-pipeline-step__container--to-delete': this.toDelete,
+        'query-pipeline-step__container--active': this.isActive,
+        'query-pipeline-step__container--last-active': this.isLastActive,
+        'query-pipeline-step__container--disabled': this.isDisabled,
+        'query-pipeline-step__container--errors': this.errorMessage && !this.isDisabled,
+        'query-pipeline-step__container--preview-source-subset':
+          this.canConfigurePreviewSourceSubset && this.isEditingPreviewSourceSubset,
+      };
+    },
+    
+    firstStrokeClass() {
+      return {
+        'query-pipeline-queue__stroke': true,
+        'query-pipeline-queue__stroke--hidden': this.isFirst,
+      };
+    },
+    
+    lastStrokeClass() {
+      return {
+        'query-pipeline-queue__stroke': true,
+        'query-pipeline-queue__stroke--hidden': this.isLast,
+      };
+    }
+  },
+  
+  methods: {
+    editStep() {
+      this.$emit('editStep', this.stepConfig(this.indexInPipeline), this.indexInPipeline);
+    },
+    
+    select() {
+      this.$emit('selectedStep');
+    },
+    
+    toggleDelete(): void {
+      if (!this.isFirst) this.$emit('toggleDelete');
+    },
+    
+    togglePreviewSourceSubsetForm(): void {
+      this.isEditingPreviewSourceSubset = !this.isEditingPreviewSourceSubset;
+    }
   }
-
-  get firstStrokeClass() {
-    return {
-      'query-pipeline-queue__stroke': true,
-      'query-pipeline-queue__stroke--hidden': this.isFirst,
-    };
-  }
-
-  get lastStrokeClass() {
-    return {
-      'query-pipeline-queue__stroke': true,
-      'query-pipeline-queue__stroke--hidden': this.isLast,
-    };
-  }
-
-  editStep() {
-    this.$emit('editStep', this.stepConfig(this.indexInPipeline), this.indexInPipeline);
-  }
-
-  select() {
-    this.$emit('selectedStep');
-  }
-
-  toggleDelete(): void {
-    if (!this.isFirst) this.$emit('toggleDelete');
-  }
-
-  togglePreviewSourceSubsetForm(): void {
-    this.isEditingPreviewSourceSubset = !this.isEditingPreviewSourceSubset;
-  }
-}
+});
 </script>
 <style lang="scss" scoped>
 @import '../styles/_variables';

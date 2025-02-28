@@ -35,43 +35,45 @@
     groups: [
       {
         conditions: [
-          { column: 'Section', operator: 'eq',  value: 'A'}
+          { column: 'Section', operator: 'eq',  value: 'A'},
           { column: 'City', operator: 'neq',  value: 'Paris'}
         ],
-        groups: []
+        groups: [],
         operator: 'or'
       }
     ],
     operator: 'and'
   }
 */
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import ConditionsGroup from './ConditionsGroup.vue';
 import type { AbstractFilterTree } from './tree-types';
 
-@Component({
+export default defineComponent({
   name: 'ConditionsEditor',
+
   components: {
     ConditionsGroup,
   },
-})
-export default class ConditionsEditor extends Vue {
-  @Prop({
-    type: Object,
-    default: () => {},
-  })
-  conditionsTree!: AbstractFilterTree;
 
-  @Prop({
-    required: true,
-  })
-  defaultValue!: any;
+  props: {
+    conditionsTree: {
+      type: Object as PropType<AbstractFilterTree>,
+      default: () => ({}),
+    },
+    defaultValue: {
+      type: null,
+      required: true,
+    },
+  },
 
-  updateConditionsTree(newConditionsTree: AbstractFilterTree) {
-    this.$emit('conditionsTreeUpdated', newConditionsTree);
-  }
-}
+  methods: {
+    updateConditionsTree(newConditionsTree: AbstractFilterTree): void {
+      this.$emit('conditionsTreeUpdated', newConditionsTree);
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>

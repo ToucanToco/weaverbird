@@ -22,96 +22,121 @@ import _isEmpty from 'lodash/isEmpty';
 import _isEqual from 'lodash/isEqual';
 // @ts-ignore
 import DatePicker from 'v-calendar/src/components/DatePicker.vue';
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import { clampRange, isDateRange } from '@/lib/dates';
 import type { DatePickerHighlight, DateRange } from '@/lib/dates';
 import type { LocaleIdentifier } from '@/lib/internationalization';
 
-@Component({
+export default defineComponent({
   name: 'calendar',
+  
   components: {
     DatePicker,
   },
-})
-export default class Calendar extends Vue {
-  @Prop({ default: undefined })
-  value!: Date | DateRange | undefined;
-
-  @Prop({ default: undefined })
-  highlightedDates!: DateRange | undefined;
-
-  @Prop({ default: () => ({ start: undefined, end: undefined }) })
-  availableDates!: DateRange;
-
-  @Prop({ default: false })
-  isRange!: boolean;
-
-  @Prop({ type: String, required: false })
-  locale?: LocaleIdentifier;
-
-  defaultDate: '' | Date = '';
-
-  get boundedValue(): Date | DateRange | undefined {
-    if (
-      !(this.value instanceof Date) &&
-      isDateRange(this.value) &&
-      isDateRange(this.availableDates)
-    ) {
-      return clampRange(this.value, this.availableDates);
+  
+  props: {
+    value: {
+      type: [Date, Object] as PropType<Date | DateRange | undefined>,
+      default: undefined
+    },
+    highlightedDates: {
+      type: Object as PropType<DateRange | undefined>,
+      default: undefined
+    },
+    availableDates: {
+      type: Object as PropType<DateRange>,
+      default: () => ({ start: undefined, end: undefined })
+    },
+    isRange: {
+      type: Boolean,
+      default: false
+    },
+    locale: {
+      type: String as PropType<LocaleIdentifier>,
+      required: false
     }
-    return this.value;
-  }
-
-  // Emitted values should always been days at midnight (UTC)
-  get datePickerModelConfig(): object {
+  },
+  
+  data() {
     return {
-      timeAdjust: '00:00:00',
-      start: {
+      defaultDate: '' as ('' | Date)
+    };
+  },
+  
+  computed: {
+    boundedValue(): Date | DateRange | undefined {
+      if (
+        !(this.value instanceof Date) &&
+        isDateRange(this.value) &&
+        isDateRange(this.availableDates)
+      ) {
+        return clampRange(this.value, this.availableDates);
+      }
+      return this.value;
+    },
+    
+    // Emitted values should always been days at midnight (UTC)
+    datePickerModelConfig(): object {
+      return {
         timeAdjust: '00:00:00',
-      },
-      end: {
-        timeAdjust: '23:59:59',
-      },
-    };
-  }
-
-  get shouldUpdateDefaultDate(): boolean {
-    return (
-      !this.boundedValue || (!(this.boundedValue instanceof Date) && !this.boundedValue?.start)
-    );
-  }
-
-  get selectedDatesStyle(): DatePickerHighlight {
-    return {
-      highlight: {
-        class: 'calendar-value',
-        contentClass: 'calendar-content',
-      },
-    };
-  }
-
-  get rangeSelectedDatesStyle(): DatePickerHighlight {
-    return {
-      highlight: {
-        class: 'calendar-range',
-        contentClass: 'calendar-content',
-      },
-    };
-  }
-
-  // style to apply to dates to highlight to fake a range selected behaviour
-  get highlights(): DatePickerHighlight[] {
-    if (!this.highlightedDates) return [];
-    return [
-      {
-        key: 'highlighted',
-        highlight: this.rangeSelectedDatesStyle.highlight,
-        dates: this.highlightedDates,
-      },
-    ];
-  }
-
+        start: {
+          timeAdjust: '00:00:00',
+        },
+        end: {
+          timeAdjust: '23:59:59',
+        },
+      };
+    },
+    
+    shouldUpdateDefaultDate(): boolean {
+      return (
+        !this.boundedValue || (!(this.boundedValue instanceof Date) && !this.boundedValue?.start)
+      );
+    },
+    
+    selectedDatesStyle(): DatePickerHighlight {
+      return {
+        highlight: {
+          class: 'calendar-value',
+          contentClass: 'calendar-content',
+        },
+      };
+    },
+    
+    rangeSelectedDatesStyle(): DatePickerHighlight {
+      return {
+        highlight: {
+          class: 'calendar-range',
+          contentClass: 'calendar-content',
+        },
+      };
+    },
+    
+    // style to apply to dates to highlight to fake a range selected behaviour
+    highlights(): DatePickerHighlight[] {
+      if (!this.highlightedDates) return [];
+      return [
+        {
+          key: 'highlighted',
+          highlight: this.rangeSelectedDatesStyle.highlight,
+          dates: this.highlightedDates,
+        },
+      ];
+    }
+  },
+  
+  watch: {
+    availableDates: {
+      handler() {
+        if (this.availableDates.start && _isEmpty(this.boundedValue)) {
+          if (this.value) this.onInput(undefined);
+          this.defaultDate = this.availableDates.start;
+        }
+      }
+    }
+  },
+  
   created() {
     if (this.shouldUpdateDefaultDate) {
       this.defaultDate = this.availableDates?.start ?? '';
@@ -120,29 +145,23 @@ export default class Calendar extends Vue {
     if (!_isEqual(this.boundedValue, this.value)) {
       this.onInput(this.boundedValue);
     }
+  },
+  
+  methods: {
+    onInput(value: Date | DateRange | undefined): void {
+      if (value == null || value instanceof Date) {
+        this.$emit('input', value);
+      } else {
+        this.$emit('input', { ...value, duration: 'day' });
+      }
+    },
+    
+    // when user start to select a range he has only start value selected, we disable validate button until he select the end value
+    onDrag(dragValue: DateRange): void {
+      this.onInput({ start: dragValue.start, duration: 'day' });
+    },
   }
-
-  onInput(value: Date | DateRange | undefined): void {
-    if (value == null || value instanceof Date) {
-      this.$emit('input', value);
-    } else {
-      this.$emit('input', { ...value, duration: 'day' });
-    }
-  }
-
-  // when user start to select a range he has only start value selected, we disable validate button until he select the end value
-  onDrag(dragValue: DateRange): void {
-    this.onInput({ start: dragValue.start, duration: 'day' });
-  }
-
-  @Watch('availableDates')
-  resetValueOutOfBounds() {
-    if (this.availableDates.start && _isEmpty(this.boundedValue)) {
-      if (this.value) this.onInput(undefined);
-      this.defaultDate = this.availableDates.start;
-    }
-  }
-}
+});
 </script>
 
 <style scoped lang="scss">
