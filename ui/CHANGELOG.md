@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [0.115.6] - 2025-02-28
+
+### Fixed
+
+ - Re-enable variables for column names that affect the schema
+
 ## [0.115.5] - 2025-02-11
 
 ### Changed
@@ -1626,7 +1632,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 ### Added
 
 - Initial version, showtime!
-
+[0.115.6]: https://github.com/ToucanToco/weaverbird/compare/v0.115.5...v0.115.6
 [0.115.5]: https://github.com/ToucanToco/weaverbird/compare/v0.115.4...v0.115.5
 [0.115.4]: https://github.com/ToucanToco/weaverbird/compare/v0.115.3...v0.115.4
 [0.115.3]: https://github.com/ToucanToco/weaverbird/compare/v0.115.2...v0.115.3
