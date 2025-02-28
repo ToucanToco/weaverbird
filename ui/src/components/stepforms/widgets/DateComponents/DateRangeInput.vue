@@ -342,7 +342,7 @@ export default defineComponent({
 
     relativeTabValue: {
       get(): RelativeDate | undefined {
-        return !this.isFixedTabSelected ? this.currentTabValue as RelativeDate : undefined;
+        return !this.isFixedTabSelected ? (this.currentTabValue as RelativeDate) : undefined;
       },
       set(value: RelativeDate | undefined): void {
         if (value) {

@@ -11,9 +11,9 @@ import resizable from '@/directives/resizable/resizable';
 
 export default defineComponent({
   name: 'FakeOtherComponent',
-  
+
   directives: {
     resizable,
-  }
+  },
 });
 </script>

@@ -49,34 +49,34 @@ Vue.use(VTooltip);
  */
 export default defineComponent({
   name: 'variable-tag',
-  
+
   components: {
     FAIcon,
   },
-  
+
   props: {
     value: {
       type: String,
-      required: true
+      required: true,
     },
     availableVariables: {
       type: Array as PropType<VariablesBucket>,
-      default: () => []
+      default: () => [],
     },
     variableDelimiters: {
       type: Object as PropType<VariableDelimiters>,
-      default: undefined
+      default: undefined,
     },
     trustedVariableDelimiters: {
       type: Object as PropType<VariableDelimiters>,
-      default: undefined
+      default: undefined,
     },
     isDate: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  
+
   computed: {
     /**
      * Retrieve identifier by removing delimiters from value.
@@ -88,21 +88,21 @@ export default defineComponent({
         this.trustedVariableDelimiters,
       );
     },
-    
+
     /**
      * Retrieve variable in available variables by identifier.
      */
     variable() {
       return this.availableVariables.find((aV) => aV.identifier === this.variableIdentifier);
     },
-    
+
     /*
     TO_FIX: every variable not found in availableVariables is an advanced variable
     */
     isAdvancedVariable() {
       return !this.variable;
     },
-    
+
     /**
      * Display label rather than identifier if available.
      */
@@ -115,27 +115,27 @@ export default defineComponent({
         return 'AdVariable';
       }
     },
-    
+
     /**
      * Display as list if value is an array.
      */
     variableValue() {
       const value = this.variable?.value || '';
       return Array.isArray(value) ? value.join(', ') : value;
-    }
+    },
   },
-  
+
   methods: {
     removeVariableTag() {
       this.$emit('removed');
     },
-    
+
     editAdvancedVariable() {
       if (this.isAdvancedVariable) {
         this.$emit('edited', this.value);
       }
-    }
-  }
+    },
+  },
 });
 </script>
 

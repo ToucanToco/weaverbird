@@ -37,67 +37,67 @@ import type { PaginationContext } from '@/lib/dataset/pagination';
 
 export default defineComponent({
   name: 'pagination',
-  
+
   components: {
     ArrowPagination,
     Paginate,
   },
-  
+
   props: {
     paginationContext: {
       type: Object as PropType<PaginationContext>,
-      required: true
-    }
+      required: true,
+    },
   },
-  
+
   data() {
     return {
-      useArrowPagination: false
+      useArrowPagination: false,
     };
   },
-  
+
   computed: {
     showPager(): boolean {
       return this.paginationContext.shouldPaginate;
     },
-    
+
     pageCount() {
       if (this.paginationContext) {
         return numberOfPages(this.paginationContext);
       }
       return 1;
     },
-    
+
     pageNumber() {
       if (this.paginationContext) {
         return this.paginationContext.pageNumber;
       }
       return 1;
     },
-    
+
     paginationCounterText() {
       return counterText({
         useArrowPagination: false,
         paginationContext: this.paginationContext,
         pageCount: this.pageCount,
       });
-    }
+    },
   },
-  
+
   watch: {
     paginationContext: {
       immediate: true,
       handler(paginationContext: PaginationContext, oldPaginationContext: PaginationContext) {
         this.useArrowPagination = shouldUseArrowPagination(paginationContext, oldPaginationContext);
-      }
-    }
+      },
+    },
   },
-  
+
   methods: {
     pageClicked(pageNumber: number) {
       this.$emit('setPage', { pageNumber });
-    }
-  }
+    },
+  },
 });
 </script>
 <style lang="scss">

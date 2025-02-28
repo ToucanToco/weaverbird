@@ -30,43 +30,44 @@ import FAIcon from '@/components/FAIcon.vue';
 
 export default defineComponent({
   name: 'PreviewSourceSubset',
-  
+
   components: {
     FAIcon,
   },
-  
+
   data() {
     const store = useVQBStore();
-    const initialValue = store.previewSourceRowsSubset === 'unlimited' 
-      ? 100000000 // we don't support 'unlimited' value (yet ?), use an arbitrary number instead
-      : store.previewSourceRowsSubset;
-    
+    const initialValue =
+      store.previewSourceRowsSubset === 'unlimited'
+        ? 100000000 // we don't support 'unlimited' value (yet ?), use an arbitrary number instead
+        : store.previewSourceRowsSubset;
+
     return {
-      rowsSubsetInput: initialValue as number | string | undefined
+      rowsSubsetInput: initialValue as number | string | undefined,
     };
   },
-  
+
   computed: {
     previewSourceRowsSubset(): number | 'unlimited' | undefined {
       return useVQBStore().previewSourceRowsSubset;
     },
-    
+
     lastSuccessfulPreviewRowsSubset() {
       return this.previewSourceRowsSubset === 'unlimited'
         ? 100000000 // we don't support 'unlimited' value (yet ?), use an arbitrary number instead
         : this.previewSourceRowsSubset;
-    }
+    },
   },
-  
+
   watch: {
     lastSuccessfulPreviewRowsSubset: {
       handler() {
         this.rowsSubsetInput = this.lastSuccessfulPreviewRowsSubset;
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
-  
+
   methods: {
     refreshPreview() {
       const store = useVQBStore();
@@ -75,8 +76,8 @@ export default defineComponent({
           typeof this.rowsSubsetInput === 'number' ? this.rowsSubsetInput : undefined,
       });
       store.updateDataset();
-    }
-  }
+    },
+  },
 });
 </script>
 

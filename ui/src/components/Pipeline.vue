@@ -67,102 +67,93 @@ import Step from './Step.vue';
 
 export default defineComponent({
   name: 'pipeline',
-  
+
   components: {
     DeleteConfirmationModal,
     Draggable,
     Step,
     FAIcon,
   },
-  
+
   data() {
     return {
       // pipeline steps to delete based on their indexes
       selectedSteps: [] as number[],
-      deleteConfirmationModalIsOpened: false
+      deleteConfirmationModalIsOpened: false,
     };
   },
-  
+
   computed: {
-    ...mapState(VQBModule, [
-      'domains',
-      'variableDelimiters',
-      'trustedVariableDelimiters'
-    ]),
-    
+    ...mapState(VQBModule, ['domains', 'variableDelimiters', 'trustedVariableDelimiters']),
+
     ...mapGetters(VQBModule, {
       activeStepIndex: 'computedActiveStepIndex',
       domainStep: 'domainStep',
       steps: 'pipeline',
       onlyDomainStepIsPresent: 'isPipelineEmpty',
       isDisabled: 'isStepDisabled',
-      supportedSteps: 'supportedSteps'
+      supportedSteps: 'supportedSteps',
     }),
-    
+
     hasSupportedSteps(): boolean {
       return this.supportedSteps.filter((step: PipelineStepName) => step !== 'domain').length > 0;
     },
-    
+
     arrangedSteps: {
       get(): Pipeline {
         return this.steps;
       },
       set(pipeline: Pipeline) {
         this.updatePipeline({ pipeline });
-      }
+      },
     },
-    
+
     isDeletingSteps(): boolean {
       return this.selectedSteps.length > 0;
-    }
+    },
   },
-  
+
   created() {
     /* istanbul ignore next */
     document.addEventListener('keydown', this.keyDownEventHandler);
   },
-  
+
   beforeDestroy() {
     /* istanbul ignore next */
     document.removeEventListener('keydown', this.keyDownEventHandler);
   },
-  
+
   methods: {
-    ...mapActions(VQBModule, [
-      'selectStep',
-      'deleteSteps',
-      'addSteps',
-      'setPipeline'
-    ]),
-    
+    ...mapActions(VQBModule, ['selectStep', 'deleteSteps', 'addSteps', 'setPipeline']),
+
     editStep(step: PipelineStep, index: number) {
       this.$emit('editStep', step, index);
     },
-    
+
     toDelete({ index }: { index: number }): boolean {
       return this.selectedSteps.indexOf(index) !== -1;
     },
-    
+
     toggleStepToDelete({ index }: { index: number }): void {
       // toggle step to delete using its index in pipeline
       this.selectedSteps = _xor(this.selectedSteps, [index]);
     },
-    
+
     openDeleteConfirmationModal(): void {
       this.deleteConfirmationModalIsOpened = true;
     },
-    
+
     closeDeleteConfirmationModal(): void {
       this.deleteConfirmationModalIsOpened = false;
     },
-    
+
     deleteSelectedSteps(): void {
       this.deleteSteps({ indexes: this.selectedSteps });
       // clean steps to delete
       this.selectedSteps = [];
       this.closeDeleteConfirmationModal();
     },
-    
+
     updatePipeline({ pipeline }: { pipeline: Pipeline }): void {
       // keep active step content in memory to retrieve new index
       const selectedStepContent = JSON.stringify(this.steps[this.activeStepIndex]);
@@ -174,13 +165,13 @@ export default defineComponent({
       );
       this.selectStep({ index: newActiveStepIndex });
     },
-    
+
     keyDownEventHandler(event: KeyboardEvent): void {
       const isPasting: boolean = event.key == 'v' && (event.ctrlKey || event.metaKey);
       const isCopying: boolean = event.key == 'c' && (event.ctrlKey || event.metaKey);
       const isDeleting: boolean = event.key === 'Backspace';
       const isNotFocusingAnyInput = document.activeElement === document.body;
-  
+
       if (isCopying) {
         this.copySelectedSteps();
       } else if (isPasting) {
@@ -189,7 +180,7 @@ export default defineComponent({
         this.openDeleteConfirmationModal();
       }
     },
-    
+
     async copySelectedSteps(): Promise<void> {
       // make sure we have selected steps to copy
       if (!this.selectedSteps.length) return;
@@ -200,7 +191,7 @@ export default defineComponent({
       // copy selected steps content to clipboard
       await copyToClipboard(JSON.stringify(selectedStepsContent));
     },
-    
+
     async pasteSelectedSteps(): Promise<void> {
       // retrieve data from clipboard
       const stepsFromClipBoard: string = await pasteFromClipboard();
@@ -211,8 +202,8 @@ export default defineComponent({
         // add new steps to pipeline
         this.addSteps({ steps: parsedSteps });
       }
-    }
-  }
+    },
+  },
 });
 </script>
 

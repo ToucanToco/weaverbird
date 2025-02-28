@@ -38,7 +38,7 @@ export default defineComponent({
 
   components: {
     VariableList,
-    VariableListOption
+    VariableListOption,
   },
 
   props: {

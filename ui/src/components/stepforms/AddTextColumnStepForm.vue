@@ -56,7 +56,7 @@ export default defineComponent({
       default: (): AddTextColumnStep => ({
         name: 'text',
         newColumn: '',
-        text: ''
+        text: '',
       }),
     },
   },

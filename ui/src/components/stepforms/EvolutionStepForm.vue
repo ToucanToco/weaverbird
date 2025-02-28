@@ -144,7 +144,9 @@ export default defineComponent({
     },
     evolutionType: {
       get(): EvolutionType {
-        return this.evolutionTypes.filter((d) => d.evolutionType === this.editedStep.evolutionType)[0];
+        return this.evolutionTypes.filter(
+          (d) => d.evolutionType === this.editedStep.evolutionType,
+        )[0];
       },
       set(input: EvolutionType) {
         this.editedStep.evolutionType = input.evolutionType;

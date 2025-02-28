@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { type PropType,defineComponent } from 'vue';
+import { type PropType, defineComponent } from 'vue';
 
 import Calendar from '@/components/DatePicker/Calendar.vue';
 import CustomGranularityCalendar from '@/components/DatePicker/CustomGranularityCalendar.vue';

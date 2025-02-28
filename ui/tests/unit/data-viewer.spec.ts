@@ -579,12 +579,12 @@ describe('Data Viewer', () => {
           },
         }),
       );
-      wrapper = shallowMount(DataViewer, { 
-        pinia, 
+      wrapper = shallowMount(DataViewer, {
+        pinia,
         localVue,
         methods: {
-          openStepForm: openStepFormStub
-        }
+          openStepForm: openStepFormStub,
+        },
       });
     });
 

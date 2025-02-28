@@ -43,62 +43,62 @@ import type { VariableDelimiters } from '@/lib/variables';
  */
 export default defineComponent({
   name: 'advanced-variable-modal',
-  
+
   components: {
     CodeEditorWidget,
     FAIcon,
   },
-  
+
   props: {
     isOpened: {
       type: Boolean,
-      default: false
+      default: false,
     },
     variable: {
       type: String,
-      default: ''
+      default: '',
     },
     variableDelimiters: {
       type: Object as PropType<VariableDelimiters>,
-      default: () => ({ start: '{{', end: '}}' })
-    }
+      default: () => ({ start: '{{', end: '}}' }),
+    },
   },
-  
+
   data() {
     return {
-      value: ''
+      value: '',
     };
   },
-  
+
   computed: {
     variableIdentifier() {
       return extractVariableIdentifier(this.variable, this.variableDelimiters) || '';
     },
-    
+
     canSave() {
       return this.value && this.variableIdentifier !== this.value;
-    }
+    },
   },
-  
+
   watch: {
     isOpened(isOpened: boolean) {
       if (isOpened) {
         this.value = this.variableIdentifier;
       }
-    }
+    },
   },
-  
+
   methods: {
     close() {
       this.$emit('closed');
     },
-    
+
     save() {
       if (this.canSave) {
         this.$emit('input', this.value);
       }
-    }
-  }
+    },
+  },
 });
 </script>
 

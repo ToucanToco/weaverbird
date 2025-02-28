@@ -11,12 +11,12 @@ import type { FAIconName } from '@/assets/FA-ICONS';
 
 export default defineComponent({
   name: 'FA-icon',
-  
+
   props: {
     icon: {
       type: String as PropType<FAIconName>,
-      default: ''
-    }
-  }
+      default: '',
+    },
+  },
 });
 </script>

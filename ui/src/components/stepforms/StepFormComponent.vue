@@ -93,7 +93,9 @@ export default defineComponent({
       required: true,
     },
     getColumnNamesFromPipeline: {
-      type: Function as PropType<(pipelineNameOrDomain: string | ReferenceToExternalQuery) => Promise<string[] | undefined>>,
+      type: Function as PropType<
+        (pipelineNameOrDomain: string | ReferenceToExternalQuery) => Promise<string[] | undefined>
+      >,
       required: true,
     },
     selectedColumn: {
@@ -123,9 +125,12 @@ export default defineComponent({
       }
     };
 
-    watch(() => props.selectedColumn, () => {
-      setSelectedColumns({ column: props.selectedColumn });
-    });
+    watch(
+      () => props.selectedColumn,
+      () => {
+        setSelectedColumns({ column: props.selectedColumn });
+      },
+    );
 
     return {
       selectedColumns,

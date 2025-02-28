@@ -18,46 +18,46 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'resizable-panels',
-  
+
   data() {
     return {
-      ratio: 0.4
+      ratio: 0.4,
     };
   },
-  
+
   computed: {
     leftPanelWidth() {
       return {
         width: `${this.ratio * 100}%`,
       };
     },
-    
+
     rightPanelWidth() {
       return {
         width: `${(1 - this.ratio) * 100}%`,
       };
-    }
+    },
   },
-  
+
   methods: {
     startResize() {
       const containerWith = this.$el.getBoundingClientRect().width;
-  
+
       const mousemoveListener = (e: MouseEvent) => {
         this.ratio = this.ratio + e.movementX / containerWith;
       };
-  
+
       const mouseupListener = () => {
         window.removeEventListener('mousemove', mousemoveListener);
         window.removeEventListener('mouseup', mouseupListener);
         window.removeEventListener('blur', mouseupListener);
       };
-  
+
       window.addEventListener('mousemove', mousemoveListener);
       window.addEventListener('mouseup', mouseupListener);
       window.addEventListener('blur', mouseupListener);
-    }
-  }
+    },
+  },
 });
 </script>
 <style lang="scss" scoped>

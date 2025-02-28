@@ -38,32 +38,27 @@ import { CATEGORY_BUTTONS } from './constants';
 
 export default defineComponent({
   name: 'action-toolbar',
-  
+
   components: {
     ActionToolbarButton,
     ActionToolbarSearch,
   },
-  
+
   data() {
     return {
-      isActiveActionToolbarButton: -1
+      isActiveActionToolbarButton: -1,
     };
   },
-  
+
   computed: {
-    ...mapState(VQBModule, [
-      'selectedColumns',
-      'featureFlags'
-    ]),
-    
-    ...mapGetters(VQBModule, [
-      'unsupportedSteps'
-    ]),
-    
+    ...mapState(VQBModule, ['selectedColumns', 'featureFlags']),
+
+    ...mapGetters(VQBModule, ['unsupportedSteps']),
+
     hasSupportedButtons(): boolean {
       return this.supportedButtons.length > 0;
     },
-    
+
     // Enable to develop steps under feature flag
     featureFlagsAllowedButtons(): ButtonDef[] {
       return CATEGORY_BUTTONS.filter((d) => {
@@ -74,20 +69,20 @@ export default defineComponent({
         }
       });
     },
-    
+
     // Filter buttons that contains at least one supported step
     supportedButtons(): ButtonDef[] {
       return this.featureFlagsAllowedButtons;
     },
-    
+
     formattedButtons() {
       return this.supportedButtons.map((d, index) => {
         let isActionToolbarMenuOpened = false;
-  
+
         if (index === this.isActiveActionToolbarButton) {
           isActionToolbarMenuOpened = true;
         }
-  
+
         return {
           ...d,
           class: {
@@ -98,29 +93,29 @@ export default defineComponent({
         };
       });
     },
-    
+
     actionToolbarSearchIndex() {
       return this.formattedButtons.length;
     },
-    
+
     isActionToolbarSearchOpened() {
       return this.isActiveActionToolbarButton === this.actionToolbarSearchIndex;
-    }
+    },
   },
-  
+
   methods: {
     actionClicked(stepName: PipelineStepName, defaults = {}) {
       this.$emit('actionClicked', stepName, defaults);
     },
-    
+
     openPopover(index: number) {
       this.isActiveActionToolbarButton = index;
     },
-    
+
     closePopover() {
       this.isActiveActionToolbarButton = -1;
-    }
-  }
+    },
+  },
 });
 </script>
 <style lang="scss">

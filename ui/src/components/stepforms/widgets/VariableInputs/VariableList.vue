@@ -44,34 +44,34 @@ import VariableListOption from './VariableListOption.vue';
  */
 export default defineComponent({
   name: 'variable-list',
-  
-  components: { 
-    VariableListOption 
+
+  components: {
+    VariableListOption,
   },
-  
+
   props: {
     isMultiple: {
       type: Boolean,
-      default: false
+      default: false,
     },
     selectedVariables: {
       type: [String, Array] as PropType<string | string[]>,
-      default: () => ''
+      default: () => '',
     },
     availableVariables: {
       type: Array as PropType<VariablesBucket>,
-      default: () => []
+      default: () => [],
     },
     enableAdvancedVariable: {
       type: Boolean,
-      default: true
+      default: true,
     },
     showOnlyLabel: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  
+
   /* istanbul ignore next */
   created() {
     if (this.isMultiple && !Array.isArray(this.selectedVariables)) {
@@ -80,7 +80,7 @@ export default defineComponent({
       throw new Error('selectedVariables should be a string');
     }
   },
-  
+
   computed: {
     /**
      * Group variables by category to easily choose among them
@@ -101,9 +101,9 @@ export default defineComponent({
         }
         return categories;
       }, []);
-    }
+    },
   },
-  
+
   methods: {
     /**
      * Toggle value in array if necessary
@@ -117,7 +117,7 @@ export default defineComponent({
         return [...this.selectedVariables, variableIdentifier];
       }
     },
-    
+
     /**
      * Emit the choosen variable
      */
@@ -125,11 +125,11 @@ export default defineComponent({
       const value = this.toggleVariable(variableIdentifier);
       this.$emit('input', value);
     },
-    
+
     addAdvancedVariable() {
       this.$emit('addAdvancedVariable');
-    }
-  }
+    },
+  },
 });
 </script>
 

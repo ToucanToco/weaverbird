@@ -32,36 +32,36 @@ import FAIcon from '@/components/FAIcon.vue';
 
 export default defineComponent({
   name: 'step-form-header',
-  
+
   components: {
     FAIcon,
   },
-  
+
   props: {
     backendError: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     version: {
       type: String,
-      default: ''
+      default: '',
     },
     title: {
       type: String,
-      default: ''
+      default: '',
     },
     stepName: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
-  
+
   methods: {
     cancelEdition(): void {
       /* istanbul ignore next */
       (this.$parent as any).cancelEdition(); // TODO: refactor (old functional logic)
-    }
-  }
+    },
+  },
 });
 </script>
 

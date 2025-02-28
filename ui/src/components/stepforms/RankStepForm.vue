@@ -83,7 +83,10 @@ export default defineComponent({
     initialStepValue: {
       type: Object as PropType<Partial<RankStep>>,
       default: (): Partial<RankStep> => ({
-        name: 'rank', valueCol: '', order: 'desc', method: 'standard'
+        name: 'rank',
+        valueCol: '',
+        order: 'desc',
+        method: 'standard',
       }),
     },
   },

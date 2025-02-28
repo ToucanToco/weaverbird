@@ -58,7 +58,7 @@ export default defineComponent({
       default: (): AbsoluteValueStep => ({
         name: 'absolutevalue',
         column: '',
-        newColumn: ''
+        newColumn: '',
       }),
     },
   },

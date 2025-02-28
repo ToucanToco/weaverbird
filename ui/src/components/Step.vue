@@ -79,88 +79,88 @@ import PreviewSourceSubset from './PreviewSourceSubset.vue';
 
 export default defineComponent({
   name: 'step',
-  
+
   components: {
     FAIcon,
     PreviewSourceSubset,
   },
-  
+
   props: {
     isFirst: {
       type: Boolean,
-      required: true
+      required: true,
     },
     isLast: {
       type: Boolean,
-      required: true
+      required: true,
     },
     isActive: {
       type: Boolean,
-      required: true
+      required: true,
     },
     isLastActive: {
       type: Boolean,
-      required: true
+      required: true,
     },
     isDisabled: {
       type: Boolean,
-      required: true
+      required: true,
     },
     toDelete: {
       type: Boolean,
-      required: true
+      required: true,
     },
     isEditable: {
       type: Boolean,
-      default: true
+      default: true,
     },
     step: {
       type: Object as PropType<PipelineStep>,
-      required: true
+      required: true,
     },
     variableDelimiters: {
       type: Object as PropType<VariableDelimiters>,
-      required: true
+      required: true,
     },
     trustedVariableDelimiters: {
       type: Object as PropType<VariableDelimiters>,
-      required: true
+      required: true,
     },
     indexInPipeline: {
       type: Number,
-      required: true
-    }
+      required: true,
+    },
   },
-  
+
   data() {
     return {
-      isEditingPreviewSourceSubset: false
+      isEditingPreviewSourceSubset: false,
     };
   },
-  
+
   computed: {
     // Access store state
     availableDomains(): { name: string; uid: string }[] {
       return useVQBStore().availableDomains;
     },
-    
+
     customRetrieveDomainName(): ((domain: Reference) => string) | undefined {
       return useVQBStore().customRetrieveDomainName;
     },
-    
+
     // Access store getters
     stepConfig(): (index: number) => PipelineStep {
       return useVQBStore().stepConfig;
     },
-    
+
     stepErrors(): (index: number) => string | undefined {
       return useVQBStore().stepErrors;
     },
-    
+
     previewSourceRowsSubset(): number | 'unlimited' | undefined {
       return useVQBStore().previewSourceRowsSubset;
     },
-    
+
     // Component computed properties
     stepName(): string {
       // enable to retrieve the related name of a query referenced behind an uid
@@ -169,15 +169,15 @@ export default defineComponent({
         return customDomainName ?? retrieveDomainName(domain, this.availableDomains);
       });
     },
-    
+
     canConfigurePreviewSourceSubset(): boolean {
       return Boolean(this.isFirst && this.previewSourceRowsSubset);
     },
-    
+
     errorMessage(): string | undefined {
       return this.stepErrors(this.indexInPipeline);
     },
-    
+
     stepTitle(): string {
       const replaceDelimiters = { start: '', end: '' };
       return labelWithReadeableVariables(
@@ -187,7 +187,7 @@ export default defineComponent({
         this.trustedVariableDelimiters,
       );
     },
-    
+
     stepLabel(): string {
       const replaceDelimiters = { start: '<em>', end: '</em>' };
       return labelWithReadeableVariables(
@@ -197,7 +197,7 @@ export default defineComponent({
         this.trustedVariableDelimiters,
       );
     },
-    
+
     classContainer() {
       return {
         'query-pipeline-step__container': true,
@@ -212,39 +212,39 @@ export default defineComponent({
           this.canConfigurePreviewSourceSubset && this.isEditingPreviewSourceSubset,
       };
     },
-    
+
     firstStrokeClass() {
       return {
         'query-pipeline-queue__stroke': true,
         'query-pipeline-queue__stroke--hidden': this.isFirst,
       };
     },
-    
+
     lastStrokeClass() {
       return {
         'query-pipeline-queue__stroke': true,
         'query-pipeline-queue__stroke--hidden': this.isLast,
       };
-    }
+    },
   },
-  
+
   methods: {
     editStep() {
       this.$emit('editStep', this.stepConfig(this.indexInPipeline), this.indexInPipeline);
     },
-    
+
     select() {
       this.$emit('selectedStep');
     },
-    
+
     toggleDelete(): void {
       if (!this.isFirst) this.$emit('toggleDelete');
     },
-    
+
     togglePreviewSourceSubsetForm(): void {
       this.isEditingPreviewSourceSubset = !this.isEditingPreviewSourceSubset;
-    }
-  }
+    },
+  },
 });
 </script>
 <style lang="scss" scoped>

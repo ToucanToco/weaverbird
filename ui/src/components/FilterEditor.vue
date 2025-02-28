@@ -45,12 +45,12 @@ import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 export default defineComponent({
   name: 'filter-editor',
-  
+
   components: {
     ConditionsEditor,
     FilterSimpleConditionWidget,
   },
-  
+
   props: {
     filterTree: {
       type: Object as PropType<FilterCondition>,
@@ -74,31 +74,31 @@ export default defineComponent({
     },
     multiVariable: {
       type: Boolean,
-      default: true
+      default: true,
     },
     errors: {
       type: Array as PropType<ErrorObject[]>,
       default: () => [],
     },
   },
-  
+
   data() {
     return {
       defaultValue: DEFAULT_FILTER,
     };
   },
-  
+
   computed: {
     conditionsTree() {
       return buildConditionsEditorTree(castFilterStepTreeValue(this.filterTree, this.columnTypes));
     },
   },
-  
+
   methods: {
     updateFilterTree(newConditionsTree: AbstractFilterTree) {
       const newFilterTree = buildFilterStepTree(newConditionsTree);
       this.$emit('filterTreeUpdated', newFilterTree);
-    }
-  }
+    },
+  },
 });
 </script>

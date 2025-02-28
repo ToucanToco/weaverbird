@@ -74,7 +74,7 @@ export default defineComponent({
       default: (): Partial<AddTotalRowsStep> => ({
         name: 'totals',
         totalDimensions: [],
-        aggregations: []
+        aggregations: [],
       }),
     },
   },

@@ -18,13 +18,13 @@ import ResizablePanels from '@/components/ResizablePanels.vue';
 
 export default defineComponent({
   name: 'vqb',
-  
+
   components: {
     DataViewer,
     PipelineSelector,
     QueryBuilder,
     ResizablePanels,
-  }
+  },
 });
 </script>
 

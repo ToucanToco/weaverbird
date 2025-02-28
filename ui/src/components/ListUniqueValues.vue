@@ -54,47 +54,47 @@ import { VQBModule } from '@/store';
  */
 export default defineComponent({
   name: 'list-unique-values',
-  
-  components: { 
-    CheckboxWidget 
+
+  components: {
+    CheckboxWidget,
   },
-  
+
   props: {
     columnName: {
       type: String,
-      required: true
+      required: true,
     },
     options: {
       type: Array as PropType<ColumnValueStat[]>,
-      required: true
+      required: true,
     },
     filter: {
       type: Object as PropType<Omit<FilterConditionInclusion, 'column'>>,
-      required: true
+      required: true,
     },
     loaded: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
-  
+
   data() {
     return {
-      search: ''
+      search: '',
     };
   },
-  
+
   computed: {
     ...mapState(VQBModule, ['isLoading']),
-    
+
     searchedOptions(): ColumnValueStat[] {
       return this.options.filter((option) => this.searchFunction(option.value, this.search));
-    }
+    },
   },
-  
+
   methods: {
     ...mapActions(VQBModule, ['loadColumnUniqueValues']),
-    
+
     isChecked(option: ColumnValueStat): boolean {
       if (this.filter.operator == 'in') {
         return this.filter.value.includes(option.value);
@@ -102,7 +102,7 @@ export default defineComponent({
         return !this.filter.value.includes(option.value);
       }
     },
-    
+
     selectAll() {
       if (this.search === '') {
         this.$emit('input', {
@@ -121,7 +121,7 @@ export default defineComponent({
         } as FilterConditionInclusion);
       }
     },
-    
+
     clearAll() {
       if (this.search === '') {
         this.$emit('input', {
@@ -140,7 +140,7 @@ export default defineComponent({
         } as FilterConditionInclusion);
       }
     },
-    
+
     toggleCheck(option: ColumnValueStat) {
       const newFilter = { ...this.filter, column: this.columnName };
       if (newFilter.value.includes(option.value)) {
@@ -150,19 +150,19 @@ export default defineComponent({
       }
       this.$emit('input', newFilter);
     },
-    
+
     stringify(value: any): string {
       return JSON.stringify(value).replace(/^"/, '').replace(/"$/, ''); // remove `"` introduce by JSON.stringify around strings;
     },
-    
+
     searchFunction(value: any, search: string) {
       return this.stringify(value).toLowerCase().includes(search.toLowerCase());
     },
-    
+
     loadAllValues() {
       this.$emit('loadAllValues');
-    }
-  }
+    },
+  },
 });
 </script>
 <style lang="scss" scoped>

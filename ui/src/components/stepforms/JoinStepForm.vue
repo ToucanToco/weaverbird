@@ -118,7 +118,7 @@ export default defineComponent({
       set(value: DropdownOption) {
         /* istanbul ignore next */
         this.editedStep.rightPipeline = value.trackBy;
-      }
+      },
     },
     on: {
       get() {
@@ -130,7 +130,7 @@ export default defineComponent({
       },
       set(newval) {
         this.editedStep.on = [...newval];
-      }
+      },
     },
     options(): object[] {
       return this.availableDomains.map((d) => {

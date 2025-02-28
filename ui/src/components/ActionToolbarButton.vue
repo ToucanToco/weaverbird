@@ -42,73 +42,70 @@ type NoFormStep = S.DateExtractStep | S.ToLowerStep | S.ToDateStep | S.ToUpperSt
 
 export default defineComponent({
   name: 'action-toolbar-button',
-  
+
   components: {
     Popover,
     FAIcon,
     ActionMenuOption,
   },
-  
+
   props: {
     label: String,
     icon: String,
     isActive: {
       type: Boolean,
-      default: false
+      default: false,
     },
     category: {
       type: String as PropType<PipelineStepCategory>,
-      required: true
-    }
+      required: true,
+    },
   },
-  
+
   data() {
     return {
-      alignLeft: POPOVER_ALIGN.LEFT
+      alignLeft: POPOVER_ALIGN.LEFT,
     };
   },
-  
+
   computed: {
     ...mapGetters(VQBModule, [
       'computedActiveStepIndex',
       'isEditingStep',
       'pipeline',
-      'unsupportedSteps'
+      'unsupportedSteps',
     ]),
-    
-    ...mapState(VQBModule, [
-      'selectedColumns'
-    ]),
-    
+
+    ...mapState(VQBModule, ['selectedColumns']),
+
     isDisabled() {
       return (stepName: S.PipelineStepName) => this.unsupportedSteps.includes(stepName);
     },
-    
+
     // Filter out unsupported steps
     items() {
       return ACTION_CATEGORIES[this.category].map((name) => ({ name, label: STEP_LABELS[name] }));
-    }
+    },
   },
-  
+
   methods: {
-    ...mapActions(VQBModule, [
-      'selectStep',
-      'setPipeline',
-      'closeStepForm'
-    ]),
-    
+    ...mapActions(VQBModule, ['selectStep', 'setPipeline', 'closeStepForm']),
+
     /**
      * @description Emit an event with a PipelineStepName in order to open its form
      */
     actionClicked(stepName: S.PipelineStepName, defaults = {}) {
-      if ((stepName === 'lowercase' || stepName === 'uppercase') && this.selectedColumns.length > 0) {
+      if (
+        (stepName === 'lowercase' || stepName === 'uppercase') &&
+        this.selectedColumns.length > 0
+      ) {
         this.createStep(stepName, defaults);
       } else {
         this.$emit('actionClicked', stepName, defaults);
       }
       this.$emit('closed');
     },
-    
+
     createStep(stepName: NoFormStep['name'], defaults: { [prop: string]: any } = {}) {
       const newPipeline: S.Pipeline = [...this.pipeline];
       const index = this.computedActiveStepIndex + 1;
@@ -123,8 +120,8 @@ export default defineComponent({
       newPipeline.splice(index, 0, step as S.PipelineStep);
       this.setPipeline({ pipeline: newPipeline });
       this.selectStep({ index });
-    }
-  }
+    },
+  },
 });
 </script>
 <style lang="scss">

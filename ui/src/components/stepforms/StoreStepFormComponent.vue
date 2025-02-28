@@ -39,26 +39,26 @@ import { VQBModule } from '@/store';
 */
 export default defineComponent({
   name: 'store-step-from-component',
-  
+
   props: {
     name: {
       type: String as PropType<PipelineStepName>,
-      required: true
+      required: true,
     },
     initialStepValue: {
       type: Object as PropType<Record<string, any> | undefined>,
-      default: undefined
+      default: undefined,
     },
     stepFormDefaults: {
       type: Object as PropType<Record<string, any>>,
-      default: () => ({})
+      default: () => ({}),
     },
     backendError: {
       type: String,
-      default: undefined
-    }
+      default: undefined,
+    },
   },
-  
+
   computed: {
     ...mapState(VQBModule, [
       'interpolateFunc',
@@ -69,40 +69,32 @@ export default defineComponent({
       'unjoinableDomains',
       'availableVariables',
       'variableDelimiters',
-      'trustedVariableDelimiters'
+      'trustedVariableDelimiters',
     ]),
-    
-    ...mapGetters(VQBModule, [
-      'translator',
-      'computedActiveStepIndex',
-      'columnTypes'
-    ]),
-    
+
+    ...mapGetters(VQBModule, ['translator', 'computedActiveStepIndex', 'columnTypes']),
+
     isStepCreation() {
       return this.initialStepValue === undefined;
     },
-    
+
     formComponent() {
       return StepFormsComponents[this.name];
-    }
+    },
   },
-  
+
   methods: {
-    ...mapActions(VQBModule, [
-      'selectStep',
-      'setSelectedColumns',
-      'getColumnNamesFromPipeline'
-    ]),
-    
+    ...mapActions(VQBModule, ['selectStep', 'setSelectedColumns', 'getColumnNamesFromPipeline']),
+
     back() {
       this.$emit('back');
       const idx = this.isStepCreation ? this.computedActiveStepIndex : this.selectedStepIndex + 1;
       this.selectStep({ index: idx });
     },
-    
+
     formSaved(step: PipelineStep) {
       this.$emit('formSaved', step);
-    }
-  }
+    },
+  },
 });
 </script>

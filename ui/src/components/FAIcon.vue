@@ -12,18 +12,18 @@ import type { FAIconName } from '@/assets/FA-ICONS';
 
 export default defineComponent({
   name: 'FA-icon',
-  
+
   components: {
     FontAwesomeIcon,
   },
-  
+
   props: {
     icon: {
       type: String as PropType<FAIconName>,
       default: '',
-    }
+    },
   },
-  
+
   computed: {
     iconWithStyle(): FAIconName | string[] {
       const hasSpecificStyle = this.icon.indexOf(' ') != -1; // icon name is prefixed
@@ -32,7 +32,7 @@ export default defineComponent({
       } else {
         return this.icon;
       }
-    }
-  }
+    },
+  },
 });
 </script>

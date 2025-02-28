@@ -74,63 +74,63 @@ type SelectableOption = {
 
 export default defineComponent({
   name: 'custom-granularity-calendar',
-  
+
   components: {
     FAIcon,
   },
-  
+
   props: {
     value: {
       type: Object as PropType<DateRange | undefined>,
-      default: undefined
+      default: undefined,
     },
     granularity: {
       type: String as PropType<AvailableDuration>,
-      required: true
+      required: true,
     },
     bounds: {
       type: Object as PropType<DateRange>,
-      default: () => ({})
+      default: () => ({}),
     },
     locale: {
       type: String as PropType<LocaleIdentifier>,
-      required: false
+      required: false,
     },
     compactMode: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  
+
   data() {
     return {
-      currentNavRangeStart: DateTime.now()
+      currentNavRangeStart: DateTime.now(),
     };
   },
-  
+
   computed: {
     pickerConfig(): GranularityConfig {
       return RANGE_PICKERS[this.granularity];
     },
-    
+
     currentNavRangeLabel(): string {
       return this.pickerConfig.navRange.label(this.currentNavRangeStart, this.locale);
     },
-    
+
     currentNavRangeRangeStarts(): DateTime[] {
       return this.pickerConfig.selectableRanges.currentOptions(this.currentNavRangeStart);
     },
-    
+
     boundedValue(): DateRange | undefined {
       if (!this.value || !this.value.start) return undefined;
       return clampRange(this.value, this.bounds);
     },
-    
+
     selectedRangeStart(): DateTime | undefined {
       if (!this.boundedValue?.start) return undefined;
       return this.pickerConfig.selectableRanges.rangeToOption(this.boundedValue.start);
     },
-    
+
     selectableOptions(): SelectableOption[] {
       return this.currentNavRangeRangeStarts.map((date) => {
         const range = this.retrieveRangeFromOption(date);
@@ -141,7 +141,7 @@ export default defineComponent({
         return { label, range, description, selected, disabled };
       });
     },
-    
+
     // The previous button should be disabled if the last selectable option of the previous range should be disabled
     prevNavRangeDisabled(): boolean {
       const previousNavRangeStart = this.pickerConfig.navRange.prev(this.currentNavRangeStart);
@@ -150,33 +150,34 @@ export default defineComponent({
       const lastPreviousNavRangeStart = previousNavRangeStarts[previousNavRangeStarts.length - 1];
       return this.isOptionDisabled(lastPreviousNavRangeStart);
     },
-    
+
     // The next button should be disabled if the first selectable option of the next range should be disabled
     nextNavRangeDisabled(): boolean {
       const nextNavRangeStart = this.pickerConfig.navRange.next(this.currentNavRangeStart);
-      const nextNavRangeStarts = this.pickerConfig.selectableRanges.currentOptions(nextNavRangeStart);
+      const nextNavRangeStarts =
+        this.pickerConfig.selectableRanges.currentOptions(nextNavRangeStart);
       const firstNextNavRangeStart = nextNavRangeStarts[0];
       return this.isOptionDisabled(firstNextNavRangeStart);
-    }
+    },
   },
-  
+
   watch: {
     bounds: {
       handler() {
         this.resetRangeOutOfBounds();
-      }
+      },
     },
     granularity: {
       handler() {
         this.updateSelectedRange();
-      }
-    }
+      },
+    },
   },
-  
+
   created() {
     this.updateSelectedRange();
   },
-  
+
   methods: {
     // A period is disabled if it has no overlap with the bounds
     isOptionDisabled(date: DateTime): boolean {
@@ -185,23 +186,23 @@ export default defineComponent({
       const startAfterEndBound = this.bounds.end ? start >= this.bounds.end : false;
       return endBeforeStartBound || startAfterEndBound;
     },
-    
+
     selectPreviousNavRange() {
       this.currentNavRangeStart = this.pickerConfig.navRange.prev(this.currentNavRangeStart);
     },
-    
+
     selectNextNavRange() {
       this.currentNavRangeStart = this.pickerConfig.navRange.next(this.currentNavRangeStart);
     },
-    
+
     retrieveRangeFromOption(date: DateTime): Required<DateRange> {
       return this.pickerConfig.selectableRanges.optionToRange(date);
     },
-    
+
     selectRange(range: DateRange | undefined) {
       this.$emit('input', range);
     },
-    
+
     updateNavStart(): void {
       if (this.selectedRangeStart) {
         // update navigation start to retrieve page with available options containing selected date range
@@ -213,22 +214,22 @@ export default defineComponent({
         );
       }
     },
-    
+
     resetRangeOutOfBounds() {
       if (this.bounds.start && this.value && !this.boundedValue) {
         this.selectRange(undefined);
       }
       this.updateNavStart();
     },
-    
+
     updateSelectedRange() {
       if (this.selectedRangeStart) {
         const range = this.retrieveRangeFromOption(this.selectedRangeStart);
         this.selectRange(range);
       }
       this.updateNavStart();
-    }
-  }
+    },
+  },
 });
 </script>
 

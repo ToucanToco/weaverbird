@@ -25,30 +25,30 @@ import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
   name: 'tabs',
-  
+
   props: {
     tabs: {
       type: Array as PropType<string[]>,
-      default: () => []
+      default: () => [],
     },
     disabledTabs: {
       type: Array as PropType<string[]>,
-      default: () => []
+      default: () => [],
     },
     selectedTab: {
       type: String,
-      default: undefined
+      default: undefined,
     },
     formatTab: {
       type: Function as PropType<(tab: string) => string>,
-      default: (tab: string) => `${tab}`
+      default: (tab: string) => `${tab}`,
     },
     compactMode: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  
+
   created() {
     // select first available tab if necessary
     const availableTabs = this.tabs.filter((t) => this.disabledTabs.indexOf(t) === -1);
@@ -56,18 +56,18 @@ export default defineComponent({
       this.selectedTab == null || availableTabs.indexOf(this.selectedTab) === -1;
     if (tabIsUnavailable) this.selectTab(availableTabs[0]);
   },
-  
+
   methods: {
     selectTab(tab: string): void {
       if (!this.isTabDisabled(tab)) {
         this.$emit('tabSelected', tab);
       }
     },
-    
+
     isTabDisabled(tab: string): boolean {
       return this.disabledTabs.indexOf(tab) !== -1;
-    }
-  }
+    },
+  },
 });
 </script>
 

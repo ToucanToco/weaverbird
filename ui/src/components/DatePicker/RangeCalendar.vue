@@ -26,25 +26,25 @@ import Calendar from './Calendar.vue';
 
 export default defineComponent({
   name: 'range-calendar',
-  
+
   components: {
     Calendar,
   },
-  
+
   props: {
     value: {
       type: Object as PropType<DateRange>,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
-  
+
   computed: {
     // dates to highlight in calendar to fake a range mode
     highlightedDates(): DateRange | undefined {
       return this.value.start && this.value.end ? this.value : undefined;
-    }
+    },
   },
-  
+
   methods: {
     getAvailableDates(prop: DateRangeSide): DateRange {
       if (prop === 'start') {
@@ -55,7 +55,7 @@ export default defineComponent({
         return { start: this.value.start, end: undefined };
       }
     },
-    
+
     onInput(value: Date | null, prop: DateRangeSide): void {
       if (value) {
         this.$emit('input', { ...this.value, [prop]: value });
@@ -65,8 +65,8 @@ export default defineComponent({
         delete newValue[prop];
         this.$emit('input', newValue);
       }
-    }
-  }
+    },
+  },
 });
 </script>
 <style scoped lang="scss">

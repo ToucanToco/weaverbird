@@ -35,7 +35,7 @@ export default defineComponent({
   name: 'custom-sql-step-form',
 
   components: {
-    CodeEditorWidget
+    CodeEditorWidget,
   },
 
   extends: BaseStepForm,
@@ -45,7 +45,7 @@ export default defineComponent({
       type: Object as PropType<Partial<CustomSqlStep>>,
       default: (): Partial<CustomSqlStep> => ({
         name: 'customsql',
-        query: 'SELECT * FROM ##PREVIOUS_STEP##'
+        query: 'SELECT * FROM ##PREVIOUS_STEP##',
       }),
     },
   },

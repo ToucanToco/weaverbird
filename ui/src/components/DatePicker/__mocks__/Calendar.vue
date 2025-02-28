@@ -9,25 +9,25 @@ import type { DateRange } from '@/lib/dates';
 
 export default defineComponent({
   name: 'calendar',
-  
+
   props: {
     value: {
       type: [Date, Object] as PropType<Date | DateRange | undefined>,
-      default: undefined
+      default: undefined,
     },
     highlightedDates: {
       type: Object as PropType<DateRange | undefined>,
-      default: undefined
+      default: undefined,
     },
     availableDates: {
       type: Object as PropType<DateRange>,
-      default: () => ({ start: undefined, end: undefined })
+      default: () => ({ start: undefined, end: undefined }),
     },
     isRange: {
       type: Boolean,
-      default: false
-    }
-  }
+      default: false,
+    },
+  },
 });
 </script>
 

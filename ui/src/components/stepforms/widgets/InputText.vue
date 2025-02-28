@@ -51,7 +51,7 @@ export default defineComponent({
   name: 'input-text-widget',
   components: {
     VariableInput,
-    FAIcon
+    FAIcon,
   },
   extends: FormWidget,
   props: {

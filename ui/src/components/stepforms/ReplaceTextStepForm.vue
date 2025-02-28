@@ -51,7 +51,12 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<Partial<ReplaceTextStep>>,
-      default: (): Partial<ReplaceTextStep> => ({ name: 'replacetext', searchColumn: '', oldStr: '', newStr: '' }),
+      default: (): Partial<ReplaceTextStep> => ({
+        name: 'replacetext',
+        searchColumn: '',
+        oldStr: '',
+        newStr: '',
+      }),
     },
   },
   data() {

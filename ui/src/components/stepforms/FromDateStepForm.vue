@@ -96,9 +96,7 @@ export default defineComponent({
       { format: '%m/%Y', label: '%m/%Y', example: '12/1970' },
     ];
 
-    const datePresets = formatOptions
-      .filter((d) => d.format !== 'custom')
-      .map((d) => d.format);
+    const datePresets = formatOptions.filter((d) => d.format !== 'custom').map((d) => d.format);
 
     const translators = [
       {

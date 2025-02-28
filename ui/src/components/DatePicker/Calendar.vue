@@ -30,40 +30,40 @@ import type { LocaleIdentifier } from '@/lib/internationalization';
 
 export default defineComponent({
   name: 'calendar',
-  
+
   components: {
     DatePicker,
   },
-  
+
   props: {
     value: {
       type: [Date, Object] as PropType<Date | DateRange | undefined>,
-      default: undefined
+      default: undefined,
     },
     highlightedDates: {
       type: Object as PropType<DateRange | undefined>,
-      default: undefined
+      default: undefined,
     },
     availableDates: {
       type: Object as PropType<DateRange>,
-      default: () => ({ start: undefined, end: undefined })
+      default: () => ({ start: undefined, end: undefined }),
     },
     isRange: {
       type: Boolean,
-      default: false
+      default: false,
     },
     locale: {
       type: String as PropType<LocaleIdentifier>,
-      required: false
-    }
+      required: false,
+    },
   },
-  
+
   data() {
     return {
-      defaultDate: '' as ('' | Date)
+      defaultDate: '' as '' | Date,
     };
   },
-  
+
   computed: {
     boundedValue(): Date | DateRange | undefined {
       if (
@@ -75,7 +75,7 @@ export default defineComponent({
       }
       return this.value;
     },
-    
+
     // Emitted values should always been days at midnight (UTC)
     datePickerModelConfig(): object {
       return {
@@ -88,13 +88,13 @@ export default defineComponent({
         },
       };
     },
-    
+
     shouldUpdateDefaultDate(): boolean {
       return (
         !this.boundedValue || (!(this.boundedValue instanceof Date) && !this.boundedValue?.start)
       );
     },
-    
+
     selectedDatesStyle(): DatePickerHighlight {
       return {
         highlight: {
@@ -103,7 +103,7 @@ export default defineComponent({
         },
       };
     },
-    
+
     rangeSelectedDatesStyle(): DatePickerHighlight {
       return {
         highlight: {
@@ -112,7 +112,7 @@ export default defineComponent({
         },
       };
     },
-    
+
     // style to apply to dates to highlight to fake a range selected behaviour
     highlights(): DatePickerHighlight[] {
       if (!this.highlightedDates) return [];
@@ -123,9 +123,9 @@ export default defineComponent({
           dates: this.highlightedDates,
         },
       ];
-    }
+    },
   },
-  
+
   watch: {
     availableDates: {
       handler() {
@@ -133,10 +133,10 @@ export default defineComponent({
           if (this.value) this.onInput(undefined);
           this.defaultDate = this.availableDates.start;
         }
-      }
-    }
+      },
+    },
   },
-  
+
   created() {
     if (this.shouldUpdateDefaultDate) {
       this.defaultDate = this.availableDates?.start ?? '';
@@ -146,7 +146,7 @@ export default defineComponent({
       this.onInput(this.boundedValue);
     }
   },
-  
+
   methods: {
     onInput(value: Date | DateRange | undefined): void {
       if (value == null || value instanceof Date) {
@@ -155,12 +155,12 @@ export default defineComponent({
         this.$emit('input', { ...value, duration: 'day' });
       }
     },
-    
+
     // when user start to select a range he has only start value selected, we disable validate button until he select the end value
     onDrag(dragValue: DateRange): void {
       this.onInput({ start: dragValue.start, duration: 'day' });
     },
-  }
+  },
 });
 </script>
 

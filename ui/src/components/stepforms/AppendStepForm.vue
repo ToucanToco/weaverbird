@@ -48,7 +48,7 @@ export default defineComponent({
       type: Object as PropType<Partial<AppendStep>>,
       default: (): Partial<AppendStep> => ({
         name: 'append',
-        pipelines: []
+        pipelines: [],
       }),
     },
   },
@@ -72,7 +72,8 @@ export default defineComponent({
         return this.editedStep.pipelines.map((pipeline) => {
           if (isReferenceToExternalQuery(pipeline)) {
             return {
-              label: this.availableDomains.find((d) => d.uid === pipeline.uid)?.name ?? pipeline.uid,
+              label:
+                this.availableDomains.find((d) => d.uid === pipeline.uid)?.name ?? pipeline.uid,
               trackBy: pipeline,
             };
           } else {

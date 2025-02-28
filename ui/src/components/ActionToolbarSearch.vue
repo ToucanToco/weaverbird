@@ -43,29 +43,25 @@ import Popover from './Popover.vue';
 
 export default defineComponent({
   name: 'action-toolbar-search',
-  
+
   components: {
     Popover,
     Multiselect,
     FAIcon,
   },
-  
+
   props: {
     isActive: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  
+
   computed: {
-    ...mapState(VQBModule, [
-      'translator'
-    ]),
-    
-    ...mapGetters(VQBModule, [
-      'unsupportedSteps'
-    ]),
-    
+    ...mapState(VQBModule, ['translator']),
+
+    ...mapGetters(VQBModule, ['unsupportedSteps']),
+
     actionOptions() {
       return CATEGORY_BUTTONS.map((button) => ({
         type: button.label,
@@ -76,9 +72,9 @@ export default defineComponent({
           }))
           .filter((a) => !this.unsupportedSteps.includes(a.name)),
       }));
-    }
+    },
   },
-  
+
   watch: {
     isActive: {
       async handler(newVal) {
@@ -86,26 +82,26 @@ export default defineComponent({
           await this.$nextTick();
           this.focusSearchBar();
         }
-      }
-    }
+      },
+    },
   },
-  
+
   mounted() {
     if (this.isActive) {
       this.focusSearchBar();
     }
   },
-  
+
   methods: {
     focusSearchBar() {
       (this.$refs.searchComponent.$el as HTMLElement).focus();
     },
-    
+
     actionClicked(actionName: { name: PipelineStepName }) {
       this.$emit('actionClicked', actionName.name);
       this.$emit('closed');
-    }
-  }
+    },
+  },
 });
 </script>
 <style lang="scss">

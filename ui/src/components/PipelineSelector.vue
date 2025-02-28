@@ -17,25 +17,19 @@ import { VQBModule } from '@/store';
 
 export default defineComponent({
   name: 'PipelineSelector',
-  
+
   computed: {
-    ...mapState(VQBModule, [
-      'currentPipelineName'
-    ]),
-    
-    ...mapGetters(VQBModule, [
-      'pipelinesNames'
-    ])
+    ...mapState(VQBModule, ['currentPipelineName']),
+
+    ...mapGetters(VQBModule, ['pipelinesNames']),
   },
-  
+
   methods: {
-    ...mapActions(VQBModule, [
-      'selectPipeline'
-    ]),
-    
+    ...mapActions(VQBModule, ['selectPipeline']),
+
     selectPipelineByName(pipelineName: string) {
       this.selectPipeline({ name: pipelineName });
-    }
-  }
+    },
+  },
 });
 </script>

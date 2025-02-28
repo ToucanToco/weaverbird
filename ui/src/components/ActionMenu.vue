@@ -127,14 +127,14 @@ enum VisiblePanel {
 
 export default defineComponent({
   name: 'action-menu',
-  
+
   components: {
     Popover,
     ListUniqueValues,
     FAIcon,
     ActionMenuOption,
   },
-  
+
   props: {
     columnName: {
       type: String,
@@ -145,19 +145,19 @@ export default defineComponent({
       default: true,
     },
   },
-  
+
   data() {
     return {
       visiblePanel: 1 as VisiblePanel,
       alignLeft: POPOVER_ALIGN.LEFT,
-      condition: { 
-        column: this.columnName, 
-        value: [], 
-        operator: 'nin' 
+      condition: {
+        column: this.columnName,
+        value: [],
+        operator: 'nin',
       } as FilterConditionInclusion,
     };
   },
-  
+
   computed: {
     ...mapGetters(VQBModule, [
       'computedActiveStepIndex',
@@ -166,39 +166,35 @@ export default defineComponent({
       'columnHeaders',
       'unsupportedSteps',
     ]),
-    
+
     currentUnique() {
       return (
         this.columnHeaders.find((hdr) => hdr.name === this.columnName) as DataSetColumn | undefined
       )?.uniques;
     },
-    
+
     isDisabled() {
       return (stepName: PipelineStepName): boolean => this.unsupportedSteps.includes(stepName);
     },
-    
+
     isApplyFilterVisible() {
       return !_isEqual(this.condition, { column: this.columnName, value: [], operator: 'nin' });
-    }
+    },
   },
-  
+
   methods: {
-    ...mapActions(VQBModule, [
-      'selectStep',
-      'setPipeline',
-      'closeStepForm',
-    ]),
-    
+    ...mapActions(VQBModule, ['selectStep', 'setPipeline', 'closeStepForm']),
+
     close() {
       this.visiblePanel = 1;
       this.$emit('closed');
     },
-    
+
     openStep(stepName: PipelineStepName) {
       this.$emit('actionClicked', stepName);
       this.close();
     },
-    
+
     createStep(newStepForm: PipelineStep) {
       const newPipeline: Pipeline = [...this.pipeline];
       const index = this.computedActiveStepIndex + 1;
@@ -214,19 +210,22 @@ export default defineComponent({
       this.selectStep({ index });
       this.close();
     },
-    
+
     createDeleteColumnStep() {
       this.createStep({ name: 'delete', columns: [this.columnName] });
     },
-    
+
     createUniqueGroupsStep() {
       this.createStep({ name: 'uniquegroups', on: [this.columnName] });
     },
-    
+
     createFilterStep() {
-      this.createStep({ name: 'filter', condition: { ...this.condition, column: this.columnName } });
-    }
-  }
+      this.createStep({
+        name: 'filter',
+        condition: { ...this.condition, column: this.columnName },
+      });
+    },
+  },
 });
 </script>
 <style lang="scss">

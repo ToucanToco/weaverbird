@@ -21,29 +21,29 @@ import type { ResizableTableOptions } from '@/directives/resizable/ResizableTabl
 
 export default defineComponent({
   name: 'FakeTableComponent',
-  
+
   directives: {
     resizable,
   },
-  
+
   props: {
     options: {
       type: Object as PropType<ResizableTableOptions>,
-      default: undefined
+      default: undefined,
     },
     rows: {
       type: Array as PropType<Array<{ [name: string]: string }>>,
-      default: () => [{ Col1: '1', Col2: '2', Col3: '3' }]
-    }
+      default: () => [{ Col1: '1', Col2: '2', Col3: '3' }],
+    },
   },
-  
+
   computed: {
     columnNames(): string[] {
       return this.rows ? Object.keys(this.rows[0]) : [];
     },
     directiveOptions(): any {
       return { columns: this.columnNames, ...this.options };
-    }
-  }
+    },
+  },
 });
 </script>

@@ -46,52 +46,48 @@ import StoreStepFormComponent from './stepforms/StoreStepFormComponent.vue';
 
 export default defineComponent({
   name: 'query-builder',
-  
+
   components: {
     StepForm: StoreStepFormComponent,
     Pipeline: PipelineComponent,
     FAIcon,
   },
-  
+
   data() {
     return {
       version: version, // display the current version of the package
-      editedStepBackendError: undefined as string | undefined
+      editedStepBackendError: undefined as string | undefined,
     };
   },
-  
+
   computed: {
-    ...mapState(VQBModule, [
-      'currentStepFormName',
-      'stepFormInitialValue',
-      'stepFormDefaults'
-    ]),
-    
+    ...mapState(VQBModule, ['currentStepFormName', 'stepFormInitialValue', 'stepFormDefaults']),
+
     ...mapGetters(VQBModule, [
       'computedActiveStepIndex',
       'isEditingStep',
       'pipeline',
-      'stepErrors'
+      'stepErrors',
     ]),
-    
+
     isStepCreation() {
       return this.stepFormInitialValue === undefined;
     },
-    
+
     backendError(): string | undefined {
       return this.isStepCreation ? undefined : this.editedStepBackendError;
-    }
+    },
   },
-  
+
   methods: {
     ...mapActions(VQBModule, [
       'closeStepForm',
       'openStepForm',
       'resetStepFormInitialValue',
       'selectStep',
-      'setPipeline'
+      'setPipeline',
     ]),
-    
+
     editStep(params: PipelineStep, index: number) {
       // save the selected edited step error to avoid store to be refreshed with new data and lose it when entering the step form
       this.editedStepBackendError = this.stepErrors(index);
@@ -99,7 +95,7 @@ export default defineComponent({
       const prevIndex = Math.max(index - 1, 0);
       this.selectStep({ index: prevIndex });
     },
-    
+
     saveStep(step: PipelineStep) {
       const newPipeline: Pipeline = [...this.pipeline];
       const index = step.name === 'domain' ? 0 : this.computedActiveStepIndex + 1;
@@ -113,8 +109,8 @@ export default defineComponent({
       this.closeStepForm();
       // Reset value from DataViewer
       this.resetStepFormInitialValue();
-    }
-  }
+    },
+  },
 });
 </script>
 <style lang="scss" scoped>

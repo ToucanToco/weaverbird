@@ -124,7 +124,7 @@ Vue.use(VTooltip);
  */
 export default defineComponent({
   name: 'data-viewer',
-  
+
   components: {
     ActionMenu,
     ActionToolbar,
@@ -133,44 +133,37 @@ export default defineComponent({
     Pagination,
     FAIcon,
   },
-  
-  directives: { 
-    resizable 
+
+  directives: {
+    resizable,
   },
-  
-  
+
   data() {
     return {
       activeActionMenuColumnName: '',
       activeDataTypeMenuColumnName: '',
     };
   },
-  
+
   computed: {
-    ...mapState(VQBModule, [
-      'dataset',
-      'isLoading',
-      'pagesize',
-      'selectedColumns',
-      'translator'
-    ]),
-    
+    ...mapState(VQBModule, ['dataset', 'isLoading', 'pagesize', 'selectedColumns', 'translator']),
+
     ...mapGetters(VQBModule, [
       'isDatasetEmpty',
       'isDatasetComplete',
       'columnHeaders',
       'pipeline',
-      'supportedSteps'
+      'supportedSteps',
     ]),
-    
+
     isEmpty(): boolean {
       return this.isDatasetEmpty;
     },
-    
+
     hasSupportedActions(): boolean {
       return this.supportedSteps.filter((step: PipelineStepName) => step !== 'domain').length > 0;
     },
-    
+
     /**
      * @description Get our columns with their names and linked classes
      *
@@ -191,20 +184,20 @@ export default defineComponent({
         };
       });
     },
-    
+
     columnNames(): string[] {
       return this.formattedColumns.map(({ name }: { name: string }) => name);
     },
-    
+
     iconClass() {
       if (this.isSupported('convert')) {
         return { 'data-viewer__header-icon': true, 'data-viewer__header-icon--active': true };
       } else {
         return { 'data-viewer__header-icon': true, 'data-viewer__header-icon--active': false };
       }
-    }
+    },
   },
-  
+
   watch: {
     columnHeaders: {
       handler(after: DataSetColumn[], before: DataSetColumn[]) {
@@ -220,18 +213,18 @@ export default defineComponent({
           this.closeMenu();
           this.closeDataTypeMenu();
         }
-      }
-    }
+      },
+    },
   },
-  
+
   methods: {
     ...mapActions(VQBModule, [
       'createStepForm',
-      'toggleColumnSelection', 
+      'toggleColumnSelection',
       'setSelectedColumns',
-      'setCurrentPage'
+      'setCurrentPage',
     ]),
-    
+
     /**
      * @description Open the form to create a step
      *
@@ -240,7 +233,7 @@ export default defineComponent({
     openStepForm(stepName: PipelineStepName, defaults = {}) {
       this.createStepForm({ stepName, stepFormDefaults: defaults });
     },
-    
+
     /**
      * @description Tell us if our column is selected or not
      *
@@ -250,11 +243,11 @@ export default defineComponent({
     isSelected(column: string) {
       return this.selectedColumns.includes(column);
     },
-    
+
     isSupported(step: PipelineStepName) {
       return getTranslator(this.translator).supports(step);
     },
-    
+
     getIconType(type: DataSetColumnType) {
       switch (type) {
         case 'string':
@@ -277,7 +270,7 @@ export default defineComponent({
           return '???';
       }
     },
-    
+
     shouldUseFAIcon(type: DataSetColumnType): boolean {
       switch (type) {
         case 'date':
@@ -290,25 +283,25 @@ export default defineComponent({
           return false;
       }
     },
-    
+
     openDataTypeMenu(name: string) {
       this.activeDataTypeMenuColumnName = name;
       this.setSelectedColumns({ column: name });
     },
-    
+
     closeDataTypeMenu() {
       this.activeDataTypeMenuColumnName = '';
     },
-    
+
     openMenu(name: string) {
       this.activeActionMenuColumnName = name;
       this.setSelectedColumns({ column: name });
     },
-    
+
     closeMenu() {
       this.activeActionMenuColumnName = '';
-    }
-  }
+    },
+  },
 });
 </script>
 <style lang="scss" scoped>

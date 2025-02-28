@@ -32,53 +32,53 @@ import VariableList from './VariableList.vue';
  */
 export default defineComponent({
   name: 'variable-chooser',
-  
-  components: { 
-    Popover, 
-    VariableList 
+
+  components: {
+    Popover,
+    VariableList,
   },
-  
+
   props: {
     isMultiple: {
       type: Boolean,
-      default: false
+      default: false,
     },
     selectedVariables: {
       type: [String, Array] as PropType<string | string[]>,
-      default: () => ''
+      default: () => '',
     },
     availableVariables: {
       type: Array as PropType<VariablesBucket>,
-      default: () => []
+      default: () => [],
     },
     isOpened: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  
+
   data() {
     return {
-      alignLeft: POPOVER_ALIGN.LEFT
+      alignLeft: POPOVER_ALIGN.LEFT,
     };
   },
-  
+
   methods: {
     close() {
       this.$emit('closed');
     },
-    
+
     /**
      * Emit the choosen variable(s)
      */
     chooseVariable(selectedVariables: string | string[]) {
       this.$emit('input', selectedVariables);
     },
-    
+
     addAdvancedVariable() {
       this.$emit('addAdvancedVariable');
-    }
-  }
+    },
+  },
 });
 </script>
 

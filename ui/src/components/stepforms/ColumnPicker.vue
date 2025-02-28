@@ -23,66 +23,66 @@ import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 export default defineComponent({
   name: 'column-picker',
-  
-  components: { 
-    AutocompleteWidget 
+
+  components: {
+    AutocompleteWidget,
   },
-  
+
   props: {
     name: {
       type: String,
-      default: 'column'
+      default: 'column',
     },
     placeholder: {
       type: String,
-      default: 'Enter a column'
+      default: 'Enter a column',
     },
     errors: {
       type: Array as PropType<ErrorObject[]>,
-      default: () => []
+      default: () => [],
     },
     dataPath: {
       type: String,
-      default: null
+      default: null,
     },
     value: {
       type: String,
-      default: null
+      default: null,
     },
     availableVariables: {
       type: Array as PropType<VariablesBucket>,
-      default: undefined
+      default: undefined,
     },
     variableDelimiters: {
       type: Object as PropType<VariableDelimiters>,
-      default: undefined
+      default: undefined,
     },
     trustedVariableDelimiters: {
       type: Object as PropType<VariableDelimiters>,
-      default: undefined
+      default: undefined,
     },
     // Whether the column data of ColumnPicker should react to a change of
     // selected column
     syncWithSelectedColumn: {
       type: Boolean,
-      default: true
+      default: true,
     },
     selectedColumns: {
       type: Array as PropType<string[]>,
-      default: () => []
+      default: () => [],
     },
     columnNames: {
       type: Array as PropType<string[]>,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
-  
+
   created() {
     if (this.syncWithSelectedColumn && this.selectedColumns[0] && !this.value) {
       this.$emit('input', this.selectedColumns[0]);
     }
   },
-  
+
   watch: {
     selectedColumns: {
       handler() {
@@ -93,17 +93,17 @@ export default defineComponent({
         ) {
           this.$emit('input', this.selectedColumns[0]);
         }
-      }
-    }
+      },
+    },
   },
-  
+
   methods: {
     valueChanged(newColumn: string) {
       this.$emit('input', newColumn);
       if (this.syncWithSelectedColumn) {
         this.$emit('setSelectedColumns', { column: newColumn });
       }
-    }
-  }
+    },
+  },
 });
 </script>

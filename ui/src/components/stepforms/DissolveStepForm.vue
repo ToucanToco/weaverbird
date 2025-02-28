@@ -66,7 +66,12 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<Partial<DissolveStep>>,
-      default: (): Partial<DissolveStep> => ({ name: 'dissolve', groups: [], includeNulls: false, aggregations: [] }),
+      default: (): Partial<DissolveStep> => ({
+        name: 'dissolve',
+        groups: [],
+        includeNulls: false,
+        aggregations: [],
+      }),
     },
   },
   data() {

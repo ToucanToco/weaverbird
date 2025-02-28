@@ -54,57 +54,53 @@ type PropMap<T> = { [prop: string]: T };
 
 export default defineComponent({
   name: 'data-types-menu',
-  
+
   components: {
     Popover,
     FAIcon,
   },
-  
+
   props: {
     columnName: {
       type: String,
-      default: ''
+      default: '',
     },
     visible: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
-  
+
   data() {
     return {
-      alignLeft: POPOVER_ALIGN.LEFT
+      alignLeft: POPOVER_ALIGN.LEFT,
     };
   },
-  
+
   computed: {
     ...mapGetters(VQBModule, [
       'columnTypes',
       'computedActiveStepIndex',
       'isEditingStep',
-      'pipeline'
+      'pipeline',
     ]),
-    
+
     isCastableToDate() {
       return (
         this.columnTypes[this.columnName] === 'date' ||
         this.columnTypes[this.columnName] === 'string' ||
         this.columnTypes[this.columnName] === 'integer'
       );
-    }
+    },
   },
-  
+
   methods: {
-    ...mapActions(VQBModule, [
-      'selectStep',
-      'setPipeline',
-      'closeStepForm'
-    ]),
-    
+    ...mapActions(VQBModule, ['selectStep', 'setPipeline', 'closeStepForm']),
+
     close() {
       this.$emit('closed');
     },
-    
+
     createConvertStep(dataType: dataType) {
       const newPipeline: Pipeline = [...this.pipeline!];
       const index = this.computedActiveStepIndex + 1;
@@ -123,7 +119,7 @@ export default defineComponent({
       this.selectStep({ index });
       this.close();
     },
-    
+
     openToDateStep() {
       // if string or int, we want to open the dedicated todate step where the user can
       // specify string formats
@@ -138,8 +134,8 @@ export default defineComponent({
       if (this.columnTypes[this.columnName] === 'date') {
         this.createConvertStep('date');
       }
-    }
-  }
+    },
+  },
 });
 </script>
 <style lang="scss">

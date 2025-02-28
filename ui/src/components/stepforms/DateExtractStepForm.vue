@@ -59,7 +59,12 @@ export default defineComponent({
   props: {
     initialStepValue: {
       type: Object as PropType<DateExtractStep>,
-      default: (): DateExtractStep => ({ name: 'dateextract', column: '', dateInfo: [], newColumns: [] }),
+      default: (): DateExtractStep => ({
+        name: 'dateextract',
+        column: '',
+        dateInfo: [],
+        newColumns: [],
+      }),
     },
   },
   data() {

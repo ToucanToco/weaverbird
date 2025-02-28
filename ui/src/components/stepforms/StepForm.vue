@@ -93,7 +93,9 @@ export default defineComponent({
       default: (e: any) => e,
     },
     getColumnNamesFromPipeline: {
-      type: Function as PropType<(pipelineNameOrDomain: string | ReferenceToExternalQuery) => Promise<string[] | undefined>>,
+      type: Function as PropType<
+        (pipelineNameOrDomain: string | ReferenceToExternalQuery) => Promise<string[] | undefined>
+      >,
       default: () => Promise.resolve([]),
     },
   },
@@ -185,7 +187,7 @@ export default defineComponent({
       addAjvKeywords(ajv);
       const ajvValidator: ValidateFunction<object> = ajv.compile(this.editedStepModel);
       const interpolator = new PipelineInterpolator(this.interpolateFunc, this.variables);
-      const interpolateAndValidate: ValidatorProxy = function(step: PipelineStep) {
+      const interpolateAndValidate: ValidatorProxy = function (step: PipelineStep) {
         const ret = ajvValidator(interpolator.interpolateStep(step));
         interpolateAndValidate.errors = ajvValidator.errors?.map(ajvErrorsToValidationError);
         return ret;

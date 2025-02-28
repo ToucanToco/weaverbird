@@ -21,24 +21,24 @@ import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
   name: 'action-menu-option',
-  
+
   props: {
     label: {
       type: String,
-      required: true
+      required: true,
     },
     isDisabled: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  
+
   methods: {
     onActionClicked() {
       if (this.isDisabled) return;
       this.$emit('actionClicked');
-    }
-  }
+    },
+  },
 });
 </script>
 <style lang="scss">

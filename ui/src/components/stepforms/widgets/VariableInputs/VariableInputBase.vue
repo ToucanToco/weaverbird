@@ -56,54 +56,54 @@ import { sendAnalytics } from '@/lib/send-analytics';
  */
 export default defineComponent({
   name: 'variable-input-base',
-  
+
   components: {
     VariableChooser,
     AdvancedVariableModal,
   },
-  
+
   props: {
     isMultiple: {
       type: Boolean,
-      default: false
+      default: false,
     },
     value: {
       type: [String, Array] as PropType<string | string[]>,
-      default: () => ''
+      default: () => '',
     },
     availableVariables: {
       type: Array as PropType<VariablesBucket>,
-      default: undefined
+      default: undefined,
     },
     variableDelimiters: {
       type: Object as PropType<VariableDelimiters>,
-      default: () => ({ start: '{{', end: '}}' })
+      default: () => ({ start: '{{', end: '}}' }),
     },
     trustedVariableDelimiters: {
       type: Object as PropType<VariableDelimiters>,
-      default: undefined
+      default: undefined,
     },
     editedAdvancedVariable: {
       type: String,
-      default: () => ''
+      default: () => '',
     },
     hasArrow: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isVariable: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  
+
   data() {
     return {
       isChoosingVariable: false,
-      isAdvancedVariableModalOpened: false
+      isAdvancedVariableModalOpened: false,
     };
   },
-  
+
   computed: {
     /**
      * Remove identifier from selected variable(s)
@@ -129,42 +129,42 @@ export default defineComponent({
         }, []);
       }
     },
-    
+
     /**
      * Determine whether to authorize or not the selection of a variable
      */
     canBeVariable() {
       return this.availableVariables;
-    }
+    },
   },
-  
+
   watch: {
     editedAdvancedVariable: {
       handler() {
         if (this.editedAdvancedVariable) this.openAdvancedVariableModal();
-      }
-    }
+      },
+    },
   },
-  
+
   methods: {
     startChoosingVariable() {
       this.isChoosingVariable = true;
     },
-    
+
     stopChoosingVariable() {
       this.isChoosingVariable = false;
     },
-    
+
     openAdvancedVariableModal() {
       this.stopChoosingVariable();
       this.isAdvancedVariableModalOpened = true;
     },
-    
+
     closeAdvancedVariableModal() {
       this.isAdvancedVariableModalOpened = false;
       this.$emit('resetEditedAdvancedVariable');
     },
-    
+
     setVariableDelimiters(value: string | string[]): string | string[] {
       const retrieveVariableDelimiters = (
         variableIdentifier: string,
@@ -186,7 +186,7 @@ export default defineComponent({
         ? value.map((v) => addVariableDelimiters(v))
         : addVariableDelimiters(value);
     },
-    
+
     /**
      * Emit the choosen variable(s)
      */
@@ -197,7 +197,7 @@ export default defineComponent({
         this.stopChoosingVariable(); // keep list open with multiVariable mode
       }
     },
-    
+
     /**
      * Emit the choosen advanced variable and close the modal
      */
@@ -205,8 +205,8 @@ export default defineComponent({
       const value = `${this.variableDelimiters.start} ${variableIdentifier} ${this.variableDelimiters.end}`;
       this.$emit('chooseAdvancedVariable', value);
       this.closeAdvancedVariableModal();
-    }
-  }
+    },
+  },
 });
 </script>
 

@@ -32,51 +32,51 @@ Vue.use(VTooltip);
  */
 export default defineComponent({
   name: 'variable-list-option',
-  
+
   props: {
     selectedVariables: {
       type: [String, Array] as PropType<string | string[]>,
-      default: () => ''
+      default: () => '',
     },
     value: {
       type: null,
-      default: undefined
+      default: undefined,
     },
     label: {
       type: String,
-      default: ''
+      default: '',
     },
     identifier: {
       type: String,
-      default: ''
+      default: '',
     },
     togglable: {
       type: Boolean,
-      default: false
+      default: false,
     },
     showOnlyLabel: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  
+
   computed: {
     formattedValue(): string {
       return this.value instanceof Date ? this.value.toString() : this.value;
     },
-    
+
     readableValue(): string {
       return this.showOnlyLabel ? '' : JSON.stringify(this.formattedValue);
     },
-    
+
     selected(): boolean {
       if (Array.isArray(this.selectedVariables)) {
         return this.selectedVariables.indexOf(this.identifier) != -1;
       } else {
         return this.selectedVariables === this.identifier;
       }
-    }
-  }
+    },
+  },
 });
 </script>
 

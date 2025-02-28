@@ -19,5 +19,5 @@ export default {
 </script>
 
 <style>
-  /* No changes to style section */
+/* No changes to style section */
 </style>

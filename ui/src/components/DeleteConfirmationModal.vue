@@ -45,11 +45,11 @@ import FAIcon from '@/components/FAIcon.vue';
  */
 export default defineComponent({
   name: 'delete-confirmation-modal',
-  
+
   components: {
     FAIcon,
   },
-  
+
   methods: {
     cancelDelete(): void {
       /* istanbul ignore next */
@@ -58,8 +58,8 @@ export default defineComponent({
     validateDelete(): void {
       /* istanbul ignore next */
       (this.$listeners as any).validateDelete(); // TODO: refactor (old functional logic)
-    }
-  }
+    },
+  },
 });
 </script>
 

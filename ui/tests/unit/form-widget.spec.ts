@@ -10,7 +10,7 @@ const FakeWidget = defineComponent({
   extends: FormWidget,
   render() {
     // empty render to manage the mixins render issue
-  }
+  },
 });
 
 describe('Form widget', () => {

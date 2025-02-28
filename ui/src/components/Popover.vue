@@ -50,41 +50,41 @@ in an floating element. Useful to create previews of configurable popovers. Make
 */
 export default defineComponent({
   name: 'popover',
-  
+
   inject: {
     weaverbirdPopoverContainer: {
-      default: () => document.body
-    }
+      default: () => document.body,
+    },
   },
-  
+
   props: {
     visible: {
       type: Boolean,
-      required: true
+      required: true,
     },
     align: {
       type: String as PropType<Alignment>,
       default: () => Alignment.Center,
-      validator: (value: string) => Object.values(Alignment).includes(value as Alignment)
+      validator: (value: string) => Object.values(Alignment).includes(value as Alignment),
     },
     bottom: {
       type: Boolean,
-      default: false
+      default: false,
     },
     forcePositionUpdate: {
       type: Number,
-      default: 0 // we increment the number each time we need the position to be updated
+      default: 0, // we increment the number each time we need the position to be updated
     },
     alwaysOpened: {
       type: Boolean,
-      default: false
+      default: false,
     },
     shouldCalculateHeight: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  
+
   data() {
     return {
       elementStyle: {} as ElementPosition,
@@ -92,10 +92,10 @@ export default defineComponent({
       element: null as HTMLElement | null,
       parents: [] as HTMLElement[],
       updatePositionListener: () => this.updatePosition(),
-      clickListener: () => this.$emit('closed')
+      clickListener: () => this.$emit('closed'),
     };
   },
-  
+
   watch: {
     visible: {
       async handler(visible: boolean) {
@@ -108,13 +108,13 @@ export default defineComponent({
         } else {
           this.setupPositioning();
         }
-      }
+      },
     },
     forcePositionUpdate() {
       this.updatePosition();
-    }
+    },
   },
-  
+
   mounted() {
     if (this.alwaysOpened) {
       // Skip all the repositioning in the DOM
@@ -148,13 +148,13 @@ export default defineComponent({
       this.setupPositioning();
     }
   },
-  
+
   beforeDestroy() {
     if (this.visible && !this.alwaysOpened) {
       this.destroyPositioning();
     }
   },
-  
+
   methods: {
     setupPositioning() {
       this.weaverbirdPopoverContainer.appendChild(this.$el as HTMLElement);
@@ -167,7 +167,7 @@ export default defineComponent({
         parent.addEventListener('scroll', this.updatePositionListener);
       }
     },
-    
+
     destroyPositioning() {
       // Cleanup listeners
       window.removeEventListener('click', this.clickListener);
@@ -181,7 +181,7 @@ export default defineComponent({
         return (this.$el as HTMLElement).parentElement?.removeChild(this.$el as HTMLElement);
       }
     },
-    
+
     // Set the absolute position
     // Checks available space on screen for vertical positioning and alignment
     updatePosition: _.throttle(
@@ -203,12 +203,14 @@ export default defineComponent({
           elementStyle.height = DOMUtil.computeHeight(this.bottom, positionContext);
         }
         // make sure to use `px` unit explicitly
-        this.elementStyle = _.fromPairs(Object.entries(elementStyle).map(([k, v]) => [k, `${v}px`]));
+        this.elementStyle = _.fromPairs(
+          Object.entries(elementStyle).map(([k, v]) => [k, `${v}px`]),
+        );
       },
       // 60fps
-      16
-    )
-  }
+      16,
+    ),
+  },
 });
 </script>
 <style lang="scss" scoped>
