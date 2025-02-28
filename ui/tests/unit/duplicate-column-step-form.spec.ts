@@ -38,16 +38,5 @@ describe('Duplicate Column Step Form', () => {
     props: { initialStepValue: { name: 'duplicate', column: 'foo', newColumnName: 'bar' } },
   });
 
-  runner.testCancel({
-    currentPipelineName: 'default_pipeline',
-    pipelines: {
-      default_pipeline: [
-        { name: 'domain', domain: 'foo' },
-        { name: 'rename', toRename: [['foo', 'bar']] },
-      ],
-    },
-    selectedStepIndex: 1,
-  });
-
-  runner.testResetSelectedIndex();
+  runner.testCancel();
 });

@@ -29,18 +29,6 @@ describe('Argmax Step Form', () => {
   });
 
   runner.testCancel();
-  runner.testResetSelectedIndex({
-    currentPipelineName: 'default_pipeline',
-    pipelines: {
-      default_pipeline: [
-        { name: 'domain', domain: 'foo' },
-        { name: 'rename', toRename: [['foo', 'bar']] },
-        { name: 'rename', toRename: [['baz', 'spam']] },
-        { name: 'rename', toRename: [['tic', 'tac']] },
-      ],
-    },
-    selectedStepIndex: 2,
-  });
 
   it('should pass down the properties to the input components', async () => {
     const wrapper = runner.shallowMount();

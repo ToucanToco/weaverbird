@@ -1,1 +1,0 @@
-../../ui/dist/weaverbird.umd.cjs

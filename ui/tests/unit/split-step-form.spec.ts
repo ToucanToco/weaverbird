@@ -32,7 +32,6 @@ describe('Split Step Form', () => {
   });
 
   runner.testCancel();
-  runner.testResetSelectedIndex();
 
   it('should pass down the properties to the input components', async () => {
     const wrapper = runner.shallowMount({

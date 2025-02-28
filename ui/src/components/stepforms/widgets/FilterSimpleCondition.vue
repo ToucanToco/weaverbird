@@ -187,8 +187,6 @@ export default defineComponent({
   },
 
   computed: {
-    // Column names can be provided either in the store or via a prop
-    // The prop takes priority over the store
     columnNames() {
       return this.columnNamesProp ?? [];
     },
