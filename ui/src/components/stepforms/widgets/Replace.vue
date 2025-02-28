@@ -25,66 +25,71 @@
 <script lang="ts">
 import type { ErrorObject } from 'ajv';
 import isEqual from 'lodash/isEqual';
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-
 import InputTextWidget from './InputText.vue';
 
-@Component({
+export default defineComponent({
   name: 'replace-widget',
   components: {
     InputTextWidget,
   },
-})
-export default class ReplaceWidget extends Vue {
-  @Prop({
-    type: Array,
-    default: () => ['', ''],
-  })
-  value!: any[];
-
-  @Prop({ type: String, default: null })
-  dataPath!: string;
-
-  @Prop({ type: Array, default: () => [] })
-  errors!: ErrorObject[];
-
-  @Prop()
-  availableVariables?: VariablesBucket;
-
-  @Prop()
-  variableDelimiters?: VariableDelimiters;
-
-  @Prop()
-  trustedVariableDelimiters?: VariableDelimiters;
-
+  props: {
+    value: {
+      type: Array as PropType<any[]>,
+      default: () => ['', ''],
+    },
+    dataPath: {
+      type: String as PropType<string | null>,
+      default: null,
+    },
+    errors: {
+      type: Array as PropType<ErrorObject[]>,
+      default: () => [],
+    },
+    availableVariables: {
+      type: Object as PropType<VariablesBucket | undefined>,
+      default: undefined,
+    },
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+    trustedVariableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+  },
   created() {
     if (isEqual(this.value, ['', ''])) {
       this.update(this.value);
     }
-  }
-
-  get valueToReplace() {
-    return this.value[0];
-  }
-
-  set valueToReplace(newValue) {
-    this.update([newValue, this.newValueToReplace]);
-  }
-
-  get newValueToReplace() {
-    return this.value[1];
-  }
-
-  set newValueToReplace(newValue) {
-    this.update([this.valueToReplace, newValue]);
-  }
-
-  update(newValues: string[]) {
-    this.$emit('input', newValues);
-  }
-}
+  },
+  computed: {
+    valueToReplace: {
+      get() {
+        return this.value[0];
+      },
+      set(newValue) {
+        this.update([newValue, this.newValueToReplace]);
+      },
+    },
+    newValueToReplace: {
+      get() {
+        return this.value[1];
+      },
+      set(newValue) {
+        this.update([this.valueToReplace, newValue]);
+      },
+    },
+  },
+  methods: {
+    update(newValues: string[]) {
+      this.$emit('input', newValues);
+    },
+  },
+});
 </script>
 <style lang="scss" scoped>
 .widget-to-replace__container {

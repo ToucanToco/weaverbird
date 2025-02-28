@@ -22,26 +22,33 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
-import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import type { PipelineStepName, TrimStep } from '@/lib/steps';
-
+import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import BaseStepForm from './StepForm.vue';
 
-@Component({
+export default defineComponent({
   name: 'trim-step-form',
   components: {
     MultiselectWidget,
   },
-})
-export default class TrimStepForm extends BaseStepForm<TrimStep> {
-  stepname: PipelineStepName = 'trim';
-
-  @Prop({ type: Object, default: () => ({ name: 'trim', columns: [] }) })
-  declare initialStepValue: TrimStep;
-
-  readonly title: string = 'Trim Columns';
-}
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<TrimStep>,
+      default: () => ({ name: 'trim', columns: [] }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'trim' as PipelineStepName,
+      title: 'Trim Columns' as string,
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      },
+    };
+  },
+});
 </script>

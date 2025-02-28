@@ -61,18 +61,16 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import type { PipelineStepName, RankStep } from '@/lib/steps';
-
-import ColumnPicker from './ColumnPicker.vue';
 import BaseStepForm from './StepForm.vue';
+import ColumnPicker from './ColumnPicker.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
-@Component({
+export default defineComponent({
   name: 'rank-step-form',
   components: {
     AutocompleteWidget,
@@ -80,16 +78,23 @@ import MultiselectWidget from './widgets/Multiselect.vue';
     InputTextWidget,
     MultiselectWidget,
   },
-})
-export default class RankStepForm extends BaseStepForm<RankStep> {
-  stepname: PipelineStepName = 'rank';
-
-  @Prop({
-    type: Object,
-    default: () => ({ name: 'rank', valueCol: '', order: 'desc', method: 'standard' }),
-  })
-  declare initialStepValue: RankStep;
-
-  readonly title: string = 'Compute rank';
-}
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<Partial<RankStep>>,
+      default: (): Partial<RankStep> => ({
+        name: 'rank',
+        valueCol: '',
+        order: 'desc',
+        method: 'standard',
+      }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'rank' as PipelineStepName,
+      title: 'Compute rank' as string,
+    };
+  },
+});
 </script>

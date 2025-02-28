@@ -25,11 +25,10 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from 'vue';
-import { Component } from 'vue-property-decorator';
+import { defineComponent } from 'vue';
+import { mapGetters, mapState } from 'pinia';
 
 import type { PipelineStepName } from '@/lib/steps';
-import { Getter, State } from 'pinia-class';
 import { VQBModule } from '@/store';
 
 import ActionToolbarButton from './ActionToolbarButton.vue';
@@ -37,79 +36,87 @@ import ActionToolbarSearch from './ActionToolbarSearch.vue';
 import type { ButtonDef } from './constants';
 import { CATEGORY_BUTTONS } from './constants';
 
-@Component({
+export default defineComponent({
   name: 'action-toolbar',
+
   components: {
     ActionToolbarButton,
     ActionToolbarSearch,
   },
-})
-export default class ActionToolbar extends Vue {
-  @State(VQBModule) selectedColumns!: string[];
-  @State(VQBModule) featureFlags!: Record<string, any>;
-  @Getter(VQBModule) unsupportedSteps!: PipelineStepName[];
 
-  isActiveActionToolbarButton = -1;
+  data() {
+    return {
+      isActiveActionToolbarButton: -1,
+    };
+  },
 
-  actionClicked(stepName: PipelineStepName, defaults = {}) {
-    this.$emit('actionClicked', stepName, defaults);
-  }
+  computed: {
+    ...mapState(VQBModule, ['selectedColumns', 'featureFlags']),
 
-  openPopover(index: number) {
-    this.isActiveActionToolbarButton = index;
-  }
+    ...mapGetters(VQBModule, ['unsupportedSteps']),
 
-  get hasSupportedButtons(): boolean {
-    return this.supportedButtons.length > 0;
-  }
+    hasSupportedButtons(): boolean {
+      return this.supportedButtons.length > 0;
+    },
 
-  // Enable to develop steps under feature flag
-  get featureFlagsAllowedButtons(): ButtonDef[] {
-    return CATEGORY_BUTTONS.filter((d) => {
-      if (!d.featureFlag) {
-        return !!d.enable;
-      } else {
-        return !this.featureFlags ? false : this.featureFlags[d.featureFlag] === 'enable';
-      }
-    });
-  }
+    // Enable to develop steps under feature flag
+    featureFlagsAllowedButtons(): ButtonDef[] {
+      return CATEGORY_BUTTONS.filter((d) => {
+        if (!d.featureFlag) {
+          return !!d.enable;
+        } else {
+          return !this.featureFlags ? false : this.featureFlags[d.featureFlag] === 'enable';
+        }
+      });
+    },
 
-  // Filter buttons that contains at least one supported step
-  get supportedButtons(): ButtonDef[] {
-    return this.featureFlagsAllowedButtons;
-  }
+    // Filter buttons that contains at least one supported step
+    supportedButtons(): ButtonDef[] {
+      return this.featureFlagsAllowedButtons;
+    },
 
-  get formattedButtons() {
-    return this.supportedButtons.map((d, index) => {
-      let isActionToolbarMenuOpened = false;
+    formattedButtons() {
+      return this.supportedButtons.map((d, index) => {
+        let isActionToolbarMenuOpened = false;
 
-      if (index === this.isActiveActionToolbarButton) {
-        isActionToolbarMenuOpened = true;
-      }
+        if (index === this.isActiveActionToolbarButton) {
+          isActionToolbarMenuOpened = true;
+        }
 
-      return {
-        ...d,
-        class: {
-          'action-toolbar__btn--active': isActionToolbarMenuOpened,
-          'action-toolbar__btn--disable': !d.enable,
-        },
-        isActionToolbarMenuOpened,
-      };
-    });
-  }
+        return {
+          ...d,
+          class: {
+            'action-toolbar__btn--active': isActionToolbarMenuOpened,
+            'action-toolbar__btn--disable': !d.enable,
+          },
+          isActionToolbarMenuOpened,
+        };
+      });
+    },
 
-  get actionToolbarSearchIndex() {
-    return this.formattedButtons.length;
-  }
+    actionToolbarSearchIndex() {
+      return this.formattedButtons.length;
+    },
 
-  get isActionToolbarSearchOpened() {
-    return this.isActiveActionToolbarButton === this.actionToolbarSearchIndex;
-  }
+    isActionToolbarSearchOpened() {
+      return this.isActiveActionToolbarButton === this.actionToolbarSearchIndex;
+    },
+  },
 
-  closePopover() {
-    this.isActiveActionToolbarButton = -1;
-  }
-}
+  methods: {
+    actionClicked(stepName: PipelineStepName, defaults = {}) {
+      this.$emit('actionClicked', stepName, defaults);
+    },
+
+    openPopover(index: number) {
+      this.isActiveActionToolbarButton = index;
+    },
+
+    closePopover() {
+      this.isActiveActionToolbarButton = -1;
+    },
+  },
+});
 </script>
 <style lang="scss">
 .action-toolbar {

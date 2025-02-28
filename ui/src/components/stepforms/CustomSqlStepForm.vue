@@ -23,8 +23,7 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import type { CustomSqlStep, PipelineStepName } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
@@ -32,27 +31,48 @@ import { getTranslator } from '@/lib/translators';
 import BaseStepForm from './StepForm.vue';
 import CodeEditorWidget from './widgets/CodeEditorWidget.vue';
 
-@Component({
+export default defineComponent({
   name: 'custom-sql-step-form',
-  components: { CodeEditorWidget },
-})
-export default class CustomSqlStepForm extends BaseStepForm<CustomSqlStep> {
-  stepname: PipelineStepName = 'customsql';
 
-  @Prop({
-    type: Object,
-    default: () => ({ name: 'customsql', query: 'SELECT * FROM ##PREVIOUS_STEP##' }),
-  })
-  declare initialStepValue: CustomSqlStep;
+  components: {
+    CodeEditorWidget,
+  },
 
-  readonly title: string = 'Custom Sql step';
+  extends: BaseStepForm,
 
-  validate() {
-    const errors = this.$$super.validate();
-    if (errors !== null) {
-      return errors;
-    }
-    return getTranslator('snowflake').validate({ ...this.editedStep });
-  }
-}
+  props: {
+    initialStepValue: {
+      type: Object as PropType<Partial<CustomSqlStep>>,
+      default: (): Partial<CustomSqlStep> => ({
+        name: 'customsql',
+        query: 'SELECT * FROM ##PREVIOUS_STEP##',
+      }),
+    },
+  },
+
+  data(): {
+    stepname: PipelineStepName;
+    title: string;
+    editedStep: CustomSqlStep;
+  } {
+    return {
+      stepname: 'customsql',
+      title: 'Custom Sql step',
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      },
+    };
+  },
+
+  methods: {
+    validate() {
+      const errors = this.$$super.validate();
+      if (errors !== null) {
+        return errors;
+      }
+      return getTranslator('snowflake').validate({ ...this.editedStep });
+    },
+  },
+});
 </script>

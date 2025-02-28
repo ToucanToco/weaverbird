@@ -70,8 +70,7 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, type PropType } from 'vue';
 
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { setAggregationsNewColumnsInStep } from '@/lib/helpers';
@@ -82,69 +81,80 @@ import AggregationWidget from './widgets/Aggregation.vue';
 import ListWidget from './widgets/List.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
-@Component({
+export default defineComponent({
   name: 'rollup-step-form',
+
   components: {
     InputTextWidget,
     ListWidget,
     MultiselectWidget,
   },
-})
-export default class RollupStepForm extends BaseStepForm<RollupStep> {
-  stepname: PipelineStepName = 'rollup';
 
-  @Prop({
-    type: Object,
-    default: () => ({ name: 'rollup', hierarchy: [], aggregations: [] }),
-  })
-  declare initialStepValue: RollupStep;
+  extends: BaseStepForm,
 
-  readonly title: string = 'Hierarchical rollup';
-  widgetAggregation = AggregationWidget;
+  props: {
+    initialStepValue: {
+      type: Object as PropType<Partial<RollupStep>>,
+      default: (): Partial<RollupStep> => ({
+        name: 'rollup',
+        hierarchy: [],
+        aggregations: [],
+      }),
+    },
+  },
 
-  /** Overload the definition of editedStep in BaseStepForm, to manage retrocompatibility:
-   *   column and newcolumn (simple strings parameters) are deprecated and replaced by
-   *   columns and newcolumns (list if strings)
-   */
-  editedStep: RollupStep = {
-    ...this.initialStepValue,
-    ...this.stepFormDefaults,
-    aggregations: this.initialStepValue.aggregations.map((x) => ({
-      ...x,
-      columns: x.column ? [x.column] : x.columns,
-      newcolumns: x.newcolumn ? [x.newcolumn] : x.newcolumns,
-      column: undefined,
-      newcolumn: undefined,
-    })),
-  };
-
-  get defaultAggregation(): Aggregation {
+  data() {
     return {
-      columns: [],
-      newcolumns: [],
-      aggfunction: 'sum',
+      stepname: 'rollup' as PipelineStepName,
+      title: 'Hierarchical rollup' as const,
+      widgetAggregation: AggregationWidget,
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+        aggregations: this.initialStepValue.aggregations.map((x) => ({
+          ...x,
+          columns: x.column ? [x.column] : x.columns,
+          newcolumns: x.newcolumn ? [x.newcolumn] : x.newcolumns,
+          column: undefined,
+          newcolumn: undefined,
+        })),
+      } as RollupStep,
     };
-  }
+  },
 
-  get aggregations() {
-    return this.editedStep.aggregations;
-  }
+  computed: {
+    defaultAggregation(): Aggregation {
+      return {
+        columns: [],
+        newcolumns: [],
+        aggfunction: 'sum',
+      };
+    },
 
-  set aggregations(newval) {
-    this.editedStep.aggregations = [...newval];
-  }
+    aggregations: {
+      get() {
+        return this.editedStep.aggregations;
+      },
+      set(newval) {
+        this.editedStep.aggregations = [...newval];
+      },
+    },
 
-  get groupby() {
-    return this.editedStep.groupby ?? [];
-  }
+    groupby: {
+      get() {
+        return this.editedStep.groupby ?? [];
+      },
+      set(groupby: any[]) {
+        this.editedStep.groupby = groupby.length ? groupby : undefined;
+      },
+    },
+  },
 
-  set groupby(groupby: any[]) {
-    this.editedStep.groupby = groupby.length ? groupby : undefined;
-  }
-
-  submit() {
-    setAggregationsNewColumnsInStep(this.editedStep);
-    this.$$super.submit();
-  }
-}
+  methods: {
+    submit() {
+      setAggregationsNewColumnsInStep(this.editedStep);
+      this.$$super.submit();
+    },
+  },
+});
 </script>

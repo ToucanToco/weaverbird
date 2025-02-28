@@ -31,59 +31,75 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import FAIcon from '@/components/FAIcon.vue';
 import CodeEditorWidget from '@/components/stepforms/widgets/CodeEditorWidget.vue';
 import { extractVariableIdentifier } from '@/lib/variables';
 import type { VariableDelimiters } from '@/lib/variables';
+
 /**
  * This component allow to add an advanced variable
  */
-@Component({
+export default defineComponent({
   name: 'advanced-variable-modal',
+
   components: {
     CodeEditorWidget,
     FAIcon,
   },
-})
-export default class AdvancedVariableModal extends Vue {
-  value = '';
 
-  @Prop({ default: false })
-  isOpened!: boolean;
+  props: {
+    isOpened: {
+      type: Boolean,
+      default: false,
+    },
+    variable: {
+      type: String,
+      default: '',
+    },
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters>,
+      default: () => ({ start: '{{', end: '}}' }),
+    },
+  },
 
-  @Prop({ default: '' })
-  variable!: string;
+  data() {
+    return {
+      value: '',
+    };
+  },
 
-  @Prop({ default: () => ({ start: '{{', end: '}}' }) })
-  variableDelimiters!: VariableDelimiters;
+  computed: {
+    variableIdentifier() {
+      return extractVariableIdentifier(this.variable, this.variableDelimiters) || '';
+    },
 
-  get variableIdentifier() {
-    return extractVariableIdentifier(this.variable, this.variableDelimiters) || '';
-  }
+    canSave() {
+      return this.value && this.variableIdentifier !== this.value;
+    },
+  },
 
-  get canSave() {
-    return this.value && this.variableIdentifier !== this.value;
-  }
+  watch: {
+    isOpened(isOpened: boolean) {
+      if (isOpened) {
+        this.value = this.variableIdentifier;
+      }
+    },
+  },
 
-  @Watch('isOpened')
-  setValue(isOpened: boolean) {
-    if (isOpened) {
-      this.value = this.variableIdentifier;
-    }
-  }
+  methods: {
+    close() {
+      this.$emit('closed');
+    },
 
-  close() {
-    this.$emit('closed');
-  }
-
-  save() {
-    if (this.canSave) {
-      this.$emit('input', this.value);
-    }
-  }
-}
+    save() {
+      if (this.canSave) {
+        this.$emit('input', this.value);
+      }
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>

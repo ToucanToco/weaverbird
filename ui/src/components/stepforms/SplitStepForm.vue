@@ -42,42 +42,48 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
+import type { PipelineStepName, SplitStep } from '@/lib/steps';
+import BaseStepForm from './StepForm.vue';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import type { PipelineStepName, SplitStep } from '@/lib/steps';
 
-import BaseStepForm from './StepForm.vue';
-
-@Component({
+export default defineComponent({
   name: 'split-step-form',
   components: {
     ColumnPicker,
     InputTextWidget,
   },
-})
-export default class SplitStepForm extends BaseStepForm<SplitStep> {
-  stepname: PipelineStepName = 'split';
-
-  @Prop({
-    type: Object,
-    default: () => ({ name: 'split', column: '', delimiter: '' }),
-  })
-  declare initialStepValue: SplitStep;
-
-  readonly title: string = 'Split column';
-
-  get stepSelectedColumn() {
-    return this.editedStep.column;
-  }
-
-  set stepSelectedColumn(colname: string | null) {
-    if (colname === null) {
-      throw new Error('should not try to set null on "column" field');
-    }
-    this.editedStep.column = colname;
-  }
-}
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<SplitStep>,
+      default: (): SplitStep => ({ name: 'split', column: '', delimiter: '' }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'split' as PipelineStepName,
+      title: 'Split column' as string,
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      },
+    };
+  },
+  computed: {
+    stepSelectedColumn: {
+      get(): string {
+        return this.editedStep.column;
+      },
+      set(colname: string | null) {
+        if (colname === null) {
+          throw new Error('should not try to set null on "column" field');
+        }
+        this.editedStep.column = colname;
+      },
+    },
+  },
+});
 </script>

@@ -89,6 +89,7 @@ export class BasicStepFormTestRunner {
         ...propsData,
       },
       localVue: this.vue,
+      pinia: this.pinia,
       sync: false,
     });
     if (data) {
@@ -137,13 +138,15 @@ export class BasicStepFormTestRunner {
         ...propsData,
       },
       localVue: this.vue,
+      pinia: this.pinia,
     });
     if (data) {
       wrapper.setData(data);
     }
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     await this.vue.nextTick();
-    const wrapperErrors = wrapper.vm.$data.errors ?? [];
+    // For Options API, errors might be in data or computed
+    const wrapperErrors = wrapper.vm.$data.errors || wrapper.vm.errors || [];
     const errors = wrapperErrors
       .map((err: ValidationError) => ({ keyword: err.keyword, dataPath: err.dataPath }))
       .sort((err1: ValidationError, err2: ValidationError) =>
@@ -175,6 +178,7 @@ export class BasicStepFormTestRunner {
       it(`click version`, async () => {
         const wrapper = mount(this.componentType, {
           localVue: this.vue,
+          pinia: this.pinia,
           propsData: {
             ...this.requiredStepProps,
             ...(props ?? {}),
@@ -186,13 +190,16 @@ export class BasicStepFormTestRunner {
         }
         wrapper.find('.widget-form-action__button--validate').trigger('click');
         await this.vue.nextTick();
-        expect(wrapper.vm.$data.errors).toBeNull();
+        // For Options API, errors might be in data or computed
+        const errors = wrapper.vm.$data.errors || wrapper.vm.errors;
+        expect(errors).toBeNull();
         expect(wrapper.emitted().formSaved).toEqual([[expectedEmit]]);
       });
 
       it(`shortcut ctrl+enter version`, async () => {
         const wrapper = mount(this.componentType, {
           localVue: this.vue,
+          pinia: this.pinia,
           propsData: { ...this.requiredStepProps, ...(props ?? {}) },
           sync: false,
         });
@@ -203,13 +210,16 @@ export class BasicStepFormTestRunner {
           new KeyboardEvent('keydown', { ctrlKey: true, code: 'Enter' }),
         );
         await this.vue.nextTick();
-        expect(wrapper.vm.$data.errors).toBeNull();
+        // For Options API, errors might be in data or computed
+        const errors = wrapper.vm.$data.errors || wrapper.vm.errors;
+        expect(errors).toBeNull();
         expect(wrapper.emitted().formSaved).toEqual([[expectedEmit]]);
       });
 
       it(`shortcut command+enter version`, async () => {
         const wrapper = mount(this.componentType, {
           localVue: this.vue,
+          pinia: this.pinia,
           propsData: { ...this.requiredStepProps, ...(props ?? {}) },
           sync: false,
         });
@@ -220,7 +230,9 @@ export class BasicStepFormTestRunner {
           new KeyboardEvent('keydown', { metaKey: true, code: 'Enter' }),
         );
         await this.vue.nextTick();
-        expect(wrapper.vm.$data.errors).toBeNull();
+        // For Options API, errors might be in data or computed
+        const errors = wrapper.vm.$data.errors || wrapper.vm.errors;
+        expect(errors).toBeNull();
         expect(wrapper.emitted().formSaved).toEqual([[expectedEmit]]);
       });
     });
@@ -230,6 +242,7 @@ export class BasicStepFormTestRunner {
     it('should emit "back" event when back button is clicked', () => {
       const wrapper = mount(this.componentType, {
         localVue: this.vue,
+        pinia: this.pinia,
         propsData: this.requiredStepProps,
         sync: false,
       });
@@ -239,12 +252,12 @@ export class BasicStepFormTestRunner {
 
     it('should overwrite cancelEdition function', () => {
       const cancelEditionCustomMock = vi.fn();
-      const methods = { cancelEdition: cancelEditionCustomMock };
       const wrapper = mount(this.componentType, {
         localVue: this.vue,
+        pinia: this.pinia,
         propsData: this.requiredStepProps,
         sync: false,
-        methods,
+        methods: { cancelEdition: cancelEditionCustomMock },
       });
       wrapper.find('.step-edit-form__back-button').trigger('click');
       expect(cancelEditionCustomMock).toHaveBeenCalledTimes(1);

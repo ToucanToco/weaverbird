@@ -25,8 +25,8 @@
   </div>
 </template>
 <script lang="ts">
+import { defineComponent, PropType } from 'vue';
 import type { ErrorObject } from 'ajv';
-import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import type { TotalDimension } from '@/lib/steps';
@@ -34,58 +34,66 @@ import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 import InputTextWidget from './InputText.vue';
 
-@Component({
+export default defineComponent({
   name: 'total-dimensions-widget',
   components: {
     AutocompleteWidget,
     InputTextWidget,
   },
-})
-export default class TotalDimensionsWidget extends Vue {
-  @Prop({
-    type: Object,
-    default: () => ({ columnTotal: '', totalRowsLabel: '' }),
-  })
-  value!: TotalDimension;
-
-  @Prop({ type: String, default: null })
-  dataPath!: string;
-
-  @Prop({ type: Array, default: () => [] })
-  errors!: ErrorObject[];
-
-  @Prop()
-  availableVariables?: VariablesBucket;
-
-  @Prop()
-  variableDelimiters?: VariableDelimiters;
-
-  @Prop()
-  trustedVariableDelimiters?: VariableDelimiters;
-
-  @Prop({ default: () => [] })
-  columnNames!: string[];
-
-  get totalColumn() {
-    return this.value.totalColumn;
-  }
-
-  set totalColumn(newColumn: string) {
-    this.update({ totalColumn: newColumn, totalRowsLabel: this.totalRowsLabel });
-  }
-
-  get totalRowsLabel() {
-    return this.value.totalRowsLabel;
-  }
-
-  set totalRowsLabel(newTotalRowsLabel: string) {
-    this.update({ totalColumn: this.totalColumn, totalRowsLabel: newTotalRowsLabel });
-  }
-
-  update(newTotalDimensions: TotalDimension) {
-    this.$emit('input', newTotalDimensions);
-  }
-}
+  props: {
+    value: {
+      type: Object as PropType<TotalDimension>,
+      default: () => ({ columnTotal: '', totalRowsLabel: '' }),
+    },
+    dataPath: {
+      type: String as PropType<string | null>,
+      default: null,
+    },
+    errors: {
+      type: Array as PropType<ErrorObject[]>,
+      default: () => [],
+    },
+    availableVariables: {
+      type: Object as PropType<VariablesBucket | undefined>,
+      default: undefined,
+    },
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+    trustedVariableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+    columnNames: {
+      type: Array as PropType<string[]>,
+      default: () => [],
+    },
+  },
+  computed: {
+    totalColumn: {
+      get() {
+        return this.value.totalColumn;
+      },
+      set(newColumn: string) {
+        this.update({ totalColumn: newColumn, totalRowsLabel: this.totalRowsLabel });
+      },
+    },
+    totalRowsLabel: {
+      get() {
+        return this.value.totalRowsLabel;
+      },
+      set(newTotalRowsLabel: string) {
+        this.update({ totalColumn: this.totalColumn, totalRowsLabel: newTotalRowsLabel });
+      },
+    },
+  },
+  methods: {
+    update(newTotalDimensions: TotalDimension) {
+      this.$emit('input', newTotalDimensions);
+    },
+  },
+});
 </script>
 <style lang="scss" scoped>
 .widget-totals__container {

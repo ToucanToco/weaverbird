@@ -22,26 +22,33 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import type { PipelineStepName, UniqueGroupsStep } from '@/lib/steps';
-
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
-@Component({
+export default defineComponent({
   name: 'uniquegroups-step-form',
   components: {
     MultiselectWidget,
   },
-})
-export default class UniqueGroupsStepForm extends BaseStepForm<UniqueGroupsStep> {
-  stepname: PipelineStepName = 'uniquegroups';
-
-  @Prop({ type: Object, default: () => ({ name: 'uniquegroups', on: [] }) })
-  declare initialStepValue: UniqueGroupsStep;
-
-  readonly title: string = 'Get unique groups/values';
-}
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<UniqueGroupsStep>,
+      default: () => ({ name: 'uniquegroups', on: [] }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'uniquegroups' as PipelineStepName,
+      title: 'Get unique groups/values' as string,
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      },
+    };
+  },
+});
 </script>

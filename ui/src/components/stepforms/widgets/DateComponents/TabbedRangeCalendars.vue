@@ -29,15 +29,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { type PropType, defineComponent } from 'vue';
 
 import Calendar from '@/components/DatePicker/Calendar.vue';
 import CustomGranularityCalendar from '@/components/DatePicker/CustomGranularityCalendar.vue';
 import Tabs from '@/components/Tabs.vue';
 import type { CustomDateRange, DateRange } from '@/lib/dates';
-import t from '@/lib/internationalization';
 import type { LocaleIdentifier } from '@/lib/internationalization';
-import { defineComponent, type PropType } from 'vue';
+import t from '@/lib/internationalization';
 
 export default defineComponent({
   name: 'tabbed-range-calendars',

@@ -38,98 +38,105 @@
   </popover>
 </template>
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
+import { mapActions, mapGetters } from 'pinia';
 
 import { POPOVER_ALIGN } from '@/components/constants';
 import FAIcon from '@/components/FAIcon.vue';
 import type { DataSetColumnType } from '@/lib/dataset';
 import type { ConvertStep, Pipeline } from '@/lib/steps';
-import { Action, Getter } from 'pinia-class';
-import { VQBModule, type VQBActions } from '@/store';
+import { VQBModule } from '@/store';
 
 import Popover from './Popover.vue';
 
 type dataType = 'boolean' | 'date' | 'float' | 'integer' | 'text';
 type PropMap<T> = { [prop: string]: T };
 
-@Component({
+export default defineComponent({
   name: 'data-types-menu',
+
   components: {
     Popover,
     FAIcon,
   },
-})
-export default class DataTypesMenu extends Vue {
-  @Prop({
-    type: String,
-    default: () => '',
-  })
-  columnName!: string;
 
-  @Prop({
-    type: Boolean,
-    default: true,
-  })
-  visible!: boolean;
+  props: {
+    columnName: {
+      type: String,
+      default: '',
+    },
+    visible: {
+      type: Boolean,
+      default: true,
+    },
+  },
 
-  @Getter(VQBModule) columnTypes!: PropMap<DataSetColumnType>;
-  @Getter(VQBModule) computedActiveStepIndex!: number;
-  @Getter(VQBModule) isEditingStep!: boolean;
-  @Getter(VQBModule) pipeline?: Pipeline;
-
-  @Action(VQBModule) selectStep!: VQBActions['selectStep'];
-  @Action(VQBModule) setPipeline!: VQBActions['setPipeline'];
-  @Action(VQBModule) closeStepForm!: VQBActions['closeStepForm'];
-
-  alignLeft: string = POPOVER_ALIGN.LEFT;
-
-  get isCastableToDate() {
-    return (
-      this.columnTypes[this.columnName] === 'date' ||
-      this.columnTypes[this.columnName] === 'string' ||
-      this.columnTypes[this.columnName] === 'integer'
-    );
-  }
-
-  close() {
-    this.$emit('closed');
-  }
-
-  createConvertStep(dataType: dataType) {
-    const newPipeline: Pipeline = [...this.pipeline!];
-    const index = this.computedActiveStepIndex + 1;
-    const convertStep: ConvertStep = {
-      name: 'convert',
-      columns: [this.columnName],
-      dataType: dataType,
+  data() {
+    return {
+      alignLeft: POPOVER_ALIGN.LEFT,
     };
-    // If a step edition form is already open, close it so that the left panel
-    // displays the pipeline with the new delete step inserted
-    if (this.isEditingStep) {
-      this.closeStepForm();
-    }
-    newPipeline.splice(index, 0, convertStep);
-    this.setPipeline({ pipeline: newPipeline });
-    this.selectStep({ index });
-    this.close();
-  }
+  },
 
-  openToDateStep() {
-    // if string or int, we want to open the dedicated todate step where the user can
-    // specify string formats
-    if (
-      this.columnTypes[this.columnName] === 'string' ||
-      this.columnTypes[this.columnName] === 'integer'
-    ) {
-      this.$emit('actionClicked', 'todate');
+  computed: {
+    ...mapGetters(VQBModule, [
+      'columnTypes',
+      'computedActiveStepIndex',
+      'isEditingStep',
+      'pipeline',
+    ]),
+
+    isCastableToDate() {
+      return (
+        this.columnTypes[this.columnName] === 'date' ||
+        this.columnTypes[this.columnName] === 'string' ||
+        this.columnTypes[this.columnName] === 'integer'
+      );
+    },
+  },
+
+  methods: {
+    ...mapActions(VQBModule, ['selectStep', 'setPipeline', 'closeStepForm']),
+
+    close() {
+      this.$emit('closed');
+    },
+
+    createConvertStep(dataType: dataType) {
+      const newPipeline: Pipeline = [...this.pipeline!];
+      const index = this.computedActiveStepIndex + 1;
+      const convertStep: ConvertStep = {
+        name: 'convert',
+        columns: [this.columnName],
+        dataType: dataType,
+      };
+      // If a step edition form is already open, close it so that the left panel
+      // displays the pipeline with the new delete step inserted
+      if (this.isEditingStep) {
+        this.closeStepForm();
+      }
+      newPipeline.splice(index, 0, convertStep);
+      this.setPipeline({ pipeline: newPipeline });
+      this.selectStep({ index });
       this.close();
-    }
-    // if date, we can convert the column directly
-    if (this.columnTypes[this.columnName] === 'date') {
-      this.createConvertStep('date');
-    }
-  }
-}
+    },
+
+    openToDateStep() {
+      // if string or int, we want to open the dedicated todate step where the user can
+      // specify string formats
+      if (
+        this.columnTypes[this.columnName] === 'string' ||
+        this.columnTypes[this.columnName] === 'integer'
+      ) {
+        this.$emit('actionClicked', 'todate');
+        this.close();
+      }
+      // if date, we can convert the column directly
+      if (this.columnTypes[this.columnName] === 'date') {
+        this.createConvertStep('date');
+      }
+    },
+  },
+});
 </script>
 <style lang="scss">
 @import '../styles/_variables';

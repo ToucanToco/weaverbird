@@ -34,8 +34,9 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, PropType } from 'vue';
+import Vue from 'vue';
 import VTooltip from 'v-tooltip';
-import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
 import { extractVariableIdentifier } from '@/lib/variables';
@@ -46,84 +47,96 @@ Vue.use(VTooltip);
 /**
  * This component display a variable based on a human readable format and allow to delete it
  */
-@Component({
+export default defineComponent({
   name: 'variable-tag',
+
   components: {
     FAIcon,
   },
-})
-export default class VariableTag extends Vue {
-  @Prop()
-  value!: string;
 
-  @Prop({ default: () => [] })
-  availableVariables!: VariablesBucket;
+  props: {
+    value: {
+      type: String,
+      required: true,
+    },
+    availableVariables: {
+      type: Array as PropType<VariablesBucket>,
+      default: () => [],
+    },
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters>,
+      default: undefined,
+    },
+    trustedVariableDelimiters: {
+      type: Object as PropType<VariableDelimiters>,
+      default: undefined,
+    },
+    isDate: {
+      type: Boolean,
+      default: false,
+    },
+  },
 
-  @Prop({ default: undefined })
-  variableDelimiters!: VariableDelimiters;
+  computed: {
+    /**
+     * Retrieve identifier by removing delimiters from value.
+     */
+    variableIdentifier() {
+      return extractVariableIdentifier(
+        this.value,
+        this.variableDelimiters,
+        this.trustedVariableDelimiters,
+      );
+    },
 
-  @Prop({ default: undefined })
-  trustedVariableDelimiters!: VariableDelimiters;
+    /**
+     * Retrieve variable in available variables by identifier.
+     */
+    variable() {
+      return this.availableVariables.find((aV) => aV.identifier === this.variableIdentifier);
+    },
 
-  @Prop({ default: false })
-  isDate!: boolean;
+    /*
+    TO_FIX: every variable not found in availableVariables is an advanced variable
+    */
+    isAdvancedVariable() {
+      return !this.variable;
+    },
 
-  /**
-   * Retrieve identifier by removing delimiters from value.
-   */
-  get variableIdentifier() {
-    return extractVariableIdentifier(
-      this.value,
-      this.variableDelimiters,
-      this.trustedVariableDelimiters,
-    );
-  }
+    /**
+     * Display label rather than identifier if available.
+     */
+    variableLabel() {
+      if (this.variable) {
+        return this.variable.label;
+      } else if (this.isDate) {
+        return this.variableIdentifier;
+      } else {
+        return 'AdVariable';
+      }
+    },
 
-  /**
-   * Retrieve variable in available variables by identifier.
-   */
-  get variable() {
-    return this.availableVariables.find((aV) => aV.identifier === this.variableIdentifier);
-  }
+    /**
+     * Display as list if value is an array.
+     */
+    variableValue() {
+      const value = this.variable?.value || '';
+      return Array.isArray(value) ? value.join(', ') : value;
+    },
+  },
 
-  /*
-  TO_FIX: every variable not found in availableVariables is an advanced variable
-  */
-  get isAdvancedVariable() {
-    return !this.variable;
-  }
+  methods: {
+    removeVariableTag() {
+      this.$emit('removed');
+    },
 
-  /**
-   * Display label rather than identifier if available.
-   */
-  get variableLabel() {
-    if (this.variable) {
-      return this.variable.label;
-    } else if (this.isDate) {
-      return this.variableIdentifier;
-    } else {
-      return 'AdVariable';
-    }
-  }
-
-  /**
-   * Display as list if value is an array.
-   */
-  get variableValue() {
-    const value = this.variable?.value || '';
-    return Array.isArray(value) ? value.join(', ') : value;
-  }
-
-  removeVariableTag() {
-    this.$emit('removed');
-  }
-
-  editAdvancedVariable() {
-    if (this.isAdvancedVariable) {
-      this.$emit('edited', this.value);
-    }
-  }
-}
+    editAdvancedVariable() {
+      if (this.isAdvancedVariable) {
+        this.$emit('edited', this.value);
+      }
+    },
+  },
+});
 </script>
 
 <style lang="scss">

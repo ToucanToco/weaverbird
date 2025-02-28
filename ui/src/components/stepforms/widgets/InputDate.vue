@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import FAIcon from '@/components/FAIcon.vue';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
@@ -46,48 +46,58 @@ import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import FormWidget from './FormWidget.vue';
 import VariableInput from './VariableInput.vue';
 
-@Component({
+export default defineComponent({
   name: 'input-date-widget',
   components: {
     VariableInput,
     FAIcon,
   },
-})
-export default class InputDateWidget extends FormWidget {
-  @Prop({ type: String, default: '' })
-  name!: string;
-
-  @Prop({ type: String, default: '' })
-  placeholder!: string;
-
-  @Prop({ default: '' })
-  value!: string | Date;
-
-  @Prop({ default: undefined })
-  docUrl!: string | undefined;
-
-  @Prop()
-  availableVariables?: VariablesBucket;
-
-  @Prop()
-  variableDelimiters?: VariableDelimiters;
-
-  @Prop()
-  trustedVariableDelimiters?: VariableDelimiters;
-
-  get parsedValue(): string {
-    return this.value instanceof Date ? this.parseDateToString(this.value) : this.value;
-  }
-
-  parseDateToString(date: Date): string {
-    // transform a date to the expected date input string with format (YYYY-MM-DD)
-    return date.toISOString().substr(0, 10);
-  }
-
-  updateValue(newValue: string): void {
-    this.$emit('input', newValue);
-  }
-}
+  extends: FormWidget,
+  props: {
+    name: {
+      type: String as PropType<string>,
+      default: '',
+    },
+    placeholder: {
+      type: String as PropType<string>,
+      default: '',
+    },
+    value: {
+      type: [String, Date] as PropType<string | Date>,
+      default: '',
+    },
+    docUrl: {
+      type: String as PropType<string | undefined>,
+      default: undefined,
+    },
+    availableVariables: {
+      type: Object as PropType<VariablesBucket | undefined>,
+      default: undefined,
+    },
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+    trustedVariableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+  },
+  computed: {
+    parsedValue(): string {
+      return this.value instanceof Date ? this.parseDateToString(this.value) : this.value;
+    },
+  },
+  methods: {
+    parseDateToString(date: Date): string {
+      // transform a date to the expected date input string with format (YYYY-MM-DD)
+      return date.toISOString().substr(0, 10);
+    },
+    updateValue(newValue: string): void {
+      this.$emit('input', newValue);
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>

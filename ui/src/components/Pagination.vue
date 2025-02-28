@@ -28,64 +28,77 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 import Paginate from 'vuejs-paginate';
-import ArrowPagination from '@/components/ArrowPagination.vue';
 
-import { numberOfPages, counterText, shouldUseArrowPagination } from '@/lib/dataset/pagination';
+import ArrowPagination from '@/components/ArrowPagination.vue';
+import { counterText, numberOfPages, shouldUseArrowPagination } from '@/lib/dataset/pagination';
 import type { PaginationContext } from '@/lib/dataset/pagination';
 
-@Component({
+export default defineComponent({
   name: 'pagination',
+
   components: {
     ArrowPagination,
     Paginate,
   },
-})
-export default class Pagination extends Vue {
-  @Prop()
-  paginationContext!: PaginationContext;
 
-  useArrowPagination = false;
+  props: {
+    paginationContext: {
+      type: Object as PropType<PaginationContext>,
+      required: true,
+    },
+  },
 
-  get showPager(): boolean {
-    return this.paginationContext.shouldPaginate;
-  }
-
-  get pageCount() {
-    if (this.paginationContext) {
-      return numberOfPages(this.paginationContext);
-    }
-    return 1;
-  }
-
-  get pageNumber() {
-    if (this.paginationContext) {
-      return this.paginationContext.pageNumber;
-    }
-    return 1;
-  }
-
-  get paginationCounterText() {
-    return counterText({
+  data() {
+    return {
       useArrowPagination: false,
-      paginationContext: this.paginationContext,
-      pageCount: this.pageCount,
-    });
-  }
+    };
+  },
 
-  @Watch('paginationContext', { immediate: true })
-  setUseArrowPagination(
-    paginationContext: PaginationContext,
-    oldPaginationContext: PaginationContext,
-  ) {
-    this.useArrowPagination = shouldUseArrowPagination(paginationContext, oldPaginationContext);
-  }
+  computed: {
+    showPager(): boolean {
+      return this.paginationContext.shouldPaginate;
+    },
 
-  pageClicked(pageNumber: number) {
-    this.$emit('setPage', { pageNumber });
-  }
-}
+    pageCount() {
+      if (this.paginationContext) {
+        return numberOfPages(this.paginationContext);
+      }
+      return 1;
+    },
+
+    pageNumber() {
+      if (this.paginationContext) {
+        return this.paginationContext.pageNumber;
+      }
+      return 1;
+    },
+
+    paginationCounterText() {
+      return counterText({
+        useArrowPagination: false,
+        paginationContext: this.paginationContext,
+        pageCount: this.pageCount,
+      });
+    },
+  },
+
+  watch: {
+    paginationContext: {
+      immediate: true,
+      handler(paginationContext: PaginationContext, oldPaginationContext: PaginationContext) {
+        this.useArrowPagination = shouldUseArrowPagination(paginationContext, oldPaginationContext);
+      },
+    },
+  },
+
+  methods: {
+    pageClicked(pageNumber: number) {
+      this.$emit('setPage', { pageNumber });
+    },
+  },
+});
 </script>
 <style lang="scss">
 .pagination {

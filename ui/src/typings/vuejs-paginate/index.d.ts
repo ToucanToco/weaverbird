@@ -3,37 +3,20 @@
  */
 
 declare module 'vuejs-paginate' {
-  import { Vue, Component, Prop } from 'vue-property-decorator';
+  import { DefineComponent } from 'vue';
 
-  @Component({
-    name: 'paginate',
-  })
-  export default class Paginate extends Vue {
-    @Prop({ type: Number })
+  interface PaginateProps {
     pageCount: number;
-
-    @Prop({ type: Number, default: 3 })
     pageRange: number;
-
-    @Prop({ type: Number, default: 1 })
     marginPages: number;
-
-    @Prop({ type: String, default: 'Prev' })
     prevText: string;
-
-    @Prop({ type: String, default: 'Next' })
     nextText: string;
-
-    @Prop({ type: String, default: '…' })
     breakViewText: string;
-
-    @Prop({ type: Number })
     forcePage: number;
-
-    @Prop({ type: Function })
     clickHandler: (pageno: number) => void;
-
-    @Prop({ type: String })
     containerClass: string;
   }
+
+  const Paginate: DefineComponent<PaginateProps>;
+  export default Paginate;
 }

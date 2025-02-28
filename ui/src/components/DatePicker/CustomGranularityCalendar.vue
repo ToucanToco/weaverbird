@@ -54,7 +54,7 @@
 
 <script lang="ts">
 import { DateTime } from 'luxon';
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import FAIcon from '@/components/FAIcon.vue';
 import { clampRange } from '@/lib/dates';
@@ -72,137 +72,165 @@ type SelectableOption = {
   disabled: boolean;
 };
 
-@Component({
+export default defineComponent({
   name: 'custom-granularity-calendar',
+
   components: {
     FAIcon,
   },
-})
-export default class CustomGranularityCalendar extends Vue {
-  @Prop()
-  value?: DateRange;
 
-  @Prop({ required: true })
-  granularity!: AvailableDuration;
+  props: {
+    value: {
+      type: Object as PropType<DateRange | undefined>,
+      default: undefined,
+    },
+    granularity: {
+      type: String as PropType<AvailableDuration>,
+      required: true,
+    },
+    bounds: {
+      type: Object as PropType<DateRange>,
+      default: () => ({}),
+    },
+    locale: {
+      type: String as PropType<LocaleIdentifier>,
+      required: false,
+    },
+    compactMode: {
+      type: Boolean,
+      default: false,
+    },
+  },
 
-  @Prop({ default: () => [] })
-  bounds!: DateRange;
+  data() {
+    return {
+      currentNavRangeStart: DateTime.now(),
+    };
+  },
 
-  @Prop({ type: String, required: false })
-  locale?: LocaleIdentifier;
+  computed: {
+    pickerConfig(): GranularityConfig {
+      return RANGE_PICKERS[this.granularity];
+    },
 
-  @Prop({ default: false })
-  compactMode!: boolean;
+    currentNavRangeLabel(): string {
+      return this.pickerConfig.navRange.label(this.currentNavRangeStart, this.locale);
+    },
 
-  currentNavRangeStart: DateTime = DateTime.now();
+    currentNavRangeRangeStarts(): DateTime[] {
+      return this.pickerConfig.selectableRanges.currentOptions(this.currentNavRangeStart);
+    },
 
-  get pickerConfig(): GranularityConfig {
-    return RANGE_PICKERS[this.granularity];
-  }
+    boundedValue(): DateRange | undefined {
+      if (!this.value || !this.value.start) return undefined;
+      return clampRange(this.value, this.bounds);
+    },
 
-  get currentNavRangeLabel(): string {
-    return this.pickerConfig.navRange.label(this.currentNavRangeStart, this.locale);
-  }
+    selectedRangeStart(): DateTime | undefined {
+      if (!this.boundedValue?.start) return undefined;
+      return this.pickerConfig.selectableRanges.rangeToOption(this.boundedValue.start);
+    },
 
-  get currentNavRangeRangeStarts(): DateTime[] {
-    return this.pickerConfig.selectableRanges.currentOptions(this.currentNavRangeStart);
-  }
+    selectableOptions(): SelectableOption[] {
+      return this.currentNavRangeRangeStarts.map((date) => {
+        const range = this.retrieveRangeFromOption(date);
+        const description = this.pickerConfig.selectableRanges.description(range, this.locale);
+        const label = this.pickerConfig.selectableRanges.label(date, this.locale);
+        const selected = this.selectedRangeStart?.equals(date) ?? false;
+        const disabled = this.isOptionDisabled(date);
+        return { label, range, description, selected, disabled };
+      });
+    },
 
-  get boundedValue(): DateRange | undefined {
-    if (!this.value || !this.value.start) return undefined;
-    return clampRange(this.value, this.bounds);
-  }
+    // The previous button should be disabled if the last selectable option of the previous range should be disabled
+    prevNavRangeDisabled(): boolean {
+      const previousNavRangeStart = this.pickerConfig.navRange.prev(this.currentNavRangeStart);
+      const previousNavRangeStarts =
+        this.pickerConfig.selectableRanges.currentOptions(previousNavRangeStart);
+      const lastPreviousNavRangeStart = previousNavRangeStarts[previousNavRangeStarts.length - 1];
+      return this.isOptionDisabled(lastPreviousNavRangeStart);
+    },
 
-  get selectedRangeStart(): DateTime | undefined {
-    if (!this.boundedValue?.start) return undefined;
-    return this.pickerConfig.selectableRanges.rangeToOption(this.boundedValue.start);
-  }
+    // The next button should be disabled if the first selectable option of the next range should be disabled
+    nextNavRangeDisabled(): boolean {
+      const nextNavRangeStart = this.pickerConfig.navRange.next(this.currentNavRangeStart);
+      const nextNavRangeStarts =
+        this.pickerConfig.selectableRanges.currentOptions(nextNavRangeStart);
+      const firstNextNavRangeStart = nextNavRangeStarts[0];
+      return this.isOptionDisabled(firstNextNavRangeStart);
+    },
+  },
 
-  // A period is disabled if it has no overlap with the bounds
-  isOptionDisabled(date: DateTime): boolean {
-    const { start, end } = this.pickerConfig.selectableRanges.optionToRange(date);
-    const endBeforeStartBound = this.bounds.start ? end < this.bounds.start : false;
-    const startAfterEndBound = this.bounds.end ? start >= this.bounds.end : false;
-    return endBeforeStartBound || startAfterEndBound;
-  }
-
-  get selectableOptions(): SelectableOption[] {
-    return this.currentNavRangeRangeStarts.map((date) => {
-      const range = this.retrieveRangeFromOption(date);
-      const description = this.pickerConfig.selectableRanges.description(range, this.locale);
-      const label = this.pickerConfig.selectableRanges.label(date, this.locale);
-      const selected = this.selectedRangeStart?.equals(date) ?? false;
-      const disabled = this.isOptionDisabled(date);
-      return { label, range, description, selected, disabled };
-    });
-  }
-
-  // The previous button should be disabled if the last selectable option of the previous range should be disabled
-  get prevNavRangeDisabled(): boolean {
-    const previousNavRangeStart = this.pickerConfig.navRange.prev(this.currentNavRangeStart);
-    const previousNavRangeStarts =
-      this.pickerConfig.selectableRanges.currentOptions(previousNavRangeStart);
-    const lastPreviousNavRangeStart = previousNavRangeStarts[previousNavRangeStarts.length - 1];
-    return this.isOptionDisabled(lastPreviousNavRangeStart);
-  }
-
-  // The next button should be disabled if the first selectable option of the next range should be disabled
-  get nextNavRangeDisabled(): boolean {
-    const nextNavRangeStart = this.pickerConfig.navRange.next(this.currentNavRangeStart);
-    const nextNavRangeStarts = this.pickerConfig.selectableRanges.currentOptions(nextNavRangeStart);
-    const firstNextNavRangeStart = nextNavRangeStarts[0];
-    return this.isOptionDisabled(firstNextNavRangeStart);
-  }
+  watch: {
+    bounds: {
+      handler() {
+        this.resetRangeOutOfBounds();
+      },
+    },
+    granularity: {
+      handler() {
+        this.updateSelectedRange();
+      },
+    },
+  },
 
   created() {
     this.updateSelectedRange();
-  }
+  },
 
-  selectPreviousNavRange() {
-    this.currentNavRangeStart = this.pickerConfig.navRange.prev(this.currentNavRangeStart);
-  }
+  methods: {
+    // A period is disabled if it has no overlap with the bounds
+    isOptionDisabled(date: DateTime): boolean {
+      const { start, end } = this.pickerConfig.selectableRanges.optionToRange(date);
+      const endBeforeStartBound = this.bounds.start ? end < this.bounds.start : false;
+      const startAfterEndBound = this.bounds.end ? start >= this.bounds.end : false;
+      return endBeforeStartBound || startAfterEndBound;
+    },
 
-  selectNextNavRange() {
-    this.currentNavRangeStart = this.pickerConfig.navRange.next(this.currentNavRangeStart);
-  }
+    selectPreviousNavRange() {
+      this.currentNavRangeStart = this.pickerConfig.navRange.prev(this.currentNavRangeStart);
+    },
 
-  retrieveRangeFromOption(date: DateTime): Required<DateRange> {
-    return this.pickerConfig.selectableRanges.optionToRange(date);
-  }
+    selectNextNavRange() {
+      this.currentNavRangeStart = this.pickerConfig.navRange.next(this.currentNavRangeStart);
+    },
 
-  selectRange(range: DateRange | undefined) {
-    this.$emit('input', range);
-  }
+    retrieveRangeFromOption(date: DateTime): Required<DateRange> {
+      return this.pickerConfig.selectableRanges.optionToRange(date);
+    },
 
-  updateNavStart(): void {
-    if (this.selectedRangeStart) {
-      // update navigation start to retrieve page with available options containing selected date range
-      this.currentNavRangeStart = this.selectedRangeStart;
-    } else if (this.bounds.start) {
-      // update nav start to retrieve page with available options for selected bound start
-      this.currentNavRangeStart = this.pickerConfig.selectableRanges.rangeToOption(
-        this.bounds.start,
-      );
-    }
-  }
+    selectRange(range: DateRange | undefined) {
+      this.$emit('input', range);
+    },
 
-  @Watch('bounds')
-  resetRangeOutOfBounds() {
-    if (this.bounds.start && this.value && !this.boundedValue) {
-      this.selectRange(undefined);
-    }
-    this.updateNavStart();
-  }
+    updateNavStart(): void {
+      if (this.selectedRangeStart) {
+        // update navigation start to retrieve page with available options containing selected date range
+        this.currentNavRangeStart = this.selectedRangeStart;
+      } else if (this.bounds.start) {
+        // update nav start to retrieve page with available options for selected bound start
+        this.currentNavRangeStart = this.pickerConfig.selectableRanges.rangeToOption(
+          this.bounds.start,
+        );
+      }
+    },
 
-  @Watch('granularity')
-  updateSelectedRange() {
-    if (this.selectedRangeStart) {
-      const range = this.retrieveRangeFromOption(this.selectedRangeStart);
-      this.selectRange(range);
-    }
-    this.updateNavStart();
-  }
-}
+    resetRangeOutOfBounds() {
+      if (this.bounds.start && this.value && !this.boundedValue) {
+        this.selectRange(undefined);
+      }
+      this.updateNavStart();
+    },
+
+    updateSelectedRange() {
+      if (this.selectedRangeStart) {
+        const range = this.retrieveRangeFromOption(this.selectedRangeStart);
+        this.selectRange(range);
+      }
+      this.updateNavStart();
+    },
+  },
+});
 </script>
 
 <style scoped lang="scss">

@@ -74,8 +74,7 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
@@ -84,28 +83,37 @@ import type { MovingAverageStep, PipelineStepName } from '@/lib/steps';
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
-@Component({
+export default defineComponent({
   name: 'moving-average-step-form',
+
   components: {
     ColumnPicker,
     InputTextWidget,
     MultiselectWidget,
   },
-})
-export default class MovingAverageStepForm extends BaseStepForm<MovingAverageStep> {
-  stepname: PipelineStepName = 'movingaverage';
 
-  @Prop({
-    type: Object,
-    default: () => ({
-      name: 'movingaverage',
-      valueColumn: '',
-      columnToSort: '',
-      movingWindow: null,
-    }),
-  })
-  declare initialStepValue: MovingAverageStep;
+  extends: BaseStepForm,
 
-  readonly title: string = 'Computate Moving Average';
-}
+  props: {
+    initialStepValue: {
+      type: Object as PropType<MovingAverageStep>,
+      default: (): Partial<MovingAverageStep> => ({
+        name: 'movingaverage',
+        valueColumn: '',
+        columnToSort: '',
+      }),
+    },
+  },
+
+  data() {
+    return {
+      stepname: 'movingaverage' as PipelineStepName,
+      title: 'Computate Moving Average' as const,
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      } as MovingAverageStep,
+    };
+  },
+});
 </script>

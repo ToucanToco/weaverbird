@@ -116,128 +116,121 @@
 
 <script lang="ts">
 import type { ErrorObject } from 'ajv';
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import convertIfThenElseToHumanFormat from '@/components/convert-if-then-else-to-human-format';
 import FAIcon from '@/components/FAIcon.vue';
 import FilterEditor from '@/components/FilterEditor.vue';
-import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import type { ColumnTypeMapping } from '@/lib/dataset';
 import type { FilterCondition, Formula, IfThenElseStep } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
-@Component({
+export default defineComponent({
   name: 'ifthenelse-widget',
   components: {
-    AutocompleteWidget,
     FilterEditor,
     InputTextWidget,
     FAIcon,
   },
-})
-export default class IfThenElseWidget extends Vue {
-  @Prop()
-  availableVariables?: VariablesBucket;
-
-  @Prop()
-  variableDelimiters?: VariableDelimiters;
-
-  @Prop()
-  trustedVariableDelimiters?: VariableDelimiters;
-
-  @Prop({
-    type: Object,
-    default: () => ({
-      if: { column: '', value: '', operator: 'eq' },
-      then: '',
-      else: '',
-    }),
-  })
-  value!: Omit<IfThenElseStep, 'name' | 'newColumn'>;
-
-  @Prop({ type: String, default: '' })
-  dataPath!: string;
-
-  @Prop({
-    type: Boolean,
-    default: false,
-  })
-  isRoot!: boolean;
-
-  @Prop({
-    type: Array,
-    default: () => [],
-  })
-  errors!: ErrorObject[];
-
-  @Prop({
-    type: Object,
-    default: () => {},
-  })
-  columnTypes!: ColumnTypeMapping;
-
-  readonly title: string = 'Add a conditional column';
-  readonly inputPlaceHolderText: string = 'Enter a "Text" with quotes, or a formula';
-  collapsed = false;
-
-  get formulaToHumanFormat() {
-    return convertIfThenElseToHumanFormat(this.value);
-  }
-
-  get hasElseIf() {
-    return typeof this.value.else !== 'string';
-  }
-
-  updateFilterTree(newFilterTree: FilterCondition) {
-    this.$emit('input', {
-      ...this.value,
-      if: newFilterTree,
-    });
-  }
-
-  updateThenFormula(formula: Formula) {
-    this.$emit('input', {
-      ...this.value,
-      then: formula,
-    });
-  }
-
-  updateElseFormula(elseObject: Omit<IfThenElseStep, 'name' | 'newColumn'> | Formula) {
-    this.$emit('input', {
-      ...this.value,
-      else: elseObject || '',
-    });
-  }
-
-  transformElseIntoElseIf() {
-    this.updateElseFormula({
-      if: { column: '', value: '', operator: 'eq' },
-      then: '',
-      else: this.value.else,
-    });
-  }
-
-  transformElseIfIntoElse() {
-    // This else case should never happen, "else if" being always an object
-    //but is necessary for TypeScript completeness
-    /* istanbul ignore else */
-    if (typeof this.value.else === 'object') {
-      this.collapsed = false;
-      this.updateElseFormula(this.value.else.else);
-    } else {
-      return;
-    }
-  }
-
-  deleteElseIf() {
-    this.$emit('deletedElseIf');
-  }
-
-  toggle() {
-    this.collapsed = !this.collapsed;
-  }
-}
+  props: {
+    availableVariables: {
+      type: Object as PropType<VariablesBucket | undefined>,
+      default: undefined,
+    },
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+    trustedVariableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+    value: {
+      type: Object as PropType<Omit<IfThenElseStep, 'name' | 'newColumn'>>,
+      default: () => ({
+        if: { column: '', value: '', operator: 'eq' },
+        then: '',
+        else: '',
+      }),
+    },
+    dataPath: {
+      type: String as PropType<string>,
+      default: '',
+    },
+    isRoot: {
+      type: Boolean as PropType<boolean>,
+      default: false,
+    },
+    errors: {
+      type: Array as PropType<ErrorObject[]>,
+      default: () => [],
+    },
+    columnTypes: {
+      type: Object as PropType<ColumnTypeMapping>,
+      default: () => ({}),
+    },
+  },
+  data() {
+    return {
+      title: 'Add a conditional column' as const,
+      inputPlaceHolderText: 'Enter a "Text" with quotes, or a formula' as const,
+      collapsed: false,
+    };
+  },
+  computed: {
+    formulaToHumanFormat() {
+      return convertIfThenElseToHumanFormat(this.value);
+    },
+    hasElseIf() {
+      return typeof this.value.else !== 'string';
+    },
+  },
+  methods: {
+    updateFilterTree(newFilterTree: FilterCondition) {
+      this.$emit('input', {
+        ...this.value,
+        if: newFilterTree,
+      });
+    },
+    updateThenFormula(formula: Formula) {
+      this.$emit('input', {
+        ...this.value,
+        then: formula,
+      });
+    },
+    updateElseFormula(elseObject: Omit<IfThenElseStep, 'name' | 'newColumn'> | Formula) {
+      this.$emit('input', {
+        ...this.value,
+        else: elseObject || '',
+      });
+    },
+    transformElseIntoElseIf() {
+      this.updateElseFormula({
+        if: { column: '', value: '', operator: 'eq' },
+        then: '',
+        else: this.value.else,
+      });
+    },
+    transformElseIfIntoElse() {
+      // This else case should never happen, "else if" being always an object
+      //but is necessary for TypeScript completeness
+      /* istanbul ignore else */
+      if (typeof this.value.else === 'object') {
+        this.collapsed = false;
+        this.updateElseFormula(this.value.else.else);
+      } else {
+        return;
+      }
+    },
+    deleteElseIf() {
+      this.$emit('deletedElseIf');
+    },
+    toggle() {
+      this.collapsed = !this.collapsed;
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>

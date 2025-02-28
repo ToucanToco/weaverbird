@@ -23,12 +23,10 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import type { AppendStep, PipelineStepName, ReferenceToExternalQuery } from '@/lib/steps';
 import { isReferenceToExternalQuery } from '@/lib/steps';
-
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
@@ -39,53 +37,71 @@ interface DropdownOption {
   tooltip?: string;
 }
 
-@Component({
+export default defineComponent({
   name: 'append-step-form',
   components: {
     MultiselectWidget,
   },
-})
-export default class AppendStepForm extends BaseStepForm<AppendStep> {
-  stepname: PipelineStepName = 'append';
-
-  @Prop({ type: Object, default: () => ({ name: 'append', pipelines: [] }) })
-  declare initialStepValue: AppendStep;
-
-  readonly title: string = 'Append datasets';
-
-  get pipelines(): DropdownOption[] {
-    return this.editedStep.pipelines.map((pipeline) => {
-      if (isReferenceToExternalQuery(pipeline)) {
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<Partial<AppendStep>>,
+      default: (): Partial<AppendStep> => ({
+        name: 'append',
+        pipelines: [],
+      }),
+    },
+  },
+  data(): {
+    stepname: PipelineStepName;
+    title: string;
+    editedStep: AppendStep;
+  } {
+    return {
+      stepname: 'append',
+      title: 'Append datasets',
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      },
+    };
+  },
+  computed: {
+    pipelines: {
+      get(): DropdownOption[] {
+        return this.editedStep.pipelines.map((pipeline) => {
+          if (isReferenceToExternalQuery(pipeline)) {
+            return {
+              label:
+                this.availableDomains.find((d) => d.uid === pipeline.uid)?.name ?? pipeline.uid,
+              trackBy: pipeline,
+            };
+          } else {
+            return {
+              label: pipeline as string,
+              trackBy: pipeline as string,
+            };
+          }
+        });
+      },
+      set(values: DropdownOption[]) {
+        /* istanbul ignore next */
+        this.editedStep.pipelines = values.map((v) => v.trackBy);
+      },
+    },
+    options(): DropdownOption[] {
+      return this.availableDomains.map((d) => {
+        const isDisabled = !!this.unjoinableDomains.find((domain) => domain.uid === d.uid);
         return {
-          label: this.availableDomains.find((d) => d.uid === pipeline.uid)?.name ?? pipeline.uid,
-          trackBy: pipeline,
+          label: d.name,
+          trackBy: { type: 'ref', uid: d.uid },
+          ...(isDisabled && {
+            disabled: true,
+            tooltip: 'This dataset cannot be combined with the actual one',
+          }),
         };
-      } else {
-        return {
-          label: pipeline as string,
-          trackBy: pipeline as string,
-        };
-      }
-    });
-  }
-
-  set pipelines(values: DropdownOption[]) {
-    /* istanbul ignore next */
-    this.editedStep.pipelines = values.map((v) => v.trackBy);
-  }
-
-  get options(): DropdownOption[] {
-    return this.availableDomains.map((d) => {
-      const isDisabled = !!this.unjoinableDomains.find((domain) => domain.uid === d.uid);
-      return {
-        label: d.name,
-        trackBy: { type: 'ref', uid: d.uid },
-        ...(isDisabled && {
-          disabled: true,
-          tooltip: 'This dataset cannot be combined with the actual one',
-        }),
-      };
-    });
-  }
-}
+      });
+    },
+  },
+});
 </script>

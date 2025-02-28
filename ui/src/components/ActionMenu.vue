@@ -102,7 +102,8 @@
 </template>
 <script lang="ts">
 import _isEqual from 'lodash/isEqual';
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
+import { mapActions, mapGetters, mapState } from 'pinia';
 
 import { POPOVER_ALIGN } from '@/components/constants';
 import FAIcon from '@/components/FAIcon.vue';
@@ -114,8 +115,7 @@ import type {
   PipelineStep,
   PipelineStepName,
 } from '@/lib/steps';
-import { Action, Getter } from 'pinia-class';
-import { VQBModule, type VQBActions } from '@/store';
+import { VQBModule } from '@/store';
 
 import ActionMenuOption from './ActionMenuOption.vue';
 import Popover from './Popover.vue';
@@ -125,95 +125,108 @@ enum VisiblePanel {
   'OTHER OPERATIONS',
 }
 
-@Component({
+export default defineComponent({
   name: 'action-menu',
+
   components: {
     Popover,
     ListUniqueValues,
     FAIcon,
     ActionMenuOption,
   },
-})
-export default class ActionMenu extends Vue {
-  @Prop({
-    type: String,
-    default: () => '',
-  })
-  columnName!: string;
-  visiblePanel: VisiblePanel = 1;
 
-  @Prop({
-    type: Boolean,
-    default: true,
-  })
-  visible!: boolean;
+  props: {
+    columnName: {
+      type: String,
+      default: '',
+    },
+    visible: {
+      type: Boolean,
+      default: true,
+    },
+  },
 
-  @Getter(VQBModule) computedActiveStepIndex!: number;
-  @Getter(VQBModule) isEditingStep!: boolean;
-  @Getter(VQBModule) pipeline!: Pipeline;
-  @Getter(VQBModule) columnHeaders!: Pipeline;
-  @Getter(VQBModule) unsupportedSteps!: PipelineStepName[];
+  data() {
+    return {
+      visiblePanel: 1 as VisiblePanel,
+      alignLeft: POPOVER_ALIGN.LEFT,
+      condition: {
+        column: this.columnName,
+        value: [],
+        operator: 'nin',
+      } as FilterConditionInclusion,
+    };
+  },
 
-  get currentUnique() {
-    return (
-      this.columnHeaders.find((hdr) => hdr.name === this.columnName) as DataSetColumn | undefined
-    )?.uniques;
-  }
+  computed: {
+    ...mapGetters(VQBModule, [
+      'computedActiveStepIndex',
+      'isEditingStep',
+      'pipeline',
+      'columnHeaders',
+      'unsupportedSteps',
+    ]),
 
-  get isDisabled() {
-    return (stepName: PipelineStepName): boolean => this.unsupportedSteps.includes(stepName);
-  }
+    currentUnique() {
+      return (
+        this.columnHeaders.find((hdr) => hdr.name === this.columnName) as DataSetColumn | undefined
+      )?.uniques;
+    },
 
-  @Action(VQBModule) selectStep!: VQBActions['selectStep'];
-  @Action(VQBModule) setPipeline!: VQBActions['setPipeline'];
-  @Action(VQBModule) closeStepForm!: VQBActions['closeStepForm'];
+    isDisabled() {
+      return (stepName: PipelineStepName): boolean => this.unsupportedSteps.includes(stepName);
+    },
 
-  alignLeft: string = POPOVER_ALIGN.LEFT;
+    isApplyFilterVisible() {
+      return !_isEqual(this.condition, { column: this.columnName, value: [], operator: 'nin' });
+    },
+  },
 
-  condition: FilterConditionInclusion = { column: this.columnName, value: [], operator: 'nin' };
+  methods: {
+    ...mapActions(VQBModule, ['selectStep', 'setPipeline', 'closeStepForm']),
 
-  get isApplyFilterVisible() {
-    return !_isEqual(this.condition, { column: this.columnName, value: [], operator: 'nin' });
-  }
+    close() {
+      this.visiblePanel = 1;
+      this.$emit('closed');
+    },
 
-  close() {
-    this.visiblePanel = 1;
-    this.$emit('closed');
-  }
+    openStep(stepName: PipelineStepName) {
+      this.$emit('actionClicked', stepName);
+      this.close();
+    },
 
-  openStep(stepName: PipelineStepName) {
-    this.$emit('actionClicked', stepName);
-    this.close();
-  }
+    createStep(newStepForm: PipelineStep) {
+      const newPipeline: Pipeline = [...this.pipeline];
+      const index = this.computedActiveStepIndex + 1;
+      /**
+       * If a step edition form is already open, close it so that the left panel displays
+       * the pipeline with the new delete step inserted
+       */
+      if (this.isEditingStep) {
+        this.closeStepForm();
+      }
+      newPipeline.splice(index, 0, newStepForm);
+      this.setPipeline({ pipeline: newPipeline });
+      this.selectStep({ index });
+      this.close();
+    },
 
-  createStep(newStepForm: PipelineStep) {
-    const newPipeline: Pipeline = [...this.pipeline];
-    const index = this.computedActiveStepIndex + 1;
-    /**
-     * If a step edition form is already open, close it so that the left panel displays
-     * the pipeline with the new delete step inserted
-     */
-    if (this.isEditingStep) {
-      this.closeStepForm();
-    }
-    newPipeline.splice(index, 0, newStepForm);
-    this.setPipeline({ pipeline: newPipeline });
-    this.selectStep({ index });
-    this.close();
-  }
+    createDeleteColumnStep() {
+      this.createStep({ name: 'delete', columns: [this.columnName] });
+    },
 
-  createDeleteColumnStep() {
-    this.createStep({ name: 'delete', columns: [this.columnName] });
-  }
+    createUniqueGroupsStep() {
+      this.createStep({ name: 'uniquegroups', on: [this.columnName] });
+    },
 
-  createUniqueGroupsStep() {
-    this.createStep({ name: 'uniquegroups', on: [this.columnName] });
-  }
-
-  createFilterStep() {
-    this.createStep({ name: 'filter', condition: { ...this.condition, column: this.columnName } });
-  }
-}
+    createFilterStep() {
+      this.createStep({
+        name: 'filter',
+        condition: { ...this.condition, column: this.columnName },
+      });
+    },
+  },
+});
 </script>
 <style lang="scss">
 @import '../styles/_variables';

@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import { extractVariableIdentifier, isTrustedVariable } from '@/lib/variables';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
@@ -54,140 +54,160 @@ import { sendAnalytics } from '@/lib/send-analytics';
  * This component wraps an input of any type and allow modifing its value by one or multiple variables chosen from a list or an
  * expression.
  */
-@Component({
+export default defineComponent({
   name: 'variable-input-base',
+
   components: {
     VariableChooser,
     AdvancedVariableModal,
   },
-})
-export default class VariableInputBase extends Vue {
-  @Prop({ default: false })
-  isMultiple!: boolean;
 
-  @Prop({ default: () => '' })
-  value!: string | string[];
+  props: {
+    isMultiple: {
+      type: Boolean,
+      default: false,
+    },
+    value: {
+      type: [String, Array] as PropType<string | string[]>,
+      default: () => '',
+    },
+    availableVariables: {
+      type: Array as PropType<VariablesBucket>,
+      default: undefined,
+    },
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters>,
+      default: () => ({ start: '{{', end: '}}' }),
+    },
+    trustedVariableDelimiters: {
+      type: Object as PropType<VariableDelimiters>,
+      default: undefined,
+    },
+    editedAdvancedVariable: {
+      type: String,
+      default: () => '',
+    },
+    hasArrow: {
+      type: Boolean,
+      default: false,
+    },
+    isVariable: {
+      type: Boolean,
+      default: false,
+    },
+  },
 
-  @Prop({ default: undefined })
-  availableVariables!: VariablesBucket;
+  data() {
+    return {
+      isChoosingVariable: false,
+      isAdvancedVariableModalOpened: false,
+    };
+  },
 
-  @Prop({ default: () => ({ start: '{{', end: '}}' }) })
-  variableDelimiters!: VariableDelimiters;
-
-  @Prop({ default: undefined })
-  trustedVariableDelimiters!: VariableDelimiters;
-
-  @Prop({ default: () => '' })
-  editedAdvancedVariable!: string;
-
-  @Prop({ default: false })
-  hasArrow!: boolean;
-
-  @Prop({ default: false })
-  isVariable!: boolean;
-
-  isChoosingVariable = false;
-
-  isAdvancedVariableModalOpened = false;
-
-  @Watch('editedAdvancedVariable')
-  editAdvancedVariable() {
-    if (this.editedAdvancedVariable) this.openAdvancedVariableModal();
-  }
-
-  /**
-   * Remove identifier from selected variable(s)
-   */
-  get selectedVariables(): string | string[] {
-    if (!Array.isArray(this.value)) {
-      return (
-        extractVariableIdentifier(
-          this.value,
-          this.variableDelimiters,
-          this.trustedVariableDelimiters,
-        ) ?? ''
-      );
-    } else {
-      return this.value.reduce((variables: string[], value: string) => {
-        const identifier = extractVariableIdentifier(
-          value,
-          this.variableDelimiters,
-          this.trustedVariableDelimiters,
+  computed: {
+    /**
+     * Remove identifier from selected variable(s)
+     */
+    selectedVariables(): string | string[] {
+      if (!Array.isArray(this.value)) {
+        return (
+          extractVariableIdentifier(
+            this.value,
+            this.variableDelimiters,
+            this.trustedVariableDelimiters,
+          ) ?? ''
         );
-        // in case value is a simple string we still want to keep it in array
-        return [...variables, identifier || value];
-      }, []);
-    }
-  }
-
-  /**
-   * Determine whether to authorize or not the selection of a variable
-   */
-  get canBeVariable() {
-    return this.availableVariables;
-  }
-
-  startChoosingVariable() {
-    this.isChoosingVariable = true;
-    sendAnalytics({ name: 'Variables button clicked' });
-  }
-
-  stopChoosingVariable() {
-    this.isChoosingVariable = false;
-  }
-
-  openAdvancedVariableModal() {
-    this.stopChoosingVariable();
-    this.isAdvancedVariableModalOpened = true;
-  }
-
-  closeAdvancedVariableModal() {
-    this.isAdvancedVariableModalOpened = false;
-    this.$emit('resetEditedAdvancedVariable');
-  }
-
-  setVariableDelimiters(value: string | string[]): string | string[] {
-    const retrieveVariableDelimiters = (
-      variableIdentifier: string,
-    ): VariableDelimiters | undefined => {
-      const variable = this.availableVariables.find((v) => v.identifier === variableIdentifier);
-      if (!variable) {
-        return; // if variable is unfound we don't want to display any delimiters
-      } else if (isTrustedVariable(variable)) {
-        return this.trustedVariableDelimiters;
+      } else {
+        return this.value.reduce((variables: string[], value: string) => {
+          const identifier = extractVariableIdentifier(
+            value,
+            this.variableDelimiters,
+            this.trustedVariableDelimiters,
+          );
+          // in case value is a simple string we still want to keep it in array
+          return [...variables, identifier || value];
+        }, []);
       }
-      return this.variableDelimiters;
-    };
-    const addVariableDelimiters = (variableIdentifier: string): string => {
-      const delimiters = retrieveVariableDelimiters(variableIdentifier);
-      if (!delimiters) return variableIdentifier;
-      return `${delimiters.start} ${variableIdentifier} ${delimiters.end}`;
-    };
-    return Array.isArray(value)
-      ? value.map((v) => addVariableDelimiters(v))
-      : addVariableDelimiters(value);
-  }
+    },
 
-  /**
-   * Emit the choosen variable(s)
-   */
-  chooseVariable(selectedVariables: string | string[]) {
-    const value = this.setVariableDelimiters(selectedVariables);
-    this.$emit('input', value);
-    if (!this.isMultiple) {
-      this.stopChoosingVariable(); // keep list open with multiVariable mode
-    }
-  }
+    /**
+     * Determine whether to authorize or not the selection of a variable
+     */
+    canBeVariable() {
+      return this.availableVariables;
+    },
+  },
 
-  /**
-   * Emit the choosen advanced variable and close the modal
-   */
-  chooseAdvancedVariable(variableIdentifier: string) {
-    const value = `${this.variableDelimiters.start} ${variableIdentifier} ${this.variableDelimiters.end}`;
-    this.$emit('chooseAdvancedVariable', value);
-    this.closeAdvancedVariableModal();
-  }
-}
+  watch: {
+    editedAdvancedVariable: {
+      handler() {
+        if (this.editedAdvancedVariable) this.openAdvancedVariableModal();
+      },
+    },
+  },
+
+  methods: {
+    startChoosingVariable() {
+      this.isChoosingVariable = true;
+    },
+
+    stopChoosingVariable() {
+      this.isChoosingVariable = false;
+    },
+
+    openAdvancedVariableModal() {
+      this.stopChoosingVariable();
+      this.isAdvancedVariableModalOpened = true;
+    },
+
+    closeAdvancedVariableModal() {
+      this.isAdvancedVariableModalOpened = false;
+      this.$emit('resetEditedAdvancedVariable');
+    },
+
+    setVariableDelimiters(value: string | string[]): string | string[] {
+      const retrieveVariableDelimiters = (
+        variableIdentifier: string,
+      ): VariableDelimiters | undefined => {
+        const variable = this.availableVariables.find((v) => v.identifier === variableIdentifier);
+        if (!variable) {
+          return; // if variable is unfound we don't want to display any delimiters
+        } else if (isTrustedVariable(variable)) {
+          return this.trustedVariableDelimiters;
+        }
+        return this.variableDelimiters;
+      };
+      const addVariableDelimiters = (variableIdentifier: string): string => {
+        const delimiters = retrieveVariableDelimiters(variableIdentifier);
+        if (!delimiters) return variableIdentifier;
+        return `${delimiters.start} ${variableIdentifier} ${delimiters.end}`;
+      };
+      return Array.isArray(value)
+        ? value.map((v) => addVariableDelimiters(v))
+        : addVariableDelimiters(value);
+    },
+
+    /**
+     * Emit the choosen variable(s)
+     */
+    chooseVariable(selectedVariables: string | string[]) {
+      const value = this.setVariableDelimiters(selectedVariables);
+      this.$emit('input', value);
+      if (!this.isMultiple) {
+        this.stopChoosingVariable(); // keep list open with multiVariable mode
+      }
+    },
+
+    /**
+     * Emit the choosen advanced variable and close the modal
+     */
+    chooseAdvancedVariable(variableIdentifier: string) {
+      const value = `${this.variableDelimiters.start} ${variableIdentifier} ${this.variableDelimiters.end}`;
+      this.$emit('chooseAdvancedVariable', value);
+      this.closeAdvancedVariableModal();
+    },
+  },
+});
 </script>
 
 <style scoped lang="scss">

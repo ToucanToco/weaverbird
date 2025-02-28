@@ -30,74 +30,79 @@
   </div>
 </template>
 <script lang="ts">
+import { defineComponent, PropType } from 'vue';
+import { mapGetters, mapState } from 'pinia';
 import { Multiselect } from 'vue-multiselect';
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
 import type { PipelineStepName } from '@/lib/steps';
 
-import { State, Getter } from 'pinia-class';
 import { VQBModule } from '@/store';
 import { ACTION_CATEGORIES, CATEGORY_BUTTONS, STEP_LABELS } from './constants';
 import Popover from './Popover.vue';
 
-@Component({
+export default defineComponent({
   name: 'action-toolbar-search',
+
   components: {
     Popover,
     Multiselect,
     FAIcon,
   },
-})
-export default class SearchActions extends Vue {
-  @State(VQBModule) translator!: string;
-  @Getter(VQBModule) unsupportedSteps!: PipelineStepName[];
 
-  @Prop({
-    type: Boolean,
-    default: () => false,
-  })
-  isActive!: boolean;
+  props: {
+    isActive: {
+      type: Boolean,
+      default: false,
+    },
+  },
 
-  @Watch('isActive')
-  async onIsActiveChanged() {
-    if (this.isActive) {
-      await this.$nextTick();
-      this.focusSearchBar();
-    }
-  }
+  computed: {
+    ...mapState(VQBModule, ['translator']),
 
-  get actionOptions() {
-    return CATEGORY_BUTTONS.map((button) => ({
-      type: button.label,
-      actions: ACTION_CATEGORIES[button.category]
-        .map((name) => ({
-          name,
-          label: STEP_LABELS[name],
-        }))
-        .filter((a) => !this.unsupportedSteps.includes(a.name)),
-    }));
-  }
+    ...mapGetters(VQBModule, ['unsupportedSteps']),
+
+    actionOptions() {
+      return CATEGORY_BUTTONS.map((button) => ({
+        type: button.label,
+        actions: ACTION_CATEGORIES[button.category]
+          .map((name) => ({
+            name,
+            label: STEP_LABELS[name],
+          }))
+          .filter((a) => !this.unsupportedSteps.includes(a.name)),
+      }));
+    },
+  },
+
+  watch: {
+    isActive: {
+      async handler(newVal) {
+        if (newVal) {
+          await this.$nextTick();
+          this.focusSearchBar();
+        }
+      },
+    },
+  },
 
   mounted() {
     if (this.isActive) {
       this.focusSearchBar();
     }
-  }
+  },
 
-  $refs!: {
-    searchComponent: Multiselect;
-  };
+  methods: {
+    focusSearchBar() {
+      (this.$refs.searchComponent.$el as HTMLElement).focus();
+    },
 
-  focusSearchBar() {
-    (this.$refs.searchComponent.$el as HTMLElement).focus();
-  }
-
-  actionClicked(actionName: { name: PipelineStepName }) {
-    this.$emit('actionClicked', actionName.name);
-    this.$emit('closed');
-  }
-}
+    actionClicked(actionName: { name: PipelineStepName }) {
+      this.$emit('actionClicked', actionName.name);
+      this.$emit('closed');
+    },
+  },
+});
 </script>
 <style lang="scss">
 @import '../styles/_variables';

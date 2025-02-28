@@ -35,30 +35,32 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Component } from 'vue-property-decorator';
+import { defineComponent } from 'vue';
 
 import FAIcon from '@/components/FAIcon.vue';
-@Component({
-  name: 'delete-confirmation-modal',
-  components: {
-    FAIcon,
-  },
-})
+
 /**
  * @name DeleteConfirmationModal
  * @description A modal asking for confirmation before deleting a step
  */
-export default class DeleteConfirmationModal extends Vue {
-  cancelDelete(): void {
-    /* istanbul ignore next */
-    (this.$listeners as any).cancelDelete(); // TODO: refactor (old functional logic)
-  }
-  validateDelete(): void {
-    /* istanbul ignore next */
-    (this.$listeners as any).validateDelete(); // TODO: refactor (old functional logic)
-  }
-}
+export default defineComponent({
+  name: 'delete-confirmation-modal',
+
+  components: {
+    FAIcon,
+  },
+
+  methods: {
+    cancelDelete(): void {
+      /* istanbul ignore next */
+      (this.$listeners as any).cancelDelete(); // TODO: refactor (old functional logic)
+    },
+    validateDelete(): void {
+      /* istanbul ignore next */
+      (this.$listeners as any).validateDelete(); // TODO: refactor (old functional logic)
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>

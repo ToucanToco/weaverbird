@@ -17,36 +17,42 @@
   </div>
 </template>
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import type { PipelineStepName, SimplifyStep } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 import InputNumberWidget from './widgets/InputNumber.vue';
 
-@Component({
+export default defineComponent({
   name: 'simplify-step-form',
   components: {
     InputNumberWidget,
   },
-})
-export default class SimplifyStepForm extends BaseStepForm<SimplifyStep> {
-  stepname: PipelineStepName = 'simplify';
-
-  @Prop({
-    type: Object,
-    default: () => ({
-      name: 'simplify',
-      tolerance: 1,
-    }),
-  })
-  declare initialStepValue: SimplifyStep;
-
-  readonly title: string = 'Simplify geographical data';
-
-  submit() {
-    this.$$super.submit();
-  }
-}
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<Partial<SimplifyStep>>,
+      default: (): Partial<SimplifyStep> => ({
+        name: 'simplify',
+        tolerance: 1,
+      }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'simplify' as PipelineStepName,
+      title: 'Simplify geographical data' as string,
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      },
+    };
+  },
+  methods: {
+    submit() {
+      this.$$super.submit();
+    },
+  },
+});
 </script>

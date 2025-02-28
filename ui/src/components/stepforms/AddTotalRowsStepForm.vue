@@ -51,75 +51,90 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
-import TotalDimensionsWidget from '@/components/stepforms/widgets/TotalDimensions.vue';
-import { setAggregationsNewColumnsInStep } from '@/lib/helpers';
 import type { AddTotalRowsStep, Aggregation, PipelineStepName, TotalDimension } from '@/lib/steps';
-
+import { setAggregationsNewColumnsInStep } from '@/lib/helpers';
 import BaseStepForm from './StepForm.vue';
 import AggregationWidget from './widgets/Aggregation.vue';
 import ListWidget from './widgets/List.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
+import TotalDimensionsWidget from '@/components/stepforms/widgets/TotalDimensions.vue';
 
-@Component({
+export default defineComponent({
   name: 'totals-step-form',
   components: {
     ListWidget,
     MultiselectWidget,
   },
-})
-export default class AddTotalRowsStepForm extends BaseStepForm<AddTotalRowsStep> {
-  stepname: PipelineStepName = 'totals';
-
-  @Prop({
-    type: Object,
-    default: () => ({ name: 'totals', totalDimensions: [], aggregations: [] }),
-  })
-  declare initialStepValue: AddTotalRowsStep;
-
-  readonly title: string = 'Add Total Rows';
-  totalDimensionsWidget = TotalDimensionsWidget;
-  widgetAggregation = AggregationWidget;
-
-  get defaultAggregation() {
-    const agg: Aggregation = {
-      columns: [],
-      newcolumns: [],
-      aggfunction: 'sum',
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<Partial<AddTotalRowsStep>>,
+      default: (): Partial<AddTotalRowsStep> => ({
+        name: 'totals',
+        totalDimensions: [],
+        aggregations: [],
+      }),
+    },
+  },
+  data(): {
+    stepname: PipelineStepName;
+    title: string;
+    totalDimensionsWidget: typeof TotalDimensionsWidget;
+    widgetAggregation: typeof AggregationWidget;
+    editedStep: AddTotalRowsStep;
+  } {
+    return {
+      stepname: 'totals',
+      title: 'Add Total Rows',
+      totalDimensionsWidget: TotalDimensionsWidget,
+      widgetAggregation: AggregationWidget,
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      },
     };
-    return agg;
-  }
-
-  get aggregations() {
-    return this.editedStep.aggregations;
-  }
-
-  set aggregations(newval) {
-    this.editedStep.aggregations = [...newval];
-  }
-
-  get defaultTotalDimensions() {
-    return { totalColumn: '', totalRowsLabel: '' } as TotalDimension;
-  }
-
-  get totalDimensions() {
-    if (this.editedStep.totalDimensions.length) {
-      return this.editedStep.totalDimensions;
-    } else {
-      return [{ totalColumn: '', totalRowsLabel: '' }];
-    }
-  }
-
-  set totalDimensions(newval) {
-    this.editedStep.totalDimensions = [...newval];
-  }
-
-  async submit() {
-    setAggregationsNewColumnsInStep(this.editedStep);
-    await this.$nextTick();
-    this.$$super.submit();
-  }
-}
+  },
+  computed: {
+    defaultAggregation(): Aggregation {
+      const agg: Aggregation = {
+        columns: [],
+        newcolumns: [],
+        aggfunction: 'sum',
+      };
+      return agg;
+    },
+    aggregations: {
+      get(): Aggregation[] {
+        return this.editedStep.aggregations;
+      },
+      set(newval: Aggregation[]) {
+        this.editedStep.aggregations = [...newval];
+      },
+    },
+    defaultTotalDimensions(): TotalDimension {
+      return { totalColumn: '', totalRowsLabel: '' };
+    },
+    totalDimensions: {
+      get(): TotalDimension[] {
+        if (this.editedStep.totalDimensions.length) {
+          return this.editedStep.totalDimensions;
+        } else {
+          return [{ totalColumn: '', totalRowsLabel: '' }];
+        }
+      },
+      set(newval: TotalDimension[]) {
+        this.editedStep.totalDimensions = [...newval];
+      },
+    },
+  },
+  methods: {
+    async submit() {
+      setAggregationsNewColumnsInStep(this.editedStep);
+      await this.$nextTick();
+      this.$$super.submit();
+    },
+  },
+});
 </script>

@@ -22,37 +22,46 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
-import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import type { PipelineStepName, ToUpperStep } from '@/lib/steps';
-
+import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import BaseStepForm from './StepForm.vue';
 
-@Component({
+export default defineComponent({
   name: 'toupper-step-form',
   components: {
     ColumnPicker,
   },
-})
-export default class ToUpperStepForm extends BaseStepForm<ToUpperStep> {
-  stepname: PipelineStepName = 'uppercase';
-
-  @Prop({ type: Object, default: () => ({ name: 'uppercase', column: '' }) })
-  declare initialStepValue: ToUpperStep;
-
-  readonly title: string = 'Convert column to uppercase';
-
-  get stepSelectedColumn() {
-    return this.editedStep.column;
-  }
-
-  set stepSelectedColumn(colname: string | null) {
-    if (colname === null) {
-      throw new Error('should not try to set null on "column" field');
-    }
-    this.editedStep.column = colname;
-  }
-}
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<ToUpperStep>,
+      default: () => ({ name: 'uppercase', column: '' }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'uppercase' as PipelineStepName,
+      title: 'Convert column to uppercase' as string,
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      },
+    };
+  },
+  computed: {
+    stepSelectedColumn: {
+      get(): string {
+        return this.editedStep.column;
+      },
+      set(colname: string | null) {
+        if (colname === null) {
+          throw new Error('should not try to set null on "column" field');
+        }
+        this.editedStep.column = colname;
+      },
+    },
+  },
+});
 </script>

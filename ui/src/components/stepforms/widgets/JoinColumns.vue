@@ -41,71 +41,80 @@
   </div>
 </template>
 <script lang="ts">
+import { defineComponent, PropType } from 'vue';
 import type { ErrorObject } from 'ajv';
-import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 import InputTextWidget from './InputText.vue';
 
-@Component({
+export default defineComponent({
   name: 'join-colum-widget',
   components: {
     AutocompleteWidget,
     InputTextWidget,
   },
-})
-export default class JoinColumns extends Vue {
-  @Prop({
-    type: Array,
-    default: () => ['', ''],
-  })
-  value!: string[];
-
-  @Prop({ type: String, default: null })
-  dataPath!: string;
-
-  @Prop({ type: Array, default: () => [] })
-  errors!: ErrorObject[];
-
-  @Prop()
-  availableVariables?: VariablesBucket;
-
-  @Prop()
-  variableDelimiters?: VariableDelimiters;
-
-  @Prop()
-  trustedVariableDelimiters?: VariableDelimiters;
-
-  @Prop({ default: () => [] })
-  columnNames!: string[];
-
-  @Prop()
-  rightColumnNames?: string[] | null; // because initializing to undefined won't make it reactive
-
-  get leftOnColumn() {
-    return this.value[0];
-  }
-
-  set leftOnColumn(newLeftOnColumn) {
-    // If no right column, set it to the same as left column (smart default)
-    const newRightColumn = this.rightOnColumn === '' ? newLeftOnColumn : this.rightOnColumn;
-    this.update([newLeftOnColumn, newRightColumn]);
-  }
-
-  get rightOnColumn() {
-    return this.value[1];
-  }
-
-  set rightOnColumn(newRightOnColumn) {
-    this.update([this.leftOnColumn, newRightOnColumn]);
-  }
-
-  update(newJoinColumns: string[]) {
-    this.$emit('input', newJoinColumns);
-  }
-}
+  props: {
+    value: {
+      type: Array as PropType<string[]>,
+      default: () => ['', ''],
+    },
+    dataPath: {
+      type: String as PropType<string | null>,
+      default: null,
+    },
+    errors: {
+      type: Array as PropType<ErrorObject[]>,
+      default: () => [],
+    },
+    availableVariables: {
+      type: Object as PropType<VariablesBucket | undefined>,
+      default: undefined,
+    },
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+    trustedVariableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+    columnNames: {
+      type: Array as PropType<string[]>,
+      default: () => [],
+    },
+    rightColumnNames: {
+      type: Array as PropType<string[] | null>,
+      default: null,
+    },
+  },
+  computed: {
+    leftOnColumn: {
+      get() {
+        return this.value[0];
+      },
+      set(newLeftOnColumn: string) {
+        // If no right column, set it to the same as left column (smart default)
+        const newRightColumn = this.rightOnColumn === '' ? newLeftOnColumn : this.rightOnColumn;
+        this.update([newLeftOnColumn, newRightColumn]);
+      },
+    },
+    rightOnColumn: {
+      get() {
+        return this.value[1];
+      },
+      set(newRightOnColumn: string) {
+        this.update([this.leftOnColumn, newRightOnColumn]);
+      },
+    },
+  },
+  methods: {
+    update(newJoinColumns: string[]) {
+      this.$emit('input', newJoinColumns);
+    },
+  },
+});
 </script>
 <style lang="scss" scoped>
 .rightOn {

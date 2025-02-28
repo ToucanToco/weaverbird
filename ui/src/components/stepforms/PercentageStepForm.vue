@@ -40,8 +40,7 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import type { PercentageStep, PipelineStepName } from '@/lib/steps';
@@ -50,33 +49,52 @@ import BaseStepForm from './StepForm.vue';
 import InputTextWidget from './widgets/InputText.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
-@Component({
+export default defineComponent({
   name: 'percentage-step-form',
+
   components: {
     ColumnPicker,
     InputTextWidget,
     MultiselectWidget,
   },
-})
-export default class PercentageStepForm extends BaseStepForm<PercentageStep> {
-  stepname: PipelineStepName = 'percentage';
 
-  @Prop({ type: Object, default: () => ({ name: 'percentage', column: '' }) })
-  declare initialStepValue: PercentageStep;
+  extends: BaseStepForm,
 
-  readonly title: string = 'Percentage of total';
+  props: {
+    initialStepValue: {
+      type: Object as PropType<PercentageStep>,
+      default: (): PercentageStep => ({
+        name: 'percentage',
+        column: '',
+      }),
+    },
+  },
 
-  get stepSelectedColumn() {
-    return this.editedStep.column;
-  }
+  data() {
+    return {
+      stepname: 'percentage' as PipelineStepName,
+      title: 'Percentage of total' as const,
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      } as PercentageStep,
+    };
+  },
 
-  set stepSelectedColumn(colname: string | null) {
-    if (colname === null) {
-      throw new Error('should not try to set null on percentage "value column" field');
-    }
-    if (colname !== null) {
-      this.editedStep.column = colname;
-    }
-  }
-}
+  computed: {
+    stepSelectedColumn: {
+      get(): string {
+        return this.editedStep.column;
+      },
+      set(colname: string | null) {
+        if (colname === null) {
+          throw new Error('should not try to set null on percentage "value column" field');
+        }
+        if (colname !== null) {
+          this.editedStep.column = colname;
+        }
+      },
+    },
+  },
+});
 </script>

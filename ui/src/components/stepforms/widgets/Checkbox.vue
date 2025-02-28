@@ -11,46 +11,52 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
-@Component({
+export default defineComponent({
   name: 'checkbox-widget',
-})
-export default class CheckboxWidget extends Vue {
-  @Prop({ type: String, default: null })
-  label!: string;
-
-  @Prop({ type: String, default: undefined })
-  info?: string;
-
-  @Prop({ type: Boolean, default: false })
-  croppedLabel?: boolean;
-
-  @Prop({ type: Boolean, default: true })
-  value!: boolean;
-
-  get toggleCheckedClass() {
-    return {
-      'widget-checkbox': true,
-      'widget-checkbox--checked': this.value,
-      'widget-checkbox--cropped': this.croppedLabel,
-    };
-  }
-
-  get title(): string | undefined {
-    if (!this.croppedLabel) {
-      return undefined;
-    } else if (this.info) {
-      return `${this.label}${this.info}`;
-    } else {
-      return this.label;
-    }
-  }
-
-  toggleValue() {
-    this.$emit('input', !this.value);
-  }
-}
+  props: {
+    label: {
+      type: String as PropType<string | null>,
+      default: null,
+    },
+    info: {
+      type: String as PropType<string | undefined>,
+      default: undefined,
+    },
+    croppedLabel: {
+      type: Boolean as PropType<boolean>,
+      default: false,
+    },
+    value: {
+      type: Boolean as PropType<boolean>,
+      default: true,
+    },
+  },
+  computed: {
+    toggleCheckedClass() {
+      return {
+        'widget-checkbox': true,
+        'widget-checkbox--checked': this.value,
+        'widget-checkbox--cropped': this.croppedLabel,
+      };
+    },
+    title(): string | undefined {
+      if (!this.croppedLabel) {
+        return undefined;
+      } else if (this.info) {
+        return `${this.label}${this.info}`;
+      } else {
+        return this.label;
+      }
+    },
+  },
+  methods: {
+    toggleValue() {
+      this.$emit('input', !this.value);
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>

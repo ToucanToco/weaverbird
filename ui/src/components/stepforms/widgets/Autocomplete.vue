@@ -72,84 +72,97 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, PropType, ref } from 'vue';
 import { Multiselect } from 'vue-multiselect';
-import { Component, Prop } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-
 import FormWidget from './FormWidget.vue';
 import VariableInput from './VariableInput.vue';
 
-@Component({
+export default defineComponent({
   name: 'autocomplete-widget',
   components: {
     Multiselect,
     VariableInput,
     FAIcon,
   },
-})
-export default class AutocompleteWidget extends FormWidget {
-  @Prop({ type: String, default: '' })
-  name!: string;
-
-  @Prop({ type: String, default: '' })
-  placeholder!: string;
-
-  @Prop({ default: '' })
-  value!: string | object;
-
-  @Prop({ type: Array, default: () => [] })
-  options!: string[] | object[];
-
-  @Prop({ type: String, default: undefined })
-  trackBy!: string;
-
-  @Prop({ type: String, default: undefined })
-  label!: string;
-
-  @Prop({ type: Boolean, default: false })
-  withExample!: boolean;
-
-  @Prop()
-  availableVariables?: VariablesBucket;
-
-  @Prop()
-  variableDelimiters?: VariableDelimiters;
-
-  @Prop()
-  trustedVariableDelimiters?: VariableDelimiters;
-
-  @Prop({ type: Number, default: undefined })
-  maxHeight!: number;
-
-  // Allow typing a value which is not on the list.
-  // Won't work for object options.
-  @Prop({ type: Boolean, default: false })
-  allowCustom!: boolean;
-
-  updateValue(newValue?: string | object) {
-    this.$emit('input', newValue);
-  }
-
-  onOptionClick(e: Event, disabled?: boolean) {
-    if (disabled) e.stopPropagation();
-  }
-
-  searchValue: string = '';
-  onSearchChange(v: string) {
-    this.searchValue = v;
-  }
-
-  get isSearchValueInOptions(): boolean {
-    return this.options.includes(this.searchValue);
-  }
-
-  onSelectCustom() {
-    this.updateValue(this.searchValue);
-    (this.$refs.multiSelect as Multiselect).deactivate();
-  }
-}
+  extends: FormWidget,
+  props: {
+    name: {
+      type: String as PropType<string>,
+      default: '',
+    },
+    placeholder: {
+      type: String as PropType<string>,
+      default: '',
+    },
+    value: {
+      type: [String, Object] as PropType<string | object>,
+      default: '',
+    },
+    options: {
+      type: Array as PropType<string[] | object[]>,
+      default: () => [],
+    },
+    trackBy: {
+      type: String as PropType<string | undefined>,
+      default: undefined,
+    },
+    label: {
+      type: String as PropType<string | undefined>,
+      default: undefined,
+    },
+    withExample: {
+      type: Boolean as PropType<boolean>,
+      default: false,
+    },
+    availableVariables: {
+      type: Object as PropType<VariablesBucket | undefined>,
+      default: undefined,
+    },
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+    trustedVariableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+    maxHeight: {
+      type: Number as PropType<number | undefined>,
+      default: undefined,
+    },
+    allowCustom: {
+      type: Boolean as PropType<boolean>,
+      default: false,
+    },
+  },
+  setup() {
+    const searchValue = ref('');
+    return { searchValue };
+  },
+  computed: {
+    isSearchValueInOptions(): boolean {
+      return this.options.includes(this.searchValue);
+    },
+  },
+  methods: {
+    updateValue(newValue?: string | object) {
+      this.$emit('input', newValue);
+    },
+    onOptionClick(e: Event, disabled?: boolean) {
+      if (disabled) e.stopPropagation();
+    },
+    onSearchChange(v: string) {
+      this.searchValue = v;
+    },
+    onSelectCustom() {
+      this.updateValue(this.searchValue);
+      (this.$refs.multiSelect as Multiselect).deactivate();
+    },
+  },
+});
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

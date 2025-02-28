@@ -45,46 +45,51 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
+import type { PipelineStepName, UnpivotStep } from '@/lib/steps';
+import { generateNewColumnName } from '@/lib/helpers';
+import BaseStepForm from './StepForm.vue';
 import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
-import { generateNewColumnName } from '@/lib/helpers';
-import type { PipelineStepName, UnpivotStep } from '@/lib/steps';
 
-import BaseStepForm from './StepForm.vue';
-
-@Component({
+export default defineComponent({
   name: 'unpivot-step-form',
   components: {
     CheckboxWidget,
     MultiselectWidget,
   },
-})
-export default class UnpivotStepForm extends BaseStepForm<UnpivotStep> {
-  stepname: PipelineStepName = 'unpivot';
-
-  @Prop({
-    type: Object,
-    default: () => ({
-      name: 'unpivot',
-      keep: [],
-      unpivot: [],
-      unpivotColumnName: '',
-      valueColumnName: '',
-      dropna: true,
-    }),
-  })
-  declare initialStepValue: UnpivotStep;
-
-  readonly title: string = 'Unpivot columns';
-  readonly checkboxLabel: string = 'Drop null values';
-
-  submit() {
-    this.editedStep.unpivotColumnName = generateNewColumnName('variable', this.columnNames);
-    this.editedStep.valueColumnName = generateNewColumnName('value', this.columnNames);
-    this.$$super.submit();
-  }
-}
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<UnpivotStep>,
+      default: () => ({
+        name: 'unpivot',
+        keep: [],
+        unpivot: [],
+        unpivotColumnName: '',
+        valueColumnName: '',
+        dropna: true,
+      }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'unpivot' as PipelineStepName,
+      title: 'Unpivot columns' as string,
+      checkboxLabel: 'Drop null values' as string,
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      },
+    };
+  },
+  methods: {
+    submit() {
+      this.editedStep.unpivotColumnName = generateNewColumnName('variable', this.columnNames);
+      this.editedStep.valueColumnName = generateNewColumnName('value', this.columnNames);
+      this.$$super.submit();
+    },
+  },
+});
 </script>

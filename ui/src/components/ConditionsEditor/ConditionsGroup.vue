@@ -116,152 +116,97 @@
  *
  * Nesting is intentionally blocked to two levels of depth to avoid unnecessary complexity.
  */
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import FAIcon from '@/components/FAIcon.vue';
 
 import type { AbstractCondition, AbstractFilterTree, ConditionOperator } from './tree-types';
 
-@Component({
+export default defineComponent({
   name: 'ConditionsGroup',
+
   components: {
     FAIcon,
   },
-})
-export default class ConditionsGroup extends Vue {
-  @Prop({
-    type: Object,
-    default: () => ({ operator: '', conditions: [], groups: [] }),
-  })
-  conditionsTree!: AbstractFilterTree;
 
-  @Prop({
-    required: true,
-  })
-  defaultValue!: any;
+  props: {
+    conditionsTree: {
+      type: Object as PropType<AbstractFilterTree>,
+      default: () => ({ operator: '', conditions: [], groups: [] }),
+    },
+    defaultValue: {
+      type: null,
+      required: true,
+    },
+    isRootGroup: {
+      type: Boolean,
+      default: false,
+    },
+    dataPath: {
+      type: String,
+      default: '',
+    },
+  },
 
-  @Prop({
-    type: Boolean,
-    default: false,
-  })
-  isRootGroup!: boolean;
+  computed: {
+    operator(): ConditionOperator | '' {
+      return this.conditionsTree.operator;
+    },
+    conditions(): AbstractCondition[] {
+      return this.conditionsTree.conditions;
+    },
+    groups(): AbstractFilterTree[] {
+      return this.conditionsTree.groups;
+    },
+    hasMultipleRows(): boolean {
+      return this.conditions.length > 1 || (this.groups && this.groups.length > 0);
+    },
+  },
 
-  @Prop({
-    type: String,
-    default: '',
-  })
-  dataPath!: string;
+  methods: {
+    addGroup(): void {
+      const newGroups = this.conditionsTree.groups || [];
+      newGroups.push({
+        operator: 'and',
+        conditions: [this.defaultValue],
+        groups: [],
+      });
 
-  get operator() {
-    return this.conditionsTree.operator;
-  }
-
-  get conditions() {
-    return this.conditionsTree.conditions;
-  }
-
-  get groups() {
-    return this.conditionsTree.groups;
-  }
-
-  get hasMultipleRows() {
-    return this.conditions.length > 1 || (this.groups && this.groups.length > 0);
-  }
-
-  addGroup() {
-    const newGroups = this.conditionsTree.groups || [];
-    newGroups.push({
-      operator: 'and',
-      conditions: [this.defaultValue],
-      groups: [],
-    });
-
-    const newConditionsTree = {
-      ...this.conditionsTree,
-      groups: newGroups,
-    } as AbstractFilterTree;
-    // When there is only one condition, the operator is an empty string.
-    // Set the operator to 'and' when a group is added.
-
-    this.setOperatorIfNecessaryAndUpdateConditionTree(newConditionsTree);
-  }
-
-  addRow() {
-    const newConditionsTree = {
-      ...this.conditionsTree,
-      conditions: [...this.conditions, this.defaultValue],
-    } as AbstractFilterTree;
-
-    this.setOperatorIfNecessaryAndUpdateConditionTree(newConditionsTree);
-  }
-
-  deleteGroup(groupIndex: number) {
-    const newGroups = [...this.groups];
-    newGroups.splice(groupIndex, 1);
-
-    const newConditionsTree = {
-      ...this.conditionsTree,
-      groups: newGroups,
-    } as AbstractFilterTree;
-
-    this.emitUpdatedConditionTree(newConditionsTree);
-    this.resetOperatorIfNecessary();
-  }
-
-  deleteRow(rowIndex: number) {
-    const newConditions = [...this.conditions];
-    newConditions.splice(rowIndex, 1);
-
-    const newConditionsTree = {
-      ...this.conditionsTree,
-      conditions: newConditions,
-    } as AbstractFilterTree;
-
-    this.emitUpdatedConditionTree(newConditionsTree);
-    this.resetOperatorIfNecessary();
-  }
-
-  isLastRow(rowIndex: number) {
-    const hasGroups = this.groups && this.groups.length;
-    const isLastCondition = rowIndex === this.conditions.length - 1;
-    return !hasGroups && isLastCondition;
-  }
-
-  isLastGroup(groupIndex: number) {
-    return groupIndex === this.groups.length - 1;
-  }
-
-  async resetOperatorIfNecessary() {
-    // await the re-render to received the updated tree (emitted + received in props)
-    await this.$nextTick();
-
-    // reset the operator to an empty string when there's only one condition left
-    if (this.conditions.length === 1 && this.groups.length === 0) {
       const newConditionsTree = {
         ...this.conditionsTree,
-        operator: '',
+        groups: newGroups,
       } as AbstractFilterTree;
+      // When there is only one condition, the operator is an empty string.
+      // Set the operator to 'and' when a group is added.
+
+      this.setOperatorIfNecessaryAndUpdateConditionTree(newConditionsTree);
+    },
+
+    addRow(): void {
+      const newConditionsTree = {
+        ...this.conditionsTree,
+        conditions: [...this.conditions, this.defaultValue],
+      } as AbstractFilterTree;
+
+      this.setOperatorIfNecessaryAndUpdateConditionTree(newConditionsTree);
+    },
+
+    deleteGroup(groupIndex: number): void {
+      const newGroups = [...this.groups];
+      newGroups.splice(groupIndex, 1);
+
+      const newConditionsTree = {
+        ...this.conditionsTree,
+        groups: newGroups,
+      } as AbstractFilterTree;
+
       this.emitUpdatedConditionTree(newConditionsTree);
-    }
-    return;
-  }
+      this.resetOperatorIfNecessary();
+    },
 
-  setOperatorIfNecessaryAndUpdateConditionTree(newConditionsTree: AbstractFilterTree) {
-    // When there is only one condition and no group, the operator is an empty string (cf resetOperatorIfNecessary).
-    // Set the operator to 'and' when the condition is no longer alone.
-    if (this.operator === '') {
-      newConditionsTree = {
-        ...newConditionsTree,
-        operator: 'and',
-      } as AbstractFilterTree;
-    }
-    this.emitUpdatedConditionTree(newConditionsTree);
-  }
-
-  updateCondition(rowIndex: number) {
-    return (c: AbstractCondition) => {
+    deleteRow(rowIndex: number): void {
       const newConditions = [...this.conditions];
-      newConditions[rowIndex] = c;
+      newConditions.splice(rowIndex, 1);
 
       const newConditionsTree = {
         ...this.conditionsTree,
@@ -269,33 +214,80 @@ export default class ConditionsGroup extends Vue {
       } as AbstractFilterTree;
 
       this.emitUpdatedConditionTree(newConditionsTree);
-    };
-  }
+      this.resetOperatorIfNecessary();
+    },
 
-  updateGroup(groupIndex: number, g: AbstractFilterTree) {
-    const newGroups = [...this.groups];
-    newGroups[groupIndex] = g;
+    isLastRow(rowIndex: number): boolean {
+      const hasGroups = this.groups && this.groups.length;
+      const isLastCondition = rowIndex === this.conditions.length - 1;
+      return !hasGroups && isLastCondition;
+    },
 
-    const newConditionsTree = {
-      ...this.conditionsTree,
-      groups: newGroups,
-    } as AbstractFilterTree;
+    isLastGroup(groupIndex: number): boolean {
+      return groupIndex === this.groups.length - 1;
+    },
 
-    this.emitUpdatedConditionTree(newConditionsTree);
-  }
+    async resetOperatorIfNecessary(): Promise<void> {
+      // await the re-render to received the updated tree (emitted + received in props)
+      await this.$nextTick();
 
-  switchOperator(newOperator: ConditionOperator) {
-    const newConditionsTree = {
-      ...this.conditionsTree,
-      operator: newOperator,
-    } as AbstractFilterTree;
-    this.emitUpdatedConditionTree(newConditionsTree);
-  }
+      // reset the operator to an empty string when there's only one condition left
+      if (this.conditions.length === 1 && this.groups.length === 0) {
+        const newConditionsTree = {
+          ...this.conditionsTree,
+          operator: '',
+        } as AbstractFilterTree;
+        this.emitUpdatedConditionTree(newConditionsTree);
+      }
+    },
 
-  emitUpdatedConditionTree(newConditionsTree: AbstractFilterTree) {
-    this.$emit('conditionsTreeUpdated', newConditionsTree);
-  }
-}
+    setOperatorIfNecessaryAndUpdateConditionTree(newConditionsTree: AbstractFilterTree): void {
+      // When there is only one condition and no group, the operator is an empty string (cf resetOperatorIfNecessary).
+      // Set the operator to 'and' when a new condition or group is added.
+      if (
+        (newConditionsTree.conditions.length > 1 || newConditionsTree.groups.length > 0) &&
+        !newConditionsTree.operator
+      ) {
+        newConditionsTree.operator = 'and';
+      }
+      this.emitUpdatedConditionTree(newConditionsTree);
+    },
+
+    emitUpdatedConditionTree(newConditionsTree: AbstractFilterTree): void {
+      this.$emit('conditionsTreeUpdated', newConditionsTree);
+    },
+
+    switchOperator(operator: ConditionOperator): void {
+      const newConditionsTree = {
+        ...this.conditionsTree,
+        operator,
+      } as AbstractFilterTree;
+      this.emitUpdatedConditionTree(newConditionsTree);
+    },
+
+    updateCondition(rowIndex: number) {
+      return (newCondition: AbstractCondition) => {
+        const newConditions = [...this.conditions];
+        newConditions[rowIndex] = newCondition;
+        const newConditionsTree = {
+          ...this.conditionsTree,
+          conditions: newConditions,
+        } as AbstractFilterTree;
+        this.emitUpdatedConditionTree(newConditionsTree);
+      };
+    },
+
+    updateGroup(groupIndex: number, newGroupConditionTree: AbstractFilterTree): void {
+      const newGroups = [...this.groups];
+      newGroups[groupIndex] = newGroupConditionTree;
+      const newConditionsTree = {
+        ...this.conditionsTree,
+        groups: newGroups,
+      } as AbstractFilterTree;
+      this.emitUpdatedConditionTree(newConditionsTree);
+    },
+  },
+});
 </script>
 
 <style lang="scss">

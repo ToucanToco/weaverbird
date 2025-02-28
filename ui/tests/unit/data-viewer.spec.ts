@@ -579,8 +579,13 @@ describe('Data Viewer', () => {
           },
         }),
       );
-      wrapper = shallowMount(DataViewer, { pinia, localVue });
-      wrapper.setMethods({ openStepForm: openStepFormStub });
+      wrapper = shallowMount(DataViewer, {
+        pinia,
+        localVue,
+        methods: {
+          openStepForm: openStepFormStub,
+        },
+      });
     });
 
     afterEach(() => {

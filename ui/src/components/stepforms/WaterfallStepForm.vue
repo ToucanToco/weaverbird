@@ -125,19 +125,17 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 import type { PipelineStepName, WaterfallStep } from '@/lib/steps';
-
 import ColumnPicker from './ColumnPicker.vue';
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
-@Component({
+export default defineComponent({
   name: 'waterfall-step-form',
   components: {
     AutocompleteWidget,
@@ -146,26 +144,32 @@ import MultiselectWidget from './widgets/Multiselect.vue';
     MultiselectWidget,
     CheckboxWidget,
   },
-})
-export default class WaterfallStepForm extends BaseStepForm<WaterfallStep> {
-  stepname: PipelineStepName = 'waterfall';
-
-  @Prop({
-    type: Object,
-    default: () => ({
-      name: 'waterfall',
-      valueColumn: '',
-      milestonesColumn: '',
-      start: '',
-      end: '',
-      labelsColumn: '',
-      sortBy: 'value',
-      order: 'desc',
-      backfill: true,
-    }),
-  })
-  declare initialStepValue: WaterfallStep;
-
-  readonly title: string = 'Compute waterfall';
-}
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<WaterfallStep>,
+      default: () => ({
+        name: 'waterfall',
+        valueColumn: '',
+        milestonesColumn: '',
+        start: '',
+        end: '',
+        labelsColumn: '',
+        sortBy: 'value',
+        order: 'desc',
+        backfill: true,
+      }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'waterfall' as PipelineStepName,
+      title: 'Compute waterfall' as string,
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      },
+    };
+  },
+});
 </script>

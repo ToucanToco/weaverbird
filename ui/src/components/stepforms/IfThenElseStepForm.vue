@@ -30,66 +30,70 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, PropType } from 'vue';
 import _omit from 'lodash/omit';
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
 
+import BaseStepForm from './StepForm.vue';
 import IfThenElseWidget from '@/components/stepforms/widgets/IfThenElseWidget.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import type { IfThenElseStep, PipelineStepName } from '@/lib/steps';
 
-import BaseStepForm from './StepForm.vue';
-
-@Component({
+export default defineComponent({
   name: 'ifthenelse-step-form',
   components: {
     IfThenElseWidget,
     InputTextWidget,
   },
-})
-export default class IfThenElseStepForm extends BaseStepForm<IfThenElseStep> {
-  stepname: PipelineStepName = 'ifthenelse';
-
-  @Prop({
-    type: Object,
-    default: () => ({
-      name: 'ifthenelse',
-      newColumn: '',
-      if: { column: '', value: '', operator: 'eq' },
-      then: '',
-      else: '',
-    }),
-  })
-  declare initialStepValue: IfThenElseStep;
-
-  readonly title: string = 'Add a conditional column';
-
-  ifthenelse = _omit({ ...this.initialStepValue }, ['name', 'newColumn']);
-
-  get duplicateColumnName() {
-    if (this.columnNames.includes(this.editedStep.newColumn)) {
-      return `A column name "${this.editedStep.newColumn}" already exists. You will overwrite it.`;
-    } else {
-      return null;
-    }
-  }
-
-  submit() {
-    this.editedStep = {
-      ...this.editedStep,
-      ..._omit(this.editedStep, ['name', 'newColumn']),
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<IfThenElseStep>,
+      default: () => ({
+        name: 'ifthenelse',
+        newColumn: '',
+        if: { column: '', value: '', operator: 'eq' },
+        then: '',
+        else: '',
+      }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'ifthenelse' as PipelineStepName,
+      title: 'Add a conditional column' as string,
+      ifthenelse: _omit({ ...this.initialStepValue }, ['name', 'newColumn']),
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      },
     };
-    this.$$super.submit();
-  }
-
-  updateIfThenElse(ifthenelse: Omit<IfThenElseStep, 'name' | 'newColumn'>) {
-    this.editedStep = {
-      ...this.editedStep,
-      ...ifthenelse,
-    };
-    this.ifthenelse = ifthenelse;
-  }
-}
+  },
+  computed: {
+    duplicateColumnName() {
+      if (this.columnNames.includes(this.editedStep.newColumn)) {
+        return `A column name "${this.editedStep.newColumn}" already exists. You will overwrite it.`;
+      } else {
+        return null;
+      }
+    },
+  },
+  methods: {
+    submit() {
+      this.editedStep = {
+        ...this.editedStep,
+        ..._omit(this.editedStep, ['name', 'newColumn']),
+      };
+      this.$$super.submit();
+    },
+    updateIfThenElse(ifthenelse: Omit<IfThenElseStep, 'name' | 'newColumn'>) {
+      this.editedStep = {
+        ...this.editedStep,
+        ...ifthenelse,
+      };
+      this.ifthenelse = ifthenelse;
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>

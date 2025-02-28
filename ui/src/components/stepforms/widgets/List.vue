@@ -45,14 +45,12 @@
 <script lang="ts">
 import type { ErrorObject } from 'ajv';
 import _ from 'lodash';
-import type { VueConstructor } from 'vue';
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import FAIcon from '@/components/FAIcon.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import type { TotalDimension } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-
 import FormWidget from './FormWidget.vue';
 
 type Field = {
@@ -63,114 +61,127 @@ type Field = {
 
 type RepeatableField = Field[];
 
-@Component({
+export default defineComponent({
   name: 'list-widget',
   components: {
     FAIcon,
   },
-})
-export default class ListWidget extends FormWidget {
-  @Prop({ type: String, default: '' })
-  addFieldName!: string;
-
-  @Prop({ type: Object, default: () => {} })
-  componentProps!: object;
-
-  @Prop({ type: String, default: '' })
-  name!: string;
-
-  @Prop({ type: String, default: null })
-  separatorLabel!: string;
-
-  @Prop({ type: Array, default: () => [] })
-  value!: any[];
-
-  @Prop({ type: Array, default: () => [] })
-  options!: string[];
-
-  @Prop({
-    type: Function,
-    default: InputTextWidget,
-  })
-  widget!: VueConstructor<Vue>;
-
-  @Prop({ type: Boolean, default: true })
-  automaticNewField!: boolean;
-
-  @Prop({ default: null })
-  defaultItem!: string | RepeatableField | TotalDimension;
-
-  @Prop({ type: Array, default: () => [] })
-  errors!: ErrorObject[];
-
-  @Prop({ default: null })
-  dataPath!: string;
-
-  @Prop()
-  availableVariables?: VariablesBucket;
-
-  @Prop()
-  variableDelimiters?: VariableDelimiters;
-
-  @Prop()
-  trustedVariableDelimiters?: VariableDelimiters;
-
-  // Remove gray box and padding around list elements
-  @Prop({ type: Boolean, default: false })
-  unstyledItems!: boolean;
-
-  @Prop({ type: Array, default: () => [] })
-  columnNames!: string[];
-
-  @Prop({ type: Array, default: () => [] })
-  selectedColumns!: string[];
-
-  get children() {
-    const valueCopy = [...this.value];
-    if (this.automaticNewField) {
-      valueCopy.push(this.defaultChildValue);
-    }
-    return valueCopy.map((value) => ({
-      isRemovable: !this.automaticNewField || valueCopy.length !== 1,
-      value,
-    }));
-  }
-
-  get defaultChildValue() {
-    if (this.defaultItem) {
-      return this.defaultItem;
-    }
-    if (this.widget === InputTextWidget) {
-      return '';
-    } else {
-      return [];
-    }
-  }
-
-  addFieldSet() {
-    this.updateValue([...this.value, _.cloneDeep(this.defaultChildValue)]);
-  }
-
-  removeChild(index: number) {
-    const newValue = [...this.value];
-    newValue.splice(index, 1);
-    this.updateValue(newValue);
-  }
-
-  updateChildValue(childValue: any, index: number) {
-    const newValue = [...this.value];
-    if (this.value.length < index) {
-      newValue.push(childValue);
-    } else {
-      newValue[index] = childValue;
-    }
-    this.updateValue(newValue);
-  }
-
-  updateValue(newValue: Record<string, any>[]) {
-    this.$emit('input', newValue);
-  }
-}
+  extends: FormWidget,
+  props: {
+    addFieldName: {
+      type: String as PropType<string>,
+      default: '',
+    },
+    componentProps: {
+      type: Object as PropType<Record<string, any>>,
+      default: () => ({}),
+    },
+    name: {
+      type: String as PropType<string>,
+      default: '',
+    },
+    separatorLabel: {
+      type: String as PropType<string | null>,
+      default: null,
+    },
+    value: {
+      type: Array as PropType<any[]>,
+      default: () => [],
+    },
+    options: {
+      type: Array as PropType<string[]>,
+      default: () => [],
+    },
+    widget: {
+      type: [Function, Object] as PropType<any>,
+      default: () => InputTextWidget,
+    },
+    automaticNewField: {
+      type: Boolean as PropType<boolean>,
+      default: true,
+    },
+    defaultItem: {
+      type: [String, Array, Object] as PropType<string | RepeatableField | TotalDimension>,
+      default: null,
+    },
+    errors: {
+      type: Array as PropType<ErrorObject[]>,
+      default: () => [],
+    },
+    dataPath: {
+      type: String as PropType<string | null>,
+      default: null,
+    },
+    availableVariables: {
+      type: Object as PropType<VariablesBucket | undefined>,
+      default: undefined,
+    },
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+    trustedVariableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+    unstyledItems: {
+      type: Boolean as PropType<boolean>,
+      default: false,
+    },
+    columnNames: {
+      type: Array as PropType<string[]>,
+      default: () => [],
+    },
+    selectedColumns: {
+      type: Array as PropType<string[]>,
+      default: () => [],
+    },
+  },
+  computed: {
+    children() {
+      const valueCopy = [...this.value];
+      if (this.automaticNewField) {
+        valueCopy.push(this.defaultChildValue);
+      }
+      return valueCopy.map((value) => ({
+        isRemovable: !this.automaticNewField || valueCopy.length !== 1,
+        value,
+      }));
+    },
+    defaultChildValue() {
+      if (this.defaultItem) {
+        return this.defaultItem;
+      }
+      if (this.widget === InputTextWidget) {
+        return '';
+      } else {
+        return [];
+      }
+    },
+  },
+  methods: {
+    addFieldSet() {
+      this.updateValue([...this.value, _.cloneDeep(this.defaultChildValue)]);
+    },
+    removeChild(index: number) {
+      const newValue = [...this.value];
+      newValue.splice(index, 1);
+      this.updateValue(newValue);
+    },
+    updateChildValue(childValue: any, index: number) {
+      const newValue = [...this.value];
+      if (this.value.length < index) {
+        newValue.push(childValue);
+      } else {
+        newValue[index] = childValue;
+      }
+      this.updateValue(newValue);
+    },
+    updateValue(newValue: Record<string, any>[]) {
+      this.$emit('input', newValue);
+    },
+  },
+});
 </script>
 <style lang="scss" scoped>
 @import '../../../styles/_variables';

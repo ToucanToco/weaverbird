@@ -14,45 +14,51 @@
   </div>
 </template>
 <script lang="ts">
-import Vue from 'vue';
-import { Component } from 'vue-property-decorator';
+import { defineComponent } from 'vue';
 
-@Component({
+export default defineComponent({
   name: 'resizable-panels',
-})
-export default class ResizablePanels extends Vue {
-  private ratio = 0.4;
 
-  get leftPanelWidth() {
+  data() {
     return {
-      width: `${this.ratio * 100}%`,
+      ratio: 0.4,
     };
-  }
+  },
 
-  get rightPanelWidth() {
-    return {
-      width: `${(1 - this.ratio) * 100}%`,
-    };
-  }
+  computed: {
+    leftPanelWidth() {
+      return {
+        width: `${this.ratio * 100}%`,
+      };
+    },
 
-  startResize() {
-    const containerWith = this.$el.getBoundingClientRect().width;
+    rightPanelWidth() {
+      return {
+        width: `${(1 - this.ratio) * 100}%`,
+      };
+    },
+  },
 
-    const mousemoveListener = (e: MouseEvent) => {
-      this.ratio = this.ratio + e.movementX / containerWith;
-    };
+  methods: {
+    startResize() {
+      const containerWith = this.$el.getBoundingClientRect().width;
 
-    const mouseupListener = () => {
-      window.removeEventListener('mousemove', mousemoveListener);
-      window.removeEventListener('mouseup', mouseupListener);
-      window.removeEventListener('blur', mouseupListener);
-    };
+      const mousemoveListener = (e: MouseEvent) => {
+        this.ratio = this.ratio + e.movementX / containerWith;
+      };
 
-    window.addEventListener('mousemove', mousemoveListener);
-    window.addEventListener('mouseup', mouseupListener);
-    window.addEventListener('blur', mouseupListener);
-  }
-}
+      const mouseupListener = () => {
+        window.removeEventListener('mousemove', mousemoveListener);
+        window.removeEventListener('mouseup', mouseupListener);
+        window.removeEventListener('blur', mouseupListener);
+      };
+
+      window.addEventListener('mousemove', mousemoveListener);
+      window.addEventListener('mouseup', mouseupListener);
+      window.addEventListener('blur', mouseupListener);
+    },
+  },
+});
 </script>
 <style lang="scss" scoped>
 .resizable-panels {

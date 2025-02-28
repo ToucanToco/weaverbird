@@ -14,8 +14,7 @@
 </template>
 <script lang="ts">
 import _ from 'lodash';
-import Vue from 'vue';
-import { Component, Inject, Prop, Watch } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import { Alignment } from '@/components/constants';
 import * as DOMUtil from '@/components/domutil';
@@ -49,92 +48,88 @@ Implement a popover component
 @params {Boolean} [alwaysOpened = false] always displays the popover, and keep its content in the page flow rather than
 in an floating element. Useful to create previews of configurable popovers. Make the prop `visible` effect-less.
 */
-@Component({
+export default defineComponent({
   name: 'popover',
-})
-export default class Popover extends Vue {
-  // To specify TypeScript that we got a HTMLElement
-  $el!: HTMLElement;
 
-  @Prop({
-    type: Boolean,
-    required: true,
-  })
-  visible!: boolean;
+  inject: {
+    weaverbirdPopoverContainer: {
+      default: () => document.body,
+    },
+  },
 
-  @Prop({
-    default: () => Alignment.Center,
-    validator: (value) => Object.values(Alignment).includes(value),
-  })
-  align!: Alignment;
+  props: {
+    visible: {
+      type: Boolean,
+      required: true,
+    },
+    align: {
+      type: String as PropType<Alignment>,
+      default: () => Alignment.Center,
+      validator: (value: string) => Object.values(Alignment).includes(value as Alignment),
+    },
+    bottom: {
+      type: Boolean,
+      default: false,
+    },
+    forcePositionUpdate: {
+      type: Number,
+      default: 0, // we increment the number each time we need the position to be updated
+    },
+    alwaysOpened: {
+      type: Boolean,
+      default: false,
+    },
+    shouldCalculateHeight: {
+      type: Boolean,
+      default: false,
+    },
+  },
 
-  @Prop({
-    type: Boolean,
-    default: () => false,
-  })
-  bottom!: boolean;
+  data() {
+    return {
+      elementStyle: {} as ElementPosition,
+      parent: null as HTMLElement | null,
+      element: null as HTMLElement | null,
+      parents: [] as HTMLElement[],
+      updatePositionListener: () => this.updatePosition(),
+      clickListener: () => this.$emit('closed'),
+    };
+  },
 
-  @Prop({
-    type: Number,
-    default: 0, // we increment the number each time we need the position to be updated
-  })
-  forcePositionUpdate!: number;
+  watch: {
+    visible: {
+      async handler(visible: boolean) {
+        if (this.alwaysOpened) {
+          return;
+        }
 
-  @Prop({
-    type: Boolean,
-    default: false,
-  })
-  alwaysOpened!: boolean;
+        if (!visible) {
+          this.destroyPositioning();
+        } else {
+          this.setupPositioning();
+        }
+      },
+    },
+    forcePositionUpdate() {
+      this.updatePosition();
+    },
+  },
 
-  @Prop({
-    type: Boolean,
-    default: false,
-  })
-  shouldCalculateHeight!: boolean;
-
-  // Inject any element as `weaverbirdPopoverContainer` in any parent component
-  @Inject({ default: document.body }) weaverbirdPopoverContainer!: Element;
-
-  elementStyle: ElementPosition = {};
-  parent: HTMLElement | null = null;
-  element: HTMLElement | null = null;
-  parents: HTMLElement[] = [];
-  updatePositionListener!: () => void;
-  clickListener!: () => void;
-
-  @Watch('visible')
-  async onVisibleChange(visible: boolean) {
-    if (this.alwaysOpened) {
-      return;
-    }
-
-    if (!visible) {
-      this.destroyPositioning();
-    } else {
-      this.setupPositioning();
-    }
-  }
-
-  @Watch('forcePositionUpdate')
-  forceUpdatePosition() {
-    this.updatePosition();
-  }
-
-  async mounted() {
+  mounted() {
     if (this.alwaysOpened) {
       // Skip all the repositioning in the DOM
       return;
     }
 
     // Save original parent before moving into body to use its position
-    this.parent = this.$el.parentElement;
+    this.parent = (this.$el as HTMLElement).parentElement;
     let { parent } = this;
     if (parent === null) {
       throw new Error('The popover has no parent!');
     }
 
     // Remove element from parent: it will be added to body when `setupPosition`
-    parent.removeChild(this.$el);
+    parent.removeChild(this.$el as HTMLElement);
 
     // Get all scrollable parents
     const parents: HTMLElement[] = [];
@@ -149,76 +144,74 @@ export default class Popover extends Vue {
 
     this.parents = parents;
 
-    // instantiate the events listener
-    this.updatePositionListener = () => this.updatePosition();
-    this.clickListener = () => this.$emit('closed');
-    // IMPORTANT: in order to not close the popover when clicking inside, any click
-    // from inside the popover are not propagated to the window
-
     if (this.visible) {
       this.setupPositioning();
     }
-  }
+  },
 
   beforeDestroy() {
     if (this.visible && !this.alwaysOpened) {
       this.destroyPositioning();
     }
-  }
+  },
 
-  setupPositioning() {
-    this.weaverbirdPopoverContainer.appendChild(this.$el);
-    this.updatePosition();
-    // Attach listeners
-    window.addEventListener('click', this.clickListener);
-    window.addEventListener('orientationchange', this.updatePositionListener);
-    window.addEventListener('resize', this.updatePositionListener);
-    for (const parent of this.parents) {
-      parent.addEventListener('scroll', this.updatePositionListener);
-    }
-  }
-
-  destroyPositioning() {
-    // Cleanup listeners
-    window.removeEventListener('click', this.clickListener);
-    window.removeEventListener('orientationchange', this.updatePositionListener);
-    window.removeEventListener('resize', this.updatePositionListener);
-    for (const parent of this.parents) {
-      parent.removeEventListener('scroll', this.updatePositionListener);
-    }
-    // Cleanup DOM
-    if (this.$el.parentElement !== null) {
-      return this.$el.parentElement.removeChild(this.$el);
-    }
-  }
-
-  // Set the absolute position
-  // Checks available space on screen for vertical positioning and alignment
-  updatePosition = _.throttle(
-    function (this: Popover) {
-      if (this.parent === null) {
-        return;
+  methods: {
+    setupPositioning() {
+      this.weaverbirdPopoverContainer.appendChild(this.$el as HTMLElement);
+      this.updatePosition();
+      // Attach listeners
+      window.addEventListener('click', this.clickListener);
+      window.addEventListener('orientationchange', this.updatePositionListener);
+      window.addEventListener('resize', this.updatePositionListener);
+      for (const parent of this.parents) {
+        parent.addEventListener('scroll', this.updatePositionListener);
       }
-
-      const positionContext = {
-        body: this.weaverbirdPopoverContainer.getBoundingClientRect(),
-        parent: this.parent.getBoundingClientRect(),
-        element: this.$el,
-        window,
-      };
-      // Set alignment
-      const elementStyle: ElementPosition = DOMUtil.align(this.align, positionContext);
-      elementStyle.top = DOMUtil.computeTop(this.bottom, positionContext);
-      if (this.shouldCalculateHeight) {
-        elementStyle.height = DOMUtil.computeHeight(this.bottom, positionContext);
-      }
-      // make sure to use `px` unit explicitly
-      this.elementStyle = _.fromPairs(Object.entries(elementStyle).map(([k, v]) => [k, `${v}px`]));
     },
-    // 60fps
-    16,
-  );
-}
+
+    destroyPositioning() {
+      // Cleanup listeners
+      window.removeEventListener('click', this.clickListener);
+      window.removeEventListener('orientationchange', this.updatePositionListener);
+      window.removeEventListener('resize', this.updatePositionListener);
+      for (const parent of this.parents) {
+        parent.removeEventListener('scroll', this.updatePositionListener);
+      }
+      // Cleanup DOM
+      if ((this.$el as HTMLElement).parentElement !== null) {
+        return (this.$el as HTMLElement).parentElement?.removeChild(this.$el as HTMLElement);
+      }
+    },
+
+    // Set the absolute position
+    // Checks available space on screen for vertical positioning and alignment
+    updatePosition: _.throttle(
+      function (this: any) {
+        if (this.parent === null) {
+          return;
+        }
+
+        const positionContext = {
+          body: this.weaverbirdPopoverContainer.getBoundingClientRect(),
+          parent: this.parent.getBoundingClientRect(),
+          element: this.$el,
+          window,
+        };
+        // Set alignment
+        const elementStyle: ElementPosition = DOMUtil.align(this.align, positionContext);
+        elementStyle.top = DOMUtil.computeTop(this.bottom, positionContext);
+        if (this.shouldCalculateHeight) {
+          elementStyle.height = DOMUtil.computeHeight(this.bottom, positionContext);
+        }
+        // make sure to use `px` unit explicitly
+        this.elementStyle = _.fromPairs(
+          Object.entries(elementStyle).map(([k, v]) => [k, `${v}px`]),
+        );
+      },
+      // 60fps
+      16,
+    ),
+  },
+});
 </script>
 <style lang="scss" scoped>
 .weaverbird-popover {

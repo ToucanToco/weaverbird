@@ -40,62 +40,72 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
+import BaseStepForm from './StepForm.vue';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
 import ReplaceWidget from '@/components/stepforms/widgets/Replace.vue';
 import { castFromString } from '@/lib/helpers';
 import type { PipelineStepName, ReplaceStep } from '@/lib/steps';
 
-import BaseStepForm from './StepForm.vue';
-
-@Component({
+export default defineComponent({
   name: 'replace-step-form',
   components: {
     ColumnPicker,
     ListWidget,
   },
-})
-export default class ReplaceStepForm extends BaseStepForm<ReplaceStep> {
-  stepname: PipelineStepName = 'replace';
-
-  @Prop({ type: Object, default: () => ({ name: 'replace', searchColumn: '', toReplace: [[]] }) })
-  declare initialStepValue: ReplaceStep;
-
-  readonly title: string = 'Replace values';
-  replaceWidget = ReplaceWidget;
-
-  get stepSelectedColumn() {
-    return this.editedStep.searchColumn;
-  }
-
-  set stepSelectedColumn(colname: string) {
-    this.editedStep.searchColumn = colname;
-  }
-
-  get toReplace() {
-    if (this.editedStep.toReplace.length) {
-      return this.editedStep.toReplace;
-    } else {
-      return [[]];
-    }
-  }
-
-  set toReplace(newval) {
-    this.editedStep.toReplace = [...newval];
-  }
-
-  submit() {
-    const type = this.columnTypes[this.editedStep.searchColumn];
-    for (const tuple of this.editedStep.toReplace) {
-      if (type !== undefined) {
-        tuple[0] = castFromString(tuple[0], type);
-        tuple[1] = castFromString(tuple[1], type);
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<Partial<ReplaceStep>>,
+      default: (): Partial<ReplaceStep> => ({ name: 'replace', searchColumn: '', toReplace: [[]] }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'replace' as PipelineStepName,
+      title: 'Replace values' as string,
+      replaceWidget: ReplaceWidget,
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      },
+    };
+  },
+  computed: {
+    stepSelectedColumn: {
+      get() {
+        return this.editedStep.searchColumn;
+      },
+      set(colname: string) {
+        this.editedStep.searchColumn = colname;
+      },
+    },
+    toReplace: {
+      get() {
+        if (this.editedStep.toReplace.length) {
+          return this.editedStep.toReplace;
+        } else {
+          return [[]];
+        }
+      },
+      set(newval) {
+        this.editedStep.toReplace = [...newval];
+      },
+    },
+  },
+  methods: {
+    submit() {
+      const type = this.columnTypes[this.editedStep.searchColumn];
+      for (const tuple of this.editedStep.toReplace) {
+        if (type !== undefined) {
+          tuple[0] = castFromString(tuple[0], type);
+          tuple[1] = castFromString(tuple[1], type);
+        }
       }
-    }
-    this.$$super.submit();
-  }
-}
+      this.$$super.submit();
+    },
+  },
+});
 </script>

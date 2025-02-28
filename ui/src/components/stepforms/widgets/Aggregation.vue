@@ -27,7 +27,7 @@
 </template>
 <script lang="ts">
 import type { ErrorObject } from 'ajv';
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import type { Aggregation } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
@@ -35,65 +35,78 @@ import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import AutocompleteWidget from './Autocomplete.vue';
 import MultiselectWidget from './Multiselect.vue';
 
-@Component({
+export default defineComponent({
   name: 'aggregation-widget',
   components: {
     AutocompleteWidget,
     MultiselectWidget,
   },
-})
-export default class AggregationWidget extends Vue {
-  @Prop({ type: String, default: null })
-  dataPath!: string;
-
-  @Prop({ type: Object, default: () => ({ columns: [], aggfunctions: 'sum', newcolumns: [] }) })
-  value!: Aggregation;
-
-  @Prop({ type: Array, default: () => [] })
-  errors!: ErrorObject[];
-
-  @Prop()
-  availableVariables?: VariablesBucket;
-
-  @Prop()
-  variableDelimiters?: VariableDelimiters;
-
-  @Prop()
-  trustedVariableDelimiters?: VariableDelimiters;
-
-  @Prop({ type: Array, default: () => [] })
-  columnNames!: string[];
-
-  get aggregationColumns() {
-    return this.value.columns;
-  }
-
-  set aggregationColumns(newAggregationColumns) {
-    this.$emit('input', { ...this.value, columns: newAggregationColumns });
-  }
-
-  get aggregationFunction() {
-    return this.value.aggfunction;
-  }
-
-  set aggregationFunction(newAggregationFunction) {
-    this.$emit('input', {
-      ...this.value,
-      aggfunction: newAggregationFunction,
-    });
-  }
-
-  aggregationFunctions: Aggregation['aggfunction'][] = [
-    'sum',
-    'avg',
-    'count',
-    'count distinct',
-    'min',
-    'max',
-    'first',
-    'last',
-  ];
-}
+  props: {
+    dataPath: {
+      type: String,
+      default: null,
+    },
+    value: {
+      type: Object as PropType<Aggregation>,
+      default: () => ({ columns: [], aggfunctions: 'sum', newcolumns: [] }),
+    },
+    errors: {
+      type: Array as PropType<ErrorObject[]>,
+      default: () => [],
+    },
+    availableVariables: {
+      type: Object as PropType<VariablesBucket | undefined>,
+      default: undefined,
+    },
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+    trustedVariableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+    columnNames: {
+      type: Array as PropType<string[]>,
+      default: () => [],
+    },
+  },
+  data() {
+    return {
+      aggregationFunctions: [
+        'sum',
+        'avg',
+        'count',
+        'count distinct',
+        'min',
+        'max',
+        'first',
+        'last',
+      ] as Aggregation['aggfunction'][],
+    };
+  },
+  computed: {
+    aggregationColumns: {
+      get() {
+        return this.value.columns;
+      },
+      set(newAggregationColumns) {
+        this.$emit('input', { ...this.value, columns: newAggregationColumns });
+      },
+    },
+    aggregationFunction: {
+      get() {
+        return this.value.aggfunction;
+      },
+      set(newAggregationFunction) {
+        this.$emit('input', {
+          ...this.value,
+          aggfunction: newAggregationFunction,
+        });
+      },
+    },
+  },
+});
 </script>
 <style lang="scss" scoped>
 @import '../../../styles/_variables';

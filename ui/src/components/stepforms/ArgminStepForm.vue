@@ -38,8 +38,7 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import type { ArgminStep, PipelineStepName } from '@/lib/steps';
@@ -47,30 +46,54 @@ import type { ArgminStep, PipelineStepName } from '@/lib/steps';
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
-@Component({
+export default defineComponent({
   name: 'argmin-step-form',
+
   components: {
     ColumnPicker,
     MultiselectWidget,
   },
-})
-export default class ArgminStepForm extends BaseStepForm<ArgminStep> {
-  stepname: PipelineStepName = 'argmin';
 
-  @Prop({ type: Object, default: () => ({ name: 'argmin', column: '' }) })
-  declare initialStepValue: ArgminStep;
+  extends: BaseStepForm,
 
-  readonly title: string = 'Argmin';
+  props: {
+    initialStepValue: {
+      type: Object as PropType<ArgminStep>,
+      default: (): ArgminStep => ({
+        name: 'argmin',
+        column: '',
+        groups: [],
+      }),
+    },
+  },
 
-  get stepSelectedColumn() {
-    return this.editedStep.column;
-  }
+  data(): {
+    stepname: PipelineStepName;
+    title: string;
+    editedStep: ArgminStep;
+  } {
+    return {
+      stepname: 'argmin',
+      title: 'Argmin',
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+      },
+    };
+  },
 
-  set stepSelectedColumn(colname: string | null) {
-    if (colname === null) {
-      throw new Error('should not try to set null on "column" field');
-    }
-    this.editedStep.column = colname;
-  }
-}
+  computed: {
+    stepSelectedColumn: {
+      get(): string {
+        return this.editedStep.column;
+      },
+      set(colname: string | null) {
+        if (colname === null) {
+          throw new Error('should not try to set null on "column" field');
+        }
+        this.editedStep.column = colname;
+      },
+    },
+  },
+});
 </script>

@@ -19,8 +19,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Component, Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
+import { mapActions, mapGetters, mapState } from 'pinia';
 
 import {
   ACTION_CATEGORIES,
@@ -30,8 +30,7 @@ import {
 } from '@/components/constants';
 import FAIcon from '@/components/FAIcon.vue';
 import type * as S from '@/lib/steps';
-import { Action, Getter, State } from 'pinia-class';
-import { VQBModule, type VQBActions } from '@/store';
+import { VQBModule } from '@/store';
 
 import ActionMenuOption from './ActionMenuOption.vue';
 import Popover from './Popover.vue';
@@ -41,79 +40,89 @@ import Popover from './Popover.vue';
  */
 type NoFormStep = S.DateExtractStep | S.ToLowerStep | S.ToDateStep | S.ToUpperStep;
 
-@Component({
+export default defineComponent({
   name: 'action-toolbar-button',
+
   components: {
     Popover,
     FAIcon,
     ActionMenuOption,
   },
+
   props: {
     label: String,
     icon: String,
+    isActive: {
+      type: Boolean,
+      default: false,
+    },
+    category: {
+      type: String as PropType<PipelineStepCategory>,
+      required: true,
+    },
   },
-})
-export default class ActionToolbarButton extends Vue {
-  @Prop({
-    type: Boolean,
-    default: () => false,
-  })
-  isActive!: boolean;
 
-  alignLeft: string = POPOVER_ALIGN.LEFT;
+  data() {
+    return {
+      alignLeft: POPOVER_ALIGN.LEFT,
+    };
+  },
 
-  @Prop({
-    type: String,
-  })
-  category!: PipelineStepCategory;
+  computed: {
+    ...mapGetters(VQBModule, [
+      'computedActiveStepIndex',
+      'isEditingStep',
+      'pipeline',
+      'unsupportedSteps',
+    ]),
 
-  @Getter(VQBModule) computedActiveStepIndex!: number;
-  @Getter(VQBModule) isEditingStep!: boolean;
-  @Getter(VQBModule) pipeline!: S.Pipeline;
-  @State(VQBModule) selectedColumns!: string[];
-  @Getter(VQBModule) unsupportedSteps!: S.PipelineStepName[];
+    ...mapState(VQBModule, ['selectedColumns']),
 
-  @Action(VQBModule) selectStep!: VQBActions['selectStep'];
-  @Action(VQBModule) setPipeline!: VQBActions['setPipeline'];
-  @Action(VQBModule) closeStepForm!: VQBActions['closeStepForm'];
+    isDisabled() {
+      return (stepName: S.PipelineStepName) => this.unsupportedSteps.includes(stepName);
+    },
 
-  get isDisabled() {
-    return (stepName: S.PipelineStepName) => this.unsupportedSteps.includes(stepName);
-  }
+    // Filter out unsupported steps
+    items() {
+      return ACTION_CATEGORIES[this.category].map((name) => ({ name, label: STEP_LABELS[name] }));
+    },
+  },
 
-  /**
-   * @description Emit an event with a PipelineStepName in order to open its form
-   */
-  actionClicked(stepName: S.PipelineStepName, defaults = {}) {
-    if ((stepName === 'lowercase' || stepName === 'uppercase') && this.selectedColumns.length > 0) {
-      this.createStep(stepName, defaults);
-    } else {
-      this.$emit('actionClicked', stepName, defaults);
-    }
-    this.$emit('closed');
-  }
+  methods: {
+    ...mapActions(VQBModule, ['selectStep', 'setPipeline', 'closeStepForm']),
 
-  createStep(stepName: NoFormStep['name'], defaults: { [prop: string]: any } = {}) {
-    const newPipeline: S.Pipeline = [...this.pipeline];
-    const index = this.computedActiveStepIndex + 1;
-    const step = { name: stepName, column: this.selectedColumns[0], ...defaults };
     /**
-     * If a step edition form is already open, close it so that the left panel displays
-     * the pipeline with the new delete step inserted
+     * @description Emit an event with a PipelineStepName in order to open its form
      */
-    if (this.isEditingStep) {
-      this.closeStepForm();
-    }
-    newPipeline.splice(index, 0, step as S.PipelineStep);
-    this.setPipeline({ pipeline: newPipeline });
-    this.selectStep({ index });
-  }
+    actionClicked(stepName: S.PipelineStepName, defaults = {}) {
+      if (
+        (stepName === 'lowercase' || stepName === 'uppercase') &&
+        this.selectedColumns.length > 0
+      ) {
+        this.createStep(stepName, defaults);
+      } else {
+        this.$emit('actionClicked', stepName, defaults);
+      }
+      this.$emit('closed');
+    },
 
-  // Filter out unsupported steps
-  get items() {
-    return ACTION_CATEGORIES[this.category].map((name) => ({ name, label: STEP_LABELS[name] }));
-  }
-}
+    createStep(stepName: NoFormStep['name'], defaults: { [prop: string]: any } = {}) {
+      const newPipeline: S.Pipeline = [...this.pipeline];
+      const index = this.computedActiveStepIndex + 1;
+      const step = { name: stepName, column: this.selectedColumns[0], ...defaults };
+      /**
+       * If a step edition form is already open, close it so that the left panel displays
+       * the pipeline with the new delete step inserted
+       */
+      if (this.isEditingStep) {
+        this.closeStepForm();
+      }
+      newPipeline.splice(index, 0, step as S.PipelineStep);
+      this.setPipeline({ pipeline: newPipeline });
+      this.selectStep({ index });
+    },
+  },
+});
 </script>
 <style lang="scss">
 @import '../styles/_variables';

@@ -31,73 +31,82 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
+import BaseStepForm from './StepForm.vue';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
 import RenameWidget from '@/components/stepforms/widgets/Rename.vue';
 import type { PipelineStepName, RenameStep } from '@/lib/steps';
 
-import BaseStepForm from './StepForm.vue';
-
-@Component({
+export default defineComponent({
   name: 'rename-step-form',
   components: {
     ListWidget,
   },
-})
-export default class RenameStepForm extends BaseStepForm<RenameStep> {
-  stepname: PipelineStepName = 'rename';
-
-  @Prop({ type: Object, default: () => ({ name: 'rename', toRename: [['', '']] }) })
-  declare initialStepValue: RenameStep;
-
-  readonly title: string = 'Rename Column';
-  renameWidget = RenameWidget;
-
-  /** Overload the definition of editedStep in BaseStepForm to guarantee retrocompatibility,
-   *  as we have to manage historical configurations where only one column at a time could be
-   * renamed via the 'newname' and 'oldname' parameter, now optional and not useful. So we
-   * convert them into a 'toRename' array upfront */
-  editedStep = {
-    ...this.initialStepValue,
-    ...this.stepFormDefaults,
-    toRename:
-      this.initialStepValue.oldname && this.initialStepValue.newname
-        ? [[this.initialStepValue.oldname, this.initialStepValue.newname]]
-        : this.initialStepValue.toRename,
-    oldname: undefined,
-    newname: undefined,
-  };
-
-  get stepSelectedColumn() {
-    return null;
-  }
-
-  set stepSelectedColumn(colname: string | null) {
-    if (colname === null) {
-      throw new Error('should not try to set null in rename "toRename" field');
-    }
-    if (colname !== null && this.editedStep.toRename[0][0] === '') {
-      this.editedStep.toRename[0].splice(0, 1, colname);
-    }
-  }
-
-  get toRename() {
-    return this.editedStep.toRename;
-  }
-
-  set toRename(newval) {
-    this.editedStep.toRename = [...newval];
-  }
-
-  submit() {
-    this.$$super.submit();
-    if (this.errors === null) {
-      this.setSelectedColumns({
-        column: this.editedStep.toRename[this.editedStep.toRename.length - 1][1],
-      });
-    }
-  }
-}
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<RenameStep>,
+      default: (): Partial<RenameStep> => ({
+        name: 'rename',
+        toRename: [['', '']],
+      }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'rename' as PipelineStepName,
+      readonly: false,
+      title: 'Rename Column' as string,
+      renameWidget: RenameWidget,
+      /** Overload the definition of editedStep in BaseStepForm to guarantee retrocompatibility,
+       *  as we have to manage historical configurations where only one column at a time could be
+       * renamed via the 'newname' and 'oldname' parameter, now optional and not useful. So we
+       * convert them into a 'toRename' array upfront */
+      editedStep: {
+        ...this.initialStepValue,
+        ...this.stepFormDefaults,
+        toRename:
+          this.initialStepValue.oldname && this.initialStepValue.newname
+            ? [[this.initialStepValue.oldname, this.initialStepValue.newname]]
+            : this.initialStepValue.toRename,
+        oldname: undefined,
+        newname: undefined,
+      },
+    };
+  },
+  computed: {
+    stepSelectedColumn: {
+      get() {
+        return null;
+      },
+      set(colname: string | null) {
+        if (colname === null) {
+          throw new Error('should not try to set null in rename "toRename" field');
+        }
+        if (colname !== null && this.editedStep.toRename[0][0] === '') {
+          this.editedStep.toRename[0].splice(0, 1, colname);
+        }
+      },
+    },
+    toRename: {
+      get() {
+        return this.editedStep.toRename;
+      },
+      set(newval) {
+        this.editedStep.toRename = [...newval];
+      },
+    },
+  },
+  methods: {
+    submit() {
+      this.$$super.submit();
+      if (this.errors === null) {
+        this.setSelectedColumns({
+          column: this.editedStep.toRename[this.editedStep.toRename.length - 1][1],
+        });
+      }
+    },
+  },
+});
 </script>

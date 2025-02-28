@@ -6,6 +6,7 @@
         data-cy="weaverbird-date-input-relative-form-quantity"
         v-model="quantity"
         :min="1"
+        :dataPath="'quantity'"
       />
       <AutocompleteWidget
         class="widget-relative-date-range-form__duration"
@@ -14,6 +15,7 @@
         :options="durations"
         trackBy="value"
         label="label"
+        :dataPath="'duration'"
       />
     </div>
     <div class="widget-relative-date-range-form__container">
@@ -23,6 +25,7 @@
         v-model="operator"
         :options="availableOperators"
         label="label"
+        :dataPath="'operator'"
       />
       <AutocompleteWidget
         class="widget-relative-date-range-form__input widget-relative-date-range-form__input--base-date"
@@ -33,109 +36,123 @@
         trackBy="identifier"
         label="label"
         :maxHeight="240"
+        :dataPath="'date'"
       />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputNumberWidget from '@/components/stepforms/widgets/InputNumber.vue';
-import { DEFAULT_DURATIONS, RELATIVE_DATE_OPERATORS } from '@/lib/dates';
 import type { DurationOption, RelativeDate } from '@/lib/dates';
-import { extractVariableIdentifier, isTrustedVariable } from '@/lib/variables';
+import { DEFAULT_DURATIONS, RELATIVE_DATE_OPERATORS } from '@/lib/dates';
 import type { AvailableVariable, VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { extractVariableIdentifier, isTrustedVariable } from '@/lib/variables';
 
 /**
  * This component return a relative date between a date variable and a relative date returned by RelativeDateForm
  */
-@Component({
+export default defineComponent({
   name: 'relative-date-range-form',
+
   components: {
     InputNumberWidget,
     AutocompleteWidget,
   },
-})
-export default class RelativeDateForm extends Vue {
-  @Prop({ default: () => [] })
-  availableVariables!: VariablesBucket;
 
-  @Prop({ default: () => ({ start: '', end: '' }) })
-  variableDelimiters!: VariableDelimiters;
+  props: {
+    availableVariables: {
+      type: Array as PropType<VariablesBucket>,
+      default: () => [],
+    },
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters>,
+      default: () => ({ start: '', end: '' }),
+    },
+    trustedVariableDelimiters: {
+      type: Object as PropType<VariableDelimiters>,
+      default: undefined,
+    },
+    value: {
+      type: Object as PropType<RelativeDate>,
+      default: () => ({ date: '', quantity: 1, duration: 'year', operator: 'until' }),
+    },
+  },
 
-  @Prop({ default: undefined })
-  trustedVariableDelimiters!: VariableDelimiters;
+  computed: {
+    quantity: {
+      get(): number {
+        return Math.abs(this.value.quantity);
+      },
+      set(quantity: number): void {
+        this.$emit('input', {
+          ...this.value,
+          quantity: quantity,
+        });
+      },
+    },
 
-  @Prop({ default: () => ({ date: '', quantity: 1, duration: 'year', operator: 'until' }) })
-  value!: RelativeDate;
+    durations(): DurationOption[] {
+      return DEFAULT_DURATIONS;
+    },
 
-  get quantity(): number {
-    return Math.abs(this.value.quantity);
-  }
+    duration: {
+      get(): DurationOption | undefined {
+        return this.durations.find((v) => v.value === this.value.duration);
+      },
+      set(duration: DurationOption | undefined): void {
+        this.$emit('input', { ...this.value, duration: duration?.value });
+      },
+    },
 
-  set quantity(quantity: number) {
-    this.$emit('input', {
-      ...this.value,
-      quantity: quantity,
-    });
-  }
+    baseDate: {
+      get(): AvailableVariable | undefined {
+        const identifier = extractVariableIdentifier(
+          this.value.date,
+          this.variableDelimiters,
+          this.trustedVariableDelimiters,
+        );
+        return this.availableVariables.find((v) => v.identifier === identifier);
+      },
+      set(variable: AvailableVariable | undefined): void {
+        // use correct delimiters depending on if the variable is trusted or not
+        const attendedVariableDelimiters = isTrustedVariable(variable)
+          ? this.trustedVariableDelimiters
+          : this.variableDelimiters;
+        const value = `${attendedVariableDelimiters.start}${variable?.identifier}${attendedVariableDelimiters.end}`;
+        this.$emit('input', { ...this.value, date: value });
+      },
+    },
 
-  get durations(): DurationOption[] {
-    return DEFAULT_DURATIONS;
-  }
+    availableOperators(): { label: string; sign: number }[] {
+      return [RELATIVE_DATE_OPERATORS.until, RELATIVE_DATE_OPERATORS.from];
+    },
 
-  get duration(): DurationOption | undefined {
-    return this.durations.find((v) => v.value === this.value.duration);
-  }
-
-  set duration(duration: DurationOption | undefined) {
-    this.$emit('input', { ...this.value, duration: duration?.value });
-  }
-
-  get baseDate(): AvailableVariable | undefined {
-    const identifier = extractVariableIdentifier(
-      this.value.date,
-      this.variableDelimiters,
-      this.trustedVariableDelimiters,
-    );
-    return this.availableVariables.find((v) => v.identifier === identifier);
-  }
-
-  set baseDate(variable: AvailableVariable | undefined) {
-    // use correct delimiters depending on if the variable is trusted or not
-    const attendedVariableDelimiters = isTrustedVariable(variable)
-      ? this.trustedVariableDelimiters
-      : this.variableDelimiters;
-    const value = `${attendedVariableDelimiters.start}${variable?.identifier}${attendedVariableDelimiters.end}`;
-    this.$emit('input', { ...this.value, date: value });
-  }
-
-  get availableOperators() {
-    return [RELATIVE_DATE_OPERATORS.until, RELATIVE_DATE_OPERATORS.from];
-  }
-
-  get operator() {
-    // Current value should have an operator but we introduced it without at first,
-    // relying entierly on quantity's sign to encode it.
-    // We keep this fallback as a reminder of this mistake until someone decide that comments
-    // is not the place for keeping track of our stuttering torward Clean Code :tm:
-    const fallbackOperator =
-      this.value.quantity >= 0 ? RELATIVE_DATE_OPERATORS.from : RELATIVE_DATE_OPERATORS.until;
-    return (
-      this.availableOperators.find((op) => op.label === this.value.operator) ?? fallbackOperator
-    );
-  }
-
-  set operator(operator: { label: string; sign: number }) {
-    this.$emit('input', {
-      ...this.value,
-      operator: operator.label,
-      quantity: this.quantity,
-    });
-  }
-}
+    operator: {
+      get(): { label: string; sign: number } {
+        // Current value should have an operator but we introduced it without at first,
+        // relying entierly on quantity's sign to encode it.
+        // We keep this fallback as a reminder of this mistake until someone decide that comments
+        // is not the place for keeping track of our stuttering torward Clean Code :tm:
+        const fallbackOperator =
+          this.value.quantity >= 0 ? RELATIVE_DATE_OPERATORS.from : RELATIVE_DATE_OPERATORS.until;
+        return (
+          this.availableOperators.find((op) => op.label === this.value.operator) ?? fallbackOperator
+        );
+      },
+      set(operator: { label: string; sign: number }): void {
+        this.$emit('input', {
+          ...this.value,
+          operator: operator.label,
+          quantity: this.quantity,
+        });
+      },
+    },
+  },
+});
 </script>
 
 <style scoped lang="scss">

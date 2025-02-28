@@ -24,8 +24,8 @@
   />
 </template>
 <script lang="ts">
-import Vue from 'vue';
-import { Component, Prop, Watch } from 'vue-property-decorator';
+import { defineComponent, PropType, ref, computed, watch } from 'vue';
+
 import type { PipelineStep, PipelineStepName, ReferenceToExternalQuery } from '@/lib/steps';
 import StepFormsComponents from './index';
 import { VariableDelimiters, VariablesBucket } from '@/types';
@@ -33,94 +33,113 @@ import { InterpolateFunction, ScopeContext } from '@/lib/templating';
 import { ColumnTypeMapping } from '@/lib/dataset';
 
 /*
-  StepComponent to use outside of QueryBuilder context, it do not need pinia store to handle selectedColumns 
+  StepComponent to use outside of QueryBuilder context, it do not need pinia store to handle selectedColumns
 */
-@Component({
+export default defineComponent({
   name: 'step-from-component',
-})
-export default class StepFormComponent extends Vue {
-  @Prop({
-    type: String,
-    required: true,
-  })
-  name!: PipelineStepName;
 
-  @Prop({ type: String, default: 'pandas' })
-  translator!: string;
+  props: {
+    name: {
+      type: String as PropType<PipelineStepName>,
+      required: true,
+    },
+    translator: {
+      type: String as PropType<string>,
+      default: 'pandas',
+    },
+    initialStepValue: {
+      type: Object as PropType<Partial<PipelineStep>>,
+      required: false,
+      default: undefined,
+    },
+    stepFormDefaults: {
+      type: Object as PropType<Partial<PipelineStep>>,
+      default: undefined,
+    },
+    backendError: {
+      type: String as PropType<string>,
+      default: undefined,
+    },
+    columnTypes: {
+      type: Object as PropType<ColumnTypeMapping>,
+      default: () => ({}),
+    },
+    availableVariables: {
+      type: Object as PropType<VariablesBucket>,
+      default: undefined,
+    },
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters>,
+      default: undefined,
+    },
+    trustedVariableDelimiters: {
+      type: Object as PropType<VariableDelimiters>,
+      default: undefined,
+    },
+    variables: {
+      type: Object as PropType<ScopeContext>,
+      default: () => ({}),
+    },
+    availableDomains: {
+      type: Array as PropType<{ name: string; uid: string }[]>,
+      default: () => [],
+    },
+    unjoinableDomains: {
+      type: Array as PropType<{ name: string; uid: string }[]>,
+      default: () => [],
+    },
+    interpolateFunc: {
+      type: Function as PropType<InterpolateFunction>,
+      required: true,
+    },
+    getColumnNamesFromPipeline: {
+      type: Function as PropType<
+        (pipelineNameOrDomain: string | ReferenceToExternalQuery) => Promise<string[] | undefined>
+      >,
+      required: true,
+    },
+    selectedColumn: {
+      type: String as PropType<string>,
+      default: undefined,
+    },
+  },
 
-  @Prop({
-    type: Object,
-    required: false,
-    default: undefined,
-  })
-  initialStepValue?: Record<string, any>;
+  setup(props, { emit }) {
+    const selectedColumns = ref<string[]>(props.selectedColumn ? [props.selectedColumn] : []);
 
-  @Prop({ type: Object, default: undefined })
-  stepFormDefaults!: Record<string, any>;
+    const isStepCreation = computed(() => props.initialStepValue === undefined);
 
-  @Prop({ type: String, default: undefined })
-  backendError?: string;
+    const formComponent = computed(() => StepFormsComponents[props.name]);
 
-  @Prop({ type: Object, default: () => ({}) })
-  columnTypes!: ColumnTypeMapping;
+    const back = () => {
+      emit('back');
+    };
 
-  @Prop()
-  availableVariables?: VariablesBucket;
+    const formSaved = (step: PipelineStep) => {
+      emit('formSaved', step);
+    };
 
-  @Prop()
-  variableDelimiters?: VariableDelimiters;
+    const setSelectedColumns = ({ column }: { column: string | undefined }) => {
+      if (!!column && column !== selectedColumns.value[0]) {
+        selectedColumns.value = [column];
+      }
+    };
 
-  @Prop()
-  trustedVariableDelimiters?: VariableDelimiters;
+    watch(
+      () => props.selectedColumn,
+      () => {
+        setSelectedColumns({ column: props.selectedColumn });
+      },
+    );
 
-  @Prop({ type: Object, required: false, default: () => ({}) })
-  variables!: ScopeContext;
-
-  @Prop({ type: Array, default: () => [] })
-  availableDomains!: { name: string; uid: string }[];
-
-  @Prop({ type: Array, default: () => [] })
-  unjoinableDomains!: { name: string; uid: string }[];
-
-  @Prop({ type: Function, required: true })
-  interpolateFunc!: InterpolateFunction;
-
-  @Prop({ type: Function, required: true })
-  getColumnNamesFromPipeline!: (
-    pipelineNameOrDomain: string | ReferenceToExternalQuery,
-  ) => Promise<string[] | undefined>;
-
-  // some complex steps use selectedColumns to preselect column (rename, filter...)
-  @Prop({})
-  selectedColumn?: string;
-
-  get isStepCreation() {
-    return this.initialStepValue === undefined;
-  }
-
-  get formComponent() {
-    return StepFormsComponents[this.name];
-  }
-
-  back() {
-    this.$emit('back');
-  }
-
-  formSaved(step: PipelineStep) {
-    this.$emit('formSaved', step);
-  }
-
-  selectedColumns: string[] = this.selectedColumn ? [this.selectedColumn] : [];
-
-  setSelectedColumns({ column }: { column: string | undefined }) {
-    if (!!column && column !== this.selectedColumns[0]) {
-      this.selectedColumns = [column];
-    }
-  }
-
-  @Watch('selectedColumn')
-  onSelectedColumnChanged() {
-    this.setSelectedColumns({ column: this.selectedColumn });
-  }
-}
+    return {
+      selectedColumns,
+      isStepCreation,
+      formComponent,
+      back,
+      formSaved,
+      setSelectedColumns,
+    };
+  },
+});
 </script>

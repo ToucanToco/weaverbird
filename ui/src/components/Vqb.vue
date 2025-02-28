@@ -9,24 +9,23 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Component } from 'vue-property-decorator';
+import { defineComponent } from 'vue';
 
 import DataViewer from '@/components/DataViewer.vue';
 import PipelineSelector from '@/components/PipelineSelector.vue';
 import QueryBuilder from '@/components/QueryBuilder.vue';
 import ResizablePanels from '@/components/ResizablePanels.vue';
 
-@Component({
+export default defineComponent({
   name: 'vqb',
+
   components: {
     DataViewer,
     PipelineSelector,
     QueryBuilder,
     ResizablePanels,
   },
-})
-export default class Vqb extends Vue {}
+});
 </script>
 
 <style lang="scss" scoped>

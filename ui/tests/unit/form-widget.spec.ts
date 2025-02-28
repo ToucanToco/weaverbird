@@ -1,18 +1,17 @@
 import { shallowMount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
-import { Component } from 'vue-property-decorator';
+import { defineComponent } from 'vue';
 
 import FormWidget from '@/components/stepforms/widgets/FormWidget.vue';
 
 /* Fake widget use to manage the mixins render issue */
-@Component({
+const FakeWidget = defineComponent({
   name: 'fake-widget',
-})
-export default class FakeWidget extends FormWidget {
+  extends: FormWidget,
   render() {
-    // empty render to manager the mixins render issue
-  }
-}
+    // empty render to manage the mixins render issue
+  },
+});
 
 describe('Form widget', () => {
   it('should return correctly messageError', () => {

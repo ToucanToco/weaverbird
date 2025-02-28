@@ -58,8 +58,8 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, PropType } from 'vue';
 import { Multiselect } from 'vue-multiselect';
-import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';
 import { extractVariableIdentifier } from '@/lib/variables';
@@ -68,89 +68,96 @@ import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import MultiVariableInput from './MultiVariableInput.vue';
 import VariableInput from './VariableInput.vue';
 
-@Component({
+export default defineComponent({
   name: 'multi-input-text-widget',
   components: {
     Multiselect,
     VariableTag,
   },
-})
-export default class MultiInputTextWidget extends Vue {
-  editedAdvancedVariable = '';
-
-  @Prop({ type: String, default: '' })
-  name!: string;
-
-  @Prop({ type: String, default: '' })
-  placeholder!: string;
-
-  @Prop({ default: () => [] })
-  value!: string[] | string;
-
-  @Prop()
-  availableVariables?: VariablesBucket;
-
-  @Prop({ default: undefined })
-  variableDelimiters!: VariableDelimiters;
-
-  @Prop({ default: undefined })
-  trustedVariableDelimiters!: VariableDelimiters;
-
-  @Prop({ default: true })
-  multiVariable!: boolean;
-
-  options: string[] = [];
-
-  get variableInputMode() {
-    return this.multiVariable ? MultiVariableInput : VariableInput;
-  }
-
-  get isMultiselectBig() {
-    // add overflow to tag container when there is a lot of values
-    return Array.isArray(this.value) && this.value.length > 6;
-  }
-
-  updateOptions(newVal: string) {
-    if (newVal.length > 0) {
-      this.options = [newVal];
-    }
-  }
-
-  updateValue(newValue: string[] | string | undefined) {
-    if (newValue === undefined) {
-      this.$emit('input', []);
-    } else {
-      this.$emit('input', newValue);
-    }
-    this.options = [];
-  }
-
-  /**
-   * Verify if we need to use regular template or variable one
-   **/
-  isVariable(value: string) {
-    const identifier = extractVariableIdentifier(
-      value,
-      this.variableDelimiters,
-      this.trustedVariableDelimiters,
-    );
-    return identifier != null;
-  }
-
-  /*
-  Select the advanced variable to edit
-  */
-  editAdvancedVariable(value: string) {
-    this.editedAdvancedVariable = value;
-  }
-
-  /*
-  Reset the advanced variable to edit
-  */
-  resetEditedAdvancedVariable() {
-    this.editedAdvancedVariable = '';
-  }
-}
+  props: {
+    name: {
+      type: String as PropType<string>,
+      default: '',
+    },
+    placeholder: {
+      type: String as PropType<string>,
+      default: '',
+    },
+    value: {
+      type: [Array, String] as PropType<string[] | string>,
+      default: () => [],
+    },
+    availableVariables: {
+      type: Object as PropType<VariablesBucket | undefined>,
+      default: undefined,
+    },
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+    trustedVariableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+    multiVariable: {
+      type: Boolean as PropType<boolean>,
+      default: true,
+    },
+  },
+  data() {
+    return {
+      editedAdvancedVariable: '',
+      options: [] as string[],
+    };
+  },
+  computed: {
+    variableInputMode() {
+      return this.multiVariable ? MultiVariableInput : VariableInput;
+    },
+    isMultiselectBig() {
+      // add overflow to tag container when there is a lot of values
+      return Array.isArray(this.value) && this.value.length > 6;
+    },
+  },
+  methods: {
+    updateOptions(newVal: string) {
+      if (newVal.length > 0) {
+        this.options = [newVal];
+      }
+    },
+    updateValue(newValue: string[] | string | undefined) {
+      if (newValue === undefined) {
+        this.$emit('input', []);
+      } else {
+        this.$emit('input', newValue);
+      }
+      this.options = [];
+    },
+    /**
+     * Verify if we need to use regular template or variable one
+     **/
+    isVariable(value: string) {
+      const identifier = extractVariableIdentifier(
+        value,
+        this.variableDelimiters,
+        this.trustedVariableDelimiters,
+      );
+      return identifier != null;
+    },
+    /*
+    Select the advanced variable to edit
+    */
+    editAdvancedVariable(value: string) {
+      this.editedAdvancedVariable = value;
+    },
+    /*
+    Reset the advanced variable to edit
+    */
+    resetEditedAdvancedVariable() {
+      this.editedAdvancedVariable = '';
+    },
+  },
+});
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

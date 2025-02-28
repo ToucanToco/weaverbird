@@ -20,51 +20,64 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, PropType } from 'vue';
+import Vue from 'vue';
 import VTooltip from 'v-tooltip';
-import { Component, Prop, Vue } from 'vue-property-decorator';
 
+// Register the tooltip directive globally
 Vue.use(VTooltip);
+
 /**
  * This component display a variable option in list
  */
-@Component({
+export default defineComponent({
   name: 'variable-list-option',
-})
-export default class VariableListOption extends Vue {
-  @Prop({ default: () => '' })
-  selectedVariables!: string | string[];
 
-  @Prop({ default: () => undefined })
-  value!: any;
+  props: {
+    selectedVariables: {
+      type: [String, Array] as PropType<string | string[]>,
+      default: () => '',
+    },
+    value: {
+      type: null,
+      default: undefined,
+    },
+    label: {
+      type: String,
+      default: '',
+    },
+    identifier: {
+      type: String,
+      default: '',
+    },
+    togglable: {
+      type: Boolean,
+      default: false,
+    },
+    showOnlyLabel: {
+      type: Boolean,
+      default: false,
+    },
+  },
 
-  @Prop({ default: () => '' })
-  label!: string;
+  computed: {
+    formattedValue(): string {
+      return this.value instanceof Date ? this.value.toString() : this.value;
+    },
 
-  @Prop({ default: () => '' })
-  identifier!: string;
+    readableValue(): string {
+      return this.showOnlyLabel ? '' : JSON.stringify(this.formattedValue);
+    },
 
-  @Prop({ default: () => false })
-  togglable!: boolean;
-
-  @Prop({ default: false })
-  showOnlyLabel!: boolean;
-
-  get formattedValue(): string {
-    return this.value instanceof Date ? this.value.toString() : this.value;
-  }
-
-  get readableValue(): string {
-    return this.showOnlyLabel ? '' : JSON.stringify(this.formattedValue);
-  }
-
-  get selected(): boolean {
-    if (Array.isArray(this.selectedVariables)) {
-      return this.selectedVariables.indexOf(this.identifier) != -1;
-    } else {
-      return this.selectedVariables === this.identifier;
-    }
-  }
-}
+    selected(): boolean {
+      if (Array.isArray(this.selectedVariables)) {
+        return this.selectedVariables.indexOf(this.identifier) != -1;
+      } else {
+        return this.selectedVariables === this.identifier;
+      }
+    },
+  },
+});
 </script>
 
 <style scoped lang="scss">

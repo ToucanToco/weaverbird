@@ -99,7 +99,7 @@
 import _ from 'lodash';
 import VTooltip from 'v-tooltip';
 import Vue from 'vue';
-import { Component, Watch } from 'vue-property-decorator';
+import { defineComponent } from 'vue';
 
 import FAIcon from '@/components/FAIcon.vue';
 import Pagination from '@/components/Pagination.vue';
@@ -107,8 +107,8 @@ import { resizable } from '@/directives/resizable/resizable';
 import type { DataSet, DataSetColumn, DataSetColumnType } from '@/lib/dataset';
 import type { Pipeline, PipelineStepName } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
-import { Action, Getter, State } from 'pinia-class';
-import { VQBModule, type VQBActions } from '@/store';
+import { mapState, mapGetters, mapActions } from 'pinia';
+import { VQBModule } from '@/store';
 
 import ActionMenu from './ActionMenu.vue';
 import ActionToolbar from './ActionToolbar.vue';
@@ -122,8 +122,9 @@ Vue.use(VTooltip);
  * @description A Vue Component that displays data into a table
  * @param {DataSet} dataset - The dataset that we want to display
  */
-@Component({
+export default defineComponent({
   name: 'data-viewer',
+
   components: {
     ActionMenu,
     ActionToolbar,
@@ -132,163 +133,176 @@ Vue.use(VTooltip);
     Pagination,
     FAIcon,
   },
-  directives: { resizable },
-})
-export default class DataViewer extends Vue {
-  @State(VQBModule) dataset!: DataSet;
-  @State(VQBModule) isLoading!: { dataset: boolean; uniqueValues: boolean };
-  @State(VQBModule) pagesize!: number;
-  @State(VQBModule) selectedColumns!: string[];
 
-  @Getter(VQBModule, 'isDatasetEmpty') isEmpty!: boolean;
-  @Getter(VQBModule) isDatasetComplete!: boolean;
-  @Getter(VQBModule) columnHeaders!: DataSetColumn[];
-  @State(VQBModule) translator!: string;
-  @Getter(VQBModule) pipeline?: Pipeline;
-  @Getter(VQBModule) supportedSteps!: PipelineStepName[];
+  directives: {
+    resizable,
+  },
 
-  @Action(VQBModule) createStepForm!: VQBActions['createStepForm'];
-  @Action(VQBModule) toggleColumnSelection!: VQBActions['toggleColumnSelection'];
-  @Action(VQBModule) setSelectedColumns!: VQBActions['setSelectedColumns'];
-  @Action(VQBModule) setCurrentPage!: VQBActions['setCurrentPage'];
+  data() {
+    return {
+      activeActionMenuColumnName: '',
+      activeDataTypeMenuColumnName: '',
+    };
+  },
 
-  activeActionMenuColumnName = '';
-  activeDataTypeMenuColumnName = '';
+  computed: {
+    ...mapState(VQBModule, ['dataset', 'isLoading', 'pagesize', 'selectedColumns', 'translator']),
 
-  get hasSupportedActions(): boolean {
-    return this.supportedSteps.filter((step) => step !== 'domain').length > 0;
-  }
+    ...mapGetters(VQBModule, [
+      'isDatasetEmpty',
+      'isDatasetComplete',
+      'columnHeaders',
+      'pipeline',
+      'supportedSteps',
+    ]),
 
-  /**
-   * @description Get our columns with their names and linked classes
-   *
-   * @return {Array<object>}
-   */
-  get formattedColumns() {
-    return this.columnHeaders.map((d) => {
-      return {
-        name: d.name,
-        type: d.type || 'undefined',
-        isActionMenuOpened: this.activeActionMenuColumnName === d.name,
-        isDataTypeMenuOpened: this.activeDataTypeMenuColumnName === d.name,
-        class: {
-          'data-viewer__header-cell': true,
-          'data-viewer__header-cell--disabled': !this.hasSupportedActions,
-          'data-viewer__header-cell--active': this.isSelected(d.name),
-        },
-      };
-    });
-  }
+    isEmpty(): boolean {
+      return this.isDatasetEmpty;
+    },
 
-  get columnNames(): string[] {
-    return this.formattedColumns.map(({ name }: { name: string }) => name);
-  }
+    hasSupportedActions(): boolean {
+      return this.supportedSteps.filter((step: PipelineStepName) => step !== 'domain').length > 0;
+    },
 
-  get iconClass() {
-    if (this.isSupported('convert')) {
-      return { 'data-viewer__header-icon': true, 'data-viewer__header-icon--active': true };
-    } else {
-      return { 'data-viewer__header-icon': true, 'data-viewer__header-icon--active': false };
-    }
-  }
+    /**
+     * @description Get our columns with their names and linked classes
+     *
+     * @return {Array<object>}
+     */
+    formattedColumns() {
+      return this.columnHeaders.map((d: DataSetColumn) => {
+        return {
+          name: d.name,
+          type: d.type || 'undefined',
+          isActionMenuOpened: this.activeActionMenuColumnName === d.name,
+          isDataTypeMenuOpened: this.activeDataTypeMenuColumnName === d.name,
+          class: {
+            'data-viewer__header-cell': true,
+            'data-viewer__header-cell--disabled': !this.hasSupportedActions,
+            'data-viewer__header-cell--active': this.isSelected(d.name),
+          },
+        };
+      });
+    },
 
-  /**
-   * @description Open the form to create a step
-   *
-   * @param {PipelineStepName} stepName - The name of the step we want to create
-   */
-  openStepForm(stepName: PipelineStepName, defaults = {}) {
-    this.createStepForm({ stepName, stepFormDefaults: defaults });
-  }
+    columnNames(): string[] {
+      return this.formattedColumns.map(({ name }: { name: string }) => name);
+    },
 
-  /**
-   * @description Tell us if our column is selected or not
-   *
-   * @param {string} column - A column name
-   * @return {boolean}
-   */
-  isSelected(column: string) {
-    return this.selectedColumns.includes(column);
-  }
+    iconClass() {
+      if (this.isSupported('convert')) {
+        return { 'data-viewer__header-icon': true, 'data-viewer__header-icon--active': true };
+      } else {
+        return { 'data-viewer__header-icon': true, 'data-viewer__header-icon--active': false };
+      }
+    },
+  },
 
-  isSupported(step: PipelineStepName) {
-    return getTranslator(this.translator).supports(step);
-  }
+  watch: {
+    columnHeaders: {
+      handler(after: DataSetColumn[], before: DataSetColumn[]) {
+        // we compare old header to new header
+        const columnsDifferences: DataSetColumn[] = _.differenceWith(before, after, _.isEqual);
+        // if the difference is only on one column with same name that active one ...
+        const isModifyingTheSameColumn =
+          columnsDifferences.length === 1 &&
+          columnsDifferences[0].name === this.activeActionMenuColumnName;
+        // ... we won't close the menu because we are just editing a col (ex: loadAllValues )
+        if (!isModifyingTheSameColumn) {
+          // but we close it if changing the headers
+          this.closeMenu();
+          this.closeDataTypeMenu();
+        }
+      },
+    },
+  },
 
-  getIconType(type: DataSetColumnType) {
-    switch (type) {
-      case 'string':
-        return 'ABC';
-      case 'integer':
-        return '123';
-      case 'long':
-        return '123';
-      case 'float':
-        return '1.2';
-      case 'date':
-        return 'calendar-alt';
-      case 'boolean':
-        return 'check';
-      case 'object':
-        return '{ }';
-      case 'geometry':
-        return 'map-marked-alt';
-      default:
-        return '???';
-    }
-  }
+  methods: {
+    ...mapActions(VQBModule, [
+      'createStepForm',
+      'toggleColumnSelection',
+      'setSelectedColumns',
+      'setCurrentPage',
+    ]),
 
-  shouldUseFAIcon(type: DataSetColumnType): boolean {
-    switch (type) {
-      case 'date':
-        return true;
-      case 'boolean':
-        return true;
-      case 'geometry':
-        return true;
-      default:
-        return false;
-    }
-  }
+    /**
+     * @description Open the form to create a step
+     *
+     * @param {PipelineStepName} stepName - The name of the step we want to create
+     */
+    openStepForm(stepName: PipelineStepName, defaults = {}) {
+      this.createStepForm({ stepName, stepFormDefaults: defaults });
+    },
 
-  openDataTypeMenu(name: string) {
-    this.activeDataTypeMenuColumnName = name;
-    this.setSelectedColumns({ column: name });
-  }
+    /**
+     * @description Tell us if our column is selected or not
+     *
+     * @param {string} column - A column name
+     * @return {boolean}
+     */
+    isSelected(column: string) {
+      return this.selectedColumns.includes(column);
+    },
 
-  closeDataTypeMenu() {
-    this.activeDataTypeMenuColumnName = '';
-  }
+    isSupported(step: PipelineStepName) {
+      return getTranslator(this.translator).supports(step);
+    },
 
-  openMenu(name: string) {
-    this.activeActionMenuColumnName = name;
-    this.setSelectedColumns({ column: name });
-  }
+    getIconType(type: DataSetColumnType) {
+      switch (type) {
+        case 'string':
+          return 'ABC';
+        case 'integer':
+          return '123';
+        case 'long':
+          return '123';
+        case 'float':
+          return '1.2';
+        case 'date':
+          return 'calendar-alt';
+        case 'boolean':
+          return 'check';
+        case 'object':
+          return '{ }';
+        case 'geometry':
+          return 'map-marked-alt';
+        default:
+          return '???';
+      }
+    },
 
-  closeMenu() {
-    this.activeActionMenuColumnName = '';
-  }
+    shouldUseFAIcon(type: DataSetColumnType): boolean {
+      switch (type) {
+        case 'date':
+          return true;
+        case 'boolean':
+          return true;
+        case 'geometry':
+          return true;
+        default:
+          return false;
+      }
+    },
 
-  /**
-   * These menus are associated to the column headers.
-   * It makes sense to close them when the headers change.
-   */
-  @Watch('columnHeaders')
-  onSelectedColumnsChange(before: any, after: any) {
-    // we compare old header to new header
-    const columnsDifferences: DataSetColumn[] = _.differenceWith(before, after, _.isEqual);
-    // if the difference is only on one column with same name that active one ...
-    const isModifyingTheSameColumn =
-      columnsDifferences.length === 1 &&
-      columnsDifferences[0].name === this.activeActionMenuColumnName;
-    // ... we won't close the menu because we are just editing a col (ex: loadAllValues )
-    if (!isModifyingTheSameColumn) {
-      // but we close it if changing the headers
-      this.closeMenu();
-      this.closeDataTypeMenu();
-    }
-  }
-}
+    openDataTypeMenu(name: string) {
+      this.activeDataTypeMenuColumnName = name;
+      this.setSelectedColumns({ column: name });
+    },
+
+    closeDataTypeMenu() {
+      this.activeDataTypeMenuColumnName = '';
+    },
+
+    openMenu(name: string) {
+      this.activeActionMenuColumnName = name;
+      this.setSelectedColumns({ column: name });
+    },
+
+    closeMenu() {
+      this.activeActionMenuColumnName = '';
+    },
+  },
+});
 </script>
 <style lang="scss" scoped>
 @import '../styles/_variables';

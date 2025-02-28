@@ -18,36 +18,38 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import type { DomainStep, PipelineStepName } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 
-@Component({
+export default defineComponent({
   name: 'domain-step-form',
   components: {
     AutocompleteWidget,
   },
-})
-export default class DomainStepForm extends BaseStepForm<DomainStep> {
-  stepname: PipelineStepName = 'domain';
-
-  @Prop({
-    type: Object,
-    default: () => ({
-      name: 'domain',
-      domain: '',
-    }),
-  })
-  declare initialStepValue: DomainStep;
-
-  get availableDatasetNames() {
-    return this.availableDomains.map((d) => d.name);
-  }
-
-  readonly title: string = 'Select a dataset';
-}
+  extends: BaseStepForm,
+  props: {
+    initialStepValue: {
+      type: Object as PropType<DomainStep>,
+      default: (): DomainStep => ({
+        name: 'domain',
+        domain: '',
+      }),
+    },
+  },
+  data() {
+    return {
+      stepname: 'domain' as PipelineStepName,
+      title: 'Select a dataset',
+    };
+  },
+  computed: {
+    availableDatasetNames(): string[] {
+      return this.availableDomains.map((d) => d.name);
+    },
+  },
+});
 </script>

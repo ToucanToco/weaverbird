@@ -3,26 +3,32 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import type { DateRange } from '@/lib/dates';
 
-@Component({
+export default defineComponent({
   name: 'calendar',
-})
-export default class Calendar extends Vue {
-  @Prop({ default: undefined })
-  value!: Date | DateRange | undefined;
 
-  @Prop({ default: undefined })
-  highlightedDates!: DateRange | undefined;
-
-  @Prop({ default: () => ({ start: undefined, end: undefined }) })
-  availableDates!: DateRange;
-
-  @Prop({ default: false })
-  isRange!: boolean;
-}
+  props: {
+    value: {
+      type: [Date, Object] as PropType<Date | DateRange | undefined>,
+      default: undefined,
+    },
+    highlightedDates: {
+      type: Object as PropType<DateRange | undefined>,
+      default: undefined,
+    },
+    availableDates: {
+      type: Object as PropType<DateRange>,
+      default: () => ({ start: undefined, end: undefined }),
+    },
+    isRange: {
+      type: Boolean,
+      default: false,
+    },
+  },
+});
 </script>
 
 <style></style>

@@ -40,44 +40,56 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import FAIcon from '@/components/FAIcon.vue';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-
 import FormWidget from './FormWidget.vue';
 import VariableInput from './VariableInput.vue';
 
-@Component({
+export default defineComponent({
   name: 'input-text-widget',
-  components: { VariableInput, FAIcon },
-})
-export default class InputTextWidget extends FormWidget {
-  @Prop({ type: String, default: '' })
-  name!: string;
-
-  @Prop({ type: String, default: '' })
-  placeholder!: string;
-
-  @Prop({ default: undefined })
-  value!: string | number | boolean | undefined;
-
-  @Prop({ default: undefined })
-  docUrl!: string | undefined;
-
-  @Prop()
-  availableVariables?: VariablesBucket;
-
-  @Prop()
-  variableDelimiters?: VariableDelimiters;
-
-  @Prop()
-  trustedVariableDelimiters?: VariableDelimiters;
-
-  updateValue(newValue: string | undefined) {
-    this.$emit('input', newValue || undefined);
-  }
-}
+  components: {
+    VariableInput,
+    FAIcon,
+  },
+  extends: FormWidget,
+  props: {
+    name: {
+      type: String as PropType<string>,
+      default: '',
+    },
+    placeholder: {
+      type: String as PropType<string>,
+      default: '',
+    },
+    value: {
+      type: [String, Number, Boolean] as PropType<string | number | boolean | undefined>,
+      default: undefined,
+    },
+    docUrl: {
+      type: String as PropType<string | undefined>,
+      default: undefined,
+    },
+    availableVariables: {
+      type: Object as PropType<VariablesBucket | undefined>,
+      default: undefined,
+    },
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+    trustedVariableDelimiters: {
+      type: Object as PropType<VariableDelimiters | undefined>,
+      default: undefined,
+    },
+  },
+  methods: {
+    updateValue(newValue: string | undefined) {
+      this.$emit('input', newValue || undefined);
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>

@@ -76,7 +76,7 @@
             </div>
             <RelativeDateForm
               v-else
-              v-model="currentTabValue"
+              v-model="relativeTabValue"
               :availableVariables="relativeAvailableVariables"
               :variableDelimiters="variableDelimiters"
               :trusted-variable-delimiters="trustedVariableDelimiters"
@@ -107,10 +107,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import { POPOVER_ALIGN } from '@/components/constants';
-import Calendar from '@/components/DatePicker/Calendar.vue';
 import { transformValueToDateRange } from '@/components/DatePicker/transform-value-to-date-or-range';
 import FAIcon from '@/components/FAIcon.vue';
 import Popover from '@/components/Popover.vue';
@@ -121,6 +120,7 @@ import {
   dateRangeToString,
   isDateRange,
   isRelativeDate,
+  RelativeDate,
   relativeDateToString,
 } from '@/lib/dates';
 import t, { LocaleIdentifier } from '@/lib/internationalization';
@@ -147,282 +147,258 @@ import TabbedRangeCalendars from './TabbedRangeCalendars.vue';
  * In another emitted property, DateRangeInput component will return a DateRange @dateRangeValueUpdated
  * This returned value is a calculated form of the config into a date range { start: Date, end: Date } in order to be used
  */
-@Component({
+export default defineComponent({
   name: 'date-range-input',
+
   components: {
     CustomVariableList,
     Popover,
     Tabs,
-    Calendar,
     RelativeDateForm,
     FAIcon,
     TabbedRangeCalendars,
   },
-})
-export default class DateRangeInput extends Vue {
-  @Prop()
-  value!: string | CustomDateRange | undefined;
 
-  @Prop({ default: () => [] })
-  availableVariables!: VariablesBucket;
+  props: {
+    value: {
+      type: [String, Object] as PropType<string | CustomDateRange | undefined>,
+      default: undefined,
+    },
+    availableVariables: {
+      type: Array as PropType<VariablesBucket>,
+      default: () => [],
+    },
+    relativeAvailableVariables: {
+      type: Array as PropType<VariablesBucket>,
+      default: () => [],
+    },
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters>,
+      default: () => ({ start: '', end: '' }),
+    },
+    trustedVariableDelimiters: {
+      type: Object as PropType<VariableDelimiters>,
+      default: undefined,
+    },
+    enableRelativeDate: {
+      type: Boolean,
+      default: true,
+    },
+    enableCustom: {
+      type: Boolean,
+      default: true,
+    },
+    enabledCalendars: {
+      type: Array as PropType<string[]>,
+      default: undefined,
+    },
+    bounds: {
+      type: Object as PropType<CustomDateRange>,
+      default: () => ({ start: undefined, end: undefined }),
+    },
+    alwaysOpened: {
+      type: Boolean,
+      default: false,
+    },
+    locale: {
+      type: String as PropType<LocaleIdentifier>,
+      required: false,
+    },
+    themeCSSVariables: {
+      type: Object as PropType<Record<string, string>>,
+      default: undefined,
+    },
+    coloredBackground: {
+      type: Boolean,
+      default: false,
+    },
+    dateRangeFormatter: {
+      type: Function as PropType<(dr: DateRange, locale?: LocaleIdentifier) => string | undefined>,
+      default: undefined,
+    },
+    compactMode: {
+      type: Boolean,
+      default: false,
+    },
+    hidePlaceholder: {
+      type: Boolean,
+      default: false,
+    },
+  },
 
-  @Prop({ default: () => [] })
-  relativeAvailableVariables!: VariablesBucket; // variables to use in RelativeDateForm "from"
+  data() {
+    return {
+      isEditorOpened: false,
+      isEditingCustomVariable: false, // force to expand custom part of editor
+      selectedTab: 'Relative',
+      forcePopoverToUpdatePosition: 0,
+      // keep each tab value in memory to enable to switch between tabs without loosing content
+      tabsValues: {
+        Fixed: {}, // DateRange should be empty on init because we can have bounds so defined dates could be out of bounds
+        Relative: { date: '', quantity: 1, duration: 'year', operator: 'until' },
+      } as Record<string, CustomDateRange>,
+    };
+  },
 
-  @Prop({ default: () => ({ start: '', end: '' }) })
-  variableDelimiters!: VariableDelimiters;
+  computed: {
+    popoverAlignement(): string {
+      return this.compactMode && this.isEditingCustomVariable
+        ? POPOVER_ALIGN.CENTER
+        : POPOVER_ALIGN.LEFT;
+    },
 
-  @Prop({ default: undefined })
-  trustedVariableDelimiters!: VariableDelimiters;
+    accessibleVariables(): VariablesBucket {
+      // some variables are required for date computations but should not be part of the variable list displayed to users
+      return this.availableVariables.filter((v: AvailableVariable) => v.category !== 'hidden');
+    },
 
-  @Prop({ default: () => true })
-  enableRelativeDate!: boolean;
-
-  @Prop({ default: true })
-  enableCustom!: boolean;
-
-  @Prop()
-  enabledCalendars!: string[] | undefined;
-
-  @Prop({ default: () => ({ start: undefined, end: undefined }) })
-  bounds!: CustomDateRange;
-
-  @Prop({ type: Boolean, default: false })
-  alwaysOpened!: boolean;
-
-  @Prop({ type: String, required: false })
-  locale?: LocaleIdentifier;
-
-  @Prop({ default: undefined })
-  themeCSSVariables!: Record<string, string> | undefined;
-
-  @Prop({ default: false })
-  coloredBackground!: boolean;
-
-  @Prop()
-  dateRangeFormatter!: (dr: DateRange, locale?: LocaleIdentifier) => string | undefined;
-
-  @Prop({ default: false })
-  compactMode!: boolean;
-
-  @Prop({ default: false })
-  hidePlaceholder!: boolean;
-
-  isEditorOpened = false;
-  isEditingCustomVariable = false; // force to expand custom part of editor
-  selectedTab = 'Relative';
-  forcePopoverToUpdatePosition = 0;
-
-  get popoverAlignement(): string {
-    return this.compactMode && this.isEditingCustomVariable
-      ? POPOVER_ALIGN.CENTER
-      : POPOVER_ALIGN.LEFT;
-  }
-
-  get accessibleVariables(): VariablesBucket {
-    // some variables are required for date computations but should not be part of the variable list displayed to users
-    return this.availableVariables.filter((v) => v.category !== 'hidden');
-  }
-
-  get boundsAsDateRange(): DateRange | undefined {
-    const dateRange = transformValueToDateRange(
-      this.bounds,
-      this.availableVariables,
-      this.relativeAvailableVariables,
-      this.variableDelimiters,
-    );
-    return dateRange;
-  }
-
-  get tabs(): string[] {
-    return ['Relative', 'Fixed'];
-  }
-
-  // keep each tab value in memory to enable to switch between tabs without loosing content
-  tabsValues: Record<string, CustomDateRange> = {
-    Fixed: {}, // DateRange should be empty on init because we can have bounds so defined dates could be out of bounds
-    Relative: { date: '', quantity: 1, duration: 'year', operator: 'until' },
-  };
-
-  get currentTabValue(): CustomDateRange {
-    return this.tabsValues[this.selectedTab];
-  }
-
-  set currentTabValue(value: CustomDateRange) {
-    this.tabsValues[this.selectedTab] = value;
-  }
-
-  get variable(): AvailableVariable | undefined {
-    if (typeof this.value !== 'string') return undefined;
-    const identifier = extractVariableIdentifier(
-      this.value,
-      this.variableDelimiters,
-      this.trustedVariableDelimiters,
-    );
-    return this.availableVariables.find((v) => v.identifier === identifier);
-  }
-
-  get selectedVariables(): string {
-    // needed to select the custom button in CustomVariableList
-    if (this.isCustom) {
-      return 'custom';
-    } else {
-      return this.variable?.identifier ?? '';
-    }
-  }
-
-  get hasVariables(): boolean {
-    return this.accessibleVariables.length > 0;
-  }
-
-  get hasCustomValue(): boolean {
-    // value is custom if not undefined and not a preset variable
-    return (this.value && !this.variable) as boolean;
-  }
-
-  get isCustom(): boolean {
-    return this.hasCustomValue || this.isEditingCustomVariable;
-  }
-
-  get displayCustomEditor(): boolean {
-    if (!this.hasVariables) return true;
-    // in compact mode always force click on custom option to open the custom editor
-    return this.compactMode ? this.isEditingCustomVariable : this.isCustom;
-  }
-
-  get displayVariableList(): boolean {
-    // in compact mode display variable list only when custom editor is not opened
-    if (this.compactMode) return !this.displayCustomEditor;
-    return this.hasVariables;
-  }
-
-  get isFixedTabSelected(): boolean {
-    return this.selectedTab === 'Fixed';
-  }
-
-  get label(): string {
-    if (this.variable) {
-      return this.variable.label;
-    } else if (isDateRange(this.value)) {
-      // Use the dateRangeFormatter function is available, and it returns a value
-      if (this.dateRangeFormatter) {
-        const formattedDataRange = this.dateRangeFormatter(this.value, this.locale);
-        if (formattedDataRange) return formattedDataRange;
-      }
-      return dateRangeToString(this.value, this.locale);
-    } else if (isRelativeDate(this.value)) {
-      return relativeDateToString(
-        this.value,
+    boundsAsDateRange(): DateRange | undefined {
+      const dateRange = transformValueToDateRange(
+        this.bounds,
+        this.availableVariables,
         this.relativeAvailableVariables,
+        this.variableDelimiters,
+      );
+      return dateRange;
+    },
+
+    tabs(): string[] {
+      return ['Relative', 'Fixed'];
+    },
+
+    currentTabValue: {
+      get(): DateRange | RelativeDate {
+        return this.tabsValues[this.selectedTab];
+      },
+      set(value: DateRange | RelativeDate): void {
+        this.tabsValues[this.selectedTab] = value;
+      },
+    },
+
+    isFixedTabSelected(): boolean {
+      return this.selectedTab === 'Fixed';
+    },
+
+    hasInvalidTabValue(): boolean {
+      if (this.isFixedTabSelected) {
+        const value = this.currentTabValue as DateRange;
+        return !value?.start || !value?.end;
+      }
+      const value = this.currentTabValue as RelativeDate;
+      return !value?.date;
+    },
+
+    displayVariableList(): boolean {
+      return !this.isEditingCustomVariable;
+    },
+
+    displayCustomEditor(): boolean {
+      return this.isEditingCustomVariable;
+    },
+
+    selectedVariables(): string {
+      const identifier = extractVariableIdentifier(
+        this.value as string,
         this.variableDelimiters,
         this.trustedVariableDelimiters,
       );
-    } else {
-      return t('SELECT_PERIOD_PLACEHOLDER', this.locale);
-    }
-  }
+      return identifier ?? '';
+    },
 
-  get hideLabel(): boolean {
-    return this.hidePlaceholder && !this.value;
-  }
-
-  get customLabel(): string {
-    if (this.enableRelativeDate) {
-      return this.t('CUSTOM');
-    } else {
-      return this.t('CALENDAR');
-    }
-  }
-
-  get hasInvalidTabValue(): boolean {
-    if (this.isFixedTabSelected) {
-      return (
-        !isDateRange(this.currentTabValue) ||
-        !this.currentTabValue.start ||
-        !this.currentTabValue.end
-      );
-    } else {
-      return !isRelativeDate(this.currentTabValue) || !this.currentTabValue.date;
-    }
-  }
-
-  created() {
-    this.initTabs();
-  }
-
-  // init tabs by selecting correct tab and value based on prop value
-  initTabs(): void {
-    if (isDateRange(this.value)) {
-      this.tabsValues.Fixed = this.value;
-      this.selectTab('Fixed');
-    } else if (isRelativeDate(this.value)) {
-      this.tabsValues.Relative = this.value;
-      this.selectTab('Relative');
-    }
-    // force fixed tab by default if relative date is not enabled
-    if (!this.enableRelativeDate) {
-      this.selectTab('Fixed');
-    }
-  }
-
-  openEditor(): void {
-    this.initTabs();
-    this.isEditorOpened = true;
-  }
-
-  closeEditor(): void {
-    this.isEditingCustomVariable = false;
-    this.isEditorOpened = false;
-  }
-
-  setVariableDelimiters(value: string): string {
-    const retrieveVariableDelimiters = (
-      variableIdentifier: string,
-    ): VariableDelimiters | undefined => {
-      const variable = this.availableVariables.find((v) => v.identifier === variableIdentifier);
-      if (!variable) {
-        return; // if variable is unfound we don't want to display any delimiters
-      } else if (isTrustedVariable(variable)) {
-        return this.trustedVariableDelimiters;
+    label(): string {
+      if (this.value === undefined) {
+        return this.hidePlaceholder ? '' : t('SELECT_DATE_RANGE');
       }
-      return this.variableDelimiters;
-    };
 
-    const delimiters = retrieveVariableDelimiters(value);
-    if (!delimiters) return value;
-    return `${delimiters.start}${value}${delimiters.end}`;
-  }
+      if (typeof this.value === 'string') {
+        return this.value;
+      }
 
-  selectVariable(value: string): void {
-    const variableWithDelimiters = this.setVariableDelimiters(value);
-    this.$emit('input', variableWithDelimiters);
-    this.closeEditor();
-  }
+      if (isDateRange(this.value)) {
+        if (this.dateRangeFormatter) {
+          return this.dateRangeFormatter(this.value, this.locale) ?? '';
+        }
+        return dateRangeToString(this.value, this.locale);
+      }
 
-  resetValue(): void {
-    this.$emit('input', undefined);
-  }
+      if (isRelativeDate(this.value)) {
+        return relativeDateToString(this.value);
+      }
 
-  async editCustomVariable(): Promise<void> {
-    this.isEditingCustomVariable = true;
-    // force popover to update position to always display custom editor in visible part of screen
-    await this.$nextTick();
-    this.forcePopoverToUpdatePosition = this.forcePopoverToUpdatePosition + 1;
-  }
+      return '';
+    },
 
-  saveCustomVariable(): void {
-    this.$emit('input', this.currentTabValue);
-    this.closeEditor();
-  }
+    hideLabel(): boolean {
+      return this.hidePlaceholder && !this.value;
+    },
 
-  selectTab(tab: string): void {
-    this.selectedTab = tab;
-  }
+    customLabel(): string {
+      if (this.enableRelativeDate) {
+        return this.t('CUSTOM');
+      } else {
+        return this.t('CALENDAR');
+      }
+    },
 
-  t(key: string): string {
-    return t(key, this.locale);
-  }
-}
+    relativeTabValue: {
+      get(): RelativeDate | undefined {
+        return !this.isFixedTabSelected ? (this.currentTabValue as RelativeDate) : undefined;
+      },
+      set(value: RelativeDate | undefined): void {
+        if (value) {
+          this.tabsValues[this.selectedTab] = value;
+        }
+      },
+    },
+  },
+
+  methods: {
+    openEditor() {
+      this.isEditorOpened = true;
+      this.isEditingCustomVariable = false;
+    },
+
+    closeEditor() {
+      this.isEditorOpened = false;
+      this.isEditingCustomVariable = false;
+    },
+
+    resetValue() {
+      this.$emit('input', undefined);
+    },
+
+    selectTab(tab: string) {
+      this.selectedTab = tab;
+      this.forcePopoverToUpdatePosition++;
+    },
+
+    selectVariable(variableIdentifier: string) {
+      const variable = this.availableVariables.find((v) => v.identifier === variableIdentifier);
+      const attendedVariableDelimiters = isTrustedVariable(variable)
+        ? this.trustedVariableDelimiters
+        : this.variableDelimiters;
+      const value = `${attendedVariableDelimiters.start}${variableIdentifier}${attendedVariableDelimiters.end}`;
+      this.$emit('input', value);
+      this.closeEditor();
+    },
+
+    editCustomVariable() {
+      this.isEditingCustomVariable = true;
+      this.forcePopoverToUpdatePosition++;
+    },
+
+    saveCustomVariable() {
+      if (!this.hasInvalidTabValue) {
+        this.$emit('input', this.currentTabValue);
+        this.closeEditor();
+      }
+    },
+
+    t(key: string): string {
+      return t(key, this.locale);
+    },
+  },
+});
 </script>
 
 <style scoped lang="scss">

@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import { CodeEditor, CodeEditorConfigs } from '@/components/code-editor';
 import type { CodeEditorConfig } from '@/components/code-editor';
@@ -30,62 +30,68 @@ import FAIcon from '@/components/FAIcon.vue';
 
 import FormWidget from './FormWidget.vue';
 
-@Component({
+export default defineComponent({
   name: 'code-editor-widget',
   components: {
     FAIcon,
   },
-})
-export default class CodeEditorWidget extends FormWidget {
-  @Prop({ type: String, default: '' })
-  name!: string;
-
-  @Prop({ type: String, default: '' })
-  placeholder!: string;
-
-  @Prop({ default: '' })
-  value!: string;
-
-  @Prop({ type: String, default: '' })
-  config!: string;
-
-  isFocused = false;
-
-  // Code editor is set through a responsive data so it can be change after import
-  codeEditor: CodeEditorConfig = CodeEditor;
-
-  get elementClass() {
+  extends: FormWidget,
+  props: {
+    name: {
+      type: String as PropType<string>,
+      default: '',
+    },
+    placeholder: {
+      type: String as PropType<string>,
+      default: '',
+    },
+    value: {
+      type: String as PropType<string>,
+      default: '',
+    },
+    config: {
+      type: String as PropType<string>,
+      default: '',
+    },
+  },
+  data() {
     return {
-      'widget-code-editor': true,
-      'widget-code-editor--focused': this.isFocused,
+      isFocused: false,
+      // Code editor is set through a responsive data so it can be change after import
+      codeEditor: CodeEditor as CodeEditorConfig,
     };
-  }
-
+  },
+  computed: {
+    elementClass() {
+      return {
+        'widget-code-editor': true,
+        'widget-code-editor--focused': this.isFocused,
+      };
+    },
+  },
   created() {
     this.setEditorConfig();
-  }
-
-  /*
-  Use a specific config of AvailableCodeEditors
-  */
-  setEditorConfig() {
-    if (this.config && CodeEditorConfigs[this.config]) {
-      this.codeEditor = CodeEditorConfigs[this.config];
-    }
-  }
-
-  blur() {
-    this.isFocused = false;
-  }
-
-  focus() {
-    this.isFocused = true;
-  }
-
-  updateEditedValue(newValue: string) {
-    this.$emit('input', newValue);
-  }
-}
+  },
+  methods: {
+    /*
+    Use a specific config of AvailableCodeEditors
+    */
+    setEditorConfig() {
+      if (this.config && CodeEditorConfigs[this.config]) {
+        this.codeEditor = CodeEditorConfigs[this.config];
+      }
+    },
+    blur() {
+      this.isFocused = false;
+    },
+    focus() {
+      this.isFocused = true;
+    },
+    updateEditedValue(newValue: string) {
+      this.$emit('input', newValue);
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>

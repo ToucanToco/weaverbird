@@ -27,7 +27,7 @@
 
 <script lang="ts">
 import type { ErrorObject } from 'ajv';
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { defineComponent, PropType } from 'vue';
 
 import ConditionsEditor from '@/components/ConditionsEditor/ConditionsEditor.vue';
 import type { AbstractFilterTree } from '@/components/ConditionsEditor/tree-types';
@@ -43,56 +43,62 @@ import type { ColumnTypeMapping } from '@/lib/dataset';
 import type { FilterCondition } from '@/lib/steps';
 import type { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
-@Component({
+export default defineComponent({
   name: 'filter-editor',
+
   components: {
     ConditionsEditor,
     FilterSimpleConditionWidget,
   },
-})
-export default class FilterEditor extends Vue {
-  @Prop({
-    type: Object,
-    default: () => ({ column: '', value: '', operator: 'eq' }),
-  })
-  filterTree!: FilterCondition;
 
-  @Prop({
-    type: Object,
-    default: () => ({}),
-  })
-  columnTypes!: ColumnTypeMapping;
+  props: {
+    filterTree: {
+      type: Object as PropType<FilterCondition>,
+      default: () => ({ column: '', value: '', operator: 'eq' }),
+    },
+    columnTypes: {
+      type: Object as PropType<ColumnTypeMapping>,
+      default: () => ({}),
+    },
+    availableVariables: {
+      type: Object as PropType<VariablesBucket>,
+    },
+    variableDelimiters: {
+      type: Object as PropType<VariableDelimiters>,
+    },
+    trustedVariableDelimiters: {
+      type: Object as PropType<VariableDelimiters>,
+    },
+    hideColumnVariables: {
+      type: Boolean,
+    },
+    multiVariable: {
+      type: Boolean,
+      default: true,
+    },
+    errors: {
+      type: Array as PropType<ErrorObject[]>,
+      default: () => [],
+    },
+  },
 
-  @Prop()
-  availableVariables?: VariablesBucket;
+  data() {
+    return {
+      defaultValue: DEFAULT_FILTER,
+    };
+  },
 
-  @Prop()
-  variableDelimiters?: VariableDelimiters;
+  computed: {
+    conditionsTree() {
+      return buildConditionsEditorTree(castFilterStepTreeValue(this.filterTree, this.columnTypes));
+    },
+  },
 
-  @Prop()
-  trustedVariableDelimiters?: VariableDelimiters;
-
-  @Prop()
-  hideColumnVariables?: boolean;
-
-  @Prop({ type: Boolean, default: true })
-  multiVariable!: boolean; // display multiInputText as multiVariableInput
-
-  @Prop({
-    type: Array,
-    default: () => [],
-  })
-  errors!: ErrorObject[];
-
-  readonly defaultValue = DEFAULT_FILTER;
-
-  get conditionsTree() {
-    return buildConditionsEditorTree(castFilterStepTreeValue(this.filterTree, this.columnTypes));
-  }
-
-  updateFilterTree(newConditionsTree: AbstractFilterTree) {
-    const newFilterTree = buildFilterStepTree(newConditionsTree);
-    this.$emit('filterTreeUpdated', newFilterTree);
-  }
-}
+  methods: {
+    updateFilterTree(newConditionsTree: AbstractFilterTree) {
+      const newFilterTree = buildFilterStepTree(newConditionsTree);
+      this.$emit('filterTreeUpdated', newFilterTree);
+    },
+  },
+});
 </script>
