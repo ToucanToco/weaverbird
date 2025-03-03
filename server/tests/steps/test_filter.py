@@ -11,15 +11,11 @@ from pandas.testing import assert_frame_equal
 
 from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.filter import execute_filter
-from weaverbird.pipeline.conditions import (
-    ComparisonCondition,
-    ConditionComboAnd,
-    DateBoundCondition,
-    nosql_apply_parameters_to_query_with_errors,
-)
+from weaverbird.pipeline.conditions import ComparisonCondition, ConditionComboAnd, DateBoundCondition
 from weaverbird.pipeline.dates import RelativeDateWithVariables
 from weaverbird.pipeline.steps import FilterStep
 from weaverbird.pipeline.steps.filter import FilterStepWithVariables
+from weaverbird.utils.toucan_connectors import nosql_apply_parameters_to_query_with_errors
 
 
 @pytest.fixture
