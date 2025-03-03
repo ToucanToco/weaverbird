@@ -660,7 +660,7 @@ def test_keep_condition_if_empty_list_from_filter_steps(
     assert remove_void_conditions_from_filter_steps([step]) == expected_steps
 
 
-def test_raise_error_when_variables_are_missing():
+def test_raises_error_when_variables_are_missing():
     with pytest.raises(UndefinedVariableError):
         PipelineWithVariables(
             steps=[
