@@ -3,7 +3,7 @@
 ## Unreleased
 
 ### Changed
--  Missing variables during rendering now raises `UndefinedVariableError` instead of validation errors.
+- Missing variables during rendering now cause a `UndefinedVariableError`  to be raised instead of a `ValidationError`.
 
 ## [0.51.2] - 2025-02-20
 
