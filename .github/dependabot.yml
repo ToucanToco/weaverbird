@@ -13,7 +13,7 @@ updates:
         dependency-type: "development"
   # yarn
   - package-ecosystem: "npm"
-    directory: "/"
+    directory: "/ui"
     schedule:
       interval: "weekly"
     allow:
