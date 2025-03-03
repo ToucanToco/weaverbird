@@ -1,7 +1,8 @@
 version: 2
+enable-beta-ecosystems: true
 updates:
   # uv
-  - package-ecosystem: "pip"
+  - package-ecosystem: "uv"
     directory: "/server"
     schedule:
       interval: "weekly"
