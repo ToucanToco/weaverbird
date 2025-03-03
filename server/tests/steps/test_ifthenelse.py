@@ -2,11 +2,11 @@ from typing import Any
 
 import pytest
 from pandas import NA, DataFrame
-from toucan_connectors.common import nosql_apply_parameters_to_query
 
 from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.ifthenelse import execute_ifthenelse
 from weaverbird.pipeline.steps.ifthenelse import IfthenelseStep, IfThenElseStepWithVariables
+from weaverbird.utils.toucan_connectors import nosql_apply_parameters_to_query_with_errors
 
 
 @pytest.fixture
@@ -197,7 +197,7 @@ def test_render_ifthenelsestep_step_with_variables(available_variables: dict[str
             "new_column": "coucou",
         }
     )
-    rendered = step.render(available_variables, nosql_apply_parameters_to_query)
+    rendered = step.render(available_variables, nosql_apply_parameters_to_query_with_errors)
     assert rendered.condition.value == available_variables["TODAY"]
 
     step = IfThenElseStepWithVariables(
@@ -218,5 +218,5 @@ def test_render_ifthenelsestep_step_with_variables(available_variables: dict[str
         }
     )
 
-    rendered = step.render(available_variables, nosql_apply_parameters_to_query)
+    rendered = step.render(available_variables, nosql_apply_parameters_to_query_with_errors)
     assert rendered.condition.value.date == available_variables["TODAY"]

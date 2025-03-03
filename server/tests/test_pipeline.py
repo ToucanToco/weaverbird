@@ -6,7 +6,7 @@ from datetime import datetime
 import pytest
 from jinja2.nativetypes import NativeEnvironment
 from pydantic import BaseModel
-from toucan_connectors.common import nosql_apply_parameters_to_query
+from toucan_connectors.common import UndefinedVariableError
 
 from weaverbird.pipeline.conditions import ComparisonCondition, InclusionCondition
 from weaverbird.pipeline.pipeline import (
@@ -21,6 +21,7 @@ from weaverbird.pipeline.steps import DomainStep, FilterStep, JoinStep, RollupSt
 from weaverbird.pipeline.steps.aggregate import Aggregation
 from weaverbird.pipeline.steps.append import AppendStep
 from weaverbird.pipeline.steps.text import TextStep
+from weaverbird.utils.toucan_connectors import nosql_apply_parameters_to_query_with_errors
 
 
 class Case(BaseModel):
@@ -64,7 +65,7 @@ ids = (x.filename for x in cases)
 def test_step_with_variables(case: Case):
     pipeline_with_variables = PipelineWithVariables(**case.data)
 
-    pipeline = pipeline_with_variables.render(case.context, renderer=nosql_apply_parameters_to_query)
+    pipeline = pipeline_with_variables.render(case.context, renderer=nosql_apply_parameters_to_query_with_errors)
 
     expected_result = Pipeline(steps=case.expected_result)
     assert pipeline == expected_result
@@ -75,7 +76,7 @@ def test_custom_sql_step_with_variables():
     variables = {"__front_var_0__": "-- DROP TABLE users;"}
 
     pipeline_with_variables = PipelineWithVariables(steps=steps)
-    pipeline = pipeline_with_variables.render(variables, renderer=nosql_apply_parameters_to_query)
+    pipeline = pipeline_with_variables.render(variables, renderer=nosql_apply_parameters_to_query_with_errors)
 
     # It should not have been rendered:
     assert pipeline.steps[0].query == "{{ __front_var_0__ }}"
@@ -657,3 +658,16 @@ def test_keep_condition_if_empty_list_from_filter_steps(
 ):
     expected_steps = [expected_step] if expected_step is not None else []
     assert remove_void_conditions_from_filter_steps([step]) == expected_steps
+
+
+def test_raise_error_when_variables_are_missing():
+    with pytest.raises(UndefinedVariableError):
+        PipelineWithVariables(
+            steps=[
+                {"name": "domain", "domain": "beers"},
+                {
+                    "name": "filter",
+                    "condition": {"column": "price", "value": "{{ __front_var_0__ }}", "operator": "lt"},
+                },
+            ]
+        ).render({}, nosql_apply_parameters_to_query_with_errors)

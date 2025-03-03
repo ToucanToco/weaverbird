@@ -8,11 +8,11 @@ import pandas as pd
 import pytest
 from pandas.api.types import is_bool_dtype, is_datetime64_any_dtype, is_numeric_dtype
 from pymongo import MongoClient
-from toucan_connectors.common import nosql_apply_parameters_to_query
 
 from tests.utils import assert_dataframes_content_equals, get_spec_from_json_fixture, retrieve_case
 from weaverbird.backends.mongo_translator.mongo_pipeline_translator import translate_pipeline
 from weaverbird.pipeline import PipelineWithVariables
+from weaverbird.utils.toucan_connectors import nosql_apply_parameters_to_query_with_errors
 
 exec_type = "mongo"
 test_cases = retrieve_case("mongo_translator", exec_type)
@@ -96,7 +96,9 @@ def test_mongo_translator_pipeline(mongo_database, case_id, case_spec_file_path,
 
     # create query
     steps = spec["step"]["pipeline"]
-    pipeline = PipelineWithVariables(steps=steps).render(available_variables, nosql_apply_parameters_to_query)
+    pipeline = PipelineWithVariables(steps=steps).render(
+        available_variables, nosql_apply_parameters_to_query_with_errors
+    )
     query = translate_pipeline(pipeline)
     # execute query
     result = list(mongo_database[collection_uid].aggregate(query))

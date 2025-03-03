@@ -7,12 +7,12 @@ import pandas as pd
 import pytest
 from snowflake.sqlalchemy import URL
 from sqlalchemy import create_engine, text
-from toucan_connectors.common import nosql_apply_parameters_to_query
 
 from tests.utils import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import translate_pipeline
 from weaverbird.pipeline import PipelineWithVariables
+from weaverbird.utils.toucan_connectors import nosql_apply_parameters_to_query_with_errors
 
 _ACCOUNT = "toucantocopartner.west-europe.azure"
 _USER = "toucan_test"
@@ -57,7 +57,9 @@ def test_snowflake_translator_pipeline(engine: Any, case_id: str, case_spec_file
     pipeline_spec = get_spec_from_json_fixture(case_id, case_spec_file)
 
     steps = [{"name": "domain", "domain": "beers_tiny"}] + pipeline_spec["step"]["pipeline"]
-    pipeline = PipelineWithVariables(steps=steps).render(available_variables, nosql_apply_parameters_to_query)
+    pipeline = PipelineWithVariables(steps=steps).render(
+        available_variables, nosql_apply_parameters_to_query_with_errors
+    )
 
     query = translate_pipeline(
         sql_dialect=SQLDialect.SNOWFLAKE,

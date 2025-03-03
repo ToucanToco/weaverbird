@@ -8,7 +8,6 @@ from zoneinfo import ZoneInfo
 import pytest
 from pandas import DataFrame, read_json
 from pandas.testing import assert_frame_equal
-from toucan_connectors.common import nosql_apply_parameters_to_query
 
 from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.filter import execute_filter
@@ -16,6 +15,7 @@ from weaverbird.pipeline.conditions import (
     ComparisonCondition,
     ConditionComboAnd,
     DateBoundCondition,
+    nosql_apply_parameters_to_query_with_errors,
 )
 from weaverbird.pipeline.dates import RelativeDateWithVariables
 from weaverbird.pipeline.steps import FilterStep
@@ -439,7 +439,7 @@ def test_render_filter_step_with_variables(available_variables: dict[str, Any]) 
             "operator": "from",
         }
     )
-    rendered = step.render(available_variables, nosql_apply_parameters_to_query)
+    rendered = step.render(available_variables, nosql_apply_parameters_to_query_with_errors)
     assert rendered.condition.value == available_variables["TODAY"]
 
     step = FilterStepWithVariables(
@@ -454,13 +454,13 @@ def test_render_filter_step_with_variables(available_variables: dict[str, Any]) 
             "operator": "from",
         }
     )
-    rendered = step.render(available_variables, nosql_apply_parameters_to_query)
+    rendered = step.render(available_variables, nosql_apply_parameters_to_query_with_errors)
     assert rendered.condition.value.date == available_variables["TODAY"]
 
     step = FilterStepWithVariables(condition={"or": [step.model_dump()["condition"]]})
-    rendered = step.render(available_variables, nosql_apply_parameters_to_query)
+    rendered = step.render(available_variables, nosql_apply_parameters_to_query_with_errors)
     assert rendered.condition.or_[0].value.date == available_variables["TODAY"]
 
     step = FilterStepWithVariables(condition={"column": "int_column", "operator": "in", "value": "{{ INTEGER_LIST }}"})
-    rendered = step.render(available_variables, nosql_apply_parameters_to_query)
+    rendered = step.render(available_variables, nosql_apply_parameters_to_query_with_errors)
     assert rendered.condition.value == available_variables["INTEGER_LIST"] == [1, 2, 3]

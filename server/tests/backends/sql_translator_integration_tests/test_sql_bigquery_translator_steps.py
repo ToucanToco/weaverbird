@@ -7,7 +7,6 @@ import pytest
 from google.cloud.bigquery import Client
 from google.oauth2 import service_account
 from pandas.api.types import is_datetime64_any_dtype
-from toucan_connectors.common import nosql_apply_parameters_to_query
 
 from tests.utils import (
     _BEERS_TABLE_COLUMNS,
@@ -18,6 +17,7 @@ from tests.utils import (
 from weaverbird.backends.pypika_translator.dialects import SQLDialect
 from weaverbird.backends.pypika_translator.translate import translate_pipeline
 from weaverbird.pipeline import PipelineWithVariables
+from weaverbird.utils.toucan_connectors import nosql_apply_parameters_to_query_with_errors
 
 credentials = service_account.Credentials.from_service_account_info(
     info=json.loads(environ["GOOGLE_BIG_QUERY_CREDENTIALS"])
@@ -51,7 +51,9 @@ def test_bigquery_translator_pipeline(
         steps = [{"name": "domain", "domain": "beers_tiny"}] + pipeline_spec["step"]["pipeline"]
         table_columns = _BEERS_TABLE_COLUMNS
 
-    pipeline = PipelineWithVariables(steps=steps).render(available_variables, nosql_apply_parameters_to_query)
+    pipeline = PipelineWithVariables(steps=steps).render(
+        available_variables, nosql_apply_parameters_to_query_with_errors
+    )
 
     query = translate_pipeline(
         sql_dialect=SQLDialect.GOOGLEBIGQUERY,
