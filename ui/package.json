@@ -63,7 +63,7 @@
     "ajv": "^8.11.0",
     "lodash": "^4.17.11",
     "luxon": "^3.4.4",
-    "mathjs": "^11.3.3"
+    "mathjs": "^14.3.0"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "^6.5.14",
