@@ -8658,9 +8658,9 @@ marked@^0.8.0:
   integrity sha512-EGwzEeCcLniFX51DhTpmTom+dSA/MG/OBUDjnWtHbEnjAH180VzUeAw+oE4+Zv+CoYBWyRlYOTR0N8SO9R1PVw==
 
 mathjs@^14.3.0:
-  version "14.3.0"
-  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-14.3.0.tgz#db606241e92db9bd7d97727885cfec66e92b8cae"
-  integrity sha512-kJbTdBp+6OgZewCkvnm8pOWyiel7VGJVEPkmU+NHPdrpqDJlxwX9Q1F2DQv8nq7FrqnvVnJaL4OBQXA/S7TnhQ==
+  version "14.3.1"
+  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-14.3.1.tgz#d55f77c763dc0687e3bd82499693667d777b7fd3"
+  integrity sha512-tgN2/TQXWVHegcl/Yw/Rkd/yhq0CagK5KnWmKUJ2/Cz/2JZoq4K2Ili9B3wZqvxaof7TVNoXbyKmA3CV3P9ZsA==
   dependencies:
     "@babel/runtime" "^7.25.7"
     complex.js "^2.2.5"
