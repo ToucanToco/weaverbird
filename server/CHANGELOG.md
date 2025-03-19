@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Mongo: the `ifthenelse` step does not fallback on a string value if the formula is invalid.
+- Mongo: the `ifthenelse` step should let the syntax error through if the formula is invalid.
 
 ### Changed
 - Missing variables during rendering now cause a `UndefinedVariableError`  to be raised instead of a `ValidationError`.
