@@ -1,0 +1,85 @@
+exclude:
+  - athena_pypika
+  - bigquery_pypika
+  - mysql_pypika
+  - postgres_pypika
+  - redshift_pypika
+  - snowflake_pypika
+step:
+  pipeline:
+    - name: ifthenelse
+      newColumn: COND
+      if:
+        column: "FAMILY OWNED"
+        value: Y
+        operator: eq
+      then: "[FAMILY OWNED]"
+      else:
+        if:
+          column: "BUSINESS OWNED"
+          value: Y
+          operator: eq
+        then: "'BUSINESS OWNED'"
+        else:
+          if:
+            column: "STATE OWNED"
+            value: Y
+            operator: eq
+          then: "'STATE OWNED'"
+          else: "'N/A'"
+
+input:
+  schema:
+    fields:
+      - name: NAME
+        type: string
+      - name: FAMILY OWNED
+        type: string
+      - name: BUSINESS OWNED
+        type: string
+      - name: STATE OWNED
+        type: string
+    pandas_version: 0.20.0
+  data:
+    - NAME: one
+      "FAMILY OWNED": Y
+      "BUSINESS OWNED": N
+      "STATE OWNED": N
+    - NAME: two
+      "FAMILY OWNED": N
+      "BUSINESS OWNED": Y
+      "STATE OWNED": N
+    - NAME: three
+      "FAMILY OWNED": N
+      "BUSINESS OWNED": N
+      "STATE OWNED": Y
+expected:
+  schema:
+    fields:
+      - name: NAME
+        type: string
+      - name: FAMILY OWNED
+        type: string
+      - name: BUSINESS OWNED
+        type: string
+      - name: STATE OWNED
+        type: string
+      - name: COND
+        type: string
+    pandas_version: 0.20.0
+  data:
+    - NAME: one
+      "FAMILY OWNED": Y
+      "BUSINESS OWNED": N
+      "STATE OWNED": N
+      COND: Y
+    - NAME: two
+      "FAMILY OWNED": N
+      "BUSINESS OWNED": Y
+      "STATE OWNED": N
+      COND: BUSINESS OWNED
+    - NAME: three
+      "FAMILY OWNED": N
+      "BUSINESS OWNED": N
+      "STATE OWNED": Y
+      COND: STATE OWNED

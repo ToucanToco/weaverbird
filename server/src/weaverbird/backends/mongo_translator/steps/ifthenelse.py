@@ -23,11 +23,7 @@ def transform_ifthenelse_step(step: IfThenElse) -> MongoStep:
             else_expr = step.else_value
 
     if_expr = build_cond_expression(step.condition)
-    try:
-        then_expr = build_mongo_formula_tree(FormulaParser(str(step.then)).parse())
-    except SyntaxError:  # step is a badly formatted string
-        return step.then
-
+    then_expr = build_mongo_formula_tree(FormulaParser(str(step.then)).parse())
     return {"$cond": {"if": if_expr, "then": _default_to_null(then_expr), "else": _default_to_null(else_expr)}}
 
 
