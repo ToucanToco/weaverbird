@@ -15,7 +15,7 @@ def test_mongo_translator_ifthenelse_error(available_variables):
             "name": "ifthenelse",
             "newColumn": "COND",
             "if": {"column": "FAMILY OWNED", "value": "Y", "operator": "eq"},
-            "then": "FAMILY OWNED",  # should be "[FAMILY OWNED]" for column or "'FAMILY OWNED'" for string
+            "then": "FAMILY OWNED",  # should be '[FAMILY OWNED]' for column or '"FAMILY OWNED"' for string
             "else": {
                 "if": {"column": "BUSINESS OWNED", "value": "Y", "operator": "eq"},
                 "then": "'BUSINESS OWNED'",

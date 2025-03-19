@@ -2,9 +2,9 @@
 
 ## Unreleased
 
-### Fixed
+### Changed
 
-- Mongo: the `ifthenelse` step should let the syntax error through if the formula is invalid.
+- Mongo: the `ifthenelse` step now raises an error rather than falling back on a string if `then` is not a valid formula
 
 ### Changed
 - Missing variables during rendering now cause a `UndefinedVariableError`  to be raised instead of a `ValidationError`.

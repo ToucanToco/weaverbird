@@ -19,14 +19,14 @@ step:
           column: "BUSINESS OWNED"
           value: Y
           operator: eq
-        then: "'BUSINESS OWNED'"
+        then: '"BUSINESS OWNED"'
         else:
           if:
             column: "STATE OWNED"
             value: Y
             operator: eq
-          then: "'STATE OWNED'"
-          else: "'N/A'"
+          then: '"STATE OWNED"'
+          else: '"N/A"'
 
 input:
   schema:
