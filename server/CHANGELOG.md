@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.52.0] - 2025-03-19
+
 ### Changed
 
 - Mongo: the `ifthenelse` step now raises an error rather than falling back on a string if `then` is not a valid formula
