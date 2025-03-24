@@ -177,17 +177,20 @@ MONTH_NUMBER_TO_NAMES = {
     "12": ["dec", "dec.", "december", "déc", "déc.", "décembre"],
 }
 
+
 MONTH_REPLACEMENT_STEP: MongoStep = {
     "$addFields": {
-        "_vqbTempMonth$switch": {
-            "branches": [
-                {
-                    "case": {"$in": month_names},
-                    "then": month_number,
-                }
-                for month_number, month_names in MONTH_NUMBER_TO_NAMES.items()
-            ],
-            "default": None,
+        "_vqbTempMonth": {
+            "$switch": {
+                "branches": [
+                    {
+                        "case": {"$in": ["$_vqbTempMonth", month_names]},
+                        "then": month_number,
+                    }
+                    for month_number, month_names in MONTH_NUMBER_TO_NAMES.items()
+                ],
+                "default": None,
+            }
         }
     }
 }

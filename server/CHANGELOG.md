@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Mongo: the `todate` step now accepts `%B` and `%b` to format dates from text.
+
 ## [0.52.0] - 2025-03-19
 
 ### Changed
