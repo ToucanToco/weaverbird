@@ -54,7 +54,12 @@ export default class VariableListOption extends Vue {
   }
 
   get readableValue(): string {
-    return this.showOnlyLabel ? '' : JSON.stringify(this.formattedValue);
+    if (this.showOnlyLabel) {
+      return '';
+    } else {
+      const jsonValue = JSON.stringify(this.formattedValue);
+      return jsonValue && jsonValue.length > 100 ? `${jsonValue.substring(0, 100)}...` : jsonValue;
+    }
   }
 
   get selected(): boolean {

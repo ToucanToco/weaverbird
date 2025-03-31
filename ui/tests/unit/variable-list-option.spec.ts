@@ -114,6 +114,30 @@ describe('Variable List option', () => {
   describe('tooltip', () => {
     [
       { type: 'array', value: [1, 2], attendedValue: '[1,2]' },
+      {
+        type: 'array',
+        value: [
+          'Lorem',
+          'ipsum',
+          'dolor',
+          'sit',
+          'amet',
+          'consectetur',
+          'adipiscing',
+          'elit',
+          'sed',
+          'do',
+          'eiusmod',
+          'tempor',
+          'incididunt',
+          'ut',
+          'labore',
+          'et',
+          'dolore',
+        ],
+        attendedValue:
+          '["Lorem","ipsum","dolor","sit","amet","consectetur","adipiscing","elit","sed","do","eiusmod","tempor...',
+      },
       { type: 'empty array', value: [], attendedValue: '[]' },
       { type: 'number', value: 1, attendedValue: '1' },
       { type: 'string', value: '1', attendedValue: '"1"' },
