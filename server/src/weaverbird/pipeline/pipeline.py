@@ -186,6 +186,9 @@ class Pipeline(BaseModel):
         return self.__class__(steps=resolved_steps)
 
 
+Pipeline.model_rebuild()
+
+
 PipelineStepWithVariables = Annotated[
     AbsoluteValueStepWithVariable
     | AddMissingDatesStepWithVariables
@@ -468,3 +471,9 @@ class ReferenceUnresolved(Exception):
     """
     Raised when a mandatory reference is not resolved
     """
+
+
+AppendStep.model_rebuild()
+AppendStepWithVariable.model_rebuild()
+JoinStep.model_rebuild()
+JoinStepWithVariable.model_rebuild()
