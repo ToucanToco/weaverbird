@@ -113,25 +113,49 @@ describe('Variable List option', () => {
 
   describe('tooltip', () => {
     [
-      { type: 'array', value: [1, 2], attendedValue: '[1,2]' },
-      { type: 'empty array', value: [], attendedValue: '[]' },
-      { type: 'number', value: 1, attendedValue: '1' },
-      { type: 'string', value: '1', attendedValue: '"1"' },
-      { type: 'undefined', value: undefined, attendedValue: undefined },
+      { type: 'array', value: [1, 2], expectedValue: '[1,2]' },
+      {
+        type: 'array',
+        value: [
+          'Lorem',
+          'ipsum',
+          'dolor',
+          'sit',
+          'amet',
+          'consectetur',
+          'adipiscing',
+          'elit',
+          'sed',
+          'do',
+          'eiusmod',
+          'tempor',
+          'incididunt',
+          'ut',
+          'labore',
+          'et',
+          'dolore',
+        ],
+        expectedValue:
+          '["Lorem","ipsum","dolor","sit","amet","consectetur","adipiscing","elit","sed","do","eiusmod","tempor...',
+      },
+      { type: 'empty array', value: [], expectedValue: '[]' },
+      { type: 'number', value: 1, expectedValue: '1' },
+      { type: 'string', value: '1', expectedValue: '"1"' },
+      { type: 'undefined', value: undefined, expectedValue: undefined },
       {
         type: 'date',
         value: new Date(1623398957013),
-        attendedValue: `"${new Date(1623398957013).toString()}"`,
+        expectedValue: `"${new Date(1623398957013).toString()}"`,
       },
     ].forEach(
-      ({ type, value, attendedValue }: { type: string; value: any; attendedValue: any }) => {
+      ({ type, value, expectedValue }: { type: string; value: any; expectedValue: any }) => {
         describe(`with ${type} value`, () => {
           beforeEach(async () => {
             wrapper.setProps({ value });
             await wrapper.vm.$nextTick();
           });
           it('should display readable value in tooltip', () => {
-            expect((wrapper.vm as any).readableValue).toStrictEqual(attendedValue);
+            expect((wrapper.vm as any).readableValue).toStrictEqual(expectedValue);
           });
         });
       },

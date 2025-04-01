@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+ - Variables: value tooltip shows a limited length of it (100 characters maximum).
+
 ## [0.115.6] - 2025-02-28
 
 ### Fixed
