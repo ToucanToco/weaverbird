@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## [0.53.1] - 2025-04-01
+
+This versions adresses publishing issues.
+
 ## [0.53.0] - 2025-04-01
 
 ### Added
