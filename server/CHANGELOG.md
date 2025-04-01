@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [0.53.0] - 2025-04-01
+
+### Added
+
+- Pydantic 2.11 is now supported
+
 ## [0.52.1] - 2025-03-24
 
 ### Fixed
