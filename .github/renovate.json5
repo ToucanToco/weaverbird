@@ -1,0 +1,42 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "schedule:earlyMondays"
+  ],
+  "packageRules": [
+    {
+      "matchDepTypes": ["dependency-groups"],
+      "groupName": "python dev dependencies",
+    },
+    {
+      "matchDepTypes": ["project.dependencies"],
+      "matchUpdateTypes": ["patch", "minor"],
+      "groupName": "python dependencies (non-major)",
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "groupName": "js dev dependencies",
+    },
+    {
+      "matchDepTypes": ["dependencies"],
+      "matchUpdateTypes": ["patch", "minor"],
+      "groupName": "js dependencies (non-major)",
+    },
+    {
+      // We pin specific versions in our docker-compose files because we want to match the infra versions
+      "matchManagers": ["docker-compose"],
+      "enabled": false
+    },
+    {
+      "matchPackageNames": ["*"],
+      "semanticCommitType": "chore"
+    }
+  ],
+  "rebaseWhen": "conflicted",
+  // Periodic update for uv.lock and yarn.lock
+  "lockFileMaintenance": {
+    "enabled": true,
+  },
+  "prHourlyLimit": 5
+}
