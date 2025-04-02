@@ -78,4 +78,4 @@ const FA_ICONS = {
 
 export const FA_ICONS_PACK = Object.values(FA_ICONS);
 export const FA_ICONS_NAMES = Object.keys(FA_ICONS);
-export type FAIconName = typeof FA_ICONS_NAMES[number];
+export type FAIconName = (typeof FA_ICONS_NAMES)[number];
