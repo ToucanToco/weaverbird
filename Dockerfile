@@ -19,7 +19,7 @@ COPY playground/dist /weaverbird/playground/dist
 RUN yarn build
 
 
-FROM python:3.11 as server
+FROM python:3.13 as server
 
 WORKDIR /weaverbird/server
 
