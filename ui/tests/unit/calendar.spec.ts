@@ -2,6 +2,7 @@ import type { Wrapper } from '@vue/test-utils';
 import { shallowMount } from '@vue/test-utils';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
+// eslint-disable-next-line import/no-unresolved
 import DatePicker from 'v-calendar/lib/components/date-picker.umd';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
