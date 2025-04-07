@@ -5,7 +5,7 @@
 # $ docker run -p 5000:5000 --rm -d weaverbird-playground
 # and then access http://localhost:5000/?backend=pandas
 
-FROM node:18 AS ui-builder
+FROM node:22 AS ui-builder
 
 WORKDIR /weaverbird/ui
 
