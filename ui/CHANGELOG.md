@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.115.7] - 2025-04-09
+
 ### Fixed
 
  - Variables: value tooltip shows a limited length of it (100 characters maximum).
@@ -1635,6 +1637,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ### Added
 
+[0.115.7]: https://github.com/ToucanToco/weaverbird/compare/v0.115.6...v0.115.7
 [0.115.6]: https://github.com/ToucanToco/weaverbird/compare/v0.115.5...v0.115.6
 [0.115.5]: https://github.com/ToucanToco/weaverbird/compare/v0.115.4...v0.115.5
 [0.115.4]: https://github.com/ToucanToco/weaverbird/compare/v0.115.3...v0.115.4
