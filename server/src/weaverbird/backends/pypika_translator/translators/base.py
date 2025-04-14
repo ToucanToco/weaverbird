@@ -572,7 +572,7 @@ class SQLTranslator(ABC):
                     if new_column_name not in agg_col_names:
                         column_field = prev_step_table[agg_column_name]
                         # Count("column") ignores NULL values, whereas COUNT(*) takes them into account
-                        if agg_fn is functions.Count:
+                        if step.count_nulls and agg_fn is functions.Count:
                             new_agg_col = agg_fn("*").as_(new_column_name)
                         else:
                             new_agg_col = agg_fn(column_field).as_(new_column_name)

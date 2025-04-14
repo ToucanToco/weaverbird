@@ -18,6 +18,17 @@ _CASES: list[tuple[list[dict | PipelineStep], str]] = [
                 aggregations=[{"aggfunction": "count", "new_columns": ["beer_count"], "columns": ["name"]}],
             ),
         ],
+        'WITH __step_0_dummy__ AS (SELECT "price_per_l","alcohol_degree","name","cost","beer_kind","volume_ml","brewing_date","nullable_name" FROM "beers_tiny") SELECT "beer_kind",COUNT("name") "beer_count" FROM "__step_0_dummy__" GROUP BY "beer_kind" ORDER BY "beer_kind" ASC NULLS LAST',
+    ),
+    (
+        [
+            steps.DomainStep(domain="beers_tiny"),
+            steps.AggregateStep(
+                on=["beer_kind"],
+                aggregations=[{"aggfunction": "count", "new_columns": ["beer_count"], "columns": ["name"]}],
+                count_nulls=True,
+            ),
+        ],
         'WITH __step_0_dummy__ AS (SELECT "price_per_l","alcohol_degree","name","cost","beer_kind","volume_ml","brewing_date","nullable_name" FROM "beers_tiny") SELECT "beer_kind",COUNT(*) "beer_count" FROM "__step_0_dummy__" GROUP BY "beer_kind" ORDER BY "beer_kind" ASC NULLS LAST',
     ),
     (
@@ -27,6 +38,18 @@ _CASES: list[tuple[list[dict | PipelineStep], str]] = [
                 on=["beer_kind"],
                 aggregations=[{"aggfunction": "count", "new_columns": ["beer_count"], "columns": ["name"]}],
                 keep_original_granularity=True,
+            ),
+        ],
+        'WITH __step_0_dummy__ AS (SELECT "price_per_l","alcohol_degree","name","cost","beer_kind","volume_ml","brewing_date","nullable_name" FROM "beers_tiny") SELECT "__step_0_dummy__"."price_per_l","__step_0_dummy__"."alcohol_degree","__step_0_dummy__"."name","__step_0_dummy__"."cost","__step_0_dummy__"."beer_kind","__step_0_dummy__"."volume_ml","__step_0_dummy__"."brewing_date","__step_0_dummy__"."nullable_name","sq0"."beer_count" FROM "__step_0_dummy__" LEFT JOIN (WITH __step_0_dummy__ AS (SELECT "price_per_l","alcohol_degree","name","cost","beer_kind","volume_ml","brewing_date","nullable_name" FROM "beers_tiny") SELECT "beer_kind",COUNT("name") "beer_count" FROM "__step_0_dummy__" GROUP BY "beer_kind") "sq0" ON "__step_0_dummy__"."beer_kind"="sq0"."beer_kind" ORDER BY "__step_0_dummy__"."beer_kind" ASC NULLS LAST',
+    ),
+    (
+        [
+            steps.DomainStep(domain="beers_tiny"),
+            steps.AggregateStep(
+                on=["beer_kind"],
+                aggregations=[{"aggfunction": "count", "new_columns": ["beer_count"], "columns": ["name"]}],
+                keep_original_granularity=True,
+                count_nulls=True,
             ),
         ],
         'WITH __step_0_dummy__ AS (SELECT "price_per_l","alcohol_degree","name","cost","beer_kind","volume_ml","brewing_date","nullable_name" FROM "beers_tiny") SELECT "__step_0_dummy__"."price_per_l","__step_0_dummy__"."alcohol_degree","__step_0_dummy__"."name","__step_0_dummy__"."cost","__step_0_dummy__"."beer_kind","__step_0_dummy__"."volume_ml","__step_0_dummy__"."brewing_date","__step_0_dummy__"."nullable_name","sq0"."beer_count" FROM "__step_0_dummy__" LEFT JOIN (WITH __step_0_dummy__ AS (SELECT "price_per_l","alcohol_degree","name","cost","beer_kind","volume_ml","brewing_date","nullable_name" FROM "beers_tiny") SELECT "beer_kind",COUNT(*) "beer_count" FROM "__step_0_dummy__" GROUP BY "beer_kind") "sq0" ON "__step_0_dummy__"."beer_kind"="sq0"."beer_kind" ORDER BY "__step_0_dummy__"."beer_kind" ASC NULLS LAST',
@@ -44,6 +67,25 @@ _CASES: list[tuple[list[dict | PipelineStep], str]] = [
                         "columns": ["price_per_l"],
                     },
                 ],
+            ),
+            steps.AbsoluteValueStep(column="avg_price_per_l", new_column="avg_price_per_l_abs"),
+        ],
+        'WITH __step_0_dummy__ AS (SELECT "price_per_l","alcohol_degree","name","cost","beer_kind","volume_ml","brewing_date","nullable_name" FROM "beers_tiny") ,__step_1_dummy__ AS (SELECT "beer_kind",COUNT("name") "beer_count",AVG("price_per_l") "avg_price_per_l" FROM "__step_0_dummy__" GROUP BY "beer_kind" ORDER BY "beer_kind" ASC NULLS LAST) SELECT "beer_kind","beer_count","avg_price_per_l",ABS("avg_price_per_l") "avg_price_per_l_abs" FROM "__step_1_dummy__"',
+    ),
+    (
+        [
+            steps.DomainStep(domain="beers_tiny"),
+            steps.AggregateStep(
+                on=["beer_kind"],
+                aggregations=[
+                    {"aggfunction": "count", "new_columns": ["beer_count"], "columns": ["name"]},
+                    {
+                        "aggfunction": "avg",
+                        "new_columns": ["avg_price_per_l"],
+                        "columns": ["price_per_l"],
+                    },
+                ],
+                count_nulls=True,
             ),
             steps.AbsoluteValueStep(column="avg_price_per_l", new_column="avg_price_per_l_abs"),
         ],
