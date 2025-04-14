@@ -3,7 +3,7 @@ authors = [{ name = "Toucan Toco", email = "dev@toucantoco.com" }]
 license = "BSD-3-Clause"
 requires-python = "<3.14,>=3.11"
 name = "weaverbird"
-version = "0.53.1"
+version = "0.54.0"
 description = "A visual data pipeline builder with various backends"
 keywords = [
     "builder",

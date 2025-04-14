@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.54.0] - 2025-04-14
+
 ### Changed
 
 A new `countNulls` boolean field was added to the `aggregate` step. It indicates wether null values should be counted or
