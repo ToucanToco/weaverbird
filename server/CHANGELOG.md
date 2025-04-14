@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Changed
+
+A new `countNulls` boolean field was added to the `aggregate` step. It indicates wether null values should be counted or
+not in `count` aggregations. A value of `false` will default to the pre-v0.48.7 behaviour (ignoring nulls), whereas `true`
+will induce the post-v0.48.7 behaviour, i.e. considering nulls as regular values
+
 ## [0.53.1] - 2025-04-01
 
 This versions adresses publishing issues.

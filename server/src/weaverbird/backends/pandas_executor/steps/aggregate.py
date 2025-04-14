@@ -17,19 +17,20 @@ AggregateFn = Literal[
 ]
 
 
-def _count(series: Series) -> int:
+def _count_with_nulls(series: Series) -> int:
     return series.size
 
 
 functions_aliases = {
     "avg": "mean",
-    "count": _count,
     "count distinct": "nunique",
     "count distinct including empty": len,
 }
 
 
-def get_aggregate_fn(agg_function: str) -> Any:
+def get_aggregate_fn(agg_function: str, count_nulls: bool) -> Any:
+    if agg_function == "count":
+        return _count_with_nulls if count_nulls else "count"
     if agg_function in functions_aliases:
         return functions_aliases[agg_function]
     return agg_function
@@ -57,7 +58,9 @@ def execute_aggregate(
     else:
         for aggregation in step.aggregations:
             for col, new_col in zip(aggregation.columns, aggregation.new_columns, strict=True):
-                agg_serie = grouped_by_df[col].agg(get_aggregate_fn(aggregation.agg_function)).rename(new_col)
+                agg_serie = (
+                    grouped_by_df[col].agg(get_aggregate_fn(aggregation.agg_function, step.count_nulls)).rename(new_col)
+                )
                 aggregated_cols.append(agg_serie)
 
         df_result = concat(aggregated_cols, axis=1).reset_index()

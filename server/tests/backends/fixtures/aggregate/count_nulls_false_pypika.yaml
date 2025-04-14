@@ -4,15 +4,14 @@ exclude:
   - snowflake
 step:
   pipeline:
-  - name: aggregate
-    aggregations:
+  - aggregations:
     - aggfunction: count
       columns:
       - nullable_name
       newcolumns:
       - nullable_name_count
     keepOriginalGranularity: false
-    countNulls: true
+    name: aggregate
     'on':
     - nullable_name
 expected:
@@ -32,7 +31,7 @@ expected:
     - nullable_name: Weihenstephan Hefe Weizen Alcoholarm
       nullable_name_count: 1
     - nullable_name: null
-      nullable_name_count: 3
+      nullable_name_count: 0
   schema:
     fields:
     - name: nullable_name

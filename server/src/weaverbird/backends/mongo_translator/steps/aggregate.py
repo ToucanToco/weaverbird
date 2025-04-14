@@ -20,11 +20,13 @@ def translate_aggregate(step: AggregateStep) -> list[MongoStep]:
         # column, the aggregation result will be stored in a new __id column
         new_cols = [col if col != _ID_COLUMN else _NEW_ID_COLUMN for col in agg_f_step.new_columns]
 
-        # There is no `$count` operator in Mongo, we have to `$sum` 1s to get
-        # an equivalent result
         if agg_f_step.agg_function == "count":
-            for i in range(len(cols)):
-                group[new_cols[i]] = {"$sum": 1}
+            for i, col in enumerate(cols):
+                if step.count_nulls:
+                    group[new_cols[i]] = {"$count": {}}
+                else:
+                    group[new_cols[i]] = {"$sum": {"$cond": {"if": {"$eq": [f"${col}", None]}, "then": 0, "else": 1}}}
+
         elif agg_f_step.agg_function == "count distinct":
             for i in range(len(cols)):
                 group[new_cols[i]] = {"$addToSet": f"${cols[i]}"}

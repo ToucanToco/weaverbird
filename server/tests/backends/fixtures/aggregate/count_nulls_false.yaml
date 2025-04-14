@@ -7,15 +7,14 @@ exclude:
 - snowflake_pypika
 step:
   pipeline:
-  - name: aggregate
-    aggregations:
+  - aggregations:
     - aggfunction: count
       columns:
       - VALUE
       newcolumns:
       - VALUE_COUNT
     keepOriginalGranularity: false
-    countNulls: true
+    name: aggregate
     'on':
     - VALUE
 input:
@@ -38,7 +37,7 @@ expected:
   - VALUE: two
     VALUE_COUNT: 1
   - VALUE: null
-    VALUE_COUNT: 2
+    VALUE_COUNT: 0
   schema:
     fields:
     - name: VALUE

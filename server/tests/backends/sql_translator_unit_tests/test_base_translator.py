@@ -198,6 +198,34 @@ def test_aggregate(base_translator: BaseTranslator, agg_type: str, default_step_
 
     agg_func = base_translator._get_aggregate_function(agg_type)
     field = Field(agg_field)
+    agged = agg_func(field)
+    expected_query = (
+        Query.from_(previous_step)
+        .groupby(field)
+        .orderby(agg_field, order=Order.ASC_NULLS_LAST)
+        .select(field, agged.as_(new_column))
+    )
+
+    assert ctx.selectable.get_sql() == expected_query.get_sql()
+
+
+@pytest.mark.parametrize("agg_type", ["avg", "count", "count distinct", "max", "min", "sum"])
+def test_aggregate_with_count_nulls(
+    base_translator: BaseTranslator, agg_type: str, default_step_kwargs: dict[str, Any]
+):
+    new_column = "avgAge"
+    previous_step = "previous_with"
+    agg_field = "age"
+
+    step = steps.AggregateStep(
+        on=[agg_field],
+        aggregations=[steps.Aggregation(new_columns=[new_column], agg_function=agg_type, columns=[agg_field])],
+        count_nulls=True,
+    )
+    ctx = base_translator.aggregate(step=step, columns=["*"], **default_step_kwargs)
+
+    agg_func = base_translator._get_aggregate_function(agg_type)
+    field = Field(agg_field)
     agged = agg_func(field) if agg_func is not functions.Count else functions.Count("*")
     expected_query = (
         Query.from_(previous_step)
@@ -222,6 +250,40 @@ def test_aggregate_with_original_granularity(
         on=[agg_field],
         aggregations=[steps.Aggregation(new_columns=[new_column], agg_function=agg_type, columns=[agg_field])],
         keepOriginalGranularity=True,
+    )
+    ctx = base_translator.aggregate(step=step, columns=original_select, **default_step_kwargs)
+
+    agg_func = base_translator._get_aggregate_function(agg_type)
+    field = Field(agg_field)
+    agged = agg_func(field)
+    agg_query = Query.from_(previous_step).groupby(field).select(field, agged.as_(new_column))
+
+    expected_query = (
+        Query.from_(previous_step)
+        .select(*original_select)
+        .left_join(agg_query)
+        .on_field(agg_field)
+        .select(*original_select)
+        .orderby(agg_field, order=Order.ASC_NULLS_LAST)
+    )
+
+    assert ctx.selectable.get_sql() == expected_query.get_sql()
+
+
+@pytest.mark.parametrize("agg_type", ["avg", "count", "count distinct", "max", "min", "sum"])
+def test_aggregate_with_original_granularity_and_count_nulls(
+    base_translator: BaseTranslator, agg_type: str, default_step_kwargs: dict[str, Any]
+):
+    original_select = ["*"]
+    new_column = "avgAge"
+    previous_step = "previous_with"
+    agg_field = "age"
+
+    step = steps.AggregateStep(
+        on=[agg_field],
+        aggregations=[steps.Aggregation(new_columns=[new_column], agg_function=agg_type, columns=[agg_field])],
+        keepOriginalGranularity=True,
+        count_nulls=True,
     )
     ctx = base_translator.aggregate(step=step, columns=original_select, **default_step_kwargs)
 

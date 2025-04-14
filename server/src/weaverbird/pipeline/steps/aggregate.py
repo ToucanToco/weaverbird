@@ -47,6 +47,7 @@ class AggregateStep(BaseStep):
     on: list[ColumnName] = []
     aggregations: Sequence[Aggregation]
     keep_original_granularity: bool | None = False
+    count_nulls: bool = False
 
 
 class AggregationWithVariables(Aggregation):
