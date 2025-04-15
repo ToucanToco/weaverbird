@@ -31,7 +31,7 @@ const schema = {
     },
     countNulls: {
       type: 'boolean',
-      description: 'If true, counts null values as regular values',
+      description: 'If true, counts null values like regular values',
     },
   },
   required: ['name', 'on', 'aggregations'],

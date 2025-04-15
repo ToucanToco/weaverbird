@@ -44,7 +44,7 @@
     />
     <CheckboxWidget
       class="countNullsCheckbox"
-      label="If true, counts null values as regular values"
+      label="If true, counts null values like regular values"
       v-model="editedStep.countNulls"
     />
     <StepFormButtonbar />
