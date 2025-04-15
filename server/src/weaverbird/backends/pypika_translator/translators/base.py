@@ -1002,6 +1002,8 @@ class SQLTranslator(ABC):
             return cls._date_trunc("quarter", target_column)
         elif lowered_date_unit == "firstdayofisoweek":
             return cls._date_trunc("week", target_column)
+        elif lowered_date_unit == "currentday":
+            return cls._date_trunc("day", target_column)
         elif lowered_date_unit == "previousday":
             return cls._add_date(target_column=target_column, unit="days", duration=-1)
         elif lowered_date_unit == "previousyear":

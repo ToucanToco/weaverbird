@@ -25,6 +25,7 @@ export type AdvancedDateInfo =
   | 'firstDayOfWeek'
   | 'firstDayOfQuarter'
   | 'firstDayOfIsoWeek'
+  | 'currentDay'
   | 'previousDay'
   | 'firstDayOfPreviousYear'
   | 'firstDayOfPreviousMonth'

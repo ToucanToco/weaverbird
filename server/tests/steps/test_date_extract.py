@@ -46,6 +46,7 @@ def test_date_extract_no_uint32(sample_df: DataFrame):
             "firstDayOfWeek",
             "firstDayOfQuarter",
             "firstDayOfIsoWeek",
+            "currentDay",
             "previousDay",
             "firstDayOfPreviousYear",
             "firstDayOfPreviousMonth",
@@ -78,6 +79,7 @@ def test_date_extract_no_uint32(sample_df: DataFrame):
             "date_firstDayOfWeek",
             "date_firstDayOfQuarter",
             "date_firstDayOfIsoWeek",
+            "date_currentDay",
             "date_previousDay",
             "date_firstDayOfPreviousYear",
             "date_firstDayOfPreviousMonth",
@@ -161,6 +163,17 @@ def test_date_extract_no_uint32(sample_df: DataFrame):
                     "2019-04-08T00:00:00.000Z",
                     "2017-01-02T00:00:00.000Z",
                     "2015-12-28T00:00:00.000Z",
+                    None,
+                ]
+            ),
+            "date_currentDay": to_datetime(
+                [
+                    "2021-03-29T00:00:00.000Z",
+                    "2020-12-13T00:00:00.000Z",
+                    "2020-07-29T00:00:00.000Z",
+                    "2019-04-09T00:00:00.000Z",
+                    "2017-01-02T00:00:00.000Z",
+                    "2016-01-01T00:00:00.000Z",
                     None,
                 ]
             ),
