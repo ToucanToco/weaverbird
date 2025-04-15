@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Aggregate step: added support for the new `countNulls` parameter
+
 ## [0.115.7] - 2025-04-09
 
 ### Fixed
