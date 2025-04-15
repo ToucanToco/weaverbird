@@ -982,46 +982,18 @@ information can be extracted:
 - `month`: extract 'month' from date,
 - `day`: extract 'day of month' from date,
 - `week'`: extract 'week number' (ranging from 0 to 53) from date,
-- `quarter`: extract 'quarter number' from date (1 for Jan-Feb-Mar)
-- `dayOfWeek`: extract 'day of week' (ranging from 1 for Sunday to 7 for
-  Staurday) from date,
-- `dayOfYear`: extract 'day of year' from date,
-- `isoYear`: extract 'year number' in ISO 8601 format (ranging from 1 to 53)
-  from date.
 - `isoWeek`: extract 'week number' in ISO 8601 format (ranging from 1 to 53)
   from date.
-- `isoDayOfWeek`: extract 'day of week' in ISO 8601 format (ranging from 1 for
-  Monday to 7 for Sunday) from date,
-- `firstDayOfYear`: calendar date corresponding to the first day (1st of January) of the year ,
-- `firstDayOfMonth`: calendar date corresponding to the first day of the month,
-- `firstDayOfWeek`: calendar date corresponding to the first day of the week,
-- `firstDayOfQuarter`: calendar date corresponding to the first day of the quarter,
-- `firstDayOfIsoWeek`: calendar date corresponding to the first day of the week in ISO 8601 format,
-- `previousDay`: calendar date of the target date,
-- `previousDay`: calendar date one day before the target date,
-- `firstDayOfPreviousYear`: calendar date corresponding to the first day (1st of January) of the previous year,
-- `firstDayOfPreviousMonth`: calendar date corresponding to the first day of the previous month,
-- `firstDayOfPreviousWeek`: calendar date corresponding to the first day of the previous week,
-- `firstDayOfPreviousQuarter`: calendar date corresponding to the first day of the previous quarter,
-- `firstDayOfPreviousISOWeek`: calendar date corresponding to the first day of the previous ISO week,
-- `previousYear`: extract previous 'year number' from date
-- `previousMonth`: extract previous 'month number' from date
-- `previousWeek`: extract previous 'week number' from date
-- `previousQuarter`: extract previous 'quarter number' from date
-- `previousISOWeek`: extract previous 'week number' in ISO 8601 format (ranging from 1 for Monday to 7 for Sunday) from date
-- `hour`: extract 'hour' from date,
-- `minutes`: extract 'minutes' from date,
-- `seconds`: extract 'seconds' from date,
-- `milliseconds`: extract 'milliseconds' from date,
+- `quarter`: extract 'quarter number' from date (1 for Jan-Feb-Mar)
 
 Here's an example of such a step:
 
 ```javascript
 {
-  name: 'dateextract',
+  name: 'dategranularity',
   column: 'date',
-  dateInfo: ['year', 'month', 'day'],
-  newColumns: ['date_year', 'date_month', 'date_day'],
+  granularity: ['year', 'month', 'day'],
+  newColumn: 'optional_new_name',
 }
 ```
 
@@ -1032,22 +1004,6 @@ Here's an example of such a step:
 - Mongo 4.0
 - Mongo 3.6
 - Pandas (python)
-
-**Deprecation note:**
-
-The `operation` and `new_column_name` parameters are deprecated and are
-supported for retrocompatibility purposes only.
-
-An old-fashioned step looks like this:
-
-```javascript
-{
-  name: 'dateextract',
-  column: 'date',
-  operation: 'day',
-  new_column_name: 'date_day',
-}
-```
 
 #### Example
 
@@ -1083,6 +1039,71 @@ An old-fashioned step looks like this:
 | 2019-09-30T00:00:00.000Z | 2020      | 10         | 30       |
 | 2019-09-15T00:00:00.000Z | 2020      | 10         | 15       |
 | 2019-09-01T00:00:00.000Z | 2020      | 10         | 1        |
+
+### `dategranularity` step
+
+Extract date information (eg. _day_, _week_, _year_ etc.) in a column intended for aggregation.
+The following granularities are supported:
+
+- `year`: calendar date corresponding to the first day (1st of January) of the year
+- `quarter`: calendar date corresponding to the first day of the quarter
+- `month`: calendar date corresponding to the first day of the month
+- `week`: calendar date corresponding to the first day of the week (sunday)
+- `isoWeek`: calendar date corresponding to the first day of the week (monday)
+- `day`: calendar date corresponding to the first hour of the day
+
+Here's an example of such a step:
+
+```javascript
+{
+  name: 'dategranularity',
+  column: 'date',
+  granularity: 'year',
+  newColumn: 'do_the_aggregate_on_this'
+}
+```
+
+**This step is supported by the following backends:*
+
+- Mongo 5.0
+- Mongo 4.2
+- Mongo 4.0
+- Mongo 3.6
+- Pandas (python)
+
+#### Example
+
+**Input dataset:**
+
+| Date                     |
+| ------------------------ |
+| 2019-10-30T00:00:00.000Z |
+| 2019-10-15T00:00:00.000Z |
+| 2019-10-01T00:00:00.000Z |
+| 2019-09-30T05:11:31.000Z |
+| 2019-09-15T00:00:00.000Z |
+| 2019-09-01T00:00:00.000Z |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'dateextract',
+  column: 'Date',
+  granularity: 'month'
+}
+```
+
+**Output dataset:**
+
+| Date                     |
+| ------------------------ |
+| 2019-10-01T00:00:00.000Z |
+| 2019-10-01T00:00:00.000Z |
+| 2019-10-01T00:00:00.000Z |
+| 2019-09-01T00:00:00.000Z |
+| 2019-09-01T00:00:00.000Z |
+| 2019-09-01T00:00:00.000Z |
 
 ### `delete` step
 

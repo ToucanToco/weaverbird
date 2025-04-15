@@ -1,53 +1,53 @@
+from weaverbird.backends.pandas_executor.steps.absolutevalue import execute_absolutevalue
+from weaverbird.backends.pandas_executor.steps.addmissingdates import execute_addmissingdates
+from weaverbird.backends.pandas_executor.steps.aggregate import execute_aggregate
+from weaverbird.backends.pandas_executor.steps.append import execute_append
+from weaverbird.backends.pandas_executor.steps.argmax import execute_argmax
+from weaverbird.backends.pandas_executor.steps.argmin import execute_argmin
+from weaverbird.backends.pandas_executor.steps.comparetext import execute_comparetext
+from weaverbird.backends.pandas_executor.steps.concatenate import execute_concatenate
+from weaverbird.backends.pandas_executor.steps.convert import execute_convert
+from weaverbird.backends.pandas_executor.steps.cumsum import execute_cumsum
+from weaverbird.backends.pandas_executor.steps.date_extract import execute_date_extract
+from weaverbird.backends.pandas_executor.steps.date_granularity import execute_date_granularity
+from weaverbird.backends.pandas_executor.steps.delete import execute_delete
+from weaverbird.backends.pandas_executor.steps.dissolve import execute_dissolve
+from weaverbird.backends.pandas_executor.steps.domain import execute_domain
+from weaverbird.backends.pandas_executor.steps.duplicate import execute_duplicate
+from weaverbird.backends.pandas_executor.steps.duration import execute_duration
+from weaverbird.backends.pandas_executor.steps.evolution import execute_evolution
+from weaverbird.backends.pandas_executor.steps.fillna import execute_fillna
+from weaverbird.backends.pandas_executor.steps.filter import execute_filter
+from weaverbird.backends.pandas_executor.steps.formula import execute_formula
+from weaverbird.backends.pandas_executor.steps.fromdate import execute_fromdate
+from weaverbird.backends.pandas_executor.steps.hierarchy import execute_hierarchy
+from weaverbird.backends.pandas_executor.steps.ifthenelse import execute_ifthenelse
+from weaverbird.backends.pandas_executor.steps.join import execute_join
+from weaverbird.backends.pandas_executor.steps.lowercase import execute_lowercase
+from weaverbird.backends.pandas_executor.steps.moving_average import execute_moving_average
+from weaverbird.backends.pandas_executor.steps.percentage import execute_percentage
+from weaverbird.backends.pandas_executor.steps.pivot import execute_pivot
+from weaverbird.backends.pandas_executor.steps.rank import execute_rank
+from weaverbird.backends.pandas_executor.steps.rename import execute_rename
+from weaverbird.backends.pandas_executor.steps.replace import execute_replace
 from weaverbird.backends.pandas_executor.steps.replacetext import execute_replacetext
-
-from ..types import StepExecutor
-from .absolutevalue import execute_absolutevalue
-from .addmissingdates import execute_addmissingdates
-from .aggregate import execute_aggregate
-from .append import execute_append
-from .argmax import execute_argmax
-from .argmin import execute_argmin
-from .comparetext import execute_comparetext
-from .concatenate import execute_concatenate
-from .convert import execute_convert
-from .cumsum import execute_cumsum
-from .date_extract import execute_date_extract
-from .delete import execute_delete
-from .dissolve import execute_dissolve
-from .domain import execute_domain
-from .duplicate import execute_duplicate
-from .duration import execute_duration
-from .evolution import execute_evolution
-from .fillna import execute_fillna
-from .filter import execute_filter
-from .formula import execute_formula
-from .fromdate import execute_fromdate
-from .hierarchy import execute_hierarchy
-from .ifthenelse import execute_ifthenelse
-from .join import execute_join
-from .lowercase import execute_lowercase
-from .moving_average import execute_moving_average
-from .percentage import execute_percentage
-from .pivot import execute_pivot
-from .rank import execute_rank
-from .rename import execute_rename
-from .replace import execute_replace
-from .rollup import execute_rollup
-from .select import execute_select
-from .simplify import execute_simplify
-from .sort import execute_sort
-from .split import execute_split
-from .statistics import execute_statistics
-from .substring import execute_substring
-from .text import execute_text
-from .todate import execute_todate
-from .top import execute_top
-from .totals import execute_totals
-from .trim import execute_trim
-from .uniquegroups import execute_uniquegroups
-from .unpivot import execute_unpivot
-from .uppercase import execute_uppercase
-from .waterfall import execute_waterfall
+from weaverbird.backends.pandas_executor.steps.rollup import execute_rollup
+from weaverbird.backends.pandas_executor.steps.select import execute_select
+from weaverbird.backends.pandas_executor.steps.simplify import execute_simplify
+from weaverbird.backends.pandas_executor.steps.sort import execute_sort
+from weaverbird.backends.pandas_executor.steps.split import execute_split
+from weaverbird.backends.pandas_executor.steps.statistics import execute_statistics
+from weaverbird.backends.pandas_executor.steps.substring import execute_substring
+from weaverbird.backends.pandas_executor.steps.text import execute_text
+from weaverbird.backends.pandas_executor.steps.todate import execute_todate
+from weaverbird.backends.pandas_executor.steps.top import execute_top
+from weaverbird.backends.pandas_executor.steps.totals import execute_totals
+from weaverbird.backends.pandas_executor.steps.trim import execute_trim
+from weaverbird.backends.pandas_executor.steps.uniquegroups import execute_uniquegroups
+from weaverbird.backends.pandas_executor.steps.unpivot import execute_unpivot
+from weaverbird.backends.pandas_executor.steps.uppercase import execute_uppercase
+from weaverbird.backends.pandas_executor.steps.waterfall import execute_waterfall
+from weaverbird.backends.pandas_executor.types import StepExecutor
 
 steps_executors: dict[str, StepExecutor] = {
     "absolutevalue": execute_absolutevalue,
@@ -61,6 +61,7 @@ steps_executors: dict[str, StepExecutor] = {
     "convert": execute_convert,
     "cumsum": execute_cumsum,
     "dateextract": execute_date_extract,
+    "dategranularity": execute_date_granularity,
     "delete": execute_delete,
     "dissolve": execute_dissolve,
     "domain": execute_domain,  # type: ignore

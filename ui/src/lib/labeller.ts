@@ -204,6 +204,15 @@ class StepLabeller implements StepMatcher<string> {
     return `Extract date information from "${step.column}"`;
   }
 
+  dategranularity(step: Readonly<S.DateGranularityStep>) {
+    const resultColumn = step.newColumn || step.column;
+    if (resultColumn == step.column) {
+      return `Apply granularity on "${resultColumn}"`;
+    } else {
+      return `Extract granularity from "${step.column}" into "${resultColumn}"`;
+    }
+  }
+
   delete(step: Readonly<S.DeleteStep>) {
     return `Delete columns ${formatMulticol(step.columns)}`;
   }

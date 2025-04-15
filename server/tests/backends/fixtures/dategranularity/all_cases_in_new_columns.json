@@ -1,0 +1,194 @@
+{
+  "exclude": [
+    "athena_pypika",
+    "bigquery_pypika",
+    "mongo",
+    "mysql_pypika",
+    "postgres_pypika",
+    "redshift_pypika",
+    "snowflake",
+    "snowflake_pypika"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "dategranularity",
+        "column": "date",
+        "granularity": "year",
+        "newColumn": "year"
+      },
+      {
+        "name": "dategranularity",
+        "column": "date",
+        "granularity": "month",
+        "newColumn": "month"
+      },
+      {
+        "name": "dategranularity",
+        "column": "date",
+        "granularity": "week",
+        "newColumn": "week"
+      },
+      {
+        "name": "dategranularity",
+        "column": "date",
+        "granularity": "quarter",
+        "newColumn": "quarter"
+      },
+      {
+        "name": "dategranularity",
+        "column": "date",
+        "granularity": "isoWeek",
+        "newColumn": "isoWeek"
+      },
+      {
+        "name": "dategranularity",
+        "column": "date",
+        "granularity": "day",
+        "newColumn": "day"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "date",
+          "type": "datetime",
+          "tz": "UTC"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "date": "2021-03-29T00:00:00.000Z"
+      },
+      {
+        "date": "2020-12-13T00:00:00.000Z"
+      },
+      {
+        "date": "2020-07-29T00:00:00.000Z"
+      },
+      {
+        "date": "2019-04-09T01:02:03.004Z"
+      },
+      {
+        "date": "2017-01-02T00:00:00.000Z"
+      },
+      {
+        "date": "2016-01-01T00:00:00.000Z"
+      },
+      {
+        "date": null
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "date",
+          "type": "datetime",
+          "tz": "UTC"
+        },
+        {
+          "name": "year",
+          "type": "datetime",
+          "tz": "UTC"
+        },
+        {
+          "name": "month",
+          "type": "datetime",
+          "tz": "UTC"
+        },
+        {
+          "name": "week",
+          "type": "datetime",
+          "tz": "UTC"
+        },
+        {
+          "name": "quarter",
+          "type": "datetime",
+          "tz": "UTC"
+        },
+        {
+          "name": "isoWeek",
+          "type": "datetime",
+          "tz": "UTC"
+        },
+        {
+          "name": "day",
+          "type": "datetime",
+          "tz": "UTC"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "date": "2021-03-29T00:00:00.000Z",
+        "year": "2021-01-01T00:00:00.000Z",
+        "month": "2021-03-01T00:00:00.000Z",
+        "week": "2021-03-28T00:00:00.000Z",
+        "quarter": "2021-01-01T00:00:00.000Z",
+        "isoWeek": "2021-03-29T00:00:00.000Z",
+        "day": "2021-03-29T00:00:00.000Z"
+      },
+      {
+        "date": "2020-12-13T00:00:00.000Z",
+        "year": "2020-01-01T00:00:00.000Z",
+        "month": "2020-12-01T00:00:00.000Z",
+        "week": "2020-12-13T00:00:00.000Z",
+        "quarter": "2020-10-01T00:00:00.000Z",
+        "isoWeek": "2020-12-07T00:00:00.000Z",
+        "day": "2020-12-13T00:00:00.000Z"
+      },
+      {
+        "date": "2020-07-29T00:00:00.000Z",
+        "year": "2020-01-01T00:00:00.000Z",
+        "month": "2020-07-01T00:00:00.000Z",
+        "week": "2020-07-26T00:00:00.000Z",
+        "quarter": "2020-07-01T00:00:00.000Z",
+        "isoWeek": "2020-07-27T00:00:00.000Z",
+        "day": "2020-07-29T00:00:00.000Z"
+      },
+      {
+        "date": "2019-04-09T01:02:03.004Z",
+        "year": "2019-01-01T00:00:00.000Z",
+        "month": "2019-04-01T00:00:00.000Z",
+        "week": "2019-04-07T00:00:00.000Z",
+        "quarter": "2019-04-01T00:00:00.000Z",
+        "isoWeek": "2019-04-08T00:00:00.000Z",
+        "day": "2019-04-09T00:00:00.000Z"
+      },
+      {
+        "date": "2017-01-02T00:00:00.000Z",
+        "year": "2017-01-01T00:00:00.000Z",
+        "month": "2017-01-01T00:00:00.000Z",
+        "week": "2017-01-01T00:00:00.000Z",
+        "quarter": "2017-01-01T00:00:00.000Z",
+        "isoWeek": "2017-01-02T00:00:00.000Z",
+        "day": "2017-01-02T00:00:00.000Z"
+      },
+      {
+        "date": "2016-01-01T00:00:00.000Z",
+        "year": "2016-01-01T00:00:00.000Z",
+        "month": "2016-01-01T00:00:00.000Z",
+        "week": "2015-12-27T00:00:00.000Z",
+        "quarter": "2016-01-01T00:00:00.000Z",
+        "isoWeek": "2015-12-28T00:00:00.000Z",
+        "day": "2016-01-01T00:00:00.000Z"
+      },
+      {
+        "date": null,
+        "year": null,
+        "month": null,
+        "week": null,
+        "quarter": null,
+        "isoWeek": null,
+        "day": null
+      }
+    ]
+  }
+}
