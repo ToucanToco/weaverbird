@@ -197,6 +197,7 @@ describe('Aggregate Step Form', () => {
           on: ['foo'],
           aggregations: [{ columns: ['bar'], newcolumns: ['bar'], aggfunction: 'sum' }],
           keepOriginalGranularity: false,
+          countNulls: false,
         },
       },
     });
