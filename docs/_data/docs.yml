@@ -21,6 +21,7 @@
     - duration
     - evolution
     - dateextract
+    - dategranularity
     - substring
     - fillna
     - filter

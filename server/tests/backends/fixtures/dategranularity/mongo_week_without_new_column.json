@@ -1,0 +1,91 @@
+{
+  "exclude": [
+    "athena_pypika",
+    "bigquery_pypika",
+    "mysql_pypika",
+    "pandas",
+    "postgres_pypika",
+    "redshift_pypika",
+    "snowflake",
+    "snowflake_pypika"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "dategranularity",
+        "column": "DATE",
+        "granularity": "week"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "DATE",
+          "type": "datetime",
+          "tz": "UTC"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "DATE": "2021-03-29T00:00:00.000Z"
+      },
+      {
+        "DATE": "2020-12-13T00:00:00.000Z"
+      },
+      {
+        "DATE": "2020-07-29T00:00:00.000Z"
+      },
+      {
+        "DATE": "2019-04-09T01:02:03.004Z"
+      },
+      {
+        "DATE": "2017-01-02T00:00:00.000Z"
+      },
+      {
+        "DATE": "2016-01-01T00:00:00.000Z"
+      },
+      {
+        "DATE": null
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "DATE",
+          "type": "datetime",
+          "tz": "UTC"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "DATE": "2021-03-28T00:00:00.000Z"
+      },
+      {
+        "DATE": "2020-12-13T00:00:00.000Z"
+      },
+      {
+        "DATE": "2020-07-26T00:00:00.000Z"
+      },
+      {
+        "DATE": "2019-04-07T00:00:00.000Z"
+      },
+      {
+        "DATE": "2017-01-01T00:00:00.000Z"
+      },
+      {
+        "DATE": "2015-12-27T00:00:00.000Z"
+      },
+      {
+        "DATE": null
+      }
+    ]
+  }
+}

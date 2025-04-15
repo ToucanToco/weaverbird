@@ -1084,6 +1084,71 @@ An old-fashioned step looks like this:
 | 2019-09-15T00:00:00.000Z | 2020      | 10         | 15       |
 | 2019-09-01T00:00:00.000Z | 2020      | 10         | 1        |
 
+### `dategranularity` step
+
+Extract date information (eg. _day_, _week_, _year_ etc.) in a column intended for aggregation.
+The following granularities are supported:
+
+- `year`: calendar date corresponding to the first day (1st of January) of the year
+- `quarter`: calendar date corresponding to the first day of the quarter
+- `month`: calendar date corresponding to the first day of the month
+- `week`: calendar date corresponding to the first day of the week (sunday)
+- `isoWeek`: calendar date corresponding to the first day of the week (monday)
+- `day`: calendar date corresponding to the first hour of the day
+
+Here's an example of such a step:
+
+```javascript
+{
+  name: 'dategranularity',
+  column: 'date',
+  granularity: 'year',
+  newColumn: 'do_the_aggregate_on_this'
+}
+```
+
+**This step is supported by the following backends:*
+
+- Mongo 5.0
+- Mongo 4.2
+- Mongo 4.0
+- Mongo 3.6
+- Pandas (python)
+
+#### Example
+
+**Input dataset:**
+
+| Date                     |
+| ------------------------ |
+| 2019-10-30T00:00:00.000Z |
+| 2019-10-15T00:00:00.000Z |
+| 2019-10-01T00:00:00.000Z |
+| 2019-09-30T05:11:31.000Z |
+| 2019-09-15T00:00:00.000Z |
+| 2019-09-01T00:00:00.000Z |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'dateextract',
+  column: 'Date',
+  granularity: 'month'
+}
+```
+
+**Output dataset:**
+
+| Date                     |
+| ------------------------ |
+| 2019-10-01T00:00:00.000Z |
+| 2019-10-01T00:00:00.000Z |
+| 2019-10-01T00:00:00.000Z |
+| 2019-09-01T00:00:00.000Z |
+| 2019-09-01T00:00:00.000Z |
+| 2019-09-01T00:00:00.000Z |
+
 ### `delete` step
 
 Delete a column.

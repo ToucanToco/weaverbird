@@ -145,6 +145,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   dateextract(step: Readonly<S.DateExtractStep>) {}
 
   @unsupported
+  dategranularity(step: Readonly<S.DateGranularityStep>) {}
+
+  @unsupported
   delete(step: Readonly<S.DeleteStep>) {}
 
   @unsupported

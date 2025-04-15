@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### changed
+
+- Steps: add `dategranularity` to help build dynamic date aggregations.
+
 ## [0.115.7] - 2025-04-09
 
 ### Fixed

@@ -40,6 +40,8 @@ export type AdvancedDateInfo =
 
 export type DateInfo = BasicDatePart | AdvancedDateInfo;
 
+export type DateGranularity = 'day' | 'week' | 'isoWeek' | 'month' | 'quarter' | 'year';
+
 type PrimitiveType = number | boolean | string | Date;
 type Templatable<T> = T | string;
 export type ReferenceToExternalQuery = { type: 'ref'; uid: string };
@@ -212,6 +214,13 @@ export type DateExtractStep = {
   newColumns: string[];
   operation?: BasicDatePart; // Supported for retrocompatibility only
   newColumnName?: string; // Supported for retrocompatibility only
+};
+
+export type DateGranularityStep = {
+  name: 'dategranularity';
+  granularity: DateGranularity[];
+  column: string;
+  newColumn?: string;
 };
 
 export type DeleteStep = {
@@ -540,6 +549,7 @@ export type PipelineStep =
   | CustomStep
   | CustomSqlStep
   | DateExtractStep
+  | DateGranularityStep
   | DissolveStep
   | DeleteStep
   | DuplicateColumnStep

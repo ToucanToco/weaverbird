@@ -5,7 +5,9 @@
 ### Changed
 
 A new `currentDay` extract was added to the `dateextract` step, to match `previousDay`. It allows to get the current
-datetime reset to midnight i.e. 00:00:00.
+datetime reset to midnight i.e. 00:00:00
+
+Add `dategranularity` step to help build dynamic date aggregations.
 
 ## [0.54.0] - 2025-04-14
 
