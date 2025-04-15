@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.116.1] - 2025-04-15
+
 ### Changed
 
 Changed wording for `countNulls` in `AggregateStepForm` from "If true, counts null values like regular values" to "Count
