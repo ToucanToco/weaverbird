@@ -59,7 +59,7 @@ def execute_date_extract(
             # we subtract a number of days corresponding to(dayOfWeek - 1)
             result = series_dt - to_timedelta(dayofweek - 1, unit="d")
             # the result should be returned with 0-ed time information
-            result = to_datetime(result.dt.date)
+            result = result.dt.normalize()
         elif dt_info == "firstDayOfQuarter":
             result = to_datetime(
                 DataFrame(
@@ -75,11 +75,11 @@ def execute_date_extract(
             # we subtract a number of days corresponding to(dayOfWeek - 1)
             result = series_dt - to_timedelta(dayofweek - 1, unit="d")
             # the result should be returned with 0-ed time information
-            result = to_datetime(result.dt.date)
+            result = result.dt.normalize()
         elif dt_info == "previousDay":
             result = series_dt - to_timedelta(1, unit="d")
             # the result should be returned with 0-ed time information
-            result = to_datetime(result.dt.date)
+            result = result.dt.normalize()
         elif dt_info == "firstDayOfPreviousYear":
             result = to_datetime(DataFrame({"year": series_dt_accessor.year - 1, "month": 1, "day": 1}))
         elif dt_info == "firstDayOfPreviousMonth":
