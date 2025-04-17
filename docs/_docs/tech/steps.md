@@ -997,7 +997,7 @@ information can be extracted:
 - `firstDayOfWeek`: calendar date corresponding to the first day of the week,
 - `firstDayOfQuarter`: calendar date corresponding to the first day of the quarter,
 - `firstDayOfIsoWeek`: calendar date corresponding to the first day of the week in ISO 8601 format,
-- `previousDay`: calendar date of the target date,
+- `currentDay`: calendar date of the target date,
 - `previousDay`: calendar date one day before the target date,
 - `firstDayOfPreviousYear`: calendar date corresponding to the first day (1st of January) of the previous year,
 - `firstDayOfPreviousMonth`: calendar date corresponding to the first day of the previous month,
