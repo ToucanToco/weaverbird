@@ -86,6 +86,7 @@ export default class DateExtractStepForm extends BaseStepForm<DateExtractStep> {
     { info: 'firstDayOfWeek', label: 'first day of week (sunday)' },
     { info: 'firstDayOfQuarter', label: 'first day of quarter' },
     { info: 'firstDayOfIsoWeek', label: 'first day of ISO week (monday)' },
+    { info: 'currentDay', label: 'current day' },
     { info: 'previousDay', label: 'previous day' },
     { info: 'firstDayOfPreviousYear', label: 'first day of previous year' },
     { info: 'firstDayOfPreviousMonth', label: 'first day of previous month' },

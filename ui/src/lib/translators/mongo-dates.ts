@@ -29,7 +29,7 @@ export const DATE_EXTRACT_MAP: Record<S.BasicDatePart, string> = {
 
 export const ADVANCED_DATE_EXTRACT_MAP: Record<
   S.AdvancedDateInfo,
-  (step: Readonly<S.DateExtractStep>) => object
+  (step: Readonly<S.DateExtractStep>) => object | string
 > = {
   quarter: (step) => ({
     $switch: {
@@ -85,6 +85,7 @@ export const ADVANCED_DATE_EXTRACT_MAP: Record<
       },
     ],
   }),
+  currentDay: (step) => $$(step.column),
   previousDay: (step) => ({
     // We subtract to the target date 1 day in milliseconds
     $subtract: [$$(step.column), 24 * 60 * 60 * 1000],
@@ -187,7 +188,7 @@ export const ADVANCED_DATE_EXTRACT_MAP: Record<
 
 export const ADVANCED_DATE_EXTRACT_MAP_MONGO_5: Record<
   S.AdvancedDateInfo,
-  (step: Readonly<S.DateExtractStep>) => object
+  (step: Readonly<S.DateExtractStep>) => object | string
 > = {
   ...ADVANCED_DATE_EXTRACT_MAP,
   firstDayOfWeek: (step) => {
@@ -195,6 +196,9 @@ export const ADVANCED_DATE_EXTRACT_MAP_MONGO_5: Record<
   },
   firstDayOfIsoWeek: (step) => {
     return truncateDateToDay(ADVANCED_DATE_EXTRACT_MAP['firstDayOfIsoWeek'](step));
+  },
+  currentDay: (step) => {
+    return truncateDateToDay(ADVANCED_DATE_EXTRACT_MAP['currentDay'](step));
   },
   previousDay: (step) => {
     return truncateDateToDay(ADVANCED_DATE_EXTRACT_MAP['previousDay'](step));

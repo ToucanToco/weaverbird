@@ -102,6 +102,10 @@ def _extract_first_day_of_iso_week(step: DateExtractStep) -> MongoStep:
     )
 
 
+def _extract_current_day(step: DateExtractStep) -> MongoStep:
+    return _truncate_date_to_day(f"${step.column}")
+
+
 def _extract_previous_day(step: DateExtractStep) -> MongoStep:
     return _truncate_date_to_day(
         {
@@ -261,6 +265,7 @@ _ADVANCED_DATE_EXTRACT_MAP = {
     "firstDayOfWeek": _extract_first_day_of_week,
     "firstDayOfQuarter": _extract_first_day_of_quarter,
     "firstDayOfIsoWeek": _extract_first_day_of_iso_week,
+    "currentDay": _extract_current_day,
     "previousDay": _extract_previous_day,
     "firstDayOfPreviousYear": _extract_first_day_of_previous_year,
     "firstDayOfPreviousMonth": _extract_first_day_of_previous_month,

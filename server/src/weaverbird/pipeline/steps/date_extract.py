@@ -36,6 +36,7 @@ INTEGER_DATE_PARTS = Union[  # noqa: UP007
 ]
 
 TIMESTAMP_DATE_PARTS = Literal[
+    "currentDay",
     "previousDay",
     "firstDayOfYear",
     "firstDayOfMonth",
