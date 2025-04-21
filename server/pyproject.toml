@@ -40,7 +40,7 @@ playground = [
     "hypercorn<0.18,>=0.13",
     "pymongo>=4.2.0",
     "psycopg<4.0.0,>=3.0.15",
-    "toucan-connectors[Redshift,awsathena,google_big_query,mongo,mysql,snowflake]>=6.3.0,<8.0.0",
+    "toucan-connectors[Redshift,awsathena,google_big_query,mongo,mysql,snowflake]>=8.0.2,<8.1.0",
 ]
 pypika = ["pypika>=0.48.9"]
 all = [
