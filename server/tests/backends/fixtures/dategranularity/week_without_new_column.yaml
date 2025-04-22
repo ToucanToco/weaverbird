@@ -1,0 +1,43 @@
+exclude:
+  - athena_pypika
+  - bigquery_pypika
+  - mysql_pypika
+  - postgres_pypika
+  - redshift_pypika
+  - snowflake
+  - snowflake_pypika
+step:
+  pipeline:
+    - name: dategranularity
+      column: date
+      granularity: week
+input:
+  schema:
+    fields:
+      - name: date
+        type: datetime
+        tz: UTC
+    pandas_version: 0.20.0
+  data:
+    - date: "2021-03-29T00:00:00.000Z"
+    - date: "2020-12-13T00:00:00.000Z"
+    - date: "2020-07-29T00:00:00.000Z"
+    - date: "2019-04-09T01:02:03.004Z"
+    - date: "2017-01-02T00:00:00.000Z"
+    - date: "2016-01-01T00:00:00.000Z"
+    - date: null
+expected:
+  schema:
+    fields:
+      - name: date
+        type: datetime
+        tz: UTC
+    pandas_version: 0.20.0
+  data:
+    - date: "2021-03-28T00:00:00.000Z"
+    - date: "2020-12-13T00:00:00.000Z"
+    - date: "2020-07-26T00:00:00.000Z"
+    - date: "2019-04-07T00:00:00.000Z"
+    - date: "2017-01-01T00:00:00.000Z"
+    - date: "2015-12-27T00:00:00.000Z"
+    - date: null
