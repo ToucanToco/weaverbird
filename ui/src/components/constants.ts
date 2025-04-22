@@ -54,7 +54,7 @@ export const STEP_LABELS: Record<PipelineStepName, string> = {
   todate: 'Convert text to date',
   fromdate: 'Convert date to text',
   dateextract: 'Extract date information',
-  dategranularity: 'Apply date granularity',
+  dategranularity: 'Normalize to date granularity',
   addmissingdates: 'Add missing dates',
   duration: 'Compute duration',
   pivot: 'Pivot',
