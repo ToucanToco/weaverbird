@@ -1,3 +1,5 @@
+from weaverbird.backends.pandas_executor.steps.replacetext import execute_replacetext
+
 from ..types import StepExecutor
 from .absolutevalue import execute_absolutevalue
 from .addmissingdates import execute_addmissingdates
@@ -31,7 +33,6 @@ from .pivot import execute_pivot
 from .rank import execute_rank
 from .rename import execute_rename
 from .replace import execute_replace
-from .replacetext import execute_replacetext
 from .rollup import execute_rollup
 from .select import execute_select
 from .simplify import execute_simplify
