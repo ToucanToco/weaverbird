@@ -136,6 +136,25 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Extract date information from "foo"');
   });
 
+  it('generates label for date granularity steps with newColumn', () => {
+    const step: S.DateGranularityStep = {
+      name: 'dategranularity',
+      column: 'foo',
+      granularity: 'year',
+      newColumn: 'foo_year',
+    };
+    expect(hrl(step)).toEqual('Extract granularity from "foo" into "foo_year"');
+  });
+
+  it('generates label for date granularity steps without newColumn', () => {
+    const step: S.DateGranularityStep = {
+      name: 'dategranularity',
+      column: 'foo',
+      granularity: 'year',
+    };
+    expect(hrl(step)).toEqual('Normalize granularity in "foo"');
+  });
+
   it('generates label for domain steps', () => {
     const step: S.DomainStep = {
       name: 'domain',

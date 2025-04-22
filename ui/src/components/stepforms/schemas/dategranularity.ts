@@ -5,7 +5,7 @@ export default {
   properties: {
     name: {
       type: 'string',
-      enum: ['dateextract'],
+      enum: ['dategranularity'],
     },
     column: {
       type: 'string',
@@ -18,9 +18,10 @@ export default {
     },
     granularity: {
       type: 'string',
-      enum: ['year', 'quarter', 'month', 'isoWeek', 'week', 'day'],
+      minLength: 1,
       title: 'Date granularity to apply',
-      description: 'At what granularity will the date be truncated.',
+      description:
+        "At what granularity will the date be truncated. Should be 'year', 'quarter', 'month', 'isoWeek', 'week', 'day' or a variable.",
     },
     newColumn: {
       type: 'string',

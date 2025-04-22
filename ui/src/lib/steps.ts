@@ -219,7 +219,7 @@ export type DateExtractStep = {
 
 export type DateGranularityStep = {
   name: 'dategranularity';
-  granularity: DateGranularity[];
+  granularity: DateGranularity;
   column: string;
   newColumn?: string;
 };

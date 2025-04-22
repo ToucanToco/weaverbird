@@ -207,7 +207,7 @@ class StepLabeller implements StepMatcher<string> {
   dategranularity(step: Readonly<S.DateGranularityStep>) {
     const resultColumn = step.newColumn || step.column;
     if (resultColumn == step.column) {
-      return `Apply granularity on "${resultColumn}"`;
+      return `Normalize granularity in "${resultColumn}"`;
     } else {
       return `Extract granularity from "${step.column}" into "${resultColumn}"`;
     }
