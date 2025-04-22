@@ -1,5 +1,13 @@
-from pandas import DataFrame, to_datetime, to_timedelta
+from pandas import DataFrame, to_datetime
 
+from weaverbird.backends.pandas_executor.steps.utils.dates import (
+    extract_current_day_date,
+    extract_first_day_of_iso_week,
+    extract_first_day_of_month,
+    extract_first_day_of_quarter,
+    extract_first_day_of_week,
+    extract_first_day_of_year,
+)
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps import DateGranularityStep
 
@@ -12,40 +20,22 @@ def execute_date_granularity(
 ) -> DataFrame:
     granularity = step.granularity
     new_column_name = step.new_column if step.new_column is not None else step.column
+
     series_dt = to_datetime(df[step.column], utc=True)
     series_dt_accessor = series_dt.dt
 
     if granularity == "year":
-        result = to_datetime(DataFrame({"year": series_dt_accessor.year, "month": 1, "day": 1}))
+        result = extract_first_day_of_year(series_dt_accessor)
     elif granularity == "month":
-        result = to_datetime(DataFrame({"year": series_dt_accessor.year, "month": series_dt_accessor.month, "day": 1}))
+        result = extract_first_day_of_month(series_dt_accessor)
     elif granularity == "week":
-        # dayofweek should be between 1 (sunday) and 7 (saturday)
-        dayofweek = (series_dt_accessor.dayofweek + 2) % 7
-        dayofweek = dayofweek.replace({0: 7})
-        # we subtract a number of days corresponding to(dayOfWeek - 1)
-        result = series_dt - to_timedelta(dayofweek - 1, unit="d")
-        # the result should be returned with 0-ed time information
-        result = result.dt.normalize()
+        result = extract_first_day_of_week(series_dt, series_dt_accessor)
     elif granularity == "quarter":
-        result = to_datetime(
-            DataFrame(
-                {
-                    "year": series_dt_accessor.year,
-                    "month": 3 * ((series_dt_accessor.month - 1) // 3) + 1,
-                    "day": 1,
-                }
-            )
-        )
+        result = extract_first_day_of_quarter(series_dt_accessor)
     elif granularity == "isoWeek":
-        dayofweek = series_dt_accessor.isocalendar().day
-        # we subtract a number of days corresponding to(dayOfWeek - 1)
-        result = series_dt - to_timedelta(dayofweek - 1, unit="d")
-        # the result should be returned with 0-ed time information
-        result = result.dt.normalize()
+        result = extract_first_day_of_iso_week(series_dt, series_dt_accessor)
     elif granularity == "day":
-        # the result should be returned with 0-ed time information
-        result = series_dt_accessor.normalize()
+        result = extract_current_day_date(series_dt_accessor)
     else:
         return df
 
