@@ -1129,7 +1129,7 @@ Here's an example of such a step:
 
 ```javascript
 {
-  name: 'dateextract',
+  name: 'dategranularity',
   column: 'Date',
   granularity: 'month'
 }
