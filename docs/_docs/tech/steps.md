@@ -992,17 +992,18 @@ information can be extracted:
   from date.
 - `isoDayOfWeek`: extract 'day of week' in ISO 8601 format (ranging from 1 for
   Monday to 7 for Sunday) from date,
-- `firstDayOfYear`: calendar dat corresponding to the first day (1st of January) of the year ,
-- `firstDayOfMonth`: calendar dat corresponding to the first day of the month,
-- `firstDayOfWeek`: calendar dat corresponding to the first day of the week,
-- `firstDayOfQuarter`: calendar dat corresponding to the first day of the quarter,
-- `firstDayOfIsoWeek`: calendar dat corresponding to the first day of the week in ISO 8601 format,
+- `firstDayOfYear`: calendar date corresponding to the first day (1st of January) of the year ,
+- `firstDayOfMonth`: calendar date corresponding to the first day of the month,
+- `firstDayOfWeek`: calendar date corresponding to the first day of the week,
+- `firstDayOfQuarter`: calendar date corresponding to the first day of the quarter,
+- `firstDayOfIsoWeek`: calendar date corresponding to the first day of the week in ISO 8601 format,
+- `currentDay`: calendar date of the target date,
 - `previousDay`: calendar date one day before the target date,
-- `firstDayOfPreviousYear`: calendar dat corresponding to the first day (1st of January) of the previous year,
-- `firstDayOfPreviousMonth`: calendar dat corresponding to the first day of the previous month,
-- `firstDayOfPreviousWeek`: calendar dat corresponding to the first day of the previous week,
-- `firstDayOfPreviousQuarter`: calendar dat corresponding to the first day of the previous quarter,
-- `firstDayOfPreviousISOWeek`: calendar dat corresponding to the first day of the previous ISO week,
+- `firstDayOfPreviousYear`: calendar date corresponding to the first day (1st of January) of the previous year,
+- `firstDayOfPreviousMonth`: calendar date corresponding to the first day of the previous month,
+- `firstDayOfPreviousWeek`: calendar date corresponding to the first day of the previous week,
+- `firstDayOfPreviousQuarter`: calendar date corresponding to the first day of the previous quarter,
+- `firstDayOfPreviousISOWeek`: calendar date corresponding to the first day of the previous ISO week,
 - `previousYear`: extract previous 'year number' from date
 - `previousMonth`: extract previous 'month number' from date
 - `previousWeek`: extract previous 'week number' from date

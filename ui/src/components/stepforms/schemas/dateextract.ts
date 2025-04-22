@@ -36,6 +36,7 @@ export default {
           'firstDayOfWeek',
           'firstDayOfQuarter',
           'firstDayOfIsoWeek',
+          'currentDay',
           'previousDay',
           'firstDayOfPreviousYear',
           'firstDayOfPreviousMonth',

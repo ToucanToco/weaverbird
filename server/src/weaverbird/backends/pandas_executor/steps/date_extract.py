@@ -76,6 +76,9 @@ def execute_date_extract(
             result = series_dt - to_timedelta(dayofweek - 1, unit="d")
             # the result should be returned with 0-ed time information
             result = to_datetime(result.dt.date)
+        elif dt_info == "currentDay":
+            # the result should be returned with 0-ed time information
+            result = series_dt_accessor.normalize()
         elif dt_info == "previousDay":
             result = series_dt - to_timedelta(1, unit="d")
             # the result should be returned with 0-ed time information
