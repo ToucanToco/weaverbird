@@ -29,6 +29,10 @@ const schema = {
       description:
         'If true, keeps the original granularity and adds the aggregation(s) in new column(s)',
     },
+    countNulls: {
+      type: 'boolean',
+      description: 'If true, counts null values like regular values',
+    },
   },
   required: ['name', 'on', 'aggregations'],
   additionalProperties: false,

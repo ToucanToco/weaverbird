@@ -54,6 +54,21 @@ describe('Aggregate Step Form', () => {
       expect(wrapper.vm.$data.editedStep.keepOriginalGranularity).toEqual(false);
     });
 
+    it('countNulls should be set to false if undefined in inititalValue', async () => {
+      const wrapper = runner.shallowMount({
+        propsData: {
+          initialStepValue: {
+            name: 'aggregate',
+            on: [''],
+            aggregations: [],
+            countNulls: undefined,
+          },
+        },
+      });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.vm.$data.editedStep.countNulls).toEqual(false);
+    });
+
     it('should pass down the "on" prop to the MultiselectWidget value prop', async () => {
       const wrapper = runner.shallowMount({
         data: {
@@ -182,6 +197,7 @@ describe('Aggregate Step Form', () => {
           on: ['foo'],
           aggregations: [{ columns: ['bar'], newcolumns: ['bar'], aggfunction: 'sum' }],
           keepOriginalGranularity: false,
+          countNulls: false,
         },
       },
     });

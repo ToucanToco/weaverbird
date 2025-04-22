@@ -42,6 +42,11 @@
       label="Keep original granularity and add aggregation(s) in new column(s)"
       v-model="editedStep.keepOriginalGranularity"
     />
+    <CheckboxWidget
+      class="countNullsCheckbox"
+      label="Count null values like regular values"
+      v-model="editedStep.countNulls"
+    />
     <StepFormButtonbar />
   </div>
 </template>
@@ -103,6 +108,7 @@ export default class AggregateStepForm extends BaseStepForm<AggregateStep> {
       newcolumn: undefined,
     })),
     keepOriginalGranularity: this.initialStepValue.keepOriginalGranularity ?? false,
+    countNulls: this.initialStepValue.countNulls ?? false,
   };
 
   get defaultAggregation() {

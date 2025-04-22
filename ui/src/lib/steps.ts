@@ -134,6 +134,7 @@ export type AggregateStep = {
   /** optional to guarantee retrocompatibility as this parameter did not exist
    *  when this step was first created */
   keepOriginalGranularity?: boolean;
+  countNulls?: boolean;
 };
 
 export type AppendStep = {
