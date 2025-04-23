@@ -22,20 +22,19 @@ def execute_date_granularity(
     new_column_name = step.new_column if step.new_column is not None else step.column
 
     series_dt = to_datetime(df[step.column], utc=True)
-    series_dt_accessor = series_dt.dt
 
     if granularity == "year":
-        result = extract_first_day_of_year(series_dt_accessor)
+        result = extract_first_day_of_year(series_dt)
     elif granularity == "month":
-        result = extract_first_day_of_month(series_dt_accessor)
+        result = extract_first_day_of_month(series_dt)
     elif granularity == "week":
-        result = extract_first_day_of_week(series_dt, series_dt_accessor)
+        result = extract_first_day_of_week(series_dt)
     elif granularity == "quarter":
-        result = extract_first_day_of_quarter(series_dt_accessor)
+        result = extract_first_day_of_quarter(series_dt)
     elif granularity == "isoWeek":
-        result = extract_first_day_of_iso_week(series_dt, series_dt_accessor)
+        result = extract_first_day_of_iso_week(series_dt)
     elif granularity == "day":
-        result = extract_current_day_date(series_dt_accessor)
+        result = extract_current_day_date(series_dt)
     else:
         return df
 

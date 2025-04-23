@@ -55,17 +55,17 @@ def execute_date_extract(
         elif dt_info == "isoDayOfWeek":
             result = series_dt_accessor.isocalendar().day
         elif dt_info == "firstDayOfYear":
-            result = extract_first_day_of_year(series_dt_accessor)
+            result = extract_first_day_of_year(series_dt)
         elif dt_info == "firstDayOfMonth":
-            result = extract_first_day_of_month(series_dt_accessor)
+            result = extract_first_day_of_month(series_dt)
         elif dt_info == "firstDayOfWeek":
-            result = extract_first_day_of_week(series_dt, series_dt_accessor)
+            result = extract_first_day_of_week(series_dt)
         elif dt_info == "firstDayOfQuarter":
-            result = extract_first_day_of_quarter(series_dt_accessor)
+            result = extract_first_day_of_quarter(series_dt)
         elif dt_info == "firstDayOfIsoWeek":
-            result = extract_first_day_of_iso_week(series_dt, series_dt_accessor)
+            result = extract_first_day_of_iso_week(series_dt)
         elif dt_info == "currentDay":
-            result = extract_current_day_date(series_dt_accessor)
+            result = extract_current_day_date(series_dt)
         elif dt_info == "previousDay":
             result = series_dt - to_timedelta(1, unit="d")
             # the result should be returned with 0-ed time information
