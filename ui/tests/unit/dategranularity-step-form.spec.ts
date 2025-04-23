@@ -37,6 +37,10 @@ describe('DateGranularity Step Form', () => {
         },
         {
           dataPath: '.granularity',
+          keyword: 'pattern',
+        },
+        {
+          dataPath: '.granularity',
           keyword: 'enum',
         },
         {
@@ -53,15 +57,19 @@ describe('DateGranularity Step Form', () => {
 
   runner.testValidationErrors([
     {
-      testlabel: 'submitted data is not valid',
+      testlabel: 'submitted granularity is not valid',
       props: {
         initialStepValue: {
           name: 'dategranularity',
           column: 'date',
-          granularity: '{{invalidvarorinput}}',
+          granularity: '% invalid var or input %',
         },
       },
       errors: [
+        {
+          dataPath: '.granularity',
+          keyword: 'pattern',
+        },
         {
           dataPath: '.granularity',
           keyword: 'pattern',
@@ -79,7 +87,7 @@ describe('DateGranularity Step Form', () => {
   ]);
 
   runner.testValidate({
-    testlabel: 'submitted data is valid',
+    testlabel: 'submitted data is valid with front-end var',
     props: {
       columnTypes: { foo: 'date', bar: 'string' },
       initialStepValue: {
@@ -92,7 +100,20 @@ describe('DateGranularity Step Form', () => {
   });
 
   runner.testValidate({
-    testlabel: 'submitted data is valid',
+    testlabel: 'submitted data is valid with back-end var',
+    props: {
+      columnTypes: { foo: 'date', bar: 'string' },
+      initialStepValue: {
+        name: 'dategranularity',
+        column: 'foo',
+        granularity: '{{ user.attribute.something }}',
+        newColumn: 'foo_year',
+      },
+    },
+  });
+
+  runner.testValidate({
+    testlabel: 'submitted data is valid with enum',
     props: {
       columnTypes: { foo: 'date', bar: 'string' },
       initialStepValue: {

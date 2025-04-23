@@ -21,7 +21,12 @@ export default {
       minLength: 1,
       oneOf: [
         {
+          $comment: 'Front-end variable',
           pattern: '^<%=.+%>$',
+        },
+        {
+          $comment: 'Back-end variable',
+          pattern: '^\\{\\{.+\\}\\}$',
         },
         {
           enum: ['year', 'quarter', 'month', 'isoWeek', 'week', 'day'],
