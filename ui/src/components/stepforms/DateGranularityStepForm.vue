@@ -80,15 +80,15 @@ export default class DateGranularityStepForm extends BaseStepForm<DateGranularit
   })
   declare initialStepValue: DateGranularityStep;
 
-  readonly title: string = 'Apply Date Granularity';
+  readonly title: string = 'Normalize Date Granularity';
 
   readonly granularities: GranularityOption[] = [
     { info: 'year', label: 'year' },
-    { info: 'quarter', label: 'quarter number' },
+    { info: 'quarter', label: 'quarter' },
     { info: 'month', label: 'month' },
     { info: 'isoWeek', label: 'ISO week (monday to monday)' },
     { info: 'week', label: 'week (sunday to sunday)' },
-    { info: 'day', label: 'day of month' },
+    { info: 'day', label: 'day' },
   ];
 
   /** Overload the definition of editedStep in BaseStepForm to guarantee
@@ -100,7 +100,7 @@ export default class DateGranularityStepForm extends BaseStepForm<DateGranularit
 
   get duplicateColumnName() {
     if (this.editedStep.newColumn && this.columnNames.includes(this.editedStep.newColumn)) {
-      return `A column name "${this.editedStep.newColumn}" already exists. You will overwrite it.`;
+      return `A column with name "${this.editedStep.newColumn}" already exists. You will overwrite it.`;
     } else {
       return null;
     }
