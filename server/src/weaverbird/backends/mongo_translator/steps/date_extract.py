@@ -1,4 +1,4 @@
-from weaverbird.backends.mongo_translator.mongo_date_extractors import (
+from weaverbird.backends.mongo_translator.date_extractors import (
     extract_current_day,
     extract_first_day_of_iso_week,
     extract_first_day_of_month,
