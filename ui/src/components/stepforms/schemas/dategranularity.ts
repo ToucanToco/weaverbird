@@ -19,9 +19,17 @@ export default {
     granularity: {
       type: 'string',
       minLength: 1,
+      oneOf: [
+        {
+          pattern: '^<%=.+%>$',
+        },
+        {
+          enum: ['year', 'quarter', 'month', 'isoWeek', 'week', 'day'],
+        },
+      ],
       title: 'Date granularity to apply',
       description:
-        "At what granularity will the date be truncated. Should be 'year', 'quarter', 'month', 'isoWeek', 'week', 'day' or a variable.",
+        "The granularity to which the date will be truncated. Should be one of 'year', 'quarter', 'month', 'isoWeek', 'week' or 'day'.",
     },
     newColumn: {
       type: 'string',

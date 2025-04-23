@@ -28,16 +28,68 @@ describe('DateGranularity Step Form', () => {
       },
       errors: [
         {
-          keyword: 'minLength',
           dataPath: '.column',
+          keyword: 'minLength',
         },
         {
-          keyword: 'minLength',
           dataPath: '.granularity',
+          keyword: 'pattern',
+        },
+        {
+          dataPath: '.granularity',
+          keyword: 'enum',
+        },
+        {
+          dataPath: '.granularity',
+          keyword: 'oneOf',
+        },
+        {
+          dataPath: '.granularity',
+          keyword: 'minLength',
         },
       ],
     },
   ]);
+
+  runner.testValidationErrors([
+    {
+      testlabel: 'submitted data is not valid',
+      props: {
+        initialStepValue: {
+          name: 'dategranularity',
+          column: 'date',
+          granularity: '{{invalidvarorinput}}',
+        },
+      },
+      errors: [
+        {
+          dataPath: '.granularity',
+          keyword: 'pattern',
+        },
+        {
+          dataPath: '.granularity',
+          keyword: 'enum',
+        },
+        {
+          dataPath: '.granularity',
+          keyword: 'oneOf',
+        },
+      ],
+    },
+  ]);
+
+  runner.testValidate({
+    testlabel: 'submitted data is valid',
+    props: {
+      columnTypes: { foo: 'date', bar: 'string' },
+      initialStepValue: {
+        name: 'dategranularity',
+        column: 'foo',
+        granularity: '<%=somevar%>',
+        newColumn: 'foo_year',
+      },
+    },
+  });
 
   runner.testValidate({
     testlabel: 'submitted data is valid',
