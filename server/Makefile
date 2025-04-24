@@ -45,7 +45,7 @@ build:
 
 .PHONY: upload
 upload:
-	uv publish --build
+	uv publish
 
 .PHONY: start_docker_playground
 start-docker-playground:
