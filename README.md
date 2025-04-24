@@ -153,14 +153,6 @@ This library is published on npm under the name `weaverbird` automatically each 
 
     ex: `[0.20.0] - 2020-08-03`
 
-  - Add link to the `CHANGELOG.md` from this version to the previous one at the end of the `CHANGELOG.md`
-
-    ```
-    [X.Y.Z]: https://github.com/ToucanToco/weaverbird/compare/voldX.oldY.oldZ...vX.Y.Z
-    ```
-
-    ex: [0.20.0]: https://github.com/ToucanToco/weaverbird/compare/v0.19.2...v0.20.0
-
 - Commit changes with version number
 
   ex: `v0.20.0`
