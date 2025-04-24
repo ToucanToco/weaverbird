@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.117.0] - 2025-04-24
+
 ### Added
 
 - A new `dategranularity` step was added to help build dynamic date aggregations.
