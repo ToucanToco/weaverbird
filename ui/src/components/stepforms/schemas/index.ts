@@ -11,6 +11,7 @@ import cumsumSchema from './cumsum';
 import customSchema from './custom';
 import customSqlSchema from './customsql';
 import dateextractSchema from './dateextract';
+import dategranularitySchema from './dategranularity';
 import deleteSchema from './delete';
 import dissolveSchema from './dissolve';
 import domainSchema from './domain';
@@ -65,6 +66,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   custom: customSchema,
   customsql: customSqlSchema,
   dateextract: dateextractSchema,
+  dategranularity: dategranularitySchema,
   delete: deleteSchema,
   dissolve: dissolveSchema,
   domain: domainSchema,

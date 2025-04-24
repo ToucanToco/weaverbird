@@ -19,6 +19,7 @@ import CumSumStepForm from './CumSumStepForm.vue';
 import CustomSqlStepForm from './CustomSqlStepForm.vue';
 import CustomStepForm from './CustomStepForm.vue';
 import DateExtractStepForm from './DateExtractStepForm.vue';
+import DateGranularityStepForm from './DateGranularityStepForm.vue';
 import DeleteColumnStepForm from './DeleteColumnStepForm.vue';
 import DissolveStepForm from './DissolveStepForm.vue';
 import DomainStepForm from './DomainStepForm.vue';
@@ -71,6 +72,7 @@ const StepFormsComponents: { [K in PipelineStepName]: VueConstructor<StepForm> }
   custom: CustomStepForm,
   customsql: CustomSqlStepForm,
   dateextract: DateExtractStepForm,
+  dategranularity: DateGranularityStepForm,
   delete: DeleteColumnStepForm,
   dissolve: DissolveStepForm,
   duration: ComputeDurationStepForm,

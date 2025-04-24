@@ -18,10 +18,7 @@ from weaverbird.pipeline.conditions import (
     InclusionCondition,
     MatchCondition,
 )
-from weaverbird.pipeline.steps.hierarchy import HierarchyStep
-from weaverbird.pipeline.steps.utils.combination import PipelineOrDomainName, Reference, ReferenceResolver
-
-from .steps import (
+from weaverbird.pipeline.steps import (
     AbsoluteValueStep,
     AbsoluteValueStepWithVariable,
     AddMissingDatesStep,
@@ -45,6 +42,8 @@ from .steps import (
     CustomStep,
     DateExtractStep,
     DateExtractStepWithVariable,
+    DateGranularityStep,
+    DateGranularityStepWithVariable,
     DeleteStep,
     DissolveStep,
     DomainStep,
@@ -102,6 +101,8 @@ from .steps import (
     WaterfallStep,
     WaterfallStepWithVariable,
 )
+from weaverbird.pipeline.steps.hierarchy import HierarchyStep
+from weaverbird.pipeline.steps.utils.combination import PipelineOrDomainName, Reference, ReferenceResolver
 
 PipelineStep = Annotated[
     AbsoluteValueStep
@@ -117,6 +118,7 @@ PipelineStep = Annotated[
     | CustomSqlStep
     | CustomStep
     | DateExtractStep
+    | DateGranularityStep
     | DeleteStep
     | DissolveStep
     | DomainStep
@@ -200,6 +202,7 @@ PipelineStepWithVariables = Annotated[
     | ConcatenateStepWithVariable
     | CumSumStepWithVariable
     | DateExtractStepWithVariable
+    | DateGranularityStepWithVariable
     | DurationStepWithVariable
     | EvolutionStepWithVariable
     | FillnaStepWithVariable

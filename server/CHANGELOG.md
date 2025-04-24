@@ -2,22 +2,26 @@
 
 ## Unreleased
 
+### Added
+
+- A new `dategranularity` step was added to help build dynamic date aggregations.
+
 ### Changed
 
-A new `currentDay` extract was added to the `dateextract` step, to match `previousDay`. It allows to get the current
-datetime reset to midnight i.e. 00:00:00.
+- A new `currentDay` extract was added to the `dateextract` step, to match `previousDay`. It allows to get the current
+datetime reset to midnight i.e. 00:00:00
 
 ## [0.54.0] - 2025-04-14
 
 ### Changed
 
-A new `countNulls` boolean field was added to the `aggregate` step. It indicates wether null values should be counted or
+- A new `countNulls` boolean field was added to the `aggregate` step. It indicates wether null values should be counted or
 not in `count` aggregations. A value of `false` will default to the pre-v0.48.7 behaviour (ignoring nulls), whereas `true`
 will induce the post-v0.48.7 behaviour, i.e. considering nulls as regular values
 
 ## [0.53.1] - 2025-04-01
 
-This versions adresses publishing issues.
+- This versions adresses publishing issues.
 
 ## [0.53.0] - 2025-04-01
 

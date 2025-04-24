@@ -1,14 +1,14 @@
+from weaverbird.backends.mongo_translator.date_extractors import (
+    extract_current_day,
+    extract_first_day_of_iso_week,
+    extract_first_day_of_month,
+    extract_first_day_of_quarter,
+    extract_first_day_of_week,
+    extract_first_day_of_year,
+    truncate_date_to_day,
+)
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import DateExtractStep
-
-
-def _truncate_date_to_day(expr: dict | str) -> MongoStep:
-    return {
-        "$dateTrunc": {
-            "unit": "day",
-            "date": expr,
-        },
-    }
 
 
 def _extract_quarter(step: DateExtractStep) -> MongoStep:
@@ -25,89 +25,31 @@ def _extract_quarter(step: DateExtractStep) -> MongoStep:
 
 
 def _extract_first_day_of_year(step: DateExtractStep) -> MongoStep:
-    return {
-        "$dateFromParts": {"year": {"$year": f"${step.column}"}, "month": 1, "day": 1},
-    }
+    return extract_first_day_of_year(step.column)
 
 
 def _extract_first_day_of_month(step: DateExtractStep) -> MongoStep:
-    return {
-        "$dateFromParts": {
-            "year": {"$year": f"${step.column}"},
-            "month": {"$month": f"${step.column}"},
-            "day": 1,
-        },
-    }
+    return extract_first_day_of_month(step.column)
 
 
 def _extract_first_day_of_week(step: DateExtractStep) -> MongoStep:
-    return _truncate_date_to_day(
-        {
-            # We subtract to the target date a number of days corresponding to (dayOfWeek - 1)
-            "$subtract": [
-                f"${step.column}",
-                {
-                    "$multiply": [
-                        {"$subtract": [{"$dayOfWeek": f"${step.column}"}, 1]},
-                        24 * 60 * 60 * 1000,
-                    ],
-                },
-            ],
-        }
-    )
+    return extract_first_day_of_week(step.column)
 
 
 def _extract_first_day_of_quarter(step: DateExtractStep) -> MongoStep:
-    return {
-        "$dateFromParts": {
-            "year": {"$year": f"${step.column}"},
-            "month": {
-                "$switch": {
-                    "branches": [
-                        {
-                            "case": {"$lte": [{"$divide": [{"$month": f"${step.column}"}, 3]}, 1]},
-                            "then": 1,
-                        },
-                        {
-                            "case": {"$lte": [{"$divide": [{"$month": f"${step.column}"}, 3]}, 2]},
-                            "then": 4,
-                        },
-                        {
-                            "case": {"$lte": [{"$divide": [{"$month": f"${step.column}"}, 3]}, 3]},
-                            "then": 7,
-                        },
-                    ],
-                    "default": 10,
-                },
-            },
-            "day": 1,
-        },
-    }
+    return extract_first_day_of_quarter(step.column)
 
 
 def _extract_first_day_of_iso_week(step: DateExtractStep) -> MongoStep:
-    return _truncate_date_to_day(
-        {
-            # We subtract to the target date a number of days corresponding to (isoDayOfWeek - 1)
-            "$subtract": [
-                f"${step.column}",
-                {
-                    "$multiply": [
-                        {"$subtract": [{"$isoDayOfWeek": f"${step.column}"}, 1]},
-                        24 * 60 * 60 * 1000,
-                    ],
-                },
-            ],
-        }
-    )
+    return extract_first_day_of_iso_week(step.column)
 
 
 def _extract_current_day(step: DateExtractStep) -> MongoStep:
-    return _truncate_date_to_day(f"${step.column}")
+    return extract_current_day(step.column)
 
 
 def _extract_previous_day(step: DateExtractStep) -> MongoStep:
-    return _truncate_date_to_day(
+    return truncate_date_to_day(
         {
             # We subtract to the target date 1 day in milliseconds
             "$subtract": [f"${step.column}", 24 * 60 * 60 * 1000],
@@ -148,7 +90,7 @@ def _extract_first_day_of_previous_month(step: DateExtractStep) -> MongoStep:
 
 
 def _extract_first_day_of_previous_week(step: DateExtractStep) -> MongoStep:
-    return _truncate_date_to_day(
+    return truncate_date_to_day(
         {
             # We subtract to the target date a number of days corresponding to (dayOfWeek - 1)
             "$subtract": [
@@ -199,7 +141,7 @@ def _extract_first_day_of_previous_quarter(step: DateExtractStep) -> MongoStep:
 
 
 def _extract_first_day_of_previous_iso_week(step: DateExtractStep) -> MongoStep:
-    return _truncate_date_to_day(
+    return truncate_date_to_day(
         {
             # We subtract to the target date a number of days corresponding to (isoDayOfWeek - 1)
             "$subtract": [

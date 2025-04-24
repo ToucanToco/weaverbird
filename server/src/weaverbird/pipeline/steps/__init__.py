@@ -14,6 +14,7 @@ from .cumsum import CumSumStep, CumSumStepWithVariable
 from .custom import CustomStep
 from .customsql import CustomSqlStep
 from .date_extract import DateExtractStep, DateExtractStepWithVariable
+from .date_granularity import DateGranularityStep, DateGranularityStepWithVariable
 from .delete import DeleteStep
 from .dissolve import DissolveStep
 from .domain import DomainStep

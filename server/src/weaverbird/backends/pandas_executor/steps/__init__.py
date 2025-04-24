@@ -12,6 +12,7 @@ from .concatenate import execute_concatenate
 from .convert import execute_convert
 from .cumsum import execute_cumsum
 from .date_extract import execute_date_extract
+from .date_granularity import execute_date_granularity
 from .delete import execute_delete
 from .dissolve import execute_dissolve
 from .domain import execute_domain
@@ -61,6 +62,7 @@ steps_executors: dict[str, StepExecutor] = {
     "convert": execute_convert,
     "cumsum": execute_cumsum,
     "dateextract": execute_date_extract,
+    "dategranularity": execute_date_granularity,
     "delete": execute_delete,
     "dissolve": execute_dissolve,
     "domain": execute_domain,  # type: ignore

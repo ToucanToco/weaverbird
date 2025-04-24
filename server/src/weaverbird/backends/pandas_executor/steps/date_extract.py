@@ -3,6 +3,14 @@ from typing import get_args
 from pandas import DataFrame, to_datetime, to_timedelta
 from pandas.api.types import is_unsigned_integer_dtype
 
+from weaverbird.backends.pandas_executor.date_extractors import (
+    extract_current_day_date,
+    extract_first_day_of_iso_week,
+    extract_first_day_of_month,
+    extract_first_day_of_quarter,
+    extract_first_day_of_week,
+    extract_first_day_of_year,
+)
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.pipeline.steps import DateExtractStep
 from weaverbird.pipeline.steps.date_extract import DATE_INFO, TIMESTAMP_DATE_PARTS
@@ -47,38 +55,17 @@ def execute_date_extract(
         elif dt_info == "isoDayOfWeek":
             result = series_dt_accessor.isocalendar().day
         elif dt_info == "firstDayOfYear":
-            result = to_datetime(DataFrame({"year": series_dt_accessor.year, "month": 1, "day": 1}))
+            result = extract_first_day_of_year(series_dt)
         elif dt_info == "firstDayOfMonth":
-            result = to_datetime(
-                DataFrame({"year": series_dt_accessor.year, "month": series_dt_accessor.month, "day": 1})
-            )
+            result = extract_first_day_of_month(series_dt)
         elif dt_info == "firstDayOfWeek":
-            # dayofweek should be between 1 (sunday) and 7 (saturday)
-            dayofweek = (series_dt_accessor.dayofweek + 2) % 7
-            dayofweek = dayofweek.replace({0: 7})
-            # we subtract a number of days corresponding to(dayOfWeek - 1)
-            result = series_dt - to_timedelta(dayofweek - 1, unit="d")
-            # the result should be returned with 0-ed time information
-            result = to_datetime(result.dt.date)
+            result = extract_first_day_of_week(series_dt)
         elif dt_info == "firstDayOfQuarter":
-            result = to_datetime(
-                DataFrame(
-                    {
-                        "year": series_dt_accessor.year,
-                        "month": 3 * ((series_dt_accessor.month - 1) // 3) + 1,
-                        "day": 1,
-                    }
-                )
-            )
+            result = extract_first_day_of_quarter(series_dt)
         elif dt_info == "firstDayOfIsoWeek":
-            dayofweek = series_dt_accessor.isocalendar().day
-            # we subtract a number of days corresponding to(dayOfWeek - 1)
-            result = series_dt - to_timedelta(dayofweek - 1, unit="d")
-            # the result should be returned with 0-ed time information
-            result = to_datetime(result.dt.date)
+            result = extract_first_day_of_iso_week(series_dt)
         elif dt_info == "currentDay":
-            # the result should be returned with 0-ed time information
-            result = series_dt_accessor.normalize()
+            result = extract_current_day_date(series_dt)
         elif dt_info == "previousDay":
             result = series_dt - to_timedelta(1, unit="d")
             # the result should be returned with 0-ed time information

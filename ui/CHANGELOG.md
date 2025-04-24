@@ -2,11 +2,15 @@
 
 ## Unreleased
 
+### Added
+
+- A new `dategranularity` step was added to help build dynamic date aggregations.
+
 ## [0.116.1] - 2025-04-15
 
 ### Changed
 
-Changed wording for `countNulls` in `AggregateStepForm` from "If true, counts null values like regular values" to "Count
+- Changed wording for `countNulls` in `AggregateStepForm` from "If true, counts null values like regular values" to "Count
 null values like regular values"
 
 ## [0.116.0] - 2025-04-15

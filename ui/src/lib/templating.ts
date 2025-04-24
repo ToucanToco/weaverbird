@@ -257,6 +257,13 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     };
   }
 
+  dategranularity(step: Readonly<S.DateGranularityStep>) {
+    return {
+      ...step,
+      granularity: _interpolate(this.interpolateFunc, step.granularity, this.context),
+    };
+  }
+
   delete(step: Readonly<S.DeleteStep>) {
     return { ...step };
   }
