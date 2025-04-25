@@ -2,7 +2,7 @@ from typing import Literal
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMixin
-from weaverbird.pipeline.types import ColumnName
+from weaverbird.pipeline.types import ColumnName, TemplatedVariable
 
 DATE_GRANULARITY = Literal[
     "day",
@@ -21,4 +21,5 @@ class DateGranularityStep(BaseStep):
     new_column: ColumnName | None = None
 
 
-class DateGranularityStepWithVariable(DateGranularityStep, StepWithVariablesMixin): ...
+class DateGranularityStepWithVariable(DateGranularityStep, StepWithVariablesMixin):
+    granularity: TemplatedVariable

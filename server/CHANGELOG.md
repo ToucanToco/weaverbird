@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Step `dategranularity` now supports variables in `granularity` field.
+
 ## [0.55.0] - 2025-04-24
 
 ### Added
