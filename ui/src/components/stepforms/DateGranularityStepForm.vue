@@ -18,15 +18,16 @@
       :selectedColumns="selectedColumns"
       @setSelectedColumns="setSelectedColumns"
     />
+    <!-- Uses `granularity` getter/setter to support both variables (string) and enum values (GranularityOption) -->
     <AutocompleteWidget
       class="dateInfoInput"
-      v-model="editedStep.granularity"
+      v-model="granularity"
       name="Date granularity to apply:"
       :options="granularities"
       :trackBy="`info`"
       :label="`label`"
       placeholder="Select one or several"
-      data-path=".dateInfo"
+      data-path=".granularity"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :trusted-variable-delimiters="trustedVariableDelimiters"
@@ -76,6 +77,7 @@ export default class DateGranularityStepForm extends BaseStepForm<DateGranularit
     default: () => ({
       name: 'dategranularity',
       column: '',
+      granularity: '',
     }),
   })
   declare initialStepValue: DateGranularityStep;
@@ -104,6 +106,15 @@ export default class DateGranularityStepForm extends BaseStepForm<DateGranularit
     } else {
       return null;
     }
+  }
+
+  get granularity(): GranularityOption {
+    const enumOption = this.granularities.filter((d) => d.info === this.editedStep.granularity)[0];
+    return enumOption ?? this.editedStep.granularity;
+  }
+
+  set granularity(input: GranularityOption | string | undefined) {
+    this.editedStep.granularity = typeof input == 'string' ? input : input?.info ?? '';
   }
 }
 </script>

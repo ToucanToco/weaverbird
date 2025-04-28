@@ -33,15 +33,15 @@ describe('DateGranularity Step Form', () => {
         },
         {
           dataPath: '.granularity',
-          keyword: 'pattern',
-        },
-        {
-          dataPath: '.granularity',
-          keyword: 'pattern',
-        },
-        {
-          dataPath: '.granularity',
           keyword: 'enum',
+        },
+        {
+          dataPath: '.granularity',
+          keyword: 'pattern',
+        },
+        {
+          dataPath: '.granularity',
+          keyword: 'pattern',
         },
         {
           dataPath: '.granularity',
@@ -68,15 +68,15 @@ describe('DateGranularity Step Form', () => {
       errors: [
         {
           dataPath: '.granularity',
-          keyword: 'pattern',
-        },
-        {
-          dataPath: '.granularity',
-          keyword: 'pattern',
-        },
-        {
-          dataPath: '.granularity',
           keyword: 'enum',
+        },
+        {
+          dataPath: '.granularity',
+          keyword: 'pattern',
+        },
+        {
+          dataPath: '.granularity',
+          keyword: 'pattern',
         },
         {
           dataPath: '.granularity',
@@ -139,7 +139,8 @@ describe('DateGranularity Step Form', () => {
       },
     });
     await wrapper.vm.$nextTick();
-    expect(wrapper.find('AutocompleteWidget-stub').props('value')).toEqual('year');
+    const transferedValue = wrapper.find('AutocompleteWidget-stub').props('value');
+    expect(transferedValue?.info).toEqual('year');
   });
 
   it('should update editedStep when Autocomplete is updated', async () => {

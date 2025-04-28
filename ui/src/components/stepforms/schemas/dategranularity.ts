@@ -21,15 +21,16 @@ export default {
       minLength: 1,
       oneOf: [
         {
+          $comment: 'Listed first to display a legible validation message',
+          enum: ['year', 'quarter', 'month', 'isoWeek', 'week', 'day'],
+        },
+        {
           $comment: 'Front-end variable',
           pattern: '^<%=.+%>$',
         },
         {
           $comment: 'Back-end variable',
           pattern: '^\\{\\{.+\\}\\}$',
-        },
-        {
-          enum: ['year', 'quarter', 'month', 'isoWeek', 'week', 'day'],
         },
       ],
       title: 'Date granularity to apply',
