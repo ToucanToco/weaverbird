@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.117.1] - 2025-04-28
+
 ### Fixed
 
 - Step `dategranularity` now works properly with values like `day`, `month` as well as templated variables.
