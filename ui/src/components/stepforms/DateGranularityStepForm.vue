@@ -18,6 +18,7 @@
       :selectedColumns="selectedColumns"
       @setSelectedColumns="setSelectedColumns"
     />
+    <!-- Uses `granularity` getter/setter to support both variables (string) and enum values (GranularityOption) -->
     <AutocompleteWidget
       class="dateInfoInput"
       v-model="granularity"
