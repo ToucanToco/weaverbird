@@ -4,7 +4,7 @@
 
 ## [0.55.1] - 2025-04-28
 
-### Changed
+### Fixed
 
 - Step `dategranularity` now supports variables in `granularity` field.
 
