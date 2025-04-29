@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Step `todate` supports two-digit years up to 2100.
+- Mongo: step `todate` supports two-digit years (`%y`) like pandas.
 
 ## [0.55.1] - 2025-04-28
 

@@ -8,7 +8,7 @@ def translate_todate(step: ToDateStep) -> list[MongoStep]:
     col_as_string = {"$toString": f"${step.column}"}
 
     steps: list[dict] = []
-    add_two_millennia = False
+    should_guess_year = False
 
     if date_format:
         # % B and %b should be equivalent
@@ -16,7 +16,7 @@ def translate_todate(step: ToDateStep) -> list[MongoStep]:
 
         if "%y" in date_format:
             date_format = date_format.replace("%y", "%Y")
-            add_two_millennia = True
+            should_guess_year = True
 
     if not date_format:
         # Mongo will try to guess the date format
@@ -168,11 +168,25 @@ def translate_todate(step: ToDateStep) -> list[MongoStep]:
             }
         ]
 
-    if add_two_millennia is True:
+    # When year is stored as two-digits, it should be guessed like pandas %y:
+    # 00-68 -> 2000-2068 and 69-99 -> 1969-1999
+    if should_guess_year is True:
         steps.append(
             {
                 "$addFields": {
-                    step.column: {"$dateAdd": {"startDate": f"${step.column}", "unit": "year", "amount": 2000}}
+                    step.column: {
+                        "$dateAdd": {
+                            "startDate": f"${step.column}",
+                            "unit": "year",
+                            "amount": {
+                                "$cond": {
+                                    "if": {"$gt": [{"$year": f"${step.column}"}, 68]},
+                                    "then": 1900,
+                                    "else": 2000,
+                                }
+                            },
+                        }
+                    }
                 }
             }
         )
