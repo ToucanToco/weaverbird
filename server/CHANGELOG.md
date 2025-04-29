@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Step `todate` supports two-digit years up to 2100.
+
 ## [0.55.1] - 2025-04-28
 
 ### Fixed

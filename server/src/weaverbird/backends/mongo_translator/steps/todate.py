@@ -7,13 +7,20 @@ def translate_todate(step: ToDateStep) -> list[MongoStep]:
 
     col_as_string = {"$toString": f"${step.column}"}
 
+    steps: list[dict] = []
+    add_two_millennia = False
+
     if date_format:
         # % B and %b should be equivalent
         date_format = date_format.replace("%B", "%b")
 
+        if "%y" in date_format:
+            date_format = date_format.replace("%y", "%Y")
+            add_two_millennia = True
+
     if not date_format:
         # Mongo will try to guess the date format
-        return [
+        steps = [
             {
                 "$addFields": {
                     step.column: {
@@ -65,7 +72,7 @@ def translate_todate(step: ToDateStep) -> list[MongoStep]:
     # Mongo doesn't handle months names (%b and %B), so we replace them by numbers before converting
     # All these could probably be factorized to make it easier to read!
     elif date_format == "%d %b %Y":
-        return [
+        steps = [
             {"$addFields": {"_vqbTempArray": {"$split": [col_as_string, " "]}}},
             _extract_date_parts_to_temp_fields(2, 1, 0),
             MONTH_REPLACEMENT_STEP,
@@ -84,7 +91,7 @@ def translate_todate(step: ToDateStep) -> list[MongoStep]:
         ]
 
     elif date_format == "%d-%b-%Y":
-        return [
+        steps = [
             {"$addFields": {"_vqbTempArray": {"$split": [col_as_string, "-"]}}},
             _extract_date_parts_to_temp_fields(2, 1, 0),
             MONTH_REPLACEMENT_STEP,
@@ -103,7 +110,7 @@ def translate_todate(step: ToDateStep) -> list[MongoStep]:
         ]
 
     elif date_format == "%b %Y":
-        return [
+        steps = [
             {"$addFields": {"_vqbTempArray": {"$split": [col_as_string, " "]}}},
             _extract_date_parts_to_temp_fields(1, 0),
             MONTH_REPLACEMENT_STEP,
@@ -112,7 +119,7 @@ def translate_todate(step: ToDateStep) -> list[MongoStep]:
         ]
 
     elif date_format == "%b-%Y":
-        return [
+        steps = [
             {"$addFields": {"_vqbTempArray": {"$split": [col_as_string, "-"]}}},
             _extract_date_parts_to_temp_fields(1, 0),
             MONTH_REPLACEMENT_STEP,
@@ -122,32 +129,32 @@ def translate_todate(step: ToDateStep) -> list[MongoStep]:
 
     # Mongo does not support dates where some parts of the date are missing
     elif date_format == "%Y-%m":
-        return [
+        steps = [
             _concat_fields_to_date(step.column, [col_as_string, "-01"], "%Y-%m-%d"),
         ]
 
     elif date_format == "%Y/%m":
-        return [
+        steps = [
             _concat_fields_to_date(step.column, ["/01", col_as_string], "%Y/%m/%d"),
         ]
 
     elif date_format == "%m-%Y":
-        return [
+        steps = [
             _concat_fields_to_date(step.column, ["01-", col_as_string], "%d-%m-%Y"),
         ]
 
     elif date_format == "%m/%Y":
-        return [
+        steps = [
             _concat_fields_to_date(step.column, ["01/", col_as_string], "%d/%m/%Y"),
         ]
 
     elif date_format == "%Y":
-        return [
+        steps = [
             _concat_fields_to_date(step.column, [col_as_string, "-01-01"], "%Y-%m-%d"),
         ]
 
     else:
-        return [
+        steps = [
             {
                 "$addFields": {
                     step.column: {
@@ -160,6 +167,17 @@ def translate_todate(step: ToDateStep) -> list[MongoStep]:
                 }
             }
         ]
+
+    if add_two_millennia is True:
+        steps.append(
+            {
+                "$addFields": {
+                    step.column: {"$dateAdd": {"startDate": f"${step.column}", "unit": "year", "amount": 2000}}
+                }
+            }
+        )
+
+    return steps
 
 
 MONTH_NUMBER_TO_NAMES = {
