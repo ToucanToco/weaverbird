@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Mongo: step `todate` properly supports two-digit years (`%y`).
+
 ## [0.55.1] - 2025-04-28
 
 ### Fixed
