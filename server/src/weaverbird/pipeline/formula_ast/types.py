@@ -14,7 +14,7 @@ class Operator(str, Enum):
     MOD = "%"
 
 
-Constant = int | bool | float | str
+Constant = int | bool | float | str | None
 
 
 class ColumnName(BaseModel):
@@ -45,6 +45,8 @@ def format_expr(
     column_end_seq: str = "]",
     bools_as_py: bool = False,
 ) -> str | int | float:
+    if expr is None:
+        return "null"
     if isinstance(expr, Operation):
         left = format_expr(
             expr.left,
