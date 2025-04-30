@@ -4,7 +4,7 @@
 
 ### Breaking
 
-- Formulas now accepts `null`. Old formulas referencing a column named `null` must do so by using `[null]` instead.
+- Formulas now accepts `null`. Old formulas referencing a column named `null` must do so by stating `[null]` instead.
 
 ### Fixed
 
