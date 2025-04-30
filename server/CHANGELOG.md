@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Mongo: step `todate` supports two-digit years (`%y`) like pandas.
+- Mongo: step `todate` properly supports two-digit years (`%y`).
 
 ## [0.55.1] - 2025-04-28
 
