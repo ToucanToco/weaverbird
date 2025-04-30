@@ -170,7 +170,7 @@ def translate_todate(step: ToDateStep) -> list[MongoStep]:
 
     # When year is stored as two-digits, it should be guessed like pandas %y:
     # 00-68 -> 2000-2068 and 69-99 -> 1969-1999
-    if should_guess_century is True:
+    if should_guess_century:
         steps.append(
             {
                 "$addFields": {
