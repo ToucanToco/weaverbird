@@ -42,14 +42,7 @@ jobs:
         run: yarn format:ci
 
       - name: Lint
-        run: yarn lint:ci
-
-      - name: Archive lint report
-        uses: actions/upload-artifact@v4
-        with:
-          name: lint-report
-          path: ui/lint-report.json
-        if: failure()
+        run: yarn lint
 
       - name: Unit tests
         run: yarn coverage
