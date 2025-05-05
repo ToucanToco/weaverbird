@@ -115,16 +115,18 @@ class FormulaParser:
             case _:
                 raise UnsupportedOperator(f"Unsupported operator: {op}")
 
-    def _build_name(self, name: str) -> types.ColumnName | bool:
+    def _build_name(self, name: str) -> types.ColumnName | bool | None:
         """Builds a ColumnName from a raw name.
 
         In case the name is "true" or "false", returns the equivalent boolean
-        (users do not expect to have to capitalize booleans).
+        (users do not expect to have to capitalize booleans). Same for "null".
         """
         if name == "true":
             return True
         if name == "false":
             return False
+        if name == types.NULL_REPR:
+            return None
         return (
             types.ColumnName(name=self._columns[name], alias=name)
             if name in self._columns
@@ -159,7 +161,7 @@ class FormulaParser:
                     raise UnsupportedConstant(f"Unsupported constant '{expr}' of type {type(value)}")
             # Column name
             case ast.Name(id=name):
-                return None if name == "null" else self._build_name(name)
+                return self._build_name(name)
             case _:
                 raise UnsupportedExpression(f"Unsupported expression: {ast.dump(expr)}")
 

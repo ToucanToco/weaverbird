@@ -35,6 +35,9 @@ class Operation(BaseModel):
 Operation.model_rebuild()
 
 
+NULL_REPR = "null"
+
+
 # For debugging purpose: DO NOT REMOVE!
 def format_expr(
     expr: Expression,
@@ -46,7 +49,7 @@ def format_expr(
     bools_as_py: bool = False,
 ) -> str | int | float:
     if expr is None:
-        return "null"
+        return NULL_REPR
     if isinstance(expr, Operation):
         left = format_expr(
             expr.left,
