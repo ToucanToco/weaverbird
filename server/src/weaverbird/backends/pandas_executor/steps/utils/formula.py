@@ -16,10 +16,7 @@ _OP_MAP = {
 
 
 class NullSeries(Series):
-    """
-    When the expr is "null", this is a float series filled with NaN.
-    This subclass allow us to keep this information for necessary casts, e.g in ifthenelse step.
-    """
+    """This type allow us to know that a series is filled with None without re-checking all its content."""
 
     def __init__(self, index: DataFrame.index):
         Series.__init__(self, index=index, dtype="object")
