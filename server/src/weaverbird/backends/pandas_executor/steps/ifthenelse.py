@@ -16,7 +16,7 @@ def _execute_ifthenelse(ifthenelse: IfThenElse, df: DataFrame, new_column) -> Da
 
     then_branch = eval_formula(df, str(ifthenelse.then))
 
-    # If one of the branch is filled with null, we cast it to the non-null type to avoid date issues
+    # If one of the branches is null, we cast it to the non-null type to avoid typing issues
     else_branch_is_null = isinstance(else_branch, NullSeries)
     then_branch_is_null = isinstance(then_branch, NullSeries)
 
