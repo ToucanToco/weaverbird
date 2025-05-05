@@ -75,7 +75,7 @@ def test_simple_condition_with_null():
             "newColumn": "test",
             "if": {"column": "a_str", "value": "test", "operator": "eq"},
             "then": '"foo"',
-            "else": 'null',
+            "else": "null",
         }
     )
     result_df = execute_ifthenelse(step, sample_df)
