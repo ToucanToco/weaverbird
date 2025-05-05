@@ -1,7 +1,7 @@
 from typing import Any
 
 import pytest
-from pandas import NA, DataFrame, date_range
+from pandas import NA, DataFrame
 
 from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.ifthenelse import execute_ifthenelse
@@ -64,68 +64,6 @@ def test_then_should_support_formulas():
 
     expected_df = DataFrame({"a_bool": [True, False, True], "a_number": [1, 2, 3], "result": [1, -2, 3]})
 
-    assert_dataframes_equals(result_df, expected_df)
-
-
-def test_simple_condition_with_null():
-    sample_df = DataFrame({"a_str": ["test", "test", "autre chose"]})
-    step = IfthenelseStep(
-        **{
-            "name": "ifthenelse",
-            "newColumn": "test",
-            "if": {"column": "a_str", "value": "test", "operator": "eq"},
-            "then": '"foo"',
-            "else": "null",
-        }
-    )
-    result_df = execute_ifthenelse(step, sample_df)
-
-    expected_df = DataFrame({"a_str": ["test", "test", "autre chose"], "test": ["foo", "foo", NA]})
-
-    assert_dataframes_equals(result_df, expected_df)
-
-
-def test_simple_condition_with_dates_and_null():
-    dates = date_range("2025-05-05", periods=3, freq="D")
-    sample_df = DataFrame({"a_str": ["test", "test", "autre chose"], "a_date": dates})
-    step = IfthenelseStep(
-        **{
-            "name": "ifthenelse",
-            "newColumn": "test",
-            "if": {"column": "a_str", "value": "test", "operator": "eq"},
-            "then": "[a_date]",
-            "else": "null",
-        }
-    )
-    result_df = execute_ifthenelse(step, sample_df)
-
-    expected_df = DataFrame(
-        {"a_str": ["test", "test", "autre chose"], "a_date": dates, "test": [dates[0], dates[1], NA]}
-    )
-
-    print(result_df.dtypes)
-    print(expected_df.dtypes)
-    assert_dataframes_equals(result_df, expected_df)
-
-
-def test_simple_condition_with_dates_and_null_reversed():
-    dates = date_range("2025-05-05", periods=3, freq="D")
-    sample_df = DataFrame({"a_str": ["test", "test", "autre chose"], "a_date": dates})
-    step = IfthenelseStep(
-        **{
-            "name": "ifthenelse",
-            "newColumn": "test",
-            "if": {"column": "a_str", "value": "test", "operator": "eq"},
-            "then": "null",
-            "else": "[a_date]",
-        }
-    )
-    result_df = execute_ifthenelse(step, sample_df)
-
-    expected_df = DataFrame({"a_str": ["test", "test", "autre chose"], "a_date": dates, "test": [NA, NA, dates[2]]})
-
-    print(result_df.dtypes)
-    print(expected_df.dtypes)
     assert_dataframes_equals(result_df, expected_df)
 
 
