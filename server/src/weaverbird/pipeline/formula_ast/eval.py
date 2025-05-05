@@ -153,13 +153,13 @@ class FormulaParser:
                 return types.Operation(left=self._parse_expr(left), right=self._parse_expr(right), operator=operator)
             # Constant: number, string literal or boolean
             case ast.Constant(value=value):
-                if isinstance(value, bool | int | float | str):
+                if isinstance(value, bool | int | float | str | None):
                     return value
                 else:
                     raise UnsupportedConstant(f"Unsupported constant '{expr}' of type {type(value)}")
             # Column name
             case ast.Name(id=name):
-                return self._build_name(name)
+                return None if name == "null" else self._build_name(name)
             case _:
                 raise UnsupportedExpression(f"Unsupported expression: {ast.dump(expr)}")
 

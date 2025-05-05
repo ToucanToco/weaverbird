@@ -67,6 +67,24 @@ def test_then_should_support_formulas():
     assert_dataframes_equals(result_df, expected_df)
 
 
+def test_simple_condition_with_null():
+    sample_df = DataFrame({"a_str": ["test", "test", "autre chose"]})
+    step = IfthenelseStep(
+        **{
+            "name": "ifthenelse",
+            "newColumn": "test",
+            "if": {"column": "a_str", "value": "test", "operator": "eq"},
+            "then": '"foo"',
+            "else": 'null',
+        }
+    )
+    result_df = execute_ifthenelse(step, sample_df)
+
+    expected_df = DataFrame({"a_str": ["test", "test", "autre chose"], "test": ["foo", "foo", NA]})
+
+    assert_dataframes_equals(result_df, expected_df)
+
+
 def test_then_should_support_nested_else():
     base_df = DataFrame({"a_bool": [True, False, False], "a_number": [1, 2, 3]})
     step = IfthenelseStep(
