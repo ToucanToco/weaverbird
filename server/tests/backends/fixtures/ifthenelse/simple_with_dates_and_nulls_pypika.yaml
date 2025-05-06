@@ -18,7 +18,7 @@ step:
       else: "null"
     - name: ifthenelse
       if:
-        column: index
+        column: name
         operator: eq
         value: Brasserie De Sutter Brin de Folie
       newColumn: date_c
