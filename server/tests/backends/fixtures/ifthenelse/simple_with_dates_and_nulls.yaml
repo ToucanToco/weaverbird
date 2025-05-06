@@ -22,7 +22,7 @@ step:
         value: 5
       newColumn: date_c
       then: "null"
-      else: "[date_b]"
+      else: "date_b"
 input:
   schema:
     fields:
