@@ -23,7 +23,7 @@ step:
         value: Brasserie De Sutter Brin de Folie
       newColumn: date_c
       then: "null"
-      else: "date_b"
+      else: date_b
 expected:
   data:
     - name: Superstrong beer
