@@ -1,0 +1,79 @@
+exclude:
+  - mongo
+  - pandas
+  - snowflake
+step:
+  pipeline:
+    - columns:
+        - name
+        - brewing_date
+      name: select
+    - name: ifthenelse
+      if:
+        column: name
+        operator: ne
+        value: Cuvée des Trolls
+      newColumn: date_b
+      then: "[brewing_date]"
+      else: "null"
+    - name: ifthenelse
+      if:
+        column: name
+        operator: eq
+        value: Brasserie De Sutter Brin de Folie
+      newColumn: date_c
+      then: "null"
+      else: date_b
+expected:
+  data:
+    - name: Superstrong beer
+      brewing_date: "2022-01-01T00:00:00"
+      date_b: "2022-01-01T00:00:00"
+      date_c: "2022-01-01T00:00:00"
+    - name: Ninkasi Ploploplop
+      brewing_date: "2022-01-02T00:00:00"
+      date_b: "2022-01-02T00:00:00"
+      date_c: "2022-01-02T00:00:00"
+    - name: Brewdog Nanny State Alcoholvrij
+      brewing_date: "2022-01-03T00:00:00"
+      date_b: "2022-01-03T00:00:00"
+      date_c: "2022-01-03T00:00:00"
+    - name: Ardwen Blonde
+      brewing_date: "2022-01-04T00:00:00"
+      date_b: "2022-01-04T00:00:00"
+      date_c: "2022-01-04T00:00:00"
+    - name: Cuvée des Trolls
+      brewing_date: "2022-01-05T00:00:00"
+      date_b: null
+      date_c: null
+    - name: Weihenstephan Hefe Weizen Alcoholarm
+      brewing_date: "2022-01-06T00:00:00"
+      date_b: "2022-01-06T00:00:00"
+      date_c: "2022-01-06T00:00:00"
+    - name: Bellfield Lawless Village IPA
+      brewing_date: "2022-01-07T00:00:00"
+      date_b: "2022-01-07T00:00:00"
+      date_c: "2022-01-07T00:00:00"
+    - name: Pauwel Kwak
+      brewing_date: "2022-01-08T00:00:00"
+      date_b: "2022-01-08T00:00:00"
+      date_c: "2022-01-08T00:00:00"
+    - name: Brasserie De Sutter Brin de Folie
+      brewing_date: "2022-01-09T00:00:00"
+      date_b: "2022-01-09T00:00:00"
+      date_c: null
+    - name: Brugse Zot blonde
+      brewing_date: "2022-01-10T00:00:00"
+      date_b: "2022-01-10T00:00:00"
+      date_c: "2022-01-10T00:00:00"
+  schema:
+    fields:
+      - name: name
+        type: string
+      - name: brewing_date
+        type: datetime
+      - name: date_b
+        type: datetime
+      - name: date_c
+        type: datetime
+    pandas_version: 1.4.0

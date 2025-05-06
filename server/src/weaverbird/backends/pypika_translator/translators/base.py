@@ -1467,7 +1467,11 @@ class SQLTranslator(ABC):
         except (json.JSONDecodeError, TypeError):
             # the value is a formula or a string literal that can't be parsed
             then_value = formula_to_term(then_, prev_step_table)
-            case_ = case_.when(self._get_filter_criterion(if_, prev_step_table), LiteralValue(then_value))
+
+            if not isinstance(then_value, Field):
+                then_value = LiteralValue(then_value)
+
+            case_ = case_.when(self._get_filter_criterion(if_, prev_step_table), then_value)
 
         if isinstance(else_, IfThenElse):
             return self._build_ifthenelse_case(
@@ -1485,6 +1489,10 @@ class SQLTranslator(ABC):
             except (json.JSONDecodeError, TypeError):
                 # the value is a formula or a string literal that can't be parsed
                 else_value = formula_to_term(else_, prev_step_table)
+
+                if not isinstance(else_value, Field):
+                    else_value = LiteralValue(else_value)
+
                 return case_.else_(else_value)
 
     def ifthenelse(

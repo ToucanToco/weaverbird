@@ -1,0 +1,89 @@
+exclude:
+  - athena_pypika
+  - bigquery_pypika
+  - mysql_pypika
+  - postgres_pypika
+  - redshift_pypika
+  - snowflake_pypika
+step:
+  pipeline:
+    - name: ifthenelse
+      if:
+        column: index
+        operator: ne
+        value: 3
+      newColumn: date_b
+      then: "[date_a]"
+      else: "null"
+    - name: ifthenelse
+      if:
+        column: index
+        operator: eq
+        value: 5
+      newColumn: date_c
+      then: "null"
+      else: date_b
+input:
+  schema:
+    fields:
+      - name: index
+        type: integer
+      - name: date_a
+        type: datetime
+    pandas_version: 0.20.0
+  data:
+    - index: 0
+      date_a: "1969-03-15T00:00:00.000"
+    - index: 1
+      date_a: null
+    - index: 2
+      date_a: "1984-02-22T00:00:00.000"
+    - index: 3
+      date_a: "1999-06-30T00:00:00.000"
+    - index: 4
+      date_a: "2001-10-06T00:00:00.000"
+    - index: 5
+      date_a: "2019-10-07T00:00:00.000"
+    - index: 6
+      date_a: "2040-10-08T00:00:00.000"
+expected:
+  schema:
+    fields:
+      - name: index
+        type: integer
+      - name: date_a
+        type: datetime
+      - name: date_b
+        type: datetime
+      - name: date_c
+        type: datetime
+    pandas_version: 0.20.0
+  data:
+    - index: 0
+      date_a: "1969-03-15T00:00:00.000"
+      date_b: "1969-03-15T00:00:00.000"
+      date_c: "1969-03-15T00:00:00.000"
+    - index: 1
+      date_a: null
+      date_b: null
+      date_c: null
+    - index: 2
+      date_a: "1984-02-22T00:00:00.000"
+      date_b: "1984-02-22T00:00:00.000"
+      date_c: "1984-02-22T00:00:00.000"
+    - index: 3
+      date_a: "1999-06-30T00:00:00.000"
+      date_b: null
+      date_c: null
+    - index: 4
+      date_a: "2001-10-06T00:00:00.000"
+      date_b: "2001-10-06T00:00:00.000"
+      date_c: "2001-10-06T00:00:00.000"
+    - index: 5
+      date_a: "2019-10-07T00:00:00.000"
+      date_b: "2019-10-07T00:00:00.000"
+      date_c: null
+    - index: 6
+      date_a: "2040-10-08T00:00:00.000"
+      date_b: "2040-10-08T00:00:00.000"
+      date_c: "2040-10-08T00:00:00.000"
