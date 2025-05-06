@@ -17,7 +17,7 @@ _OP_MAP = {
 
 class NullSeries(Series):
     """A Series containing only null values.
-    
+
     This type allows us to know that a Series is filled with null values without having to check its content
     """
 

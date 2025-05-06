@@ -119,7 +119,7 @@ class FormulaParser:
         """Builds a ColumnName from a raw name.
 
         In case the name is "true" or "false", returns the equivalent boolean
-        (users do not expect to have to capitalize booleans). 
+        (users do not expect to have to capitalize booleans).
         In case the name is "null", returns None.
         """
         if name == "true":
