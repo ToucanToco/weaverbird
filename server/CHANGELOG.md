@@ -4,11 +4,12 @@
 
 ### Breaking
 
-- Formulas now accepts `null`. Old formulas referencing a column named `null` must do so by stating `[null]` instead.
+- Formulas now accept `null` as a value. Old formulas referencing a column named `null` must do so by stating `[null]` instead.
 
 ### Fixed
 
 - Mongo: step `todate` properly supports two-digit years (`%y`).
+- Pypika: the GBQ translator now supports `[column]` in `ifthenelse` branches formulas.
 
 ## [0.55.1] - 2025-04-28
 
