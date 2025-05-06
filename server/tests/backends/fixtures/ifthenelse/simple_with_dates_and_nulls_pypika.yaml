@@ -44,8 +44,8 @@ expected:
       date_c: "2022-01-04T00:00:00"
     - name: Cuvée des Trolls
       brewing_date: "2022-01-05T00:00:00"
-      date_b: "2022-01-05T00:00:00"
-      date_c: "2022-01-05T00:00:00"
+      date_b: null
+      date_c: null
     - name: Weihenstephan Hefe Weizen Alcoholarm
       brewing_date: "2022-01-06T00:00:00"
       date_b: "2022-01-06T00:00:00"
@@ -61,7 +61,7 @@ expected:
     - name: Brasserie De Sutter Brin de Folie
       brewing_date: "2022-01-09T00:00:00"
       date_b: "2022-01-09T00:00:00"
-      date_c: "2022-01-09T00:00:00"
+      date_c: null
     - name: Brugse Zot blonde
       brewing_date: "2022-01-10T00:00:00"
       date_b: "2022-01-10T00:00:00"
