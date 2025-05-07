@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.56.0] - 2025-05-07
+
 ### Breaking
 
 - Formulas now accept `null` as a value. Old formulas referencing a column named `null` must do so by stating `[null]` instead.
