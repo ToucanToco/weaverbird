@@ -332,7 +332,6 @@ export default class MultiselectWidget extends FormWidget {
   ::v-deep .widget-variable__toggle {
     top: 10px;
     bottom: auto;
-    z-index: 50;
   }
 }
 
