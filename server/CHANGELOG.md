@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Playground feature has been removed.
+
 ## [0.56.0] - 2025-05-07
 
 ### Breaking

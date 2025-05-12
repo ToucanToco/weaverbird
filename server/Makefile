@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := all
-ruff = ruff check src tests playground.py
-format = ruff format src tests playground.py
+ruff = ruff check src tests
+format = ruff format src tests
 
 .PHONY: clean
 clean:
@@ -47,11 +47,3 @@ build:
 upload:
 	uv publish
 
-.PHONY: start_docker_playground
-start-docker-playground:
-	docker compose down
-	docker compose up -d weaverbird mongodb
-
-.PHONY: stop_docker_playground
-stop-docker-playground:
-	docker compose down
