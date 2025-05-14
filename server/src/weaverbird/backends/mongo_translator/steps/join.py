@@ -53,6 +53,18 @@ def translate_join(step: JoinStep) -> list[MongoStep]:
         }
     )
 
+    # Retrieve right domain col names
+    mongo_pipeline.append(
+        {
+            "$lookup": {
+                "from": right_domain.domain,
+                "let": mongo_let,
+                "pipeline": translate_pipeline(right_without_domain) + [{"$limit": 1}],
+                "as": "_vqbJoinKeyMetadata",
+            }
+        }
+    )
+
     if step.type == "inner":
         mongo_pipeline.append({"$unwind": "$_vqbJoinKey"})
     elif step.type == "left" or step.type == "left outer":
@@ -63,12 +75,28 @@ def translate_join(step: JoinStep) -> list[MongoStep]:
 
     mongo_pipeline.append(
         {
-            "$replaceRoot": {"newRoot": {"$mergeObjects": ["$_vqbJoinKey", "$$ROOT"]}},
+            "$replaceRoot": {
+                "newRoot": {
+                    "$mergeObjects": [
+                        {
+                            "$arrayToObject": {
+                                "$map": {
+                                    "input": {"$objectToArray": {"$first": "$_vqbJoinKeyMetadata"}},
+                                    "as": "metadata",
+                                    "in": {"$setField": {"field": "v", "input": "$$metadata", "value": None}},
+                                }
+                            }
+                        },
+                        "$_vqbJoinKey",
+                        "$$ROOT",
+                    ]
+                }
+            }
         }
     )
     mongo_pipeline.append(
         {
-            "$project": {"_vqbJoinKey": 0},
+            "$project": {"_vqbJoinKey": 0, "_vqbJoinKeyMetadata": 0},
         },
     )
     return mongo_pipeline
