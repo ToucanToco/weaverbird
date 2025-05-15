@@ -53,7 +53,7 @@ def translate_join(step: JoinStep) -> list[MongoStep]:
         }
     )
 
-    # Retrieve right domain col names
+    # Retrieve right domain first row to determine column names
     mongo_pipeline.append(
         {
             "$lookup": {
@@ -78,11 +78,17 @@ def translate_join(step: JoinStep) -> list[MongoStep]:
             "$replaceRoot": {
                 "newRoot": {
                     "$mergeObjects": [
+                        # Generate a document with the right_domain column names and `None` values to fill in for
+                        # documents that do not match the join conditions, in order to avoid unexpected behavior in the
+                        # subsequent pipeline steps.
                         {
                             "$arrayToObject": {
                                 "$map": {
+                                    # The `$objectToArray` operator converts an object into an array of key-value pairs
+                                    # in a deterministic format, e.g., [{"k": "key_1", "v": "value_1"}, ...].
                                     "input": {"$objectToArray": {"$first": "$_vqbJoinKeyMetadata"}},
                                     "as": "metadata",
+                                    # Set each value field to None
                                     "in": {"$setField": {"field": "v", "input": "$$metadata", "value": None}},
                                 }
                             }
