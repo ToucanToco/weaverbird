@@ -1,6 +1,7 @@
 import json
 import socket
 import uuid
+from collections.abc import Generator
 from io import StringIO
 
 import docker
@@ -8,7 +9,7 @@ import geopandas as gpd
 import pandas as pd
 import pytest
 from pandas.api.types import is_bool_dtype, is_datetime64_any_dtype, is_numeric_dtype
-from pymongo import MongoClient
+from pymongo import Database, MongoClient
 
 from tests.utils import assert_dataframes_content_equals, get_spec_from_json_fixture, retrieve_case
 from weaverbird.backends.mongo_translator.mongo_pipeline_translator import translate_pipeline
@@ -19,7 +20,7 @@ exec_type = "mongo"
 test_cases = retrieve_case("mongo_translator", exec_type)
 
 
-def unused_port():
+def unused_port() -> int:
     """find an unused TCP port and return it"""
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind(("127.0.0.1", 0))
@@ -27,12 +28,12 @@ def unused_port():
 
 
 @pytest.fixture(scope="session")
-def mongo_version():
+def mongo_version() -> str:
     return "7"
 
 
 @pytest.fixture(scope="session")
-def mongo_server_port(mongo_version):
+def mongo_server_port(mongo_version: int) -> Generator[int, None, None]:
     port = unused_port()
     docker_client = docker.from_env()
     container = docker_client.containers.run(
@@ -43,9 +44,11 @@ def mongo_server_port(mongo_version):
 
 
 @pytest.fixture()
-def mongo_database(mongo_server_port):
+def mongo_database(mongo_server_port: int, case_id: str) -> Database:
     client = MongoClient("localhost", mongo_server_port)
-    return client["tests"]
+    # Database names cannot contain the character '/'
+    # db name must be at most 63 characters
+    return client[case_id[1:63]]
 
 
 def _serialize_geo_df(gdf: pd.DataFrame) -> pd.DataFrame:
