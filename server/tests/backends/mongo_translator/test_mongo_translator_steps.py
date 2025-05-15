@@ -9,7 +9,8 @@ import geopandas as gpd
 import pandas as pd
 import pytest
 from pandas.api.types import is_bool_dtype, is_datetime64_any_dtype, is_numeric_dtype
-from pymongo import Database, MongoClient
+from pymongo import MongoClient
+from pymongo.database import Database
 
 from tests.utils import assert_dataframes_content_equals, get_spec_from_json_fixture, retrieve_case
 from weaverbird.backends.mongo_translator.mongo_pipeline_translator import translate_pipeline
