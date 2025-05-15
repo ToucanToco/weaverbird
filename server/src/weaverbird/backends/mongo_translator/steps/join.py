@@ -53,6 +53,18 @@ def translate_join(step: JoinStep) -> list[MongoStep]:
         }
     )
 
+    # Retrieve right domain first row to determine column names
+    mongo_pipeline.append(
+        {
+            "$lookup": {
+                "from": right_domain.domain,
+                "let": mongo_let,
+                "pipeline": translate_pipeline(right_without_domain) + [{"$limit": 1}],
+                "as": "_vqbJoinKeyMetadata",
+            }
+        }
+    )
+
     if step.type == "inner":
         mongo_pipeline.append({"$unwind": "$_vqbJoinKey"})
     elif step.type == "left" or step.type == "left outer":
@@ -63,12 +75,34 @@ def translate_join(step: JoinStep) -> list[MongoStep]:
 
     mongo_pipeline.append(
         {
-            "$replaceRoot": {"newRoot": {"$mergeObjects": ["$_vqbJoinKey", "$$ROOT"]}},
+            "$replaceRoot": {
+                "newRoot": {
+                    "$mergeObjects": [
+                        # Generate a document with the right_domain column names and `None` values to fill in for
+                        # documents that do not match the join conditions, in order to avoid unexpected behavior in the
+                        # subsequent pipeline steps.
+                        {
+                            "$arrayToObject": {
+                                "$map": {
+                                    # The `$objectToArray` operator converts an object into an array of key-value pairs
+                                    # in a deterministic format, e.g., [{"k": "key_1", "v": "value_1"}, ...].
+                                    "input": {"$objectToArray": {"$first": "$_vqbJoinKeyMetadata"}},
+                                    "as": "metadata",
+                                    # Set each value field to None
+                                    "in": {"$setField": {"field": "v", "input": "$$metadata", "value": None}},
+                                }
+                            }
+                        },
+                        "$_vqbJoinKey",
+                        "$$ROOT",
+                    ]
+                }
+            }
         }
     )
     mongo_pipeline.append(
         {
-            "$project": {"_vqbJoinKey": 0},
+            "$project": {"_vqbJoinKey": 0, "_vqbJoinKeyMetadata": 0},
         },
     )
     return mongo_pipeline

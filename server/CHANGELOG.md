@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Mongo: `join` step adds also new columns to rows that do not match join conditions.   
+
 ### Changed
 
 - Playground feature has been removed.

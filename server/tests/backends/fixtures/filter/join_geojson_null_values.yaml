@@ -1,0 +1,113 @@
+exclude:
+- athena_pypika
+- bigquery_pypika
+- mysql_pypika
+- postgres_pypika
+- redshift_pypika
+- snowflake
+- snowflake_pypika
+step:
+  pipeline:
+  - name: join
+    right_pipeline:
+    - name: domain
+      domain: countries
+    type: left
+    'on':
+    - - CODE_DEPT
+      - code
+  - name: filter
+    condition:
+      column: geometry
+      operator: isnull
+      value: null
+
+input:
+  schema:
+    fields:
+    - name: identifier
+      type: integer
+    - name: NOM_DEPT
+      type: string
+    - name: value
+      type: integer
+    - name: CODE_DEPT
+      type: string
+    pandas_version: 1.4.2
+  data:
+  - identifier: 0
+    NOM_DEPT: AIN
+    value: 3652
+    CODE_DEPT: 1
+  - identifier: 1
+    NOM_DEPT: AISNE
+    value: 3227
+    CODE_DEPT: 2
+  - identifier: 2
+    NOM_DEPT: ALLIER
+    value: 2106
+    CODE_DEPT: 3
+other_inputs:
+  countries:
+    schema: geojson
+    data:
+      type: FeatureCollection
+      features:
+        - type: Feature
+          geometry:
+            type: Polygon
+            coordinates:
+              - - - -1.571044921875
+                  - 42.956422511073335
+                - - -3.7353515625
+                  - 40.730608477796636
+                - - -0.406494140625
+                  - 39.59722324495565
+                - - 3.05419921875
+                  - 42.12267315117256
+                - - -1.571044921875
+                  - 42.956422511073335
+          properties:
+            code: 1
+            name: Ain
+          id: '01'
+        - type: Feature
+          geometry:
+            type: LineString
+            coordinates:
+              - - -0.230712890625
+                - 42.88401467044253
+              - - -0.274658203125
+                - 43.92163712834673
+              - - 1.549072265625
+                - 45.034714778688624
+              - - 3.427734375
+                - 44.98811302615805
+              - - 4.822998046875
+                - 44.10336537791152
+              - - 4.28466796875
+                - 43.44494295526125
+              - - 3.043212890625
+                - 42.36666166373274
+              - - -0.20191669464111328
+                - 42.879234772343025
+          properties:
+            code: 2
+            name: Aisne
+          id: '02'
+expected:
+  schema: geojson
+  data:
+    type: FeatureCollection
+    features:
+      - type: Feature
+        geometry:
+        properties:
+          identifier: 2
+          NOM_DEPT: ALLIER
+          value: 2106
+          CODE_DEPT: 3
+          id:
+          code:
+          name:
+        id: '02'
