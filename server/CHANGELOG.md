@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.57.0] - 2025-05-16
+
 ### Fixed
 
 - Mongo: `join` step adds also new columns to rows that do not match join conditions.   
