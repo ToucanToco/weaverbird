@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.117.2] - 2025-05-16
+
 ### Fixed
 
 - The `Multiselect` with variables is now properly rendered and do not display variable buttons above the options.
