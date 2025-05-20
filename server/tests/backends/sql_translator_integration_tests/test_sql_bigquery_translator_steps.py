@@ -9,7 +9,7 @@ from google.oauth2 import service_account
 from pandas.api.types import is_datetime64_any_dtype
 
 from tests.utils import (
-    _BEERS_TABLE_COLUMNS,
+    BEERS_TABLE_COLUMNS,
     assert_dataframes_equals,
     get_spec_from_json_fixture,
     retrieve_case,
@@ -46,10 +46,10 @@ def test_bigquery_translator_pipeline(
 
     if pipeline_spec["step"]["pipeline"][0]["name"] == "customsql":
         steps = pipeline_spec["step"]["pipeline"]
-        table_columns = pipeline_spec["step"].get("table_columns", _BEERS_TABLE_COLUMNS)
+        table_columns = pipeline_spec["step"].get("table_columns", BEERS_TABLE_COLUMNS)
     else:
         steps = [{"name": "domain", "domain": "beers_tiny"}] + pipeline_spec["step"]["pipeline"]
-        table_columns = _BEERS_TABLE_COLUMNS
+        table_columns = BEERS_TABLE_COLUMNS
 
     pipeline = PipelineWithVariables(steps=steps).render(
         available_variables, nosql_apply_parameters_to_query_with_errors

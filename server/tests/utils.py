@@ -14,7 +14,7 @@ from docker.models.containers import Container
 from pandas import DataFrame, Series
 from pandas.testing import assert_frame_equal, assert_series_equal
 
-_BEERS_TABLE_COLUMNS = [
+BEERS_TABLE_COLUMNS = [
     "price_per_l",
     "alcohol_degree",
     "name",

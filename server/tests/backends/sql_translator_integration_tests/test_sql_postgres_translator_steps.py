@@ -11,7 +11,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.engine.base import OptionEngine
 
 from tests.utils import (
-    _BEERS_TABLE_COLUMNS,
+    BEERS_TABLE_COLUMNS,
     assert_dataframes_equals,
     docker_container,
     get_spec_from_json_fixture,
@@ -83,7 +83,7 @@ def test_sql_translator_pipeline(
     query = translate_pipeline(
         sql_dialect=SQLDialect.POSTGRES,
         pipeline=pipeline,
-        tables_columns={"beers_tiny": _BEERS_TABLE_COLUMNS},
+        tables_columns={"beers_tiny": BEERS_TABLE_COLUMNS},
         db_schema=None,
     )
     # Execute request generated from Pipeline in Postgres and get the result
