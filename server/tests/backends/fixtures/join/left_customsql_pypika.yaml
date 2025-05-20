@@ -1,5 +1,5 @@
 exclude:
-# We need the schema for bigquery, so there's a distinct left_customsql_pypika_bigquery.yaml firxture for that
+# We need the schema for bigquery, so there's a distinct left_customsql_pypika_bigquery.yaml fixture for that
 - bigquery_pypika
 - mongo
 - pandas
@@ -46,7 +46,7 @@ step:
       - name
     # Ensure we can have custom SQL in the pipeline
     right_pipeline:
-    - query: 'SELECT * FROM beers_tiny'
+    - query: 'SELECT * FROM "beers_tiny"'
       name: customsql
     - name: concatenate
       columns:

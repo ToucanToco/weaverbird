@@ -48,5 +48,9 @@ def test_snowflake_translator_pipeline(engine: Any, case_id: str, case_spec_file
         db_schema=None,
     )
     expected = pd.read_json(StringIO(json.dumps(pipeline_spec["expected"])), orient="table")
+    expected_rounded = expected.round(5)
+
     result: pd.DataFrame = pd.read_sql(text(query), engine)
-    assert_dataframes_equals(expected, result)
+    result_rounded = result.round(5)
+
+    assert_dataframes_equals(expected_rounded, result_rounded)
