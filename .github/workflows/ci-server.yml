@@ -61,6 +61,11 @@ jobs:
       env:
         # Snowflake
         SNOWFLAKE_PASSWORD: '${{ secrets.SNOWFLAKE_PASSWORD }}'
+        SNOWFLAKE_USER: '${{ secrets.SNOWFLAKE_USER}}'
+        SNOWFLAKE_DATABASE: '${{ secrets.SNOWFLAKE_DATABASE}}'
+        SNOWFLAKE_ACCOUNT: '${{ secrets.SNOWFLAKE_ACCOUNT}}'
+        SNOWFLAKE_SCHEMA: '${{ secrets.SNOWFLAKE_SCHEMA}}'
+        SNOWFLAKE_WAREHOUSE: '${{ secrets.SNOWFLAKE_WAREHOUSE}}'
         # Redshift
         REDSHIFT_USER: '${{ secrets.REDSHIFT_USER }}'
         REDSHIFT_PASSWORD: '${{ secrets.REDSHIFT_PASSWORD }}'
