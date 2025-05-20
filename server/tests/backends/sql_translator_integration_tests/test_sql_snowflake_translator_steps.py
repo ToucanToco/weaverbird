@@ -19,12 +19,12 @@ from weaverbird.utils.toucan_connectors import nosql_apply_parameters_to_query_w
 @pytest.fixture(scope="module")
 def engine():
     url = URL(
-        user=environ.get("SNOWFLAKE_USER"),
-        password=quote(environ.get("SNOWFLAKE_PASSWORD")),
-        database=environ.get("SNOWFLAKE_DATABASE"),
-        account=environ.get("SNOWFLAKE_ACCOUNT"),
-        schema=environ.get("SNOWFLAKE_SCHEMA"),
-        warehouse=environ.get("SNOWFLAKE_WAREHOUSE"),
+        user=environ["SNOWFLAKE_USER"],
+        password=quote(environ["SNOWFLAKE_PASSWORD"]),
+        database=environ["SNOWFLAKE_DATABASE"],
+        account=environ["SNOWFLAKE_ACCOUNT"],
+        schema=environ["SNOWFLAKE_SCHEMA"],
+        warehouse=environ["SNOWFLAKE_WAREHOUSE"],
     )
     engine = create_engine(url)
     connection = engine.connect()
