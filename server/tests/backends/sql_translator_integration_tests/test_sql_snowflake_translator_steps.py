@@ -1,4 +1,5 @@
 import json
+from datetime import date
 from io import StringIO
 from os import environ
 from typing import Any
@@ -32,6 +33,14 @@ def engine():
     connection.close()
 
 
+def _sanitize_datetimes(df: pd.DataFrame) -> pd.DataFrame:
+    """Converts date columns to datetime objects"""
+    for col in df.columns:
+        if all(elem is None or isinstance(elem, date) for elem in df[col]):
+            df[col] = pd.to_datetime(df[col])
+    return df
+
+
 @pytest.mark.parametrize("case_id, case_spec_file", retrieve_case("sql_translator", "snowflake_pypika"))
 def test_snowflake_translator_pipeline(engine: Any, case_id: str, case_spec_file: str, available_variables: dict):
     pipeline_spec = get_spec_from_json_fixture(case_id, case_spec_file)
@@ -51,6 +60,7 @@ def test_snowflake_translator_pipeline(engine: Any, case_id: str, case_spec_file
     expected_rounded = expected.round(5)
 
     result: pd.DataFrame = pd.read_sql(text(query), engine)
-    result_rounded = result.round(5)
+    sanitized_result = _sanitize_datetimes(result)
+    result_rounded = sanitized_result.round(5)
 
     assert_dataframes_equals(expected_rounded, result_rounded)
