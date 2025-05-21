@@ -22,13 +22,6 @@ jobs:
       fail-fast: true
       matrix:
         python-version: ['3.11', '3.12', '3.13']
-        pandas-version: ['<2','>=2']
-        # Pandas<2 is not supported on Python 3.12
-        exclude:
-          - python-version: '3.12'
-            pandas-version: '<2'
-          - python-version: '3.13'
-            pandas-version: '<2'
 
     defaults:
       run:
@@ -44,15 +37,12 @@ jobs:
 
     - name: Install uv
       env:
-        UV_VERSION: "0.6.8"
+        UV_VERSION: "0.7.6"
       run: |
         curl -LsSf "https://astral.sh/uv/${UV_VERSION}/install.sh" | sh
 
     - name: Install dependencies
       run: make install
-
-    - name: Install pandas ${{ matrix.pandas-version }}
-      run: uv pip install "pandas${{ matrix.pandas-version }}"
 
     - name: Lint
       run: make lint
@@ -61,6 +51,11 @@ jobs:
       env:
         # Snowflake
         SNOWFLAKE_PASSWORD: '${{ secrets.SNOWFLAKE_PASSWORD }}'
+        SNOWFLAKE_USER: '${{ secrets.SNOWFLAKE_USER}}'
+        SNOWFLAKE_DATABASE: '${{ secrets.SNOWFLAKE_DATABASE}}'
+        SNOWFLAKE_ACCOUNT: '${{ secrets.SNOWFLAKE_ACCOUNT}}'
+        SNOWFLAKE_SCHEMA: '${{ secrets.SNOWFLAKE_SCHEMA}}'
+        SNOWFLAKE_WAREHOUSE: '${{ secrets.SNOWFLAKE_WAREHOUSE}}'
         # Redshift
         REDSHIFT_USER: '${{ secrets.REDSHIFT_USER }}'
         REDSHIFT_PASSWORD: '${{ secrets.REDSHIFT_PASSWORD }}'

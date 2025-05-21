@@ -68,7 +68,7 @@ def test_adapt_date_format_redshift(input: str, expected: str):
         ("%Y-%m-%d", "YYYY-MM-DD"),
         ("%d/%m/%Y", "DD/MM/YYYY"),
         ("%d %b %Y", "DD MON YYYY"),
-        ("%d %B %Y", "DD MON YYYY"),
+        ("%d %B %Y", "DD MMMM YYYY"),
     ],
 )
 def test_adapt_date_format_snowflake(input: str, expected: str):

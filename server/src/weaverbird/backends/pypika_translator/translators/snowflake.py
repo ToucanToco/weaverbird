@@ -1,4 +1,4 @@
-from typing import Any, TypeVar
+from typing import Any, Self
 
 from pypika import functions
 from pypika.dialects import QueryBuilder, SnowflakeQueryBuilder
@@ -13,10 +13,16 @@ from weaverbird.backends.pypika_translator.translators.base import (
     DataTypeMapping,
     DateAddWithoutUnderscore,
     DateFormatMapping,
+    FromTable,
     SQLTranslator,
+    StepContext,
 )
+from weaverbird.pipeline.steps.duration import DURATIONS_IN_SECOND, DurationStep
 
-Self = TypeVar("Self", bound="SQLTranslator")
+
+class SnowflakeTimestampDiff(functions.Function):
+    def __init__(self, end: Field, start: Field) -> None:
+        super().__init__("TIMESTAMPDIFF", "second", start, end)
 
 
 class QuotedSnowflakeQueryBuilder(SnowflakeQueryBuilder):
@@ -50,7 +56,7 @@ class SnowflakeTranslator(SQLTranslator):
         day_number="DD",
         month_number="MM",
         month_short="MON",
-        month_full="MON",
+        month_full="MMMM",
         year="YYYY",
     )
     SUPPORT_ROW_NUMBER = True
@@ -67,6 +73,17 @@ class SnowflakeTranslator(SQLTranslator):
     @classmethod
     def _interval_to_seconds(cls, value: Selectable) -> functions.Function:
         raise NotImplementedError
+
+    def duration(
+        self: Self, *, builder: "QueryBuilder", prev_step_table: FromTable, columns: list[str], step: "DurationStep"
+    ) -> StepContext:
+        as_seconds = SnowflakeTimestampDiff(
+            self._cast_to_timestamp(prev_step_table[step.end_date_column]),
+            self._cast_to_timestamp(prev_step_table[step.start_date_column]),
+        )
+        new_column = (as_seconds / DURATIONS_IN_SECOND[step.duration_in]).as_(step.new_column_name)
+        query: QueryBuilder = prev_step_table.select(*columns, new_column)
+        return StepContext(query, columns + [step.new_column_name])
 
 
 SQLTranslator.register(SnowflakeTranslator)
