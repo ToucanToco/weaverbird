@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.57.1] - 2025-06-05
+
 ### Fixed
 
 - Pandas: The dissolve step now renames aggregated columns to the new column name specified in the aggregation
