@@ -37,11 +37,19 @@ def execute_dissolve(
         columns_to_keep = set(step.groups + ["geometry"])
         geo_df = df_to_geodf(df).drop(list(set(df.columns) - columns_to_keep), axis=1)
 
-    return DataFrame(
-        geo_df.dissolve(
-            by=step.groups,
-            aggfunc=aggfunc,
-            as_index=False,
-            dropna=not step.include_nulls,
-        )
+    dissolved = geo_df.dissolve(
+        by=step.groups,
+        aggfunc=aggfunc,
+        as_index=False,
+        dropna=not step.include_nulls,
     )
+
+    if len(step.aggregations) > 0:
+        to_rename = {
+            col: new_col
+            for agg in step.aggregations
+            for (col, new_col) in zip(agg.columns, agg.new_columns, strict=True)
+        }
+        dissolved.rename(columns=to_rename, inplace=True)
+
+    return DataFrame(dissolved)
