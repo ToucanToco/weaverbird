@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- Pandas: The dissolve step now renames aggregated columns to the new column name specified in the aggregation
 - PyPika: The Snowflake translator has been refreshed and its CI has been reactivated
 
 ## [0.57.0] - 2025-05-16
