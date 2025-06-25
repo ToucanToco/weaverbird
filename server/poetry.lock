@@ -3513,4 +3513,4 @@ playground = ["Quart-CORS", "google-cloud-bigquery", "hypercorn", "pandas", "psy
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.11"
-content-hash = "31cdb59ba53f7d9a10273b90b2c792a7e6a10c62a5d038f2d361c156bd072ed0"
+content-hash = "c1a1c2565b6315613c80e2a33d1137324c2fa79cd9cec865375a28d8b477d654"

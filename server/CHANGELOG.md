@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## Fixed
+
+- Move `pytest-xdist` as a development dependency
+
 ## [0.26.18] - 2024-09-04
 
 ### Changed
