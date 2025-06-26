@@ -1,6 +1,12 @@
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import ToDateStep
 
+_VQB_TEMP_DAY = "_vqbTempDay"
+_VQB_TEMP_MONTH = "_vqbTempMonth"
+_VQB_TEMP_YEAR = "_vqbTempYear"
+_VQB_TEMP_ARRAY = "_vqbTempArray"
+_VQB_TEMP_DATE = "_vqbTempDate"
+
 
 def translate_todate(step: ToDateStep) -> list[MongoStep]:
     date_format = step.format
@@ -73,17 +79,17 @@ def translate_todate(step: ToDateStep) -> list[MongoStep]:
     # All these could probably be factorized to make it easier to read!
     elif date_format == "%d %b %Y":
         steps = [
-            {"$addFields": {"_vqbTempArray": {"$split": [col_as_string, " "]}}},
+            {"$addFields": {_VQB_TEMP_ARRAY: {"$split": [col_as_string, " "]}}},
             _extract_date_parts_to_temp_fields(2, 1, 0),
             MONTH_REPLACEMENT_STEP,
             _concat_fields_to_date(
                 step.column,
                 [
-                    "$_vqbTempDay",
+                    f"${_VQB_TEMP_DAY}",
                     "-",
-                    "$_vqbTempMonth",
+                    f"${_VQB_TEMP_MONTH}",
                     "-",
-                    "$_vqbTempYear",
+                    f"${_VQB_TEMP_YEAR}",
                 ],
                 "%d-%m-%Y",
             ),
@@ -92,17 +98,17 @@ def translate_todate(step: ToDateStep) -> list[MongoStep]:
 
     elif date_format == "%d-%b-%Y":
         steps = [
-            {"$addFields": {"_vqbTempArray": {"$split": [col_as_string, "-"]}}},
+            {"$addFields": {_VQB_TEMP_ARRAY: {"$split": [col_as_string, "-"]}}},
             _extract_date_parts_to_temp_fields(2, 1, 0),
             MONTH_REPLACEMENT_STEP,
             _concat_fields_to_date(
                 step.column,
                 [
-                    "$_vqbTempDay",
+                    f"${_VQB_TEMP_DAY}",
                     "-",
-                    "$_vqbTempMonth",
+                    f"${_VQB_TEMP_MONTH}",
                     "-",
-                    "$_vqbTempYear",
+                    f"${_VQB_TEMP_YEAR}",
                 ],
                 "%d-%m-%Y",
             ),
@@ -111,19 +117,19 @@ def translate_todate(step: ToDateStep) -> list[MongoStep]:
 
     elif date_format == "%b %Y":
         steps = [
-            {"$addFields": {"_vqbTempArray": {"$split": [col_as_string, " "]}}},
+            {"$addFields": {_VQB_TEMP_ARRAY: {"$split": [col_as_string, " "]}}},
             _extract_date_parts_to_temp_fields(1, 0),
             MONTH_REPLACEMENT_STEP,
-            _concat_fields_to_date(step.column, ["01-", "$_vqbTempMonth", "-", "$_vqbTempYear"], "%d-%m-%Y"),
+            _concat_fields_to_date(step.column, ["01-", f"${_VQB_TEMP_MONTH}", "-", f"${_VQB_TEMP_YEAR}"], "%d-%m-%Y"),
             _clean_temp_fields(),
         ]
 
     elif date_format == "%b-%Y":
         steps = [
-            {"$addFields": {"_vqbTempArray": {"$split": [col_as_string, "-"]}}},
+            {"$addFields": {_VQB_TEMP_ARRAY: {"$split": [col_as_string, "-"]}}},
             _extract_date_parts_to_temp_fields(1, 0),
             MONTH_REPLACEMENT_STEP,
-            _concat_fields_to_date(step.column, ["01-", "$_vqbTempMonth", "-", "$_vqbTempYear"], "%d-%m-%Y"),
+            _concat_fields_to_date(step.column, ["01-", f"${_VQB_TEMP_MONTH}", "-", f"${_VQB_TEMP_YEAR}"], "%d-%m-%Y"),
             _clean_temp_fields(),
         ]
 
@@ -212,11 +218,11 @@ MONTH_NUMBER_TO_NAMES = {
 
 MONTH_REPLACEMENT_STEP: MongoStep = {
     "$addFields": {
-        "_vqbTempMonth": {
+        _VQB_TEMP_MONTH: {
             "$switch": {
                 "branches": [
                     {
-                        "case": {"$in": ["$_vqbTempMonth", month_names]},
+                        "case": {"$in": [f"${_VQB_TEMP_MONTH}", month_names]},
                         "then": month_number,
                     }
                     for month_number, month_names in MONTH_NUMBER_TO_NAMES.items()
@@ -232,14 +238,16 @@ def _extract_date_parts_to_temp_fields(
     year_position: int, month_position: int | None = None, day_position: int | None = None
 ) -> MongoStep:
     date_parts_temp_fields: MongoStep = {
-        "_vqbTempYear": {"$arrayElemAt": ["$_vqbTempArray", year_position]},
+        _VQB_TEMP_YEAR: {"$arrayElemAt": [f"${_VQB_TEMP_ARRAY}", year_position]},
     }
 
     if month_position is not None:
-        date_parts_temp_fields["_vqbTempMonth"] = {"$toLower": {"$arrayElemAt": ["$_vqbTempArray", month_position]}}
+        date_parts_temp_fields[_VQB_TEMP_MONTH] = {
+            "$toLower": {"$arrayElemAt": [f"${_VQB_TEMP_ARRAY}", month_position]}
+        }
 
     if day_position is not None:
-        date_parts_temp_fields["_vqbTempDay"] = {"$arrayElemAt": ["$_vqbTempArray", day_position]}
+        date_parts_temp_fields[_VQB_TEMP_DAY] = {"$arrayElemAt": [f"${_VQB_TEMP_ARRAY}", day_position]}
 
     return {
         "$addFields": date_parts_temp_fields,
@@ -247,7 +255,15 @@ def _extract_date_parts_to_temp_fields(
 
 
 def _clean_temp_fields():
-    return {"$project": {"_vqbTempArray": 0, "_vqbTempMonth": 0, "_vqbTempYear": 0, "_vqbTempDate": 0}}
+    return {
+        "$project": {
+            _VQB_TEMP_ARRAY: 0,
+            _VQB_TEMP_DAY: 0,
+            _VQB_TEMP_MONTH: 0,
+            _VQB_TEMP_YEAR: 0,
+            _VQB_TEMP_DATE: 0,
+        }
+    }
 
 
 def _concat_fields_to_date(target_col: str, fields: list[str | dict], format: str):

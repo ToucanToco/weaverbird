@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Mongo: The `todate` step no longer inserts a new `_vqbTempDay` column.
+
 ## [0.57.1] - 2025-06-05
 
 ### Fixed
