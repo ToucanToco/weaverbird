@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Fixed
+
+- Mongo: The `todate` step no longer inserts a new `_vqbTempDay` column.
+- Pandas: French months are now supported for `%b` and `%B` format codes in the `todate` step.
+
 ## [0.57.1] - 2025-06-05
 
 ### Fixed

@@ -1,0 +1,35 @@
+exclude:
+  - athena_pypika
+  - bigquery_pypika
+  - mysql_pypika
+  - postgres_pypika
+  - redshift_pypika
+  - snowflake
+  - snowflake_pypika
+step:
+  pipeline:
+    - name: todate
+      column: date_col
+      format: "%d %b %Y"
+input:
+  schema:
+    fields:
+      - name: date_col
+        type: string
+    pandas_version: 1.4.0
+  data:
+    - date_col: 14 déc 2025
+    - date_col: 05 janv 1997
+    - date_col: 16 sept 2099
+    - date_col:
+expected:
+  schema:
+    fields:
+      - name: date_col
+        type: datetime
+    pandas_version: 1.4.0
+  data:
+    - date_col: "2025-12-14T00:00:00.000"
+    - date_col: "1997-01-05T00:00:00.000"
+    - date_col: "2099-09-16T00:00:00.000"
+    - date_col:
