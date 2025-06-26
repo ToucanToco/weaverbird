@@ -37,6 +37,9 @@
   // Periodic update for uv.lock and yarn.lock
   "lockFileMaintenance": {
     "enabled": true,
+    // https://github.com/renovatebot/config-help/issues/89#issuecomment-419611402
+    "branchTopic": "lock-file-maintenance-{{packageFile}}",
+    "commitMessageExtra": "({{packageFile}})"
   },
   "prHourlyLimit": 5
 }
