@@ -6,6 +6,7 @@ from weaverbird.pipeline.steps import ToDateStep
 _FR_TO_EN_MONTHS_LONG = [
     ("janvier", "january"),
     ("février", "february"),
+    ("fevrier", "february"),
     ("mars", "march"),
     ("avril", "april"),
     ("mai", "may"),
@@ -23,6 +24,7 @@ _FR_TO_EN_MONTHS_LONG = [
 _FR_TO_EN_MONTHS_SHORT = [
     ("janv", "jan"),
     ("févr", "feb"),
+    ("fevr", "feb"),
     ("mars", "mar"),
     ("avr", "apr"),
     ("mai", "may"),
