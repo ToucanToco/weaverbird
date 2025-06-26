@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.26.19] - 2025-06-26
+
 ## Fixed
 
 - `pytest-xdist` is now a development-only dependency
