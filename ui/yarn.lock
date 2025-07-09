@@ -5155,10 +5155,15 @@ decamelize@^1.1.2:
   resolved "https://registry.yarnpkg.com/decamelize/-/decamelize-1.2.0.tgz#f6534d15148269b20352e7bee26f501f9a191290"
   integrity sha512-z2S+W9X73hAUUki+N+9Za2lBlun89zigOyGrsax+KUQ6wKW4ZoWpEYBkGhQjwAjjDCkWxhY0VKEhk8wzY7F5cA==
 
-decimal.js@^10.4.2, decimal.js@^10.4.3:
+decimal.js@^10.4.2:
   version "10.5.0"
   resolved "https://registry.yarnpkg.com/decimal.js/-/decimal.js-10.5.0.tgz#0f371c7cf6c4898ce0afb09836db73cd82010f22"
   integrity sha512-8vDa8Qxvr/+d94hSh5P3IJwI5t8/c0KsMp+g8bNw9cY2icONa5aPfvKeieW1WlG0WQYwwhJ7mjui2xtiePQSXw==
+
+decimal.js@^10.4.3:
+  version "10.6.0"
+  resolved "https://registry.yarnpkg.com/decimal.js/-/decimal.js-10.6.0.tgz#e649a43e3ab953a72192ff5983865e509f37ed9a"
+  integrity sha512-YpgQiITW3JXGntzdUmyUR1V812Hn8T1YVXhCu+wO3OpS4eU9l4YdD3qjyiKdV6mvV29zapkMeD390UVEf2lkUg==
 
 decode-uri-component@^0.2.0:
   version "0.2.2"
@@ -8721,9 +8726,9 @@ lunr@^2.3.8:
   integrity sha512-zTU3DaZaF3Rt9rhN3uBMGQD3dD2/vFQqnvZCDv4dl5iOzq2IZQqTxu90r4E5J+nP70J3ilqVCrbho2eWaeW8Ow==
 
 luxon@^3.4.4:
-  version "3.6.1"
-  resolved "https://registry.yarnpkg.com/luxon/-/luxon-3.6.1.tgz#d283ffc4c0076cb0db7885ec6da1c49ba97e47b0"
-  integrity sha512-tJLxrKJhO2ukZ5z0gyjY1zPh3Rh88Ej9P7jNrZiHMUXHae1yvI2imgOZtL1TO8TW6biMMKfTtAOoEJANgtWBMQ==
+  version "3.7.1"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-3.7.1.tgz#9bd09aa84a56afb00c57ea78a8ec5bd16eb24ec0"
+  integrity sha512-RkRWjA926cTvz5rAb1BqyWkKbbjzCGchDUIKMCUvNi17j6f6j8uHGDV82Aqcqtzd+icoYpELmG3ksgGiFNNcNg==
 
 magic-string@^0.25.7:
   version "0.25.9"
@@ -8799,9 +8804,9 @@ math-intrinsics@^1.1.0:
   integrity sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==
 
 mathjs@^14.3.0:
-  version "14.5.2"
-  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-14.5.2.tgz#0f0aa8e7f11791aa3e26feff8d431b5d70c758e6"
-  integrity sha512-51U6hp7j4M4Rj+l+q2KbmXAV9EhQVQzUdw1wE67RnUkKKq5ibxdrl9Ky2YkSUEIc2+VU8/IsThZNu6QSHUoyTA==
+  version "14.5.3"
+  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-14.5.3.tgz#e75100088adfb6da7c367404f9aba9ed9354c450"
+  integrity sha512-srHhiZwFPUjHuRywRG/+5xWUNcQJsDBNMYaSu7zEN+th6BB2TkUmBkIc2cpdDqtgu40Q7DneAsFmyzo8q3ugmA==
   dependencies:
     "@babel/runtime" "^7.26.10"
     complex.js "^2.2.5"
