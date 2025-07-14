@@ -30,13 +30,13 @@ package = true
 pandas = [
     "numpy<2.0.0,>=1.2.5; python_version < \"3.12\"",
     "numpy>=2,<3; python_version >= \"3.12\"",
-    "pandas<2.0.0,>=1.2.5; python_version < \"3.12\"",
+    "pandas<2.4.0,>=2.3.1; python_version < \"3.12\"",
     "pandas<3,>=2; python_version >= \"3.12\"",
     "geopandas<2",
 ]
 pypika = ["pypika>=0.48.9"]
 all = [
-    "pandas<2.0.0,>=1.2.5; python_version < \"3.12\"",
+    "pandas<2.4.0,>=2.3.1; python_version < \"3.12\"",
     "pandas<3,>=2; python_version >= \"3.12\"",
     "geopandas<2",
     "pypika>=0.48.9",
