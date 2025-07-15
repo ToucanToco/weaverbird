@@ -1,0 +1,38 @@
+exclude:
+  - mongo
+  - athena_pypika
+  - bigquery_pypika
+  - mysql_pypika
+  - postgres_pypika
+  - redshift_pypika
+  - snowflake
+  - snowflake_pypika
+step:
+  pipeline:
+    - name: replacetext
+      search_column: NAME
+      old_str: foo
+      new_str: oof
+input:
+  schema:
+    fields:
+      - name: NAME
+        # NOTE: column type is datetime to fake a random type assignment in case of missing data
+        type: datetime
+      - name: AGE
+        type: integer
+      - name: SCORE
+        type: integer
+    pandas_version: 0.20.0
+  data:
+expected:
+  schema:
+    fields:
+      - name: NAME
+        type: datetime
+      - name: AGE
+        type: integer
+      - name: SCORE
+        type: integer
+    pandas_version: 0.20.0
+  data:
