@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.58.1] - 2025-07.15
+
 ### Fixed
 
 - Pandas: `replacetext` step now accepts all data types in input.
