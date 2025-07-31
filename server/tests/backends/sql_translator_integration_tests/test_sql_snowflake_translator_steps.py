@@ -3,10 +3,11 @@ from datetime import date
 from io import StringIO
 from os import environ
 from typing import Any
-from urllib.parse import quote
 
 import pandas as pd
 import pytest
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
 from snowflake.sqlalchemy import URL
 from sqlalchemy import create_engine, text
 
@@ -21,14 +22,25 @@ from weaverbird.utils.toucan_connectors import nosql_apply_parameters_to_query_w
 def engine():
     url = URL(
         user=environ["SNOWFLAKE_USER"],
-        password=quote(environ["SNOWFLAKE_PASSWORD"]),
         database=environ["SNOWFLAKE_DATABASE"],
         account=environ["SNOWFLAKE_ACCOUNT"],
         schema=environ["SNOWFLAKE_SCHEMA"],
         warehouse=environ["SNOWFLAKE_WAREHOUSE"],
     )
-    engine = create_engine(url)
+    pk_pem = environ["SNOWFLAKE_PRIVATE_KEY"].encode()
+    pk_password = environ["SNOWFLAKE_PASSWORD"]
+    private_key = serialization.load_pem_private_key(pk_pem, password=pk_password.encode(), backend=default_backend())
+
+    connect_args = {
+        "private_key": private_key.private_bytes(
+            encoding=serialization.Encoding.DER,
+            format=serialization.PrivateFormat.PKCS8,
+            encryption_algorithm=serialization.NoEncryption(),
+        )
+    }
+    engine = create_engine(url, connect_args=connect_args)
     connection = engine.connect()
+
     yield connection
     connection.close()
 
