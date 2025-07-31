@@ -7,3 +7,4 @@
 # Secrets
 bigquery-credentials.json
 .env
+snowflake_rsa_key.p8

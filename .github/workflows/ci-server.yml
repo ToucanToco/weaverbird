@@ -56,6 +56,7 @@ jobs:
         SNOWFLAKE_ACCOUNT: '${{ secrets.SNOWFLAKE_ACCOUNT}}'
         SNOWFLAKE_SCHEMA: '${{ secrets.SNOWFLAKE_SCHEMA}}'
         SNOWFLAKE_WAREHOUSE: '${{ secrets.SNOWFLAKE_WAREHOUSE}}'
+        SNOWFLAKE_PRIVATE_KEY: '${{ secrets.SNOWFLAKE_PRIVATE_KEY}}'
         # Redshift
         REDSHIFT_USER: '${{ secrets.REDSHIFT_USER }}'
         REDSHIFT_PASSWORD: '${{ secrets.REDSHIFT_PASSWORD }}'
