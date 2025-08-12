@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Added
+
+- Step `rollup` now outputs an additional column `child_level` with the next hierarchy element after `level`.
+  The name of the column is customisable.
+
 ## [0.58.1] - 2025-07.15
 
 ### Fixed

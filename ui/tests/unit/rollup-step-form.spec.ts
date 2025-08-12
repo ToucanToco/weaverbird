@@ -204,6 +204,24 @@ describe('Rollup Step Form', () => {
         errors: [{ keyword: 'minLength', dataPath: '.levelCol' }],
       },
       {
+        testlabel: '"childLevelCol" parameter is an empty string',
+        props: {
+          initialStepValue: {
+            name: 'rollup',
+            hierarchy: ['column1'],
+            aggregations: [
+              {
+                newcolumns: ['sum_col1'],
+                aggfunction: 'sum',
+                columns: ['col1'],
+              },
+            ],
+            childLevelCol: '',
+          },
+        },
+        errors: [{ keyword: 'minLength', dataPath: '.childLevelCol' }],
+      },
+      {
         testlabel: '"parentLabelCol" parameter is an empty string',
         props: {
           initialStepValue: {
@@ -232,6 +250,7 @@ describe('Rollup Step Form', () => {
           aggregations: [{ columns: ['bar'], newcolumns: ['bar'], aggfunction: 'sum' }],
           labelCol: 'label',
           levelCol: 'label',
+          childLevelCol: 'child_label',
           parentLabelCol: 'label',
         },
       },

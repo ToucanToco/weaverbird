@@ -18,6 +18,7 @@ step:
       columns:
       - RETAIL_PRICE
     level_col: LEVEL
+    child_level_col: CHILD_LEVEL
     label_col: LABEL
     parent_label_col: PARENT
   - name: dateextract

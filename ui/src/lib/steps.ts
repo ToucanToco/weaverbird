@@ -437,6 +437,8 @@ export type RollupStep = {
   labelCol?: string;
   /** To give a custom name to the output level column */
   levelCol?: string;
+  /** To give a custom name to the next output level column */
+  childLevelCol?: string;
   /** To give a custom name to the output parent column */
   parentLabelCol?: string;
 };

@@ -58,6 +58,14 @@
       :errors="errors"
     />
     <InputTextWidget
+      class="childLevelColumnInput"
+      v-model="editedStep.childLevelCol"
+      name="(Optional) Child level column name to be created:"
+      placeholder="child_level"
+      data-path=".childLevelCol"
+      :errors="errors"
+    />
+    <InputTextWidget
       class="parentColumnInput"
       v-model="editedStep.parentLabelCol"
       name="(Optional) Parent column name to be created:"
