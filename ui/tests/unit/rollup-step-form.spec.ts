@@ -16,7 +16,7 @@ describe('Rollup Step Form', () => {
   runner.testInstantiate();
   runner.testExpectedComponents({
     'multiselectwidget-stub': 2,
-    'inputtextwidget-stub': 3,
+    'inputtextwidget-stub': 4,
   });
 
   describe('MultiselectWidgets', () => {
