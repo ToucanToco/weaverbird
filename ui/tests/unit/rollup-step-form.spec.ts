@@ -250,7 +250,7 @@ describe('Rollup Step Form', () => {
           aggregations: [{ columns: ['bar'], newcolumns: ['bar'], aggfunction: 'sum' }],
           labelCol: 'label',
           levelCol: 'label',
-          childLevelCol: 'child_label',
+          childLevelCol: 'child_level_or_something',
           parentLabelCol: 'label',
         },
       },
