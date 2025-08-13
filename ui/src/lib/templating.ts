@@ -454,6 +454,9 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     if (step.levelCol) {
       ret.levelCol = _interpolate(this.interpolateFunc, step.levelCol, this.context);
     }
+    if (step.childLevelCol) {
+      ret.childLevelCol = _interpolate(this.interpolateFunc, step.childLevelCol, this.context);
+    }
     return ret;
   }
 

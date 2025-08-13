@@ -19,6 +19,8 @@ class RollupStep(BaseStep):
     label_col: ColumnName | None = None
     # To give a custom name to the output level column:
     level_col: ColumnName | None = None
+    # To give a custom name to the output level column for the next hierarchical level:
+    child_level_col: ColumnName | None = None
     # To give a custom name to the output parent column:
     parent_label_col: ColumnName | None = None
 

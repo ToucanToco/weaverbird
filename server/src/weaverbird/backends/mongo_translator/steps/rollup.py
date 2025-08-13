@@ -13,8 +13,11 @@ def translate_rollup(step: RollupStep) -> list[MongoStep]:
     facet: dict[str, list[MongoStep]] = {}
     label_col = step.label_col or "label"
     level_col = step.level_col or "level"
+    child_level_col = step.child_level_col or "child_level"
     parent_label_col = step.parent_label_col or "parent"
     add_fields = {}
+
+    hierarchy_last_index = len(step.hierarchy) - 1
 
     for idx, elem in enumerate(step.hierarchy):
         id = column_map(step.hierarchy[: idx + 1] + (step.groupby or []))
@@ -50,6 +53,7 @@ def translate_rollup(step: RollupStep) -> list[MongoStep]:
             **{k: 1 for k in aggs.keys()},
             label_col: f"${_ID_COLUMN}.{elem}",
             level_col: elem,
+            child_level_col: step.hierarchy[idx + 1] if idx < hierarchy_last_index else None,
         }
 
         # In case we have a nested hierarchy, we always want the parent field to be present
