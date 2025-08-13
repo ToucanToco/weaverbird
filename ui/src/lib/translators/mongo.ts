@@ -1279,7 +1279,6 @@ function transformRollup(step: Readonly<S.RollupStep>): MongoStep {
   const facet: { [id: string]: MongoStep[] } = {};
   const labelCol = step.labelCol ?? 'label';
   const levelCol = step.levelCol ?? 'level';
-  const childLevelCol = step.childLevelCol ?? 'child_level';
   const parentLabelCol = step.parentLabelCol ?? 'parent';
   const addFields: PropMap<any> = {};
 
@@ -1318,7 +1317,6 @@ function transformRollup(step: Readonly<S.RollupStep>): MongoStep {
       ...Object.fromEntries(Object.keys(aggs).map((col) => [col, 1])),
       [labelCol]: `$_id.${elem}`,
       [levelCol]: elem,
-      [childLevelCol]: step.hierarchy[idx + 1] ?? null,
     };
 
     if (idx > 0) {
