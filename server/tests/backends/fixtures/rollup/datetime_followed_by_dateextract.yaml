@@ -31,6 +31,7 @@ step:
     - CREATED_AT
     - LABEL_YEAR
     - CITY
+    - CHILD_LEVEL
 input:
   schema:
     fields:
@@ -101,40 +102,50 @@ expected_sql:
       type: datetime
     - name: LABEL_YEAR
       type: number
+    - name: CHILD_LEVEL
+      type: string
     pandas_version: 0.20.0
   data:
   - CITY:
     SUM_RETAIL_PRICE: 15
     CREATED_AT: "1905-07-01"
     LABEL_YEAR: 1905
+    CHILD_LEVEL: CITY
   - CITY:
     SUM_RETAIL_PRICE: 48
     CREATED_AT: "1941-01-01"
     LABEL_YEAR: 1941
+    CHILD_LEVEL: CITY
   - CITY:
     SUM_RETAIL_PRICE: 64
     CREATED_AT: "1943-03-01"
     LABEL_YEAR: 1943
+    CHILD_LEVEL: CITY
   - CITY: SF
     SUM_RETAIL_PRICE: 5
     CREATED_AT: "1905-07-01"
     LABEL_YEAR: 1905
+    CHILD_LEVEL:
   - CITY: SJ
     SUM_RETAIL_PRICE: 10
     CREATED_AT: "1905-07-01"
     LABEL_YEAR: 1905
+    CHILD_LEVEL:
   - CITY: Miami
     SUM_RETAIL_PRICE: 16
     CREATED_AT: "1941-01-01"
     LABEL_YEAR: 1941
+    CHILD_LEVEL:
   - CITY: Orlando
     SUM_RETAIL_PRICE: 32
     CREATED_AT: "1941-01-01"
     LABEL_YEAR: 1941
+    CHILD_LEVEL:
   - CITY: SJ
     SUM_RETAIL_PRICE: 64
     CREATED_AT: "1943-03-01"
     LABEL_YEAR: 1943
+    CHILD_LEVEL:
 expected:
   schema:
     fields:
@@ -146,37 +157,47 @@ expected:
       type: datetime
     - name: LABEL_YEAR
       type: number
+    - name: CHILD_LEVEL
+      type: string
     pandas_version: 0.20.0
   data:
   - CITY:
     SUM_RETAIL_PRICE: 15
     CREATED_AT: "1905-07-01"
     LABEL_YEAR: 1905
+    CHILD_LEVEL: CITY
   - CITY:
     SUM_RETAIL_PRICE: 48
     CREATED_AT: "1941-01-01"
     LABEL_YEAR: 1941
+    CHILD_LEVEL: CITY
   - CITY:
     SUM_RETAIL_PRICE: 64
     CREATED_AT: "1943-03-01"
     LABEL_YEAR: 1943
+    CHILD_LEVEL: CITY
   - CITY: SF
     SUM_RETAIL_PRICE: 5
     CREATED_AT: "1905-07-01"
     LABEL_YEAR: 1905
+    CHILD_LEVEL:
   - CITY: SJ
     SUM_RETAIL_PRICE: 10
     CREATED_AT: "1905-07-01"
     LABEL_YEAR: 1905
+    CHILD_LEVEL:
   - CITY: Miami
     SUM_RETAIL_PRICE: 16
     CREATED_AT: "1941-01-01"
     LABEL_YEAR: 1941
+    CHILD_LEVEL:
   - CITY: Orlando
     SUM_RETAIL_PRICE: 32
     CREATED_AT: "1941-01-01"
     LABEL_YEAR: 1941
+    CHILD_LEVEL:
   - CITY: SJ
     SUM_RETAIL_PRICE: 64
     CREATED_AT: "1943-03-01"
     LABEL_YEAR: 1943
+    CHILD_LEVEL:
