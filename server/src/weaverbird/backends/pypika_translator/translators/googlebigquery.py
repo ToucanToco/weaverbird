@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Literal, TypeAlias, TypeVar
+from typing import TYPE_CHECKING, Any, Literal, TypeVar
 
 from pypika import Field, Query, functions
 from pypika.enums import Dialects
@@ -51,7 +51,7 @@ class GBQSplit(Function):
         super().__init__(*args)
 
 
-GQBTimestampDiffUnit: TypeAlias = Literal["MICROSECOND", "MILLISECOND", "SECOND", "MINUTE", "HOUR", "DAY"]
+type GQBTimestampDiffUnit = Literal["MICROSECOND", "MILLISECOND", "SECOND", "MINUTE", "HOUR", "DAY"]
 
 
 class GBQTimestampDiff(Function):
