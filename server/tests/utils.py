@@ -158,7 +158,7 @@ def docker_container(
     environment: dict[str, str] | None = None,
     ports: dict[str, str] | None = None,
     **run_kwargs: Any,
-) -> Generator[Container, None, None]:
+) -> Generator[Container]:
     logger = logging.getLogger(__name__)
 
     image_str = f"{image_name}:{image_version}"

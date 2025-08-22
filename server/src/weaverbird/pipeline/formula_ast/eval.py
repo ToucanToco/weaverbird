@@ -43,7 +43,7 @@ class FormulaParser:
         self._formula = formula
         self._columns: dict[str, str] = {}
 
-    def _iterate_tokens(self, tokens: Iterator[tokenize.TokenInfo]) -> Generator[str, None, None]:
+    def _iterate_tokens(self, tokens: Iterator[tokenize.TokenInfo]) -> Generator[str]:
         """This function iterates over tokens, sanitizes and yields them."""
 
         def next_token():
@@ -139,9 +139,16 @@ class FormulaParser:
         match expr:
             # +LITERAL: +1, +13.37
             case ast.UnaryOp(op=ast.UAdd(), operand=ast.Constant(value=value)):
-                return value
+                if isinstance(value, int | bool | float | str | None):
+                    return value
+                else:
+                    raise UnsupportedConstant(f"Unsupported constant {expr} of type {type(value)}")
             # -LITERAL: -1, -13.37
             case ast.UnaryOp(op=ast.USub(), operand=ast.Constant(value=value)):
+                if isinstance(value, int | bool | float):
+                    return -value
+                else:
+                    raise UnsupportedConstant(f"Unsupported negged constant {expr} of type {type(value)}")
                 return -value
             # +colname: +mycol, +[my col]
             case ast.UnaryOp(op=ast.UAdd(), operand=ast.Name(id=name)):

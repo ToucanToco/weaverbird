@@ -1,7 +1,7 @@
 [project]
 authors = [{ name = "Toucan Toco", email = "dev@toucantoco.com" }]
 license = "BSD-3-Clause"
-requires-python = "<3.14,>=3.11"
+requires-python = "<3.14,>=3.13"
 name = "weaverbird"
 version = "0.58.1"
 description = "A visual data pipeline builder with various backends"
@@ -27,20 +27,9 @@ license-files = []
 package = true
 
 [project.optional-dependencies]
-pandas = [
-    "numpy<2.0.0,>=1.2.5; python_version < \"3.12\"",
-    "numpy>=2,<3; python_version >= \"3.12\"",
-    "pandas<2.0.0,>=1.2.5; python_version < \"3.12\"",
-    "pandas<3,>=2; python_version >= \"3.12\"",
-    "geopandas<2",
-]
+pandas = ["pandas<3,>=2", "geopandas<2"]
 pypika = ["pypika>=0.48.9"]
-all = [
-    "pandas<2.0.0,>=1.2.5; python_version < \"3.12\"",
-    "pandas<3,>=2; python_version >= \"3.12\"",
-    "geopandas<2",
-    "pypika>=0.48.9",
-]
+all = ["pandas<3,>=2", "geopandas<2", "pypika>=0.48.9"]
 
 [dependency-groups]
 dev = [
@@ -68,6 +57,7 @@ dev = [
 
 
 [tool.mypy]
+python_version = "3.13"
 files = "src/"
 exclude = "weaverbird/backends/sql_translator"
 plugins = "pydantic.mypy"
@@ -86,8 +76,8 @@ markers = ["serial: marks tests as serial (deselect with '-m \"not serial\"')"]
 line-length = 120
 # Exclude a variety of commonly ignored directories.
 exclude = [".git", ".direnv"]
-# Assume Python 3.11.
-target-version = "py311"
+# Assume Python 3.13.
+target-version = "py313"
 
 [tool.ruff.lint]
 select = ["E", "F", "UP", "N", "C", "B", "I001", "S"]

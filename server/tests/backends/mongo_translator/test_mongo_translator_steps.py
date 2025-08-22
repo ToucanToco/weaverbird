@@ -34,7 +34,7 @@ def mongo_version() -> str:
 
 
 @pytest.fixture(scope="session")
-def mongo_server_port(mongo_version: int) -> Generator[int, None, None]:
+def mongo_server_port(mongo_version: int) -> Generator[int]:
     port = unused_port()
     docker_client = docker.from_env()
     container = docker_client.containers.run(
