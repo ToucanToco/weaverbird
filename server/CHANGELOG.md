@@ -2,11 +2,13 @@
 
 ## Unreleased
 
+## [0.59.0] - 2025-08-22
+
 ### Breaking
 
 - Dropped support for Python<3.13
 
-## [0.58.1] - 2025-07.15
+## [0.58.1] - 2025-07-15
 
 ### Fixed
 
