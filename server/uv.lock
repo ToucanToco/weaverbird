@@ -1480,7 +1480,7 @@ wheels = [
 
 [[package]]
 name = "toucan-connectors"
-version = "9.2.2"
+version = "10.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cached-property" },
@@ -1488,9 +1488,9 @@ dependencies = [
     { name = "pydantic" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9b/3c/478042212528582ba4f8537d747b0095b5c1b0c77923a84d06ef1de77dd7/toucan_connectors-9.2.2.tar.gz", hash = "sha256:e6d62849a611667db0c5efdfa85e2aa2534f9a489a15a231513943ffecc03a5c", size = 1060094, upload-time = "2025-08-05T11:22:48.556Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/28/c6/6ba5ef09cc652f94c1f3bbcc52bf01255e1a7d2f41eaecb6719d84336c15/toucan_connectors-10.0.0.tar.gz", hash = "sha256:d3b634abad97932a04c1ea30871c541a500ca7ae4cc66e677f5fdd970972d34e", size = 1060002, upload-time = "2025-08-22T09:48:06.774Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2a/49/4f61101c2ed97b87819325453839faca27529810d5462cfe98b3bba70fb2/toucan_connectors-9.2.2-py3-none-any.whl", hash = "sha256:55a7dea366c7cf9e385e0385c0e241cfca7346522f61672520ee6b5896323096", size = 1048215, upload-time = "2025-08-05T11:22:46.513Z" },
+    { url = "https://files.pythonhosted.org/packages/4a/35/e0bc0877f88f44886567748fac88628de95e3026e57c646a8faf5c1ff173/toucan_connectors-10.0.0-py3-none-any.whl", hash = "sha256:731d2196c36ef1f65701f0b2b3f0e7009cfd6d666508dca3cc9d51a41e025d8d", size = 1048143, upload-time = "2025-08-22T09:48:03.978Z" },
 ]
 
 [package.optional-dependencies]
@@ -1659,6 +1659,6 @@ dev = [
     { name = "snowflake-sqlalchemy", specifier = ">=1.6.1,<2.0.0" },
     { name = "sqlalchemy", specifier = ">=2,<3" },
     { name = "tenacity", specifier = ">=8.4.2,<10.0.0" },
-    { name = "toucan-connectors", extras = ["redshift", "awsathena", "google-big-query", "mongo", "mysql", "snowflake"], specifier = ">=9.2.2,<9.3.0" },
+    { name = "toucan-connectors", extras = ["redshift", "awsathena", "google-big-query", "mongo", "mysql", "snowflake"], specifier = ">=10.0.0,<10.1.0" },
     { name = "types-python-dateutil", specifier = ">=2.8.19,<3.0.0" },
 ]
