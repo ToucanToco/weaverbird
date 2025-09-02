@@ -21,14 +21,14 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ['3.11', '3.12', '3.13']
+        python-version: ['3.13']
 
     defaults:
       run:
         working-directory: server
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
@@ -37,7 +37,7 @@ jobs:
 
     - name: Install uv
       env:
-        UV_VERSION: "0.7.6"
+        UV_VERSION: "0.8.12"
       run: |
         curl -LsSf "https://astral.sh/uv/${UV_VERSION}/install.sh" | sh
 

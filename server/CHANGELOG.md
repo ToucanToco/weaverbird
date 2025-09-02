@@ -7,7 +7,13 @@
 - The `rollup` step now outputs an additional column with the next hierarchy element after `level`.
   Its name is `child_level` by default, and is customizable through the `child_level_col` field.
 
-## [0.58.1] - 2025-07.15
+## [0.59.0] - 2025-08-22
+
+### Breaking
+
+- Dropped support for Python<3.13
+
+## [0.58.1] - 2025-07-15
 
 ### Fixed
 
