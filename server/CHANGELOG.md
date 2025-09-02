@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.60.0] - 2025-09-02
+
 ### Added
 
 - The `rollup` step now outputs an additional column with the next hierarchy element after `level`.
