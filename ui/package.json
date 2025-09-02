@@ -52,7 +52,7 @@
     "coverage": "vitest run --coverage"
   },
   "peerDependencies": {
-    "vue": "^2.7"
+    "vue": "^2.7 || ^3.0.0"
   },
   "sideeffects": false,
   "dependencies": {
