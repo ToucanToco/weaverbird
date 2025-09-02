@@ -30,6 +30,7 @@
           "PRODUCT_ID"
         ],
         "level_col": "LEVEL",
+        "child_level_col": "CHILD_LEVEL",
         "label_col": "LABEL",
         "parent_label_col": "PARENT"
       }
@@ -137,6 +138,10 @@
           "type": "string"
         },
         {
+          "name": "CHILD_LEVEL",
+          "type": "string"
+        },
+        {
           "name": "PARENT",
           "type": "string"
         },
@@ -154,6 +159,7 @@
         "PRODUCT_ID": 1,
         "LABEL": "SF",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "CA",
         "SUM_RETAIL_PRICE": 1
       },
@@ -163,6 +169,7 @@
         "PRODUCT_ID": 1,
         "LABEL": "SJ",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "CA",
         "SUM_RETAIL_PRICE": 2
       },
@@ -172,6 +179,7 @@
         "PRODUCT_ID": 2,
         "LABEL": "SF",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "CA",
         "SUM_RETAIL_PRICE": 4
       },
@@ -181,6 +189,7 @@
         "PRODUCT_ID": 2,
         "LABEL": "SJ",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "CA",
         "SUM_RETAIL_PRICE": 8
       },
@@ -190,6 +199,7 @@
         "PRODUCT_ID": 2,
         "LABEL": "Miami",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "FL",
         "SUM_RETAIL_PRICE": 16
       },
@@ -199,6 +209,7 @@
         "PRODUCT_ID": 2,
         "LABEL": "Orlando",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "FL",
         "SUM_RETAIL_PRICE": 32
       },
@@ -208,6 +219,7 @@
         "PRODUCT_ID": 2,
         "LABEL": "SJ",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "PR",
         "SUM_RETAIL_PRICE": 64
       },
@@ -217,6 +229,7 @@
         "PRODUCT_ID": 1,
         "LABEL": "CA",
         "LEVEL": "STATE",
+        "CHILD_LEVEL": "CITY",
         "PARENT": null,
         "SUM_RETAIL_PRICE": 3
       },
@@ -226,6 +239,7 @@
         "PRODUCT_ID": 2,
         "LABEL": "CA",
         "LEVEL": "STATE",
+        "CHILD_LEVEL": "CITY",
         "PARENT": null,
         "SUM_RETAIL_PRICE": 12
       },
@@ -235,6 +249,7 @@
         "PRODUCT_ID": 2,
         "LABEL": "FL",
         "LEVEL": "STATE",
+        "CHILD_LEVEL": "CITY",
         "PARENT": null,
         "SUM_RETAIL_PRICE": 48
       },
@@ -244,6 +259,7 @@
         "PRODUCT_ID": 2,
         "LABEL": "PR",
         "LEVEL": "STATE",
+        "CHILD_LEVEL": "CITY",
         "PARENT": null,
         "SUM_RETAIL_PRICE": 64
       }
@@ -273,6 +289,10 @@
           "type": "string"
         },
         {
+          "name": "CHILD_LEVEL",
+          "type": "string"
+        },
+        {
           "name": "PARENT",
           "type": "string"
         },
@@ -290,6 +310,7 @@
         "PRODUCT_ID": 1,
         "LABEL": "CA",
         "LEVEL": "STATE",
+        "CHILD_LEVEL": "CITY",
         "PARENT": null,
         "SUM_RETAIL_PRICE": 3
       },
@@ -299,6 +320,7 @@
         "PRODUCT_ID": 2,
         "LABEL": "CA",
         "LEVEL": "STATE",
+        "CHILD_LEVEL": "CITY",
         "PARENT": null,
         "SUM_RETAIL_PRICE": 12
       },
@@ -308,6 +330,7 @@
         "PRODUCT_ID": 2,
         "LABEL": "FL",
         "LEVEL": "STATE",
+        "CHILD_LEVEL": "CITY",
         "PARENT": null,
         "SUM_RETAIL_PRICE": 48
       },
@@ -317,6 +340,7 @@
         "PRODUCT_ID": 2,
         "LABEL": "PR",
         "LEVEL": "STATE",
+        "CHILD_LEVEL": "CITY",
         "PARENT": null,
         "SUM_RETAIL_PRICE": 64
       },
@@ -326,6 +350,7 @@
         "PRODUCT_ID": 1,
         "LABEL": "SF",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "CA",
         "SUM_RETAIL_PRICE": 1
       },
@@ -335,6 +360,7 @@
         "PRODUCT_ID": 1,
         "LABEL": "SJ",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "CA",
         "SUM_RETAIL_PRICE": 2
       },
@@ -344,6 +370,7 @@
         "PRODUCT_ID": 2,
         "LABEL": "SF",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "CA",
         "SUM_RETAIL_PRICE": 4
       },
@@ -353,6 +380,7 @@
         "PRODUCT_ID": 2,
         "LABEL": "SJ",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "CA",
         "SUM_RETAIL_PRICE": 8
       },
@@ -362,6 +390,7 @@
         "PRODUCT_ID": 2,
         "LABEL": "Miami",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "FL",
         "SUM_RETAIL_PRICE": 16
       },
@@ -371,6 +400,7 @@
         "PRODUCT_ID": 2,
         "LABEL": "Orlando",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "FL",
         "SUM_RETAIL_PRICE": 32
       },
@@ -380,6 +410,7 @@
         "PRODUCT_ID": 2,
         "LABEL": "SJ",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "PR",
         "SUM_RETAIL_PRICE": 64
       }

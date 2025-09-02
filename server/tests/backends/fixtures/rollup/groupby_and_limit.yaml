@@ -11,6 +11,7 @@ step:
     parent_label_col: PARENT
     label_col: LABEL
     level_col: LEVEL
+    child_level_col: CHILD_LEVEL
     aggregations:
     - aggfunction: sum
       columns:
@@ -83,6 +84,7 @@ expected:
   - CITY: null
     LABEL: CA
     LEVEL: STATE
+    CHILD_LEVEL: CITY
     PARENT: null
     PRODUCT_ID: 1
     STATE: CA
@@ -90,6 +92,7 @@ expected:
   - CITY: null
     LABEL: CA
     LEVEL: STATE
+    CHILD_LEVEL: CITY
     PARENT: null
     PRODUCT_ID: 2
     STATE: CA
@@ -97,6 +100,7 @@ expected:
   - CITY: null
     LABEL: FL
     LEVEL: STATE
+    CHILD_LEVEL: CITY
     PARENT: null
     PRODUCT_ID: 2
     STATE: FL
@@ -112,6 +116,8 @@ expected:
     - name: LABEL
       type: string
     - name: LEVEL
+      type: string
+    - name: CHILD_LEVEL
       type: string
     - name: PARENT
       type: string

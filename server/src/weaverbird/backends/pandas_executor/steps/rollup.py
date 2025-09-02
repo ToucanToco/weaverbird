@@ -14,6 +14,7 @@ def execute_rollup(
 ) -> DataFrame:
     label_col = step.label_col or "label"
     level_col = step.level_col or "level"
+    child_level_col = step.child_level_col or "child_level"
     parent_label_col = step.parent_label_col or "parent"
 
     full_current_hierarchy = []
@@ -21,7 +22,9 @@ def execute_rollup(
     previous_level = None
     parent_col_in_results = False
 
-    for current_level in step.hierarchy:
+    hierarchy_last_index = len(step.hierarchy) - 1
+
+    for idx, current_level in enumerate(step.hierarchy):
         full_current_hierarchy.append(current_level)
         aggregate_on_cols = (step.groupby or []) + full_current_hierarchy
         results_for_this_level = execute_aggregate(
@@ -35,6 +38,7 @@ def execute_rollup(
         )
 
         results_for_this_level[level_col] = current_level
+        results_for_this_level[child_level_col] = step.hierarchy[idx + 1] if idx < hierarchy_last_index else None
         results_for_this_level[label_col] = results_for_this_level[current_level]
         if previous_level is not None:
             results_for_this_level[parent_label_col] = results_for_this_level[previous_level]
@@ -44,9 +48,9 @@ def execute_rollup(
         previous_level = current_level
 
     if parent_col_in_results:
-        extra_output_cols = [label_col, level_col, parent_label_col]
+        extra_output_cols = [label_col, level_col, child_level_col, parent_label_col]
     else:
-        extra_output_cols = [label_col, level_col]
+        extra_output_cols = [label_col, level_col, child_level_col]
 
     columns = (
         step.hierarchy[::-1]

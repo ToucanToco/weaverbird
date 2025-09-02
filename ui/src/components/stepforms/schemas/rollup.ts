@@ -52,6 +52,15 @@ export default {
         placeholder: 'level',
       },
     },
+    childLevelCol: {
+      type: 'string',
+      minLength: 1,
+      title: 'Child level column name',
+      description: 'The name of the level column that will be created for the next level',
+      attrs: {
+        placeholder: 'child_level',
+      },
+    },
     parentLabelCol: {
       type: 'string',
       minLength: 1,

@@ -12,6 +12,7 @@ step:
     - STATE
     label_col: LABEL
     level_col: LEVEL
+    child_level_col: CHILD_LEVEL
     name: rollup
     parent_label_col: PARENT
 input:
@@ -68,12 +69,15 @@ expected:
   data:
   - LABEL: CA
     LEVEL: STATE
+    CHILD_LEVEL: null
     STATE: CA
   - LABEL: FL
     LEVEL: STATE
+    CHILD_LEVEL: null
     STATE: FL
   - LABEL: PR
     LEVEL: STATE
+    CHILD_LEVEL: null
     STATE: PR
   schema:
     fields:
@@ -82,5 +86,7 @@ expected:
     - name: LABEL
       type: string
     - name: LEVEL
+      type: string
+    - name: CHILD_LEVEL
       type: string
     pandas_version: 1.4.0

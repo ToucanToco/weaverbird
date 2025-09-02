@@ -17,6 +17,7 @@
         ],
         "aggregations": [],
         "level_col": "LEVEL",
+        "child_level_col": "CHILD_LEVEL",
         "label_col": "LABEL",
         "parent_label_col": "PARENT"
       }
@@ -98,6 +99,10 @@
           "type": "string"
         },
         {
+          "name": "CHILD_LEVEL",
+          "type": "string"
+        },
+        {
           "name": "PARENT",
           "type": "string"
         }
@@ -110,6 +115,7 @@
         "CITY": "SF",
         "LABEL": "SF",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "CA"
       },
       {
@@ -117,6 +123,7 @@
         "CITY": "SJ",
         "LABEL": "SJ",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "CA"
       },
       {
@@ -124,6 +131,7 @@
         "CITY": "Miami",
         "LABEL": "Miami",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "FL"
       },
       {
@@ -131,6 +139,7 @@
         "CITY": "Orlando",
         "LABEL": "Orlando",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "FL"
       },
       {
@@ -138,6 +147,7 @@
         "CITY": "SJ",
         "LABEL": "SJ",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "PR"
       },
       {
@@ -145,6 +155,7 @@
         "CITY": null,
         "LABEL": "CA",
         "LEVEL": "STATE",
+        "CHILD_LEVEL": "CITY",
         "PARENT": null
       },
       {
@@ -152,6 +163,7 @@
         "CITY": null,
         "LABEL": "FL",
         "LEVEL": "STATE",
+        "CHILD_LEVEL": "CITY",
         "PARENT": null
       },
       {
@@ -159,6 +171,7 @@
         "CITY": null,
         "LABEL": "PR",
         "LEVEL": "STATE",
+        "CHILD_LEVEL": "CITY",
         "PARENT": null
       }
     ]
@@ -183,6 +196,10 @@
           "type": "string"
         },
         {
+          "name": "CHILD_LEVEL",
+          "type": "string"
+        },
+        {
           "name": "PARENT",
           "type": "string"
         }
@@ -195,6 +212,7 @@
         "CITY": null,
         "LABEL": "CA",
         "LEVEL": "STATE",
+        "CHILD_LEVEL": "CITY",
         "PARENT": null
       },
       {
@@ -202,6 +220,7 @@
         "CITY": null,
         "LABEL": "FL",
         "LEVEL": "STATE",
+        "CHILD_LEVEL": "CITY",
         "PARENT": null
       },
       {
@@ -209,6 +228,7 @@
         "CITY": null,
         "LABEL": "PR",
         "LEVEL": "STATE",
+        "CHILD_LEVEL": "CITY",
         "PARENT": null
       },
       {
@@ -216,6 +236,7 @@
         "CITY": "SF",
         "LABEL": "SF",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "CA"
       },
       {
@@ -223,6 +244,7 @@
         "CITY": "SJ",
         "LABEL": "SJ",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "CA"
       },
       {
@@ -230,6 +252,7 @@
         "CITY": "Miami",
         "LABEL": "Miami",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "FL"
       },
       {
@@ -237,6 +260,7 @@
         "CITY": "Orlando",
         "LABEL": "Orlando",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "FL"
       },
       {
@@ -244,6 +268,7 @@
         "CITY": "SJ",
         "LABEL": "SJ",
         "LEVEL": "CITY",
+        "CHILD_LEVEL": null,
         "PARENT": "PR"
       }
     ]
