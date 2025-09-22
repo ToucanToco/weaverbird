@@ -33,7 +33,7 @@ all = ["pandas<3,>=2", "geopandas<2", "pypika>=0.48.9"]
 
 [dependency-groups]
 dev = [
-    "pytest-cov<7.0,>=4.1",
+    "pytest-cov<7.1,>=7",
     "pytest-mock<4.0.0,>=3.11.1",
     "pytest-asyncio<2,>=1",
     "toucan-connectors[Redshift,awsathena,google_big_query,mongo,mysql,snowflake]>=10.0.0,<10.1.0",
