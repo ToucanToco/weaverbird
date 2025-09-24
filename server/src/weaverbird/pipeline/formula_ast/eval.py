@@ -1,7 +1,9 @@
 import ast
+import re
 import tokenize
 from collections.abc import Generator, Iterator
 from io import BytesIO
+from typing import Any
 
 from . import types
 
@@ -38,9 +40,13 @@ class UnsupportedConstant(ASTError):
     """Unsupported constant"""
 
 
+# Everything that is between square brackets but is not an opening square bracket, lazily
+_COLUMN_NAME_RE = re.compile(r"\[[^[]+?\]")
+
+
 class FormulaParser:
-    def __init__(self, formula: str) -> None:
-        self._formula = formula
+    def __init__(self, formula: Any) -> None:
+        self._formula = str(formula)
         self._columns: dict[str, str] = {}
 
     def _iterate_tokens(self, tokens: Iterator[tokenize.TokenInfo]) -> Generator[str]:
@@ -52,23 +58,6 @@ class FormulaParser:
             except StopIteration:
                 return None
 
-        def parse_col_name(prev_token: tokenize.TokenInfo) -> str:
-            # NOTE: position is expressed as a (posLine, posColumn) tuple. We assume that the
-            # formula is written on a single line
-            start = prev_token.end[1]
-            # Skipping the current token, which is [
-            while tok := next_token():
-                # We reached the end of the column name. Store an alias for it and yield the alias
-                if tok.type == tokenize.OP and tok.string == "]":
-                    end = tok.start[1]
-                    if end - start < 1:
-                        raise EmptyColumnName(f"Got an empty column name at {prev_token.start[1]}")
-                    col_name = f"__VQB_COL__{len(self._columns)}"
-                    self._columns[col_name] = self._formula[start:end]
-                    return col_name
-                prev_token = tok
-            raise UnclosedColumnName(f"Expected column to be closed near {prev_token.string} at {prev_token.start[1]}")
-
         while token := next_token():
             if token.type in (
                 tokenize.ENCODING,
@@ -78,12 +67,21 @@ class FormulaParser:
             ):
                 # Those are whitespace tokens we don't care about, so not yielding them
                 continue
-            elif token.type == tokenize.OP and token.string == "[":
-                # Square brackets are delimiters for column names, so here we read everything until
-                # the closing bracket
-                yield parse_col_name(token)
             else:
                 yield token.string
+
+    def _substitute_bracket_columns(self, formula: str) -> str:
+        """Substitutes column names between square brackets with unique identifiers"""
+        columns: list[tuple[str, str]] = []
+        for match_ in re.finditer(_COLUMN_NAME_RE, formula):
+            columns.append((f"__VQB_COL__{len(columns)}", match_.group(0)))
+
+        for replacement, col_name_match in columns:
+            # removing the square brackets around the column name
+            formula = formula.replace(col_name_match, replacement, 1)
+        # removing the square brackets around the column name
+        self._columns = {replacement: col_name_match[1:-1] for replacement, col_name_match in columns}
+        return formula
 
     def sanitize_formula(self) -> str:
         """Removes [] around column names and aliases them.
@@ -91,9 +89,12 @@ class FormulaParser:
         This is needed because stuff parsed with the STL's ast module needs to be valid python code
         """
         self._columns = {}
+        formula_substituted_columns = self._substitute_bracket_columns(self._formula)
         # Stripping because strings starting with whitespace raise UnexpectedIndent when parsed by
         # the ast module
-        return " ".join(self._iterate_tokens(tokenize.tokenize(BytesIO(self._formula.encode()).readline))).strip()
+        return " ".join(
+            self._iterate_tokens(tokenize.tokenize(BytesIO(formula_substituted_columns.encode()).readline))
+        ).strip()
 
     @staticmethod
     def _operator_from_ast_op(op: ast.operator) -> types.Operator:
