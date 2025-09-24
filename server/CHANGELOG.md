@@ -1,5 +1,7 @@
 # Changelog (weaverbird python package)
 
+## [0.60.1] - 2025-09-24
+
 ### Fixed
 
 - The formula parser now accepts column names containing double or single quotes again. A regression was introduced in
