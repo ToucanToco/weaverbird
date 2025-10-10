@@ -8804,9 +8804,9 @@ math-intrinsics@^1.1.0:
   integrity sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==
 
 mathjs@^14.3.0:
-  version "14.7.0"
-  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-14.7.0.tgz#cca88e3dbc2ac83487ead9e3d83170f031155e5f"
-  integrity sha512-RaMhb+9MSESjDZNox/FzzuFpIUI+oxGLyOy1t3BMoW53pGWnTzZtlucJ5cvbit0dIMYlCq00gNbW1giZX4/1Rg==
+  version "14.9.1"
+  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-14.9.1.tgz#cba4403b1bef0d0302a2c814ae6b2b7763a526c8"
+  integrity sha512-xhqv8Xjf+caWG3WlaPekg4v8QFOR3D5+8ycfcjMcPcnCNDgAONQLaLfyGgrggJrcHx2yUGCpACRpiD4GmXwX+Q==
   dependencies:
     "@babel/runtime" "^7.26.10"
     complex.js "^2.2.5"
