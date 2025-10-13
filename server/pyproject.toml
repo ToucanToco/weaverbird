@@ -1,7 +1,7 @@
 [project]
 authors = [{ name = "Toucan Toco", email = "dev@toucantoco.com" }]
 license = "BSD-3-Clause"
-requires-python = "<3.14,>=3.13"
+requires-python = "<3.15,>=3.14"
 name = "weaverbird"
 version = "0.60.1"
 description = "A visual data pipeline builder with various backends"
