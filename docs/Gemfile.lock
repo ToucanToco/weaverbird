@@ -18,7 +18,7 @@ GEM
       public_suffix (>= 2.0.2, < 7.0)
     base64 (0.3.0)
     benchmark (0.4.1)
-    bigdecimal (3.2.3)
+    bigdecimal (3.3.1)
     coffee-script (2.4.1)
       coffee-script-source
       execjs
@@ -217,7 +217,7 @@ GEM
       gemoji (>= 3, < 5)
       html-pipeline (~> 2.2)
       jekyll (>= 3.0, < 5.0)
-    json (2.15.0)
+    json (2.15.1)
     kramdown (2.4.0)
       rexml
     kramdown-parser-gfm (1.1.0)
@@ -233,7 +233,7 @@ GEM
       jekyll (>= 3.5, < 5.0)
       jekyll-feed (~> 0.9)
       jekyll-seo-tag (~> 2.1)
-    minitest (5.25.5)
+    minitest (5.26.0)
     net-http (0.6.0)
       uri
     nokogiri (1.18.10)
@@ -270,7 +270,7 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (1.8.0)
-    uri (1.0.3)
+    uri (1.0.4)
     webrick (1.9.1)
 
 PLATFORMS
