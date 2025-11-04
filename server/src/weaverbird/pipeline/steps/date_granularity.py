@@ -4,19 +4,12 @@ from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMixin
 from weaverbird.pipeline.types import ColumnName, TemplatedVariable
 
-DATE_GRANULARITY = Literal[
-    "day",
-    "isoWeek",
-    "week",
-    "month",
-    "quarter",
-    "year",
-]
+DATE_GRANULARITY = Literal["day", "isoWeek", "week", "month", "quarter", "year", "__VOID__"]
 
 
 class DateGranularityStep(BaseStep):
     name: Literal["dategranularity"] = "dategranularity"
-    granularity: DATE_GRANULARITY | Literal["__VOID__"]
+    granularity: DATE_GRANULARITY
     column: str
     new_column: ColumnName | None = None
 
