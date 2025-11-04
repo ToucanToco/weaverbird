@@ -16,7 +16,7 @@ DATE_GRANULARITY = Literal[
 
 class DateGranularityStep(BaseStep):
     name: Literal["dategranularity"] = "dategranularity"
-    granularity: DATE_GRANULARITY
+    granularity: DATE_GRANULARITY | Literal["__VOID__"]
     column: str
     new_column: ColumnName | None = None
 

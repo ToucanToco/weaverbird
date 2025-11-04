@@ -11,4 +11,5 @@ def available_variables():
         "ONE_POINT_ONE": 1.1,
         "TRUE": True,
         "INTEGER_LIST": [1, 2, 3],
+        "VOID": "__VOID__",
     }
