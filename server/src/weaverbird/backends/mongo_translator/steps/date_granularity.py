@@ -7,7 +7,13 @@ from weaverbird.backends.mongo_translator.date_extractors import (
     extract_first_day_of_year,
 )
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
+from weaverbird.pipeline.pipeline import VOID_REPR
 from weaverbird.pipeline.steps import DateGranularityStep
+
+
+def let_through(column: str) -> str:
+    return f"${column}"
+
 
 _EXTRACT_MAP = {
     "year": extract_first_day_of_year,
@@ -16,6 +22,7 @@ _EXTRACT_MAP = {
     "quarter": extract_first_day_of_quarter,
     "isoWeek": extract_first_day_of_iso_week,
     "day": extract_current_day,
+    VOID_REPR: let_through,
 }
 
 

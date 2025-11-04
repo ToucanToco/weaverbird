@@ -1,5 +1,12 @@
 # Changelog (weaverbird python package)
 
+## Unreleased
+
+### Added
+
+- Step `dategranularity` now supports empty variables in `granularity` field, and let the date
+  untouched when a filter is not yet set.
+
 ## [0.60.1] - 2025-09-24
 
 ### Fixed
@@ -7,8 +14,6 @@
 - The formula parser now accepts column names containing double or single quotes again. A regression was introduced in
   version 0.59.0 when upgrading Python to version 3.13. The `tokenize` module now refuses invalid tokens, whereas it
   produced ERROR tokens before.
-
-## Unreleased
 
 ## [0.60.0] - 2025-09-02
 

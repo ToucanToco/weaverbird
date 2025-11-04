@@ -9,6 +9,7 @@ from weaverbird.backends.pandas_executor.date_extractors import (
     extract_first_day_of_year,
 )
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
+from weaverbird.pipeline.pipeline import VOID_REPR
 from weaverbird.pipeline.steps import DateGranularityStep
 
 
@@ -35,6 +36,8 @@ def execute_date_granularity(
         result = extract_first_day_of_iso_week(series_dt)
     elif granularity == "day":
         result = extract_current_day_date(series_dt)
+    elif granularity == VOID_REPR:
+        result = series_dt
     else:
         return df
 
