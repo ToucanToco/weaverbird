@@ -81,6 +81,7 @@ from weaverbird.pipeline.steps import (
     SelectStep,
     SimplifyStep,
     SortStep,
+    SortStepWithVariables,
     SplitStep,
     SplitStepWithVariable,
     StatisticsStep,
@@ -216,6 +217,7 @@ PipelineStepWithVariables = Annotated[
     | ReplaceStepWithVariable
     | ReplaceTextStepWithVariable
     | RollupStepWithVariable
+    | SortStepWithVariables
     | SplitStepWithVariable
     | TextStepWithVariable
     | TopStepWithVariables
