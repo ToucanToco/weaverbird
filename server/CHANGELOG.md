@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.62.0] - 2025-11-02
+
 ### Added
 
  - The `sort` step now supports variables via the `SortStepWithVariables` class.
