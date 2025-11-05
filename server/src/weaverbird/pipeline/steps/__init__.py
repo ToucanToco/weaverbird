@@ -39,7 +39,7 @@ from .replacetext import ReplaceTextStep, ReplaceTextStepWithVariable
 from .rollup import RollupStep, RollupStepWithVariable
 from .select import SelectStep
 from .simplify import SimplifyStep
-from .sort import SortStep
+from .sort import SortStep, SortStepWithVariables
 from .split import SplitStep, SplitStepWithVariable
 from .statistics import StatisticsStep
 from .substring import SubstringStep
