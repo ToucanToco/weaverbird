@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.61.0] - 2025-11-05
+
 ### Added
 
 - Step `dategranularity` now supports empty variables in `granularity` field, and let the date
