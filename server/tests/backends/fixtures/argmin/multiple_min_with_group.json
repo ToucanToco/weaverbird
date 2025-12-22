@@ -1,0 +1,111 @@
+{
+  "exclude": [
+    "athena_pypika",
+    "bigquery_pypika",
+    "mysql_pypika",
+    "postgres_pypika",
+    "redshift_pypika",
+    "snowflake_pypika"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "argmin",
+        "column": "VALUE",
+        "groups": ["COLUM"]
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "LABEL",
+          "type": "string"
+        },
+        {
+          "name": "COLUM",
+          "type": "string"
+        },
+        {
+          "name": "VALUE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "LABEL": "label1",
+        "COLUM": "col 1",
+        "VALUE": 13
+      },
+      {
+        "LABEL": "label2",
+        "COLUM": "col 1",
+        "VALUE": 1
+      },
+      {
+        "LABEL": "label3",
+        "COLUM": "col 1",
+        "VALUE": 1
+      },
+      {
+        "LABEL": "label4",
+        "COLUM": "col 2",
+        "VALUE": 5
+      },
+      {
+        "LABEL": "label5",
+        "COLUM": "col 2",
+        "VALUE": 10
+      },
+      {
+        "LABEL": "label6",
+        "COLUM": "col 2",
+        "VALUE": 5
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "LABEL",
+          "type": "string"
+        },
+        {
+          "name": "COLUM",
+          "type": "string"
+        },
+        {
+          "name": "VALUE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "LABEL": "label2",
+        "COLUM": "col 1",
+        "VALUE": 1
+      },
+      {
+        "LABEL": "label3",
+        "COLUM": "col 1",
+        "VALUE": 1
+      },
+      {
+        "LABEL": "label4",
+        "COLUM": "col 2",
+        "VALUE": 5
+      },
+      {
+        "LABEL": "label6",
+        "COLUM": "col 2",
+        "VALUE": 5
+      }
+    ]
+  }
+}
