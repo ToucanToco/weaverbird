@@ -1,0 +1,50 @@
+{
+  "CALENDAR": {
+    "en": "Calendar",
+    "fr": "Calendrier"
+  },
+  "CANCEL": {
+    "en": "Cancel",
+    "fr": "Annuler"
+  },
+  "CUSTOM": {
+    "en": "Custom",
+    "fr": "Personnalisé"
+  },
+  "DAY": {
+    "en": "Day",
+    "fr": "Jour"
+  },
+  "INVALID_DATE": {
+    "en": "Invalid Date",
+    "fr": "Date invalide"
+  },
+  "MONTH": {
+    "en": "Month",
+    "fr": "Mois"
+  },
+  "QUARTER": {
+    "en": "Quarter",
+    "fr": "Trimestre"
+  },
+  "SELECT_PERIOD_PLACEHOLDER": {
+    "en": "Select a period",
+    "fr": "Choisissez une periode"
+  },
+  "SET_DATE": {
+    "en": "Set date",
+    "fr": "Valider"
+  },
+  "SHORT_WEEK_PREFIX": {
+    "en": "W",
+    "fr": "S"
+  },
+  "WEEK": {
+    "en": "Week",
+    "fr": "Semaine"
+  },
+  "YEAR": {
+    "en": "Year",
+    "fr": "Année"
+  }
+}
