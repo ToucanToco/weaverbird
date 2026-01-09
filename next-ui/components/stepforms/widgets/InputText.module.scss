@@ -1,0 +1,67 @@
+@use '../../../styles/_variables' as *;
+
+.widget-input-text__container {
+  // @extend %form-widget__container;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  width: 100%;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.widget-input-text {
+  // @extend %form-widget__field;
+  align-items: center;
+  background-color: transparent;
+  box-shadow: 0 0 0 1px #ddd inset;
+  border: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  transition: box-shadow 0.25s;
+  color: #4c4c4c;
+  line-height: 24px;
+  width: 100%;
+  padding: 8px 8px 8px 8px;
+  outline: none;
+
+  &:focus-within {
+     box-shadow: 0 0 0 1px $active-color inset; // %form-widget__field--focused
+  }
+
+  &::placeholder {
+    color: $grey;
+    // from %form-widget__field
+    font-size: 12px;
+  }
+}
+
+.widget-input-text__label {
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.widget-input-text__label label {
+  // @extend %form-widget__label;
+  color: $base-color;
+  font-size: 14px;
+  line-height: 20px;
+  margin-bottom: 5px;
+}
+
+.widget-input-text__doc-icon {
+  margin-left: 5px;
+  color: $base-color;
+  font-size: 14px;
+
+  &:hover {
+    color: $active-color;
+  }
+}
+
+.widget-input--with-variables {
+  padding-right: 35px;
+  text-overflow: ellipsis;
+}

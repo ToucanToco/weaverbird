@@ -1,0 +1,43 @@
+/*
+  This module handles the CodeEditor used in the CodeEditorWidget
+  The default CodeEditor is a native textarea.
+
+  You can set another CodeEditor passing to `setAvailableCodeEditors`
+  a list of name associated to vue component with the following requirements:
+  - It must accept a `value` property and emit an `input` event
+    as it will be used with a `v-model`
+  - Optionally:
+    - emit `blur` and `focus` event
+    - a placeholder `property`
+
+  Optionally:
+   - You can add a defaultConfig value to define the default config to use
+*/
+import React from 'react';
+
+// Placeholder for DefaultCodeEditor. Need to migrate that too eventually.
+// For now, I'll use a simple textarea component or null
+const DefaultCodeEditor: React.ComponentType<any> = (props) => React.createElement('textarea', props);
+
+export type CodeEditorConfig = React.ComponentType<any>;
+let CodeEditor: CodeEditorConfig = DefaultCodeEditor;
+
+type CodeEditorConfigs = { [name: string]: CodeEditorConfig };
+let CodeEditorConfigs: CodeEditorConfigs = {};
+
+function setAvailableCodeEditors({
+  configs,
+  defaultConfig,
+}: {
+  configs: CodeEditorConfigs;
+  defaultConfig?: string;
+}) {
+  CodeEditorConfigs = configs;
+  // Define the default config to use
+  CodeEditor =
+    defaultConfig && CodeEditorConfigs[defaultConfig]
+      ? CodeEditorConfigs[defaultConfig]
+      : Object.values(CodeEditorConfigs)[0];
+}
+
+export { CodeEditor, CodeEditorConfigs, setAvailableCodeEditors };

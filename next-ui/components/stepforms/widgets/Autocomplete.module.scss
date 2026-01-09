@@ -1,0 +1,19 @@
+@use '../../../styles/_variables' as *;
+
+.widget-autocomplete__container {
+  // @extend %form-widget__container;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  width: 100%;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.widget-autocomplete__label {
+  // @extend %form-widget__label;
+  color: $base-color;
+  font-size: 14px;
+  line-height: 20px;
+  margin-bottom: 5px;
+}

@@ -1,0 +1,88 @@
+@use '../../styles/_variables' as *;
+
+.conditions-editor {
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: 1px;
+}
+
+.conditions-editor__content {
+  margin-left: 20px;
+  margin-top: 20px;
+  position: relative;
+}
+
+.conditions-editor__content--with-switch {
+  margin-top: 60px;
+}
+
+.conditions-editor__switch {
+  display: inline-flex;
+  left: -20px;
+  position: absolute;
+  top: -40px;
+  z-index: 1;
+}
+
+.conditions-editor__switch-button {
+  background-color: $active-color-faded-3;
+  border-radius: 4px 0 0 4px;
+  color: $grey;
+  cursor: pointer;
+  display: flex;
+  font-size: 10px;
+  font-weight: bold;
+  justify-content: center;
+  padding: 6px 8px;
+  text-transform: uppercase;
+  width: 40px;
+}
+
+.conditions-editor__switch-button--active {
+  background-color: $active-color;
+  box-shadow: inset -10px 0px 10px -5px rgba(0, 0, 0, 0.3);
+  color: #fff;
+}
+
+.conditions-editor__switch-button--right {
+  border-radius: 0 4px 4px 0;
+}
+
+.conditions-editor__switch-button--right.conditions-editor__switch-button--active {
+  box-shadow: inset 10px 0px 10px -5px rgba(0, 0, 0, 0.3);
+}
+
+.conditions-editor__action-buttons {
+  display: flex;
+  font-size: 10px;
+  font-weight: bold;
+  position: relative;
+  text-transform: uppercase;
+}
+
+.conditions-editor__link {
+  border-bottom: 1px dashed $active-color;
+  border-left: 1px dashed $active-color;
+  height: 45px;
+  left: -10px;
+  position: absolute;
+  top: -32px;
+  width: 5px;
+}
+
+.conditions-editor__input {
+  height: 40px;
+  flex-grow: 1;
+  font-size: 14px;
+  margin: 3px;
+  padding: 8px 10px;
+}
+
+.conditions-editor__add-button {
+  color: $active-color;
+  margin: 5px;
+
+  &:hover {
+    color: black;
+    cursor: pointer;
+  }
+}

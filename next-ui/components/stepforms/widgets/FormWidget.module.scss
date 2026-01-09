@@ -1,0 +1,29 @@
+@use '../../../styles/_variables' as *;
+
+.field--error .widget-input-text,
+.field--error .multiselect__tags {
+  box-shadow: 0 0 0 1px #d40000 inset;
+}
+.field__msg-error {
+  color: #d40000;
+  font-size: 12px;
+  margin-top: 5px;
+}
+.field__msg-error .fa-exclamation-circle {
+  margin-right: 5px;
+}
+
+.field--warning .widget-input-text,
+.field--warning .multiselect__tags {
+  box-shadow: 0 0 0 1px #ff8800 inset;
+}
+
+.field__msg-warning {
+  color: #ff8800;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.field__msg-warning .fa-exclamation-triangle {
+  margin-right: 5px;
+}

@@ -1,0 +1,250 @@
+@use '../../styles/_variables' as *;
+$conditions-group-top-margin: 20px;
+$conditions-group-top-padding: 20px;
+$conditions-group-left-padding: 20px;
+$conditions-group-child-left-padding: 30px;
+$conditions-group-bottom-right-padding: 15px;
+$conditions-group-border-width: 1px;
+
+.conditions-group {
+  position: relative;
+  padding-top: $conditions-group-top-padding;
+  padding-bottom: $conditions-group-bottom-right-padding;
+}
+
+.conditions-group__child-group .conditions-group {
+  padding-left: $conditions-group-child-left-padding;
+  padding-right: $conditions-group-bottom-right-padding;
+}
+
+.conditions-group--with-switch {
+  padding-top: 40px;
+  padding-left: $conditions-group-left-padding;
+}
+
+.conditions-group__child-group .conditions-group--with-switch {
+  padding-left: $conditions-group-child-left-padding;
+}
+
+.conditions-group__switch {
+  left: 0;
+  position: absolute;
+  top: 10px;
+}
+
+.conditions-group__child-group .conditions-group__switch {
+  left: 10px;
+}
+
+.conditions-group__switch-buttons {
+  box-sizing: border-box;
+  display: inline-flex;
+  z-index: 1;
+}
+
+.conditions-group__delete {
+  color: $grey-medium;
+  font-size: 16px;
+  position: absolute;
+  right: 15px;
+  top: 15px;
+
+  &:hover {
+    color: #000;
+    cursor: pointer;
+  }
+}
+
+.conditions-group__switch-button {
+  background-color: $grey-extra-light; // using grey-extra-light as approximation for $grey-light-2 (which wasn't in _variables.scss but in the component style) or define it locally
+  border-radius: 4px 0 0 4px;
+  color: $grey; // brown-grey
+  cursor: pointer;
+  display: flex;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+  justify-content: center;
+  padding: 6px 8px;
+  text-transform: uppercase;
+  width: 40px;
+
+  &:last-child {
+    border-radius: 0 4px 4px 0;
+  }
+
+  &:last-child.conditions-group__switch-button--active {
+    box-shadow: inset 10px 0px 10px -5px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.conditions-group__switch-button--active {
+  background-color: $active-color; // blue
+  box-shadow: inset -10px 0px 10px -5px rgba(0, 0, 0, 0.3);
+  color: #fff;
+}
+
+.conditions-group__action-buttons {
+  display: flex;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+  position: relative;
+  text-transform: uppercase;
+}
+
+.conditions-group__child-group {
+  position: relative;
+  background: $active-color-faded-3; // blue-extra-light
+  border: $conditions-group-border-width solid $grey-extra-light; // grey-light-2
+  border-radius: 3px;
+  margin-top: $conditions-group-top-margin;
+
+  .condition-row {
+    background-color: darken($active-color-faded-3, 5%);
+  }
+}
+
+.condition-group__switch-link {
+  border-left: 1px solid $active-color;
+  height: 50%;
+  position: absolute;
+  left: 10px;
+  top: 100%;
+}
+
+.conditions-group__input {
+  height: 40px;
+  flex-grow: 1;
+  font-size: 14px;
+  margin: 3px;
+  padding: 8px 10px;
+}
+
+.conditions-group__add-button {
+  color: $active-color;
+  margin: 5px;
+
+  &:hover {
+    color: black;
+    cursor: pointer;
+  }
+}
+
+$condition-row-margin: 10px;
+$condition-row-border-width: 1px;
+
+.condition-row {
+  align-items: center;
+  background-color: $active-color-faded-3;
+  border: $condition-row-border-width solid $grey-extra-light;
+  border-radius: 3px;
+  display: flex;
+  margin: $condition-row-margin 0;
+  position: relative;
+}
+
+.condition-row__content {
+  flex: 1;
+  width: 100%;
+}
+
+.condition-row__delete {
+  color: $grey-medium;
+  font-size: 16px;
+  margin: 0 12px;
+
+  &:hover {
+    color: #000;
+    cursor: pointer;
+  }
+}
+
+.condition-row__link {
+  $row-link-width: $condition-row-margin + $condition-row-border-width;
+
+  height: calc(100% + #{2 * $condition-row-margin + $condition-row-border-width});
+  left: -$row-link-width;
+  position: absolute;
+  width: $row-link-width;
+
+  .condition-row__link__middle {
+    height: 0;
+    width: 100%;
+    border-bottom: 1px solid $active-color;
+  }
+
+  .condition-row__link__top,
+  .condition-row__link__bottom {
+    height: 50%;
+    border-left: 1px solid $active-color;
+  }
+}
+
+.conditions-group__link {
+  $link-width: calc($conditions-group-top-margin / 2) + 2 * $conditions-group-border-width +
+    calc($conditions-group-left-padding / 2);
+
+  display: flex;
+  flex-direction: column;
+  top: -$conditions-group-top-margin;
+
+  height: calc(100% + #{$conditions-group-top-margin + 2 * $conditions-group-border-width});
+  left: -1 * calc($conditions-group-top-margin / 2) - $conditions-group-border-width;
+  position: absolute;
+  width: $link-width;
+
+  .conditions-group__link__middle {
+    height: 0;
+    width: 100%;
+    border-bottom: 1px solid $active-color;
+  }
+
+  .conditions-group__link__top {
+    // Position the middle link centered to the operator buttons
+    height: $conditions-group-top-margin + $conditions-group-top-padding;
+  }
+
+  .conditions-group__link__bottom {
+    flex: 1;
+    border-left: 1px solid $active-color;
+  }
+
+  .conditions-group__link__top,
+  .conditions-group__link__bottom {
+    border-left: 1px solid $active-color;
+  }
+}
+
+// Last link is dashed, to the action buttons
+.condition-row__link--last {
+  .condition-row__link__bottom {
+    border-left-style: dashed;
+  }
+}
+
+.conditions-group__link--last {
+  .conditions-group__link__bottom {
+    border-left-style: dashed;
+  }
+}
+
+.action-buttons__link {
+  $action-button-link-width: $condition-row-margin;
+
+  height: 100%;
+  left: -$action-button-link-width;
+  position: absolute;
+  width: $action-button-link-width;
+
+  .action-buttons__link__top {
+    height: 50%;
+    border-left: 1px dashed $active-color;
+  }
+
+  .action-buttons__link__middle {
+    height: 0;
+    width: 100%;
+    border-bottom: 1px dashed $active-color;
+  }
+}

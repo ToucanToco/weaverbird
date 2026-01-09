@@ -1,0 +1,53 @@
+@use '../../../styles/_variables' as *;
+
+.filter-form-simple-condition__container {
+  display: flex;
+  width: 100%;
+}
+
+.widget-autocomplete__container,
+.widget-input-date__container,
+.widget-input-text__container {
+  margin: 0;
+}
+
+.filter-form-simple-condition-column-input,
+.filter-form-simple-condition-operator-input,
+.filter-form-simple-condition__container .widget-input-text__container,
+.filter-form-simple-condition__container .widget-input-date__container,
+.filter-form-simple-condition__container .widget-date-input,
+.filter-form-simple-condition__container .widget-multiinputtext__container {
+  margin: 4px;
+  margin-right: 0;
+  width: 33%;
+
+  &:last-child {
+    margin-right: 4px;
+  }
+}
+
+// Deep selector replacement logic for modules.
+// Since we are not migrating the child widgets yet, I'll keep these class names but they might need adjustment
+// when AutocompleteWidget etc are migrated.
+// For now, these styles target children. In CSS Modules, we might need :global if the children are not part of this module.
+
+.filter-form-simple-condition__container :global(.widget-input-text),
+.filter-form-simple-condition__container :global(.widget-input-date),
+.filter-form-simple-condition__container :global(.widget-date-input__container),
+.filter-form-simple-condition__container :global(.multiselect) {
+  background-color: white;
+
+  &::placeholder {
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+}
+
+.filter-form-simple-condition__container :global(.multiselect__tags) {
+  border-radius: 0;
+  border: none;
+}
+
+.filter-form-simple-condition__container :global(.multiselect) {
+  width: 100%;
+}
