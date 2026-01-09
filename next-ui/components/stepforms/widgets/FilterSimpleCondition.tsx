@@ -14,10 +14,11 @@ import {
 // Use real components now
 import AutocompleteWidget from './Autocomplete';
 import InputTextWidget from './InputText';
+import InputDateWidget from './InputDate';
+import MultiInputTextWidget from './MultiInputText';
 
 // Still placeholders for these for now
-const NewDateInput = (props: any) => <input type="date" value={props.value} onChange={e => props.onChange(e.target.value)} className={props.className} />;
-const MultiInputTextWidget = (props: any) => <input placeholder={props.placeholder} value={props.value} onChange={e => props.onChange(e.target.value)} className={props.className} />;
+const NewDateInput = (props: any) => <InputDateWidget {...props} />; // Map to InputDateWidget
 
 import styles from './FilterSimpleCondition.module.scss';
 
@@ -180,8 +181,6 @@ export default function FilterSimpleConditionWidget({
          }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [hasDateSelectedColumn]); // Only run when date status changes or mount. But careful with mount.
-    // Actually, Vue created() runs once. React useEffect runs on mount.
-    // The invalid operator check logic is safe to run on mount.
 
     // Watch for column type change to reset values
     const prevHasDateSelectedColumn = useRef(hasDateSelectedColumn);

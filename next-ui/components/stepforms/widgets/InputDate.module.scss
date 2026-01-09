@@ -1,0 +1,43 @@
+@use '../../../styles/_variables' as *;
+
+.widget-input-date__container {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  width: 100%;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.widget-input-date__input {
+  align-items: center;
+  background-color: transparent;
+  box-shadow: 0 0 0 1px #ddd inset;
+  border: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  transition: box-shadow 0.25s;
+  color: #4c4c4c;
+  line-height: 24px;
+  width: 100%;
+  padding: 8px 8px 8px 8px;
+  outline: none;
+  cursor: pointer;
+
+  &:focus {
+     box-shadow: 0 0 0 1px $active-color inset;
+  }
+}
+
+.widget-input-date__label-container {
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 5px;
+
+  label {
+    color: $base-color;
+    font-size: 14px;
+  }
+}

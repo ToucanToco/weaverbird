@@ -1,0 +1,73 @@
+@use '../../../styles/_variables' as *;
+
+.widget-multiinputtext__container {
+  // @extend %form-widget__container;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  width: 100%;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.widget-multiinputtext__multiselect {
+  width: 100%;
+  isolation: isolate;
+}
+
+.multiselect__tags {
+  // @extend %form-widget__field;
+  align-items: center;
+  background-color: transparent;
+  box-shadow: 0 0 0 1px #ddd inset;
+  border: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: #4c4c4c;
+  line-height: 24px;
+  width: 100%;
+  padding: 8px;
+
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 40px;
+
+  &:focus-within {
+     box-shadow: 0 0 0 1px $active-color inset;
+  }
+}
+
+.multiselect__tag {
+    background: $active-color;
+    color: white;
+    border-radius: 5px;
+    padding: 4px 8px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    display: inline-flex;
+    align-items: center;
+    font-size: 12px;
+}
+
+.multiselect__tag-icon {
+    cursor: pointer;
+    margin-left: 5px;
+    font-style: normal;
+    font-weight: bold;
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.multiselect__input {
+    border: none;
+    outline: none;
+    flex-grow: 1;
+    background: transparent;
+    font-size: 14px;
+    min-width: 50px;
+    &::placeholder {
+        color: $grey-dark;
+        font-size: 12px;
+    }
+}
