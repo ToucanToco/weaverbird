@@ -1,0 +1,16 @@
+@use '../styles/_variables' as *;
+
+.weaverbird-popover {
+  font-family: 'Montserrat', sans-serif;
+  position: absolute;
+  visibility: visible;
+  z-index: 2;
+}
+
+.weaverbird-popover--always-opened {
+    // Styles for always opened if needed
+}
+
+.weaverbird-popover--calculated-height {
+    // Styles for calculated height if needed
+}

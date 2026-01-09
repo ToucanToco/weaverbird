@@ -35,10 +35,11 @@ import {
   faTrash,
   faVial,
   faWandMagicSparkles,
+  IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
 
 /* List all icons used in app */
-const FA_ICONS = {
+export const FA_ICONS: Record<string, IconDefinition> = {
   // Solid icons (default)
   'angle-down': faAngleDown,
   'angle-left': faAngleLeft,
@@ -71,11 +72,11 @@ const FA_ICONS = {
   trash: faTrash,
   vial: faVial,
   // Regular icons (should always use `far ` prefix)
-  'far calendar': faCalendarFar,
-  'far trash-alt': faTrashAltFar,
-  'far clock': faClockFar,
+  'far calendar': faCalendarFar as unknown as IconDefinition,
+  'far trash-alt': faTrashAltFar as unknown as IconDefinition,
+  'far clock': faClockFar as unknown as IconDefinition,
 };
 
 export const FA_ICONS_PACK = Object.values(FA_ICONS);
 export const FA_ICONS_NAMES = Object.keys(FA_ICONS);
-export type FAIconName = typeof FA_ICONS_NAMES[number];
+export type FAIconName = keyof typeof FA_ICONS;
