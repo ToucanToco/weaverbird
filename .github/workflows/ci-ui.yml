@@ -31,7 +31,7 @@ jobs:
 
       - uses: actions/setup-node@v6.1.0
         with:
-          node-version: '22'
+          node-version: '24'
           cache: 'yarn'
           cache-dependency-path: ui/yarn.lock
 
