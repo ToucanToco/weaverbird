@@ -1,4 +1,4 @@
-FROM ruby:3 AS builder
+FROM ruby:4 AS builder
 
 WORKDIR /jekyll
 COPY Gemfile Gemfile.lock /jekyll/
