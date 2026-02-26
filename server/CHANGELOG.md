@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.62.1] - 2026-02-26
+
 ### Fixed
 
 - Pypika: pin to v0.48.9 for LTS mode
