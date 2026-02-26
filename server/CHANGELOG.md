@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Deps: add a `pypika` dependency group
+
 ## [0.62.1] - 2026-02-26
 
 ### Fixed
