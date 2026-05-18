@@ -1,9 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended",
-    "schedule:earlyMondays"
-  ],
+  "extends": ["config:recommended", "schedule:earlyMondays"],
+  "minimumReleaseAge": "10 days",
   "packageRules": [
     {
       "matchDepTypes": ["dependency-groups"],
@@ -26,12 +24,12 @@
     {
       // We pin specific versions in our docker-compose files because we want to match the infra versions
       "matchManagers": ["docker-compose"],
-      "enabled": false
+      "enabled": false,
     },
     {
       "matchPackageNames": ["*"],
-      "semanticCommitType": "chore"
-    }
+      "semanticCommitType": "chore",
+    },
   ],
   "rebaseWhen": "conflicted",
   // Periodic update for uv.lock and yarn.lock
@@ -39,7 +37,7 @@
     "enabled": true,
     // https://github.com/renovatebot/config-help/issues/89#issuecomment-419611402
     "branchTopic": "lock-file-maintenance-{{packageFile}}",
-    "commitMessageExtra": "({{packageFile}})"
+    "commitMessageExtra": "({{packageFile}})",
   },
-  "prHourlyLimit": 5
+  "prHourlyLimit": 5,
 }
