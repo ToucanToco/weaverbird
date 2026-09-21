@@ -27,9 +27,9 @@ license-files = []
 package = true
 
 [project.optional-dependencies]
-pandas = ["pandas<3,>=2", "geopandas<2"]
+pandas = ["pandas<4,>=3", "geopandas<2"]
 pypika = ["pypika==0.48.9"]
-all = ["pandas<3,>=2", "geopandas<2", "pypika==0.48.9"]
+all = ["pandas<4,>=3", "geopandas<2", "pypika==0.48.9"]
 
 [dependency-groups]
 dev = [
