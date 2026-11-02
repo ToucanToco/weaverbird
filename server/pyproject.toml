@@ -17,7 +17,7 @@ keywords = [
 ]
 readme = "README.md"
 
-dependencies = ["pydantic<3.0.0,>=2.4.2", "python-dateutil<3.0.0,>=2.8.2"]
+dependencies = ["pydantic<3.0.0,>=2.4.2", "python-dateutil<3.1.0,>=3.0.0"]
 
 [tool.setuptools]
 # FIXME: temporary workaround until https://github.com/pypa/setuptools/issues/4759 is fixed
